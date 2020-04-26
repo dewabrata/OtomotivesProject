@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/colorPrimary"
+                    app:popupTheme="@style/AppTheme.PopupOverlay">
+
+                </android.support.v7.widget.Toolbar>
+
+            </FrameLayout>
+
+
+
+        </android.support.design.widget.AppBarLayout>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Harga Min / Max"
+                    android:textStyle="bold"
+                    android:textColor="#000"/>
+
+                <EditText
+                    android:id="@+id/txtHarga"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Rp."
+                    android:textStyle="bold"
+                    android:ems="10"
+                    android:enabled="false" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Harga Layanan"
+                    android:textStyle="bold"
+                    android:textColor="#000"/>
+
+                <EditText
+                    android:id="@+id/txtHargaLayanan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Rp."
+                    android:textStyle="bold"
+                    android:textColorHint="#000"
+                    android:ems="10" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <CheckBox
+                        android:id="@+id/cckDiscBooking"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="Disc. Booking (Jasa)"/>
+
+                    <EditText
+                        android:id="@+id/txtNamaPelanngan"
+                        android:layout_width="240dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:hint="NN.N%"
+                        android:ems="10" />
+
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="H+ Down Payment" />
+
+                <EditText
+                    android:id="@+id/txtDP"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="NN%"
+                    android:ems="10" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Point Tambahan 1" />
+
+                    <Spinner
+                        android:id="@+id/spnTambahan1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:entries="@array/tambahan" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Point Tambahan 2" />
+
+                    <Spinner
+                        android:id="@+id/spnTambahan2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:entries="@array/tambahan" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:text="Disc Part Lain 1" />
+
+
+                    <EditText
+                        android:id="@+id/txtNamaPart1"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:enabled="false"
+                        android:textSize="14sp"
+                        android:hint="Nama / No. Part" />
+
+                    <TextView
+                        android:layout_weight="1"
+                        android:layout_width="15dp"
+                        android:layout_height="wrap_content"
+                        android:text="NN%"
+                        android:gravity="center_horizontal"
+                        />
+
+                    <TextView
+                        android:layout_weight="1"
+                        android:layout_width="15dp"
+                        android:layout_height="wrap_content"
+                        android:text="NN%"
+                        android:gravity="center_horizontal"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:text="Disc Part Lain 2" />
+
+
+                    <EditText
+                        android:id="@+id/txtNamaPart2"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:enabled="false"
+                        android:textSize="14sp"
+                        android:hint="Nama / No. Part" />
+
+                    <TextView
+                        android:layout_weight="1"
+                        android:layout_width="15dp"
+                        android:layout_height="wrap_content"
+                        android:text="NN%"
+                        android:gravity="center_horizontal"
+                        />
+
+                    <TextView
+                        android:layout_weight="1"
+                        android:layout_width="15dp"
+                        android:layout_height="wrap_content"
+                        android:text="NN%"
+                        android:gravity="center_horizontal"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:text="Disc Jasa Lain 1" />
+
+
+                    <EditText
+                        android:id="@+id/txtJasa1"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:enabled="false"
+                        android:textSize="14sp"
+                        android:hint="Aktivitas Jasa Lain" />
+
+                    <TextView
+                        android:layout_weight="1"
+                        android:layout_width="15dp"
+                        android:layout_height="wrap_content"
+                        android:text="NN%"
+                        android:gravity="center_horizontal"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:text="Disc Jasa Lain 2" />
+
+
+                    <EditText
+                        android:id="@+id/txtJasa2"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:enabled="false"
+                        android:textSize="14sp"
+                        android:hint="Aktivitas Jasa Lain" />
+
+                    <TextView
+                        android:layout_weight="1"
+                        android:layout_width="15dp"
+                        android:layout_height="wrap_content"
+                        android:text="NN%"
+                        android:gravity="center_horizontal"
+                        />
+
+                </LinearLayout>
+
+                <CheckBox
+                    android:id="@+id/cckKomplimen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Komplimen Layanan"/>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="Komplimen 1"
+                        android:layout_weight="1" />
+
+                    <Spinner
+                        android:id="@+id/spnKomplimen1"
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:entries="@array/komplimen"
+                        android:layout_weight="1"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="Komplimen 2"
+                        android:layout_weight="1" />
+
+                    <Spinner
+                        android:id="@+id/spnKomplimen2"
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:entries="@array/komplimen"
+                        android:layout_weight="1"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="Komplimen 3"
+                        android:layout_weight="1" />
+
+                    <Spinner
+                        android:id="@+id/spnKomplimen3"
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:entries="@array/komplimen"
+                        android:layout_weight="1"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+
+                    <Button
+                        android:id="@+id/tblSimpan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|right"
+                        android:layout_marginTop="15dp"
+                        android:background="@drawable/btn_rounded_accent"
+                        android:text="Simpan"
+                        android:textColor="@android:color/white" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+</FrameLayout>

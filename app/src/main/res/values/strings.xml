@@ -1,0 +1,210 @@
+<resources>
+    <string name="app_name">Otomotives</string>
+    <string-array name="pola_harga_jual">
+        <item>BELI</item>
+        <item>RATA RATA BELI</item>
+        <item>FLEXIBLE</item>
+        <item>NOMINAL</item>
+
+    </string-array>
+
+    <string-array name="pekerjaan">
+        <item>MAHASISWA</item>
+        <item>OJOL</item>
+        <item>PNS</item>
+
+    </string-array>
+
+    <string-array name="penjualan_part">
+        <item>KENDARAAN</item>
+        <item>GROSIR</item>
+
+    </string-array>
+
+    <string-array name="pola_refund">
+        <item>CASH</item>
+        <item>TRANSFER</item>
+
+    </string-array>
+
+    <string-array name="bank">
+        <item>BAN</item>
+        <item>CC</item>
+
+    </string-array>
+
+    <string-array name="tipe_supplier">
+        <item>PRINCIPAL</item>
+
+
+    </string-array>
+
+    <string-array name="pola_beli">
+        <item>ONLINE</item>
+        <item>OFFLINE</item>
+        <item>LANGSUNG</item>
+
+
+    </string-array>
+
+    <string-array name="pembayaran">
+        <item>TRANSFER DIMUKA</item>
+        <item>CASH DIMUKA</item>
+        <item>COD</item>
+        <item>INV</item>
+        <item>KONSIGNMENT</item>
+        <item>PINJAMAN</item>
+
+
+    </string-array>
+
+    <string-array name="gender">
+        <item>LAKI - LAKI</item>
+        <item>PEREMPUAN</item>
+
+    </string-array>
+
+    <string-array name="posisi">
+        <item>MEKANIK</item>
+        <item>ADMIN PART</item>
+        <item>KASIR</item>
+
+    </string-array>
+
+    <string-array name="status">
+        <item>AKTIF</item>
+        <item>NON-AKTIF</item>
+
+    </string-array>
+
+    <string-array name="penggajian">
+        <item>HARIAN</item>
+        <item>MINGGUAN</item>
+        <item>BULANAN</item>
+
+    </string-array>
+
+    <string-array name="akses_app">
+        <item>CHECK IN</item>
+        <item>PART</item>
+
+    </string-array>
+
+    <string-array name="penggunaan">
+        <item>TENT</item>
+        <item>HOME SERVIS</item>
+        <item>EMERGENCY</item>
+
+    </string-array>
+
+    <string-array name="discount">
+        <item>LAYANAN</item>
+
+    </string-array>
+
+
+    <string-array name="tambahan">
+        <item>AKTIVITAS JASA LAIN</item>
+
+    </string-array>
+
+    <string-array name="komplimen">
+        <item>MERCH</item>
+        <item>PART</item>
+        <item>LAYANAN</item>
+
+    </string-array>
+
+    <string-array name="layanan">
+        <item>SERVIS LENGKAP</item>
+
+    </string-array>
+
+    <string-array name="tipe_pembayaran">
+        <item>COD</item>
+        <item>INV</item>
+        <item>Konsigment</item>
+        <item>Pinjaman</item>
+
+    </string-array>
+
+    <string-array name="tipe_penerimaan">
+        <item>PEMBELIAN</item>
+        <item>PENGANTIAN RETURN</item>
+        <item>PENGANTIAN FASILITAS</item>
+        <item>REFUND</item>
+        <item>PENGEMBALIAN USER</item>
+    </string-array>
+    <string-array name="object_diskon">
+        <item>LAYANAN</item>
+    </string-array>
+
+    <string-array name="lokasi">
+        <item>BENGKEL</item>
+        <item>HOME</item>
+        <item>TENDA</item>
+        <item>EMERGENCY</item>
+    </string-array>
+
+    <string-array name="jenis_gift">
+        <item>PART</item>
+        <item>MERCHANDISE</item>
+        <item>FREE SERVICE</item>
+    </string-array>
+
+    <string-array name="penugasan">
+        <item>EXPRESS</item>
+        <item>PART</item>
+        <item>STANDART</item>
+        <item>FRONT OFFICE</item>
+        <item>KOMPLIMENT</item>
+        <item>H+1</item>
+        <item>OFF</item>
+        <item>TRAINING</item>
+        <item>CUTI</item>
+    </string-array>
+
+    <string-array name="item_komisi">
+        <item>LAYANAN</item>
+        <item>PART</item>
+        <item>PART BERKALA</item>
+        <item>JASA LAIN</item>
+        <item>JASA LAIN BERKALA</item>
+    </string-array>
+
+    <string-array name="lokasi_simpan">
+        <item>GUDANG</item>
+        <item>RUANG PART BENGKEL</item>
+
+    </string-array>
+
+    <string-array name="penempatan">
+        <item>PALET001</item>
+
+
+    </string-array>
+
+
+    <string-array name="pembayaran_bengkel">
+    <item>DEBIT</item>
+    <item>CREDIT</item>
+    <item>E MONEY</item>
+    <item>INVOICE</item>
+
+    </string-array>
+
+    <string-array name="harga_jual_part">
+        <item>FIX</item>
+        <item>NON FIX</item>
+
+    </string-array>
+
+    <string-array name="schedule">
+        <item>OPERASIONAL</item>
+        <item>BOOK</item>
+        <item>HOME</item>
+        <item>EMG</item>
+
+    </string-array>
+
+</resources>
