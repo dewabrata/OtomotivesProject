@@ -23,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar"
+                    android:id="@+id/toolbar_penugasan"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:background="?attr/colorPrimary"
@@ -41,10 +41,6 @@
                     android:padding="5dp"
                     app:srcCompat="@drawable/scan" />
             </FrameLayout>
-
-
-
-
 
         </android.support.design.widget.AppBarLayout>
 
@@ -110,14 +106,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="5dp"
-                            android:text="On" />
+                            android:text="ON" />
 
                         <RadioButton
                             android:id="@+id/rbOff"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="5dp"
-                            android:text="Off" />
+                            android:text="OFF" />
                     </RadioGroup>
                 </LinearLayout>
 
@@ -141,7 +137,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
-                        android:entries="@array/penugasan" />
+                        android:entries="@array/tipe_antrian" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -164,7 +160,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
-                        android:entries="@array/lokasi" />
+                        android:entries="@array/lokasi_penugasan" />
                 </LinearLayout>
 
                 <LinearLayout

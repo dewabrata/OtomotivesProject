@@ -17,93 +17,118 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 
+import com.naa.data.Nson;
+import com.naa.utils.InternetX;
+import com.naa.utils.MessageMsg;
+import com.naa.utils.Messagebox;
+import com.rkrzmail.oto.AppActivity;
+import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaAutoComplete;
 
 import java.util.Calendar;
+import java.util.Map;
 
-public class Penugasan_Activity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
+public class Penugasan_Activity extends AppActivity implements AdapterView.OnItemSelectedListener {
 
-    private NikitaAutoComplete namaMekanik;
-    private ProgressBar pbPenugasan;
-    private  RadioGroup statusPenugasan;
-    private Spinner lokasiPenugasan, tipeAntrian;
-    private Button simpan, hapus;
-    private CheckBox homePenugasan, emergencyPenugasan;
-    private LinearLayout layoutExternal;
-    private RadioButton onKerja, offKerja;
-    private EditText mulaiKerja, selesaiKerja, mulaiIstirahat, selesaiIstirahat;
+
+
+    Nson nson = Nson.readNson("");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_penugasan_);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_penugasan);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setTitle("Penugasan Mekanik");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        namaMekanik =  findViewById(R.id.tv_namaMekanik);
-        pbPenugasan =  findViewById(R.id.pb_penugasan);
-        statusPenugasan = findViewById(R.id.rgPenugasan);
-        onKerja = findViewById(R.id.rbOn);
-        offKerja = findViewById(R.id.rbOff);
-        lokasiPenugasan = findViewById(R.id.sp_lokasi);
-        tipeAntrian = findViewById(R.id.sp_antrian);
-        homePenugasan = findViewById(R.id.cb_home);
-        emergencyPenugasan = findViewById(R.id.cb_emergency);
-        mulaiKerja = findViewById(R.id.et_mulaiKerja);
-        selesaiKerja = findViewById(R.id.et_selesaiKerja);
-        mulaiIstirahat = findViewById(R.id.et_mulaistirahat);
-        selesaiIstirahat = findViewById(R.id.et_selesaistirahat);
-        layoutExternal = findViewById(R.id.layout_external);
-        simpan = findViewById(R.id.btn_simpan);
-        hapus = findViewById(R.id.btn_hapus);
 
-        simpan.setOnClickListener(this);
-        hapus.setOnClickListener(this);
-        mulaiKerja.setOnClickListener(this);
-        selesaiKerja.setOnClickListener(this);
-        mulaiIstirahat.setOnClickListener(this);
-        selesaiIstirahat.setOnClickListener(this);
+        find(R.id.sp_lokasi, Spinner.class).setOnItemSelectedListener(this);
 
-        lokasiPenugasan.setOnItemSelectedListener(this);
+        find(R.id.et_mulaiKerja, EditText.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getDateTime(find(R.id.et_mulaiKerja, EditText.class));
+            }
+        });
+
+        find(R.id.et_selesaiKerja, EditText.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getDateTime(find(R.id.et_selesaiKerja, EditText.class));
+            }
+        });
+
+        find(R.id.et_mulaistirahat, EditText.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getDateTime(find(R.id.et_mulaistirahat, EditText.class));
+            }
+        });
+
+        find(R.id.et_selesaistirahat, EditText.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getDateTime(find(R.id.et_selesaistirahat, EditText.class));
+            }
+        });
+
+        find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveData();
+            }
+        });
 
     }
 
-    private void setData(){
 
-        int selectedId = statusPenugasan.getCheckedRadioButtonId();
-        String nama = namaMekanik.getText().toString();
-        String antrian = tipeAntrian.getSelectedItem().toString().trim();
-        String lokasi = lokasiPenugasan.getSelectedItem().toString().trim();
-        String status = onKerja.getText().toString();
-        String tidakKerja = offKerja.getText().toString();
-        String emergency = emergencyPenugasan.getText().toString();
-        String home = homePenugasan.getText().toString();
+    private void saveData(){
 
-        if(nama.isEmpty()){
-            namaMekanik.setError("Silahkan Di isi");
-        }
+        MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
+            Nson result ;
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("tinggalkan_stnk", find(R.id.cb_home, CheckBox.class).isChecked()?"YES":"NO");
+                args.put("status", find(R.id.rgPenugasan, RadioGroup.class).isSelected()?"ON" : "OFF");
+                args.put("nama_mekanik", find(R.id.tv_namaMekanik, NikitaAutoComplete.class).getText().toString());
+                args.put("tipe_antrian", find(R.id.sp_antrian, Spinner.class).getSelectedItem().toString());
+                args.put("lokasi", find(R.id.sp_lokasi, Spinner.class).getSelectedItem().toString());
+                args.put("mulai_kerja", find(R.id.et_mulaiKerja, EditText.class).getText().toString());
+                args.put("selesai_kerja", find(R.id.et_selesaiKerja, EditText.class).getText().toString());
+                args.put("mulai_istirahat", find(R.id.et_mulaistirahat, EditText.class).getText().toString());
+                args.put("selesai_istirahat", find(R.id.et_selesaistirahat, EditText.class).getText().toString());
 
-        switch (selectedId){
-            case R.id.rbOn:
+                String out = InternetX.postHttpConnection(AppApplication.getBaseUrl("save.php"), args);
 
-                break;
-            case R.id.rbOff:
+                result = Nson.readJson(out);
 
-                break;
-        }
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    setResult(RESULT_OK);
+                    finish();
+                } else {
+                    showError(result.get("message").asString());
+                }
+            }
+        });
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String item = parent.getItemAtPosition(position).toString();
         if(item.equalsIgnoreCase("Tenda")){
-            setViewAndChildrenEnabled(layoutExternal, false);
+            setViewAndChildrenEnabled(find(R.id.layout_external), false);
         }else if(item.equalsIgnoreCase("Bengkel")){
-            setViewAndChildrenEnabled(layoutExternal, true);
+            setViewAndChildrenEnabled(find(R.id.layout_external), true);
         }
     }
 
@@ -120,33 +145,6 @@ public class Penugasan_Activity extends AppCompatActivity implements AdapterView
                 View child = viewGroup.getChildAt(i);
                 setViewAndChildrenEnabled(child, enabled);
             }
-        }
-    }
-
-    @Override
-    public void onClick(View view) {
-
-        switch (view.getId()){
-
-            case R.id.et_mulaiKerja:
-                getDateTime(mulaiKerja);
-                break;
-            case R.id.et_selesaiKerja:
-                getDateTime(selesaiKerja);
-                break;
-            case R.id.et_mulaistirahat:
-                getDateTime(mulaiIstirahat);
-                break;
-            case R.id.et_selesaistirahat:
-                getDateTime(selesaiIstirahat);
-                break;
-            case R.id.btn_simpan:
-
-                break;
-            case R.id.btn_hapus:
-
-                break;
-
         }
     }
 
