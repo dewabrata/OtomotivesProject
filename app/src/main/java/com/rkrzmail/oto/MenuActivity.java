@@ -43,6 +43,7 @@ import com.rkrzmail.oto.gmod.Stock_OpnameActivity;
 import com.rkrzmail.oto.modules.LoginActivity;
 import com.rkrzmail.oto.modules.part.PartActivity;
 import com.rkrzmail.oto.modules.part.PartSearchActivity;
+import com.rkrzmail.oto.modules.penugasan.PenugasanMekanikActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -142,7 +143,7 @@ public class MenuActivity extends AppActivity {
                     Intent intent = new Intent(MenuActivity.this, Penampung_ItemActivity.class);
                     startActivity(intent);
                 }else if (nPopulate.get(position).get("id").asInteger() == MN_PENUGASAN_MEKANIK) {
-                    Intent intent = new Intent(MenuActivity.this, Penugasan_Activity.class);
+                    Intent intent = new Intent(MenuActivity.this, PenugasanMekanikActivity.class);
                     startActivity(intent);
                 }
 
@@ -234,7 +235,7 @@ public class MenuActivity extends AppActivity {
         nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_PenerimaanPart).set("icon", R.drawable.mn_tugaspart).set("text", "PENERIMAAN PART"));
         nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_PartDiterima).set("icon", R.drawable.mn_tugaspart).set("text", "PART DI TERIMA"));
         nPopulate.add(Nson.newObject().set("id", MN_STOCK_OPNAME).set("icon", R.drawable.mn_tugaspart).set("text", "STOCK OPNAME"));
-        nPopulate.add(Nson.newObject().set("id", MN_PENUGASAN_MEKANIK).set("icon", R.drawable.mn_tugaspart).set("text", "PENUGASAN MEKANIK"));
+        nPopulate.add(Nson.newObject().set("id", MN_PENUGASAN_MEKANIK).set("icon", R.drawable.mn_perawatan).set("text", "PENUGASAN MEKANIK"));
 //        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_KomisiKaryawan).set("icon", R.drawable.sample).set("text", "MESSAGE"));
 //        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_LoyaltiProgram).set("icon", R.drawable.sample).set("text", "MESSAGE"));
        // nPopulate.add(Nson.newObject().set("id", 1).set("icon", R.drawable.mn_perawatan).set("text", "MEKANIK"));

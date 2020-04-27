@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.gmod;
 
+import android.app.TimePickerDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -8,25 +9,30 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TimePicker;
 
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaAutoComplete;
+
+import java.util.Calendar;
 
 public class Penugasan_Activity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
     private NikitaAutoComplete namaMekanik;
     private ProgressBar pbPenugasan;
-    private RadioGroup statusPenugasan;
+    private  RadioGroup statusPenugasan;
     private Spinner lokasiPenugasan, tipeAntrian;
-    private Button simpan, mulaiKerja, selesaiKerja, mulaiIstirahat, selesaiIstirahat, hapus;
+    private Button simpan, hapus;
     private CheckBox homePenugasan, emergencyPenugasan;
     private LinearLayout layoutExternal;
     private RadioButton onKerja, offKerja;
+    private EditText mulaiKerja, selesaiKerja, mulaiIstirahat, selesaiIstirahat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,11 +41,11 @@ public class Penugasan_Activity extends AppCompatActivity implements AdapterView
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
-        setTitle("Penugasan Mekanik");
+        getSupportActionBar().setTitle("Penugasan Mekanik");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        namaMekanik = findViewById(R.id.tv_namaMekanik);
-        pbPenugasan = findViewById(R.id.pb_penugasan);
+        namaMekanik =  findViewById(R.id.tv_namaMekanik);
+        pbPenugasan =  findViewById(R.id.pb_penugasan);
         statusPenugasan = findViewById(R.id.rgPenugasan);
         onKerja = findViewById(R.id.rbOn);
         offKerja = findViewById(R.id.rbOff);
@@ -47,12 +53,12 @@ public class Penugasan_Activity extends AppCompatActivity implements AdapterView
         tipeAntrian = findViewById(R.id.sp_antrian);
         homePenugasan = findViewById(R.id.cb_home);
         emergencyPenugasan = findViewById(R.id.cb_emergency);
-        mulaiKerja = findViewById(R.id.btn_mulaiKerja);
-        selesaiKerja = findViewById(R.id.btn_selesaikerja);
-        mulaiIstirahat = findViewById(R.id.btn_mulaistirahat);
-        selesaiIstirahat = findViewById(R.id.btn_selesaistirahat);
+        mulaiKerja = findViewById(R.id.et_mulaiKerja);
+        selesaiKerja = findViewById(R.id.et_selesaiKerja);
+        mulaiIstirahat = findViewById(R.id.et_mulaistirahat);
+        selesaiIstirahat = findViewById(R.id.et_selesaistirahat);
         layoutExternal = findViewById(R.id.layout_external);
-        simpan = findViewById(R.id.tblSimpan);
+        simpan = findViewById(R.id.btn_simpan);
         hapus = findViewById(R.id.btn_hapus);
 
         simpan.setOnClickListener(this);
@@ -122,17 +128,17 @@ public class Penugasan_Activity extends AppCompatActivity implements AdapterView
 
         switch (view.getId()){
 
-            case R.id.btn_mulaiKerja:
-
+            case R.id.et_mulaiKerja:
+                getDateTime(mulaiKerja);
                 break;
-            case R.id.btn_selesaikerja:
-
+            case R.id.et_selesaiKerja:
+                getDateTime(selesaiKerja);
                 break;
-            case R.id.btn_mulaistirahat:
-
+            case R.id.et_mulaistirahat:
+                getDateTime(mulaiIstirahat);
                 break;
-            case R.id.btn_selesaistirahat:
-
+            case R.id.et_selesaistirahat:
+                getDateTime(selesaiIstirahat);
                 break;
             case R.id.btn_simpan:
 
@@ -142,5 +148,21 @@ public class Penugasan_Activity extends AppCompatActivity implements AdapterView
                 break;
 
         }
+    }
+
+    private void getDateTime(final EditText editText) {
+
+        Calendar calendar = Calendar.getInstance();
+        int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
+        int currentMinute = calendar.get(Calendar.MINUTE);
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(Penugasan_Activity.this, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int hourOfDay, int minutes) {
+                editText.setText(hourOfDay + ":" + minutes);
+            }
+        }, currentHour, currentMinute, true);
+
+        timePickerDialog.show();
     }
 }

@@ -60,7 +60,6 @@
                 android:layout_centerVertical="false"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/border_solid"
                 android:orientation="vertical"
                 android:padding="10dp">
 
@@ -214,14 +213,15 @@
                         android:layout_weight="1"
                         android:text="Jam Kerja" />
 
-                    <Button
-                        android:id="@+id/btn_mulaiKerja"
+                    <EditText
+                        android:id="@+id/et_mulaiKerja"
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
+                        android:ems="10"
                         android:gravity="center"
-                        android:text="HH:MM" />
+                        android:hint="Mulai" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -230,15 +230,15 @@
                         android:text="-"
                         android:textSize="20sp" />
 
-                    <Button
-                        android:id="@+id/btn_selesaikerja"
+                    <EditText
+                        android:id="@+id/et_selesaiKerja"
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
                         android:ems="10"
                         android:gravity="center"
-                        android:text="HH:MM" />
+                        android:hint="Selesai" />
 
                 </LinearLayout>
 
@@ -256,14 +256,15 @@
                         android:layout_weight="1"
                         android:text="Jam Istirahat" />
 
-                    <Button
-                        android:id="@+id/btn_mulaistirahat"
+                    <EditText
+                        android:id="@+id/et_mulaistirahat"
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
+                        android:ems="10"
                         android:gravity="center"
-                        android:text="HH:MM" />
+                        android:hint="Mulai" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -272,14 +273,15 @@
                         android:text="-"
                         android:textSize="20sp" />
 
-                    <Button
-                        android:id="@+id/btn_selesaistirahat"
+                    <EditText
+                        android:id="@+id/et_selesaistirahat"
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
+                        android:ems="10"
                         android:gravity="center"
-                        android:text="HH:MM" />
+                        android:hint="Selesai" />
 
                 </LinearLayout>
 

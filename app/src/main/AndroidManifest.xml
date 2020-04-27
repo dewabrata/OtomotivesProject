@@ -39,6 +39,7 @@
         <activity android:name=".gmod.Part_DiterimaActivity" />
         <activity android:name=".gmod.Stock_OpnameActivity" />
         <activity android:name=".gmod.Penampung_Item_DetailActivity" />
+        <activity android:name=".gmod.Penugasan_Activity"/>
 
 
         <activity android:name=".MainActivity">
@@ -48,6 +49,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".modules.penugasan.PenugasanMekanikActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden"
+            />
         <activity
             android:name=".modules.CheckinActivity"
             android:screenOrientation="portrait"
