@@ -186,10 +186,10 @@
 
 
     <string-array name="pembayaran_bengkel">
-    <item>DEBIT</item>
-    <item>CREDIT</item>
-    <item>E MONEY</item>
-    <item>INVOICE</item>
+        <item>DEBIT</item>
+        <item>CREDIT</item>
+        <item>E MONEY</item>
+        <item>INVOICE</item>
 
     </string-array>
 
