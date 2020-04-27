@@ -146,6 +146,11 @@
         <item>EMERGENCY</item>
     </string-array>
 
+    <string-array name="lokasi_penugasan">
+        <item>BENGKEL</item>
+        <item>TENDA</item>
+    </string-array>
+
     <string-array name="jenis_gift">
         <item>PART</item>
         <item>MERCHANDISE</item>
@@ -162,6 +167,12 @@
         <item>OFF</item>
         <item>TRAINING</item>
         <item>CUTI</item>
+    </string-array>
+
+    <string-array name="tipe_antrian">
+        <item>STANDART</item>
+        <item>H+1</item>
+        <item>EXPRESS</item>
     </string-array>
 
     <string-array name="item_komisi">

@@ -1,99 +1,134 @@
 package com.rkrzmail.oto.gmod;
 
+import android.app.TimePickerDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TimePicker;
 
+import com.naa.data.Nson;
+import com.naa.utils.InternetX;
+import com.naa.utils.MessageMsg;
+import com.naa.utils.Messagebox;
+import com.rkrzmail.oto.AppActivity;
+import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaAutoComplete;
 
-public class Penugasan_Activity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
+import java.util.Calendar;
+import java.util.Map;
 
-    private NikitaAutoComplete namaMekanik;
-    private ProgressBar pbPenugasan;
-    private RadioGroup statusPenugasan;
-    private Spinner lokasiPenugasan, tipeAntrian;
-    private Button simpan, mulaiKerja, selesaiKerja, mulaiIstirahat, selesaiIstirahat, hapus;
-    private CheckBox homePenugasan, emergencyPenugasan;
-    private LinearLayout layoutExternal;
-    private RadioButton onKerja, offKerja;
+public class Penugasan_Activity extends AppActivity implements AdapterView.OnItemSelectedListener {
+
+
+
+    Nson nson = Nson.readNson("");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_penugasan_);
 
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
-        setTitle("Penugasan Mekanik");
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_penugasan);
+        setSupportActionBar(toolbar);
 
-        namaMekanik = findViewById(R.id.tv_namaMekanik);
-        pbPenugasan = findViewById(R.id.pb_penugasan);
-        statusPenugasan = findViewById(R.id.rgPenugasan);
-        onKerja = findViewById(R.id.rbOn);
-        offKerja = findViewById(R.id.rbOff);
-        lokasiPenugasan = findViewById(R.id.sp_lokasi);
-        tipeAntrian = findViewById(R.id.sp_antrian);
-        homePenugasan = findViewById(R.id.cb_home);
-        emergencyPenugasan = findViewById(R.id.cb_emergency);
-        mulaiKerja = findViewById(R.id.btn_mulaiKerja);
-        selesaiKerja = findViewById(R.id.btn_selesaikerja);
-        mulaiIstirahat = findViewById(R.id.btn_mulaistirahat);
-        selesaiIstirahat = findViewById(R.id.btn_selesaistirahat);
-        layoutExternal = findViewById(R.id.layout_external);
-        simpan = findViewById(R.id.tblSimpan);
-        hapus = findViewById(R.id.btn_hapus);
+        getSupportActionBar().setTitle("Penugasan Mekanik");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        simpan.setOnClickListener(this);
-        hapus.setOnClickListener(this);
-        mulaiKerja.setOnClickListener(this);
-        selesaiKerja.setOnClickListener(this);
-        mulaiIstirahat.setOnClickListener(this);
-        selesaiIstirahat.setOnClickListener(this);
 
-        lokasiPenugasan.setOnItemSelectedListener(this);
+        find(R.id.sp_lokasi, Spinner.class).setOnItemSelectedListener(this);
+
+        find(R.id.et_mulaiKerja, EditText.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getDateTime(find(R.id.et_mulaiKerja, EditText.class));
+            }
+        });
+
+        find(R.id.et_selesaiKerja, EditText.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getDateTime(find(R.id.et_selesaiKerja, EditText.class));
+            }
+        });
+
+        find(R.id.et_mulaistirahat, EditText.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getDateTime(find(R.id.et_mulaistirahat, EditText.class));
+            }
+        });
+
+        find(R.id.et_selesaistirahat, EditText.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getDateTime(find(R.id.et_selesaistirahat, EditText.class));
+            }
+        });
+
+        find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveData();
+            }
+        });
 
     }
 
-    private void setData(){
 
-        int selectedId = statusPenugasan.getCheckedRadioButtonId();
-        String nama = namaMekanik.getText().toString();
-        String antrian = tipeAntrian.getSelectedItem().toString().trim();
-        String lokasi = lokasiPenugasan.getSelectedItem().toString().trim();
-        String status = onKerja.getText().toString();
-        String tidakKerja = offKerja.getText().toString();
-        String emergency = emergencyPenugasan.getText().toString();
-        String home = homePenugasan.getText().toString();
+    private void saveData(){
 
-        if(nama.isEmpty()){
-            namaMekanik.setError("Silahkan Di isi");
-        }
+        MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
+            Nson result ;
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("tinggalkan_stnk", find(R.id.cb_home, CheckBox.class).isChecked()?"YES":"NO");
+                args.put("status", find(R.id.rgPenugasan, RadioGroup.class).isSelected()?"ON" : "OFF");
+                args.put("nama_mekanik", find(R.id.tv_namaMekanik, NikitaAutoComplete.class).getText().toString());
+                args.put("tipe_antrian", find(R.id.sp_antrian, Spinner.class).getSelectedItem().toString());
+                args.put("lokasi", find(R.id.sp_lokasi, Spinner.class).getSelectedItem().toString());
+                args.put("mulai_kerja", find(R.id.et_mulaiKerja, EditText.class).getText().toString());
+                args.put("selesai_kerja", find(R.id.et_selesaiKerja, EditText.class).getText().toString());
+                args.put("mulai_istirahat", find(R.id.et_mulaistirahat, EditText.class).getText().toString());
+                args.put("selesai_istirahat", find(R.id.et_selesaistirahat, EditText.class).getText().toString());
 
-        switch (selectedId){
-            case R.id.rbOn:
+                String out = InternetX.postHttpConnection(AppApplication.getBaseUrl("save.php"), args);
 
-                break;
-            case R.id.rbOff:
-                break;
-        }
+                result = Nson.readJson(out);
+
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    setResult(RESULT_OK);
+                    finish();
+                } else {
+                    showError(result.get("message").asString());
+                }
+            }
+        });
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String item = parent.getItemAtPosition(position).toString();
         if(item.equalsIgnoreCase("Tenda")){
-            setViewAndChildrenEnabled(layoutExternal, false);
+            setViewAndChildrenEnabled(find(R.id.layout_external), false);
         }else if(item.equalsIgnoreCase("Bengkel")){
-            setViewAndChildrenEnabled(layoutExternal, true);
+            setViewAndChildrenEnabled(find(R.id.layout_external), true);
         }
     }
 
@@ -113,28 +148,19 @@ public class Penugasan_Activity extends AppCompatActivity implements AdapterView
         }
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.btn_mulaiKerja:
+    private void getDateTime(final EditText editText) {
 
-                break;
-            case R.id.btn_selesaikerja:
+        Calendar calendar = Calendar.getInstance();
+        int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
+        int currentMinute = calendar.get(Calendar.MINUTE);
 
-                break;
-            case R.id.btn_mulaistirahat:
+        TimePickerDialog timePickerDialog = new TimePickerDialog(Penugasan_Activity.this, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int hourOfDay, int minutes) {
+                editText.setText(hourOfDay + ":" + minutes);
+            }
+        }, currentHour, currentMinute, true);
 
-                break;
-            case R.id.btn_selesaistirahat:
-
-                break;
-            case R.id.btn_simpan:
-
-                break;
-            case R.id.btn_hapus:
-
-                break;
-
-        }
+        timePickerDialog.show();
     }
 }
