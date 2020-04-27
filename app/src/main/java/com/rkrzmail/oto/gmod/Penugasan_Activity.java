@@ -2,6 +2,7 @@ package com.rkrzmail.oto.gmod;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -31,6 +32,8 @@ public class Penugasan_Activity extends AppCompatActivity implements AdapterView
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_penugasan_);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
         setTitle("Penugasan Mekanik");
@@ -83,6 +86,7 @@ public class Penugasan_Activity extends AppCompatActivity implements AdapterView
 
                 break;
             case R.id.rbOff:
+
                 break;
         }
     }
@@ -115,7 +119,9 @@ public class Penugasan_Activity extends AppCompatActivity implements AdapterView
 
     @Override
     public void onClick(View view) {
+
         switch (view.getId()){
+
             case R.id.btn_mulaiKerja:
 
                 break;
