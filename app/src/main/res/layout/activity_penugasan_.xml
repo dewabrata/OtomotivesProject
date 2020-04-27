@@ -53,48 +53,16 @@
             android:layout_height="match_parent">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:id="@+id/layout_penugasan"
+                android:layout_width="370dp"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="false"
+                android:layout_centerVertical="false"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/border_solid"
                 android:orientation="vertical"
-                android:padding="5dp">
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp">
-
-                    <android.support.design.widget.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <com.rkrzmail.srv.NikitaAutoComplete
-                            android:id="@+id/txtNamaMekanik"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:enabled="true"
-                            android:hint="Nama Mekanik"
-                            android:inputType="text"
-                            android:maxLines="1"
-                            android:singleLine="true" />
-                    </android.support.design.widget.TextInputLayout>
-
-                    <ProgressBar
-                        android:id="@+id/pb_NamaMekanik"
-                        style="?android:attr/progressBarStyleSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical|right"
-                        android:layout_marginRight="5dp"
-                        android:visibility="gone" />
-                </FrameLayout>
-
-                <TextView
-                    android:id="@+id/txtStatus"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:text="Status" />
+                android:padding="10dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -102,112 +70,255 @@
                     android:layout_margin="5dp"
                     android:orientation="horizontal">
 
-                    <RadioGroup
-                        android:id="@+id/radio"
+                    <com.rkrzmail.srv.NikitaAutoComplete
+                        android:id="@+id/tv_namaMekanik"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:enabled="true"
+                        android:hint="Nama Mekanik"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:singleLine="true" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView5"
+                        android:layout_width="109dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:text="Status" />
+
+                    <RadioGroup
+                        android:id="@+id/rgPenugasan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:checkedButton="@id/rbOn"
+                        android:gravity="center"
+                        android:orientation="horizontal">
 
                         <RadioButton
-                            android:id="@+id/rbon"
+                            android:id="@+id/rbOn"
                             android:layout_width="wrap_content"
-
                             android:layout_height="wrap_content"
-                            android:text="On"></RadioButton>
+                            android:layout_margin="5dp"
+                            android:text="On" />
 
                         <RadioButton
-                            android:id="@+id/rboff"
+                            android:id="@+id/rbOff"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Off"></RadioButton>
-
+                            android:layout_margin="5dp"
+                            android:text="Off" />
                     </RadioGroup>
                 </LinearLayout>
 
-
-                <FrameLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp">
+                    android:layout_margin="5dp"
+                    android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/txtLokasi"
-                        android:layout_width="match_parent"
+                        android:id="@+id/textView7"
+                        android:layout_width="109dp"
                         android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:text="Tipe Antrian" />
+
+                    <Spinner
+                        android:id="@+id/sp_antrian"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:entries="@array/penugasan" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView8"
+                        android:layout_width="109dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
                         android:text="Lokasi" />
 
                     <Spinner
                         android:id="@+id/sp_lokasi"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:entries="@array/lokasi"
-                        android:padding="20dp"></Spinner>
-
-                </FrameLayout>
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp">
-
-                    <TextView
-                        android:id="@+id/txtPenugasan"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Penugasan" />
-
-                    <Spinner
-                        android:id="@+id/sp_penugasan"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:entries="@array/penugasan"
-                        android:padding="20dp"></Spinner>
-
-                </FrameLayout>
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp">
-
-                    <TextView
-                        android:id="@+id/txtjadwal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Jadwal" />
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:entries="@array/lokasi" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_external"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView9"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:text="External" />
+
+                    <CheckBox
+                        android:id="@+id/cb_home"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:text="Home" />
+
+                    <CheckBox
+                        android:id="@+id/cb_emergency"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:text="Emergency" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView10"
+                        android:layout_width="109dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:text="Jam Kerja" />
 
                     <Button
-                        android:id="@+id/button1"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/btn_mulaiKerja"
+                        android:layout_width="100dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="100dp"
-                        android:text="HHmm" />
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="HH:MM" />
 
                     <TextView
-                        android:id="@+id/txttext"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="250dp"
-                        android:text="TextView" />
+                        android:layout_gravity="center"
+                        android:text="-"
+                        android:textSize="20sp" />
 
-                </FrameLayout>
+                    <Button
+                        android:id="@+id/btn_selesaikerja"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:gravity="center"
+                        android:text="HH:MM" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView11"
+                        android:layout_width="109dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:text="Jam Istirahat" />
+
+                    <Button
+                        android:id="@+id/btn_mulaistirahat"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="HH:MM" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="-"
+                        android:textSize="20sp" />
+
+                    <Button
+                        android:id="@+id/btn_selesaistirahat"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="HH:MM" />
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="5dp"
-                    android:orientation="vertical">
+                    android:layout_margin="10dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
                     <Button
-                        android:id="@+id/tblSimpan"
+                        android:id="@+id/btn_hapus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="right"
+                        android:background="@drawable/btn_rounded_accent"
+                        android:text="Hapus"
+                        android:visibility="gone" />
+
+                    <Button
+                        android:id="@+id/btn_simpan"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
                         android:background="@drawable/btn_rounded_accent"
                         android:text="Simpan"
-                        android:textColor="@android:color/white" />
+                        android:textColor="@color/white_transparency" />
+
                 </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/pb_penugasan"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
+
             </LinearLayout>
         </ScrollView>
+
     </LinearLayout>
 
 </FrameLayout>
