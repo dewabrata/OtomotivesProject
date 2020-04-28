@@ -67,6 +67,7 @@ public class MenuActivity extends AppActivity {
     public final int MN_LOKASI_PERSEDIAAN =17;
     public final int MN_STOCK_OPNAME =18;
     public static final int MN_PENUGASAN_MEKANIK = 19;
+    public static int MN_BIAYA_MEKANIK2 = 20;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,6 +145,9 @@ public class MenuActivity extends AppActivity {
                     startActivity(intent);
                 }else if (nPopulate.get(position).get("id").asInteger() == MN_PENUGASAN_MEKANIK) {
                     Intent intent = new Intent(MenuActivity.this, PenugasanMekanikActivity.class);
+                    startActivity(intent);
+                }else if (nPopulate.get(position).get("id").asInteger() == MN_BIAYA_MEKANIK2) {
+                    Intent intent = new Intent(MenuActivity.this, BiayaMekanikActivity.class);
                     startActivity(intent);
                 }
 
@@ -236,6 +240,7 @@ public class MenuActivity extends AppActivity {
         nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_PartDiterima).set("icon", R.drawable.mn_tugaspart).set("text", "PART DI TERIMA"));
         nPopulate.add(Nson.newObject().set("id", MN_STOCK_OPNAME).set("icon", R.drawable.mn_tugaspart).set("text", "STOCK OPNAME"));
         nPopulate.add(Nson.newObject().set("id", MN_PENUGASAN_MEKANIK).set("icon", R.drawable.mn_perawatan).set("text", "PENUGASAN MEKANIK"));
+        nPopulate.add(Nson.newObject().set("id", MN_BIAYA_MEKANIK2).set("icon", R.drawable.mn_perawatan).set("text", "BIAYA MEKANIK2"));
 //        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_KomisiKaryawan).set("icon", R.drawable.sample).set("text", "MESSAGE"));
 //        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_LoyaltiProgram).set("icon", R.drawable.sample).set("text", "MESSAGE"));
        // nPopulate.add(Nson.newObject().set("id", 1).set("icon", R.drawable.mn_perawatan).set("text", "MEKANIK"));
