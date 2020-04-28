@@ -12,22 +12,19 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
-import com.naa.data.UtilityAndroid;
-import com.naa.utils.InternetX;
 import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.gmod.ControlLayanan;
-import com.rkrzmail.oto.gmod.Pendaftaran1;
-import com.rkrzmail.oto.gmod.Penugasan_Activity;
+import com.rkrzmail.oto.gmod.AturPenugasan_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
 import java.util.Map;
 
-public class PenugasanMekanikActivity extends AppActivity {
+public class PenugasanActivity extends AppActivity {
 
     private RecyclerView rvPenugasan;
     private static final int REQUEST_PENUGASAN  = 123;
@@ -36,13 +33,10 @@ public class PenugasanMekanikActivity extends AppActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_penugasan_mekanik);
+        setContentView(R.layout.activity_penugasan);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        getSupportActionBar().setTitle("Penugasan");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        initToolbar();
+        initComponent();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah_tugas);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -51,10 +45,24 @@ public class PenugasanMekanikActivity extends AppActivity {
                /* Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();*/
                 //Intent intent =  new Intent(getActivity(), PendaftaranLayananActivity.class);
-                Intent intent =  new Intent(getActivity(), Penugasan_Activity.class);
+                Intent intent =  new Intent(getActivity(), AturPenugasan_Activity.class);
                 startActivityForResult(intent, REQUEST_PENUGASAN);
             }
         });
+
+
+    }
+
+    private void initToolbar(){
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setTitle("Penugasan");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void initComponent(){
 
         rvPenugasan = (RecyclerView) findViewById(R.id.recyclerView_penugasan);
         rvPenugasan.setLayoutManager(new LinearLayoutManager(this));
@@ -94,10 +102,12 @@ public class PenugasanMekanikActivity extends AppActivity {
 
             @Override
             public void runUI() {
-                if (result.isNsonArray()) {
+                if (result.get("status").asString().equalsIgnoreCase("success")) {
                     nListArray.asArray().clear();
-                    nListArray.asArray().addAll(result.asArray());
+                    nListArray.asArray().addAll(result.get("data").asArray());
                     rvPenugasan.getAdapter().notifyDataSetChanged();
+                }else {
+                    showError(result.get("message").asString());
                 }
             }
         });

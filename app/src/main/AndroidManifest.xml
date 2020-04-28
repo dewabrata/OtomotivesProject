@@ -28,6 +28,11 @@
         <activity android:name=".gmod.Part_DiterimaActivity" />
         <activity android:name=".gmod.Stock_OpnameActivity" />
         <activity android:name=".gmod.Penampung_Item_DetailActivity" />
+
+        <activity android:name=".gmod.AturPenugasan_Activity"/>
+
+
+>>>>>>> Stashed changes
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,6 +40,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+
+        <activity
+            android:name=".modules.penugasan.PenugasanActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden"
+            />
+>>>>>>> Stashed changes
         <activity
             android:name=".modules.CheckinActivity"
             android:screenOrientation="portrait"

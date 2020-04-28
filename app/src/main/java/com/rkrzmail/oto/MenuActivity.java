@@ -37,13 +37,12 @@ import com.rkrzmail.oto.gmod.Part_DiterimaActivity;
 import com.rkrzmail.oto.gmod.Penampung_ItemActivity;
 import com.rkrzmail.oto.gmod.DaftarPenjualanPartActivity;
 import com.rkrzmail.oto.gmod.Penerimaan_PartAcitivity;
-import com.rkrzmail.oto.gmod.Penugasan_Activity;
 import com.rkrzmail.oto.gmod.SparepartActivity;
 import com.rkrzmail.oto.gmod.Stock_OpnameActivity;
 import com.rkrzmail.oto.modules.LoginActivity;
 import com.rkrzmail.oto.modules.part.PartActivity;
 import com.rkrzmail.oto.modules.part.PartSearchActivity;
-import com.rkrzmail.oto.modules.penugasan.PenugasanMekanikActivity;
+import com.rkrzmail.oto.modules.penugasan.PenugasanActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -143,7 +142,7 @@ public class MenuActivity extends AppActivity {
                     Intent intent = new Intent(MenuActivity.this, Penampung_ItemActivity.class);
                     startActivity(intent);
                 }else if (nPopulate.get(position).get("id").asInteger() == MN_PENUGASAN_MEKANIK) {
-                    Intent intent = new Intent(MenuActivity.this, PenugasanMekanikActivity.class);
+                    Intent intent = new Intent(MenuActivity.this, PenugasanActivity.class);
                     startActivity(intent);
                 }
 
