@@ -96,8 +96,8 @@ public class AturBiayaMekanik2 extends AppActivity {
 
             public void runUI() {
 
-                find(R.id.txtUpakKota, EditText.class).setText("UPAH MINIMUM KOTA : Rp " + result.get(0).get("UMK").asString());
-                find(R.id.txtUpahJam, EditText.class).setText("UPAH / JAM : Rp " + result.get(0).get("UPAH_MINIM").asString());
+                find(R.id.txtUpakKota, EditText.class).setText("Rp " + result.get(0).get("UMK").asString());
+                find(R.id.txtUpahJam, EditText.class).setText("Rp " + result.get(0).get("UPAH_MINIM").asString());
             }
         });
     }

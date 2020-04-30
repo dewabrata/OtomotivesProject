@@ -3,6 +3,7 @@ package com.rkrzmail.oto.modules;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -37,7 +38,7 @@ public class BiayaMekanik2Activity extends AppActivity {
     private View parent_view;
     private RecyclerView rvListBasic2;
     //private AdapterListBasic mAdapter;
-    final int REQUEST_BIAYA_MEKANIK = 666;
+    final int REQUEST_BIAYA_MEKANIK2 = 666;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,14 @@ public class BiayaMekanik2Activity extends AppActivity {
         initToolbar();
         initComponent();
 
+        FloatingActionButton fab = (FloatingActionButton) find(R.id.fab_add_atur);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), AturBiayaMekanik2.class);
+                startActivityForResult(intent, REQUEST_BIAYA_MEKANIK2);
+            }
+        });
     }
 
     private void initToolbar() {
@@ -113,7 +122,7 @@ public class BiayaMekanik2Activity extends AppActivity {
 
                 Intent intent =  new Intent(getActivity(), AturBiayaMekanikActivity.class);
                 intent.putExtra("DATA", nListArray.get(position).toJson());
-                startActivityForResult(intent, REQUEST_BIAYA_MEKANIK);
+                startActivityForResult(intent, REQUEST_BIAYA_MEKANIK2);
             }
         }));
 
@@ -123,7 +132,7 @@ public class BiayaMekanik2Activity extends AppActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode==REQUEST_BIAYA_MEKANIK && resultCode == RESULT_OK){
+        if (requestCode==REQUEST_BIAYA_MEKANIK2 && resultCode == RESULT_OK){
             Intent intent =  new Intent();
             intent.putExtra("DATA", getIntentStringExtra(data, "DATA"));
             setResult(RESULT_OK, intent);

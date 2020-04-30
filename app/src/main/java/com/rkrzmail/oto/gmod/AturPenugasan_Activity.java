@@ -80,18 +80,24 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
 //            find(R.id.sp_antrian, Spinner.class).setSelection(savedInstanceState.getInt("sp_antrain", 0));
 //        }
 //
-//        final Nson data = Nson.readNson(getIntentStringExtra("data"));
+            final Nson data = Nson.readJson(getIntentStringExtra("data"));
 
 //        if (getIntentStringExtra("data") != null) {
 //            getSupportActionBar().setTitle("Edit Penugasan Mekanik");
+
+
+
 
             newProses(new Messagebox.DoubleRunnable() {
                 Nson result;
                 @Override
                 public void run() {
                     Map<String, String> args = AppApplication.getInstance().getArgsData();
-                    args.put("action", "update");
-                    result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrl("v3/aturpenugasanmekanik"), args));
+                    //args.put("action", "get");//view
+                    //args.put("id", data.get("id").asString());//view
+                    args.put("id", getIntentStringExtra("id"));//view
+
+                    result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturpenugasanmekanik"), args));
                 }
 
                 @Override
@@ -119,6 +125,8 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
 
                 }
             });
+
+
 
     }
 

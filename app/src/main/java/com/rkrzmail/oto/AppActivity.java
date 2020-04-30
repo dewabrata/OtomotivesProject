@@ -40,6 +40,7 @@ public class AppActivity extends AppCompatActivity {
     public  String getSetting (String key){
         return UtilityAndroid.getSetting(getActivity(),key, "");
     }
+
     public String formatNopol(String s){
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < s.length(); i++) {

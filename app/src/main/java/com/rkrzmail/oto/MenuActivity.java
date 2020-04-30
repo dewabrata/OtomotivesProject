@@ -39,6 +39,7 @@ import com.rkrzmail.oto.gmod.DaftarPenjualanPartActivity;
 import com.rkrzmail.oto.gmod.Penerimaan_PartAcitivity;
 import com.rkrzmail.oto.gmod.SparepartActivity;
 import com.rkrzmail.oto.gmod.Stock_OpnameActivity;
+import com.rkrzmail.oto.modules.BiayaMekanik2Activity;
 import com.rkrzmail.oto.modules.LoginActivity;
 import com.rkrzmail.oto.modules.part.PartActivity;
 import com.rkrzmail.oto.modules.part.PartSearchActivity;
@@ -146,7 +147,7 @@ public class MenuActivity extends AppActivity {
                     Intent intent = new Intent(MenuActivity.this, PenugasanActivity.class);
                     startActivity(intent);
                 }else if (nPopulate.get(position).get("id").asInteger() == MN_BIAYA_MEKANIK2) {
-                    Intent intent = new Intent(MenuActivity.this, BiayaMekanikActivity.class);
+                    Intent intent = new Intent(MenuActivity.this, BiayaMekanik2Activity.class);
                     startActivity(intent);
                 }
 
