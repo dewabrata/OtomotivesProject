@@ -17,6 +17,8 @@ import android.widget.ImageView;
 
 import com.naa.data.Utility;
 import com.naa.data.UtilityAndroid;
+import com.naa.utils.MessageMsg;
+import com.naa.utils.Messagebox;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -60,6 +62,7 @@ public class AppApplication extends Application {
     public static String getUrl(String name){
         return getBaseUrl(name)+"?key="+UtilityAndroid.getSetting(getInstance().getApplicationContext(), "KEY", "");
     }
+
 
 
     private static String slocation = "0,0";

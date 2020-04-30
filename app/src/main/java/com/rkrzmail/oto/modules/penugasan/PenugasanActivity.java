@@ -49,6 +49,7 @@ public class PenugasanActivity extends AppActivity {
             @Override
             public void onClick(View view) {
                 Intent intent =  new Intent(getActivity(), AturPenugasan_Activity.class);
+
                 startActivityForResult(intent, REQUEST_PENUGASAN);
             }
         });
@@ -87,8 +88,9 @@ public class PenugasanActivity extends AppActivity {
             public void onItemClick(Nson parent, View view, int position) {
                 //Toast.makeText(getActivity(),"HHHHH "+position, Toast.LENGTH_SHORT).show();
                 Intent intent =  new Intent(getActivity(), AturPenugasan_Activity.class);
-                intent.putExtra("userid", nListArray.get(position).get("namamekanik").asInteger());
-                intent.putExtra("data", nListArray.get(position).toJson());
+                intent.putExtra("userid", nListArray.get(position).get("namamekanik").asString());
+               // intent.putExtra("data", nListArray.get(position).toJson());
+                intent.putExtra("id", nListArray.get(position).get("id").asString());
                 startActivityForResult(intent, REQUEST_PENUGASAN);
             }
         }));
@@ -116,11 +118,16 @@ public class PenugasanActivity extends AppActivity {
 
                    @Override
                    public void runUI() {
-                       nListArray.get("action").get(viewHolder.getAdapterPosition()).get("namamekanik");
-                       rvPenugasan.getAdapter().notifyDataSetChanged();
+                       if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                           nListArray.asArray().remove(viewHolder.getAdapterPosition());
+                           rvPenugasan.getAdapter().notifyDataSetChanged();
+                       }else{
+                           showError("Mohon Di Coba Kembali" + result.get("message").asString());
+                       }
+
                    }
                });
-
+               showInfo("onSwiped");
             }
         }).attachToRecyclerView(rvPenugasan);
         catchData();

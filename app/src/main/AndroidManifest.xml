@@ -12,7 +12,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity android:name=".modules.AturBiayaMekanik2"></activity>
-        <activity android:name=".modules.BiayaMekanikActivity" />
+        <activity android:name=".modules.BiayaMekanik2Activity" />
         <activity android:name=".gmod.PengambilanPartActivity" />
         <activity android:name=".gmod.DaftarTugasPartActivity" />
         <activity android:name=".gmod.JumlahPartActivity" />
@@ -33,7 +33,7 @@
         <activity android:name=".gmod.AturPenugasan_Activity"/>
 
 
->>>>>>> Stashed changes
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -50,7 +50,7 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden"
             />
->>>>>>> Stashed changes
+
         <activity
             android:name=".modules.CheckinActivity"
             android:screenOrientation="portrait"
