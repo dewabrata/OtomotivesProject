@@ -1,10 +1,9 @@
 package com.rkrzmail.oto.gmod;
 
 import android.app.TimePickerDialog;
-import android.content.ComponentName;
 import android.content.Intent;
+import android.net.nsd.NsdManager;
 import android.os.Bundle;
-import android.os.Message;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -39,14 +39,6 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
     private Spinner spTipe_antrian, spLokasi;
     private CheckBox cbHome, cbEmergency;
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-//        outState.putInt("sp_lokasi", find(R.id.sp_lokasi, Spinner.class).getSelectedItemPosition());
-//        outState.putInt("sp_antrian", find(R.id.sp_antrian, Spinner.class).getSelectedItemPosition());
-//
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,65 +61,59 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
         etSelesai_Kerja.setOnClickListener(this);
         etMulai_istirahat.setOnClickListener(this);
         etSelesai_istirahat.setOnClickListener(this);
-        initComponent();
 
 
+        Nson data = Nson.readJson(getIntentStringExtra("ID"));
+        Intent i = getIntent();
+        if(i.hasExtra("ID")){
+            getSupportActionBar().setTitle("Edit Penugasan Mekanik");
+            etNama_Mekanik.setText(data.get("NAMA_MEKANIK").asString());
+            etMulai_Kerja.setText(data.get("JAM_MASUK").asString());
+            etSelesai_Kerja.setText(data.get("JAM_PULANG").asString());
+            etMulai_istirahat.setText(data.get("istirahat").asString());
+            etSelesai_istirahat.setText(data.get("selesai").asString());
 
+            if (data.get("status").asString().equalsIgnoreCase("ON")) {
+                find(R.id.rbOn, RadioButton.class).setChecked(true);
+            }
+            if (data.get("status").asString().equalsIgnoreCase("OFF")) {
+                find(R.id.rbOff, RadioButton.class).setChecked(true);
+            }
+            if (data.get("external").asString().equalsIgnoreCase("HOME")) {
+                cbHome.setChecked(true);
+            }
+            if (data.get("external").asString().equalsIgnoreCase("EMERGENCY")) {
+                cbEmergency.setChecked(true);
+            }
+            Log.d(TAG, data.get("NAMA_MEKANIK").asString() +
+                    "\n" + data.get("STATUS") + "\n" + data.get("EXTERNAL"));
 
+            setViewAndChildrenEnabled(find(R.id.layout_penugasan, LinearLayout.class), false);
+            setViewAndChildrenEnabled(find(R.id.layout_external, LinearLayout.class), false);
 
-//        if(savedInstanceState != null){
-//            find(R.id.sp_lokasi, Spinner.class).setSelection(savedInstanceState.getInt("sp_lokasi", 0));
-//            find(R.id.sp_antrian, Spinner.class).setSelection(savedInstanceState.getInt("sp_antrain", 0));
-//        }
-//
-            final Nson data = Nson.readJson(getIntentStringExtra("data"));
-
-//        if (getIntentStringExtra("data") != null) {
-//            getSupportActionBar().setTitle("Edit Penugasan Mekanik");
-
-
-
-
-            newProses(new Messagebox.DoubleRunnable() {
-                Nson result;
+            find(R.id.btn_hapus, Button.class).setVisibility(View.VISIBLE);
+            find(R.id.btn_hapus, Button.class).setEnabled(true);
+            find(R.id.btn_hapus, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void run() {
-                    Map<String, String> args = AppApplication.getInstance().getArgsData();
-                    //args.put("action", "get");//view
-                    //args.put("id", data.get("id").asString());//view
-                    args.put("id", getIntentStringExtra("id"));//view
-
-                    result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturpenugasanmekanik"), args));
+                public void onClick(View view) {
+                    deleteData(etNama_Mekanik.getText().toString());
                 }
-
+            });
+            find(R.id.btn_simpan, Button.class).setVisibility(View.GONE);
+            find(R.id.btn_update, Button.class).setVisibility(View.VISIBLE);
+            find(R.id.btn_update, Button.class).setEnabled(true);
+            find(R.id.btn_update, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void runUI() {
-                    etNama_Mekanik.setText(result.get(0).get("namamekanik").asString());
-                    etMulai_Kerja.setText(result.get("masuk").asString());
-                    etSelesai_Kerja.setText(result.get(0).get("pulang").asString());
-                    etMulai_istirahat.setText(result.get(0).get("istirahat").asString());
-                    etSelesai_istirahat.setText(result.get(0).get("selesai").asString());
-
-                    if(result.get(0).get("status").asString().equalsIgnoreCase("ON")){
-                        find(R.id.rbOn, RadioButton.class).setChecked(true);
+                public void onClick(View view) {
+                    if(find(R.id.btn_update, Button.class).getVisibility() == View.VISIBLE){
+                        setViewAndChildrenEnabled(find(R.id.layout_penugasan, LinearLayout.class), true);
+                        setViewAndChildrenEnabled(find(R.id.layout_external, LinearLayout.class), true);
                     }
-                    if(result.get(0).get("status").asString().equalsIgnoreCase("OFF")){
-                        find(R.id.rbOff, RadioButton.class).setChecked(true);
-                    }
-                    if(result.get(0).get("external").asString().equalsIgnoreCase("HOME")){
-                        cbHome.setChecked(true);
-                    }
-                    if(result.get(0).get("external").asString().equalsIgnoreCase("EMERGENCY")){
-                        cbEmergency.setChecked(true);
-                    }
-
-
-
                 }
             });
 
-
-
+        }
+        initComponent();
     }
 
     @Override
@@ -151,7 +137,7 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
 
     private void initComponent() {
 
-        find(R.id.sp_lokasi, Spinner.class).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spLokasi.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
                 String item = parent.getItemAtPosition(position).toString();
@@ -194,7 +180,6 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
     }
 
     private void initToolbar() {
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_penugasan);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Atur Penugasan Mekanik");
@@ -205,13 +190,11 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
 
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 int selectedId = rg_status.getCheckedRadioButtonId();
-
                 String nama = etNama_Mekanik.getText().toString().trim().toUpperCase();
                 String antrian = spTipe_antrian.getSelectedItem().toString().toUpperCase();
                 String lokasi = spLokasi.getSelectedItem().toString().toUpperCase();
@@ -222,12 +205,7 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
                 String home = cbHome.getText().toString();
                 String emergency = cbEmergency.getText().toString();
 
-//                String cid = "AHS700010100";
-//                String action = "add";
-
-//                args.put("CID", cid);
-//                args.put("action", action);
-                switch (selectedId){
+                switch (selectedId) {
                     case R.id.rbOn:
                         String statusKerja = find(R.id.rbOn, RadioButton.class).getText().toString();
                         args.put("status", statusKerja);
@@ -243,10 +221,10 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
                 args.put("namamekanik", nama);
                 args.put("antrian", antrian);
                 args.put("lokasi", lokasi);
-                if(cbHome.isChecked()){
+                if (cbHome.isChecked()) {
                     args.put("external", home);
                     Log.d(TAG, home);
-                }else if(cbEmergency.isChecked()){
+                } else if (cbEmergency.isChecked()) {
                     args.put("external", emergency);
                     Log.d(TAG, emergency);
                 }
@@ -257,12 +235,8 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
 
 
                 Log.d(TAG, "put data");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrl("v3/aturpenugasanmekanik"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturpenugasanmekanik"), args));
                 result.toJson().equalsIgnoreCase("data");
-
-                //Log.i(TAG, InternetX.getHttpConnectionX(""));
-//                http://otomotives.com/api/v3/aturpenugasanmekanik?CID=mekanik1
-
 
             }
 
@@ -271,7 +245,6 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
 
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     setResult(RESULT_OK);
-                   // nListArray.asArray().addAll(result.get("data").asArray());
                     Log.d(TAG, "success");
                     startActivity(new Intent(AturPenugasan_Activity.this, PenugasanActivity.class));
                     finish();
@@ -283,20 +256,49 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
         });
     }
 
-    private void getActivityForResult() {
-
-        MessageMsg.newTask(getActivity(), new Messagebox.DoubleRunnable() {
+    private void deleteData(final String id) {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson data;
             @Override
             public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "delete");
 
-
+                args.put("namamekanik", id);
+                data = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturpenugasanmekanik"), args));
             }
 
             @Override
             public void runUI() {
+                if (data.get("status").asString().equalsIgnoreCase("OK")) {
+                    setResult(RESULT_OK);
+                    startActivity(new Intent(AturPenugasan_Activity.this, PenugasanActivity.class));
 
-                find(R.id.sp_lokasi, Spinner.class).setSelection(getIntentStringExtra("flag").indexOf(""));
-                find(R.id.sp_antrian, Spinner.class).setSelection(getIntentStringExtra("flag").indexOf(""));
+                }else{
+                    showError("Mohon Di Coba Kembali");
+                }
+
+            }
+        });
+    }
+
+    private void updateData(){
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson data;
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "update");
+                data = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturpenugasanmekanik"), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (data.get("status").asString().equalsIgnoreCase("OK")) {
+                    startActivity(new Intent(AturPenugasan_Activity.this, PenugasanActivity.class));
+                }else{
+                    showError("Mohon Di Coba Kembali");
+                }
 
             }
         });
@@ -328,5 +330,4 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
 
         timePickerDialog.show();
     }
-
 }
