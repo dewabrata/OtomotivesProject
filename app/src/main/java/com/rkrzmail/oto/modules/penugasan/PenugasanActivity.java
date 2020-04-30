@@ -8,10 +8,15 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.naa.data.Nson;
+import com.naa.data.UtilityAndroid;
+import com.naa.utils.InternetX;
 import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
@@ -26,6 +31,7 @@ import java.util.Map;
 
 public class PenugasanActivity extends AppActivity {
 
+    public static final String TAG = "PenugasanActivity";
     private RecyclerView rvPenugasan;
     private static final int REQUEST_PENUGASAN  = 123;
 
@@ -42,9 +48,6 @@ public class PenugasanActivity extends AppActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               /* Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();*/
-                //Intent intent =  new Intent(getActivity(), PendaftaranLayananActivity.class);
                 Intent intent =  new Intent(getActivity(), AturPenugasan_Activity.class);
                 startActivityForResult(intent, REQUEST_PENUGASAN);
             }
@@ -58,7 +61,7 @@ public class PenugasanActivity extends AppActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setTitle("Penugasan");
+        getSupportActionBar().setTitle("Penugasan Mekanik");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -68,46 +71,83 @@ public class PenugasanActivity extends AppActivity {
         rvPenugasan.setLayoutManager(new LinearLayoutManager(this));
         rvPenugasan.setHasFixedSize(true);
 
-        Nson nson = Nson.readNson("");
-
         rvPenugasan.setAdapter(new NikitaRecyclerAdapter(nListArray,R.layout.item_penugasan){
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                viewHolder.find(R.id.tvNamaMekanik, TextView.class).setText("NAMA MEKANIK : " + nListArray.get(position).get("NAMA MEKANIK").asString());
-                viewHolder.find(R.id.tvAntrian, TextView.class).setText("TIPE ANTRIAN : " + nListArray.get(position).get("TIPE ANTRIAN").asString());
-                viewHolder.find(R.id.tvLokasi, TextView.class).setText("LOKASI : " + nListArray.get(position).get("LOKASI").asString());
-                viewHolder.find(R.id.tvStart, TextView.class).setText("JAM MULAI : " + nListArray.get(position).get("JAM MULAI").asString());
-                viewHolder.find(R.id.tvFinish, TextView.class).setText("JAM SELESAI : " + nListArray.get(position).get("JAM SELESAI").asString());
+                viewHolder.find(R.id.tvNamaMekanik, TextView.class).setText("Nama Mekanik : " + nListArray.get(position).get("NAMA_MEKANIK").asString());
+                viewHolder.find(R.id.tvAntrian, TextView.class).setText("Tipe Antrian : " + nListArray.get(position).get("TIPE_ANTRIAN").asString());
+                viewHolder.find(R.id.tvLokasi, TextView.class).setText("Lokasi Penugasan : " + nListArray.get(position).get("LOKASI").asString());
+                viewHolder.find(R.id.tvStart, TextView.class).setText("Jam Masuk : " + nListArray.get(position).get("JAM_MASUK").asString());
+                viewHolder.find(R.id.tvFinish, TextView.class).setText("Jam Pulang : " + nListArray.get(position).get("JAM_PULANG").asString());
+
 
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
                 //Toast.makeText(getActivity(),"HHHHH "+position, Toast.LENGTH_SHORT).show();
-                Intent intent =  new Intent(getActivity(), ControlLayanan.class);
+                Intent intent =  new Intent(getActivity(), AturPenugasan_Activity.class);
+                intent.putExtra("userid", nListArray.get(position).get("namamekanik").asInteger());
+                intent.putExtra("data", nListArray.get(position).toJson());
                 startActivityForResult(intent, REQUEST_PENUGASAN);
             }
         }));
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, final int direction) {
+               MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
+                   Nson result ;
+                   @Override
+                   public void run() {
+                       Map<String, String> args = AppApplication.getInstance().getArgsData();
+                       String action = "delete";
+                       args.put("action", action);
+                       args.put("namamekanik", result.get("data").asString());
+                       result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrl("v3/aturpenugasanmekanik"),args));
+//                       result.get("data").get(viewHolder.getAdapterPosition()).remove("namamekanik");
+                   }
+
+                   @Override
+                   public void runUI() {
+                       nListArray.get("action").get(viewHolder.getAdapterPosition()).get("namamekanik");
+                       rvPenugasan.getAdapter().notifyDataSetChanged();
+                   }
+               });
+
+            }
+        }).attachToRecyclerView(rvPenugasan);
+        catchData();
     }
 
-    private void reload(){
+    private void catchData(){
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result ;
+            Nson data;
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-
-
+                args.put("action", "update");
+                data = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrl("v3/aturpenugasanmekanik"),args)) ;
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrl("v3/daftarpenugasan"),args)) ;
             }
 
             @Override
             public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("success")) {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
                     rvPenugasan.getAdapter().notifyDataSetChanged();
+                    Log.d(TAG, "reload data");
                 }else {
-                    showError(result.get("message").asString());
+                    Log.d(TAG, "error");
+                    showError("Mohon Di Coba Kembali" + result.get("message").asString());
                 }
             }
         });
@@ -118,10 +158,8 @@ public class PenugasanActivity extends AppActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == REQUEST_PENUGASAN && resultCode == RESULT_OK){
-
-
+            setResult(RESULT_OK);
+            catchData();
         }
-
-
     }
 }
