@@ -88,9 +88,9 @@ public class PenugasanActivity extends AppActivity {
             public void onItemClick(Nson parent, View view, int position) {
                 //Toast.makeText(getActivity(),"HHHHH "+position, Toast.LENGTH_SHORT).show();
                 Intent intent =  new Intent(getActivity(), AturPenugasan_Activity.class);
-                intent.putExtra("userid", nListArray.get(position).get("namamekanik").asString());
-               // intent.putExtra("data", nListArray.get(position).toJson());
-                intent.putExtra("id", nListArray.get(position).get("id").asString());
+                intent.putExtra("ID", nListArray.get(position).get("ID").asString());
+                intent.putExtra("ID", nListArray.get(position).toJson());
+                //intent.putExtra("id", nListArray.get(position).get("id").asString());
                 startActivityForResult(intent, REQUEST_PENUGASAN);
             }
         }));
@@ -136,13 +136,11 @@ public class PenugasanActivity extends AppActivity {
     private void catchData(){
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result ;
-            Nson data;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "update");
-                data = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrl("v3/aturpenugasanmekanik"),args)) ;
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrl("v3/daftarpenugasan"),args)) ;
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("daftarpenugasan"), args)) ;
             }
 
             @Override
