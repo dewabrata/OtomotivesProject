@@ -71,11 +71,13 @@ public class BiayaMekanik2Activity extends AppActivity {
     private void reload(final String nama){
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result ;
+            Nson data;
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("id", nama);
+                data = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrl("aturbiayamekanik"),args)) ;
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrl("viewbiayamekanik"),args)) ;
 
             }
