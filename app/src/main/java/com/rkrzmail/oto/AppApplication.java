@@ -49,6 +49,9 @@ public class AppApplication extends Application {
     public static String getBaseUrlV2(String name){
         return "http://otomotives.com/api/v2/apitest/"+name;
     }
+    public static String getBaseUrlV3(String name){
+        return "http://otomotives.com/api/v3/"+name;
+    }
     /*Mas Brahma, ni link nya :
     Pengajuan,
     http://202.56.171.19:8185/loyaltyui/home/pengajuan
