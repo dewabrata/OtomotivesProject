@@ -26,17 +26,21 @@
             android:id="@+id/tvNamaMekanik"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginBottom="5dp"
+            android:layout_margin="10dp"
             android:text="Nama Mekanik"
             android:textSize="20sp"
             android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/shape_line_solid"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:background="@drawable/border_solid"
+
             android:foregroundGravity="center"
             android:orientation="horizontal">
 
@@ -60,14 +64,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="5dp"
-                        android:text="Tipe Antrian" />
+                        android:text="Tipe Antrian"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tvLokasi"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="5dp"
-                        android:text="Lokasi Penugasan" />
+                        android:text="Lokasi Penugasan"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
@@ -87,14 +93,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
-                    android:text="Jam Mulai Kerja" />
+                    android:text="Jam Mulai Kerja"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvFinish"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
-                    android:text="Jam Selesai Kerja" />
+                    android:text="Jam Selesai Kerja"
+                    android:textStyle="bold" />
 
             </LinearLayout>
         </LinearLayout>

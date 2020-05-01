@@ -89,6 +89,8 @@ public class PenugasanActivity extends AppActivity {
                 //Toast.makeText(getActivity(),"HHHHH "+position, Toast.LENGTH_SHORT).show();
                 Intent intent =  new Intent(getActivity(), AturPenugasan_Activity.class);
                 intent.putExtra("ID", nListArray.get(position).get("ID").asString());
+                intent.putExtra("TIPE_ANTRIAN", nListArray.get(position).get("TIPE_ANTRIAN").asString());
+                intent.putExtra("LOKASI", nListArray.get(position).get("LOKASI").asString());
                 intent.putExtra("ID", nListArray.get(position).toJson());
                 //intent.putExtra("id", nListArray.get(position).get("id").asString());
                 startActivityForResult(intent, REQUEST_PENUGASAN);

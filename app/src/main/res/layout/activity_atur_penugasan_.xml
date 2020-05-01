@@ -75,6 +75,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/layout_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
@@ -237,6 +238,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/layout_istirahat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
