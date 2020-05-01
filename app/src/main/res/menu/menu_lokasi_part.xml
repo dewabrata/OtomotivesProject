@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_stockOpname"
+        android:orderInCategory="100"
+        android:title="STOCK OPNAME"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_qrCode"
+        android:orderInCategory="100"
+        android:title="Print QRcode Lokasi"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_hapusDaftar"
+        android:orderInCategory="100"
+        android:title="Hapus Daftar"
+        app:showAsAction="never" />
+
+</menu>

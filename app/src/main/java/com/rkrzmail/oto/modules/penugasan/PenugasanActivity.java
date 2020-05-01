@@ -96,42 +96,6 @@ public class PenugasanActivity extends AppActivity {
                 startActivityForResult(intent, REQUEST_PENUGASAN);
             }
         }));
-
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
-                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, final int direction) {
-               MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
-                   Nson result ;
-                   @Override
-                   public void run() {
-                       Map<String, String> args = AppApplication.getInstance().getArgsData();
-                       String action = "delete";
-                       args.put("action", action);
-                       args.put("namamekanik", result.get("data").asString());
-                       result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrl("v3/aturpenugasanmekanik"),args));
-//                       result.get("data").get(viewHolder.getAdapterPosition()).remove("namamekanik");
-                   }
-
-                   @Override
-                   public void runUI() {
-                       if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                           nListArray.asArray().remove(viewHolder.getAdapterPosition());
-                           rvPenugasan.getAdapter().notifyDataSetChanged();
-                       }else{
-                           showError("Mohon Di Coba Kembali" + result.get("message").asString());
-                       }
-
-                   }
-               });
-               showInfo("onSwiped");
-            }
-        }).attachToRecyclerView(rvPenugasan);
         catchData();
     }
 

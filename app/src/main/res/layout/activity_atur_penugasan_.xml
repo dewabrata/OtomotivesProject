@@ -48,8 +48,8 @@
 
         <LinearLayout
             android:id="@+id/layout_penugasan"
-            android:layout_width="320dp"
-            android:layout_height="wrap_content"
+            android:layout_width="348dp"
+            android:layout_height="466dp"
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
             android:background="@drawable/border_solid"

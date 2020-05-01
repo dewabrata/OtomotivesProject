@@ -41,6 +41,7 @@ import com.rkrzmail.oto.gmod.SparepartActivity;
 import com.rkrzmail.oto.gmod.Stock_OpnameActivity;
 import com.rkrzmail.oto.modules.BiayaMekanik2Activity;
 import com.rkrzmail.oto.modules.LoginActivity;
+import com.rkrzmail.oto.modules.lokasi_part.LokasiPart_Activity;
 import com.rkrzmail.oto.modules.part.PartActivity;
 import com.rkrzmail.oto.modules.part.PartSearchActivity;
 import com.rkrzmail.oto.modules.penugasan.PenugasanActivity;
@@ -50,6 +51,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class MenuActivity extends AppActivity {
+
     Nson nPopulate = Nson.newArray();
     public final int MN_CHECKIN         =   3;
     public final int MN_PART            =   4;
@@ -68,6 +70,7 @@ public class MenuActivity extends AppActivity {
     public final int MN_STOCK_OPNAME =18;
     public static final int MN_PENUGASAN_MEKANIK = 19;
     public static int MN_BIAYA_MEKANIK2 = 20;
+    private static final int MN_LOKASI_PART = 21;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,6 +151,9 @@ public class MenuActivity extends AppActivity {
                     startActivity(intent);
                 }else if (nPopulate.get(position).get("id").asInteger() == MN_BIAYA_MEKANIK2) {
                     Intent intent = new Intent(MenuActivity.this, BiayaMekanik2Activity.class);
+                    startActivity(intent);
+                }else if(nPopulate.get(position).get("id").asInteger() == MN_LOKASI_PART){
+                    Intent intent = new Intent(MenuActivity.this, LokasiPart_Activity.class);
                     startActivity(intent);
                 }
 
@@ -241,6 +247,7 @@ public class MenuActivity extends AppActivity {
         nPopulate.add(Nson.newObject().set("id", MN_STOCK_OPNAME).set("icon", R.drawable.mn_tugaspart).set("text", "STOCK OPNAME"));
         nPopulate.add(Nson.newObject().set("id", MN_PENUGASAN_MEKANIK).set("icon", R.drawable.mn_perawatan).set("text", "PENUGASAN MEKANIK"));
         nPopulate.add(Nson.newObject().set("id", MN_BIAYA_MEKANIK2).set("icon", R.drawable.mn_perawatan).set("text", "BIAYA MEKANIK2"));
+        nPopulate.add(Nson.newObject().set("id", MN_LOKASI_PART).set("icon", R.drawable.mn_belanja).set("text", "LOKASI PART"));
 //        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_KomisiKaryawan).set("icon", R.drawable.sample).set("text", "MESSAGE"));
 //        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_LoyaltiProgram).set("icon", R.drawable.sample).set("text", "MESSAGE"));
        // nPopulate.add(Nson.newObject().set("id", 1).set("icon", R.drawable.mn_perawatan).set("text", "MEKANIK"));
