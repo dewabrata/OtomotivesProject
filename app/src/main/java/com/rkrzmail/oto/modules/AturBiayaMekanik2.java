@@ -39,8 +39,7 @@ public class AturBiayaMekanik2 extends AppActivity {
                 @Override
                 public void onClick(View v) {
 
-                    String mekanik1 = find(R.id.txtMek1, EditText.class).getText().toString().replace(" ","").toUpperCase();
-                    if (mekanik1.equalsIgnoreCase("")){
+                    if (find(R.id.txtMek1, EditText.class).getText().toString().equalsIgnoreCase("")){
                         showError("Mekanik 1 harus di isi");return;
                     }else if (find(R.id.txtMek2, EditText.class).getText().toString().equalsIgnoreCase("")){
                         showError("Mekanik 2 harus di isi");return;
