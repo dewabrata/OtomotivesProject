@@ -71,17 +71,11 @@ public class AturBiayaMekanik2 extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 String mekanik1 = find(R.id.txtMek1, EditText.class).getText().toString();
-                    mekanik1 = mekanik1.toUpperCase().trim().replace(" ", "");
                 String waktu1 = find(R.id.txtMinWB1, EditText.class).getText().toString();
-                    waktu1 = waktu1.toUpperCase().trim().replace(" ", "");
                 String mekanik2 = find(R.id.txtMek2, EditText.class).getText().toString();
-                    mekanik2 = mekanik2.toUpperCase().trim().replace(" ", "");
                 String waktu2 = find(R.id.txtMinWB2, EditText.class).getText().toString();
-                    waktu2 = waktu2.toUpperCase().trim().replace(" ", "");
                 String mekanik3 = find(R.id.txtMek3, EditText.class).getText().toString();
-                    mekanik3 = mekanik3.toUpperCase().trim().replace(" ", "");
                 String waktu3 = find(R.id.txtMinWB3, EditText.class).getText().toString();
-                    waktu3 = waktu3.toUpperCase().trim().replace(" ", "");
 
                 args.put("mekanik_1", mekanik1);
                 args.put("mekanik_2", mekanik2);
@@ -91,7 +85,7 @@ public class AturBiayaMekanik2 extends AppActivity {
                 args.put("waktu_3", waktu3);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturbiayamekanik"), args));
-                result.toJson().equalsIgnoreCase("data");
+
             }
 
             public void runUI() {

@@ -5,52 +5,64 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <android.support.v7.widget.CardView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/txtTgl"
+                <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Tanggal" />
+                    android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/txtUser"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="User" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/txtMeka1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Mekanik 1" />
+                        <TextView
+                            android:id="@+id/txtTgl"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Tanggal" />
 
-                <TextView
-                    android:id="@+id/txtMeka2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Mekanik 2" />
+                        <TextView
+                            android:id="@+id/txtUser"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="User" />
 
-                <TextView
-                    android:id="@+id/txtMeka3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Mekanik 2" />
+                        <TextView
+                            android:id="@+id/txtMeka1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Mekanik 1" />
+
+                        <TextView
+                            android:id="@+id/txtMeka2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Mekanik 2" />
+
+                        <TextView
+                            android:id="@+id/txtMeka3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Mekanik 2" />
+
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
 
             </LinearLayout>
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
 
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
 </FrameLayout>

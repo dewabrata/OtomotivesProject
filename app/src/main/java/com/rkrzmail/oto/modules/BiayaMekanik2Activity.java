@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -35,7 +36,7 @@ import java.util.Map;
 
 public class BiayaMekanik2Activity extends AppActivity {
 
-
+    public static final String TAG = "BiayaMekanik2Activity";
     private RecyclerView rvListBasic2;
     //private AdapterListBasic mAdapter;
     final int REQUEST_BIAYA_MEKANIK2 = 666;
@@ -112,12 +113,14 @@ public class BiayaMekanik2Activity extends AppActivity {
 
             @Override
             public void runUI() {
-                if (result.isNsonArray()) {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
                     rvListBasic2.getAdapter().notifyDataSetChanged();
-                }else{
-                    showError(result.get("message").asString());
+                    Log.d(TAG, "reload data");
+                }else {
+                    Log.d(TAG, "error");
+                    showError("Mohon Di Coba Kembali" + result.get("message").asString());
                 }
             }
         });
