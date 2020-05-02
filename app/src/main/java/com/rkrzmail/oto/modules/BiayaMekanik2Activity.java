@@ -35,7 +35,7 @@ import java.util.Map;
 
 public class BiayaMekanik2Activity extends AppActivity {
 
-    private View parent_view;
+
     private RecyclerView rvListBasic2;
     //private AdapterListBasic mAdapter;
     final int REQUEST_BIAYA_MEKANIK2 = 666;
@@ -44,7 +44,6 @@ public class BiayaMekanik2Activity extends AppActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_basic2);
-        parent_view = findViewById(android.R.id.content);
         rvListBasic2 = findViewById(R.id.rvListBasic2);
 
         initToolbar();
@@ -55,6 +54,7 @@ public class BiayaMekanik2Activity extends AppActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), AturBiayaMekanik2.class);
+
                 startActivityForResult(intent, REQUEST_BIAYA_MEKANIK2);
             }
         });
@@ -68,42 +68,7 @@ public class BiayaMekanik2Activity extends AppActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void reload(final String nama){
-        MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
-            Nson result ;
-            Nson data;
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-
-                args.put("id", nama);
-                data = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrl("aturbiayamekanik"),args)) ;
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrl("viewbiayamekanik"),args)) ;
-
-            }
-
-            @Override
-            public void runUI() {
-                if (result.isNsonArray()) {
-                    nListArray.asArray().clear();
-                    nListArray.asArray().addAll(result.get("data").asArray());
-                    rvListBasic2.getAdapter().notifyDataSetChanged();
-                }else{
-                    showError(result.get("message").asString());
-                }
-            }
-        });
-    }
-
-
     private void initComponent() {
-        rvListBasic2 = (RecyclerView) findViewById(R.id.rvListBasic2);
-        rvListBasic2.setLayoutManager(new LinearLayoutManager(this));
-        rvListBasic2.setHasFixedSize(true);
-
-        List<People> items = DataGenerator.getPeopleData(this);
-        items.addAll(DataGenerator.getPeopleData(this));
-        items.addAll(DataGenerator.getPeopleData(this));
 
         rvListBasic2 = (RecyclerView) findViewById(R.id.rvListBasic2);
         rvListBasic2.setLayoutManager(new LinearLayoutManager(this));
@@ -121,24 +86,50 @@ public class BiayaMekanik2Activity extends AppActivity {
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
-
-                Intent intent =  new Intent(getActivity(), AturBiayaMekanikActivity.class);
-                intent.putExtra("DATA", nListArray.get(position).toJson());
+                //Toast.makeText(getActivity(),"HHHHH "+position, Toast.LENGTH_SHORT).show();
+                Intent intent =  new Intent(getActivity(), AturBiayaMekanik2.class);
+                intent.putExtra("MEKANIK 1",nListArray.get(position).get("MEKANIK_1").asString());
+                intent.putExtra("MEKANIK 2",nListArray.get(position).get("MEKANIK_2").asString());
+                intent.putExtra("MEKANIK 3",nListArray.get(position).get("MEKANIK_3").asString());
+                intent.putExtra("TANGGAL SET",nListArray.get(position).get("TANGGAL_SET").asString());
+                intent.putExtra("USER",nListArray.get(position).get("USER").asString());
+                intent.putExtra("ID", nListArray.get(position).toJson());
                 startActivityForResult(intent, REQUEST_BIAYA_MEKANIK2);
             }
         }));
-
-        reload("");
+        reload();
     }
+
+    private void reload(){
+        MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
+            Nson result ;
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewbiayamekanik"),args)) ;
+
+            }
+
+            @Override
+            public void runUI() {
+                if (result.isNsonArray()) {
+                    nListArray.asArray().clear();
+                    nListArray.asArray().addAll(result.get("data").asArray());
+                    rvListBasic2.getAdapter().notifyDataSetChanged();
+                }else{
+                    showError(result.get("message").asString());
+                }
+            }
+        });
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode==REQUEST_BIAYA_MEKANIK2 && resultCode == RESULT_OK){
-            Intent intent =  new Intent();
-            intent.putExtra("DATA", getIntentStringExtra(data, "DATA"));
-            setResult(RESULT_OK, intent);
-            finish();
+            setResult(RESULT_OK);
+            reload();
         }
     }
 

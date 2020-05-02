@@ -24,12 +24,12 @@ import java.util.Map;
 public class AturBiayaMekanik2 extends AppActivity {
 
     private EditText txtMek1, txtMek2, txtMek3, txtMinWB1, txtMinWB2, txtMinWB3;
+    public static final String TAG = "AturBiayaMekanik2";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_biaya_mekanik2);
-
         txtMek1 = findViewById(R.id.txtMek1);
         txtMek2 = findViewById(R.id.txtMek2);
         txtMek3 = findViewById(R.id.txtMek3);
@@ -39,63 +39,39 @@ public class AturBiayaMekanik2 extends AppActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         getSupportActionBar().setTitle("ATUR BIAYA MEKANIK2");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        final Nson data = Nson.readJson(getIntentStringExtra("data"));
+            find(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
+                    String mekanik1 = find(R.id.txtMek1, EditText.class).getText().toString().replace(" ","").toUpperCase();
+                    if (mekanik1.equalsIgnoreCase("")){
+                        showError("Mekanik 1 harus di isi");return;
+                    }else if (find(R.id.txtMek2, EditText.class).getText().toString().equalsIgnoreCase("")){
+                        showError("Mekanik 2 harus di isi");return;
+                    }else if (find(R.id.txtMek3, EditText.class).getText().toString().equalsIgnoreCase("")) {
+                        showError("Mekanik 3 harus di isi");
+                    }else if (find(R.id.txtMinWB1, EditText.class).getText().toString().equalsIgnoreCase("")) {
+                        showError("Waktu Bayar 1 harus di isi");
+                    }else if (find(R.id.txtMinWB2, EditText.class).getText().toString().equalsIgnoreCase("")) {
+                        showError("Waktu Bayar 2 harus di isi");
+                    }else if (find(R.id.txtMinWB3, EditText.class).getText().toString().equalsIgnoreCase("")) {
+                        showError("Waktu Bayar 3 harus di isi");
+                        return;
+                    }
 
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("id", getIntentStringExtra("id"));//view
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturbiayamekanik"), args));
-            }
-
-            @Override
-            public void runUI() {
-                txtMek1.setText(result.get(0).get("mekanik 1").asString());
-                txtMek2.setText(result.get(0).get("mekanik 2").asString());
-                txtMek3.setText(result.get(0).get("mekanik 3").asString());
-                txtMinWB1.setText(result.get(0).get("min bayar / jam").asString());
-                txtMinWB2.setText(result.get(0).get("min bayar / jam").asString());
-                txtMinWB3.setText(result.get(0).get("min bayar / jam").asString());
-            }
-        });
-
-        find(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                String mekanik1 = find(R.id.txtMek1, EditText.class).getText().toString().replace(" ","").toUpperCase();
-                if (mekanik1.equalsIgnoreCase("")){
-                    showError("Mekanik 1 harus di isi");return;
-                }else if (find(R.id.txtMek2, EditText.class).getText().toString().equalsIgnoreCase("")){
-                    showError("Mekanik 2 harus di isi");return;
-                }else if (find(R.id.txtMek3, EditText.class).getText().toString().equalsIgnoreCase("")) {
-                    showError("Mekanik 3 harus di isi");
-                }else if (find(R.id.txtMinWB1, EditText.class).getText().toString().equalsIgnoreCase("")) {
-                    showError("Waktu Bayar 1 harus di isi");
-                }else if (find(R.id.txtMinWB2, EditText.class).getText().toString().equalsIgnoreCase("")) {
-                    showError("Waktu Bayar 2 harus di isi");
-                }else if (find(R.id.txtMinWB3, EditText.class).getText().toString().equalsIgnoreCase("")) {
-                    showError("Waktu Bayar 3 harus di isi");
-                    return;
+                    Intent intent = new Intent(getActivity(), BiayaMekanik2Activity.class);
+                    setResult(RESULT_OK, intent);
+                    finish();
                 }
-
-                Intent intent = new Intent(getActivity(), MenuActivity.class);
-                setResult(RESULT_OK, intent);
-                finish();
-            }
-        });
-        save();
+            });
+        insertdata();
     }
 
 
-    private void save() {
+    private void insertdata() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             public void run() {
@@ -121,21 +97,20 @@ public class AturBiayaMekanik2 extends AppActivity {
                 args.put("waktu_2", waktu2);
                 args.put("waktu_3", waktu3);
 
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrl("v3/aturbiayamekanik.php"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturbiayamekanik"), args));
                 result.toJson().equalsIgnoreCase("data");
             }
 
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     setResult(RESULT_OK);
+                    Log.d(TAG, "success add data" + result.get("status").asString());
                     startActivity(new Intent(AturBiayaMekanik2.this, BiayaMekanik2Activity.class));
                     finish();
                 } else {
-                    showError("Menambahkan data gagal!" + result.get("message").asString());
+                    showError(result.get("message").asString());
+                    Log.d(TAG, "error");
                 }
-
-                find(R.id.txtUpakKota, EditText.class).setText("Rp " + result.get(0).get("UMK").asString());
-                find(R.id.txtUpahJam, EditText.class).setText("Rp " + result.get(0).get("UPAH_MINIM").asString());
             }
         });
     }
