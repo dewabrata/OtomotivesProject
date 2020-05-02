@@ -23,19 +23,12 @@ import java.util.Map;
 
 public class AturBiayaMekanik2 extends AppActivity {
 
-    private EditText txtMek1, txtMek2, txtMek3, txtMinWB1, txtMinWB2, txtMinWB3;
     public static final String TAG = "AturBiayaMekanik2";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_biaya_mekanik2);
-        txtMek1 = findViewById(R.id.txtMek1);
-        txtMek2 = findViewById(R.id.txtMek2);
-        txtMek3 = findViewById(R.id.txtMek3);
-        txtMinWB1 = findViewById(R.id.txtMinWB1);
-        txtMinWB2 = findViewById(R.id.txtMinWB2);
-        txtMinWB3 = findViewById(R.id.txtMinWB3);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
