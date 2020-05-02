@@ -8,10 +8,5 @@
         android:orderInCategory="100"
         android:title="Setting"
         app:showAsAction="always" />
-    <item
-        android:id="@+id/action_chart"
-        android:orderInCategory="101"
-        android:icon="@drawable/ic_shopping_cart"
-        android:title="Setting"
-        app:showAsAction="always" />
+
 </menu>

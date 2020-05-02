@@ -1,5 +1,7 @@
 package com.rkrzmail.oto.modules.lokasi_part;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -7,8 +9,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
@@ -22,6 +26,7 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.gmod.AturPenugasan_Activity;
+import com.rkrzmail.oto.modules.lokasi_part.stock_opname.StockOpname_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
@@ -31,13 +36,13 @@ public class LokasiPart_Activity extends AppActivity {
 
     private static final String TAG = "LokasiPart_Activity";
     private RecyclerView rvLokasi_part;
+    private SearchView mSearchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lokasi_part);
         initToolbar();
-        rvLokasi_part = findViewById(R.id.recyclerView_lokasiPart);
         initComponent();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah_part);
@@ -52,7 +57,7 @@ public class LokasiPart_Activity extends AppActivity {
 
     private void initToolbar(){
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_lokasi_part);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setTitle("Lokasi Part");
@@ -61,21 +66,21 @@ public class LokasiPart_Activity extends AppActivity {
 
     private void initComponent(){
 
-        rvLokasi_part = (RecyclerView) findViewById(R.id.recyclerView_penugasan);
+        rvLokasi_part = (RecyclerView) findViewById(R.id.recyclerView_lokasiPart);
         rvLokasi_part.setLayoutManager(new LinearLayoutManager(this));
         rvLokasi_part.setHasFixedSize(true);
 
-        rvLokasi_part.setAdapter(new NikitaRecyclerAdapter(nListArray,R.layout.item_penugasan){
+        rvLokasi_part.setAdapter(new NikitaRecyclerAdapter(nListArray,R.layout.item_lokasi_part){
             @Override
             public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, int position) {
 
-                viewHolder.find(R.id.tv_noFolder, TextView.class).setText("Nama Mekanik : " + nListArray.get(position).get("NAMA_MEKANIK").asString());
-                viewHolder.find(R.id.tv_lokasiPart, TextView.class).setText("Tipe Antrian : " + nListArray.get(position).get("TIPE_ANTRIAN").asString());
-                viewHolder.find(R.id.tv_namaPart, TextView.class).setText("Lokasi Penugasan : " + nListArray.get(position).get("LOKASI").asString());
-                viewHolder.find(R.id.tv_tglOpname, TextView.class).setText("Jam Masuk : " + nListArray.get(position).get("JAM_MASUK").asString());
-                viewHolder.find(R.id.tv_penempatan, TextView.class).setText("Jam Pulang : " + nListArray.get(position).get("JAM_PULANG").asString());
-                viewHolder.find(R.id.tv_stock, TextView.class).setText("Jam Pulang : " + nListArray.get(position).get("JAM_PULANG").asString());
-                viewHolder.find(R.id.tv_user, TextView.class).setText("Jam Pulang : " + nListArray.get(position).get("JAM_PULANG").asString());
+                viewHolder.find(R.id.tv_noFolder, TextView.class).setText( nListArray.get(position).get("NAMA_MEKANIK").asString());
+                viewHolder.find(R.id.tv_lokasiPart, TextView.class).setText(nListArray.get(position).get("TIPE_ANTRIAN").asString());
+                viewHolder.find(R.id.tv_namaPart, TextView.class).setText(nListArray.get(position).get("LOKASI").asString());
+                viewHolder.find(R.id.tv_tglOpname, TextView.class).setText(nListArray.get(position).get("JAM_MASUK").asString());
+                viewHolder.find(R.id.tv_penempatan, TextView.class).setText(nListArray.get(position).get("JAM_PULANG").asString());
+                viewHolder.find(R.id.tv_stock, TextView.class).setText( nListArray.get(position).get("JAM_PULANG").asString());
+                viewHolder.find(R.id.tv_user, TextView.class).setText(nListArray.get(position).get("JAM_PULANG").asString());
 
                 viewHolder.find(R.id.tv_optionMenu, TextView.class).setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -89,6 +94,7 @@ public class LokasiPart_Activity extends AppActivity {
                                 switch (menuItem.getItemId()){
                                     case R.id.action_stockOpname:
 //                                        Stock opname : membuka form stock opname
+                                        startActivity(new Intent(LokasiPart_Activity.this, StockOpname_Activity.class));
                                         break;
                                     case R.id.action_qrCode:
 //                                        Print QR code lokasi : mengirimkan image label QR code kode lokasi ke WA user
@@ -145,4 +151,41 @@ public class LokasiPart_Activity extends AppActivity {
             }
         });
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_part, menu);
+
+        // Get the SearchView and set the searchable configuration
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        mSearchView = new SearchView(getSupportActionBar().getThemedContext());
+        mSearchView.setQueryHint("Search"); /// YOUR HINT MESSAGE
+        mSearchView.setMaxWidth(Integer.MAX_VALUE);
+
+        final MenuItem searchMenu = menu.findItem(R.id.action_search);
+        searchMenu.setActionView(mSearchView);
+        searchMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+
+
+        //SearchView searchView = (SearchView)  menu.findItem(R.id.action_search).setActionView(mSearchView);
+        // Assumes current activity is the searchable activity
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        mSearchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+
+        SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+            public boolean onQueryTextChange(String newText) {
+                //filter(newText);
+                return true;
+            }
+            public boolean onQueryTextSubmit(String query) {
+                //searchMenu.collapseActionView();
+                //filter(null);
+//                reload(query);
+                return true;
+            }
+        };
+        mSearchView.setOnQueryTextListener(queryTextListener);
+        return true;
+    }
+
 }

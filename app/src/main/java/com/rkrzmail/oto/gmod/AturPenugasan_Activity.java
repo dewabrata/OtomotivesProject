@@ -43,7 +43,7 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
     private CheckBox cbHome, cbEmergency;
 
     /*
-    Note : Update Methode belum work dan Delet Methode belum work
+       Note : Update Methode belum work belum work
      */
 
     @Override
@@ -67,14 +67,6 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
         etSelesai_Kerja.setOnClickListener(this);
         etMulai_istirahat.setOnClickListener(this);
         etSelesai_istirahat.setOnClickListener(this);
-
-//        with saveinstancestate
-//        outState.putInt("yourSpinner", yourSpinner.getSelectedItemPosition());
-//        in on create for spinner setSelection
-//        if (savedInstanceState != null) {
-//            yourSpinner.setSelection(savedInstanceState.getInt("yourSpinner", 0));
-//             do this for each of your text views
-//        }
 
         final Nson data = Nson.readJson(getIntentStringExtra("ID"));
         final Intent i = getIntent();
@@ -133,7 +125,7 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
                     find(R.id.layout_istirahat, LinearLayout.class).setVisibility(View.VISIBLE);
                     find(R.id.btn_hapus, Button.class).setVisibility(View.GONE);
                     find(R.id.btn_simpan, Button.class).setVisibility(View.VISIBLE);
-//                    updateData();
+
                 }
             });
 
@@ -327,23 +319,19 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
                 String home = cbHome.getText().toString();
                 String emergency = cbEmergency.getText().toString();
 
-
                 args.put("action", "update");
                 switch (selectedId) {
-
                     case R.id.rbOn:
                         String statusKerja = find(R.id.rbOn, RadioButton.class).getText().toString();
                         args.put("status", statusKerja);
                         Log.d(TAG, statusKerja);
                         break;
-
                     case R.id.rbOff:
                         String statusTidakKerja = find(R.id.rbOff, RadioButton.class).getText().toString();
                         args.put("status", statusTidakKerja);
                         Log.d(TAG, statusTidakKerja);
                         break;
                 }
-
                 args.put("namamekanik", nama);
                 args.put("antrian", antrian);
                 args.put("lokasi", lokasi);
@@ -371,10 +359,7 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
                 }else{
                     showError("Mohon Di Coba Kembali");
                 }
-
             }
         });
     }
-
-
 }
