@@ -26,7 +26,10 @@ import com.rkrzmail.oto.gmod.ControlLayanan;
 import com.rkrzmail.oto.gmod.AturPenugasan_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.utils.DataGenerator;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Map;
 
 public class PenugasanActivity extends AppActivity {
@@ -75,6 +78,9 @@ public class PenugasanActivity extends AppActivity {
         rvPenugasan.setAdapter(new NikitaRecyclerAdapter(nListArray,R.layout.item_penugasan){
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+
+                //DataGenerator.getStringsShort(getActivity());
+
                 viewHolder.find(R.id.tvNamaMekanik, TextView.class).setText("Nama Mekanik : " + nListArray.get(position).get("NAMA_MEKANIK").asString());
                 viewHolder.find(R.id.tvAntrian, TextView.class).setText("Tipe Antrian : " + nListArray.get(position).get("TIPE_ANTRIAN").asString());
                 viewHolder.find(R.id.tvLokasi, TextView.class).setText("Lokasi Penugasan : " + nListArray.get(position).get("LOKASI").asString());
@@ -115,6 +121,15 @@ public class PenugasanActivity extends AppActivity {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
                     rvPenugasan.getAdapter().notifyDataSetChanged();
+                    Collections.sort(nListArray.asArray(), new Comparator() {
+                        @Override
+                        public int compare(Object o, Object t1) {
+                            if(o.equals(result.get("data")) ){
+
+                            }
+                            return 0;
+                        }
+                    });
                     Log.d(TAG, "reload data");
                 }else {
                     Log.d(TAG, "error");
@@ -132,5 +147,11 @@ public class PenugasanActivity extends AppActivity {
             setResult(RESULT_OK);
             catchData();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
     }
 }

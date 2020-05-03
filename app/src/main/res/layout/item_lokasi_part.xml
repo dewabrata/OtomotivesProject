@@ -22,11 +22,19 @@
         android:orientation="vertical"
         android:padding="10dp">
 
+        <TextView
+            android:id="@+id/tv_optionMenu"
+            android:layout_marginLeft="300dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:text="&#8942;"
+            android:textAppearance="?android:textAppearanceLarge" />
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:src="@drawable/shape_line_solid" />
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -51,7 +59,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="2dp"
                     android:orientation="vertical">
@@ -125,21 +133,11 @@
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/tv_optionMenu"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:text="&#8942;"
-                android:textAppearance="?android:textAppearanceLarge" />
         </LinearLayout>
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:src="@drawable/shape_line_solid" />
     </LinearLayout>
 
