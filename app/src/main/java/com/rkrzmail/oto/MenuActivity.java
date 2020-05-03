@@ -39,7 +39,7 @@ import com.rkrzmail.oto.gmod.DaftarPenjualanPartActivity;
 import com.rkrzmail.oto.gmod.Penerimaan_PartAcitivity;
 import com.rkrzmail.oto.gmod.SparepartActivity;
 import com.rkrzmail.oto.gmod.Stock_OpnameActivity;
-import com.rkrzmail.oto.modules.BiayaMekanik2Activity;
+import com.rkrzmail.oto.modules.biayamekanik.BiayaMekanik2Activity;
 import com.rkrzmail.oto.modules.LoginActivity;
 import com.rkrzmail.oto.modules.lokasi_part.LokasiPart_Activity;
 import com.rkrzmail.oto.modules.part.PartActivity;

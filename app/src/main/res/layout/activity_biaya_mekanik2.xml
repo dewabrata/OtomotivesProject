@@ -60,8 +60,10 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:ems="10"
+                        android:enabled="false"
                         android:hint="Rp."
                         android:inputType="number"
+                        android:singleLine="true"
                         android:textSize="14sp" />
 
                 </LinearLayout>
@@ -85,8 +87,10 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:ems="10"
+                        android:enabled="false"
                         android:hint="Rp."
                         android:inputType="number"
+                        android:singleLine="true"
                         android:textSize="14sp" />
                 </LinearLayout>
 

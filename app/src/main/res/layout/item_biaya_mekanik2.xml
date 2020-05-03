@@ -5,64 +5,57 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <LinearLayout
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <android.support.v7.widget.CardView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:padding="7sp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:foregroundGravity="center"
+                android:orientation="vertical"
+                android:padding="10sp">
 
-                <android.support.v7.widget.CardView
+                <TextView
+                    android:id="@+id/txtTgl"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content"
+                    android:text="Tanggal" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
+                <TextView
+                    android:id="@+id/txtUser"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="User" />
 
-                        <TextView
-                            android:id="@+id/txtTgl"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Tanggal" />
+                <TextView
+                    android:id="@+id/txtMeka3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Mekanik 3" />
 
-                        <TextView
-                            android:id="@+id/txtUser"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="User" />
+                <TextView
+                    android:id="@+id/txtMeka2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Mekanik 2" />
 
-                        <TextView
-                            android:id="@+id/txtMeka1"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Mekanik 1" />
-
-                        <TextView
-                            android:id="@+id/txtMeka2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Mekanik 2" />
-
-                        <TextView
-                            android:id="@+id/txtMeka3"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Mekanik 2" />
-
-                    </LinearLayout>
-                </android.support.v7.widget.CardView>
+                <TextView
+                    android:id="@+id/txtMeka1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Mekanik 1" />
 
             </LinearLayout>
-        </android.support.v7.widget.CardView>
-    </LinearLayout>
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
 
 </FrameLayout>

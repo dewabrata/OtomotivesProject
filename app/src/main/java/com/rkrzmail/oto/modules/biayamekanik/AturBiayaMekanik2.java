@@ -1,23 +1,18 @@
-package com.rkrzmail.oto.modules;
+package com.rkrzmail.oto.modules.biayamekanik;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
-import com.rkrzmail.oto.MenuActivity;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.gmod.AturPenugasan_Activity;
-import com.rkrzmail.oto.modules.penugasan.PenugasanActivity;
 
 import java.util.Map;
 
@@ -83,6 +78,7 @@ public class AturBiayaMekanik2 extends AppActivity {
                 args.put("waktu_2", waktu2);
                 args.put("waktu_3", waktu3);
 
+                //mekanik1, waktu,mekanik2, mekanik3, tanggal, user
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturbiayamekanik"), args));
 
             }
