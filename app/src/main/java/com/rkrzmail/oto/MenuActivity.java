@@ -69,8 +69,9 @@ public class MenuActivity extends AppActivity {
     public final int MN_LOKASI_PERSEDIAAN =17;
     public final int MN_STOCK_OPNAME =18;
     public static final int MN_PENUGASAN_MEKANIK = 19;
-    public static int MN_BIAYA_MEKANIK2 = 20;
+    public static final int MN_BIAYA_MEKANIK2 = 20;
     private static final int MN_LOKASI_PART = 21;
+    public static final int MN_TERIMA_PART = 22;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,6 +155,9 @@ public class MenuActivity extends AppActivity {
                     startActivity(intent);
                 }else if(nPopulate.get(position).get("id").asInteger() == MN_LOKASI_PART){
                     Intent intent = new Intent(MenuActivity.this, LokasiPart_Activity.class);
+                    startActivity(intent);
+                }else if(nPopulate.get(position).get("id").asInteger() == MN_TERIMA_PART){
+                    Intent intent = new Intent(MenuActivity.this, TerimaPart.class);
                     startActivity(intent);
                 }
 

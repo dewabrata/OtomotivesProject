@@ -40,12 +40,8 @@ public class AturBiayaMekanik2 extends AppActivity {
                         showError("Mekanik 2 harus di isi");return;
                     }else if (find(R.id.txtMek3, EditText.class).getText().toString().equalsIgnoreCase("")) {
                         showError("Mekanik 3 harus di isi");
-                    }else if (find(R.id.txtMinWB1, EditText.class).getText().toString().equalsIgnoreCase("")) {
+                    }else if (find(R.id.txtMinWB, EditText.class).getText().toString().equalsIgnoreCase("")) {
                         showError("Waktu Bayar 1 harus di isi");
-                    }else if (find(R.id.txtMinWB2, EditText.class).getText().toString().equalsIgnoreCase("")) {
-                        showError("Waktu Bayar 2 harus di isi");
-                    }else if (find(R.id.txtMinWB3, EditText.class).getText().toString().equalsIgnoreCase("")) {
-                        showError("Waktu Bayar 3 harus di isi");
                         return;
                     }
 
@@ -64,19 +60,15 @@ public class AturBiayaMekanik2 extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
+                String waktu = find(R.id.txtMinWB, EditText.class).getText().toString();
                 String mekanik1 = find(R.id.txtMek1, EditText.class).getText().toString();
-                String waktu1 = find(R.id.txtMinWB1, EditText.class).getText().toString();
                 String mekanik2 = find(R.id.txtMek2, EditText.class).getText().toString();
-                String waktu2 = find(R.id.txtMinWB2, EditText.class).getText().toString();
                 String mekanik3 = find(R.id.txtMek3, EditText.class).getText().toString();
-                String waktu3 = find(R.id.txtMinWB3, EditText.class).getText().toString();
 
                 args.put("mekanik_1", mekanik1);
                 args.put("mekanik_2", mekanik2);
                 args.put("mekanik_3", mekanik3);
-                args.put("waktu_1", waktu1);
-                args.put("waktu_2", waktu2);
-                args.put("waktu_3", waktu3);
+                args.put("waktu_1", waktu);
 
                 //mekanik1, waktu,mekanik2, mekanik3, tanggal, user
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturbiayamekanik"), args));
