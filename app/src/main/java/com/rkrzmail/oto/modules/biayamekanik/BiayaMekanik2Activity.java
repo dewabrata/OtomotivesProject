@@ -82,6 +82,7 @@ public class BiayaMekanik2Activity extends AppActivity {
                 viewHolder.find(R.id.txtUser, TextView.class).setText("USER : "+ nListArray.get(position).get("USER").asString());
                 viewHolder.find(R.id.txtTgl, TextView.class).setText("TANGGAL : "+ nListArray.get(position).get("TANGGAL_SET").asString());
 
+
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
