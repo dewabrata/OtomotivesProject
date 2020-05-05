@@ -45,6 +45,7 @@ import com.rkrzmail.oto.modules.lokasi_part.LokasiPart_Activity;
 import com.rkrzmail.oto.modules.part.PartActivity;
 import com.rkrzmail.oto.modules.part.PartSearchActivity;
 import com.rkrzmail.oto.modules.penugasan.PenugasanActivity;
+import com.rkrzmail.oto.modules.terima_part.TerimaPart;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -252,6 +253,7 @@ public class MenuActivity extends AppActivity {
         nPopulate.add(Nson.newObject().set("id", MN_PENUGASAN_MEKANIK).set("icon", R.drawable.mn_perawatan).set("text", "PENUGASAN MEKANIK"));
         nPopulate.add(Nson.newObject().set("id", MN_BIAYA_MEKANIK2).set("icon", R.drawable.mn_perawatan).set("text", "BIAYA MEKANIK2"));
         nPopulate.add(Nson.newObject().set("id", MN_LOKASI_PART).set("icon", R.drawable.mn_belanja).set("text", "LOKASI PART"));
+        nPopulate.add(Nson.newObject().set("id", MN_TERIMA_PART).set("icon", R.drawable.mn_tugaspart).set("text", "TERIMA PART"));
 //        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_KomisiKaryawan).set("icon", R.drawable.sample).set("text", "MESSAGE"));
 //        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_LoyaltiProgram).set("icon", R.drawable.sample).set("text", "MESSAGE"));
        // nPopulate.add(Nson.newObject().set("id", 1).set("icon", R.drawable.mn_perawatan).set("text", "MEKANIK"));

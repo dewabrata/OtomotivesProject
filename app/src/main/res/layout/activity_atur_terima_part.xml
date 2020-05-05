@@ -1,9 +1,196 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".modules.terima_part.AturTerimaPart">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
 
-</android.support.constraint.ConstraintLayout>
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+
+            app:toolbarId="@+id/toolbar">
+
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"></android.support.v7.widget.Toolbar>
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+
+        app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/border_solid"
+            tools:context=".modules.terima_part.AturTerimaPart">
+
+            <LinearLayout
+                android:layout_width="200sp"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView28"
+                    android:layout_width="match_parent"
+                    android:layout_height="30sp"
+                    android:text="TIPE SUPPLIER" />
+
+                <TextView
+                    android:id="@+id/textView30"
+                    android:layout_width="match_parent"
+                    android:layout_height="30sp"
+                    android:text="NAMA SUPPLIER" />
+
+                <TextView
+                    android:id="@+id/textView31"
+                    android:layout_width="match_parent"
+                    android:layout_height="30sp"
+                    android:text="No. DO" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView33"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30sp"
+                        android:layout_weight="1"
+                        android:text="TANGGAL PESAN" />
+
+                    <CalendarView
+                        android:id="@+id/calendarView_TglPesan"
+                        android:layout_width="30sp"
+                        android:layout_height="30sp"
+                        android:layout_weight="1" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textView25"
+                    android:layout_width="match_parent"
+                    android:layout_height="30sp"
+                    android:text="PEMBAYARAN" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView29"
+                        android:layout_width="140sp"
+                        android:layout_height="30sp"
+                        android:text="JATUH TEMPO INV." />
+
+                    <CalendarView
+                        android:id="@+id/calendarView_JatuhTempo"
+                        android:layout_width="30sp"
+                        android:layout_height="30sp"
+                        android:layout_weight="1" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textView32"
+                    android:layout_width="match_parent"
+                    android:layout_height="30sp"
+                    android:text="ONGKOS KIRIM" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="200sp"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <Spinner
+                    android:id="@+id/spinnerSupplier"
+                    android:layout_width="match_parent"
+                    android:layout_height="30sp" />
+
+                <EditText
+                    android:id="@+id/txtNamaSupplier"
+                    android:layout_width="match_parent"
+                    android:layout_height="30sp"
+                    android:ems="10"
+                    android:inputType="textPersonName" />
+
+                <EditText
+                    android:id="@+id/txtNodo"
+                    android:layout_width="match_parent"
+                    android:layout_height="30sp"
+                    android:ems="10"
+                    android:inputType="textPersonName" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView23"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30sp"
+                        android:layout_weight="1"
+                        android:text="TANGGAL TERIMA" />
+
+                    <CalendarView
+                        android:id="@+id/calendarView_TglTerima"
+                        android:layout_width="30sp"
+                        android:layout_height="30sp"
+                        android:layout_weight="1" />
+
+                </LinearLayout>
+
+                <Spinner
+                    android:id="@+id/spinner3"
+                    android:layout_width="match_parent"
+                    android:layout_height="30sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30sp"
+                    android:orientation="horizontal"></LinearLayout>
+
+                <EditText
+                    android:id="@+id/editText7"
+                    android:layout_width="match_parent"
+                    android:layout_height="30sp"
+                    android:ems="10"
+                    android:inputType="textPersonName" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_rounded_accent"
+        android:layout_gravity="center"
+        android:text="Selanjutnya" />
+
+
+</android.support.design.widget.CoordinatorLayout>

@@ -46,7 +46,7 @@ public class BiayaMekanik2Activity extends AppActivity {
         initToolbar();
         initComponent();
 
-        FloatingActionButton fab = (FloatingActionButton) find(R.id.fab_add_atur);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_add_atur);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -69,11 +69,6 @@ public class BiayaMekanik2Activity extends AppActivity {
 
     private void initComponent() {
 
-//        Calendar calendar = Calendar.getInstance();
-//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy");
-//        String dateTime = simpleDateFormat.format(calendar.getTime());
-//        txtTgl.setText(dateTime);
-
         rvListBasic2 = (RecyclerView) findViewById(R.id.rvListBasic2);
         rvListBasic2.setLayoutManager(new LinearLayoutManager(this));
         rvListBasic2.setHasFixedSize(true);
@@ -85,7 +80,7 @@ public class BiayaMekanik2Activity extends AppActivity {
                 viewHolder.find(R.id.txtMeka2, TextView.class).setText("MEKANIK 2 : Rp " + nListArray.get(position).get("MEKANIK_2").asString());
                 viewHolder.find(R.id.txtMeka3, TextView.class).setText("MEKANIK 3 : Rp " + nListArray.get(position).get("MEKANIK_3").asString());
                 viewHolder.find(R.id.txtUser, TextView.class).setText("USER : "+ nListArray.get(position).get("USER").asString());
-                viewHolder.find(R.id.txtTgl, TextView.class).setText("TANGGAL : "+ nListArray.get(position).get("TANGGAL").asString());
+                viewHolder.find(R.id.txtTgl, TextView.class).setText("TANGGAL : "+ nListArray.get(position).get("TANGGAL_SET").asString());
 
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {

@@ -14,6 +14,8 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Map;
 
 public class AturBiayaMekanik2 extends AppActivity {
@@ -44,41 +46,48 @@ public class AturBiayaMekanik2 extends AppActivity {
                         showError("Waktu Bayar 1 harus di isi");
                         return;
                     }
-
-                    Intent intent = new Intent(getActivity(), BiayaMekanik2Activity.class);
-                    setResult(RESULT_OK, intent);
-                    finish();
+                    insertdata();
                 }
             });
-        insertdata();
     }
 
 
     private void insertdata() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+            Nson result2;
+
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
+
+                Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy");
+                String dateTime = simpleDateFormat.format(calendar.getTime());
+
 
                 String waktu = find(R.id.txtMinWB, EditText.class).getText().toString();
                 String mekanik1 = find(R.id.txtMek1, EditText.class).getText().toString();
                 String mekanik2 = find(R.id.txtMek2, EditText.class).getText().toString();
                 String mekanik3 = find(R.id.txtMek3, EditText.class).getText().toString();
 
-                args.put("mekanik_1", mekanik1);
-                args.put("mekanik_2", mekanik2);
-                args.put("mekanik_3", mekanik3);
-                args.put("waktu_1", waktu);
+                args.put("mekanik1", mekanik1);
+                args.put("mekanik2", mekanik2);
+                args.put("mekanik3", mekanik3);
+                args.put("waktu", waktu);
+                args.put("tanggal", dateTime);
 
                 //mekanik1, waktu,mekanik2, mekanik3, tanggal, user
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturbiayamekanik"), args));
+                result2 = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewbiayamekanik"), args));
 
             }
 
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    setResult(RESULT_OK);
                     Log.d(TAG, "success add data" + result.get("status").asString());
+                    find(R.id.txtUMK, EditText.class).setText(result2.get("UMK").asString());
+                    find(R.id.txtUpah, EditText.class).setText(result2.get("UPAH_MINIM").asString());
+                    Log.d("UMK", result2.get("data").get("UMK").asString());
                     startActivity(new Intent(AturBiayaMekanik2.this, BiayaMekanik2Activity.class));
                     finish();
                 } else {

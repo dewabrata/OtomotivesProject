@@ -22,6 +22,7 @@
                 android:layout_gravity="center"
                 android:foregroundGravity="center"
                 android:orientation="vertical"
+                android:background="@drawable/border_solid"
                 android:padding="10sp">
 
                 <TextView
