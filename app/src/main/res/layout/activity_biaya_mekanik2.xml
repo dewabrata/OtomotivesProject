@@ -111,10 +111,9 @@
                     <EditText
                         android:id="@+id/txtMinWB"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40sp"
                         android:layout_weight="1"
                         android:ems="10"
-                        android:hint="Rp."
                         android:inputType="number"
                         android:textSize="14sp" />
 

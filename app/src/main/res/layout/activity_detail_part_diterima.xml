@@ -72,7 +72,7 @@
                         android:text="JUMLAH" />
 
                     <EditText
-                        android:id="@+id/editText9"
+                        android:id="@+id/txtJumlah"
                         android:layout_width="70sp"
                         android:layout_height="50sp"
                         android:layout_weight="1"
@@ -113,7 +113,7 @@
                 android:orientation="vertical">
 
                 <EditText
-                    android:id="@+id/editText5"
+                    android:id="@+id/txtNoPart"
                     android:layout_width="match_parent"
                     android:layout_height="40sp"
                     android:ems="10"
@@ -121,11 +121,10 @@
                     android:inputType="textPersonName" />
 
                 <EditText
-                    android:id="@+id/editText7"
+                    android:id="@+id/txtNamaPart"
                     android:layout_width="match_parent"
                     android:layout_height="40sp"
                     android:ems="10"
-                    android:enabled="false"
                     android:inputType="textPersonName" />
 
                 <LinearLayout
@@ -134,7 +133,7 @@
                     android:orientation="horizontal">
 
                     <Button
-                        android:id="@+id/button2"
+                        android:id="@+id/btnScan"
                         android:layout_width="wrap_content"
                         android:layout_height="50sp"
                         android:layout_weight="1"
@@ -142,7 +141,7 @@
                 </LinearLayout>
 
                 <EditText
-                    android:id="@+id/editText10"
+                    android:id="@+id/txtHargaBeliUnit"
                     android:layout_width="match_parent"
                     android:layout_height="40sp"
                     android:ems="10"
@@ -150,7 +149,7 @@
                     android:text="Rp." />
 
                 <EditText
-                    android:id="@+id/editText12"
+                    android:id="@+id/txtLokasiSimpan"
                     android:layout_width="match_parent"
                     android:layout_height="40sp"
                     android:ems="10"
@@ -164,7 +163,7 @@
                     android:inputType="textPersonName" />
 
                 <EditText
-                    android:id="@+id/editText14"
+                    android:id="@+id/txtPenempatan"
                     android:layout_width="match_parent"
                     android:layout_height="40sp"
                     android:ems="10"
@@ -177,7 +176,7 @@
     </android.support.v4.widget.NestedScrollView>
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/btnTutup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|left"
@@ -187,7 +186,7 @@
         android:text="Tutup" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatingActionButton"
+        android:id="@+id/fab_tambah_detailpart_terima"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|right"

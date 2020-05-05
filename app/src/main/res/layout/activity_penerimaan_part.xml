@@ -254,7 +254,7 @@
                         android:layout_height="wrap_content">
 
                         <com.rkrzmail.srv.NikitaAutoComplete
-                            android:id="@+id/txtOngkosKirim"
+                            android:id="@+id/txt"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="Ongkos Kirim (Rp)"

@@ -3,7 +3,6 @@ package com.rkrzmail.oto.gmod;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -15,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -188,7 +186,7 @@ public class PenjualanPartActivity extends AppActivity {
         recyclerView.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_part) {
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 viewHolder.find(R.id.txtNoPart, TextView.class).setText("No. Part : " + nListArray.get(position).get("NO_PART").asString());
-                viewHolder.find(R.id.txtNamaPart, TextView.class).setText(nListArray.get(position).get("NAMA_PART").asString());
+                viewHolder.find(R.id.txtOngkosKirim, TextView.class).setText(nListArray.get(position).get("NAMA_PART").asString());
                 viewHolder.find(R.id.txtHargaPart, TextView.class).setText("Harga Part : " + nListArray.get(position).get("HARGA_PART").asString());
                 viewHolder.find(R.id.txtHargaBersih, TextView.class).setText("Harga Bersih : " + nListArray.get(position).get("HARGA_BERSIH").asString());
                 viewHolder.find(R.id.txtJumlahPart, TextView.class).setText("Jumlah : " + nListArray.get(position).get("JUMLAH").asString());

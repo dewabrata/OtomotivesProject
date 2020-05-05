@@ -194,7 +194,7 @@ public class Lokasi_PersediaanActivity extends AppActivity {
             if (result.size() >= 1) {
 
 
-                find(R.id.txtNamaPart, TextView.class).setText(result.get("NAMA").asString());
+                find(R.id.txtOngkosKirim, TextView.class).setText(result.get("NAMA").asString());
                 find(R.id.txtNoPart, TextView.class).setText(result.get("NO_PART").asString());
                 return;
             }
@@ -207,7 +207,7 @@ public class Lokasi_PersediaanActivity extends AppActivity {
 
         recyclerView.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_part_detail_lokasi) {
             public void onBindViewHolder( NikitaViewHolder viewHolder, int position) {
-                viewHolder.find(R.id.txtNamaPart, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
+                viewHolder.find(R.id.txtOngkosKirim, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
                 viewHolder.find(R.id.txtNoPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
                 viewHolder.find(R.id.txtStock, TextView.class).setText(nListArray.get(position).get("STOCK").asString());
 

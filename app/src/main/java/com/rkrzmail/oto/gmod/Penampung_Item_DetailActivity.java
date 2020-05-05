@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -146,7 +145,7 @@ public class Penampung_Item_DetailActivity extends AppActivity {
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 viewHolder.find(R.id.txtNoPart, TextView.class).setText(nListArray.get(position).get("NO_PART_ID").asString());
 
-                viewHolder.find(R.id.txtNamaPart, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
+                viewHolder.find(R.id.txtOngkosKirim, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
 
                 viewHolder.find(R.id.txtStock, TextView.class).setText("Stock : " + nListArray.get(position).get("STOCK").asString());
 

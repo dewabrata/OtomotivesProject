@@ -32,6 +32,27 @@ public class AturBiayaMekanik2 extends AppActivity {
         getSupportActionBar().setTitle("ATUR BIAYA MEKANIK2");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+            @Override
+            public void run() {
+                Map<String, String> args2 = AppApplication.getInstance().getArgsData();
+                //args2.put("UMK", "UMK");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewbiayamekanik"),args2)) ;
+                Log.d("UMK", result.get(0).get("UMK").asString());
+            }
+
+            @Override
+            public void runUI() {
+
+                if (result.get("status").asString().equalsIgnoreCase("OK")){
+                    find(R.id.txtUpakKota, EditText.class).setText(result.get("data").get(0).get("UMK").asString());
+                    find(R.id.txtUpahJam, EditText.class).setText(result.get("data").get(0).get("UPAH_MINIM").asString());
+                    Log.d("UMK", result.get("data").get(0).get("UMK").asString());
+                }
+            }
+        });
+
             find(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -78,16 +99,12 @@ public class AturBiayaMekanik2 extends AppActivity {
 
                 //mekanik1, waktu,mekanik2, mekanik3, tanggal, user
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturbiayamekanik"), args));
-                result2 = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewbiayamekanik"), args));
 
             }
 
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     Log.d(TAG, "success add data" + result.get("status").asString());
-                    find(R.id.txtUMK, EditText.class).setText(result2.get("UMK").asString());
-                    find(R.id.txtUpah, EditText.class).setText(result2.get("UPAH_MINIM").asString());
-                    Log.d("UMK", result2.get("data").get("UMK").asString());
                     startActivity(new Intent(AturBiayaMekanik2.this, BiayaMekanik2Activity.class));
                     finish();
                 } else {
