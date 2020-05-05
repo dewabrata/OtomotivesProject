@@ -263,7 +263,6 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
             public void runUI() {
 
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    setResult(RESULT_OK);
                     Log.d(TAG, "success add data" + result.get("status").asString());
                     startActivity(new Intent(AturPenugasan_Activity.this, PenugasanActivity.class));
                     finish();

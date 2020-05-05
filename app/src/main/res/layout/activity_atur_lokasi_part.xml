@@ -60,6 +60,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/border_solid"
                     android:ems="10"
+                    android:enabled="false"
                     android:hint="NO. PART"
                     android:inputType="number"
                     android:padding="5dp"
@@ -67,6 +68,7 @@
 
                 <EditText
                     android:id="@+id/et_nama_part"
+                    android:enabled="false"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="5dp"
@@ -83,6 +85,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="5dp"
+                    android:enabled="false"
                     android:layout_weight="2"
                     android:background="@drawable/border_solid"
                     android:ems="10"
@@ -216,7 +219,7 @@
             </LinearLayout>
 
             <Button
-                android:id="@+id/btn_lokasi_part"
+                android:id="@+id/btn_simpan_lokasi_part"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
