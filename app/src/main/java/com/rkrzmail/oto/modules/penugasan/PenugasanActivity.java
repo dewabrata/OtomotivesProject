@@ -26,7 +26,10 @@ import com.rkrzmail.oto.gmod.ControlLayanan;
 import com.rkrzmail.oto.gmod.AturPenugasan_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.utils.DataGenerator;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Map;
 
 public class PenugasanActivity extends AppActivity {
@@ -75,6 +78,9 @@ public class PenugasanActivity extends AppActivity {
         rvPenugasan.setAdapter(new NikitaRecyclerAdapter(nListArray,R.layout.item_penugasan){
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+
+                //DataGenerator.getStringsShort(getActivity());
+
                 viewHolder.find(R.id.tvNamaMekanik, TextView.class).setText("Nama Mekanik : " + nListArray.get(position).get("NAMA_MEKANIK").asString());
                 viewHolder.find(R.id.tvAntrian, TextView.class).setText("Tipe Antrian : " + nListArray.get(position).get("TIPE_ANTRIAN").asString());
                 viewHolder.find(R.id.tvLokasi, TextView.class).setText("Lokasi Penugasan : " + nListArray.get(position).get("LOKASI").asString());
@@ -88,61 +94,25 @@ public class PenugasanActivity extends AppActivity {
             public void onItemClick(Nson parent, View view, int position) {
                 //Toast.makeText(getActivity(),"HHHHH "+position, Toast.LENGTH_SHORT).show();
                 Intent intent =  new Intent(getActivity(), AturPenugasan_Activity.class);
-                intent.putExtra("userid", nListArray.get(position).get("namamekanik").asString());
-               // intent.putExtra("data", nListArray.get(position).toJson());
-                intent.putExtra("id", nListArray.get(position).get("id").asString());
+                intent.putExtra("ID", nListArray.get(position).get("ID").asString());
+                intent.putExtra("TIPE_ANTRIAN", nListArray.get(position).get("TIPE_ANTRIAN").asString());
+                intent.putExtra("LOKASI", nListArray.get(position).get("LOKASI").asString());
+                intent.putExtra("ID", nListArray.get(position).toJson());
+                //intent.putExtra("id", nListArray.get(position).get("id").asString());
                 startActivityForResult(intent, REQUEST_PENUGASAN);
             }
         }));
-
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
-                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, final int direction) {
-               MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
-                   Nson result ;
-                   @Override
-                   public void run() {
-                       Map<String, String> args = AppApplication.getInstance().getArgsData();
-                       String action = "delete";
-                       args.put("action", action);
-                       args.put("namamekanik", result.get("data").asString());
-                       result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrl("v3/aturpenugasanmekanik"),args));
-//                       result.get("data").get(viewHolder.getAdapterPosition()).remove("namamekanik");
-                   }
-
-                   @Override
-                   public void runUI() {
-                       if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                           nListArray.asArray().remove(viewHolder.getAdapterPosition());
-                           rvPenugasan.getAdapter().notifyDataSetChanged();
-                       }else{
-                           showError("Mohon Di Coba Kembali" + result.get("message").asString());
-                       }
-
-                   }
-               });
-               showInfo("onSwiped");
-            }
-        }).attachToRecyclerView(rvPenugasan);
         catchData();
     }
 
     private void catchData(){
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result ;
-            Nson data;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "update");
-                data = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrl("v3/aturpenugasanmekanik"),args)) ;
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrl("v3/daftarpenugasan"),args)) ;
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("daftarpenugasan"), args)) ;
             }
 
             @Override
@@ -151,6 +121,15 @@ public class PenugasanActivity extends AppActivity {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
                     rvPenugasan.getAdapter().notifyDataSetChanged();
+                    Collections.sort(nListArray.asArray(), new Comparator() {
+                        @Override
+                        public int compare(Object o, Object t1) {
+                            if(o.equals(result.get("data")) ){
+
+                            }
+                            return 0;
+                        }
+                    });
                     Log.d(TAG, "reload data");
                 }else {
                     Log.d(TAG, "error");
@@ -168,5 +147,11 @@ public class PenugasanActivity extends AppActivity {
             setResult(RESULT_OK);
             catchData();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
     }
 }

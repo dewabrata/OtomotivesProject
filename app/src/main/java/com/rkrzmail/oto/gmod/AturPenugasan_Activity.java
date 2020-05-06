@@ -1,22 +1,24 @@
 package com.rkrzmail.oto.gmod;
 
 import android.app.TimePickerDialog;
-import android.content.ComponentName;
 import android.content.Intent;
+import android.net.nsd.NsdManager;
 import android.os.Bundle;
-import android.os.Message;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.data.UtilityAndroid;
@@ -27,6 +29,7 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.penugasan.PenugasanActivity;
+import com.rkrzmail.utils.Tools;
 
 import java.util.Calendar;
 import java.util.Map;
@@ -39,14 +42,9 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
     private Spinner spTipe_antrian, spLokasi;
     private CheckBox cbHome, cbEmergency;
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-//        outState.putInt("sp_lokasi", find(R.id.sp_lokasi, Spinner.class).getSelectedItemPosition());
-//        outState.putInt("sp_antrian", find(R.id.sp_antrian, Spinner.class).getSelectedItemPosition());
-//
-    }
+    /*
+       Note : Update Methode belum work belum work
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,65 +67,77 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
         etSelesai_Kerja.setOnClickListener(this);
         etMulai_istirahat.setOnClickListener(this);
         etSelesai_istirahat.setOnClickListener(this);
-        initComponent();
 
+        final Nson data = Nson.readJson(getIntentStringExtra("ID"));
+        final Intent i = getIntent();
+        if(i.hasExtra("ID")){
 
+            getSupportActionBar().setTitle("Edit Penugasan Mekanik");
 
+            etNama_Mekanik.setText(data.get("NAMA_MEKANIK").asString());
 
+            spLokasi.setSelection(Tools.getIndexSpinner(spLokasi, data.get("LOKASI").asString()));
+            spTipe_antrian.setSelection(Tools.getIndexSpinner(spTipe_antrian, data.get("TIPE_ANTRIAN").asString()));
+            etMulai_Kerja.setText(data.get("JAM_MASUK").asString());
+            etSelesai_Kerja.setText(data.get("JAM_PULANG").asString());
+//            etMulai_istirahat.setText(data.get("istirahat").asString());
+//            etSelesai_istirahat.setText(data.get("selesai").asString());
 
-//        if(savedInstanceState != null){
-//            find(R.id.sp_lokasi, Spinner.class).setSelection(savedInstanceState.getInt("sp_lokasi", 0));
-//            find(R.id.sp_antrian, Spinner.class).setSelection(savedInstanceState.getInt("sp_antrain", 0));
-//        }
-//
-            final Nson data = Nson.readJson(getIntentStringExtra("data"));
+//            if (data.get("status").asString().equalsIgnoreCase("ON")) {
+//                find(R.id.rbOn, RadioButton.class).setChecked(true);
+//            }
+//            if (data.get("status").asString().equalsIgnoreCase("OFF")) {
+//                find(R.id.rbOff, RadioButton.class).setChecked(true);
+//            }
+//            if (data.get("external").asString().equalsIgnoreCase("HOME")) {
+//                cbHome.setChecked(true);
+//            }
+//            if (data.get("external").asString().equalsIgnoreCase("EMERGENCY")) {
+//                cbEmergency.setChecked(true);
+//            }
+            Log.d(TAG, data.get("ID").asString());
 
-//        if (getIntentStringExtra("data") != null) {
-//            getSupportActionBar().setTitle("Edit Penugasan Mekanik");
+            //gone visibility
+            Tools.setViewAndChildrenEnabled(find(R.id.layout_penugasan, LinearLayout.class), false);
+            find(R.id.layout_status, LinearLayout.class).setVisibility(View.GONE);
+            find(R.id.layout_external, LinearLayout.class).setVisibility(View.GONE);
+            find(R.id.layout_istirahat, LinearLayout.class).setVisibility(View.GONE);
 
-
-
-
-            newProses(new Messagebox.DoubleRunnable() {
-                Nson result;
+            find(R.id.btn_hapus, Button.class).setVisibility(View.VISIBLE);
+            find(R.id.btn_hapus, Button.class).setEnabled(true);
+            find(R.id.btn_hapus, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void run() {
-                    Map<String, String> args = AppApplication.getInstance().getArgsData();
-                    //args.put("action", "get");//view
-                    //args.put("id", data.get("id").asString());//view
-                    args.put("id", getIntentStringExtra("id"));//view
-
-                    result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturpenugasanmekanik"), args));
+                public void onClick(View view) {
+                    deleteData(Nson.readJson(getIntentStringExtra("ID")));
                 }
+            });
+            find(R.id.btn_simpan, Button.class).setVisibility(View.GONE);
+            find(R.id.btn_update, Button.class).setVisibility(View.VISIBLE);
+            find(R.id.btn_update, Button.class).setEnabled(true);
 
+            find(R.id.btn_update, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void runUI() {
-                    etNama_Mekanik.setText(result.get(0).get("namamekanik").asString());
-                    etMulai_Kerja.setText(result.get("masuk").asString());
-                    etSelesai_Kerja.setText(result.get(0).get("pulang").asString());
-                    etMulai_istirahat.setText(result.get(0).get("istirahat").asString());
-                    etSelesai_istirahat.setText(result.get(0).get("selesai").asString());
+                public void onClick(View view) {
 
-                    if(result.get(0).get("status").asString().equalsIgnoreCase("ON")){
-                        find(R.id.rbOn, RadioButton.class).setChecked(true);
-                    }
-                    if(result.get(0).get("status").asString().equalsIgnoreCase("OFF")){
-                        find(R.id.rbOff, RadioButton.class).setChecked(true);
-                    }
-                    if(result.get(0).get("external").asString().equalsIgnoreCase("HOME")){
-                        cbHome.setChecked(true);
-                    }
-                    if(result.get(0).get("external").asString().equalsIgnoreCase("EMERGENCY")){
-                        cbEmergency.setChecked(true);
-                    }
-
-
+                    Tools.setViewAndChildrenEnabled(find(R.id.layout_penugasan, LinearLayout.class), true);
+                    find(R.id.layout_status, LinearLayout.class).setVisibility(View.VISIBLE);
+                    find(R.id.layout_external, LinearLayout.class).setVisibility(View.VISIBLE);
+                    find(R.id.layout_istirahat, LinearLayout.class).setVisibility(View.VISIBLE);
+                    find(R.id.btn_hapus, Button.class).setVisibility(View.GONE);
+                    find(R.id.btn_simpan, Button.class).setVisibility(View.VISIBLE);
 
                 }
             });
 
+            find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    updateData();
+                }
+            });
 
-
+        }
+        initComponent();
     }
 
     @Override
@@ -135,30 +145,30 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
 
         switch (v.getId()) {
             case R.id.et_mulaiKerja:
-                getDateTime(etMulai_Kerja);
+                Tools.getTimePickerDialog(getActivity(), etMulai_Kerja);
                 break;
             case R.id.et_selesaiKerja:
-                getDateTime(etSelesai_Kerja);
+                Tools.getTimePickerDialog(getActivity(), etSelesai_Kerja);
                 break;
             case R.id.et_mulaistirahat:
-                getDateTime(etMulai_istirahat);
+                Tools.getTimePickerDialog(getActivity(), etMulai_istirahat);
                 break;
             case R.id.et_selesaistirahat:
-                getDateTime(etSelesai_istirahat);
+                Tools.getTimePickerDialog(getActivity(), etSelesai_istirahat);
                 break;
         }
     }
 
     private void initComponent() {
 
-        find(R.id.sp_lokasi, Spinner.class).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spLokasi.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
                 String item = parent.getItemAtPosition(position).toString();
                 if (item.equalsIgnoreCase("Tenda")) {
-                    setViewAndChildrenEnabled(find(R.id.layout_external), false);
+                    Tools.setViewAndChildrenEnabled(find(R.id.layout_external), false);
                 } else if (item.equalsIgnoreCase("Bengkel")) {
-                    setViewAndChildrenEnabled(find(R.id.layout_external), true);
+                    Tools.setViewAndChildrenEnabled(find(R.id.layout_external), true);
                 }
             }
 
@@ -184,9 +194,7 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
                 } else if (etSelesai_istirahat.getText().toString().equalsIgnoreCase("")) {
                     etSelesai_istirahat.setError("Harus di isi");
                 }
-
-                saveData();
-
+                insertData();
             }
 
         });
@@ -194,24 +202,20 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
     }
 
     private void initToolbar() {
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_penugasan);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Atur Penugasan Mekanik");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void saveData() {
-
+    private void insertData() {
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 int selectedId = rg_status.getCheckedRadioButtonId();
-
                 String nama = etNama_Mekanik.getText().toString().trim().toUpperCase();
                 String antrian = spTipe_antrian.getSelectedItem().toString().toUpperCase();
                 String lokasi = spLokasi.getSelectedItem().toString().toUpperCase();
@@ -222,12 +226,7 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
                 String home = cbHome.getText().toString();
                 String emergency = cbEmergency.getText().toString();
 
-//                String cid = "AHS700010100";
-//                String action = "add";
-
-//                args.put("CID", cid);
-//                args.put("action", action);
-                switch (selectedId){
+                switch (selectedId) {
                     case R.id.rbOn:
                         String statusKerja = find(R.id.rbOn, RadioButton.class).getText().toString();
                         args.put("status", statusKerja);
@@ -243,10 +242,10 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
                 args.put("namamekanik", nama);
                 args.put("antrian", antrian);
                 args.put("lokasi", lokasi);
-                if(cbHome.isChecked()){
+                if (cbHome.isChecked()) {
                     args.put("external", home);
                     Log.d(TAG, home);
-                }else if(cbEmergency.isChecked()){
+                } else if (cbEmergency.isChecked()) {
                     args.put("external", emergency);
                     Log.d(TAG, emergency);
                 }
@@ -255,14 +254,8 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
                 args.put("istirahat", istirahat);
                 args.put("selesai", selesai_istirahat);
 
-
-                Log.d(TAG, "put data");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrl("v3/aturpenugasanmekanik"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturpenugasanmekanik"), args));
                 result.toJson().equalsIgnoreCase("data");
-
-                //Log.i(TAG, InternetX.getHttpConnectionX(""));
-//                http://otomotives.com/api/v3/aturpenugasanmekanik?CID=mekanik1
-
 
             }
 
@@ -270,9 +263,7 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
             public void runUI() {
 
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    setResult(RESULT_OK);
-                   // nListArray.asArray().addAll(result.get("data").asArray());
-                    Log.d(TAG, "success");
+                    Log.d(TAG, "success add data" + result.get("status").asString());
                     startActivity(new Intent(AturPenugasan_Activity.this, PenugasanActivity.class));
                     finish();
                 } else {
@@ -283,50 +274,91 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
         });
     }
 
-    private void getActivityForResult() {
-
-        MessageMsg.newTask(getActivity(), new Messagebox.DoubleRunnable() {
+    private void deleteData(final Nson nson) {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson data;
             @Override
             public void run() {
-
-
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "delete");
+                args.put("id", nson.get("id").asString());
+                data = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturpenugasanmekanik"), args));
             }
 
             @Override
             public void runUI() {
+                if (data.get("status").asString().equalsIgnoreCase("OK")) {
+                    Log.d(TAG, "success delete data" + data.get("ID").asString());
+                    setResult(RESULT_OK);
+                    startActivity(new Intent(AturPenugasan_Activity.this, PenugasanActivity.class));
 
-                find(R.id.sp_lokasi, Spinner.class).setSelection(getIntentStringExtra("flag").indexOf(""));
-                find(R.id.sp_antrian, Spinner.class).setSelection(getIntentStringExtra("flag").indexOf(""));
+                }else{
+                    showError("Mohon Di Coba Kembali");
+                }
 
             }
         });
     }
 
-    private static void setViewAndChildrenEnabled(View view, boolean enabled) {
-        view.setEnabled(enabled);
-        if (view instanceof ViewGroup) {
-            ViewGroup viewGroup = (ViewGroup) view;
-            for (int i = 0; i < viewGroup.getChildCount(); i++) {
-                View child = viewGroup.getChildAt(i);
-                setViewAndChildrenEnabled(child, enabled);
-            }
-        }
-    }
-
-    private void getDateTime(final EditText editText) {
-
-        Calendar calendar = Calendar.getInstance();
-        int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
-        int currentMinute = calendar.get(Calendar.MINUTE);
-
-        TimePickerDialog timePickerDialog = new TimePickerDialog(AturPenugasan_Activity.this, new TimePickerDialog.OnTimeSetListener() {
+    private void updateData(){
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson data;
             @Override
-            public void onTimeSet(TimePicker timePicker, int hourOfDay, int minutes) {
-                editText.setText(hourOfDay + ":" + minutes);
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+
+                int selectedId = rg_status.getCheckedRadioButtonId();
+                String nama = etNama_Mekanik.getText().toString().trim().toUpperCase();
+                String antrian = spTipe_antrian.getSelectedItem().toString().toUpperCase();
+                String lokasi = spLokasi.getSelectedItem().toString().toUpperCase();
+                String masuk = etMulai_Kerja.getText().toString().trim();
+                String selesai = etSelesai_Kerja.getText().toString().trim();
+                String istirahat = etMulai_istirahat.getText().toString();
+                String selesai_istirahat = etSelesai_istirahat.getText().toString();
+                String home = cbHome.getText().toString();
+                String emergency = cbEmergency.getText().toString();
+
+                args.put("action", "update");
+                switch (selectedId) {
+                    case R.id.rbOn:
+                        String statusKerja = find(R.id.rbOn, RadioButton.class).getText().toString();
+                        args.put("status", statusKerja);
+                        Log.d(TAG, statusKerja);
+                        break;
+                    case R.id.rbOff:
+                        String statusTidakKerja = find(R.id.rbOff, RadioButton.class).getText().toString();
+                        args.put("status", statusTidakKerja);
+                        Log.d(TAG, statusTidakKerja);
+                        break;
+                }
+                args.put("namamekanik", nama);
+                args.put("antrian", antrian);
+                args.put("lokasi", lokasi);
+                if (cbHome.isChecked()) {
+                    args.put("external", home);
+                    Log.d(TAG, home);
+                } else if (cbEmergency.isChecked()) {
+                    args.put("external", emergency);
+                    Log.d(TAG, emergency);
+                }
+                args.put("masuk", masuk);
+                args.put("pulang", selesai);
+                args.put("istirahat", istirahat);
+                args.put("selesai", selesai_istirahat);
+                data = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturpenugasanmekanik"), args));
             }
-        }, currentHour, currentMinute, true);
 
-        timePickerDialog.show();
+            @Override
+            public void runUI() {
+                if (data.get("status").asString().equalsIgnoreCase("OK")) {
+                    Log.d(TAG, "success update data" + data.get("status").asString());
+                    setResult(RESULT_OK);
+                    Intent i = new Intent(AturPenugasan_Activity.this, PenugasanActivity.class);
+                    startActivityForResult(i, RESULT_OK);
+                }else{
+                    showError("Mohon Di Coba Kembali");
+                }
+            }
+        });
     }
-
 }

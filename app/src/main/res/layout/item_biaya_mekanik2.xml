@@ -7,17 +7,23 @@
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        app:cardBackgroundColor="#FFFFFF">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="7sp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:foregroundGravity="center"
+                android:orientation="vertical"
+                android:background="@drawable/border_solid"
+                android:padding="10sp">
 
                 <TextView
                     android:id="@+id/txtTgl"
@@ -32,10 +38,10 @@
                     android:text="User" />
 
                 <TextView
-                    android:id="@+id/txtMeka1"
+                    android:id="@+id/txtMeka3"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Mekanik 1" />
+                    android:layout_height="match_parent"
+                    android:text="Mekanik 3" />
 
                 <TextView
                     android:id="@+id/txtMeka2"
@@ -44,22 +50,15 @@
                     android:text="Mekanik 2" />
 
                 <TextView
-                    android:id="@+id/txtMeka3"
+                    android:id="@+id/txtMeka1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Mekanik 2" />
-
-                <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/fabAddAturbiaya"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:layout_marginEnd="30sp"
-                    android:clickable="true"
-                    app:srcCompat="@drawable/ic_add" />
+                    android:text="Mekanik 1" />
 
             </LinearLayout>
 
         </LinearLayout>
+
     </android.support.v7.widget.CardView>
+
 </FrameLayout>

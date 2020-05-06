@@ -118,7 +118,7 @@ public class SparepartsNew extends AppActivity {
         recyclerView.setAdapter(new NikitaRecyclerAdapter(nListArray,R.layout.parts_new){
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                viewHolder.find(R.id.txtNamaPart, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
+                viewHolder.find(R.id.txtOngkosKirim, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
 
                 viewHolder.find(R.id.txtNoPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
 

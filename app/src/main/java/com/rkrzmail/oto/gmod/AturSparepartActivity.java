@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -83,7 +82,7 @@ public class AturSparepartActivity extends AppActivity {
             public void runUI() {
 
                 find(R.id.txtNoPart, EditText.class).setText("NO. PART : " + result.get(0).get("NO_PART").asString());
-                find(R.id.txtNamaPart, EditText.class).setText("NAMA PART : " + result.get(0).get("NAMA").asString());
+                find(R.id.txt, EditText.class).setText("NAMA PART : " + result.get(0).get("NAMA").asString());
                 find(R.id.txtNamaLain, EditText.class).setText("NAMA LAIN : " + result.get(0).get("NAMA_LAIN").asString());
                 find(R.id.txtMerk, EditText.class).setText("MERK : " + result.get(0).get("MERK").asString());
                 find(R.id.txtStatus, EditText.class).setText("STATUS : " + result.get(0).get("STATUS").asString());

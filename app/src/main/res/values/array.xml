@@ -81,6 +81,45 @@
         <item>Susan Lee</item>
     </string-array>
 
+    <string-array name="lokasi_penempatan_part">
+        <item>GUDANG</item>
+        <item>RUANG PART</item>
+        <item>DISPLAY</item>
+    </string-array>
+
+    <string-array name="penempatan_lokasi_part">
+        <item>PALET</item>
+        <item>RAK</item>
+        <item>Roberts</item>
+        <item>Betty C</item>
+        <item>Susan Lee</item>
+    </string-array>
+
+    <string-array name="tinggi_rak_part">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+    <string-array name="no_rak_palet_part">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+    <string-array name="no_folder_part">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+
     <string-array name="strings_short">
         <item>Proin Eleifend Libero</item>
         <item>Placerat nec elit</item>

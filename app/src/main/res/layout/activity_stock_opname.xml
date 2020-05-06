@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".modules.lokasi_part.stock_opname.StockOpname_Activity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar_stock_opname"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/colorPrimary"
+                    app:popupTheme="@style/AppTheme.PopupOverlay">
+
+                </android.support.v7.widget.Toolbar>
+
+            </FrameLayout>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_penugasan"
+            android:layout_width="348dp"
+            android:layout_height="466dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/border_solid"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+                <EditText
+                    android:id="@+id/et_noFolder_stockOpname"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_solid"
+                    android:ems="10"
+                    android:enabled="false"
+                    android:hint="NO. FOLDER"
+                    android:inputType="number"
+                    android:padding="5dp"
+                    android:textAlignment="center" />
+
+                <EditText
+                    android:id="@+id/et_noPart_stockOpname"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp"
+                    android:enabled="false"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_solid"
+                    android:ems="10"
+                    android:hint="NO. PART"
+                    android:inputType="number"
+                    android:padding="5dp"
+                    android:textAlignment="center" />
+
+                <EditText
+                    android:id="@+id/et_namaPart_stockOpname"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:enabled="false"
+                    android:layout_margin="5dp"
+                    android:layout_weight="2"
+                    android:background="@drawable/border_solid"
+                    android:ems="10"
+                    android:hint="NAMA PART"
+                    android:inputType="number"
+                    android:padding="5dp"
+                    android:textAlignment="center" />
+
+                <EditText
+                    android:id="@+id/et_jumlahdata_stockOpname"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp"
+                    android:layout_weight="2"
+                    android:background="@drawable/border_solid"
+                    android:ems="10"
+                    android:enabled="false"
+                    android:hint="JUMLAH DATA"
+                    android:inputType="number"
+                    android:padding="5dp"
+                    android:textAlignment="center" />
+
+                <EditText
+                    android:id="@+id/et_jumlahakhir_stockOpname"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp"
+                    android:layout_weight="2"
+                    android:background="@drawable/border_solid"
+                    android:ems="10"
+                    android:hint="JUMLAH AKHIR"
+                    android:inputType="number"
+                    android:padding="5dp"
+                    android:textAlignment="center" />
+
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_simpan_stockOpname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/btn_rounded_accent"
+                android:text="SIMPAN"
+                android:textColor="@color/white_transparency" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

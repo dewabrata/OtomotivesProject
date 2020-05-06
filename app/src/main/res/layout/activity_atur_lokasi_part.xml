@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar_atur_lokasi_part"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/colorPrimary"
+                    app:popupTheme="@style/AppTheme.PopupOverlay">
+
+                </android.support.v7.widget.Toolbar>
+            </FrameLayout>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_penugasan"
+            android:layout_width="348dp"
+            android:layout_height="466dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/border_solid"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+                <EditText
+                    android:id="@+id/et_no_part"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_solid"
+                    android:ems="10"
+                    android:enabled="false"
+                    android:hint="NO. PART"
+                    android:inputType="number"
+                    android:padding="5dp"
+                    android:textAlignment="center" />
+
+                <EditText
+                    android:id="@+id/et_nama_part"
+                    android:enabled="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_solid"
+                    android:ems="10"
+                    android:hint="NAMA PART"
+                    android:inputType="number"
+                    android:padding="5dp"
+                    android:textAlignment="center" />
+
+                <EditText
+                    android:id="@+id/et_merk_part"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:enabled="false"
+                    android:layout_weight="2"
+                    android:background="@drawable/border_solid"
+                    android:ems="10"
+                    android:hint="MERK PART"
+                    android:inputType="number"
+                    android:padding="5dp"
+                    android:textAlignment="center" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView20"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="LOKASI"
+                        android:textStyle="bold" />
+
+                    <Spinner
+                        android:id="@+id/sp_lokasiPart"
+                        android:layout_width="160dp"
+                        android:layout_height="wrap_content"
+                        android:entries="@array/lokasi_penempatan_part"
+                        android:textAlignment="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView21"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="PENEMPATAN"
+                        android:textStyle="bold" />
+
+                    <Spinner
+                        android:id="@+id/sp_penempatan_part"
+                        android:layout_width="160dp"
+                        android:layout_height="wrap_content"
+                        android:entries="@array/penempatan_lokasi_part"
+                        android:textAlignment="center" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView22"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="NO. RAK / PALET"
+                        android:textStyle="bold" />
+
+                    <Spinner
+                        android:id="@+id/sp_norakPalet_part"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:entries="@array/no_rak_palet_part"
+                        android:textAlignment="center" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView26"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="NO. FOLDER"
+                        android:textStyle="bold" />
+
+                    <Spinner
+                        android:id="@+id/sp_noFolder_part"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:entries="@array/no_folder_part"
+                        android:textAlignment="center" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView27"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="TINGGI RAK"
+                        android:textStyle="bold" />
+
+                    <Spinner
+                        android:id="@+id/sp_tinggiRak"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:entries="@array/tinggi_rak_part"
+                        android:textAlignment="center" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_simpan_lokasi_part"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/btn_rounded_accent"
+                android:text="SIMPAN"
+                android:textColor="@color/white_transparency" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</FrameLayout>
