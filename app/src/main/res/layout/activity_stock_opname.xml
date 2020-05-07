@@ -32,6 +32,15 @@
 
                 </android.support.v7.widget.Toolbar>
 
+                <ImageView
+                    android:id="@+id/imgBarcode"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:layout_gravity="right|center_vertical"
+                    android:layout_marginRight="3dp"
+                    android:padding="5dp"
+                    app:srcCompat="@drawable/scan" />
+
             </FrameLayout>
 
         </android.support.design.widget.AppBarLayout>
@@ -39,7 +48,7 @@
         <LinearLayout
             android:id="@+id/layout_penugasan"
             android:layout_width="348dp"
-            android:layout_height="466dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
             android:background="@drawable/border_solid"
@@ -53,6 +62,12 @@
                 android:orientation="vertical">
 
 
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center">
+
                 <EditText
                     android:id="@+id/et_noFolder_stockOpname"
                     android:layout_width="match_parent"
@@ -60,7 +75,6 @@
                     android:layout_gravity="center"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="@drawable/border_solid"
                     android:ems="10"
                     android:enabled="false"
                     android:hint="NO. FOLDER"
@@ -68,35 +82,58 @@
                     android:padding="5dp"
                     android:textAlignment="center" />
 
+                </android.support.design.widget.TextInputLayout>
+
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center">
+
                 <EditText
                     android:id="@+id/et_noPart_stockOpname"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:layout_margin="5dp"
-                    android:enabled="false"
                     android:layout_weight="1"
-                    android:background="@drawable/border_solid"
                     android:ems="10"
+                    android:enabled="false"
                     android:hint="NO. PART"
                     android:inputType="number"
                     android:padding="5dp"
                     android:textAlignment="center" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center">
 
                 <EditText
                     android:id="@+id/et_namaPart_stockOpname"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:enabled="false"
                     android:layout_margin="5dp"
                     android:layout_weight="2"
-                    android:background="@drawable/border_solid"
                     android:ems="10"
+                    android:enabled="false"
                     android:hint="NAMA PART"
                     android:inputType="number"
                     android:padding="5dp"
                     android:textAlignment="center" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center">
 
                 <EditText
                     android:id="@+id/et_jumlahdata_stockOpname"
@@ -105,13 +142,20 @@
                     android:layout_gravity="center"
                     android:layout_margin="5dp"
                     android:layout_weight="2"
-                    android:background="@drawable/border_solid"
                     android:ems="10"
                     android:enabled="false"
                     android:hint="JUMLAH DATA"
                     android:inputType="number"
                     android:padding="5dp"
                     android:textAlignment="center" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center">
 
                 <EditText
                     android:id="@+id/et_jumlahakhir_stockOpname"
@@ -120,14 +164,13 @@
                     android:layout_gravity="center"
                     android:layout_margin="5dp"
                     android:layout_weight="2"
-                    android:background="@drawable/border_solid"
                     android:ems="10"
                     android:hint="JUMLAH AKHIR"
                     android:inputType="number"
                     android:padding="5dp"
                     android:textAlignment="center" />
 
-
+                </android.support.design.widget.TextInputLayout>
             </LinearLayout>
 
             <Button

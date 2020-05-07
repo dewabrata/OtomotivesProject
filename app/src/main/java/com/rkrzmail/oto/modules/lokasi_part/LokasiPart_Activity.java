@@ -40,6 +40,8 @@ public class LokasiPart_Activity extends AppActivity {
 
     private static final String TAG = "LokasiPart_Activity";
     public static final int REQUEST_STOCK_OPNAME = 1212;
+    private static final int REQUEST_PENYESUAIAN = 567;
+
     private View parent_view;
     private RecyclerView rvLokasi_part;
     private AdapterSuggestionSearch adapterSuggestionSearch;
@@ -92,11 +94,12 @@ public class LokasiPart_Activity extends AppActivity {
 
         rvLokasi_part.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_lokasi_part) {
             @Override
-            public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, int position) {
+            public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, final int position) {
 
                 viewHolder.find(R.id.tv_noFolder, TextView.class).setText("NO. FOLDER : " + nListArray.get(position).get("NO_FOLDER").asString());
                 viewHolder.find(R.id.tv_lokasiPart, TextView.class).setText("LOKASI : " + (nListArray.get(position).get("LOKASI").asString()));
                 viewHolder.find(R.id.tv_namaPart, TextView.class).setText("NAMA PART : " + nListArray.get(position).get("NAMA").asString());
+                viewHolder.find(R.id.tv_nomor_part, TextView.class).setText("NO. PART : " + nListArray.get(position).get("NO_PART_ID").asString());
                 viewHolder.find(R.id.tv_tglOpname, TextView.class).setText("TGL. OPNAME : " + nListArray.get(position).get("TANGGAL_OPNAME").asString());
                 viewHolder.find(R.id.tv_penempatan, TextView.class).setText("PENEMPATAN : " + nListArray.get(position).get("PENEMPATAN").asString());
                 viewHolder.find(R.id.tv_stock, TextView.class).setText("STOCK : " + nListArray.get(position).get("STOCK").asString());
@@ -114,7 +117,17 @@ public class LokasiPart_Activity extends AppActivity {
                                 switch (menuItem.getItemId()) {
                                     case R.id.action_stockOpname:
 //                                        Stock opname : membuka form stock opname
-                                        Intent i = new Intent(LokasiPart_Activity.this, StockOpname_Activity.class);
+                                        Intent i = new Intent(getActivity(), StockOpname_Activity.class);
+                                        i.putExtra("NO_FOLDER", nListArray.get(position).get("NO_FOLDER"));
+                                        i.putExtra("NO_PART_ID", nListArray.get(position).get("NO_PART_ID"));
+                                        i.putExtra("NAMA", nListArray.get(position).get("NAMA"));
+                                        i.putExtra("STOCK", nListArray.get(position).get("STOCK"));
+                                        i.putExtra("LOKASI", nListArray.get(position).get("LOKASI"));
+                                        i.putExtra("USER", nListArray.get(position).get("USER"));
+                                        i.putExtra("PENEMPATAN", nListArray.get(position).get("PENEMPATAN"));
+                                        i.putExtra("PALET", nListArray.get(position).get("PALET"));
+                                        i.putExtra("RAK", nListArray.get(position).get("LOKASI"));
+                                        i.putExtra("NO_PART_ID", nListArray.get(position).toJson());
                                         startActivityForResult(i, REQUEST_STOCK_OPNAME);
                                         break;
                                     case R.id.action_qrCode:
@@ -132,19 +145,7 @@ public class LokasiPart_Activity extends AppActivity {
                 });
                 Log.d("NAMA", nListArray.get(position).get("search").asString());
             }
-        }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Nson parent, View view, int position) {
-                //Toast.makeText(getActivity(),"HHHHH "+position, Toast.LENGTH_SHORT).show();
-//                Intent intent =  new Intent(getActivity(), AturPenugasan_Activity.class);
-//                intent.putExtra("ID", nListArray.get(position).get("ID").asString());
-//                intent.putExtra("TIPE_ANTRIAN", nListArray.get(position).get("TIPE_ANTRIAN").asString());
-//                intent.putExtra("LOKASI", nListArray.get(position).get("LOKASI").asString());
-//                intent.putExtra("ID", nListArray.get(position).toJson());
-//                //intent.putExtra("id", nListArray.get(position).get("id").asString());
-//                startActivityForResult(intent, REQUEST_PENUGASAN);
-            }
-        }));
+        });
         catchData("");
     }
 
@@ -174,13 +175,13 @@ public class LokasiPart_Activity extends AppActivity {
                     showError("Mohon Di Coba Kembali" + result.get("message").asString());
                 }
 
-                if (result.get("data").get("PENEMPATAN").get("PALET") != null) {
-                    find(R.id.frame_notifikasi, FrameLayout.class).setVisibility(View.GONE);
-                } else {
+                if(nListArray.get("data").get("PENEMPATAN").asString().equalsIgnoreCase("")){
                     find(R.id.frame_notifikasi, FrameLayout.class).setVisibility(View.VISIBLE);
                     if (find(R.id.frame_notifikasi, FrameLayout.class).getVisibility() == View.VISIBLE) {
                         loadFragment(new Notifikasi_Alokasi_Fragment());
                     }
+                } else {
+                    find(R.id.frame_notifikasi, FrameLayout.class).setVisibility(View.GONE);
                 }
             }
         });
@@ -238,7 +239,10 @@ public class LokasiPart_Activity extends AppActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_STOCK_OPNAME && requestCode == RESULT_OK) {
             setResult(RESULT_OK);
+            catchData("");
             finish();
+        }else if(requestCode == REQUEST_PENYESUAIAN && requestCode == RESULT_OK){
+            catchData("");
         }
     }
 

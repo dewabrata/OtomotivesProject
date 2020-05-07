@@ -1,19 +1,37 @@
 package com.rkrzmail.oto.modules.lokasi_part.stock_opname;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.naa.data.Nson;
+import com.naa.utils.InternetX;
+import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
+import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.lokasi_part.LokasiPart_Activity;
+import com.rkrzmail.oto.modules.lokasi_part.Penyesuain_Activity;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
 
 public class StockOpname_Activity extends AppActivity {
 
-    public static final int REQUEST_OPNAME = 2121;
-    private EditText noFolder, noPart, jumlahData, jumlahAkhir;
+    private static final int REQUEST_PENYESUAIAN = 567;
+    private EditText noFolder, noPart, jumlahData, jumlahAkhir, namaPart;
+    private ArrayList<String> indexOf_Opname = new ArrayList<String>();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,8 +42,34 @@ public class StockOpname_Activity extends AppActivity {
         noPart = findViewById(R.id.et_noPart_stockOpname);
         jumlahData = findViewById(R.id.et_jumlahdata_stockOpname);
         jumlahAkhir = findViewById(R.id.et_jumlahakhir_stockOpname);
+        namaPart = findViewById(R.id.et_namaPart_stockOpname);
 
         initComponent();
+        final Nson data = Nson.readJson(getIntentStringExtra("NO_PART_ID"));
+        Intent i = getIntent();
+        if(i.hasExtra("NO_PART_ID")){
+            noFolder.setText(data.get("NO_FOLDER").asString());
+            noPart.setText(data.get("NO_PART_ID").asString());
+            namaPart.setText(data.get("NAMA").asString());
+            jumlahData.setText(data.get("STOCK").asString());
+
+            indexOf_Opname.add(data.get("NO_FOLDER").asString());
+            indexOf_Opname.add(data.get("NO_PART_ID").asString());
+            indexOf_Opname.add(data.get("STOCK").asString());
+            indexOf_Opname.add(data.get("PENEMPATAN").asString());
+            indexOf_Opname.add(data.get("PALET").asString());
+            indexOf_Opname.add(data.get("RAK").asString());
+            indexOf_Opname.add(data.get("USER").asString());
+            indexOf_Opname.add(data.get("LOKASI").asString());
+
+
+            for(int in = 0; in < indexOf_Opname.size(); in++){
+                Log.d("OPNAME", indexOf_Opname.get(in));
+            }
+        }
+
+
+
     }
 
     private void initToolbar() {
@@ -40,6 +84,73 @@ public class StockOpname_Activity extends AppActivity {
             @Override
             public void onClick(View view) {
 
+                saveUpdate();
+            }
+        });
+    }
+
+    private void saveUpdate(){
+
+        final int stockAwal = Integer.parseInt(jumlahData.getText().toString());
+        final int stockAkhir = Integer.parseInt(jumlahAkhir.getText().toString());
+        final String lokasi = indexOf_Opname.get(7);
+        final String tempat = indexOf_Opname.get(3);
+        final String palet = indexOf_Opname.get(4);
+        final String rak = indexOf_Opname.get(5);
+        final String folder = indexOf_Opname.get(0);
+        final String user = indexOf_Opname.get(6);
+        final String nopart = indexOf_Opname.get(1);
+        final String stock = indexOf_Opname.get(2);
+
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+
+                Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy MMM dd");
+                String tanggal = simpleDateFormat.format(calendar.getTime());
+
+                args.put("action", "add");
+                args.put("lokasi", lokasi);
+                args.put("tempat", tempat);
+                args.put("palet", palet);
+                args.put("rak", rak);
+                args.put("folder", folder);
+                args.put("tanggal", tanggal);
+                args.put("user", user);
+                args.put("nopart", nopart);
+                args.put("stock", stock);
+
+
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturlokasipart"), args));
+
+            }
+
+            @Override
+            public void runUI() {
+                if(result.get("status").asString().equalsIgnoreCase("OK")){
+                    Toast.makeText(getActivity(), "Success Update Data", Toast.LENGTH_LONG).show();
+                    int stockBeda = 0;
+                    if(stockAwal > stockAkhir){
+                        stockBeda = stockAwal - stockAkhir;
+
+                        Intent i = new Intent(getActivity(), Penyesuain_Activity.class);
+                        i.putExtra("NO_FOLDER", folder);
+                        i.putExtra("NO_PART_ID", nopart);
+                        i.putExtra("STOCK", stock);
+                        i.putExtra("LOKASI", lokasi);
+                        i.putExtra("USER", user);
+                        i.putExtra("PENEMPATAN", tempat);
+                        i.putExtra("PALET", palet);
+                        i.putExtra("RAK", rak);
+                        i.putExtra("STOCK_BEDA", stockBeda);
+                        startActivityForResult(i, REQUEST_PENYESUAIAN);
+                    }else{
+                        startActivity(new Intent(getActivity(), LokasiPart_Activity.class));
+                    }
+                }
             }
         });
     }

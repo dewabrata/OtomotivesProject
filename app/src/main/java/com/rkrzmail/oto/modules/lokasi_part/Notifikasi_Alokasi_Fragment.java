@@ -54,23 +54,32 @@ public class Notifikasi_Alokasi_Fragment extends Fragment {
                 if (nListArray.get("status").asString().equalsIgnoreCase("OK")) {
                     //Log.d("HITUNG", nListArray.get("status").asString());
                     int jumlah = 0;
-                    ArrayList<String> counting = new ArrayList<>();
-                    for (int i = 0; i < nListArray.get("data").size(); i++) {
-                        nListArray.toJson();
 
-                        if (nListArray.get("data").get("PENEMPATAN").get("PALET") == null &&
-                                nListArray.get("data").get("PENEMPATAN").get("RAK") == null ){
-
-                            counting.add(nListArray.get("data").get(i).get("PENEMPATAN").asString());
-                            jumlah = counting.size();
-                            count.setText(String.valueOf(jumlah) + "PART BELUM DI ALOKASIKAN");
-                            Log.d("HITUNG", String.valueOf(jumlah));
-                            Log.d("HITUNG", nListArray.get("data").get(i).get("PENEMPATAN").asString());
-                        }else{
-                            Log.d("HITUNG", nListArray.get("data").get(i).get("PENEMPATAN").asString());
-                        }
-                        // Log.d("HITUNG", nListArray.get("data").get(i).get("PENEMPATAN").asString());
+                    if(nListArray.get("data").get("PENEMPATAN").asString().equalsIgnoreCase("")){
+                        int kosong = nListArray.get("data").get("PENEMPATAN").get("").size();
+                        nListArray.add(kosong);
                     }
+
+                    jumlah = nListArray.size();
+                    count.setText( jumlah + "PART BELUM DI ALOKASIKAN");
+
+
+//                    for (int i = 0; i < nListArray.get("data").size(); i++) {
+//                        nListArray.toJson();
+//
+//                        if (nListArray.get("data").get("PENEMPATAN").get("PALET") == null &&
+//                                nListArray.get("data").get("PENEMPATAN").get("RAK") == null ){
+//
+//                            counting.add(nListArray.get("data").get(i).get("PENEMPATAN").asString());
+//                            jumlah = counting.size();
+//
+//                            Log.d("HITUNG", String.valueOf(jumlah));
+//                            Log.d("HITUNG", nListArray.get("data").get(i).get("PENEMPATAN").asString());
+//                        }else{
+//                            Log.d("HITUNG", nListArray.get("data").get(i).get("PENEMPATAN").asString());
+//                        }
+//                        // Log.d("HITUNG", nListArray.get("data").get(i).get("PENEMPATAN").asString());
+//                    }
                 }
 
 

@@ -11,6 +11,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+
+        <activity android:name=".modules.lokasi_part.Penyesuain_Activity"/>
+        <activity android:name=".modules.lokasi_part.stock_opname.StockOpname_Activity"/>
         <activity android:name=".modules.terima_part.TerimaPart"></activity>
         <activity android:name=".modules.lokasi_part.AturLokasiPart_Activity" />
         <activity android:name=".modules.terima_part.AturTerimaPart" />

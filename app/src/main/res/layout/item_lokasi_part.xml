@@ -73,6 +73,15 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/tv_nomor_part"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="No Part"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+
+                    <TextView
                         android:id="@+id/tv_tglOpname"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -23,6 +24,8 @@ import com.rkrzmail.oto.gmod.AturPenugasan_Activity;
 import com.rkrzmail.oto.modules.penugasan.PenugasanActivity;
 import com.rkrzmail.utils.Tools;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class AturLokasiPart_Activity extends AppActivity {
@@ -47,6 +50,7 @@ public class AturLokasiPart_Activity extends AppActivity {
         sp_tinggiRak_part = findViewById(R.id.sp_tinggiRak);
         sp_noFolder_part = findViewById(R.id.sp_noFolder_part);
 
+
         initComponent();
         Intent i = getIntent();
         if(i.hasExtra("ID")){
@@ -63,6 +67,7 @@ public class AturLokasiPart_Activity extends AppActivity {
 
     private void initComponent(){
 
+        spinnerView();
         sp_penempatan_part.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
@@ -134,6 +139,34 @@ public class AturLokasiPart_Activity extends AppActivity {
                 }
             }
         });
+    }
+
+    private void spinnerView(){
+        //No. Rak Spinner
+        List<Integer> noRak = new ArrayList<Integer>();
+        for(int i = 1; i <= 100; i++){
+            noRak.add(i);
+        }
+        ArrayAdapter<Integer> rakAdapter = new ArrayAdapter<Integer>(getActivity(), android.R.layout.simple_spinner_item, noRak);
+        rakAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sp_noRakPalet_part.setAdapter(rakAdapter);
+        //Tinggi Rak Spinner
+        List<Integer> tinggiRak = new ArrayList<Integer>();
+        for(int i = 1; i <= 25; i++){
+            tinggiRak.add(i);
+        }
+        ArrayAdapter<Integer> tingiRak_adapter = new ArrayAdapter<Integer>(getActivity(), android.R.layout.simple_spinner_item, tinggiRak);
+        tingiRak_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sp_tinggiRak_part.setAdapter(tingiRak_adapter);
+        //No folder Spinner
+        List<Integer> noFolder = new ArrayList<Integer>();
+        for(int i = 1; i <= 100; i++){
+            noFolder.add(i);
+        }
+        ArrayAdapter<Integer> folderAdapter = new ArrayAdapter<Integer>(getActivity(), android.R.layout.simple_spinner_item, noFolder);
+        folderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sp_noFolder_part.setAdapter(folderAdapter);
+
     }
 
     @Override

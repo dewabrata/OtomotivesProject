@@ -69,7 +69,7 @@
                         android:id="@+id/sp_penyesuaian"
                         android:layout_width="160dp"
                         android:layout_height="wrap_content"
-                        android:entries="@array/lokasi_penempatan_part"
+                        android:entries="@array/sebab_penyesuaian"
                         android:textAlignment="center" />
                 </LinearLayout>
 
@@ -91,7 +91,6 @@
                         android:id="@+id/sp_noFolder_penyesuaian"
                         android:layout_width="160dp"
                         android:layout_height="wrap_content"
-                        android:entries="@array/penempatan_lokasi_part"
                         android:textAlignment="center" />
 
                 </LinearLayout>
@@ -102,20 +101,24 @@
                     android:layout_margin="10dp"
                     android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/textView22"
+
+                    <android.support.design.widget.TextInputLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="KETERANGAN"
-                        android:textStyle="bold" />
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_weight="1">
 
-                    <Spinner
-                        android:id="@+id/sp_ket_penyesuaian"
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:entries="@array/no_rak_palet_part"
-                        android:textAlignment="center" />
+                        <android.support.design.widget.TextInputEditText
+                            android:id="@+id/et_ket_penyesuaian"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:hint="Tambahkan Keterangan"
+                            android:maxLines="10"
+                            android:lines="5"/>
+                    </android.support.design.widget.TextInputLayout>
+
 
                 </LinearLayout>
 
