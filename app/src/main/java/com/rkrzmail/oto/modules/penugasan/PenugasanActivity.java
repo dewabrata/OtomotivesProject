@@ -120,17 +120,15 @@ public class PenugasanActivity extends AppActivity {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
-                    rvPenugasan.getAdapter().notifyDataSetChanged();
                     Collections.sort(nListArray.asArray(), new Comparator() {
-                        @Override
-                        public int compare(Object o, Object t1) {
-                            if(o.equals(result.get("data")) ){
+                                @Override
+                                public int compare(Object o1, Object o2) {
+                                    return 0;
+                                }
+                            });
 
-                            }
-                            return 0;
-                        }
-                    });
-                    Log.d(TAG, "reload data");
+                            Log.d(TAG, "reload data");
+                    rvPenugasan.getAdapter().notifyDataSetChanged();
                 }else {
                     Log.d(TAG, "error");
                     showError("Mohon Di Coba Kembali" + result.get("message").asString());

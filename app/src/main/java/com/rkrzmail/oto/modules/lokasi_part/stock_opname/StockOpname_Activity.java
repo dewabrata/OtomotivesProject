@@ -12,6 +12,7 @@ import com.rkrzmail.oto.R;
 
 public class StockOpname_Activity extends AppActivity {
 
+    public static final int REQUEST_OPNAME = 2121;
     private EditText noFolder, noPart, jumlahData, jumlahAkhir;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

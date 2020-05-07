@@ -2,6 +2,7 @@ package com.rkrzmail.oto.modules.lokasi_part;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -26,7 +27,8 @@ import java.util.Map;
 
 public class AturLokasiPart_Activity extends AppActivity {
 
-    public static final String TAG = "AturLokasiPart_Activity";
+    private static final String TAG = "AturLokasiPart_Activity";
+    private static final int REQUEST_ATUR_LOKASI_PART = 3232;
     private EditText no_part, nama_part, merk_part;
     private Spinner sp_lokasi_part, sp_penempatan_part, sp_noRakPalet_part, sp_tinggiRak_part, sp_noFolder_part;
 
@@ -46,6 +48,10 @@ public class AturLokasiPart_Activity extends AppActivity {
         sp_noFolder_part = findViewById(R.id.sp_noFolder_part);
 
         initComponent();
+        Intent i = getIntent();
+        if(i.hasExtra("ID")){
+
+        }
     }
 
     private void initToolbar() {
@@ -79,6 +85,7 @@ public class AturLokasiPart_Activity extends AppActivity {
             @Override
             public void onClick(View view) {
 
+                insertData();
             }
         });
 
@@ -93,12 +100,12 @@ public class AturLokasiPart_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 String nopart = no_part.getText().toString().toUpperCase();
-                String namapart = nama_part.getText().toString().toUpperCase();
-                String merkpart = merk_part.getText().toString().toUpperCase();
+//                String namapart = nama_part.getText().toString().toUpperCase();
+//                String merkpart = merk_part.getText().toString().toUpperCase();
                 String lokasi = sp_lokasi_part.getSelectedItem().toString().toUpperCase();
                 String tempat = sp_penempatan_part.getSelectedItem().toString().toUpperCase();
                 String norakpalet = sp_noRakPalet_part.getSelectedItem().toString().toUpperCase();
-                String tinggirak = sp_tinggiRak_part.getSelectedItem().toString().toUpperCase();
+                //String tinggirak = sp_tinggiRak_part.getSelectedItem().toString().toUpperCase();
                 String nofolder = sp_noFolder_part.getSelectedItem().toString().toUpperCase();
 
                 args.put("lokasi", lokasi);
@@ -127,5 +134,13 @@ public class AturLokasiPart_Activity extends AppActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == RESULT_OK && resultCode == REQUEST_ATUR_LOKASI_PART){
+
+        }
     }
 }

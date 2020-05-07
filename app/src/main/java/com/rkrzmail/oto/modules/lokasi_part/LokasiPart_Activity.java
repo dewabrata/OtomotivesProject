@@ -3,11 +3,11 @@ package com.rkrzmail.oto.modules.lokasi_part;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -16,6 +16,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,15 +29,12 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.gmod.AturPenugasan_Activity;
 import com.rkrzmail.oto.modules.lokasi_part.stock_opname.StockOpname_Activity;
 import com.rkrzmail.oto.modules.part.AdapterSuggestionSearch;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
 import java.util.Map;
-
-import static java.util.Locale.filter;
 
 public class LokasiPart_Activity extends AppActivity {
 
@@ -58,38 +57,50 @@ public class LokasiPart_Activity extends AppActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent =  new Intent(getActivity(), AturLokasiPart_Activity.class);
+                Intent intent = new Intent(getActivity(), AturLokasiPart_Activity.class);
                 startActivity(intent);
             }
         });
+
     }
 
-    private void initToolbar(){
+    private boolean loadFragment(Fragment fragment) {
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.frame_notifikasi, fragment)
+                    .commit();
+            return true;
+        }
+        return false;
+    }
+
+    private void initToolbar() {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_lokasi_part);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setTitle("Lokasi Part");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.animate().translationY(-toolbar.getBottom()).setInterpolator(new AccelerateInterpolator()).start();
     }
 
-    private void initComponent(){
+    private void initComponent() {
 
         rvLokasi_part = (RecyclerView) findViewById(R.id.recyclerView_lokasiPart);
         rvLokasi_part.setLayoutManager(new LinearLayoutManager(this));
         rvLokasi_part.setHasFixedSize(true);
 
-        rvLokasi_part.setAdapter(new NikitaRecyclerAdapter(nListArray,R.layout.item_lokasi_part){
+        rvLokasi_part.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_lokasi_part) {
             @Override
             public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, int position) {
 
                 viewHolder.find(R.id.tv_noFolder, TextView.class).setText("NO. FOLDER : " + nListArray.get(position).get("NO_FOLDER").asString());
-                viewHolder.find(R.id.tv_lokasiPart, TextView.class).setText("LOKASI : " +(nListArray.get(position).get("LOKASI").asString()));
+                viewHolder.find(R.id.tv_lokasiPart, TextView.class).setText("LOKASI : " + (nListArray.get(position).get("LOKASI").asString()));
                 viewHolder.find(R.id.tv_namaPart, TextView.class).setText("NAMA PART : " + nListArray.get(position).get("NAMA").asString());
                 viewHolder.find(R.id.tv_tglOpname, TextView.class).setText("TGL. OPNAME : " + nListArray.get(position).get("TANGGAL_OPNAME").asString());
                 viewHolder.find(R.id.tv_penempatan, TextView.class).setText("PENEMPATAN : " + nListArray.get(position).get("PENEMPATAN").asString());
-                viewHolder.find(R.id.tv_stock, TextView.class).setText(nListArray.get(position).get("STOCK").asString());
-                viewHolder.find(R.id.tv_user, TextView.class).setText(nListArray.get(position).get("USER").asString());
+                viewHolder.find(R.id.tv_stock, TextView.class).setText("STOCK : " + nListArray.get(position).get("STOCK").asString());
+                viewHolder.find(R.id.tv_user, TextView.class).setText("USER : " + nListArray.get(position).get("USER").asString());
 
                 viewHolder.find(R.id.tv_optionMenu, TextView.class).setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -100,7 +111,7 @@ public class LokasiPart_Activity extends AppActivity {
                             @Override
                             public boolean onMenuItemClick(MenuItem menuItem) {
 
-                                switch (menuItem.getItemId()){
+                                switch (menuItem.getItemId()) {
                                     case R.id.action_stockOpname:
 //                                        Stock opname : membuka form stock opname
                                         Intent i = new Intent(LokasiPart_Activity.this, StockOpname_Activity.class);
@@ -137,32 +148,39 @@ public class LokasiPart_Activity extends AppActivity {
         catchData("");
     }
 
-    private void catchData(final String nama){
+    private void catchData(final String nama) {
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
-            Nson result ;
+            Nson result;
 
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("search", nama);
-//                args.put("NAMA", nama);
-//                args.put("NAMA_LAIN", nama);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlokasipart"), args)) ;
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlokasipart"), args));
 
             }
 
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                        nListArray.asArray().clear();
-                        nListArray.asArray().addAll(result.get("data").asArray());
-                        rvLokasi_part.getAdapter().notifyDataSetChanged();
-                        Log.d(TAG, result.get("status").asString());
-                        Log.d("NAMA", result.get("search").get("data").asString());
+                    nListArray.asArray().clear();
+                    nListArray.asArray().addAll(result.get("data").asArray());
+                    rvLokasi_part.getAdapter().notifyDataSetChanged();
+                    Log.d(TAG, result.get("status").asString());
+                    Log.d("NAMA", result.get("search").get("data").asString());
 
-                }else {
+                } else {
                     Log.d(TAG, result.get("status").asString());
                     showError("Mohon Di Coba Kembali" + result.get("message").asString());
+                }
+
+                if (result.get("data").get("PENEMPATAN").get("PALET") != null) {
+                    find(R.id.frame_notifikasi, FrameLayout.class).setVisibility(View.GONE);
+                } else {
+                    find(R.id.frame_notifikasi, FrameLayout.class).setVisibility(View.VISIBLE);
+                    if (find(R.id.frame_notifikasi, FrameLayout.class).getVisibility() == View.VISIBLE) {
+                        loadFragment(new Notifikasi_Alokasi_Fragment());
+                    }
                 }
             }
         });
@@ -193,11 +211,9 @@ public class LokasiPart_Activity extends AppActivity {
             public boolean onQueryTextChange(String newText) {
                 return false;
             }
+
             public boolean onQueryTextSubmit(String query) {
-                //searchMenu.collapseActionView();
                 catchData(query);
-
-
                 return true;
             }
         };
@@ -208,6 +224,7 @@ public class LokasiPart_Activity extends AppActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         if (item.getItemId() == android.R.id.home) {
             finish();
         } else {
@@ -219,9 +236,10 @@ public class LokasiPart_Activity extends AppActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUEST_STOCK_OPNAME && requestCode == RESULT_OK){
+        if (requestCode == REQUEST_STOCK_OPNAME && requestCode == RESULT_OK) {
             setResult(RESULT_OK);
             finish();
         }
     }
+
 }
