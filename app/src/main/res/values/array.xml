@@ -307,23 +307,23 @@
     </string-array>
 
     <string-array name="album_name">
-        <item>The Mother</item>
-        <item>Not Advance</item>
-        <item>Coming Back</item>
-        <item>Suspicions</item>
-        <item>Desert Of Lost</item>
+    <item>The Mother</item>
+    <item>Not Advance</item>
+    <item>Coming Back</item>
+    <item>Suspicions</item>
+    <item>Desert Of Lost</item>
 
-        <item>Glances</item>
-        <item>Some Doubts</item>
-        <item>Morning</item>
-        <item>Love More Deeply</item>
-        <item>Quite</item>
+    <item>Glances</item>
+    <item>Some Doubts</item>
+    <item>Morning</item>
+    <item>Love More Deeply</item>
+    <item>Quite</item>
 
-        <item>Backseat</item>
-        <item>Peace</item>
-        <item>Ambitions </item>
-        <item>Knocking At</item>
-        <item>Synchronisation</item>
-    </string-array>
+    <item>Backseat</item>
+    <item>Peace</item>
+    <item>Ambitions </item>
+    <item>Knocking At</item>
+    <item>Synchronisation</item>
+</string-array>
 
 </resources>

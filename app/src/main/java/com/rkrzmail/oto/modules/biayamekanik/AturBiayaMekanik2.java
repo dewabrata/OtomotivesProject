@@ -65,7 +65,7 @@ public class AturBiayaMekanik2 extends AppActivity {
                         showError("Mekanik 3 harus di isi");
                     }else if (find(R.id.txtMinWB, EditText.class).getText().toString().equalsIgnoreCase("")) {
                         showError("Waktu Bayar 1 harus di isi");
-                        return;
+
                     }
                     insertdata();
                 }
