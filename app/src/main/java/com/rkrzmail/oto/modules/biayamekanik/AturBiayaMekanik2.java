@@ -76,7 +76,6 @@ public class AturBiayaMekanik2 extends AppActivity {
     private void insertdata() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-            Nson result2;
 
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();

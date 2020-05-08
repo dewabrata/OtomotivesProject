@@ -179,8 +179,8 @@
                     android:id="@+id/spinnerPembayaran"
                     android:layout_width="match_parent"
                     android:layout_height="50sp"
-                    android:entries="@array/pembayaran"
-                    android:layout_margin="5dp"/>
+                    android:layout_margin="5dp"
+                    android:entries="@array/pembayaran" />
 
                 <LinearLayout
                     android:layout_width="match_parent"

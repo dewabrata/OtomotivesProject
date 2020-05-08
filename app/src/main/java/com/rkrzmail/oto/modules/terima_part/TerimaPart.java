@@ -9,18 +9,24 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.naa.data.Nson;
+import com.naa.utils.InternetX;
 import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
+import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.biayamekanik.AturBiayaMekanik2;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+
+import java.util.Map;
 
 public class TerimaPart extends AppActivity {
 
@@ -76,19 +82,31 @@ public class TerimaPart extends AppActivity {
 
             }
         });
-        reload();
+        reload("nama");
     }
 
-    private void reload(){
+    private void reload(final String nama){
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
+            Nson result;
             @Override
             public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                //args.put("id",);
+//                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("terimapart"),args)) ;
 
             }
 
             @Override
             public void runUI() {
-
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    nListArray.asArray().clear();
+                    nListArray.asArray().addAll(result.get("data").asArray());
+                    recyclerView_terimaPart.getAdapter().notifyDataSetChanged();
+                    Log.d(TAG, "reload data");
+                }else {
+                    Log.d(TAG, "error");
+                    showError("Mohon Di Coba Kembali" + result.get("message").asString());
+                }
             }
         });
     }
@@ -98,7 +116,7 @@ public class TerimaPart extends AppActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode==REQUEST_TERIMA_PART && resultCode == RESULT_OK){
             setResult(RESULT_OK);
-            reload();
+            reload("nama");
         }
     }
 
