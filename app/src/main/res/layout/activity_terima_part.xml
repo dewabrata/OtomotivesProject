@@ -13,10 +13,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"></android.support.v7.widget.Toolbar>
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/imgSearch"
+                android:layout_width="40sp"
+                android:layout_height="40sp"
+                android:layout_gravity="right|center_vertical"
+                android:layout_marginRight="10dp"
+                android:padding="5dp"
+                app:srcCompat="@drawable/ic_search" />
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"></android.support.v7.widget.Toolbar>
+        </FrameLayout>
 
     </android.support.design.widget.AppBarLayout>
 

@@ -20,7 +20,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="15dp"
+            android:background="@drawable/border_solid">
 
             <ImageView
                 android:id="@+id/imageView8"
@@ -42,24 +44,28 @@
                         android:id="@+id/txtTanggal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:padding="5dp"
                         android:text="Tanggal" />
 
                     <TextView
                         android:id="@+id/txtSupplier"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:padding="5dp"
                         android:text="Supplier" />
 
                     <TextView
                         android:id="@+id/txtPembayaran"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:padding="5dp"
                         android:text="Pembayaran" />
 
                     <TextView
                         android:id="@+id/txtTotal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:padding="5dp"
                         android:text="Total" />
                 </LinearLayout>
 
@@ -72,24 +78,28 @@
                         android:id="@+id/txtNoDo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:padding="5dp"
                         android:text="No. DO" />
 
                     <TextView
                         android:id="@+id/textView38"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"/>
 
                     <TextView
                         android:id="@+id/txtJatuhTempo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Jatuh Tempo" />
+                        android:text="Jatuh Tempo"
+                        android:padding="5dp"/>
 
                     <TextView
                         android:id="@+id/txtUser"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="User" />
+                        android:text="User"
+                        android:padding="5dp"/>
                 </LinearLayout>
 
             </LinearLayout>

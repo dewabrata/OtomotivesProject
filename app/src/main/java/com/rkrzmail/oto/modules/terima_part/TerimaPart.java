@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +34,7 @@ public class TerimaPart extends AppActivity {
     public static final String TAG = "TerimaPart";
     private RecyclerView recyclerView_terimaPart;
     private TextView txtTgl;
+    private ImageView imgSearch;
     //private AdapterListBasic mAdapter;
     final int REQUEST_TERIMA_PART = 666;
 
@@ -40,6 +42,8 @@ public class TerimaPart extends AppActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_terima_part);
+
+        imgSearch = findViewById(R.id.imgSearch);
 
         initToolbar();
         initComponent();

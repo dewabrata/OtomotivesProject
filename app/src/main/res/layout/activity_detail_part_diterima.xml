@@ -150,8 +150,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="50sp"
                     android:ems="10"
-                    android:inputType="textPersonName"
-                    android:text="Rp." />
+                    android:inputType="number"
+                    android:hint="Rp." />
 
                 <EditText
                     android:id="@+id/txtDiskonBeli"
@@ -185,7 +185,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center|left"
         android:layout_marginStart="20sp"
-        android:layout_marginTop="100sp"
+        android:layout_marginTop="280sp"
         android:background="@drawable/btn_rounded_accent"
         android:text="Tutup" />
 
@@ -195,7 +195,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center|right"
         android:layout_marginEnd="20sp"
-        android:layout_marginTop="100sp"
+        android:layout_marginTop="280sp"
         android:clickable="true"
         app:srcCompat="@drawable/ic_add" />
 

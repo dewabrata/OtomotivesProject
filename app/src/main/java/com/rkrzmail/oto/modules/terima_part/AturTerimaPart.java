@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.naa.data.Nson;
@@ -32,12 +33,15 @@ public class AturTerimaPart extends AppActivity {
     private static final String TAG = "AturTerimaPart";
     private static final int REQUEST_ATUR_TERIMA_PART = 4141;
     private Spinner spinnerSupplier, spinnerPembayaran;
+    private ImageView imgSearching;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_atur_terima_part);
         spinnerSupplier = findViewById(R.id.spinnerSupplier);
         spinnerPembayaran = findViewById(R.id.spinnerPembayaran);
+        imgSearching = findViewById(R.id.imgSearching);
 
         initToolbar();
         initComponent();

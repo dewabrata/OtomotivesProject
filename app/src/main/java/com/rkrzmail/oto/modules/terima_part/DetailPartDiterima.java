@@ -2,6 +2,7 @@ package com.rkrzmail.oto.modules.terima_part;
 
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
@@ -25,6 +27,7 @@ public class DetailPartDiterima extends AppActivity {
     private static final String TAG = "DetailPartDiterima";
     private static final int REQUEST_DETAIL_PART_DITERIMA = 4242;
     private Spinner spinnerLokasiSimpan, spinnerPenempatan;
+    private Button btnScan, btnTutup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,9 +35,28 @@ public class DetailPartDiterima extends AppActivity {
         setContentView(R.layout.activity_detail_part_diterima);
         spinnerLokasiSimpan = findViewById(R.id.spinnerLokasiSimpan);
         spinnerPenempatan = findViewById(R.id.spinnerPenempatan);
+        btnScan = findViewById(R.id.btnScan);
+        btnTutup = findViewById(R.id.btnTutup);
+
+        btnTutup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent inten = new Intent(DetailPartDiterima.this, TerimaPart.class);
+                startActivity(inten);
+            }
+        });
 
         initToolbar();
         initComponent();
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah_detailpart_terima);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), DetailPartDiterima.class);
+                startActivityForResult(intent, REQUEST_DETAIL_PART_DITERIMA);
+            }
+        });
     }
 
     private void initToolbar(){
@@ -116,7 +138,7 @@ public class DetailPartDiterima extends AppActivity {
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     Log.d(TAG, result.get("status").asString());
-                    startActivity(new Intent(DetailPartDiterima.this, TerimaPart.class));
+                    startActivity(new Intent(DetailPartDiterima.this, DetailPartDiterima.class));
                     finish();
                 } else {
                     showError(result.get("status").asString());
