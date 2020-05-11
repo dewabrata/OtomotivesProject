@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,6 +33,8 @@ import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.DataGenerator;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +53,14 @@ public class SparepartsNew extends AppActivity {
 
         initToolbar();
         initComponent();
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah_part2);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent =  new Intent(getActivity(), AturPartsNew.class);
+                startActivityForResult(intent, REQUEST_ATUR);
+            }
+        });
     }
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -79,6 +90,15 @@ public class SparepartsNew extends AppActivity {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
                     recyclerView.getAdapter().notifyDataSetChanged();
+                    Collections.sort(nListArray.asArray(), new Comparator() {
+                        @Override
+                        public int compare(Object o, Object t1) {
+                            if(o.equals(result.get("data")) ){
+
+                            }
+                            return 0;
+                        }
+                    });
                 }else{
                     showError(result.get("massage").asString());
                 }
@@ -118,7 +138,7 @@ public class SparepartsNew extends AppActivity {
         recyclerView.setAdapter(new NikitaRecyclerAdapter(nListArray,R.layout.parts_new){
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                viewHolder.find(R.id.txtOngkosKirim, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
+                viewHolder.find(R.id.txtNamaPart, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
 
                 viewHolder.find(R.id.txtNoPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
 
@@ -144,7 +164,15 @@ public class SparepartsNew extends AppActivity {
                 //Snackbar.make(parent_view, "Item  "+position+"  clicked", Snackbar.LENGTH_SHORT).show();
 
                 Intent intent =  new Intent(getActivity(), AturPartsNew.class);
-                intent.putExtra("DATA", nListArray.get(position).toJson());
+                //intent.putExtra("DATA", nListArray.get(position).toJson());
+                intent.putExtra("NAMA", nListArray.get(position).get("NAMA").asString());
+                intent.putExtra("NO_PART", nListArray.get(position).get("NO_PART").asString());
+                intent.putExtra("STOCK", nListArray.get(position).get("STOCK").asString());
+                intent.putExtra("HARGA_JUAL", nListArray.get(position).get("HARGA_JUAL").asString());
+                intent.putExtra("MERK", nListArray.get(position).get("MERK").asString());
+                intent.putExtra("TERJUAL", nListArray.get(position).get("TERJUAL").asString());
+                intent.putExtra("STOCK_MINIMUM", nListArray.get(position).get("STOCK_MINIMUM").asString());
+                intent.putExtra("NAMA", nListArray.get(position).toJson());
                 startActivityForResult(intent, REQUEST_ATUR);
             }
         }));

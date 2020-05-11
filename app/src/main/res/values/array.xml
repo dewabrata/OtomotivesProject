@@ -60,6 +60,18 @@
         <item>@drawable/photo_female_7</item>
         <item>@drawable/photo_female_8</item>
     </integer-array>
+    
+    <string-array name="jenis_layanan">
+        <item>PAKET LAYANAN</item>
+        <item>FASILITAS</item>
+        <item>RECALL</item>
+        <item>OTOMOTIVES</item>
+    </string-array>
+
+    <string-array name="status_layanan">
+        <item>ACTIVE</item>
+        <item>NON ACTIVE</item>
+    </string-array>
 
     <string-array name="people_names">
         <item>Anderson Thomas</item>
@@ -81,6 +93,7 @@
         <item>Susan Lee</item>
     </string-array>
 
+
     <string-array name="lokasi_penempatan_part">
         <item>GUDANG</item>
         <item>RUANG PART</item>
@@ -90,6 +103,30 @@
     <string-array name="penempatan_lokasi_part">
         <item>PALET</item>
         <item>RAK</item>
+    </string-array>
+
+    <string-array name="jenis_jurnal">
+        <item>PENDAPATAN</item>
+        <item>BIAYA</item>
+    </string-array>
+
+    <string-array name="pos_jurnal">
+        <item>PENDAPATAN LAIN</item>
+        <item>BIAYA PEMASARAN</item>
+        <item>PEMBELIAN PERALATAN</item>
+        <item>PEMBELIAN SUPPLIES</item>
+        <item>PEMBELIAN LAIN</item>
+        <item>SEWA GEDUNG DAN LAINYA</item>
+        <item>GAJI</item>
+        <item>BIAYA TEKNIK DAN UTILITAS</item>
+        <item>INSENTIF DAN KOMISI</item>
+        <item>PRIVE DAN DIVIDEN</item>
+        <item>SUMBANGAN INFAQ DAN ZAKAT</item>
+        <item>BIAYA PEKERJAAN LUAR</item>
+        <item>PEMBELIAN ATK DAN LAIN</item>
+        <item>PEMBAYARAN PAJAK DAN RETRIBUSI</item>
+        <item>BIAYA LAIN</item>
+        <item>PINDAH BUKU BANK</item>
     </string-array>
 
     <string-array name="sebab_penyesuaian">
