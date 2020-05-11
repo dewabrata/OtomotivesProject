@@ -17,6 +17,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
+import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.FrameLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -34,6 +37,8 @@ import com.rkrzmail.oto.modules.part.AdapterSuggestionSearch;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class LokasiPart_Activity extends AppActivity {
@@ -245,5 +250,4 @@ public class LokasiPart_Activity extends AppActivity {
             catchData("");
         }
     }
-
 }

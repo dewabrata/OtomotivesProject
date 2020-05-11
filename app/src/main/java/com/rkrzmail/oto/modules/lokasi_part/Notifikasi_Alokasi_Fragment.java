@@ -61,6 +61,7 @@ public class Notifikasi_Alokasi_Fragment extends Fragment {
                     }
 
                     jumlah = nListArray.size();
+                    Log.d("HITUNG", String.valueOf(nListArray.size()));
                     count.setText( jumlah + "PART BELUM DI ALOKASIKAN");
 
 

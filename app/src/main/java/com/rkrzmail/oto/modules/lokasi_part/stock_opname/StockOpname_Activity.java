@@ -1,13 +1,17 @@
 package com.rkrzmail.oto.modules.lokasi_part.stock_opname;
 
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.naa.data.Nson;
@@ -16,6 +20,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.gmod.BarcodeActivity;
 import com.rkrzmail.oto.modules.lokasi_part.LokasiPart_Activity;
 import com.rkrzmail.oto.modules.lokasi_part.Penyesuain_Activity;
 
@@ -27,8 +32,10 @@ import java.util.Map;
 
 public class StockOpname_Activity extends AppActivity {
 
+    private static final int REQUEST_BARCODE_STOCK_OPNAME = 12;
     private static final int REQUEST_PENYESUAIAN = 567;
     private EditText noFolder, noPart, jumlahData, jumlahAkhir, namaPart;
+    private ImageView imgBarcode;
     private ArrayList<String> indexOf_Opname = new ArrayList<String>();
 
 
@@ -43,6 +50,7 @@ public class StockOpname_Activity extends AppActivity {
         jumlahData = findViewById(R.id.et_jumlahdata_stockOpname);
         jumlahAkhir = findViewById(R.id.et_jumlahakhir_stockOpname);
         namaPart = findViewById(R.id.et_namaPart_stockOpname);
+        imgBarcode = findViewById(R.id.imgBarcode_stockOpname);
 
         initComponent();
         final Nson data = Nson.readJson(getIntentStringExtra("NO_PART_ID"));
@@ -85,6 +93,15 @@ public class StockOpname_Activity extends AppActivity {
             public void onClick(View view) {
 
                 saveUpdate();
+            }
+        });
+
+        imgBarcode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent i = new Intent(getActivity(), BarcodeActivity.class);
+                startActivityForResult(i, REQUEST_BARCODE_STOCK_OPNAME);
             }
         });
     }
@@ -131,7 +148,7 @@ public class StockOpname_Activity extends AppActivity {
             @Override
             public void runUI() {
                 if(result.get("status").asString().equalsIgnoreCase("OK")){
-                    Toast.makeText(getActivity(), "Success Update Data", Toast.LENGTH_LONG).show();
+
                     int stockBeda = 0;
                     if(stockAwal > stockAkhir){
                         stockBeda = stockAwal - stockAkhir;
@@ -147,11 +164,46 @@ public class StockOpname_Activity extends AppActivity {
                         i.putExtra("RAK", rak);
                         i.putExtra("STOCK_BEDA", stockBeda);
                         startActivityForResult(i, REQUEST_PENYESUAIAN);
+                        Toast.makeText(getActivity(), "Diperlukan Penyesuaian", Toast.LENGTH_LONG).show();
+                        finish();
                     }else{
                         startActivity(new Intent(getActivity(), LokasiPart_Activity.class));
+                        Toast.makeText(getActivity(), "Sukses Opname Part", Toast.LENGTH_LONG).show();
+                        finish();
                     }
                 }
             }
         });
+    }
+
+    private void getBarcode(){
+        newProses(new Messagebox.DoubleRunnable() {
+            @Override
+            public void run() {
+
+            }
+
+            @Override
+            public void runUI() {
+
+                setResult(RESULT_OK);
+                finish();
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_BARCODE_STOCK_OPNAME && resultCode == RESULT_OK){
+            String barcode = getIntentStringExtra(data, "TEXT");
+            getBarcode();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
     }
 }

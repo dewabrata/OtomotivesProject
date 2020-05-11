@@ -152,7 +152,6 @@ public class Penyesuain_Activity extends AppActivity {
                 args.put("sebab", penyesuaian);
                 args.put("alasan", keterangan);
 
-
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturlokasipart"), args));
 
             }
@@ -160,10 +159,17 @@ public class Penyesuain_Activity extends AppActivity {
             @Override
             public void runUI() {
                 if(result.get("status").asString().equalsIgnoreCase("OK")){
-                    Toast.makeText(getActivity(), "Success Update Data", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Sukses Memperbaharui Data", Toast.LENGTH_LONG).show();
                         startActivity(new Intent(getActivity(), LokasiPart_Activity.class));
+                        finish();
                 }
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
     }
 }
