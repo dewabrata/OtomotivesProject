@@ -76,7 +76,7 @@ public class AturSparepartActivity extends AppActivity {
                 args.put("stock", stock);
                 args.put("margin", margin);
 
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrl("atursparepart.php"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrl("v3/atursparepart"), args));
             }
 
             public void runUI() {

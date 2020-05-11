@@ -36,6 +36,8 @@
         <activity android:name=".modules.terima_part.DetailPartDiterima" />
         <activity android:name=".modules.biayamekanik.AturBiayaMekanik2" />
         <activity android:name=".modules.biayamekanik.BiayaMekanik2Activity" />
+        <activity android:name=".modules.SparepartsNew" />
+        <activity android:name=".modules.part.AturPartsNew" />
         <activity android:name=".gmod.PengambilanPartActivity" />
         <activity android:name=".gmod.DaftarTugasPartActivity" />
         <activity android:name=".gmod.JumlahPartActivity" />

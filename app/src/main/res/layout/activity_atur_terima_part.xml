@@ -13,20 +13,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.design.widget.CollapsingToolbarLayout
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            android:layout_height="?attr/actionBarSize"></android.support.v7.widget.Toolbar>
 
-            app:toolbarId="@+id/toolbar">
-
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"></android.support.v7.widget.Toolbar>
-        </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.widget.NestedScrollView
@@ -39,31 +30,38 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
             android:background="@drawable/border_solid"
+            android:padding="10sp"
             tools:context=".modules.terima_part.AturTerimaPart">
 
             <LinearLayout
-                android:layout_width="200sp"
+                android:layout_width="170sp"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/textView28"
                     android:layout_width="match_parent"
-                    android:layout_height="40sp"
-                    android:text="TIPE SUPPLIER" />
+                    android:layout_height="50sp"
+                    android:text="TIPE SUPPLIER"
+                    android:layout_margin="5dp"/>
 
                 <TextView
                     android:id="@+id/textView30"
                     android:layout_width="match_parent"
-                    android:layout_height="40sp"
-                    android:text="NAMA SUPPLIER" />
+                    android:layout_height="50sp"
+                    android:text="NAMA SUPPLIER"
+                    android:layout_margin="5dp"/>
 
                 <TextView
                     android:id="@+id/textView31"
                     android:layout_width="match_parent"
-                    android:layout_height="40sp"
-                    android:text="No. DO" />
+                    android:layout_height="50sp"
+                    android:text="No. DO"
+                    android:layout_margin="5dp"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -72,24 +70,28 @@
 
                     <TextView
                         android:id="@+id/textView33"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40sp"
+                        android:layout_width="110sp"
+                        android:layout_height="50sp"
                         android:layout_weight="1"
-                        android:text="TANGGAL PESAN" />
+                        android:text="TANGGAL PESAN"
+                        android:layout_margin="5dp"/>
 
-                    <CalendarView
-                        android:id="@+id/calendarView_TglPesan"
+                    <ImageView
+                        android:id="@+id/img_calender1"
                         android:layout_width="30sp"
-                        android:layout_height="40sp"
-                        android:layout_weight="1" />
+                        android:layout_height="30sp"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        app:srcCompat="@drawable/ic_calender" />
 
                 </LinearLayout>
 
                 <TextView
                     android:id="@+id/textView25"
                     android:layout_width="match_parent"
-                    android:layout_height="40sp"
-                    android:text="PEMBAYARAN" />
+                    android:layout_height="50sp"
+                    android:text="PEMBAYARAN"
+                    android:layout_margin="5dp"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -98,23 +100,27 @@
 
                     <TextView
                         android:id="@+id/textView29"
-                        android:layout_width="140sp"
-                        android:layout_height="40sp"
+                        android:layout_width="120sp"
+                        android:layout_height="50sp"
+                        android:layout_margin="5dp"
                         android:text="JATUH TEMPO INV." />
 
-                    <CalendarView
-                        android:id="@+id/calendarView_JatuhTempo"
+                    <ImageView
+                        android:id="@+id/img_calender3"
                         android:layout_width="30sp"
-                        android:layout_height="40sp"
-                        android:layout_weight="1" />
+                        android:layout_height="30sp"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        app:srcCompat="@drawable/ic_calender" />
 
                 </LinearLayout>
 
                 <TextView
                     android:id="@+id/textView32"
                     android:layout_width="match_parent"
-                    android:layout_height="40sp"
-                    android:text="ONGKOS KIRIM" />
+                    android:layout_height="50sp"
+                    android:text="ONGKOS KIRIM"
+                    android:layout_margin="5dp"/>
 
             </LinearLayout>
 
@@ -126,21 +132,25 @@
                 <Spinner
                     android:id="@+id/spinnerSupplier"
                     android:layout_width="match_parent"
-                    android:layout_height="40sp" />
+                    android:layout_height="50sp"
+                    android:layout_margin="5dp"
+                    android:entries="@array/tipe_supplier"/>
 
                 <EditText
                     android:id="@+id/txtNamaSupplier"
                     android:layout_width="match_parent"
-                    android:layout_height="40sp"
+                    android:layout_height="50sp"
                     android:ems="10"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPersonName"
+                    android:layout_margin="5dp"/>
 
                 <EditText
                     android:id="@+id/txtNodo"
                     android:layout_width="match_parent"
-                    android:layout_height="40sp"
+                    android:layout_height="50sp"
+                    android:layout_margin="5dp"
                     android:ems="10"
-                    android:inputType="textPersonName" />
+                    android:inputType="number" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -149,35 +159,44 @@
 
                     <TextView
                         android:id="@+id/textView23"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40sp"
+                        android:layout_width="100sp"
+                        android:layout_height="50sp"
                         android:layout_weight="1"
-                        android:text="TANGGAL TERIMA" />
+                        android:text="TANGGAL TERIMA"
+                        android:layout_margin="5dp"/>
 
-                    <CalendarView
-                        android:id="@+id/calendarView_TglTerima"
+                    <ImageView
+                        android:id="@+id/img_calender2"
                         android:layout_width="30sp"
-                        android:layout_height="40sp"
-                        android:layout_weight="1" />
+                        android:layout_height="30sp"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        app:srcCompat="@drawable/ic_calender" />
 
                 </LinearLayout>
 
                 <Spinner
                     android:id="@+id/spinnerPembayaran"
                     android:layout_width="match_parent"
-                    android:layout_height="40sp" />
+                    android:layout_height="50sp"
+                    android:entries="@array/pembayaran"
+                    android:layout_margin="5dp"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="40sp"
-                    android:orientation="horizontal"></LinearLayout>
+                    android:layout_height="50sp"
+                    android:orientation="horizontal"
+                    android:layout_margin="5dp">
+
+                </LinearLayout>
 
                 <EditText
                     android:id="@+id/txtOngkosKirim"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50sp"
+                    android:layout_margin="5dp"
                     android:ems="10"
-                    android:inputType="textPersonName" />
+                    android:inputType="number" />
 
             </LinearLayout>
         </LinearLayout>
@@ -188,8 +207,9 @@
         android:id="@+id/btnSelanjutnya"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/btn_rounded_accent"
         android:layout_gravity="center"
+        android:layout_marginTop="450sp"
+        android:background="@drawable/btn_rounded_accent"
         android:text="Selanjutnya" />
 
 

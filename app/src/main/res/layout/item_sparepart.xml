@@ -50,6 +50,7 @@
                     android:layout_marginTop="@dimen/spacing_medium"
                     android:text="HET"
                     android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
                 <TextView
                     android:id="@+id/txtHargaJual"
                     android:layout_width="wrap_content"
