@@ -1,15 +1,11 @@
-package com.rkrzmail.oto.gmod;
+package com.rkrzmail.oto.modules.penugasan;
 
-import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.net.nsd.NsdManager;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -17,21 +13,16 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.TimePicker;
-import android.widget.Toast;
 
 import com.naa.data.Nson;
-import com.naa.data.UtilityAndroid;
 import com.naa.utils.InternetX;
 import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.penugasan.PenugasanActivity;
 import com.rkrzmail.utils.Tools;
 
-import java.util.Calendar;
 import java.util.Map;
 
 public class AturPenugasan_Activity extends AppActivity implements View.OnClickListener {
@@ -255,8 +246,6 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
                 args.put("selesai", selesai_istirahat);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturpenugasanmekanik"), args));
-                result.toJson().equalsIgnoreCase("data");
-
             }
 
             @Override

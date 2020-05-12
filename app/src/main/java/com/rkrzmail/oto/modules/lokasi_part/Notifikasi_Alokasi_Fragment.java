@@ -54,15 +54,22 @@ public class Notifikasi_Alokasi_Fragment extends Fragment {
                 if (nListArray.get("status").asString().equalsIgnoreCase("OK")) {
                     //Log.d("HITUNG", nListArray.get("status").asString());
                     int jumlah = 0;
+//
+//                    if (nListArray.get("data").get("PENEMPATAN").asString().equalsIgnoreCase("")) {
+//                        int kosong = nListArray.get("data").get("PENEMPATAN").get("").size();
+//                        nListArray.add(kosong);
+//                    }
 
-                    if(nListArray.get("data").get("PENEMPATAN").asString().equalsIgnoreCase("")){
-                        int kosong = nListArray.get("data").get("PENEMPATAN").get("").size();
-                        nListArray.add(kosong);
+                    for (int i = 0; i < nListArray.get("data").get("PENEMPATAN").size(); i++) {
+                        if (nListArray.get(i).asString().equalsIgnoreCase("")) {
+                            int kosong = nListArray.get(i).asInteger();
+                            nListArray.add(kosong);
+                        }
                     }
 
-                    jumlah = nListArray.size();
-                    Log.d("HITUNG", String.valueOf(nListArray.size()));
-                    count.setText( jumlah + "PART BELUM DI ALOKASIKAN");
+                        jumlah = nListArray.size();
+                        Log.d("HITUNG", String.valueOf(jumlah));
+                        count.setText(jumlah + "PART BELUM DI ALOKASIKAN");
 
 
 //                    for (int i = 0; i < nListArray.get("data").size(); i++) {
@@ -81,11 +88,11 @@ public class Notifikasi_Alokasi_Fragment extends Fragment {
 //                        }
 //                        // Log.d("HITUNG", nListArray.get("data").get(i).get("PENEMPATAN").asString());
 //                    }
-                }
-
+                    }
 
             }
         });
+
 
         alokasi_part = v.findViewById(R.id.btn_alokasi_part);
         alokasi_part.setOnClickListener(new View.OnClickListener() {
