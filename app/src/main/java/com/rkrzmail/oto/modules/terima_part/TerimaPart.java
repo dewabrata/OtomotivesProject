@@ -1,5 +1,7 @@
 package com.rkrzmail.oto.modules.terima_part;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,8 +10,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -33,17 +37,14 @@ public class TerimaPart extends AppActivity {
 
     public static final String TAG = "TerimaPart";
     private RecyclerView recyclerView_terimaPart;
-    private TextView txtTgl;
-    private ImageView imgSearch;
-    //private AdapterListBasic mAdapter;
+
+    private SearchView tsearchView;
     final int REQUEST_TERIMA_PART = 666;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_terima_part);
-
-        imgSearch = findViewById(R.id.imgSearch);
 
         initToolbar();
         initComponent();
@@ -75,17 +76,20 @@ public class TerimaPart extends AppActivity {
 
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                //.setText("TANGGAL :" + nListArray.get(position).get("TANGGAL").asString());
-                viewHolder.find(R.id.txtTanggal, TextView.class);
-                viewHolder.find(R.id.txtSupplier, TextView.class);
-                viewHolder.find(R.id.txtPembayaran, TextView.class);
-                viewHolder.find(R.id.txtTotal, TextView.class);
-                viewHolder.find(R.id.txtNoDo, TextView.class);
-                viewHolder.find(R.id.txtJatuhTempo, TextView.class);
-                viewHolder.find(R.id.txtUser, TextView.class);
+                viewHolder.find(R.id.txtTanggal, TextView.class).setText("TANGGAL :" + nListArray.get(position).get("TANGGAL").asString());;
+                viewHolder.find(R.id.txtSupplier, TextView.class).setText("SUPPLIER :" + nListArray.get(position).get("SUPPLIER").asString());;
+                viewHolder.find(R.id.txtPembayaran, TextView.class).setText("PEMBAYARAN :" + nListArray.get(position).get("PEMBAYARAN").asString());;
+                viewHolder.find(R.id.txtTotal, TextView.class).setText("TOTAL :" + nListArray.get(position).get("TOTAL").asString());;
+                viewHolder.find(R.id.txtNoDo, TextView.class).setText("NO DO :" + nListArray.get(position).get("NODO").asString());;
+                viewHolder.find(R.id.txtJatuhTempo, TextView.class).setText("JATUH TEMPO :" + nListArray.get(position).get("JATUHTEMPO").asString());;
+                viewHolder.find(R.id.txtUser, TextView.class).setText("USER :" + nListArray.get(position).get("USER").asString());;
+            }
+        }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Nson parent, View view, int position) {
 
             }
-        });
+        }));
         reload("nama");
     }
 
@@ -95,8 +99,9 @@ public class TerimaPart extends AppActivity {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                //args.put("id",);
-//                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("terimapart"),args)) ;
+
+                args.put("search ", nama);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewterimapart"),args)) ;
 
             }
 
@@ -123,6 +128,43 @@ public class TerimaPart extends AppActivity {
             reload("nama");
         }
     }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_terima_part, menu);
+
+        // Get the SearchView and set the searchable configuration
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        tsearchView = new SearchView(getSupportActionBar().getThemedContext());
+        tsearchView.setQueryHint("Cari terima part"); /// YOUR HINT MESSAGE
+        tsearchView.setMaxWidth(Integer.MAX_VALUE);
+
+        final MenuItem searchMenu = menu.findItem(R.id.terima_search);
+        searchMenu.setActionView(tsearchView);
+        searchMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+
+        //SearchView searchView = (SearchView)  menu.findItem(R.id.action_search).setActionView(tSearchView);
+        // Assumes current activity is the searchable activity
+        tsearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        tsearchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+
+        SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+
+            public boolean onQueryTextSubmit(String query) {
+                reload(query);
+                return true;
+            }
+        };
+        tsearchView.setOnQueryTextListener(queryTextListener);
+        return true;
+    }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

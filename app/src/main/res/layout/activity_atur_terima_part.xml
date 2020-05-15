@@ -22,15 +22,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"></android.support.v7.widget.Toolbar>
 
-            <ImageView
-                android:id="@+id/imgSearching"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|center_vertical"
-                android:layout_marginRight="10dp"
-                android:padding="5dp"
-                app:srcCompat="@drawable/ic_search" />
-
         </FrameLayout>
 
     </android.support.design.widget.AppBarLayout>

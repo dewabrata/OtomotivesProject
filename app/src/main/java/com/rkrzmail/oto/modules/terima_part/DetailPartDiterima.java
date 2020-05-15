@@ -15,11 +15,14 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.naa.data.Nson;
+import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class DetailPartDiterima extends AppActivity {
@@ -38,14 +41,6 @@ public class DetailPartDiterima extends AppActivity {
         btnScan = findViewById(R.id.btnScan);
         btnTutup = findViewById(R.id.btnTutup);
 
-        btnTutup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent inten = new Intent(DetailPartDiterima.this, TerimaPart.class);
-                startActivity(inten);
-            }
-        });
-
         initToolbar();
         initComponent();
 
@@ -53,8 +48,7 @@ public class DetailPartDiterima extends AppActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), DetailPartDiterima.class);
-                startActivityForResult(intent, REQUEST_DETAIL_PART_DITERIMA);
+                addData();
             }
         });
     }
@@ -104,34 +98,81 @@ public class DetailPartDiterima extends AppActivity {
             }
         });
 
+        find(R.id.btnTutup, Button.class).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                if (find(R.id.txtNamaPart, EditText.class).getText().toString().equalsIgnoreCase("")){
+                    showError("Supplier harus di isi");return;
+                }else if (find(R.id.txtJumlah, EditText.class).getText().toString().equalsIgnoreCase("")){
+                    showError("Nama Supplier harus di isi");return;
+                }else if (find(R.id.txtHargaBeliUnit, EditText.class).getText().toString().equalsIgnoreCase("")) {
+                    showError("No Do harus di isi");
+                }else if (find(R.id.txtDiskonBeli, EditText.class).getText().toString().equalsIgnoreCase("")) {
+                    showError("Ongkos Kirim harus di isi");
+                }
+                insertdata();
+            }
+        });
 
     }
 
     private void insertdata(){
         newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
+            Nson data;
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-
-//                Calendar calendar = Calendar.getInstance();
-//                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy");
-//                String dateTime = simpleDateFormat.format(calendar.getTime());
-
 
                 String namapart = find(R.id.txtNamaPart, EditText.class).getText().toString();
                 String jumlah = find(R.id.txtJumlah, EditText.class).getText().toString();
                 String hargabeliunit = find(R.id.txtHargaBeliUnit, EditText.class).getText().toString();
                 String diskonbeli = find(R.id.txtDiskonBeli, EditText.class).getText().toString();
 
-//                args.put("namapart", namapart);
-//                args.put("jumlah", jumlah);
-//                args.put("hargabeliunit", hargabeliunit);
-//                args.put("diskonbeli", diskonbeli);
+                args.put("namapart", namapart);
+                args.put("jumlah", jumlah);
+                args.put("hargabeliunit", hargabeliunit);
+                args.put("diskonbeli", diskonbeli);
 
-                // result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("detailpartditerima"), args));
+                data = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturterimapart"), args));
+                data.toJson().equalsIgnoreCase("data");
 
 
+            }
+
+            @Override
+            public void runUI() {
+                if (data.get("status").asString().equalsIgnoreCase("OK")) {
+                    Log.d(TAG, data.get("status").asString());
+                    startActivity(new Intent(DetailPartDiterima.this, TerimaPart.class));
+                    finish();
+                } else {
+                    showError(data.get("status").asString());
+                    Log.d(TAG, "error");
+                }
+            }
+        });
+    }
+
+    private void addData(){
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+
+                String namapart = find(R.id.txtNamaPart, EditText.class).getText().toString();
+                String jumlah = find(R.id.txtJumlah, EditText.class).getText().toString();
+                String hargabeliunit = find(R.id.txtHargaBeliUnit, EditText.class).getText().toString();
+                String diskonbeli = find(R.id.txtDiskonBeli, EditText.class).getText().toString();
+
+                args.put("action", "add");
+                args.put("namapart", namapart);
+                args.put("jumlah", jumlah);
+                args.put("hargabeliunit", hargabeliunit);
+                args.put("diskonbeli", diskonbeli);
+
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturterimapart"), args));
+                result.toJson().equalsIgnoreCase("data");
             }
 
             @Override
@@ -149,15 +190,23 @@ public class DetailPartDiterima extends AppActivity {
     }
 
     private void spinnerView1(){
-        ArrayAdapter<CharSequence> pembayaran = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
-        pembayaran.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerLokasiSimpan.setAdapter(pembayaran);
+        List<Integer> noFolder = new ArrayList<Integer>();
+        for(int i = 1; i <= 100; i++){
+            noFolder.add(i);
+        }
+        ArrayAdapter<CharSequence> lokasi_simpan = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
+        lokasi_simpan.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerLokasiSimpan.setAdapter(lokasi_simpan);
     }
 
     private void spinnerView2(){
-        ArrayAdapter<CharSequence> supplier = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
-        supplier.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerPenempatan.setAdapter(supplier);
+        List<Integer> noFolder = new ArrayList<Integer>();
+        for(int i = 1; i <= 100; i++){
+            noFolder.add(i);
+        }
+        ArrayAdapter<CharSequence> penempatan = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
+        penempatan.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerPenempatan.setAdapter(penempatan);
     }
 
     @Override
