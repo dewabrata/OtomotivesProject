@@ -10,19 +10,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.Spinner;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
-import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.gmod.AturPenugasan_Activity;
-import com.rkrzmail.oto.modules.penugasan.PenugasanActivity;
-import com.rkrzmail.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,9 +47,13 @@ public class AturLokasiPart_Activity extends AppActivity {
 
 
         initComponent();
-        Intent i = getIntent();
-        if(i.hasExtra("ID")){
+        final Nson data = Nson.readJson(getIntentStringExtra("NAMA"));
 
+        Intent i = getIntent();
+        if(i.hasExtra("NAMA")){
+            no_part.setText(data.get("NO_PART_ID").asString());
+            nama_part.setText(data.get("NAMA").asString());
+            merk_part.setText(data.get("MERK_PART").asString());
         }
     }
 

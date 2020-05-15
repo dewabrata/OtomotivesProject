@@ -64,7 +64,7 @@ public class LokasiPart_Activity extends AppActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AturLokasiPart_Activity.class);
+                Intent intent = new Intent(getActivity(), CariPart_Activity.class);
                 startActivity(intent);
             }
         });

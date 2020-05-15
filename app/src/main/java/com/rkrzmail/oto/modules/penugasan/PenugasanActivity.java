@@ -8,25 +8,19 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.naa.data.Nson;
-import com.naa.data.UtilityAndroid;
 import com.naa.utils.InternetX;
 import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.gmod.ControlLayanan;
-import com.rkrzmail.oto.gmod.AturPenugasan_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
-import com.rkrzmail.utils.DataGenerator;
 
 import java.util.Collections;
 import java.util.Comparator;

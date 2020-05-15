@@ -23,7 +23,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".modules.layanan.AturLayanan_Activity"></activity>
+        <activity android:name=".modules.lokasi_part.CariPart_Activity"></activity>
+        <activity android:name=".modules.layanan.AturLayanan_Activity" />
         <activity android:name=".modules.layanan.Layanan_Avtivity" />
         <activity android:name=".modules.jurnal.Pembayaran_Activity" />
         <activity android:name=".modules.jurnal.AturJurnal_Activity" />
@@ -54,7 +55,7 @@
         <activity android:name=".gmod.Part_DiterimaActivity" />
         <activity android:name=".gmod.Stock_OpnameActivity" />
         <activity android:name=".gmod.Penampung_Item_DetailActivity" />
-        <activity android:name=".gmod.AturPenugasan_Activity" />
+        <activity android:name=".modules.penugasan.AturPenugasan_Activity" />
         <activity android:name=".modules.lokasi_part.LokasiPart_Activity" />
         <activity android:name=".MainActivity">
             <intent-filter>
