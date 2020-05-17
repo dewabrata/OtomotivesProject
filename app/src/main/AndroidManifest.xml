@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -24,7 +24,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".modules.booking.Booking_Activity"></activity>
+        <activity android:name=".modules.booking.Booking2_Activity"></activity>
+        <activity android:name=".modules.booking.Booking_Activity" />
         <activity android:name=".modules.tenda.AturTenda_Activity" />
         <activity android:name=".modules.tenda.Tenda_Activity" />
         <activity android:name=".modules.lokasi_part.CariPart_Activity" />
