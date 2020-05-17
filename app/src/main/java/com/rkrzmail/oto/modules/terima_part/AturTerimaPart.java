@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Selection;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,6 +26,7 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.lokasi_part.AturLokasiPart_Activity;
 import com.rkrzmail.oto.modules.lokasi_part.LokasiPart_Activity;
+import com.rkrzmail.utils.Tools;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -89,64 +91,25 @@ public class AturTerimaPart extends AppActivity implements DatePickerDialog.OnDa
 
     private void initComponent(){
 
-        spinnerView1();
-
-        spinnerPembayaran.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
-                String item = parent.getItemAtPosition(position).toString();
-                if (item.equalsIgnoreCase("TRANSFER DIMUKA")) {
-                    spinnerPembayaran.setEnabled(false);
-                } else if (item.equalsIgnoreCase("CASH DIMUKA")) {
-                    spinnerPembayaran.setEnabled(false);
-                } else if (item.equalsIgnoreCase("COD")){
-                    spinnerPembayaran.setEnabled(false);
-                } else if (item.equalsIgnoreCase("INV")){
-                    spinnerPembayaran.setEnabled(false);
-                } else if (item.equalsIgnoreCase("KONSIGNMENT")){
-                    spinnerPembayaran.setEnabled(false);
-                } else  if (item.equalsIgnoreCase("PINJAMAN")){
-                    spinnerPembayaran.setEnabled(true);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        spinnerView2();
-
-        spinnerSupplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
-                String item = parent.getItemAtPosition(position).toString();
-                if (item.equalsIgnoreCase("PRINCIPAL")) {
-                    spinnerSupplier.setEnabled(true);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
         find(R.id.btnSelanjutnya, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                if (find(R.id.txtTipeSupplier, EditText.class).getText().toString().equalsIgnoreCase("")){
-                    showError("Supplier harus di isi");return;
+                if (find(R.id.txtTipeSupplier, Spinner.class).getSelectedItem().toString().equalsIgnoreCase("")){
+                    showError("Tipe supplier harus di isi");return;
                 }else if (find(R.id.txtNamaSupplier, EditText.class).getText().toString().equalsIgnoreCase("")){
-                    showError("Nama Supplier harus di isi");return;
+                    showError("Nama supplier harus di isi");return;
                 }else if (find(R.id.txtNoDo, EditText.class).getText().toString().equalsIgnoreCase("")) {
-                    showError("No Do harus di isi");
+                    showError("No DO harus di isi");
                 }else if (find(R.id.txtOngkosKirim, EditText.class).getText().toString().equalsIgnoreCase("")) {
-                    showError("Ongkos Kirim harus di isi");
-                }else if (find(R.id.txtPembayaran, EditText.class).getText().toString().equalsIgnoreCase("")) {
-                    showError("Pembayaran harus di isi");
+                    showError("Ongkos kirim harus di isi");
+                }else if (find(R.id.txtPembayaran, Spinner.class).getSelectedItem().toString().equalsIgnoreCase("")){
+                    showError("Pembayaran harus di isi");return;
+                }else if (find(R.id.img_calender1, DatePicker.class).toString().equalsIgnoreCase("")) {
+                    showError(" harus di isi");
+                }else if (find(R.id.img_calender2, DatePicker.class).toString().equalsIgnoreCase("")) {
+                    showError("Ongkos kirim harus di isi");
+                }else if (find(R.id.img_calender3, DatePicker.class).toString().equalsIgnoreCase("")) {
+                    showError("Ongkos kirim harus di isi");
                 }
                 insertData();
             }
@@ -160,11 +123,6 @@ public class AturTerimaPart extends AppActivity implements DatePickerDialog.OnDa
         c.set(Calendar.MONTH, month);
         c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-//        String currentDateString = DateFormat.getDateInstance(DateFormat.FULL).format(c.getTime());
-//        ImageView imageView = (ImageView) findViewById(R.id.txtTanggalPesan);
-//        imageView.setTextAlignment(currentDateString);
-
-
     }
 
     private void insertData() {
@@ -175,17 +133,23 @@ public class AturTerimaPart extends AppActivity implements DatePickerDialog.OnDa
             public void run() {
                 final Map<String, String> args = AppApplication.getInstance().getArgsData();
 
-                String tipe = find(R.id.txtTipeSupplier, EditText.class).getText().toString();
+                String tipe = find(R.id.txtTipeSupplier, Spinner.class).getSelectedItem().toString();
                 String nama = find(R.id.txtNamaSupplier, EditText.class).getText().toString();
                 String nodo = find(R.id.txtNoDo, EditText.class).getText().toString();
                 String ongkir = find(R.id.txtOngkosKirim, EditText.class).getText().toString();
-                String pembayaran = find(R.id.txtPembayaran, EditText.class).getText().toString();
+                String pembayaran = find(R.id.txtPembayaran, Spinner.class).getSelectedItem().toString();
+                String tglpesan = find(R.id.img_calender1, DatePicker.class).toString().toUpperCase();
+                String tglterima = find(R.id.img_calender2, DatePicker.class).toString().toUpperCase();
+                String jatuhtempo = find(R.id.img_calender3, DatePicker.class).toString().toUpperCase();
 
                 args.put("tipe", tipe);
                 args.put("nama", nama);
                 args.put("nodo", nodo);
                 args.put("ongkir", ongkir);
                 args.put("pembayaran", pembayaran);
+                args.put("tglpesan", tglpesan);
+                args.put("tglterima", tglterima);
+                args.put("jatuhtempo", jatuhtempo);
 
                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturterimapart"), args));
                result.toJson().equalsIgnoreCase("data");
@@ -203,19 +167,6 @@ public class AturTerimaPart extends AppActivity implements DatePickerDialog.OnDa
                 }
             }
         });
-    }
-
-    private void spinnerView1(){
-        ArrayAdapter<CharSequence> pembayaran = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
-        pembayaran.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerPembayaran.setAdapter(pembayaran);
-    }
-
-    private void spinnerView2(){
-
-        ArrayAdapter<CharSequence> supplier = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
-        supplier.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerSupplier.setAdapter(supplier);
     }
 
     @Override

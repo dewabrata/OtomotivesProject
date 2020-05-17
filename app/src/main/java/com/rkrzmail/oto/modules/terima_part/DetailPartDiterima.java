@@ -36,8 +36,7 @@ public class DetailPartDiterima extends AppActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_part_diterima);
-        spinnerLokasiSimpan = findViewById(R.id.spinnerLokasiSimpan);
-        spinnerPenempatan = findViewById(R.id.spinnerPenempatan);
+
         btnScan = findViewById(R.id.btnScan);
         btnTutup = findViewById(R.id.btnTutup);
 
@@ -51,6 +50,27 @@ public class DetailPartDiterima extends AppActivity {
                 addData();
             }
         });
+
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+            @Override
+            public void run() {
+                Map<String, String> args2 = AppApplication.getInstance().getArgsData();
+
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturterimapart"),args2)) ;
+                Log.d("NO_PART", result.get(0).get("NO_PART").asString());
+            }
+
+            @Override
+            public void runUI() {
+
+                if (result.get("status").asString().equalsIgnoreCase("OK")){
+                    find(R.id.txtNoPart, EditText.class).setText(result.get("data").get(0).get("NO_PART").asString());
+                    find(R.id.txtNamaPart, EditText.class).setText(result.get("data").get(0).get("NAMA_PART").asString());
+                    Log.d("NO_PART", result.get("data").get(0).get("NO_PART").asString());
+                }
+            }
+        });
     }
 
     private void initToolbar(){
@@ -58,57 +78,56 @@ public class DetailPartDiterima extends AppActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("DETAIL PART DITERIMA");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
     }
 
     private void initComponent(){
 
-        spinnerView1();
-
-        spinnerLokasiSimpan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
-                String item = parent.getItemAtPosition(position).toString();
-                if (item.equalsIgnoreCase("GUDANG")) {
-                    spinnerLokasiSimpan.setEnabled(false);
-                } else if (item.equalsIgnoreCase("RUANG PART BENGKEL")) {
-                    spinnerLokasiSimpan.setEnabled(true);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        spinnerView2();
-
-        spinnerPenempatan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
-                String item = parent.getItemAtPosition(position).toString();
-                if (item.equalsIgnoreCase("PALET001")) {
-                    spinnerLokasiSimpan.setEnabled(true);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
+//        spinnerView1();
+//
+//        spinnerLokasiSimpan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
+//                String item = parent.getItemAtPosition(position).toString();
+//                if (item.equalsIgnoreCase("GUDANG")) {
+//                    spinnerLokasiSimpan.setEnabled(false);
+//                } else if (item.equalsIgnoreCase("RUANG PART BENGKEL")) {
+//                    spinnerLokasiSimpan.setEnabled(true);
+//                }
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//            }
+//        });
+//
+//        spinnerView2();
+//
+//        spinnerPenempatan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
+//                String item = parent.getItemAtPosition(position).toString();
+//                if (item.equalsIgnoreCase("PALET001")) {
+//                    spinnerLokasiSimpan.setEnabled(true);
+//                }
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//            }
+//        });
 
         find(R.id.btnTutup, Button.class).setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                if (find(R.id.txtNamaPart, EditText.class).getText().toString().equalsIgnoreCase("")){
-                    showError("Supplier harus di isi");return;
-                }else if (find(R.id.txtJumlah, EditText.class).getText().toString().equalsIgnoreCase("")){
-                    showError("Nama Supplier harus di isi");return;
+                if (find(R.id.txtJumlah, EditText.class).getText().toString().equalsIgnoreCase("")){
+                    showError("Jumlah harus di isi");return;
                 }else if (find(R.id.txtHargaBeliUnit, EditText.class).getText().toString().equalsIgnoreCase("")) {
-                    showError("No Do harus di isi");
+                    showError("Harga beli unit harus di isi");
                 }else if (find(R.id.txtDiskonBeli, EditText.class).getText().toString().equalsIgnoreCase("")) {
-                    showError("Ongkos Kirim harus di isi");
+                    showError("Diskon beli harus di isi");
                 }
                 insertdata();
             }
@@ -123,19 +142,20 @@ public class DetailPartDiterima extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
-                String namapart = find(R.id.txtNamaPart, EditText.class).getText().toString();
                 String jumlah = find(R.id.txtJumlah, EditText.class).getText().toString();
                 String hargabeliunit = find(R.id.txtHargaBeliUnit, EditText.class).getText().toString();
                 String diskonbeli = find(R.id.txtDiskonBeli, EditText.class).getText().toString();
+                String lokasisimpan = find(R.id.txtLokasiSimpan, Spinner.class).getSelectedItem().toString();
+                String penempatan = find(R.id.txtPenempatan, Spinner.class).getSelectedItem().toString();
 
-                args.put("namapart", namapart);
                 args.put("jumlah", jumlah);
                 args.put("hargabeliunit", hargabeliunit);
                 args.put("diskonbeli", diskonbeli);
+                args.put("lokasi", lokasisimpan);
+                args.put("penempatan", penempatan);
 
                 data = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturterimapart"), args));
                 data.toJson().equalsIgnoreCase("data");
-
 
             }
 
@@ -160,16 +180,19 @@ public class DetailPartDiterima extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
-                String namapart = find(R.id.txtNamaPart, EditText.class).getText().toString();
                 String jumlah = find(R.id.txtJumlah, EditText.class).getText().toString();
                 String hargabeliunit = find(R.id.txtHargaBeliUnit, EditText.class).getText().toString();
                 String diskonbeli = find(R.id.txtDiskonBeli, EditText.class).getText().toString();
+                String lokasisimpan = find(R.id.txtLokasiSimpan, Spinner.class).getSelectedItem().toString();
+                String penempatan = find(R.id.txtPenempatan, Spinner.class).getSelectedItem().toString();
 
                 args.put("action", "add");
-                args.put("namapart", namapart);
                 args.put("jumlah", jumlah);
                 args.put("hargabeliunit", hargabeliunit);
                 args.put("diskonbeli", diskonbeli);
+                args.put("lokasi", lokasisimpan);
+                args.put("penempatan", penempatan);
+
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturterimapart"), args));
                 result.toJson().equalsIgnoreCase("data");
@@ -189,25 +212,25 @@ public class DetailPartDiterima extends AppActivity {
         });
     }
 
-    private void spinnerView1(){
-        List<Integer> noFolder = new ArrayList<Integer>();
-        for(int i = 1; i <= 100; i++){
-            noFolder.add(i);
-        }
-        ArrayAdapter<CharSequence> lokasi_simpan = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
-        lokasi_simpan.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerLokasiSimpan.setAdapter(lokasi_simpan);
-    }
-
-    private void spinnerView2(){
-        List<Integer> noFolder = new ArrayList<Integer>();
-        for(int i = 1; i <= 100; i++){
-            noFolder.add(i);
-        }
-        ArrayAdapter<CharSequence> penempatan = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
-        penempatan.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerPenempatan.setAdapter(penempatan);
-    }
+//    private void spinnerView1(){
+////        List<Integer> noFolder = new ArrayList<Integer>();
+////        for(int i = 1; i <= 100; i++){
+////            noFolder.add(i);
+////        }
+//        ArrayAdapter<CharSequence> lokasi_simpan = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
+//        lokasi_simpan.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        spinnerLokasiSimpan.setAdapter(lokasi_simpan);
+//    }
+//
+//    private void spinnerView2(){
+////        List<Integer> noFolder = new ArrayList<Integer>();
+////        for(int i = 1; i <= 100; i++){
+////            noFolder.add(i);
+////        }
+//        ArrayAdapter<CharSequence> penempatan = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
+//        penempatan.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        spinnerPenempatan.setAdapter(penempatan);
+//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

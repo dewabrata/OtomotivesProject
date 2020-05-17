@@ -28,6 +28,7 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.biayamekanik.AturBiayaMekanik2;
+import com.rkrzmail.oto.modules.penugasan.AturPenugasan_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
@@ -80,14 +81,26 @@ public class TerimaPart extends AppActivity {
                 viewHolder.find(R.id.txtSupplier, TextView.class).setText("SUPPLIER :" + nListArray.get(position).get("SUPPLIER").asString());;
                 viewHolder.find(R.id.txtPembayaran, TextView.class).setText("PEMBAYARAN :" + nListArray.get(position).get("PEMBAYARAN").asString());;
                 viewHolder.find(R.id.txtTotal, TextView.class).setText("TOTAL :" + nListArray.get(position).get("TOTAL").asString());;
-                viewHolder.find(R.id.txtNoDo, TextView.class).setText("NO DO :" + nListArray.get(position).get("NODO").asString());;
-                viewHolder.find(R.id.txtJatuhTempo, TextView.class).setText("JATUH TEMPO :" + nListArray.get(position).get("JATUHTEMPO").asString());;
+                viewHolder.find(R.id.txtNoDo, TextView.class).setText("NO DO :" + nListArray.get(position).get("NO_DO").asString());;
+                viewHolder.find(R.id.txtJatuhTempo, TextView.class).setText("JATUH TEMPO :" + nListArray.get(position).get("JATUH_TEMPO").asString());;
                 viewHolder.find(R.id.txtUser, TextView.class).setText("USER :" + nListArray.get(position).get("USER").asString());;
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
-
+                //Toast.makeText(getActivity(),"HHHHH "+position, Toast.LENGTH_SHORT).show();
+                Intent intent =  new Intent(getActivity(), AturTerimaPart.class);
+                intent.putExtra("ID", nListArray.get(position).get("ID").asString());
+                intent.putExtra("TANGGAL", nListArray.get(position).get("TANGGAL").asString());
+                intent.putExtra("SUPPLIER", nListArray.get(position).get("SUPPLIER").asString());
+                intent.putExtra("PEMBAYARAN", nListArray.get(position).get("PEMBAYARAN").asString());
+                intent.putExtra("TOTAL", nListArray.get(position).get("TOTAL").asString());
+                intent.putExtra("NO DO", nListArray.get(position).get("NO_DO").asString());
+                intent.putExtra("JATUH_TEMPO", nListArray.get(position).get("JATUH_TEMPO").asString());
+                intent.putExtra("USER", nListArray.get(position).get("USER").asString());
+                intent.putExtra("ID", nListArray.get(position).toJson());
+                //intent.putExtra("id", nListArray.get(position).get("id").asString());
+                startActivityForResult(intent, REQUEST_TERIMA_PART);
             }
         }));
         reload("nama");
@@ -100,7 +113,6 @@ public class TerimaPart extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
-                args.put("search ", nama);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewterimapart"),args)) ;
 
             }
@@ -143,9 +155,6 @@ public class TerimaPart extends AppActivity {
         final MenuItem searchMenu = menu.findItem(R.id.terima_search);
         searchMenu.setActionView(tsearchView);
         searchMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-
-        //SearchView searchView = (SearchView)  menu.findItem(R.id.action_search).setActionView(tSearchView);
-        // Assumes current activity is the searchable activity
         tsearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         tsearchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
 
