@@ -49,10 +49,9 @@
         <LinearLayout
             android:id="@+id/layout_penugasan"
             android:layout_width="348dp"
-            android:layout_height="466dp"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
-            android:background="@drawable/border_solid"
             android:orientation="vertical"
             android:padding="10dp">
 
@@ -70,15 +69,15 @@
 
                     android:textAlignment="center">
 
-                <EditText
-                    android:id="@+id/et_namaMekanik"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:enabled="true"
-                    android:hint="Nama Mekanik"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:singleLine="true" />
+                    <EditText
+                        android:id="@+id/et_namaMekanik"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="true"
+                        android:hint="Nama Mekanik"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:singleLine="true" />
                 </android.support.design.widget.TextInputLayout>
 
             </LinearLayout>
@@ -227,9 +226,8 @@
                         android:id="@+id/et_mulaiKerja"
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
                         android:layout_margin="5dp"
-                        android:layout_weight="1"
+
                         android:hint="Mulai" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -238,8 +236,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginRight="3dp"
                     android:layout_marginLeft="3dp"
+                    android:layout_marginRight="3dp"
                     android:text="-"
                     android:textSize="20sp" />
 
@@ -250,15 +248,12 @@
                     android:layout_weight="1"
                     android:textAlignment="center">
 
-                <EditText
-                    android:id="@+id/et_selesaiKerja"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:gravity="center"
-                    android:hint="Selesai" />
+                    <EditText
+                        android:id="@+id/et_selesaiKerja"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:hint="Selesai" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -286,15 +281,13 @@
                     android:layout_weight="1"
                     android:textAlignment="center">
 
-                <EditText
-                    android:id="@+id/et_mulaistirahat"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:gravity="center"
-                    android:hint="Mulai" />
+                    <EditText
+                        android:id="@+id/et_mulaistirahat"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:ems="10"
+                        android:hint="Mulai" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -314,15 +307,13 @@
                     android:layout_weight="1"
                     android:textAlignment="center">
 
-                <EditText
-                    android:id="@+id/et_selesaistirahat"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:gravity="center"
-                    android:hint="Selesai" />
+                    <EditText
+                        android:id="@+id/et_selesaistirahat"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:ems="10"
+                        android:hint="Selesai" />
 
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>

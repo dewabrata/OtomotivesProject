@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.layanan;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -12,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.naa.data.Nson;
+import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
@@ -25,7 +27,7 @@ public class AturLayanan_Activity extends AppActivity {
     private Spinner sp_jenis_layanan, sp_nama_principal, sp_nama_layanan, sp_status;
     private EditText et_biaya_minimal, et_biaya_layanan, et_disc_booking, et_dp, et_jasa_lain1,
             et_jasa_lain2, et_disc_part1, et_disc_part2, et_percent1, et_percent2, et_percent3, et_percent4;
-    private Button btn_simpan_atur_layanan;
+    //private Button btn_simpan_atur_layanan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,7 @@ public class AturLayanan_Activity extends AppActivity {
         initToolbar();
         initComponent();
 
+        Intent i = getIntent();
 
     }
 
@@ -67,8 +70,7 @@ public class AturLayanan_Activity extends AppActivity {
         find(R.id.btn_simpan_atur_layanan, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
+                saveData();
             }
         });
 
@@ -104,19 +106,45 @@ public class AturLayanan_Activity extends AppActivity {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
+                String jenisLayanan = sp_jenis_layanan.getSelectedItem().toString().toUpperCase();
+                String namaLayanan = sp_nama_layanan.getSelectedItem().toString().toUpperCase();
+                String status = sp_status.getSelectedItem().toString().toUpperCase();
+                String namaPrincipal = sp_nama_principal.getSelectedItem().toString().toUpperCase();
+                String biayaMin = et_biaya_minimal.getText().toString();
+                String biayaLayanan = et_biaya_layanan.getText().toString();
+                String discBooking = et_disc_booking.getText().toString();
+                String dp = et_dp.getText().toString();
+                String jasa1 = et_jasa_lain1.getText().toString();
+                String jasa2 = et_jasa_lain2.getText().toString();
+                String disc1 = et_disc_part1.getText().toString();
+                String disc2 = et_disc_part2.getText().toString();
+                String percent1 = et_percent1.getText().toString();
+                String percent2 = et_percent2.getText().toString();
 
+                args.put("jenisservice", jenisLayanan);
+                args.put("namalayanan", namaLayanan);
+                args.put("status", status);
+                args.put("", namaPrincipal);
+                args.put("biaya", biayaMin);
+                args.put("", biayaLayanan);
+                args.put("dcbook", discBooking);
+                args.put("hdp", dp);
+                args.put("", jasa1);
+                args.put("", jasa2);
+                args.put("", disc1);
+                args.put("", disc2);
+                args.put("", percent1);
+
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturlayanan"),args)) ;
             }
 
             @Override
             public void runUI() {
                 if(result.get("status").asString().equalsIgnoreCase("OK")){
-
+                    startActivity(new Intent(getActivity(), Layanan_Avtivity.class));
                 }
 
             }
         });
-
-
-
     }
 }

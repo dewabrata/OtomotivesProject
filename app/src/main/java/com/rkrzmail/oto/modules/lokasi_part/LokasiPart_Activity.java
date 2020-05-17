@@ -34,6 +34,7 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.lokasi_part.stock_opname.StockOpname_Activity;
 import com.rkrzmail.oto.modules.part.AdapterSuggestionSearch;
+import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
@@ -50,7 +51,7 @@ public class LokasiPart_Activity extends AppActivity {
     private View parent_view;
     private RecyclerView rvLokasi_part;
     private AdapterSuggestionSearch adapterSuggestionSearch;
-    private SearchView mSearchView;
+    private NikitaAutoComplete bootTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,15 +60,6 @@ public class LokasiPart_Activity extends AppActivity {
         initToolbar();
         parent_view = findViewById(android.R.id.content);
         initComponent();
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah_part);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), CariPart_Activity.class);
-                startActivity(intent);
-            }
-        });
 
     }
 
@@ -93,7 +85,18 @@ public class LokasiPart_Activity extends AppActivity {
 
     private void initComponent() {
 
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah_part);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), CariPart_Activity.class);
+                startActivity(intent);
+            }
+        });
+
         rvLokasi_part = (RecyclerView) findViewById(R.id.recyclerView_lokasiPart);
+        bootTitle = (NikitaAutoComplete) findViewById(R.id.et_cariLokasiPart);
+
         rvLokasi_part.setLayoutManager(new LinearLayoutManager(this));
         rvLokasi_part.setHasFixedSize(true);
 
@@ -151,11 +154,21 @@ public class LokasiPart_Activity extends AppActivity {
                 Log.d("NAMA", nListArray.get(position).get("search").asString());
             }
         });
+
+        bootTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String data = bootTitle.getText().toString();
+                catchData(data);
+            }
+        });
+
         catchData("");
+
     }
 
     private void catchData(final String nama) {
-        MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
+       newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
             @Override
@@ -190,53 +203,6 @@ public class LokasiPart_Activity extends AppActivity {
                 }
             }
         });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(final Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_part, menu);
-
-        // Get the SearchView and set the searchable configuration
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        mSearchView = new SearchView(getSupportActionBar().getThemedContext());
-        mSearchView.setQueryHint("Cari Nama Part"); /// YOUR HINT MESSAGE
-        mSearchView.setMaxWidth(Integer.MAX_VALUE);
-
-        final MenuItem searchMenu = menu.findItem(R.id.action_search);
-        searchMenu.setActionView(mSearchView);
-        searchMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-
-
-        //SearchView searchView = (SearchView)  menu.findItem(R.id.action_search).setActionView(mSearchView);
-        // Assumes current activity is the searchable activity
-        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        mSearchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
-
-        SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
-
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-
-            public boolean onQueryTextSubmit(String query) {
-                catchData(query);
-                return true;
-            }
-        };
-        mSearchView.setOnQueryTextListener(queryTextListener);
-        return true;
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-        } else {
-            Toast.makeText(getApplicationContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

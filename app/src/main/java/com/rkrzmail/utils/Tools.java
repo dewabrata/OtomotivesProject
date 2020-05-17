@@ -1,6 +1,7 @@
 package com.rkrzmail.utils;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -25,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -322,4 +324,19 @@ public class Tools {
         return 0;
     }
 
+    public static void getDatePickerDialog(Context context, final EditText dateTime){
+        DatePickerDialog datepicker;
+        final Calendar cldr = Calendar.getInstance();
+        final int day = cldr.get(Calendar.DAY_OF_MONTH);
+        final int month = cldr.get(Calendar.MONTH);
+        final int year = cldr.get(Calendar.YEAR);
+
+        datepicker = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+                dateTime.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+            }
+        }, year, month, day);
+        datepicker.show();
+    }
 }
