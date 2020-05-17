@@ -137,6 +137,7 @@
                         android:maxLines="1"
                         android:singleLine="true"
                         android:layout_marginTop="10dp"/>
+
                 </FrameLayout>
 
                 <include

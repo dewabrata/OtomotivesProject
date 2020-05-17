@@ -93,6 +93,17 @@
         <item>Susan Lee</item>
     </string-array>
 
+    <string-array name="kondisi_kendaraan_booking">
+        <item>RUNNING</item>
+        <item>MASALAH KELISTRIKAN</item>
+        <item>MASALAH MESIN/PENGGERAK</item>
+        <item>MASALAH RODA/BAN</item>
+    </string-array>
+
+    <string-array name="lokasi_layanan_booking">
+        <item>BENGKEL</item>
+        <item>HOME</item>
+    </string-array>
 
     <string-array name="lokasi_penempatan_part">
         <item>GUDANG</item>
