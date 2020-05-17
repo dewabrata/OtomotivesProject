@@ -41,6 +41,7 @@ public class AturTerimaPart extends AppActivity implements DatePickerDialog.OnDa
     private static final int REQUEST_ATUR_TERIMA_PART = 4141;
     private Spinner spinnerSupplier, spinnerPembayaran;
     private ImageView img_calender1, img_calender2, img_calender3;
+    private TextView tglPesan, tglTerima, tglJatuhTempo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +52,9 @@ public class AturTerimaPart extends AppActivity implements DatePickerDialog.OnDa
         img_calender1 = findViewById(R.id.img_calender1);
         img_calender2 = findViewById(R.id.img_calender2);
         img_calender3 = findViewById(R.id.img_calender3);
+        tglPesan = findViewById(R.id.tglPesan);
+        tglTerima = findViewById(R.id.tglTerima);
+        tglJatuhTempo = findViewById(R.id.tglJatuhTempo);
 
         img_calender1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,12 +108,12 @@ public class AturTerimaPart extends AppActivity implements DatePickerDialog.OnDa
                     showError("Ongkos kirim harus di isi");
                 }else if (find(R.id.txtPembayaran, Spinner.class).getSelectedItem().toString().equalsIgnoreCase("")){
                     showError("Pembayaran harus di isi");return;
-                }else if (find(R.id.img_calender1, DatePicker.class).toString().equalsIgnoreCase("")) {
-                    showError(" harus di isi");
-                }else if (find(R.id.img_calender2, DatePicker.class).toString().equalsIgnoreCase("")) {
-                    showError("Ongkos kirim harus di isi");
-                }else if (find(R.id.img_calender3, DatePicker.class).toString().equalsIgnoreCase("")) {
-                    showError("Ongkos kirim harus di isi");
+                }else if (find(R.id.tglPesan, TextView.class).getText().toString().equalsIgnoreCase("")) {
+                    showError(" Tanggal pesan harus di isi");
+                }else if (find(R.id.tglTerima, TextView.class).getText().toString().equalsIgnoreCase("")) {
+                    showError("Tanggal terima harus di isi");
+                }else if (find(R.id.tglJatuhTempo, TextView.class).getText().toString().equalsIgnoreCase("")) {
+                    showError("Tanggal jatuh tempo harus di isi");
                 }
                 insertData();
             }
@@ -123,6 +127,17 @@ public class AturTerimaPart extends AppActivity implements DatePickerDialog.OnDa
         c.set(Calendar.MONTH, month);
         c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
+        String currentDateString1 = DateFormat.getDateInstance().format(c.getTime());
+        TextView tglpesan = (TextView) findViewById(R.id.tglPesan);
+        tglpesan.setText(currentDateString1);
+
+        String currentDateString2 = DateFormat.getDateInstance().format(c.getTime());
+        TextView tglterima = (TextView) findViewById(R.id.tglTerima);
+        tglterima.setText(currentDateString2);
+
+        String currentDateString3 = DateFormat.getDateInstance().format(c.getTime());
+        TextView tgljatuhtempo = (TextView) findViewById(R.id.tglJatuhTempo);
+        tgljatuhtempo.setText(currentDateString3);
     }
 
     private void insertData() {
@@ -138,9 +153,9 @@ public class AturTerimaPart extends AppActivity implements DatePickerDialog.OnDa
                 String nodo = find(R.id.txtNoDo, EditText.class).getText().toString();
                 String ongkir = find(R.id.txtOngkosKirim, EditText.class).getText().toString();
                 String pembayaran = find(R.id.txtPembayaran, Spinner.class).getSelectedItem().toString();
-                String tglpesan = find(R.id.img_calender1, DatePicker.class).toString().toUpperCase();
-                String tglterima = find(R.id.img_calender2, DatePicker.class).toString().toUpperCase();
-                String jatuhtempo = find(R.id.img_calender3, DatePicker.class).toString().toUpperCase();
+                String tglpesan = find(R.id.tglPesan, TextView.class).getText().toString();
+                String tglterima = find(R.id.tglTerima, TextView.class).getText().toString();
+                String jatuhtempo = find(R.id.tglJatuhTempo, TextView.class).getText().toString();
 
                 args.put("tipe", tipe);
                 args.put("nama", nama);
