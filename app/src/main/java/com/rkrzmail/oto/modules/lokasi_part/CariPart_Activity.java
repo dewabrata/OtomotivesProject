@@ -8,10 +8,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -32,18 +35,78 @@ import java.util.Map;
 public class CariPart_Activity extends AppActivity {
 
     private RecyclerView rvCariPart;
-    private NikitaAutoComplete etCariPart;
+    private NikitaAutoComplete bookTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cari_part_);
+        initToolbar();
         initComponent();
     }
 
+    private void initToolbar() {
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_cariPart);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Cari Part");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //toolbar.animate().translationY(-toolbar.getBottom()).setInterpolator(new AccelerateInterpolator()).start();
+    }
+
+
     private void initComponent(){
         rvCariPart = (RecyclerView) findViewById(R.id.recyclerView_cariPart);
-        etCariPart = (NikitaAutoComplete) findViewById(R.id.et_cariPart);
+        bookTitle = (NikitaAutoComplete) findViewById(R.id.et_cariPart);
+
+
+        bookTitle.setThreshold(3);
+        //final String nama = bookTitle.getText().toString();
+        bookTitle.setAdapter(new NsonAutoCompleteAdapter(getActivity()){
+            @Override
+            public Nson onFindNson(Context context, String bookTitle) {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+
+                args.put("search", bookTitle);
+                args.put("NAMA", bookTitle);
+                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("caripart"),args)) ;
+
+                return result;
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                if (convertView == null) {
+                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    convertView = inflater.inflate(R.layout.find_nama_part, parent, false);
+                }
+
+                //find(R.id.tv_cari_merkPart, TextView.class).setText((getItem(position).get("").asString()));
+                findView(convertView, R.id.tv_find_cari_namaPart, TextView.class).setText((getItem(position).get("data").get("NAMA").asString()));
+//               find(R.id.tv_cari_noPart, TextView.class).setText((getItem(position).get("NO_PART_ID").asString()));
+//               find(R.id.tv_cari_stockPart, TextView.class).setText((getItem(position).get("STOCK").asString()));
+
+
+                return convertView;
+            }
+        });
+
+        bookTitle.setLoadingIndicator((android.widget.ProgressBar) findViewById(R.id.pb_tv_cariPart));
+        bookTitle.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append( n.get("NAMA").asString()  ).append(" ");
+
+                find(R.id.et_cariPart, NikitaAutoComplete.class).setText(stringBuilder.toString());
+                find(R.id.et_cariPart, NikitaAutoComplete.class).setTag(String.valueOf(adapterView.getItemAtPosition(position)));
+
+                find (R.id.tv_find_cari_namaPart, TextView.class).setText(n.get("NAMA").asString());
+
+            }
+        });
+
 
         rvCariPart.setLayoutManager(new LinearLayoutManager(this));
         rvCariPart.setHasFixedSize(true);
@@ -76,14 +139,13 @@ public class CariPart_Activity extends AppActivity {
                 })
         );
 
-        find(R.id.btn_cariPart, Button.class).setOnClickListener(new View.OnClickListener() {
+        bookTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String data = etCariPart.getText().toString();
+                String data = bookTitle.getText().toString();
                 cariPart(data);
             }
         });
-
     }
 
     private void cariPart(final String cari){
@@ -129,33 +191,6 @@ public class CariPart_Activity extends AppActivity {
 
    private void getView(){
 
-       etCariPart.setThreshold(3);
-       etCariPart.setAdapter(new NsonAutoCompleteAdapter(getActivity()){
-           @Override
-           public Nson onFindNson(Context context, String bookTitle) {
-               Map<String, String> args = AppApplication.getInstance().getArgsData();
-               args.put("search", bookTitle);
-               Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("caripart"),args)) ;
-
-               return result;
-           }
-
-           @Override
-           public View getView(int position, View convertView, ViewGroup parent) {
-               if (convertView == null) {
-                   LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                   convertView = inflater.inflate(R.layout.item_daftar_cari_part, parent, false);
-               }
-
-               //find(R.id.tv_cari_merkPart, TextView.class).setText((getItem(position).get("").asString()));
-//               find(R.id.tv_cari_namaPart, TextView.class).setText((getItem(position).get("NAMA").asString()));
-//               find(R.id.tv_cari_noPart, TextView.class).setText((getItem(position).get("NO_PART_ID").asString()));
-//               find(R.id.tv_cari_stockPart, TextView.class).setText((getItem(position).get("STOCK").asString()));
-
-
-               return convertView;
-           }
-       });
 
    }
 }

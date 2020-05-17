@@ -4,7 +4,7 @@
     xmlns:card_view="http://schemas.android.com/tools"
     android:id="@+id/cardView"
     android:layout_width="match_parent"
-    android:layout_height="65dp"
+    android:layout_height="80dp"
     android:layout_gravity="center"
     android:layout_marginLeft="7dp"
     android:layout_marginTop="4dp"
@@ -12,7 +12,7 @@
     android:layout_marginBottom="4dp"
     android:layout_weight="5"
     android:padding="10dp"
-    app:cardElevation="10dp"
+    app:cardElevation="5dp"
     app:cardCornerRadius="10dp">
 
     <LinearLayout
@@ -28,13 +28,13 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-<!--            <ImageView-->
-<!--                android:id="@+id/img_cariPart"-->
-<!--                android:layout_margin="5dp"-->
-<!--                android:layout_width="50dp"-->
-<!--                android:layout_gravity="center"-->
-<!--                android:layout_height="50dp"-->
-<!--                app:srcCompat="@drawable/ic_shopping_basket"/>-->
+            <!--            <ImageView-->
+            <!--                android:id="@+id/img_cariPart"-->
+            <!--                android:layout_margin="5dp"-->
+            <!--                android:layout_width="50dp"-->
+            <!--                android:layout_gravity="center"-->
+            <!--                android:layout_height="50dp"-->
+            <!--                app:srcCompat="@drawable/ic_shopping_basket"/>-->
 
             <LinearLayout
                 android:layout_width="150dp"
@@ -44,30 +44,39 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/tv_cari_merkPart"
+                    android:id="@+id/tv_tanggalMulai_tenda"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textSize="14sp"
-                    android:text="Merk Part"
+                    android:text="Tanggal Mulai"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tv_cari_namaPart"
+                    android:id="@+id/tv_tipeTenda"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Nama Part"
+                    android:text="Tipe Tenda"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_namaLokasi_tenda"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:textStyle="bold"
+                    android:text="Nama Lokasi"
                     android:textSize="14sp" />
 
                 <TextView
-                    android:id="@+id/tv_cari_noPart"
+                    android:id="@+id/tv_jamBuka_tenda"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textStyle="bold"
-                    android:text="No Part"
+                    android:text="Jam Buka"
                     android:textSize="14sp" />
 
 
@@ -81,11 +90,21 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/tv_cari_stockPart"
+                    android:id="@+id/tv_tanggalSelesai_tenda"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Stock"
+                    android:text="Tanggal Selesai"
+                    android:layout_marginBottom="20dp"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_jamTutup_tenda"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Jam Tutup"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 

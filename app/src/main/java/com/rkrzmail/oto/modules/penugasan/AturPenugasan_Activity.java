@@ -350,4 +350,10 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
             }
         });
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
+    }
 }

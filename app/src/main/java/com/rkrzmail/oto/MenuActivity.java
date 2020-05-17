@@ -46,6 +46,7 @@ import com.rkrzmail.oto.modules.lokasi_part.LokasiPart_Activity;
 import com.rkrzmail.oto.modules.part.PartActivity;
 import com.rkrzmail.oto.modules.part.PartSearchActivity;
 import com.rkrzmail.oto.modules.penugasan.PenugasanActivity;
+import com.rkrzmail.oto.modules.tenda.Tenda_Activity;
 import com.rkrzmail.oto.modules.terima_part.TerimaPart;
 
 import java.util.ArrayList;
@@ -72,9 +73,10 @@ public class MenuActivity extends AppActivity {
     public final int MN_STOCK_OPNAME =18;
     public static final int MN_PENUGASAN_MEKANIK = 19;
     public static final int MN_BIAYA_MEKANIK2 = 20;
-    private static final int MN_LOKASI_PART = 21;
+    public static final int MN_LOKASI_PART = 21;
     public static final int MN_TERIMA_PART = 22;
     public static final int MN_LAYANAN = 23;
+    public static final int MN_TENDA = 24;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,6 +171,9 @@ public class MenuActivity extends AppActivity {
 
                 }else if((nPopulate.get(position).get("id").asInteger() == MN_LAYANAN)){
                     Intent intent = new Intent(MenuActivity.this, Layanan_Avtivity.class);
+                    startActivity(intent);
+                }else if((nPopulate.get(position).get("id").asInteger() == MN_TENDA)){
+                    Intent intent = new Intent(MenuActivity.this, Tenda_Activity.class);
                     startActivity(intent);
                 }
 
@@ -265,6 +270,8 @@ public class MenuActivity extends AppActivity {
         nPopulate.add(Nson.newObject().set("id", MN_LOKASI_PART).set("icon", R.drawable.mn_belanja).set("text", "LOKASI PART"));
         nPopulate.add(Nson.newObject().set("id", MN_TERIMA_PART).set("icon", R.drawable.mn_tugaspart).set("text", "TERIMA PART"));
         nPopulate.add(Nson.newObject().set("id", MN_LAYANAN).set("icon", R.drawable.mn_pelanggan).set("text", "LAYANAN"));
+        nPopulate.add(Nson.newObject().set("id", MN_TENDA).set("icon", R.drawable.mn_lainnya).set("text", "TENDA"));
+
 //        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_KomisiKaryawan).set("icon", R.drawable.sample).set("text", "MESSAGE"));
 //        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_LoyaltiProgram).set("icon", R.drawable.sample).set("text", "MESSAGE"));
        // nPopulate.add(Nson.newObject().set("id", 1).set("icon", R.drawable.mn_perawatan).set("text", "MEKANIK"));
