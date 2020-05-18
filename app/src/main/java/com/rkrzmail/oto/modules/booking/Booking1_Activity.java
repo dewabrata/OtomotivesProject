@@ -1,7 +1,6 @@
 package com.rkrzmail.oto.modules.booking;
 
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -24,7 +23,7 @@ import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 
-public class Booking_Activity extends AppActivity {
+public class Booking1_Activity extends AppActivity {
 
     private NikitaAutoComplete etJenisKendaraan, etNopol, etNoPonsel;
     private EditText  etNamaPelanggan, etKeluhan, etKm, etAlamat;
@@ -33,7 +32,7 @@ public class Booking_Activity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_booking_);
+        setContentView(R.layout.activity_booking1_);
         initToolbar();
         initComponent();
     }

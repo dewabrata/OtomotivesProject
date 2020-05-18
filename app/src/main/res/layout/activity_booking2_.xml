@@ -27,28 +27,33 @@
                 android:layout_marginRight="10dp">
 
                 <TextView
+                    android:id="@+id/tv_tglBooking_booking2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/red_900"
+                    android:textStyle="bold"
                     android:text="TANGGAL BOOKING"/>
 
                 <Button
+                    android:id="@+id/btn_getTgl_booking2"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:background="@drawable/ic_date"
                     android:layout_marginRight="10dp"
+                    android:layout_weight="1"
                     android:layout_marginLeft="10dp"/>
 
                 <TextView
+                    android:id="@+id/tv_jamBooking_booking2"
                     android:layout_width="wrap_content"
+                    android:textStyle="bold"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/red_900"
                     android:text="JAM BOOKING" />
 
                 <Button
+                    android:id="@+id/btn_getJam_booking2"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:background="@drawable/ic_date"
+                    android:background="@drawable/ic_clock"
                     android:layout_marginRight="10dp"
                     android:layout_marginLeft="10dp"/>
 
@@ -63,18 +68,207 @@
                 android:layout_marginRight="10dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tv_jemput_booking2"
+                    android:layout_width="130dp"
                     android:layout_height="wrap_content"
+                    android:textStyle="bold"
                     android:text="JAM JEMPUT"/>
 
                 <Button
+                    android:id="@+id/btn_getJemput_booking2"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:background="@drawable/ic_date"
+                    android:background="@drawable/ic_clock"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp" />
+
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_partJasa_booking2"
+                android:layout_width="217dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/btn_rounded_accent"
+                android:textColor="@color/white_transparency"
+                android:layout_marginLeft="10dp"
+                android:text="PART DAN JASA" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ESTIMASI WAKTU"
+
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/btn_hari_booking2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_rounded_accent"
+                    android:textColor="@color/white_transparency"
+                    android:enabled="false"
+                    android:text="HARI" />
+
+                <Button
+                    android:id="@+id/btn_menit_booking2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_rounded_accent"
+                    android:textColor="@color/white_transparency"
+                    android:enabled="false"
+                    android:text="MENIT" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp">
+
+                <TextView
+                    android:id="@+id/tv_antar_booking2"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="JAM ANTAR" />
+
+                <Button
+                    android:id="@+id/btn_getAntar_booking2"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/ic_clock"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"/>
 
             </LinearLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <EditText
+                    android:id="@+id/et_biayaTransport_booking2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="BIAYA TRANSPORT"
+                    android:enabled="false"
+                    android:ems="10" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <EditText
+                    android:id="@+id/et_biayaLayanan_booking2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="BIAYA LAYANAN"
+                    android:enabled="false"
+                    android:ems="10" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <EditText
+                    android:id="@+id/et_totalBiaya_booking2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:hint="TOTAL BIAYA"
+                    android:ems="10" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginRight="5dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                    <EditText
+                        android:id="@+id/et_dp_booking2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:hint="DP"
+                        android:ems="10" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="5dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                    <EditText
+                        android:id="@+id/et_sisa_booking2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:hint="SISA"
+                        android:ems="10" />
+
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+
+            <Button
+                android:id="@+id/btn_simpan_booking2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_rounded_accent"
+                android:textColor="@color/white_transparency"
+                android:layout_gravity="end"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:text="SIMPAN" />
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
@@ -86,9 +280,9 @@
         android:layout_height="wrap_content">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+            android:id="@+id/toolbar_booking2"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"></android.support.v7.widget.Toolbar>
+            android:layout_height="?attr/actionBarSize" />
 
     </android.support.design.widget.AppBarLayout>
 

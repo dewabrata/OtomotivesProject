@@ -24,8 +24,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".modules.booking.Booking2_Activity"></activity>
-        <activity android:name=".modules.booking.Booking_Activity" />
+        <activity android:name=".modules.booking.Booking3_Activity"></activity>
+        <activity android:name=".modules.booking.Booking2_Activity" />
+        <activity android:name=".modules.booking.Booking1_Activity" />
         <activity android:name=".modules.tenda.AturTenda_Activity" />
         <activity android:name=".modules.tenda.Tenda_Activity" />
         <activity android:name=".modules.lokasi_part.CariPart_Activity" />
