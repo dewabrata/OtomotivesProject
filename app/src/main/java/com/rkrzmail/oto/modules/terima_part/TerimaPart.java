@@ -89,7 +89,12 @@ public class TerimaPart extends AppActivity {
                 viewHolder.find(R.id.txtJatuhTempo, TextView.class).setText(nListArray.get(position).get("JATUH_TEMPO_INV").asString());;
                 //viewHolder.find(R.id.txtUser, TextView.class).setText("USER :" + nListArray.get(position).get("USER").asString());;
             }
-        });
+        }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Nson parent, View view, int position) {
+
+            }
+        }));
         reload("");
 
         CariNoDO.setOnClickListener(new View.OnClickListener() {
