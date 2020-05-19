@@ -174,8 +174,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:inputType="textMultiLine"
-                    android:maxLines="1"
-                    android:singleLine="true"
                     android:gravity="top|left"
                     android:hint="KELUHAN" />
 

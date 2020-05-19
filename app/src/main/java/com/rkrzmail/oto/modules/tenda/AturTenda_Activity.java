@@ -18,10 +18,13 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -39,9 +42,9 @@ public class AturTenda_Activity extends AppActivity implements View.OnClickListe
     private static final String TAG = "AturTenda_Activity";
     private static final int REQUEST_LOCATION = 1;
     private EditText etTglBuka, etTglSelesai, etLokasi, etAlamat, etLonglat, etJamBuka, etJamTutup;
-    private RadioGroup rgTipe;
     private LocationManager locationManager;
-    private  String latitude, longitude;
+    private String latitude, longitude;
+    private Spinner spTipeWaktu, spHari;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +68,6 @@ public class AturTenda_Activity extends AppActivity implements View.OnClickListe
         ActivityCompat.requestPermissions(this,new String[]
                 {Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
 
-
         etTglBuka = findViewById(R.id.et_tglMulai_tenda);
         etTglSelesai = findViewById(R.id.et_tglSelesai_tenda);
         etLokasi = findViewById(R.id.et_namaLokasi_tenda);
@@ -73,37 +75,39 @@ public class AturTenda_Activity extends AppActivity implements View.OnClickListe
         etLonglat = findViewById(R.id.et_longlat_tenda);
         etJamBuka = findViewById(R.id.et_jamBuka_tenda);
         etJamTutup = findViewById(R.id.et_jamSelesai_tenda);
-        rgTipe = findViewById(R.id.rg_tipe_tenda);
+        spHari = findViewById(R.id.sp_hari_tenda);
+        spTipeWaktu = findViewById(R.id.sp_tipeWaktu_tenda);
 
-        rgTipe.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//        etLonglat.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+//                    //Write Function To enable gps
+//                    OnGPS();
+//                }
+//                else {
+//                    //GPS is already On then
+//                    getLocation();
+//                }
+//            }
+//        });
+
+        spTipeWaktu.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
-                switch (checkedId) {
-                    case R.id.rb_tetap:
-                        Tools.setViewAndChildrenEnabled(find(R.id.tl_alamat, TextInputLayout.class), true);
-                        Tools.setViewAndChildrenEnabled(find(R.id.tl_longlat, TextInputLayout.class), true);
-                        break;
-                    case R.id.rb_mobile:
-                        Tools.setViewAndChildrenEnabled(find(R.id.tl_alamat, TextInputLayout.class), false);
-                        Tools.setViewAndChildrenEnabled(find(R.id.tl_longlat, TextInputLayout.class), false);
-                        break;
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
+                String item = parent.getItemAtPosition(position).toString();
+                if (item.equalsIgnoreCase("TANGGAL")) {
+                    find(R.id.ly_hari_tenda, LinearLayout.class).setVisibility(View.GONE);
+                    find(R.id.ly_tanggal_tenda, LinearLayout.class).setVisibility(View.VISIBLE);
+                } else if (item.equalsIgnoreCase("HARI")) {
+                    find(R.id.ly_hari_tenda, LinearLayout.class).setVisibility(View.VISIBLE);
+                    find(R.id.ly_tanggal_tenda, LinearLayout.class).setVisibility(View.GONE);
                 }
             }
-        });
 
-        find(R.id.btn_getLocation_tenda, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                //Check gps is enable or not
-                if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-                    //Write Function To enable gps
-                    OnGPS();
-                }
-                else {
-                    //GPS is already On then
-                    getLocation();
-                }
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
 
@@ -190,8 +194,6 @@ public class AturTenda_Activity extends AppActivity implements View.OnClickListe
         alertDialog.show();
     }
 
-
-
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -219,8 +221,7 @@ public class AturTenda_Activity extends AppActivity implements View.OnClickListe
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
-                int selectedTipe = rgTipe.getCheckedRadioButtonId();
-                String tipe;
+
                 String tglMulai = etTglBuka.getText().toString();
                 String tglSelesai = etTglSelesai.getText().toString();
                 String lokasi = etLokasi.getText().toString();
@@ -230,20 +231,7 @@ public class AturTenda_Activity extends AppActivity implements View.OnClickListe
                 String jamTutup = etJamTutup.getText().toString();
 
                 args.put("action", "save");
-                switch (selectedTipe) {
-                    case R.id.rb_tetap:
-                        tipe = find(R.id.rb_tetap, RadioButton.class).getText().toString();
-                        Log.d("TIPE", tipe);
-                        args.put("tipe", tipe);
-                        break;
-                    case R.id.rb_mobile:
-                        tipe = find(R.id.rb_mobile, RadioButton.class).getText().toString();
-                        Log.d("TIPE", tipe);
-                        args.put("tipe", tipe);
-                        break;
-                }
-
-                //args.put("id", id);
+                //args.put("tipe", tipe);
                 args.put("tanggal", tglMulai);
                 args.put("namalokasi", lokasi);
                 args.put("alamat", alamat);

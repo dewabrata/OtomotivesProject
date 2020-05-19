@@ -1,47 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:animateLayoutChanges="true"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
 
 
-        <android.support.v4.widget.NestedScrollView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-
-            <LinearLayout
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView_spotDiscount"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:padding="10dp"
+                tools:listitem="@layout/item_spot_discount" />
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recyclerView_daftar_jurnal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    tools:listitem="@layout/item_jurnal"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
-            </LinearLayout>
-        </android.support.v4.widget.NestedScrollView>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_daftar_jurnal"
+            android:id="@+id/toolbar_spotDiscount"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:titleTextColor="@color/white_transparency"/>
+            android:layout_height="?attr/actionBarSize" />
 
         <RelativeLayout
             android:id="@+id/search_layout"
@@ -61,11 +57,11 @@
                 android:layout_gravity="center">
 
                 <com.rkrzmail.srv.NikitaAutoComplete
-                    android:id="@+id/et_cariJurnal"
+                    android:id="@+id/et_cariDiskon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawableRight="@android:drawable/ic_menu_search"
-                    android:hint="Cari Part"
+                    android:hint="Nama Pelanggan"
                     android:inputType="text"
                     android:textAlignment="center"
                     android:maxLines="1"
@@ -79,9 +75,8 @@
 
     </android.support.design.widget.AppBarLayout>
 
-
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_tambah_jurnal"
+        android:id="@+id/fab_tambah_discount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
@@ -89,5 +84,6 @@
         android:visibility="visible"
         app:backgroundTint="@color/blue_900"
         app:srcCompat="@android:drawable/ic_input_add" />
+
 
 </android.support.design.widget.CoordinatorLayout>

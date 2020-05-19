@@ -8,9 +8,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.naa.data.Nson;
+import com.naa.utils.InternetX;
+import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
+import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.utils.Tools;
+
+import java.util.Map;
 
 public class Booking2_Activity extends AppActivity implements View.OnClickListener {
 
@@ -24,7 +30,6 @@ public class Booking2_Activity extends AppActivity implements View.OnClickListen
     }
 
     private void initToolbar() {
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_booking2);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Booking 2");
@@ -53,5 +58,31 @@ public class Booking2_Activity extends AppActivity implements View.OnClickListen
                 break;
 
         }
+    }
+
+    private void saveData() {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("booking1"), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    //Intent i = new Intent(getActivity(), Booking2_Activity.class);
+//                    if(){
+//
+//                    }else{
+//
+//                    }
+                } else {
+                    showInfo("GAGAL!");
+                }
+            }
+        });
     }
 }

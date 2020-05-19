@@ -93,6 +93,21 @@
         <item>Susan Lee</item>
     </string-array>
 
+    <string-array name="tipeWaktu_tenda">
+        <item>TANGGAL</item>
+        <item>HARI</item>
+    </string-array>
+
+    <string-array name="hari_tenda">
+        <item>SENIN</item>
+        <item>SELASA</item>
+        <item>RABU</item>
+        <item>KAMIS</item>
+        <item>JUMAT</item>
+        <item>SABTU</item>
+        <item>MINGGU</item>
+    </string-array>
+
     <string-array name="kondisi_kendaraan_booking">
         <item>RUNNING</item>
         <item>MASALAH KELISTRIKAN</item>
