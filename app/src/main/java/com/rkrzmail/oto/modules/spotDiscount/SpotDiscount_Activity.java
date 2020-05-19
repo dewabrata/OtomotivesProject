@@ -1,7 +1,9 @@
-package com.rkrzmail.oto.modules.jurnal;
+package com.rkrzmail.oto.modules.spotDiscount;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -25,49 +26,55 @@ import com.rkrzmail.srv.NsonAutoCompleteAdapter;
 
 import java.util.Map;
 
-public class DaftarJurnal_Activity extends AppActivity {
+public class SpotDiscount_Activity extends AppActivity {
 
-    private RecyclerView rvJurnal;
-    private NikitaAutoComplete cariJurnal;
+    private RecyclerView rvDisc;
+    private NikitaAutoComplete cariDiskon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_daftar_jurnal_);
+        setContentView(R.layout.activity_spot_discount_);
         initToolbar();
         initComponent();
+
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_daftar_jurnal);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_spotDiscount);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Jurnal");
+        getSupportActionBar().setTitle("Spot Discount");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.animate().translationY(-toolbar.getBottom()).setInterpolator(new AccelerateInterpolator()).start();
     }
 
     private void initComponent() {
-        rvJurnal = findViewById(R.id.recyclerView_daftar_jurnal);
-        cariJurnal = findViewById(R.id.et_cariJurnal);
-
-        rvJurnal.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rvJurnal.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_jurnal) {
+        rvDisc = findViewById(R.id.recyclerView_spotDiscount);
+        cariDiskon = findViewById(R.id.et_cariDiskon);
+        FloatingActionButton fab = findViewById(R.id.fab_tambah_discount);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                super.onBindViewHolder(viewHolder, position);
-
-                viewHolder.find(R.id.tv_tanggal_jurnal, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_transaksi_jurnal, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_pos_jurnal, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_ket_jurnal, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_total_jurnal, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_pembayaran_jurnal, TextView.class).setText(nListArray.get(position).get("").asString());
-
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), AturDiscount_Activity.class));
             }
         });
 
-        cariJurnal.setThreshold(3);
-        cariJurnal.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
+        rvDisc.setHasFixedSize(true);
+        rvDisc.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        rvDisc.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_spot_discount) {
+            @Override
+            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+                super.onBindViewHolder(viewHolder, position);
+                find(R.id.tv_tanggal_spotDisc, TextView.class).setText(nListArray.get(position).get("").asString());
+                find(R.id.tv_user_spotDisc, TextView.class).setText(nListArray.get(position).get("").asString());
+                find(R.id.tv_namaPelanggan_spotDisc, TextView.class).setText(nListArray.get(position).get("").asString());
+                find(R.id.tv_transaksi_spotDisc, TextView.class).setText(nListArray.get(position).get("").asString());
+                find(R.id.tv_disc_spotDisc, TextView.class).setText(nListArray.get(position).get("").asString());
+            }
+        });
+
+        cariDiskon.setThreshold(3);
+        cariDiskon.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
             @Override
             public Nson onFindNson(Context context, String bookTitle) {
                 return super.onFindNson(context, bookTitle);
@@ -78,7 +85,6 @@ public class DaftarJurnal_Activity extends AppActivity {
                 return super.getView(position, convertView, parent);
             }
         });
-
 
     }
 

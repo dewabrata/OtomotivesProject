@@ -100,9 +100,7 @@ public class Pendaftaran1 extends AppActivity {
                 }else if (find(R.id.txtPhone, EditText.class).getText().toString().equalsIgnoreCase("")){
                     showError("No Telp. Tidak Boleh Kosong");return;
                 }
-
                 lanjut(nopol);
-
             }
         });
 

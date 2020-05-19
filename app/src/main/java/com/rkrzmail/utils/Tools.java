@@ -30,6 +30,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -39,6 +40,8 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.android.gms.maps.GoogleMap;
 import com.rkrzmail.oto.R;
 
+
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -325,6 +328,22 @@ public class Tools {
     }
 
     public static void getDatePickerDialog(Context context, final EditText dateTime){
+        DatePickerDialog datepicker;
+        final Calendar cldr = Calendar.getInstance();
+        final int day = cldr.get(Calendar.DAY_OF_MONTH);
+        final int month = cldr.get(Calendar.MONTH);
+        final int year = cldr.get(Calendar.YEAR);
+
+        datepicker = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+                dateTime.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+            }
+        }, year, month, day);
+        datepicker.show();
+    }
+
+    public static void getDatePickerDialogTextView(Context context, final TextView dateTime) {
         DatePickerDialog datepicker;
         final Calendar cldr = Calendar.getInstance();
         final int day = cldr.get(Calendar.DAY_OF_MONTH);

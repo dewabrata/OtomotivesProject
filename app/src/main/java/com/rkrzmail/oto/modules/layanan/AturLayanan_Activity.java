@@ -50,6 +50,7 @@ public class AturLayanan_Activity extends AppActivity {
     }
 
     private void initComponent(){
+
         sp_jenis_layanan = findViewById(R.id.sp_jenis_layanan);
         sp_nama_layanan = findViewById(R.id.sp_nama_layanan);
         sp_status = findViewById(R.id.sp_status_layanan);
@@ -106,10 +107,11 @@ public class AturLayanan_Activity extends AppActivity {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
+
                 String jenisLayanan = sp_jenis_layanan.getSelectedItem().toString().toUpperCase();
-                String namaLayanan = sp_nama_layanan.getSelectedItem().toString().toUpperCase();
+                //String namaLayanan = sp_nama_layanan.getSelectedItem().toString().toUpperCase();
                 String status = sp_status.getSelectedItem().toString().toUpperCase();
-                String namaPrincipal = sp_nama_principal.getSelectedItem().toString().toUpperCase();
+                //String namaPrincipal = sp_nama_principal.getSelectedItem().toString().toUpperCase();
                 String biayaMin = et_biaya_minimal.getText().toString();
                 String biayaLayanan = et_biaya_layanan.getText().toString();
                 String discBooking = et_disc_booking.getText().toString();
@@ -121,14 +123,20 @@ public class AturLayanan_Activity extends AppActivity {
                 String percent1 = et_percent1.getText().toString();
                 String percent2 = et_percent2.getText().toString();
 
+                if (find(R.id.layout_biaya, LinearLayout.class).isEnabled()) {
+                    args.put("biaya", biayaLayanan);
+                    args.put("dcbook", discBooking);
+                    args.put("hdp", dp);
+                }
+                args.put("action", "update");
                 args.put("jenisservice", jenisLayanan);
-                args.put("namalayanan", namaLayanan);
+                //args.put("namalayanan", namaLayanan);
                 args.put("status", status);
-                args.put("", namaPrincipal);
-                args.put("biaya", biayaMin);
-                args.put("", biayaLayanan);
-                args.put("dcbook", discBooking);
-                args.put("hdp", dp);
+                //args.put("", namaPrincipal);
+
+                args.put("", biayaMin);
+
+
                 args.put("", jasa1);
                 args.put("", jasa2);
                 args.put("", disc1);
@@ -142,6 +150,8 @@ public class AturLayanan_Activity extends AppActivity {
             public void runUI() {
                 if(result.get("status").asString().equalsIgnoreCase("OK")){
                     startActivity(new Intent(getActivity(), Layanan_Avtivity.class));
+                } else {
+                    showInfo("Gagal Menambahkan Layanan");
                 }
 
             }

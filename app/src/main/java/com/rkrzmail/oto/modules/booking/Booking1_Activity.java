@@ -1,7 +1,7 @@
 package com.rkrzmail.oto.modules.booking;
 
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -24,7 +24,7 @@ import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 
-public class Booking_Activity extends AppActivity {
+public class Booking1_Activity extends AppActivity {
 
     private NikitaAutoComplete etJenisKendaraan, etNopol, etNoPonsel;
     private EditText  etNamaPelanggan, etKeluhan, etKm, etAlamat;
@@ -33,7 +33,7 @@ public class Booking_Activity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_booking_);
+        setContentView(R.layout.activity_booking1_);
         initToolbar();
         initComponent();
     }
@@ -103,14 +103,51 @@ public class Booking_Activity extends AppActivity {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
+
+                String nopol = etNopol.getText().toString().toUpperCase();
+                String nophone = etNoPonsel.getText().toString();
+                String namaPelanggan = etNamaPelanggan.getText().toString().toUpperCase();
+                String jenisKendaraan = etJenisKendaraan.getText().toString().toUpperCase();
+                String kondisiKendaraan = spKondisiKendaraan.getSelectedItem().toString().toUpperCase();
+                String lokasiLayanan = spLokasiLayanan.getSelectedItem().toString().toUpperCase();
+                String km = etKm.getText().toString();
+                String keluhan = etKeluhan.getText().toString();
+                String alamat = etAlamat.getText().toString();
+                String layanan = spLayanan.getSelectedItem().toString().toUpperCase();
+                String pemilik;
+
+                args.put("nopol", nopol);
+                args.put("jeniskendaraan", jenisKendaraan);
+                args.put("nopon", nophone);
+                args.put("nama", namaPelanggan);
+
+                if (find(R.id.cb_pemilik_booking1, CheckBox.class).isChecked()) {
+                    pemilik = find(R.id.cb_pemilik_booking1, CheckBox.class).getText().toString();
+                    args.put("pemilik", pemilik);
+                } else {
+                    args.put("pemilik", "");
+                }
+
+                args.put("lokasi", lokasiLayanan);
+                args.put("kondisi", kondisiKendaraan);
+                args.put("keluhan", keluhan);
+                args.put("km", km);
+                args.put("layanan", layanan);
+                args.put("alamat", alamat);
+
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("booking1"), args));
+
             }
 
             @Override
             public void runUI() {
                 if(result.get("status").asString().equalsIgnoreCase("OK")){
-
-                    
+                    //Intent i = new Intent(getActivity(), Booking2_Activity.class);
+//                    if(){
+//
+//                    }else{
+//
+//                    }
                 }else{
                     showInfo("GAGAL!");
                 }
