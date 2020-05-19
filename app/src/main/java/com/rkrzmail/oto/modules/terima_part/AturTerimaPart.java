@@ -1,6 +1,8 @@
 package com.rkrzmail.oto.modules.terima_part;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -33,8 +35,10 @@ import com.rkrzmail.utils.Tools;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 
@@ -72,7 +76,7 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
         txtOngkosKirim = findViewById(R.id.txtOngkosKirim);
         tglPesan = findViewById(R.id.tglPesan);
         tglTerima = findViewById(R.id.tglTerima);
-        tglJatuhTempo = findViewById(R.id.tglJatuhTempo);
+        tglJatuhTempo = findViewById(R.id.jatuhTempo);
         btnSelanjutnya = findViewById(R.id.btnSelanjutnya);
 
         tglPesan.setOnClickListener(this);
@@ -83,8 +87,10 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
                 String item = parent.getItemAtPosition(position).toString();
-                if (item.equalsIgnoreCase("Principal")) {
+                if (item.equalsIgnoreCase("PRINCIPAL")) {
                     Tools.setViewAndChildrenEnabled(find(R.id.layout_nama_supplier), false);
+                }else {
+                    Tools.setViewAndChildrenEnabled(find(R.id.layout_nama_supplier), true);
                 }
             }
 
@@ -98,7 +104,7 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
                 String item = parent.getItemAtPosition(position).toString();
-                if (item.equalsIgnoreCase("Invoice")) {
+                if (item.equalsIgnoreCase("INV")) {
                     Tools.setViewAndChildrenEnabled(find(R.id.layout_jatuh_tempo), false);
                 }
             }
@@ -121,65 +127,86 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
 
 
     private void insertData() {
+
+        final String tglpesan = tglPesan.getText().toString();
+        final String tglterima = tglTerima.getText().toString();
+        final String jatuhtempo = tglJatuhTempo.getText().toString();
+        final String tipe = spinnerSupplier.getSelectedItem().toString().toUpperCase();
+        final String nama = txtNamaSupplier.getText().toString().toUpperCase();
+        final String nodo = txtNoDo.getText().toString().toUpperCase();
+        final String ongkir = txtOngkosKirim.getText().toString().toUpperCase();
+        final String pembayaran = spinnerPembayaran.getSelectedItem().toString().toUpperCase();
+
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+            Nson result2;
             @Override
             public void run() {
                 final Map<String, String> args = AppApplication.getInstance().getArgsData();
-
-                Calendar calendar = Calendar.getInstance();
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy");
-                String dateTime = simpleDateFormat.format(calendar.getTime());
-
-                String tglpesan = tglPesan.getText().toString();
-                String tglterima = tglTerima.getText().toString();
-                String jatuhtempo = tglJatuhTempo.getText().toString();
-                String tipe = find(R.id.txtTipeSupplier, Spinner.class).getSelectedItem().toString().toUpperCase();
-                String nama = find(R.id.txtNamaSupplier, EditText.class).getText().toString().toUpperCase();
-                String nodo = find(R.id.txtNoDo, EditText.class).getText().toString().toUpperCase();
-                String ongkir = find(R.id.txtOngkosKirim, EditText.class).getText().toString().toUpperCase();
-                String pembayaran = find(R.id.txtPembayaran, Spinner.class).getSelectedItem().toString().toUpperCase();
-
-                args.put("tglpesan", tglpesan);
-                args.put("tglterima", tglterima);
-                args.put("jatuhtempo", jatuhtempo);
-                args.put("tipe", tipe);
-                args.put("nama", nama);
-                args.put("nodo", nodo);
-                args.put("ongkir", ongkir);
-                args.put("pembayaran", pembayaran);
-                args.put("tanggal", dateTime);
-
-               result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturterimapart"), args));
+                final Map<String, String> args2 = AppApplication.getInstance().getArgsData();
+//                args.put("tglpesan", tglpesan);
+//                args.put("tglterima", tglterima);
+//                args.put("jatuhtempo", jatuhtempo);
+//                args.put("tipe", tipe);
+//                args.put("nama", nama);
+//                args.put("nodo", nodo);
+//                args.put("ongkir", ongkir);
+//                args.put("pembayaran", pembayaran);
+//
+//               result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturterimapart"), args));
+               result2 = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewterimapart"), args2));
 
             }
 
             @Override
             public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    Log.d(TAG, result.get("status").asString());
-                    startActivity(new Intent(AturTerimaPart.this, DetailPartDiterima.class));
-                    finish();
-                } else {
-                    showError(result.get("status").asString());
-                    Log.d(TAG, "error");
-                }
+//                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+//                    Log.d(TAG, result.get("status").asString());
+////                    else{
+////                        startActivity(new Intent(AturTerimaPart.this, TerimaPart.class));
+////                        finish();
+////                    }
+//                } else {
+//                    showError(result.get("status").asString());
+//                    Log.d(TAG, "error");
+//                }
+
+                   if(result2.get("data").asArray().equals(tglpesan)){
+                       alertDialog();
+                   }else{
+
+                   }
             }
         });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == RESULT_OK && resultCode == REQUEST_ATUR_TERIMA_PART){
-        }
-    }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.tglPesan:
-
+                Tools.getDatePickerDialogTextView(getActivity(),tglPesan);
+                break;
+            case R.id.tglTerima:
+                Tools.getDatePickerDialogTextView(getActivity(),tglTerima);
+                break;
+            case R.id.jatuhTempo:
+                Tools.getDatePickerDialogTextView(getActivity(),tglJatuhTempo);
+                break;
         }
+    }
+    private void alertDialog(){
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
+        builder1.setMessage("Penerimaan Part Telah Tercatat Sebelumnya");
+        builder1.setCancelable(true);
+        builder1.setPositiveButton(
+                "Yes",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
     }
 }

@@ -35,6 +35,11 @@
 
     <string-array name="tipe_supplier">
         <item>PRINCIPAL</item>
+        <item>MAIN SUPPLIER</item>
+        <item>RETAIL SUPPLIER</item>
+        <item>ECOMERCE</item>
+        <item>BENGKEL LAIN</item>
+        <item>LAINNYA</item>
 
 
     </string-array>

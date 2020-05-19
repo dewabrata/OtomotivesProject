@@ -29,6 +29,7 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.biayamekanik.AturBiayaMekanik2;
 import com.rkrzmail.oto.modules.penugasan.AturPenugasan_Activity;
+import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
@@ -41,6 +42,7 @@ public class TerimaPart extends AppActivity {
 
     private SearchView tsearchView;
     final int REQUEST_TERIMA_PART = 666;
+    private NikitaAutoComplete CariNoDO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +72,8 @@ public class TerimaPart extends AppActivity {
 
     private void initComponent(){
 
+        CariNoDO = findViewById(R.id.CariNoDO);
+
         recyclerView_terimaPart = (RecyclerView) findViewById(R.id.recyclerView_terimaPart);
         recyclerView_terimaPart.setLayoutManager(new LinearLayoutManager(this));
         recyclerView_terimaPart.setHasFixedSize(true);
@@ -77,25 +81,33 @@ public class TerimaPart extends AppActivity {
 
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                viewHolder.find(R.id.txtTanggal, TextView.class).setText("TANGGAL :" + nListArray.get(position).get("TANGGAL_SET").asString());;
-                viewHolder.find(R.id.txtSupplier, TextView.class).setText("SUPPLIER :" + nListArray.get(position).get("SUPPLIER").asString());;
-                viewHolder.find(R.id.txtPembayaran, TextView.class).setText("PEMBAYARAN :" + nListArray.get(position).get("PEMBAYARAN").asString());;
-                viewHolder.find(R.id.txtTotal, TextView.class).setText("TOTAL :" + nListArray.get(position).get("TOTAL").asString());;
-                viewHolder.find(R.id.txtNoDo, TextView.class).setText("NO DO :" + nListArray.get(position).get("NO_DO").asString());;
-                viewHolder.find(R.id.txtJatuhTempo, TextView.class).setText("JATUH TEMPO :" + nListArray.get(position).get("JATUH_TEMPO").asString());;
-                viewHolder.find(R.id.txtUser, TextView.class).setText("USER :" + nListArray.get(position).get("USER").asString());;
+                viewHolder.find(R.id.txtTanggal, TextView.class).setText(nListArray.get(position).get("TANGGAL_PENERIMAAN").asString());;
+                viewHolder.find(R.id.txtSupplier, TextView.class).setText(nListArray.get(position).get("SUPPLIER").asString());;
+                viewHolder.find(R.id.txtPembayaran, TextView.class).setText(nListArray.get(position).get("PEMBAYARAN").asString());;
+                viewHolder.find(R.id.txtTotal, TextView.class).setText(nListArray.get(position).get("NET").asString());;
+                viewHolder.find(R.id.txtNoDo, TextView.class).setText(nListArray.get(position).get("NO_DO").asString());;
+                viewHolder.find(R.id.txtJatuhTempo, TextView.class).setText(nListArray.get(position).get("JATUH_TEMPO_INV").asString());;
+                //viewHolder.find(R.id.txtUser, TextView.class).setText("USER :" + nListArray.get(position).get("USER").asString());;
             }
         });
-        reload("nama");
+        reload("");
+
+        CariNoDO.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String data = CariNoDO.getText().toString();
+                reload(data);
+            }
+        });
     }
 
-    private void reload(final String nama){
+    private void reload(final String data){
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-
+                args.put("search", data);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewterimapart"),args)) ;
 
             }
@@ -114,58 +126,4 @@ public class TerimaPart extends AppActivity {
             }
         });
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode==REQUEST_TERIMA_PART && resultCode == RESULT_OK){
-            setResult(RESULT_OK);
-            reload("nama");
-        }
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(final Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_terima_part, menu);
-
-        // Get the SearchView and set the searchable configuration
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        tsearchView = new SearchView(getSupportActionBar().getThemedContext());
-        tsearchView.setQueryHint("Cari terima part"); /// YOUR HINT MESSAGE
-        tsearchView.setMaxWidth(Integer.MAX_VALUE);
-
-        final MenuItem searchMenu = menu.findItem(R.id.terima_search);
-        searchMenu.setActionView(tsearchView);
-        searchMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-        tsearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        tsearchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
-
-        SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
-
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-
-            public boolean onQueryTextSubmit(String query) {
-                reload(query);
-                return true;
-            }
-        };
-        tsearchView.setOnQueryTextListener(queryTextListener);
-        return true;
-    }
-
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-        } else {
-            Toast.makeText(getApplicationContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
 }

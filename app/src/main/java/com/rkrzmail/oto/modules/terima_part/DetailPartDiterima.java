@@ -30,15 +30,13 @@ public class DetailPartDiterima extends AppActivity {
     private static final String TAG = "DetailPartDiterima";
     private static final int REQUEST_DETAIL_PART_DITERIMA = 4242;
     private Spinner spinnerLokasiSimpan, spinnerPenempatan;
-    private Button btnScan, btnTutup;
+    private Button btnScan;
+    private EditText txtNoPart, txtNamaPart, txtJumlah, txtHargaBeliUnit, txtDiskonBeli;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_part_diterima);
-
-        btnScan = findViewById(R.id.btnScan);
-        btnTutup = findViewById(R.id.btnTutup);
 
         initToolbar();
         initComponent();
@@ -57,7 +55,7 @@ public class DetailPartDiterima extends AppActivity {
             public void run() {
                 Map<String, String> args2 = AppApplication.getInstance().getArgsData();
 
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturterimapart"),args2)) ;
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewterimapart"),args2)) ;
                 Log.d("NO_PART", result.get(0).get("NO_PART").asString());
             }
 
@@ -82,6 +80,15 @@ public class DetailPartDiterima extends AppActivity {
     }
 
     private void initComponent(){
+
+        btnScan = findViewById(R.id.btnScan);
+        txtNoPart = findViewById(R.id.txtNoPart);
+        txtNamaPart = findViewById(R.id.txtNamaPart);
+        txtJumlah = findViewById(R.id.txtJumlah);
+        txtHargaBeliUnit = findViewById(R.id.txtHargaBeliUnit);
+        txtDiskonBeli = findViewById(R.id.txtDiskonBeli);
+        spinnerLokasiSimpan = findViewById(R.id.spinnerLokasiSimpan);
+        spinnerPenempatan = findViewById(R.id.spinnerPenempatan);
 
 //        spinnerView1();
 //
@@ -122,13 +129,7 @@ public class DetailPartDiterima extends AppActivity {
         find(R.id.btnTutup, Button.class).setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                if (find(R.id.txtJumlah, EditText.class).getText().toString().equalsIgnoreCase("")){
-                    showError("Jumlah harus di isi");return;
-                }else if (find(R.id.txtHargaBeliUnit, EditText.class).getText().toString().equalsIgnoreCase("")) {
-                    showError("Harga beli unit harus di isi");
-                }else if (find(R.id.txtDiskonBeli, EditText.class).getText().toString().equalsIgnoreCase("")) {
-                    showError("Diskon beli harus di isi");
-                }
+
                 insertdata();
             }
         });
@@ -142,11 +143,11 @@ public class DetailPartDiterima extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
-                String jumlah = find(R.id.txtJumlah, EditText.class).getText().toString();
-                String hargabeliunit = find(R.id.txtHargaBeliUnit, EditText.class).getText().toString();
-                String diskonbeli = find(R.id.txtDiskonBeli, EditText.class).getText().toString();
-                String lokasisimpan = find(R.id.txtLokasiSimpan, Spinner.class).getSelectedItem().toString();
-                String penempatan = find(R.id.txtPenempatan, Spinner.class).getSelectedItem().toString();
+                String jumlah = txtJumlah.getText().toString();
+                String hargabeliunit = txtHargaBeliUnit.getText().toString();
+                String diskonbeli = txtDiskonBeli.getText().toString();
+                String lokasisimpan = spinnerLokasiSimpan.getSelectedItem().toString();
+                String penempatan = spinnerPenempatan.getSelectedItem().toString();
 
                 args.put("jumlah", jumlah);
                 args.put("hargabeliunit", hargabeliunit);
@@ -155,7 +156,6 @@ public class DetailPartDiterima extends AppActivity {
                 args.put("penempatan", penempatan);
 
                 data = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturterimapart"), args));
-                data.toJson().equalsIgnoreCase("data");
 
             }
 

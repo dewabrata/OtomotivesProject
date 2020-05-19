@@ -47,7 +47,7 @@
 
                 <TextView
                     android:id="@+id/textView46"
-                    android:layout_width="wrap_content"
+                    android:layout_width="250sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Tipe Supplier" />
@@ -74,14 +74,13 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
 
-                <EditText
-                    android:id="@+id/txtNamaSupplier"
-                    android:layout_width="match_parent"
-                    android:layout_height="50sp"
-                    android:ems="10"
-                    android:hint="Nama Supplier"
-                    android:inputType="textPersonName"
-                    android:text="" />
+                    <EditText
+                        android:id="@+id/txtNamaSupplier"
+                        android:layout_width="match_parent"
+                        android:layout_height="50sp"
+                        android:ems="10"
+                        android:hint="Nama Supplier"
+                        android:inputType="textPersonName" />
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
 
@@ -103,8 +102,7 @@
                     android:layout_height="50sp"
                     android:ems="10"
                     android:hint="NO. DO"
-                    android:inputType="textPersonName"
-                    android:number="Number" />
+                    android:inputType="textPersonName" />
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
 
@@ -131,6 +129,7 @@
                         android:layout_width="40sp"
                         android:layout_height="50sp"
                         android:layout_weight="1"
+                        android:textAlignment="center"
                         android:drawableLeft="@drawable/ic_date" />
 
 
@@ -160,7 +159,8 @@
                         android:layout_width="40sp"
                         android:layout_height="40sp"
                         android:drawableLeft="@drawable/ic_date"
-                        android:layout_weight="1"/>
+                        android:layout_weight="1"
+                        android:textAlignment="center"/>
 
                 </LinearLayout>
             </LinearLayout>
@@ -179,7 +179,7 @@
 
                     <TextView
                         android:id="@+id/textView41"
-                        android:layout_width="wrap_content"
+                        android:layout_width="250dp"
                         android:layout_height="wrap_content"
                         android:text="Pembayaran"
                         android:layout_weight="1"/>
@@ -219,6 +219,7 @@
                         android:layout_width="40sp"
                         android:layout_height="40sp"
                         android:layout_weight="1"
+                        android:textAlignment="center"
                         android:drawableLeft="@drawable/ic_date" />
 
                 </LinearLayout>
@@ -248,8 +249,7 @@
                         android:layout_height="wrap_content"
                         android:ems="10"
                         android:hint="Ongkos Kirim"
-                        android:inputType="textPersonName"
-                        android:number="Number" />
+                        android:inputType="textPersonName" />
                     </android.support.design.widget.TextInputLayout>
 
                 </LinearLayout>
