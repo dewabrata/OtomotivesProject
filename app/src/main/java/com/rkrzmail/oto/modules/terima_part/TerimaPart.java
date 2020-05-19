@@ -77,7 +77,7 @@ public class TerimaPart extends AppActivity {
 
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                viewHolder.find(R.id.txtTanggal, TextView.class).setText("TANGGAL :" + nListArray.get(position).get("TANGGAL").asString());;
+                viewHolder.find(R.id.txtTanggal, TextView.class).setText("TANGGAL :" + nListArray.get(position).get("TANGGAL_SET").asString());;
                 viewHolder.find(R.id.txtSupplier, TextView.class).setText("SUPPLIER :" + nListArray.get(position).get("SUPPLIER").asString());;
                 viewHolder.find(R.id.txtPembayaran, TextView.class).setText("PEMBAYARAN :" + nListArray.get(position).get("PEMBAYARAN").asString());;
                 viewHolder.find(R.id.txtTotal, TextView.class).setText("TOTAL :" + nListArray.get(position).get("TOTAL").asString());;
@@ -85,24 +85,7 @@ public class TerimaPart extends AppActivity {
                 viewHolder.find(R.id.txtJatuhTempo, TextView.class).setText("JATUH TEMPO :" + nListArray.get(position).get("JATUH_TEMPO").asString());;
                 viewHolder.find(R.id.txtUser, TextView.class).setText("USER :" + nListArray.get(position).get("USER").asString());;
             }
-        }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Nson parent, View view, int position) {
-                //Toast.makeText(getActivity(),"HHHHH "+position, Toast.LENGTH_SHORT).show();
-                Intent intent =  new Intent(getActivity(), AturTerimaPart.class);
-                intent.putExtra("ID", nListArray.get(position).get("ID").asString());
-                intent.putExtra("TANGGAL", nListArray.get(position).get("TANGGAL").asString());
-                intent.putExtra("SUPPLIER", nListArray.get(position).get("SUPPLIER").asString());
-                intent.putExtra("PEMBAYARAN", nListArray.get(position).get("PEMBAYARAN").asString());
-                intent.putExtra("TOTAL", nListArray.get(position).get("TOTAL").asString());
-                intent.putExtra("NO DO", nListArray.get(position).get("NO_DO").asString());
-                intent.putExtra("JATUH_TEMPO", nListArray.get(position).get("JATUH_TEMPO").asString());
-                intent.putExtra("USER", nListArray.get(position).get("USER").asString());
-                intent.putExtra("ID", nListArray.get(position).toJson());
-                //intent.putExtra("id", nListArray.get(position).get("id").asString());
-                startActivityForResult(intent, REQUEST_TERIMA_PART);
-            }
-        }));
+        });
         reload("nama");
     }
 
