@@ -144,38 +144,40 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
             public void run() {
                 final Map<String, String> args = AppApplication.getInstance().getArgsData();
                 final Map<String, String> args2 = AppApplication.getInstance().getArgsData();
-//                args.put("tglpesan", tglpesan);
-//                args.put("tglterima", tglterima);
-//                args.put("jatuhtempo", jatuhtempo);
-//                args.put("tipe", tipe);
-//                args.put("nama", nama);
-//                args.put("nodo", nodo);
-//                args.put("ongkir", ongkir);
-//                args.put("pembayaran", pembayaran);
-//
-//               result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturterimapart"), args));
+                args.put("tglpesan", tglpesan);
+                args.put("tglterima", tglterima);
+                args.put("jatuhtempo", jatuhtempo);
+                args.put("tipe", tipe);
+                args.put("nama", nama);
+                args.put("nodo", nodo);
+                args.put("ongkir", ongkir);
+                args.put("pembayaran", pembayaran);
+
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturterimapart"), args));
                result2 = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewterimapart"), args2));
 
             }
 
             @Override
             public void runUI() {
-//                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-//                    Log.d(TAG, result.get("status").asString());
-////                    else{
-////                        startActivity(new Intent(AturTerimaPart.this, TerimaPart.class));
-////                        finish();
-////                    }
-//                } else {
-//                    showError(result.get("status").asString());
-//                    Log.d(TAG, "error");
-//                }
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    Log.d(TAG, result.get("status").asString());
+                    List<String> data = new ArrayList<>();
+                    for (int i = 0; i < result2.get("data").size(); i++) {
+                        data.add(result2.get("data").get(i).get("TANGGAL_PESAN").asString());
+                        data.add(result2.get("data").get(i).get("TANGGAL_PENERIMAAN").asString());
 
-                   if(result2.get("data").asArray().equals(tglpesan)){
-                       alertDialog();
-                   }else{
-
-                   }
+                    }
+                    if (data.contains(tglpesan) && data.contains(tglterima)) {
+                        alertDialog();
+                    } else {
+                        startActivity(new Intent(AturTerimaPart.this, TerimaPart.class));
+                        finish();
+                    }
+                } else {
+                    showError(result.get("status").asString());
+                    Log.d(TAG, "error");
+                }
             }
         });
     }

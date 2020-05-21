@@ -27,6 +27,8 @@ public class Booking2_Activity extends AppActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking2_);
+        initToolbar();
+        initComponent();
     }
 
     private void initToolbar() {

@@ -177,7 +177,7 @@ public class Pendaftaran1 extends AppActivity {
 
 
         bookTitle = (NikitaAutoComplete) findViewById(R.id.txtNopol);
-        bookTitle.setThreshold(3);
+        bookTitle.setThreshold(1);
         bookTitle.setAdapter(new NsonAutoCompleteAdapter(this){
             @Override
             public Nson onFindNson(Context context, String bookTitle) {

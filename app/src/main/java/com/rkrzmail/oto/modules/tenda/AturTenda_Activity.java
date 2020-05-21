@@ -119,23 +119,8 @@ public class AturTenda_Activity extends AppActivity implements View.OnClickListe
         find(R.id.btn_simpan_tenda, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (etTglBuka.getText().toString().equalsIgnoreCase("")) {
-                    etTglBuka.setError("Silahkan Di isi");
-                } else if (etTglSelesai.getText().toString().equalsIgnoreCase("")) {
-                    etTglSelesai.setError("Silahkan Di Isi");
-                } else if (etLokasi.getText().toString().equalsIgnoreCase("")) {
-                    etLokasi.setError("Silahkan Di Isi");
-                } else if (etAlamat.getText().toString().equalsIgnoreCase("")) {
-                    etAlamat.setError("Silahkan Di Isi");
-                } else if (etLonglat.getText().toString().equalsIgnoreCase("")) {
-                    etLonglat.setError("Silahkan Di Isi");
-                } else if (etJamBuka.getText().toString().equalsIgnoreCase("")) {
-                    etJamBuka.setError("Silahkan Di Isi");
-                } else if (etJamTutup.getText().toString().equalsIgnoreCase("")) {
-                    etJamTutup.setError("Silahkan Di Isi");
-                } else {
+
                     saveData();
-                }
 
             }
         });
@@ -230,12 +215,14 @@ public class AturTenda_Activity extends AppActivity implements View.OnClickListe
                 String jamBuka = etJamBuka.getText().toString();
                 String jamTutup = etJamTutup.getText().toString();
 
+                if (etLonglat.isEnabled() && etAlamat.isEnabled()) {
+                    args.put("alamat", alamat);
+                    args.put("lokasi", longlat);
+                }
                 args.put("action", "save");
                 //args.put("tipe", tipe);
                 args.put("tanggal", tglMulai);
                 args.put("namalokasi", lokasi);
-                args.put("alamat", alamat);
-                args.put("lokasi", longlat);
                 args.put("buka", jamBuka);
                 args.put("tutup", jamTutup);
                 args.put("status", "");

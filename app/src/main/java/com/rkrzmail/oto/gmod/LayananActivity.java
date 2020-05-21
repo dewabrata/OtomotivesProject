@@ -54,14 +54,13 @@ public class LayananActivity extends AppActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-
-        find(R.id.bt_filter).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), LayananFilterActivity.class);
-                startActivityForResult(intent, REQUEST_FILTER);
-            }
-        });
+//        find(R.id.bt_filter).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(getActivity(), LayananFilterActivity.class);
+//                startActivityForResult(intent, REQUEST_FILTER);
+//            }
+//        });
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

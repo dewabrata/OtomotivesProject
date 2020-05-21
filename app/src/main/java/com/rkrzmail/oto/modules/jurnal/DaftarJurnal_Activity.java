@@ -1,7 +1,9 @@
 package com.rkrzmail.oto.modules.jurnal;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -47,6 +49,14 @@ public class DaftarJurnal_Activity extends AppActivity {
     }
 
     private void initComponent() {
+        FloatingActionButton fab = findViewById(R.id.fab_tambah_jurnal);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), AturJurnal_Activity.class));
+            }
+        });
+
         rvJurnal = findViewById(R.id.recyclerView_daftar_jurnal);
         cariJurnal = findViewById(R.id.et_cariJurnal);
 

@@ -77,7 +77,6 @@ public class LokasiPart_Activity extends AppActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_lokasi_part);
         setSupportActionBar(toolbar);
-
         getSupportActionBar().setTitle("Lokasi Part");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.animate().translationY(-toolbar.getBottom()).setInterpolator(new AccelerateInterpolator()).start();

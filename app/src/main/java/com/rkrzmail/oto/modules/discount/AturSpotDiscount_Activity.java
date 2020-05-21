@@ -1,8 +1,7 @@
-package com.rkrzmail.oto.modules.spotDiscount;
+package com.rkrzmail.oto.modules.discount;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -22,7 +21,7 @@ import com.rkrzmail.srv.NsonAutoCompleteAdapter;
 
 import java.util.Map;
 
-public class AturDiscount_Activity extends AppActivity {
+public class AturSpotDiscount_Activity extends AppActivity {
 
     private NikitaAutoComplete cariNoponsel;
     private EditText etNoPonsel, etNama, etTransaksi, etDisc, etNet, etSpot, etTotal;
@@ -30,7 +29,9 @@ public class AturDiscount_Activity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_atur_discount_);
+        setContentView(R.layout.activity_atur_spot_discount);
+        initToolbar();
+        initComponent();
 
     }
 

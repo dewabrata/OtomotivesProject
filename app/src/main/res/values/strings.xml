@@ -125,14 +125,6 @@
 
     </string-array>
 
-    <string-array name="tipe_pembayaran">
-        <item>COD</item>
-        <item>INV</item>
-        <item>Konsigment</item>
-        <item>Pinjaman</item>
-
-    </string-array>
-
     <string-array name="tipe_penerimaan">
         <item>PEMBELIAN</item>
         <item>PENGANTIAN RETURN</item>

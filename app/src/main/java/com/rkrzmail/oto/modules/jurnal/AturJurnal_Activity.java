@@ -1,14 +1,11 @@
 package com.rkrzmail.oto.modules.jurnal;
 
 import android.content.Intent;
-import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -19,7 +16,6 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.spotDiscount.SpotDiscount_Activity;
 import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
@@ -69,7 +65,7 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
                 if (item.equalsIgnoreCase("SEWA GEDUNG DAN LAINYA")) {
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_periodeSewa_jurnal, LinearLayout.class), false);
                 } else {
-                    Tools.setViewAndChildrenEnabled(find(R.id.layout_biaya, LinearLayout.class), true);
+                    Tools.setViewAndChildrenEnabled(find(R.id.ly_periodeSewa_jurnal, LinearLayout.class), true);
                 }
             }
 
@@ -98,7 +94,7 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
             }
         });
 
-        find(R.id.btn_simpan_jurnal, Button.class).setOnClickListener(new View.OnClickListener() {
+        find(R.id.btn_lanjut_jurnal, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 saveData();
@@ -124,31 +120,41 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
     }
 
     private void saveData() {
+        final String tanggal = date.getText().toString();
+        final String mSewa = mulaiSewa.getText().toString();
+        final String sSewa = selesaiSewa.getText().toString();
+        final String poss = pos.getSelectedItem().toString();
+        final String transaksi = jenisTransaksi.getSelectedItem().toString();
+
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                String tanggal = date.getText().toString();
-                String mSewa = mulaiSewa.getText().toString();
-                String sSewa = selesaiSewa.getText().toString();
-                String poss = pos.getSelectedItem().toString();
-                String transaksi = jenisTransaksi.getSelectedItem().toString();
 
-                args.put("", tanggal);
-                args.put("", mSewa);
-                args.put("", sSewa);
-                args.put("", poss);
-                args.put("", transaksi);
 
+                if (find(R.id.ly_periodeSewa_jurnal, LinearLayout.class).isEnabled()) {
+                    args.put("", mSewa);
+                    args.put("", sSewa);
+                } else {
+                    args.put("", tanggal);
+                    args.put("", poss);
+                    args.put("", transaksi);
+                }
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("jurnal"), args));
             }
 
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    startActivity(new Intent(getActivity(), SpotDiscount_Activity.class));
+                    Intent i = new Intent(getActivity(), Pembayaran_Activity.class);
+                    i.putExtra("tanggal", tanggal);
+                    i.putExtra("msewa", mSewa);
+                    i.putExtra("ssewa", sSewa);
+                    i.putExtra("pos", poss);
+                    i.putExtra("transaksi", transaksi);
+                    startActivity(i);
+                    finish();
                 } else {
                     showInfo("GAGAL");
                 }

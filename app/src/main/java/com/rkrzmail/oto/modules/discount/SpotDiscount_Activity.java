@@ -1,10 +1,9 @@
-package com.rkrzmail.oto.modules.spotDiscount;
+package com.rkrzmail.oto.modules.discount;
 
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -54,7 +53,7 @@ public class SpotDiscount_Activity extends AppActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), AturDiscount_Activity.class));
+                startActivity(new Intent(getActivity(), AturSpotDiscount_Activity.class));
             }
         });
 
@@ -65,11 +64,11 @@ public class SpotDiscount_Activity extends AppActivity {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
-                find(R.id.tv_tanggal_spotDisc, TextView.class).setText(nListArray.get(position).get("").asString());
-                find(R.id.tv_user_spotDisc, TextView.class).setText(nListArray.get(position).get("").asString());
-                find(R.id.tv_namaPelanggan_spotDisc, TextView.class).setText(nListArray.get(position).get("").asString());
-                find(R.id.tv_transaksi_spotDisc, TextView.class).setText(nListArray.get(position).get("").asString());
-                find(R.id.tv_disc_spotDisc, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_tanggal_spotDisc, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_user_spotDisc, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_namaPelanggan_spotDisc, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_transaksi_spotDisc, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_disc_spotDisc, TextView.class).setText(nListArray.get(position).get("").asString());
             }
         });
 
@@ -91,7 +90,6 @@ public class SpotDiscount_Activity extends AppActivity {
     private void catchData() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
