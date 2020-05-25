@@ -26,9 +26,10 @@ import java.util.Map;
 
 public class Booking1A_Activity extends AppActivity {
 
+    private static final int REQUEST_PENDAFTARAN = 23;
     private NikitaAutoComplete etJenisKendaraan, etNopol, etNoPonsel;
     private EditText etNamaPelanggan, etKeluhan, etKm;
-    private Spinner spKondisiKendaraan, spLayanan;
+    private Spinner spKondisiKendaraan, spLayanan, spPekerjaan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,13 +58,14 @@ public class Booking1A_Activity extends AppActivity {
         etKm = findViewById(R.id.et_km_booking1a);
         spKondisiKendaraan = findViewById(R.id.sp_kondisi_booking1a);
         spLayanan = findViewById(R.id.sp_layanan_booking1a);
+        spPekerjaan = findViewById(R.id.sp_pekerjaan_booking1a);
 
         componentValidation();
 
         find(R.id.btn_history_booking1a, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showHistory();
+
             }
         });
 
@@ -75,24 +77,6 @@ public class Booking1A_Activity extends AppActivity {
         });
     }
 
-    private void showHistory(){
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("booking1"), args));
-            }
-
-            @Override
-            public void runUI() {
-                Nson nson = Nson.newObject();
-
-            }
-        });
-
-    }
-
     private void nextBooking(){
         final String nopol = etNopol.getText().toString().toUpperCase();
         final String nophone = etNoPonsel.getText().toString();
@@ -102,6 +86,7 @@ public class Booking1A_Activity extends AppActivity {
         final String km = etKm.getText().toString();
         final String keluhan = etKeluhan.getText().toString();
         final String layanan = spLayanan.getSelectedItem().toString().toUpperCase();
+        final String pekerjaan = spPekerjaan.getSelectedItem().toString().toUpperCase();
 
 
         newProses(new Messagebox.DoubleRunnable() {
@@ -131,6 +116,7 @@ public class Booking1A_Activity extends AppActivity {
                 nson.set("keluhan", keluhan);
                 nson.set("km", km);
                 nson.set("layanan", layanan);
+                nson.set("pekerjaan", pekerjaan);
 
             }
         });

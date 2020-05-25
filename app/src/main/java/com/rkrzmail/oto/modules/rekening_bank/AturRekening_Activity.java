@@ -24,6 +24,8 @@ public class AturRekening_Activity extends AppActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_atur_rekening_);
+        initToolbar();
+        initComponent();
     }
 
     private void initToolbar() {
@@ -34,8 +36,10 @@ public class AturRekening_Activity extends AppActivity {
     }
 
     private void initComponent() {
+
         EditText etNoRek = findViewById(R.id.et_noRek_rekening);
         Spinner spBank = findViewById(R.id.sp_bank_rekening);
+        EditText etNamaRek = findViewById(R.id.et_namaRek_rekening);
 
         find(R.id.btn_simpan_rekening, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override

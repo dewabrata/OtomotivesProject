@@ -13,10 +13,13 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -37,8 +40,11 @@ import com.rkrzmail.oto.modules.part.AdapterSuggestionSearch;
 import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.srv.NsonAutoCompleteAdapter;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -51,7 +57,7 @@ public class LokasiPart_Activity extends AppActivity {
     private View parent_view;
     private RecyclerView rvLokasi_part;
     private AdapterSuggestionSearch adapterSuggestionSearch;
-    private NikitaAutoComplete bootTitle;
+    private NikitaAutoComplete cariPart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,17 +90,8 @@ public class LokasiPart_Activity extends AppActivity {
 
     private void initComponent() {
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah_part);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), CariPart_Activity.class);
-                startActivity(intent);
-            }
-        });
-
         rvLokasi_part = (RecyclerView) findViewById(R.id.recyclerView_lokasiPart);
-        bootTitle = (NikitaAutoComplete) findViewById(R.id.et_cariLokasiPart);
+        cariPart = (NikitaAutoComplete) findViewById(R.id.et_cariLokasiPart);
 
         rvLokasi_part.setLayoutManager(new LinearLayoutManager(this));
         rvLokasi_part.setHasFixedSize(true);
@@ -103,14 +100,14 @@ public class LokasiPart_Activity extends AppActivity {
             @Override
             public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, final int position) {
 
-                viewHolder.find(R.id.tv_noFolder, TextView.class).setText("NO. FOLDER : " + nListArray.get(position).get("NO_FOLDER").asString());
-                viewHolder.find(R.id.tv_lokasiPart, TextView.class).setText("LOKASI : " + (nListArray.get(position).get("LOKASI").asString()));
-                viewHolder.find(R.id.tv_namaPart, TextView.class).setText("NAMA PART : " + nListArray.get(position).get("NAMA").asString());
-                viewHolder.find(R.id.tv_nomor_part, TextView.class).setText("NO. PART : " + nListArray.get(position).get("NO_PART_ID").asString());
-                viewHolder.find(R.id.tv_tglOpname, TextView.class).setText("TGL. OPNAME : " + nListArray.get(position).get("TANGGAL_OPNAME").asString());
-                viewHolder.find(R.id.tv_penempatan, TextView.class).setText("PENEMPATAN : " + nListArray.get(position).get("PENEMPATAN").asString());
-                viewHolder.find(R.id.tv_stock, TextView.class).setText("STOCK : " + nListArray.get(position).get("STOCK").asString());
-                viewHolder.find(R.id.tv_user, TextView.class).setText("USER : " + nListArray.get(position).get("USER").asString());
+                viewHolder.find(R.id.tv_noFolder, TextView.class).setText(nListArray.get(position).get("NO_FOLDER").asString());
+                viewHolder.find(R.id.tv_lokasiPart, TextView.class).setText(nListArray.get(position).get("LOKASI").asString());
+                viewHolder.find(R.id.tv_namaPart, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
+                viewHolder.find(R.id.tv_nomor_part, TextView.class).setText(nListArray.get(position).get("NO_PART_ID").asString());
+                viewHolder.find(R.id.tv_tglOpname, TextView.class).setText(nListArray.get(position).get("TANGGAL_OPNAME").asString());
+                viewHolder.find(R.id.tv_penempatan, TextView.class).setText(nListArray.get(position).get("PENEMPATAN").asString());
+                viewHolder.find(R.id.tv_stock, TextView.class).setText(nListArray.get(position).get("STOCK").asString());
+                viewHolder.find(R.id.tv_user, TextView.class).setText(nListArray.get(position).get("USER").asString());
 
                 viewHolder.find(R.id.tv_optionMenu, TextView.class).setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -125,15 +122,6 @@ public class LokasiPart_Activity extends AppActivity {
                                     case R.id.action_stockOpname:
 //                                        Stock opname : membuka form stock opname
                                         Intent i = new Intent(getActivity(), StockOpname_Activity.class);
-                                        i.putExtra("NO_FOLDER", nListArray.get(position).get("NO_FOLDER"));
-                                        i.putExtra("NO_PART_ID", nListArray.get(position).get("NO_PART_ID"));
-                                        i.putExtra("NAMA", nListArray.get(position).get("NAMA"));
-                                        i.putExtra("STOCK", nListArray.get(position).get("STOCK"));
-                                        i.putExtra("LOKASI", nListArray.get(position).get("LOKASI"));
-                                        i.putExtra("USER", nListArray.get(position).get("USER"));
-                                        i.putExtra("PENEMPATAN", nListArray.get(position).get("PENEMPATAN"));
-                                        i.putExtra("PALET", nListArray.get(position).get("PALET"));
-                                        i.putExtra("RAK", nListArray.get(position).get("LOKASI"));
                                         i.putExtra("NO_PART_ID", nListArray.get(position).toJson());
                                         startActivityForResult(i, REQUEST_STOCK_OPNAME);
                                         break;
@@ -154,11 +142,42 @@ public class LokasiPart_Activity extends AppActivity {
             }
         });
 
-        bootTitle.setOnClickListener(new View.OnClickListener() {
+        cariPart.setThreshold(3);
+        cariPart.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
             @Override
-            public void onClick(View view) {
-                String data = bootTitle.getText().toString();
-                catchData(data);
+            public Nson onFindNson(Context context, String bookTitle) {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+
+                args.put("data", bookTitle);
+                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlokasipart"), args));
+
+                return result;
+
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                if (convertView == null) {
+                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    convertView = inflater.inflate(R.layout.find_nama_part, parent, false);
+                }
+
+                findView(convertView, R.id.tv_find_cari_namaPart, TextView.class).setText((getItem(position).get("NAMA").asString()));
+
+                return convertView;
+            }
+        });
+
+        cariPart.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long l) {
+                Nson n = Nson.readJson(String.valueOf(parent.getItemAtPosition(position)));
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append(n.get("NAMA").asString());
+
+                cariPart.setText(stringBuilder.toString());
+                cariPart.setTag(String.valueOf(parent.getItemAtPosition(position)));
+
             }
         });
 
@@ -186,6 +205,18 @@ public class LokasiPart_Activity extends AppActivity {
                     rvLokasi_part.getAdapter().notifyDataSetChanged();
                     Log.d(TAG, result.get("status").asString());
                     Log.d("NAMA", result.get("search").get("data").asString());
+
+                    List<Nson> nson = new ArrayList<>();
+                    for (int i = 0; i < result.get("data").size(); i++) {
+                        nson.add(result.get("data").get(i).get("NO_FOLDER"));
+
+                    }
+                    Collections.sort(nson, new Comparator<Nson>() {
+                        @Override
+                        public int compare(Nson nson1, Nson nson2) {
+                            return nson1.size();
+                        }
+                    });
 
                 } else {
                     Log.d(TAG, result.get("status").asString());

@@ -39,152 +39,140 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:orientation="vertical"
             android:padding="10sp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/border_solid"
             tools:context=".modules.terima_part.DetailPartDiterima">
 
-
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
-
-            <EditText
-                android:id="@+id/txtNoPart"
-                android:layout_width="match_parent"
-                android:layout_height="50sp"
-                android:ems="10"
-                android:enabled="false"
-                android:inputType="textPersonName"
-                android:hint="No. PART"/>
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
-
-            <EditText
-                android:id="@+id/txtNamaPart"
-                android:layout_width="match_parent"
-                android:layout_height="50sp"
-                android:ems="10"
-                android:enabled="false"
-                android:hint="Nama PART"
-                android:inputType="textPersonName" />
-            </android.support.design.widget.TextInputLayout>
-
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <android.support.design.widget.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1">
-
-
-                    <EditText
-                        android:id="@+id/txtJumlah"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:ems="10"
-                        android:hint="Jumlah"
-                        android:inputType="textPersonName" />
-
-                </android.support.design.widget.TextInputLayout>
-
-                <Button
-                    android:id="@+id/btnScan"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="SCAN"
-                    android:layout_gravity="center"
-                    android:background="@drawable/btn_rounded_accent"
-                    android:textColor="@color/white_transparency"/>
-
-            </LinearLayout>
-
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
+                android:layout_width="250sp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1">
+                android:orientation="vertical">
 
-                <EditText
-                    android:id="@+id/txtHargaBeliUnit"
+                <TextView
+                    android:id="@+id/textView19"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:hint="Hagra Beli Unit Rp."
-                    android:inputType="number" />
-            </android.support.design.widget.TextInputLayout>
+                    android:layout_height="50sp"
+                    android:text="No. PART" />
 
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
-
-                <EditText
-                    android:id="@+id/txtDiskonBeli"
+                <TextView
+                    android:id="@+id/textView23"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:hint="Diskon Beli "
-                    android:inputType="textPersonName" />
+                    android:layout_height="50sp"
+                    android:text="Nama PART" />
 
-            </android.support.design.widget.TextInputLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/textView19"
-                        android:layout_width="330dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Lokasi Simpan" />
-
-                    <Spinner
-                        android:id="@+id/spinnerLokasiSimpan"
+                        android:id="@+id/textView25"
                         android:layout_width="wrap_content"
                         android:layout_height="50sp"
                         android:layout_weight="1"
-                        android:entries="@array/lokasi_simpan" />
+                        android:text="JUMLAH" />
+
+                    <EditText
+                        android:id="@+id/txtJumlah"
+                        android:layout_width="70sp"
+                        android:layout_height="50sp"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:inputType="textPersonName" />
 
                 </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/textView28"
+                    android:layout_width="match_parent"
+                    android:layout_height="50sp"
+                    android:text="HARGA BELI/UNIT" />
 
                 <TextView
-                    android:id="@+id/textView23"
+                    android:layout_width="match_parent"
+                    android:layout_height="50sp"
+                    android:text="DISCOUNT BELI" />
+
+                <TextView
+                    android:id="@+id/textView30"
+                    android:layout_width="match_parent"
+                    android:layout_height="50sp"
+                    android:text="LOKASI SIMPAN" />
+
+                <TextView
+                    android:id="@+id/textView31"
+                    android:layout_width="match_parent"
+                    android:layout_height="50sp"
+                    android:text="PENEMPATAN" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/txtNoPart"
+                    android:layout_width="match_parent"
+                    android:layout_height="50sp"
+                    android:ems="10"
+                    android:enabled="false"
+                    android:inputType="textPersonName" />
+
+                <EditText
+                    android:id="@+id/txtNamaPart"
+                    android:layout_width="match_parent"
+                    android:layout_height="50sp"
+                    android:ems="10"
+                    android:enabled="false"
+                    android:inputType="textPersonName" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnScan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50sp"
+                        android:layout_weight="1"
+                        android:text="SCAN" />
+
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/txtHargaBeliUnit"
+                    android:layout_width="match_parent"
+                    android:layout_height="50sp"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:hint="Rp." />
+
+                <EditText
+                    android:id="@+id/txtDiskonBeli"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50sp"
                     android:layout_weight="1"
-                    android:text="Penempatan" />
+                    android:ems="10"
+                    android:inputType="textPersonName" />
+
+                <Spinner
+                    android:id="@+id/spinnerLokasiSimpan"
+                    android:layout_width="match_parent"
+                    android:layout_height="50sp"
+                    android:entries="@array/lokasi_simpan" />
 
                 <Spinner
                     android:id="@+id/spinnerPenempatan"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="50sp"
                     android:entries="@array/penempatan" />
+
             </LinearLayout>
 
         </LinearLayout>
@@ -197,10 +185,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center|left"
         android:layout_marginStart="20sp"
-        android:layout_marginTop="300dp"
+        android:layout_marginTop="280sp"
         android:background="@drawable/btn_rounded_accent"
-        android:text="Tutup"
-        android:textColor="@color/white_transparency"/>
+        android:text="Tutup" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_tambah_detailpart_terima"
@@ -208,7 +195,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center|right"
         android:layout_marginEnd="20sp"
-        android:layout_marginTop="300dp"
+        android:layout_marginTop="280sp"
         android:clickable="true"
         app:srcCompat="@drawable/ic_add" />
 

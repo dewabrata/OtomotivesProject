@@ -19,11 +19,6 @@
             android:layout_height="wrap_content"
             android:theme="@style/AppTheme.AppBarOverlay">
 
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar_penugasan"
                     android:layout_width="match_parent"
@@ -32,17 +27,6 @@
                     app:popupTheme="@style/AppTheme.PopupOverlay">
 
                 </android.support.v7.widget.Toolbar>
-
-                <ImageView
-
-                    android:id="@+id/imgBarcode"
-                    android:layout_width="42dp"
-                    android:layout_height="42dp"
-                    android:layout_gravity="right|center_vertical"
-                    android:layout_marginRight="3dp"
-                    android:padding="5dp"
-                    app:srcCompat="@drawable/scan" />
-            </FrameLayout>
 
         </android.support.design.widget.AppBarLayout>
 
@@ -55,21 +39,17 @@
             android:orientation="vertical"
             android:padding="10dp">
 
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:focusableInTouchMode="true"
-                android:orientation="horizontal">
+                android:layout_margin="5dp">
 
                 <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="wrap_content">
 
-                    android:textAlignment="center">
-
-                    <EditText
+                    <com.rkrzmail.srv.NikitaAutoComplete
                         android:id="@+id/et_namaMekanik"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -80,7 +60,16 @@
                         android:singleLine="true" />
                 </android.support.design.widget.TextInputLayout>
 
-            </LinearLayout>
+                <ProgressBar
+                    android:id="@+id/pb_namaMekanik_penugasan"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|right"
+                    android:layout_marginRight="8dp"
+                    android:visibility="gone" />
+
+            </FrameLayout>
 
             <LinearLayout
                 android:id="@+id/layout_status"
@@ -96,6 +85,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
+                    android:textStyle="bold"
                     android:text="Status" />
 
                 <RadioGroup
@@ -132,19 +122,21 @@
 
                 <TextView
                     android:id="@+id/textView7"
-                    android:layout_width="109dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:text="Tipe Antrian" />
-
-                <Spinner
-                    android:id="@+id/sp_antrian"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:entries="@array/tipe_antrian" />
+                    android:textStyle="bold"
+                    android:text="Tipe Antrian" />
+
+                <com.rkrzmail.srv.MultiSelectionSpinner
+                    android:id="@+id/sp_antrian"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1" />
+
+
             </LinearLayout>
 
             <LinearLayout
@@ -183,6 +175,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
+                    android:textStyle="bold"
                     android:text="External" />
 
                 <CheckBox
@@ -214,6 +207,8 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
+                    android:textStyle="bold"
+                    android:layout_gravity="center"
                     android:text="Jam Kerja" />
 
                 <android.support.design.widget.TextInputLayout
@@ -271,6 +266,8 @@
                     android:layout_width="109dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
+                    android:textStyle="bold"
+                    android:layout_gravity="center"
                     android:layout_weight="1"
                     android:text="Jam Istirahat" />
 
@@ -320,8 +317,9 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:layout_margin="10dp"
                 android:orientation="horizontal">
 
                 <Button

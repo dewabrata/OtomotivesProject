@@ -22,8 +22,10 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 
 public class PenugasanActivity extends AppActivity {
@@ -40,18 +42,6 @@ public class PenugasanActivity extends AppActivity {
 
         initToolbar();
         initComponent();
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah_tugas);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AturPenugasan_Activity.class);
-
-                startActivityForResult(intent, REQUEST_PENUGASAN);
-            }
-        });
-
-
     }
 
     private void initToolbar() {
@@ -64,6 +54,16 @@ public class PenugasanActivity extends AppActivity {
     }
 
     private void initComponent() {
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah_tugas);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), AturPenugasan_Activity.class);
+
+                startActivityForResult(intent, REQUEST_PENUGASAN);
+            }
+        });
 
         rvPenugasan = (RecyclerView) findViewById(R.id.recyclerView_penugasan);
         rvPenugasan.setLayoutManager(new LinearLayoutManager(this));
@@ -114,10 +114,14 @@ public class PenugasanActivity extends AppActivity {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
-                    Collections.sort(nListArray.asArray(), new Comparator() {
+                    List<Nson> sort = new ArrayList<>();
+                    for (int i = 0; i < result.get("data").size(); i++) {
+                        sort.add(result.get("data").get(i).get("NAMA_MEKANIK"));
+                    }
+                    Collections.sort(sort, new Comparator<Nson>() {
                         @Override
-                        public int compare(Object o1, Object o2) {
-                            return 0;
+                        public int compare(Nson nson, Nson nson2) {
+                            return nson.get("NAMA_MEKANIK").asString().compareTo(nson2.get("NAMA_MEKANIK").asString());
                         }
                     });
 
@@ -129,21 +133,5 @@ public class PenugasanActivity extends AppActivity {
                 }
             }
         });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_PENUGASAN && resultCode == RESULT_OK) {
-            setResult(RESULT_OK);
-            catchData();
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        finish();
     }
 }

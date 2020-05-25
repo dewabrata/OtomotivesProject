@@ -33,18 +33,25 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.utils.Tools;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 public class AturTenda_Activity extends AppActivity implements View.OnClickListener{
 
     private static final String TAG = "AturTenda_Activity";
-    private static final int REQUEST_LOCATION = 1;
-    private EditText etTglBuka, etTglSelesai, etLokasi, etAlamat, etLonglat, etJamBuka, etJamTutup;
-    private LocationManager locationManager;
-    private String latitude, longitude;
-    private Spinner spTipeWaktu, spHari;
+    private EditText etLokasi, etAlamat, etLonglat;
+    private String[] hari;
+    private TextView tvTglBuka, tvTglSelesai, tvJamMulai, tvJamTutup;
+    private List<String> dummies = new ArrayList<>();
+    private MultiSelectionSpinner spHari;
+    private Spinner spTipeWaktu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,32 +72,30 @@ public class AturTenda_Activity extends AppActivity implements View.OnClickListe
 
     private void initComponent() {
 
-        ActivityCompat.requestPermissions(this,new String[]
-                {Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
-
-        etTglBuka = findViewById(R.id.et_tglMulai_tenda);
-        etTglSelesai = findViewById(R.id.et_tglSelesai_tenda);
+        tvTglBuka = findViewById(R.id.tv_tglMulai_tenda);
+        tvTglSelesai = findViewById(R.id.tv_tglSelesai_tenda);
         etLokasi = findViewById(R.id.et_namaLokasi_tenda);
         etAlamat = findViewById(R.id.et_alamat_tenda);
         etLonglat = findViewById(R.id.et_longlat_tenda);
-        etJamBuka = findViewById(R.id.et_jamBuka_tenda);
-        etJamTutup = findViewById(R.id.et_jamSelesai_tenda);
+        tvJamMulai = findViewById(R.id.tv_jamMulai_tenda);
+        tvJamTutup = findViewById(R.id.tv_jamSelesai_tenda);
         spHari = findViewById(R.id.sp_hari_tenda);
         spTipeWaktu = findViewById(R.id.sp_tipeWaktu_tenda);
 
-//        etLonglat.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-//                    //Write Function To enable gps
-//                    OnGPS();
-//                }
-//                else {
-//                    //GPS is already On then
-//                    getLocation();
-//                }
-//            }
-//        });
+
+        hari = getResources().getStringArray(R.array.hari_tenda);
+        spHari.setItems(hari);
+        spHari.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
+            @Override
+            public void selectedIndices(List<Integer> indices) {
+
+            }
+
+            @Override
+            public void selectedStrings(List<String> strings) {
+                dummies.addAll(strings);
+            }
+        });
 
         spTipeWaktu.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -111,10 +116,10 @@ public class AturTenda_Activity extends AppActivity implements View.OnClickListe
             }
         });
 
-        etTglBuka.setOnClickListener(this);
-        etTglSelesai.setOnClickListener(this);
-        etJamBuka.setOnClickListener(this);
-        etJamTutup.setOnClickListener(this);
+        tvTglBuka.setOnClickListener(this);
+        tvTglSelesai.setOnClickListener(this);
+        tvJamMulai.setOnClickListener(this);
+        tvJamTutup.setOnClickListener(this);
 
         find(R.id.btn_simpan_tenda, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,101 +132,66 @@ public class AturTenda_Activity extends AppActivity implements View.OnClickListe
 
     }
 
-    private void getLocation() {
-        //Check Permissions again
-
-        if (ActivityCompat.checkSelfPermission(getActivity(),Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(),
-
-                Manifest.permission.ACCESS_COARSE_LOCATION) !=PackageManager.PERMISSION_GRANTED)
-        {
-            ActivityCompat.requestPermissions(this,new String[]
-                    {Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
-        }
-        else
-        {
-            Location LocationGps= locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            //Location LocationNetwork=locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            //Location LocationPassive=locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
-
-            if (LocationGps !=null)
-            {
-                double lat = LocationGps.getLatitude();
-                double longi = LocationGps.getLongitude();
-
-                latitude = String.valueOf(lat);
-                longitude = String.valueOf(longi);
-
-                etLonglat.setText(latitude + ", "+ longitude);
-
-            }else {
-                showInfo("Can't Get Your Location");
-            }
-        }
-
-    }
-
-    private void OnGPS() {
-        final AlertDialog.Builder builder= new AlertDialog.Builder(this);
-
-        builder.setMessage("Enable GPS").setCancelable(false).setPositiveButton("YES", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-            }
-        }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                dialog.cancel();
-            }
-        });
-        final AlertDialog alertDialog=builder.create();
-        alertDialog.show();
-    }
-
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.et_tglMulai_tenda:
-                Tools.getDatePickerDialog(getActivity(), etTglBuka);
+            case R.id.tv_tglMulai_tenda:
+                Tools.getDatePickerDialogTextView(getActivity(), tvTglBuka);
                 break;
-            case R.id.et_tglSelesai_tenda:
-                Tools.getDatePickerDialog(getActivity(), etTglSelesai);
+            case R.id.tv_tglSelesai_tenda:
+                Tools.getDatePickerDialogTextView(getActivity(), tvTglSelesai);
                 break;
-            case R.id.et_jamBuka_tenda:
-                Tools.getTimePickerDialog(getActivity(), etJamBuka);
+            case R.id.tv_jamMulai_tenda:
+                Tools.getTimePickerDialogTextView(getActivity(), tvJamMulai);
                 break;
-            case R.id.et_jamSelesai_tenda:
-                Tools.getTimePickerDialog(getActivity(), etJamTutup);
+            case R.id.tv_jamSelesai_tenda:
+                Tools.getTimePickerDialogTextView(getActivity(), tvJamTutup);
                 break;
 
         }
     }
 
     private void saveData() {
+
+        StringBuilder strHari = new StringBuilder();
+        for (String hari : dummies) {
+            strHari.append(hari);
+        }
+        final String tipeHari = strHari.toString();
+        final String tglMulai = tvTglBuka.getText().toString();
+        final String tglSelesai = tvTglSelesai.getText().toString();
+        final String lokasi = etLokasi.getText().toString();
+        final String longlat = etLonglat.getText().toString();
+        final String alamat = etAlamat.getText().toString();
+        final String jamBuka = tvJamMulai.getText().toString();
+        final String jamTutup = tvJamTutup.getText().toString();
+
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
-
-                String tglMulai = etTglBuka.getText().toString();
-                String tglSelesai = etTglSelesai.getText().toString();
-                String lokasi = etLokasi.getText().toString();
-                String longlat = etLonglat.getText().toString();
-                String alamat = etAlamat.getText().toString();
-                String jamBuka = etJamBuka.getText().toString();
-                String jamTutup = etJamTutup.getText().toString();
-
+                args.put("action", "save");
                 if (etLonglat.isEnabled() && etAlamat.isEnabled()) {
                     args.put("alamat", alamat);
                     args.put("lokasi", longlat);
+                } else {
+                    args.put("alamat", "");
+                    args.put("lokasi", "");
                 }
-                args.put("action", "save");
+                if (find(R.id.ly_hari_tenda, LinearLayout.class).getVisibility() == View.VISIBLE) {
+                    args.put("hari", tipeHari);
+                } else {
+                    args.put("hari", "");
+                }
+                if (find(R.id.ly_tanggal_tenda, LinearLayout.class).getVisibility() == View.VISIBLE) {
+                    args.put("tanggal", tglMulai);
+                } else {
+                    args.put("tanggal", "");
+                }
                 //args.put("tipe", tipe);
-                args.put("tanggal", tglMulai);
+
                 args.put("namalokasi", lokasi);
                 args.put("buka", jamBuka);
                 args.put("tutup", jamTutup);
@@ -232,15 +202,35 @@ public class AturTenda_Activity extends AppActivity implements View.OnClickListe
 
             @Override
             public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    Log.d(TAG, result.get("status").asString());
-                    showInfo("Berhasil Menyimpan Aktifitas");
-                    startActivity(new Intent(getActivity(), Tenda_Activity.class));
-                    finish();
-                } else {
-                    showError("Gagal Menyiman Aktifitas ");
+                try {
+                    Date tMulai = new SimpleDateFormat("dd/MM").parse(tglMulai);
+                    Date tSelesai = new SimpleDateFormat("dd/MM").parse(tglSelesai);
+                    Date jBuka = new SimpleDateFormat("HH:mm").parse(jamBuka);
+                    Date jTutup = new SimpleDateFormat("HH:mm").parse(jamTutup);
+
+                    if (find(R.id.ly_hari_tenda, LinearLayout.class).getVisibility() == View.VISIBLE) {
+                        if (!tMulai.before(tSelesai)) {
+                            showInfo("Tanggal Tidak Sesuai");
+                        }
+                    }
+                    if (jBuka.before(jTutup)) {
+                        if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                            showInfo("Berhasil Menyimpan Aktifitas");
+                            startActivity(new Intent(getActivity(), Tenda_Activity.class));
+                            finish();
+
+                        } else {
+                            showError("Gagal Menyiman Aktifitas ");
+                        }
+                    } else {
+                        showInfo("Jam Selesai Tidak Sesuai!");
+                    }
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
             }
+
         });
     }
 

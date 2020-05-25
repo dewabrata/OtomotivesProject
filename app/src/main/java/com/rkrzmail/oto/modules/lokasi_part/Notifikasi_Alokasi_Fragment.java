@@ -44,7 +44,6 @@ public class Notifikasi_Alokasi_Fragment extends Fragment {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("PENEMPATAN", "");
                 nListArray = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlokasipart"), args));
 
             }
@@ -52,42 +51,16 @@ public class Notifikasi_Alokasi_Fragment extends Fragment {
             @Override
             public void runUI() {
                 if (nListArray.get("status").asString().equalsIgnoreCase("OK")) {
-                    //Log.d("HITUNG", nListArray.get("status").asString());
+
                     int jumlah = 0;
-//
-//                    if (nListArray.get("data").get("PENEMPATAN").asString().equalsIgnoreCase("")) {
-//                        int kosong = nListArray.get("data").get("PENEMPATAN").get("").size();
-//                        nListArray.add(kosong);
-//                    }
-
-                    for (int i = 0; i < nListArray.get("data").get("PENEMPATAN").size(); i++) {
-                        if (nListArray.get(i).asString().equalsIgnoreCase("")) {
-                            int kosong = nListArray.get(i).asInteger();
-                            nListArray.add(kosong);
-                        }
+                    StringBuilder strData = new StringBuilder();
+                    for (int i = 0; i < nListArray.get("data").size(); i++) {
+                        strData.append(nListArray.get("data").get(i).get("PENEMPATAN"));
                     }
+                    Log.d("Notifikasi", String.valueOf(strData.length()));
+                    jumlah = strData.length();
+                    count.setText(jumlah + " " + "PART BELUM DI ALOKASIKAN");
 
-                        jumlah = nListArray.size();
-                        Log.d("HITUNG", String.valueOf(jumlah));
-                        count.setText(jumlah + "PART BELUM DI ALOKASIKAN");
-
-
-//                    for (int i = 0; i < nListArray.get("data").size(); i++) {
-//                        nListArray.toJson();
-//
-//                        if (nListArray.get("data").get("PENEMPATAN").get("PALET") == null &&
-//                                nListArray.get("data").get("PENEMPATAN").get("RAK") == null ){
-//
-//                            counting.add(nListArray.get("data").get(i).get("PENEMPATAN").asString());
-//                            jumlah = counting.size();
-//
-//                            Log.d("HITUNG", String.valueOf(jumlah));
-//                            Log.d("HITUNG", nListArray.get("data").get(i).get("PENEMPATAN").asString());
-//                        }else{
-//                            Log.d("HITUNG", nListArray.get("data").get(i).get("PENEMPATAN").asString());
-//                        }
-//                        // Log.d("HITUNG", nListArray.get("data").get(i).get("PENEMPATAN").asString());
-//                    }
                     }
 
             }
@@ -98,7 +71,7 @@ public class Notifikasi_Alokasi_Fragment extends Fragment {
         alokasi_part.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getContext(), AturLokasiPart_Activity.class));
+                startActivity(new Intent(getContext(), CariPart_Activity.class));
             }
         });
         return v;

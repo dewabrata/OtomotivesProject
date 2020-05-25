@@ -140,9 +140,11 @@ public class Pendaftaran1 extends AppActivity {
                     LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     convertView = inflater.inflate(R.layout.find_jenisken, parent, false);
                 }
+
                 findView(convertView, R.id.txtMerk, TextView.class).setText( (getItem(position).get("MERK").asString()) );
                 findView(convertView, R.id.txtModel, TextView.class).setText( (getItem(position).get("MODEL").asString()) );
                 findView(convertView, R.id.txtJenisVarian, TextView.class).setText( (getItem(position).get("JENIS").asString()) + " " + (getItem(position).get("VARIAN").asString())  );
+
                 return convertView;
             }
            /* public View getDropDownView(int position, View convertView, ViewGroup parent) {
@@ -326,7 +328,7 @@ public class Pendaftaran1 extends AppActivity {
                   Intent intent = new Intent(getActivity(), Pendaftaran3.class);
                   intent.putExtra("dx", nson.toJson());
                   startActivityForResult(intent, REQUEST_PENDAFTARAN);
-                    }
+                }
             }
         });
     }
@@ -400,7 +402,6 @@ public class Pendaftaran1 extends AppActivity {
             @Override
             public void runUI() {
 
-
                 setResult(RESULT_OK);
 
                 finish();
@@ -408,13 +409,9 @@ public class Pendaftaran1 extends AppActivity {
         });
     }
 
-
     final int REQUEST_BARCODE = 13;
     final int REQUEST_PENDAFTARAN = 123;
     final int REQUEST_PART  = 15;
-
-
-
 
     public class AutoSuggestAdapter extends ArrayAdapter<String> implements Filterable {
         private List<String> mlistData;
@@ -422,10 +419,12 @@ public class Pendaftaran1 extends AppActivity {
             super(context, resource);
             mlistData = new ArrayList<>();
         }
+
         public void setData(List<String> list) {
             mlistData.clear();
             mlistData.addAll(list);
         }
+
         @Override
         public int getCount() {
             return mlistData.size();
@@ -469,6 +468,4 @@ public class Pendaftaran1 extends AppActivity {
             return dataFilter;
         }
     }
-
-
 }

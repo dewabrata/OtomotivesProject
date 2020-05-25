@@ -1,142 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+
+
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
 
 
-        <android.support.design.widget.AppBarLayout
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvListBasic2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.AppBarOverlay">
+            tools:listitem="@layout/item_biaya_mekanik2">
 
+        </android.support.v7.widget.RecyclerView>
 
+    </android.support.v4.widget.NestedScrollView>
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/colorPrimary"
-                    app:popupTheme="@style/AppTheme.PopupOverlay">
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/blue_700">
 
-                </android.support.v7.widget.Toolbar>
-            </FrameLayout>
-
-
-        </android.support.design.widget.AppBarLayout>
-
-        <ScrollView
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_biayaMekanik"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="?attr/actionBarSize" />
 
-            <LinearLayout
-                android:padding="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" >
+    </android.support.design.widget.AppBarLayout>
 
-                <EditText
-                    android:id="@+id/txtUMK"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Upah Minimum Kota (Rp.)"
-                    android:enabled="false"
-                    android:inputType="number"
-                    android:maxLines="1"
-                    android:singleLine="true" />
-
-                <EditText
-                    android:id="@+id/txtUpah"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Upah/Jam (Rp.)"
-                    android:enabled="false"
-                    android:inputType="number"
-                    android:maxLines="1"
-                    android:singleLine="true" />
-
-                <EditText
-                    android:id="@+id/txtMekanik1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Mekanik 1/ Jam (Rp.)"
-                    android:inputType="number"
-                    android:maxLines="1"
-                    android:singleLine="true" />
-
-                <EditText
-                    android:id="@+id/txtWaktuBayar1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Min Waktu Berbayar (Menit)"
-                    android:inputType="number"
-                    android:maxLines="1"
-                    android:singleLine="true" />
-
-                <EditText
-                    android:id="@+id/txtMekanik2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Mekanik 2 / Jam (Rp.)"
-                    android:inputType="number"
-                    android:maxLines="1"
-                    android:singleLine="true" />
-
-                <EditText
-                    android:id="@+id/txtWaktuBayar2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Menit Waktu Berbayar (Menit)"
-                    android:inputType="number"
-                    android:maxLines="1"
-                    android:singleLine="true" />
-
-                <EditText
-                    android:id="@+id/txtMekanik3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Mekanik 3/ Jam (Rp.)"
-                    android:inputType="number"
-                    android:maxLines="1"
-                    android:singleLine="true" />
-
-                <EditText
-                    android:id="@+id/txtWaktuBayar3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Min Waktu Berbayar (Menit)"
-                    android:inputType="number"
-                    android:maxLines="1"
-                    android:singleLine="true" />
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <Button
-                        android:id="@+id/tblSimpan"
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:layout_gravity="bottom|end"
-                        android:background="@drawable/btn_rounded_accent"
-                        android:text="Simpan"
-                        android:textColor="@android:color/white" />
-                </LinearLayout>
-            </LinearLayout>
-        </ScrollView>
-    </LinearLayout>
-
-</FrameLayout>
+</android.support.design.widget.CoordinatorLayout>

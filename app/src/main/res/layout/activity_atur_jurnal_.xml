@@ -42,11 +42,10 @@
                         android:id="@+id/tv_date_jurnal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAlignment="center"
+                        android:gravity="center"
                         android:textStyle="bold"
                         android:layout_weight="1"
-                        android:drawableStart="@drawable/ic_date" />
-
+                        android:drawableStart="@drawable/icon_tanggal" />
 
                 </LinearLayout>
 
@@ -137,6 +136,7 @@
                         android:layout_height="wrap_content"
                         android:drawableStart="@drawable/ic_contact_phone"
                         android:textAlignment="center"
+                        android:gravity="center"
                         android:textStyle="bold"
                         android:layout_weight="1" />
 
@@ -153,8 +153,8 @@
                         android:id="@+id/tv_sewa"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
                         android:text="Periode Sewa"
+                        android:layout_gravity="center"
                         android:layout_weight="1"
                         android:textStyle="bold" />
 
@@ -163,9 +163,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:textAlignment="center"
+                        android:gravity="center"
                         android:textStyle="bold"
-                        android:drawableLeft="@drawable/ic_date" />
+                        android:drawableLeft="@drawable/icon_tanggal" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -180,9 +180,9 @@
                         android:layout_width="wrap_content"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:textAlignment="center"
+                        android:gravity="center"
                         android:textStyle="bold"
-                        android:drawableRight="@drawable/ic_date" />
+                        android:drawableRight="@drawable/icon_tanggal" />
 
 
                 </LinearLayout>

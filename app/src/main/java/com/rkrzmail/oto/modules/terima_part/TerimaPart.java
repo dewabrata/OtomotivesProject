@@ -51,15 +51,6 @@ public class TerimaPart extends AppActivity {
 
         initToolbar();
         initComponent();
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_terima_part);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AturTerimaPart.class);
-                startActivityForResult(intent, REQUEST_TERIMA_PART);
-            }
-        });
     }
 
     private void initToolbar(){
@@ -73,6 +64,15 @@ public class TerimaPart extends AppActivity {
     private void initComponent(){
 
         CariNoDO = findViewById(R.id.CariNoDO);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_terima_part);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), AturTerimaPart.class);
+                startActivityForResult(intent, REQUEST_TERIMA_PART);
+            }
+        });
 
         recyclerView_terimaPart = (RecyclerView) findViewById(R.id.recyclerView_terimaPart);
         recyclerView_terimaPart.setLayoutManager(new LinearLayoutManager(this));
@@ -111,6 +111,7 @@ public class TerimaPart extends AppActivity {
             Nson result;
             @Override
             public void run() {
+
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("search", data);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewterimapart"),args)) ;

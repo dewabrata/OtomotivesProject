@@ -88,9 +88,9 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
             public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
                 String item = parent.getItemAtPosition(position).toString();
                 if (item.equalsIgnoreCase("PRINCIPAL")) {
-                    Tools.setViewAndChildrenEnabled(find(R.id.layout_nama_supplier), false);
+                    // Tools.setViewAndChildrenEnabled(find(R.id.layout_nama_supplier), false);
                 }else {
-                    Tools.setViewAndChildrenEnabled(find(R.id.layout_nama_supplier), true);
+                    //Tools.setViewAndChildrenEnabled(find(R.id.layout_nama_supplier), true);
                 }
             }
 
@@ -202,7 +202,7 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
         builder1.setMessage("Penerimaan Part Telah Tercatat Sebelumnya");
         builder1.setCancelable(true);
         builder1.setPositiveButton(
-                "Yes",
+                "Edit",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();

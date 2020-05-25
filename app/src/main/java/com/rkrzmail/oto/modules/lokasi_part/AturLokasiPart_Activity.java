@@ -45,7 +45,6 @@ public class AturLokasiPart_Activity extends AppActivity {
         sp_tinggiRak_part = findViewById(R.id.sp_tinggiRak);
         sp_noFolder_part = findViewById(R.id.sp_noFolder_part);
 
-
         initComponent();
         final Nson data = Nson.readJson(getIntentStringExtra("NAMA"));
 
@@ -151,7 +150,7 @@ public class AturLokasiPart_Activity extends AppActivity {
         sp_noRakPalet_part.setAdapter(rakAdapter);
         //Tinggi Rak Spinner
         List<Integer> tinggiRak = new ArrayList<Integer>();
-        for(int i = 1; i <= 25; i++){
+        for (int i = 1; i <= 10; i++) {
             tinggiRak.add(i);
         }
         ArrayAdapter<Integer> tingiRak_adapter = new ArrayAdapter<Integer>(getActivity(), android.R.layout.simple_spinner_item, tinggiRak);

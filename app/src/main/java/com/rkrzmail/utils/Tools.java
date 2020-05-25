@@ -20,6 +20,7 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.View;
@@ -43,6 +44,7 @@ import com.rkrzmail.oto.R;
 
 import org.w3c.dom.Text;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -309,13 +311,48 @@ public class Tools {
         TimePickerDialog timePickerDialog = new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int hourOfDay, int minutes) {
-                editText.setText(hourOfDay + ":" + minutes);
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                String time = hourOfDay + ":" + minutes;
+                Date date = null;
+                try {
+                    date = sdf.parse(time);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                String formattedTime = sdf.format(date);
+                editText.setText(formattedTime);
             }
         }, currentHour, currentMinute, true);
 
+        timePickerDialog.setTitle("Pilih Jam");
         timePickerDialog.show();
     }
 
+    public static void getTimePickerDialogTextView(Context context, final TextView textView) {
+
+        Calendar calendar = Calendar.getInstance();
+        int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
+        int currentMinute = calendar.get(Calendar.MINUTE);
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int hourOfDay, int minutes) {
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                String time = hourOfDay + ":" + minutes;
+                Date date = null;
+                try {
+                    date = sdf.parse(time);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                String formattedTime = sdf.format(date);
+                textView.setText(formattedTime);
+            }
+        }, currentHour, currentMinute, true);
+
+        timePickerDialog.setTitle("Pilih Jam");
+        timePickerDialog.show();
+    }
 
 
     public static int getIndexSpinner(Spinner spinner, String value){
@@ -353,6 +390,9 @@ public class Tools {
         datepicker = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+//                String newDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+//                newDate.replace(String.valueOf(year), "");
+
                 dateTime.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
             }
         }, year, month, day);
