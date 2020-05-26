@@ -41,16 +41,13 @@ import com.rkrzmail.oto.gmod.SparepartActivity;
 import com.rkrzmail.oto.gmod.Stock_OpnameActivity;
 import com.rkrzmail.oto.modules.biayamekanik.BiayaMekanik2Activity;
 import com.rkrzmail.oto.modules.LoginActivity;
-import com.rkrzmail.oto.modules.booking.Booking1A_Activity;
-import com.rkrzmail.oto.modules.discount.DiscountPart_Activity;
 import com.rkrzmail.oto.modules.jurnal.DaftarJurnal_Activity;
 import com.rkrzmail.oto.modules.layanan.Layanan_Avtivity;
 import com.rkrzmail.oto.modules.lokasi_part.LokasiPart_Activity;
 import com.rkrzmail.oto.modules.part.PartActivity;
 import com.rkrzmail.oto.modules.part.PartSearchActivity;
 import com.rkrzmail.oto.modules.penugasan.PenugasanActivity;
-import com.rkrzmail.oto.modules.discount.SpotDiscount_Activity;
-import com.rkrzmail.oto.modules.rekening_bank.RekeningBank_Activity;
+import com.rkrzmail.oto.modules.spotDiscount.SpotDiscount_Activity;
 import com.rkrzmail.oto.modules.tenda.Tenda_Activity;
 import com.rkrzmail.oto.modules.terima_part.TerimaPart;
 
@@ -84,9 +81,6 @@ public class MenuActivity extends AppActivity {
     public static final int MN_TENDA = 24;
     public static final int MN_JURNAL = 25;
     public static final int MN_SPOT_DISKON = 26;
-    public static final int MN_DISCOUNT_PART = 27;
-    public static final int MN_REKENING = 28;
-    public static final int MN_BOOKING = 29;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,12 +121,11 @@ public class MenuActivity extends AppActivity {
                     Intent intent = new Intent(MenuActivity.this, SparepartActivity.class);
                     startActivity(intent);
 
-                }
-//                else if (nPopulate.get(position).get("id").asInteger() == MN_BIAYA_MEKANIK) {
-//                    Intent intent = new Intent(MenuActivity.this, BiayaMekanikActivity.class);
-//                    startActivity(intent);
-//                }
-                else if (nPopulate.get(position).get("id").asInteger() == MN_JUAL_PART) {
+                } else if (nPopulate.get(position).get("id").asInteger() == MN_BIAYA_MEKANIK) {
+                    Intent intent = new Intent(MenuActivity.this, BiayaMekanikActivity.class);
+                    startActivity(intent);
+
+                } else if (nPopulate.get(position).get("id").asInteger() == MN_JUAL_PART) {
                     Intent intent = new Intent(MenuActivity.this, DaftarPenjualanPartActivity.class);
                     startActivity(intent);
 
@@ -144,33 +137,27 @@ public class MenuActivity extends AppActivity {
                     Intent intent = new Intent(MenuActivity.this, Part_DiterimaActivity.class);
                     startActivity(intent);
 
-                }
-//                else if (nPopulate.get(position).get("id").asInteger() == MN_STOCK_OPNAME) {
-//                    Intent intent = new Intent(MenuActivity.this, Stock_OpnameActivity.class);
-//                    startActivity(intent);
-//
-//                }
-                else if (nPopulate.get(position).get("id").asInteger() == MN_TUGAS_PART) {
+                } else if (nPopulate.get(position).get("id").asInteger() == MN_STOCK_OPNAME) {
+                    Intent intent = new Intent(MenuActivity.this, Stock_OpnameActivity.class);
+                    startActivity(intent);
+
+                }else if (nPopulate.get(position).get("id").asInteger() == MN_TUGAS_PART) {
                     Intent intent = new Intent(MenuActivity.this, DaftarTugasPartActivity.class);
                     startActivity(intent);
 
-                }
-//                else if (nPopulate.get(position).get("id").asInteger() == MN_KOMISI_KARYAWAN) {
-//                    Intent intent = new Intent(MenuActivity.this, Komisi_Karyawan_Activity.class);
-//                    startActivity(intent);
-//
-//                }
-//                else if (nPopulate.get(position).get("id").asInteger() == MN_LOYALTI_PROGRAM) {
-//                    Intent intent = new Intent(MenuActivity.this, Loyalti_ProgramActivity.class);
-//                    startActivity(intent);
-//
-//                }
-//                else if (nPopulate.get(position).get("id").asInteger() == MN_LOKASI_PERSEDIAAN) {
-//                    Intent intent = new Intent(MenuActivity.this, Penampung_ItemActivity.class);
-//                    startActivity(intent);
-//
-//                }
-                else if (nPopulate.get(position).get("id").asInteger() == MN_PENUGASAN_MEKANIK) {
+                } else if (nPopulate.get(position).get("id").asInteger() == MN_KOMISI_KARYAWAN) {
+                    Intent intent = new Intent(MenuActivity.this, Komisi_Karyawan_Activity.class);
+                    startActivity(intent);
+
+                } else if (nPopulate.get(position).get("id").asInteger() == MN_LOYALTI_PROGRAM) {
+                    Intent intent = new Intent(MenuActivity.this, Loyalti_ProgramActivity.class);
+                    startActivity(intent);
+
+                } else if (nPopulate.get(position).get("id").asInteger() == MN_LOKASI_PERSEDIAAN) {
+                    Intent intent = new Intent(MenuActivity.this, Penampung_ItemActivity.class);
+                    startActivity(intent);
+
+                }else if (nPopulate.get(position).get("id").asInteger() == MN_PENUGASAN_MEKANIK) {
                     Intent intent = new Intent(MenuActivity.this, PenugasanActivity.class);
                     startActivity(intent);
 
@@ -189,26 +176,14 @@ public class MenuActivity extends AppActivity {
                 }else if((nPopulate.get(position).get("id").asInteger() == MN_LAYANAN)){
                     Intent intent = new Intent(MenuActivity.this, Layanan_Avtivity.class);
                     startActivity(intent);
-
                 }else if((nPopulate.get(position).get("id").asInteger() == MN_TENDA)){
                     Intent intent = new Intent(MenuActivity.this, Tenda_Activity.class);
                     startActivity(intent);
-
                 } else if ((nPopulate.get(position).get("id").asInteger() == MN_JURNAL)) {
                     Intent intent = new Intent(MenuActivity.this, DaftarJurnal_Activity.class);
                     startActivity(intent);
-
                 } else if ((nPopulate.get(position).get("id").asInteger() == MN_SPOT_DISKON)) {
                     Intent intent = new Intent(MenuActivity.this, SpotDiscount_Activity.class);
-                    startActivity(intent);
-                } else if ((nPopulate.get(position).get("id").asInteger() == MN_DISCOUNT_PART)) {
-                    Intent intent = new Intent(MenuActivity.this, DiscountPart_Activity.class);
-                    startActivity(intent);
-                } else if ((nPopulate.get(position).get("id").asInteger() == MN_REKENING)) {
-                    Intent intent = new Intent(MenuActivity.this, RekeningBank_Activity.class);
-                    startActivity(intent);
-                } else if ((nPopulate.get(position).get("id").asInteger() == MN_BOOKING)) {
-                    Intent intent = new Intent(MenuActivity.this, Booking1A_Activity.class);
                     startActivity(intent);
                 }
 
@@ -293,13 +268,13 @@ public class MenuActivity extends AppActivity {
         nPopulate.add(Nson.newObject().set("id", MN_CHECKIN).set("icon", R.drawable.mn_checkin).set("text", "CHECK IN"));
 //        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_WA).set("icon", R.drawable.wa).set("text", "MESSAGE"));
       //  nPopulate.add(Nson.newObject().set("id", MN_SPAREPART).set("icon", R.drawable.mn_jualpart).set("text", "SPAREPART"));
-        //nPopulate.add(Nson.newObject().set("id", MN_BIAYA_MEKANIK).set("icon", R.drawable.mn_perawatan).set("text", "BIAYA MEKANIK"));
-        //nPopulate.add(Nson.newObject().set("id", MN_LOKASI_PERSEDIAAN).set("icon", R.drawable.mn_booking).set("text", "LOKASI PERSEDIAAN"));
+        nPopulate.add(Nson.newObject().set("id", MN_BIAYA_MEKANIK).set("icon", R.drawable.mn_perawatan).set("text", "BIAYA MEKANIK"));
+        nPopulate.add(Nson.newObject().set("id", MN_LOKASI_PERSEDIAAN).set("icon", R.drawable.mn_booking).set("text", "LOKASI PERSEDIAAN"));
         nPopulate.add(Nson.newObject().set("id", MN_JUAL_PART).set("icon", R.drawable.mn_belanja).set("text", "  PENJUALAN PART"));
         nPopulate.add(Nson.newObject().set("id", MN_TUGAS_PART).set("icon", R.drawable.mn_tugaspart).set("text", "TUGAS PART"));
         nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_PenerimaanPart).set("icon", R.drawable.mn_tugaspart).set("text", "PENERIMAAN PART"));
-        //nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_PartDiterima).set("icon", R.drawable.mn_tugaspart).set("text", "PART DI TERIMA"));
-        //nPopulate.add(Nson.newObject().set("id", MN_STOCK_OPNAME).set("icon", R.drawable.mn_tugaspart).set("text", "STOCK OPNAME"));
+        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_PartDiterima).set("icon", R.drawable.mn_tugaspart).set("text", "PART DI TERIMA"));
+        nPopulate.add(Nson.newObject().set("id", MN_STOCK_OPNAME).set("icon", R.drawable.mn_tugaspart).set("text", "STOCK OPNAME"));
         nPopulate.add(Nson.newObject().set("id", MN_PENUGASAN_MEKANIK).set("icon", R.drawable.mn_perawatan).set("text", "PENUGASAN MEKANIK"));
         nPopulate.add(Nson.newObject().set("id", MN_BIAYA_MEKANIK2).set("icon", R.drawable.mn_perawatan).set("text", "BIAYA MEKANIK2"));
         nPopulate.add(Nson.newObject().set("id", MN_LOKASI_PART).set("icon", R.drawable.mn_belanja).set("text", "LOKASI PART"));
@@ -308,9 +283,6 @@ public class MenuActivity extends AppActivity {
         nPopulate.add(Nson.newObject().set("id", MN_TENDA).set("icon", R.drawable.mn_lainnya).set("text", "TENDA"));
         nPopulate.add(Nson.newObject().set("id", MN_JURNAL).set("icon", R.drawable.mn_perawatan).set("text", "JURNAL"));
         nPopulate.add(Nson.newObject().set("id", MN_SPOT_DISKON).set("icon", R.drawable.mn_belanja).set("text", "SPOT DISKON"));
-        nPopulate.add(Nson.newObject().set("id", MN_DISCOUNT_PART).set("icon", R.drawable.mn_belanja).set("text", "DISKON PART"));
-        nPopulate.add(Nson.newObject().set("id", MN_REKENING).set("icon", R.drawable.mn_pembayaran).set("text", "REKENING BANK"));
-        nPopulate.add(Nson.newObject().set("id", MN_BOOKING).set("icon", R.drawable.mn_booking).set("text", "BOOKING"));
 
 //        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_KomisiKaryawan).set("icon", R.drawable.sample).set("text", "MESSAGE"));
 //        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_LoyaltiProgram).set("icon", R.drawable.sample).set("text", "MESSAGE"));
