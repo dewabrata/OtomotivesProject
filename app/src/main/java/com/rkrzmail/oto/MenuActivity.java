@@ -39,9 +39,11 @@ import com.rkrzmail.oto.gmod.DaftarPenjualanPartActivity;
 import com.rkrzmail.oto.gmod.Penerimaan_PartAcitivity;
 import com.rkrzmail.oto.gmod.SparepartActivity;
 import com.rkrzmail.oto.gmod.Stock_OpnameActivity;
+import com.rkrzmail.oto.modules.SparepartsNew;
 import com.rkrzmail.oto.modules.biayamekanik.BiayaMekanik2Activity;
 import com.rkrzmail.oto.modules.LoginActivity;
 import com.rkrzmail.oto.modules.jurnal.DaftarJurnal_Activity;
+import com.rkrzmail.oto.modules.karyawan.Karyawan;
 import com.rkrzmail.oto.modules.layanan.Layanan_Avtivity;
 import com.rkrzmail.oto.modules.lokasi_part.LokasiPart_Activity;
 import com.rkrzmail.oto.modules.part.PartActivity;
@@ -81,6 +83,8 @@ public class MenuActivity extends AppActivity {
     public static final int MN_TENDA = 24;
     public static final int MN_JURNAL = 25;
     public static final int MN_SPOT_DISKON = 26;
+    public static final int MN_SPAREPARTNEW = 30;
+    public static final int MN_KARYAWAN = 31;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,7 +189,14 @@ public class MenuActivity extends AppActivity {
                 } else if ((nPopulate.get(position).get("id").asInteger() == MN_SPOT_DISKON)) {
                     Intent intent = new Intent(MenuActivity.this, SpotDiscount_Activity.class);
                     startActivity(intent);
+                }else if ((nPopulate.get(position).get("id").asInteger() == MN_SPAREPARTNEW)) {
+                    Intent intent = new Intent(MenuActivity.this, SparepartsNew.class);
+                    startActivity(intent);
+                }else if ((nPopulate.get(position).get("id").asInteger() == MN_KARYAWAN)) {
+                    Intent intent = new Intent(MenuActivity.this, Karyawan.class);
+                    startActivity(intent);
                 }
+
 
             }
         });
@@ -283,6 +294,8 @@ public class MenuActivity extends AppActivity {
         nPopulate.add(Nson.newObject().set("id", MN_TENDA).set("icon", R.drawable.mn_lainnya).set("text", "TENDA"));
         nPopulate.add(Nson.newObject().set("id", MN_JURNAL).set("icon", R.drawable.mn_perawatan).set("text", "JURNAL"));
         nPopulate.add(Nson.newObject().set("id", MN_SPOT_DISKON).set("icon", R.drawable.mn_belanja).set("text", "SPOT DISKON"));
+        nPopulate.add(Nson.newObject().set("id", MN_SPAREPARTNEW).set("icon", R.drawable.mn_perawatan).set("text", "PARTS"));
+        nPopulate.add(Nson.newObject().set("id", MN_KARYAWAN).set("icon", R.drawable.mn_pelanggan).set("text", "KARYAWAN"));
 
 //        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_KomisiKaryawan).set("icon", R.drawable.sample).set("text", "MESSAGE"));
 //        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_LoyaltiProgram).set("icon", R.drawable.sample).set("text", "MESSAGE"));

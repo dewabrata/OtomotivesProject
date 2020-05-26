@@ -1,4 +1,4 @@
-package com.rkrzmail.oto.modules;
+package com.rkrzmail.oto.modules.karyawan;
 
 import android.app.SearchManager;
 import android.content.Context;
@@ -26,13 +26,12 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.part.AdapterListBasic;
-import com.rkrzmail.oto.modules.part.AturPartsNew;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
 import java.util.Map;
 
-public class SparepartsNew extends AppActivity {
+public class Karyawan extends AppActivity {
     private View parent_view;
 
     private RecyclerView recyclerView;
@@ -42,7 +41,7 @@ public class SparepartsNew extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_spareparts_new);
+        setContentView(R.layout.activity_karyawan);
         parent_view = findViewById(android.R.id.content);
 
         initToolbar();
@@ -51,7 +50,7 @@ public class SparepartsNew extends AppActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent =  new Intent(getActivity(), AturPartsNew.class);
+                Intent intent =  new Intent(getActivity(), AturKaryawan.class);
                 startActivityForResult(intent, REQUEST_ATUR);
             }
         });
@@ -60,7 +59,7 @@ public class SparepartsNew extends AppActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_menu);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("SPAREPART");
+        getSupportActionBar().setTitle("KARYAWAN");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
@@ -71,7 +70,7 @@ public class SparepartsNew extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("id", nama);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrl("v3/viewsparepart"),args)) ;
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrl("v3/aturkaryawan"),args)) ;
                 Log.i("hasil",result.toString());
             }
 
@@ -117,22 +116,19 @@ public class SparepartsNew extends AppActivity {
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(new NikitaRecyclerAdapter(nListArray,R.layout.parts_new){
+        recyclerView.setAdapter(new NikitaRecyclerAdapter(nListArray,R.layout.karyawan){
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                viewHolder.find(R.id.txtNamaPart, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
+                viewHolder.find(R.id.txtNamaKaryawan, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
 
-                viewHolder.find(R.id.txtNoPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
+                viewHolder.find(R.id.txtNoPonsel, TextView.class).setText(nListArray.get(position).get("NO_PONSEL").asString());
 
-                viewHolder.find(R.id.txtStock, TextView.class).setText(nListArray.get(position).get("STOCK").asString());
+                viewHolder.find(R.id.txtPosisi, TextView.class).setText(nListArray.get(position).get("POSISI").asString());
 
-                viewHolder.find(R.id.txtHargaJual, TextView.class).setText(nListArray.get(position).get("HARGA_JUAL").asString());
+                viewHolder.find(R.id.txtTglMasuk, TextView.class).setText(nListArray.get(position).get("TANGGAL_MASUK").asString());
 
-                viewHolder.find(R.id.txtMerk, TextView.class).setText(nListArray.get(position).get("MERK").asString());
+                viewHolder.find(R.id.txtStatus, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
 
-                viewHolder.find(R.id.txtTerjual, TextView.class).setText(nListArray.get(position).get("TERJUAL").asString());
-
-                viewHolder.find(R.id.txtMinStock, TextView.class).setText(nListArray.get(position).get("STOCK_MINIMUM").asString());
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
@@ -145,15 +141,13 @@ public class SparepartsNew extends AppActivity {
 
                 //Snackbar.make(parent_view, "Item  "+position+"  clicked", Snackbar.LENGTH_SHORT).show();
 
-                Intent intent =  new Intent(getActivity(), AturPartsNew.class);
+                Intent intent =  new Intent(getActivity(), AturKaryawan.class);
 //                intent.putExtra("DATA", nListArray.get(position).toJson());
                 intent.putExtra("NAMA", nListArray.get(position).get("NAMA").asString());
-                intent.putExtra("NO_PART", nListArray.get(position).get("NO_PART").asString());
-                intent.putExtra("STOCK", nListArray.get(position).get("STOCK").asString());
-                intent.putExtra("HARGA_JUAL", nListArray.get(position).get("HARGA_JUAL").asString());
-                intent.putExtra("MERK", nListArray.get(position).get("MERK").asString());
-                intent.putExtra("TERJUAL", nListArray.get(position).get("TERJUAL").asString());
-                intent.putExtra("STOCK_MINIMUM", nListArray.get(position).get("STOCK_MINIMUM").asString());
+                intent.putExtra("NO_PONSEL", nListArray.get(position).get("NO_PONSEL").asString());
+                intent.putExtra("POSISI", nListArray.get(position).get("POSISI").asString());
+                intent.putExtra("TANGGAL_MASUK", nListArray.get(position).get("TANGGAL_MASUK").asString());
+                intent.putExtra("STATUS", nListArray.get(position).get("STATUS").asString());
                 intent.putExtra("NAMA", nListArray.get(position).toJson());
                 startActivityForResult(intent, REQUEST_ATUR);
             }
@@ -166,7 +160,7 @@ public class SparepartsNew extends AppActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode==REQUEST_ATUR && resultCode == RESULT_OK){
-           // Intent intent =  new Intent();
+            // Intent intent =  new Intent();
             //intent.putExtra("DATA", getIntentStringExtra(data, "DATA"));
             setResult(RESULT_OK);
             //finish();
