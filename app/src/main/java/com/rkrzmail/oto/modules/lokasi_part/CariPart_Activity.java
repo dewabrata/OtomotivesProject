@@ -70,7 +70,11 @@ public class CariPart_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("search", bookTitle);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("caripart"),args)) ;
+                /*if (result.get("status").asString().equalsIgnoreCase("OK")){
 
+                }else{
+                    showError(result.get("message").asString());
+                }*/
                 return result.get("data");
             }
 

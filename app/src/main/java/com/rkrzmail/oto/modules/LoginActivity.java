@@ -39,13 +39,14 @@ public class LoginActivity extends AppActivity {
 
                 args.put("user",  find(R.id.user,EditText.class).getText().toString());
                 args.put("password",   find(R.id.password,EditText.class).getText().toString());
-                sResult =  (InternetX.postHttpConnection(AppApplication.getBaseUrl("login.php"),args)) ;
+                sResult =  (InternetX.postHttpConnection(AppApplication.getBaseUrlV3("login"),args)) ;
             }
 
             @Override
             public void runUI() {
-                Nson nson = Nson.readNson(sResult).get(0);
-                if (nson.get("status").asString().equalsIgnoreCase("true")){
+                Nson nson = Nson.readNson(sResult);
+                if (nson.get("status").asString().equalsIgnoreCase("OK")){
+                    nson = nson.get("data").get(0);
                     setSetting("L","L");
 
                     setSetting("result",nson.toJson());
