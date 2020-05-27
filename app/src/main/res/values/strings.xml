@@ -54,13 +54,9 @@
 
     <string-array name="pembayaran">
         <item>TRANSFER DIMUKA</item>
-        <item>CASH DIMUKA</item>
         <item>COD</item>
-        <item>INV</item>
+        <item>INVOICE</item>
         <item>KONSIGNMENT</item>
-        <item>PINJAMAN</item>
-
-
     </string-array>
 
     <string-array name="gender">

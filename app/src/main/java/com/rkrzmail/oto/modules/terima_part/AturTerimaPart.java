@@ -1,23 +1,15 @@
 package com.rkrzmail.oto.modules.terima_part;
 
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
-import android.text.Selection;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -27,16 +19,11 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.lokasi_part.AturLokasiPart_Activity;
-import com.rkrzmail.oto.modules.lokasi_part.LokasiPart_Activity;
-import com.rkrzmail.oto.modules.penugasan.AturPenugasan_Activity;
-import com.rkrzmail.oto.modules.penugasan.PenugasanActivity;
 import com.rkrzmail.utils.Tools;
 
-import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +32,7 @@ import java.util.Map;
 public class AturTerimaPart extends AppActivity implements View.OnClickListener {
 
     private static final String TAG = "AturTerimaPart";
-    private static final int REQUEST_ATUR_TERIMA_PART = 4141;
+    public static final int REQUEST_DETAIL_PART = 90;
     private Spinner spinnerSupplier, spinnerPembayaran;
     private TextView tglPesan, tglTerima, tglJatuhTempo;
     private EditText txtNoDo, txtNamaSupplier, txtOngkosKirim;
@@ -60,14 +47,14 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
         initComponent();
     }
 
-    private void initToolbar(){
+    private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("ATUR TERIMA PART");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void initComponent(){
+    private void initComponent() {
 
         spinnerSupplier = findViewById(R.id.spinnerSupplier);
         spinnerPembayaran = findViewById(R.id.spinnerPembayaran);
@@ -88,9 +75,9 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
             public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
                 String item = parent.getItemAtPosition(position).toString();
                 if (item.equalsIgnoreCase("PRINCIPAL")) {
-                    // Tools.setViewAndChildrenEnabled(find(R.id.layout_nama_supplier), false);
-                }else {
-                    //Tools.setViewAndChildrenEnabled(find(R.id.layout_nama_supplier), true);
+                    find(R.id.tl_namaSup_terimaPart, TextInputLayout.class).setEnabled(false);
+                } else {
+                    find(R.id.tl_namaSup_terimaPart, TextInputLayout.class).setEnabled(true);
                 }
             }
 
@@ -104,8 +91,11 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
                 String item = parent.getItemAtPosition(position).toString();
-                if (item.equalsIgnoreCase("INV")) {
+                if (item.equalsIgnoreCase("INVOICE")) {
+                    Tools.setViewAndChildrenEnabled(find(R.id.layout_jatuh_tempo), true);
+                } else {
                     Tools.setViewAndChildrenEnabled(find(R.id.layout_jatuh_tempo), false);
+
                 }
             }
 
@@ -115,18 +105,36 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
             }
         });
 
+        txtOngkosKirim.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if(hasFocus){
+                    txtOngkosKirim.setText("Rp. ");
+                }
+            }
+        });
+
         find(R.id.btnSelanjutnya, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                insertData();
+                try {
+                    Date jatuhTempo = new SimpleDateFormat("dd/MM").parse(String.valueOf(tglJatuhTempo));
+                    Date tanggalTerima = new SimpleDateFormat("dd/MM").parse(String.valueOf(tglTerima));
+                    if (find(R.id.layout_jatuh_tempo).isEnabled()) {
+                        if (!jatuhTempo.after(tanggalTerima) && !tanggalTerima.before(jatuhTempo)) {
+                            showInfo("Tanggal Jatuh Tempo Invoice / Tanggal Terima Tidak Sesuai");
+                        }
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                setBtnSelanjutnya();
             }
         });
     }
 
 
-
-    private void insertData() {
+    private void setBtnSelanjutnya() {
 
         final String tglpesan = tglPesan.getText().toString();
         final String tglterima = tglTerima.getText().toString();
@@ -140,43 +148,43 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             Nson result2;
+
             @Override
             public void run() {
                 final Map<String, String> args = AppApplication.getInstance().getArgsData();
                 final Map<String, String> args2 = AppApplication.getInstance().getArgsData();
-                args.put("tglpesan", tglpesan);
-                args.put("tglterima", tglterima);
-                args.put("jatuhtempo", jatuhtempo);
-                args.put("tipe", tipe);
-                args.put("nama", nama);
-                args.put("nodo", nodo);
-                args.put("ongkir", ongkir);
-                args.put("pembayaran", pembayaran);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturterimapart"), args));
-               result2 = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewterimapart"), args2));
+                result2 = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewterimapart"), args2));
 
             }
 
             @Override
             public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    Log.d(TAG, result.get("status").asString());
-                    List<String> data = new ArrayList<>();
-                    for (int i = 0; i < result2.get("data").size(); i++) {
-                        data.add(result2.get("data").get(i).get("TANGGAL_PESAN").asString());
-                        data.add(result2.get("data").get(i).get("TANGGAL_PENERIMAAN").asString());
+                ArrayList<String> data = new ArrayList<>();
+                for (int i = 0; i < result2.get("data").size(); i++) {
+                    data.add(result2.get("data").get(i).get("TANGGAL_PESAN").asString());
+                    data.add(result2.get("data").get(i).get("TANGGAL_PENERIMAAN").asString());
+                }
+                if (data.contains(tglpesan)){
+                    alertDialog();
+                } else if(data.contains(tglterima)){
+                    alertDialog();
+                }else{
+                    Nson nson = Nson.newObject();
+                    nson.set("nodo", nodo);
+                    nson.set("tglpesan", tglpesan);
+                    nson.set("tglterima", tglterima);
+                    nson.set("ongkir", ongkir);
+                    nson.set("pembayaran", pembayaran);
+                    nson.set("jatuhtempo", jatuhtempo);
+                    nson.set("nama", nama);
+                    nson.set("tipe", tipe);
 
-                    }
-                    if (data.contains(tglpesan) && data.contains(tglterima)) {
-                        alertDialog();
-                    } else {
-                        startActivity(new Intent(AturTerimaPart.this, TerimaPart.class));
-                        finish();
-                    }
-                } else {
-                    showError(result.get("status").asString());
-                    Log.d(TAG, "error");
+                    Intent i = new Intent(AturTerimaPart.this, DetailPartDiterima.class);
+                    i.putExtra("detail", nson.toJson());
+                    startActivityForResult(i, REQUEST_DETAIL_PART);
+                    finish();
                 }
             }
         });
@@ -185,19 +193,20 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.tglPesan:
-                Tools.getDatePickerDialogTextView(getActivity(),tglPesan);
+                Tools.getDatePickerDialogTextView(getActivity(), tglPesan);
                 break;
             case R.id.tglTerima:
-                Tools.getDatePickerDialogTextView(getActivity(),tglTerima);
+                Tools.getDatePickerDialogTextView(getActivity(), tglTerima);
                 break;
             case R.id.jatuhTempo:
-                Tools.getDatePickerDialogTextView(getActivity(),tglJatuhTempo);
+                Tools.getDatePickerDialogTextView(getActivity(), tglJatuhTempo);
                 break;
         }
     }
-    private void alertDialog(){
+
+    private void alertDialog() {
         AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
         builder1.setMessage("Penerimaan Part Telah Tercatat Sebelumnya");
         builder1.setCancelable(true);

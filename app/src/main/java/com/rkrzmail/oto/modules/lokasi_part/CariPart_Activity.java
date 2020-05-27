@@ -30,12 +30,13 @@ import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.srv.NsonAutoCompleteAdapter;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class CariPart_Activity extends AppActivity {
 
     private RecyclerView rvCariPart;
-    private NikitaAutoComplete bookTitle;
+    private NikitaAutoComplete cariPart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,19 +58,18 @@ public class CariPart_Activity extends AppActivity {
 
     private void initComponent(){
         rvCariPart = (RecyclerView) findViewById(R.id.recyclerView_cariPart);
-        bookTitle = (NikitaAutoComplete) findViewById(R.id.et_cariPart);
+        cariPart = (NikitaAutoComplete) findViewById(R.id.et_cariPart);
 
 
-        bookTitle.setThreshold(3);
+        cariPart.setThreshold(3);
         //final String nama = bookTitle.getText().toString();
-        bookTitle.setAdapter(new NsonAutoCompleteAdapter(getActivity()){
+        cariPart.setAdapter(new NsonAutoCompleteAdapter(getActivity()){
+            Nson result;
             @Override
             public Nson onFindNson(Context context, String bookTitle) {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-
                 args.put("search", bookTitle);
-                args.put("NAMA", bookTitle);
-                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("caripart"),args)) ;
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("caripart"),args)) ;
 
                 return result;
             }
@@ -80,9 +80,17 @@ public class CariPart_Activity extends AppActivity {
                     LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     convertView = inflater.inflate(R.layout.find_nama_part, parent, false);
                 }
-
+                ArrayList<String> data = new ArrayList<>();
+                StringBuilder str = new StringBuilder();
+                for(int i = 0; i < result.get("data").size(); i++){
+                    data.add(result.get("data").get(i).get("NAMA").asString());
+                }
+                for(String nama : data){
+                    str.append(nama);
+                    str.append(", ");
+                }
                 //find(R.id.tv_cari_merkPart, TextView.class).setText((getItem(position).get("").asString()));
-                findView(convertView, R.id.tv_find_cari_namaPart, TextView.class).setText((getItem(position).get("data").get("NAMA").asString()));
+                findView(convertView, R.id.tv_find_cari_namaPart, TextView.class).setText((getItem(position).get(String.valueOf(str)).asString()));
 //               find(R.id.tv_cari_noPart, TextView.class).setText((getItem(position).get("NO_PART_ID").asString()));
 //               find(R.id.tv_cari_stockPart, TextView.class).setText((getItem(position).get("STOCK").asString()));
 
@@ -91,8 +99,8 @@ public class CariPart_Activity extends AppActivity {
             }
         });
 
-        bookTitle.setLoadingIndicator((android.widget.ProgressBar) findViewById(R.id.pb_tv_cariPart));
-        bookTitle.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        cariPart.setLoadingIndicator((android.widget.ProgressBar) findViewById(R.id.pb_tv_cariPart));
+        cariPart.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
@@ -139,10 +147,10 @@ public class CariPart_Activity extends AppActivity {
                 })
         );
 
-        bookTitle.setOnClickListener(new View.OnClickListener() {
+        cariPart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String data = bookTitle.getText().toString();
+                String data = cariPart.getText().toString();
                 cariPart(data);
             }
         });

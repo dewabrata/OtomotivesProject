@@ -31,9 +31,8 @@
             android:id="@+id/layout_terimapart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:orientation="vertical"
-            android:padding="10dp">
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -43,10 +42,11 @@
 
                 <TextView
                     android:id="@+id/textView46"
-                    android:layout_width="100dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Tipe Supplier" />
+                    android:text="TIPE SUPPLIER"
+                    android:textStyle="bold" />
 
                 <Spinner
                     android:id="@+id/spinnerSupplier"
@@ -59,19 +59,19 @@
             </LinearLayout>
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/tl_namaSup_terimaPart"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginRight="10dp"
-                android:layout_marginLeft="10dp">
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp">
 
                 <EditText
                     android:id="@+id/txtNamaSupplier"
                     android:layout_width="match_parent"
                     android:layout_height="50sp"
                     android:ems="10"
-                    android:hint="Nama Supplier"
+                    android:hint="NAMA SUPPLIER"
                     android:inputType="text" />
             </android.support.design.widget.TextInputLayout>
 
@@ -80,17 +80,17 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginRight="10dp"
-                android:layout_marginLeft="10dp">
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp">
 
                 <EditText
                     android:id="@+id/txtNoDo"
                     android:layout_width="match_parent"
-                    android:layout_height="50sp"
+                    android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="NO. DO"
-                    android:inputType="number" />
+                    android:inputType="text" />
             </android.support.design.widget.TextInputLayout>
 
             <LinearLayout
@@ -102,7 +102,10 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="5dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -110,21 +113,21 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="TANGGAL PESAN"
+                        android:drawableLeft="@drawable/icon_tanggal"
                         android:gravity="center"
-                        android:textStyle="bold"
-                        android:drawableLeft="@drawable/icon_tanggal" />
+                        android:text="TANGGAL PESAN"
+                        android:textStyle="bold" />
 
 
                     <TextView
-                        android:id="@+id/tglPesan"
+                        android:id="@+id/tglTerima"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="TANGGAL PESAN"
+                        android:drawableLeft="@drawable/icon_tanggal"
                         android:gravity="center"
-                        android:textStyle="bold"
-                        android:drawableLeft="@drawable/icon_tanggal" />
+                        android:text="TANGGAL TERIMA"
+                        android:textStyle="bold" />
 
 
                 </LinearLayout>
@@ -135,27 +138,7 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/textView42"
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Tanggal Terima" />
-
-                    <TextView
-                        android:id="@+id/tglTerima"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:drawableLeft="@drawable/icon_tanggal" />
-
-                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -168,7 +151,9 @@
                     android:id="@+id/layout_pembayaran"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="5dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -176,7 +161,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Pembayaran" />
+                        android:text="PEMABAYARAN"
+                        android:textStyle="bold" />
 
                     <Spinner
                         android:id="@+id/spinnerPembayaran"
@@ -198,61 +184,62 @@
                     android:id="@+id/layout_jatuh_tempo"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="10dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="5dp"
                     android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/textView40"
-                        android:layout_width="100dp"
+                        android:layout_width="25dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Jatuh Tempo" />
+                        android:text="JATUH TEMPO INVOICE"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/jatuhTempo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:drawableLeft="@drawable/icon_tanggal" />
+                        android:drawableLeft="@drawable/icon_tanggal"
+                        android:gravity="center"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/layout_ongkir"
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="5dp">
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="5dp">
 
+                <EditText
+                    android:id="@+id/txtOngkosKirim"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="ONGKOS KIRIM"
+                    android:inputType="numberDecimal" />
 
-                    <android.support.design.widget.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1">
-
-                        <EditText
-                            android:id="@+id/txtOngkosKirim"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ems="10"
-                            android:hint="Ongkos Kirim"
-                            android:inputType="number" />
-                    </android.support.design.widget.TextInputLayout>
-
-            </LinearLayout>
+            </android.support.design.widget.TextInputLayout>
 
             <Button
                 android:id="@+id/btnSelanjutnya"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
+                android:layout_margin="10dp"
                 android:background="@drawable/btn_rounded_accent"
                 android:gravity="center"
                 android:text="Selanjutnya"
                 android:textColor="@color/white_transparency" />
+
         </LinearLayout>
+
     </ScrollView>
 
 

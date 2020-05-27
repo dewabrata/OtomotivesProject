@@ -20,8 +20,7 @@ import java.util.Map;
 
 public class Booking2_Activity extends AppActivity implements View.OnClickListener {
 
-
-    private TextView tglBooking;
+    private TextView tglBooking, jamJemput, jamAntar, jamBooking;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,23 +39,37 @@ public class Booking2_Activity extends AppActivity implements View.OnClickListen
 
     private void initComponent() {
         tglBooking = (TextView) findViewById(R.id.tv_tglBooking_booking2);
-        find(R.id.btn_getTgl_booking2, Button.class).setOnClickListener(this);
-        find(R.id.btn_getJam_booking2, Button.class).setOnClickListener(this);
-        find(R.id.btn_getJemput_booking2, Button.class).setOnClickListener(this);
-        find(R.id.btn_getAntar_booking2, Button.class).setOnClickListener(this);
+        jamAntar = findViewById(R.id.tv_jamAntar_booking2);
+        jamJemput = findViewById(R.id.tv_jamJemput_booking2);
+        jamBooking = findViewById(R.id.tv_jamBooking_booking2);
+
+       tglBooking.setOnClickListener(this);
+       jamAntar.setOnClickListener(this);
+       jamJemput.setOnClickListener(this);
+       jamBooking.setOnClickListener(this);
+
+       find(R.id.btn_partJasa_booking2, Button.class).setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+
+           }
+       });
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btn_getTgl_booking2:
-                Tools.getDatePickerDialog(getActivity(), (EditText) tglBooking);
+            case R.id.tv_jamBooking_booking2:
+                Tools.getDatePickerDialogTextView(getActivity(), jamBooking);
                 break;
-            case R.id.btn_getJam_booking2:
+            case R.id.tv_tglBooking_booking2:
+                Tools.getDatePickerDialogTextView(getActivity(), tglBooking);
                 break;
-            case R.id.btn_getJemput_booking2:
+            case R.id.tv_jamAntar_booking2:
+                Tools.getDatePickerDialogTextView(getActivity(), jamAntar);
                 break;
-            case R.id.btn_getAntar_booking2:
+            case R.id.tv_jamJemput_booking2:
+                Tools.getDatePickerDialogTextView(getActivity(), jamJemput);
                 break;
 
         }

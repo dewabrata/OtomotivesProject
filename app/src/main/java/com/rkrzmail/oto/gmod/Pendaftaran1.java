@@ -49,7 +49,6 @@ public class Pendaftaran1 extends AppActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
          getSupportActionBar().setTitle("PENDAFTARAN");
          getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -314,7 +313,6 @@ public class Pendaftaran1 extends AppActivity {
                 nson.set("model", n.get("MODEL").asString());
                 nson.set("jenis",  n.get("JENIS").asString());
                 nson.set("varian", n.get("VARIAN").asString());
-
 
                 if (result.get("new").asString().equalsIgnoreCase("true")) {
                     Intent intent = new Intent(getActivity(), Pendaftaran2.class);

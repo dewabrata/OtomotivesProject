@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -42,7 +44,6 @@
             android:layout_height="466dp"
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
-            android:background="@drawable/border_solid"
             android:orientation="vertical"
             android:padding="10dp">
 
@@ -243,7 +244,8 @@
                 android:id="@+id/btn_simpan_lokasi_part"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="end"
+
                 android:layout_marginTop="10dp"
                 android:background="@drawable/btn_rounded_accent"
                 android:text="SIMPAN"

@@ -32,7 +32,6 @@
                     </android.support.v7.widget.Toolbar>
 
                     <ImageView
-
                         android:id="@+id/imgBarcode"
                         android:layout_width="42dp"
                         android:layout_height="42dp"

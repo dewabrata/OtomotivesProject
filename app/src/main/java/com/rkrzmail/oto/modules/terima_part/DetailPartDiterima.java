@@ -1,36 +1,31 @@
 package com.rkrzmail.oto.modules.terima_part;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.naa.data.Nson;
+import com.naa.data.UtilityAndroid;
 import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.gmod.BarcodeActivity;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class DetailPartDiterima extends AppActivity {
 
     private static final String TAG = "DetailPartDiterima";
-    private static final int REQUEST_DETAIL_PART_DITERIMA = 4242;
+    final int REQUEST_BARCODE = 13;
     private Spinner spinnerLokasiSimpan, spinnerPenempatan;
-    private Button btnScan;
     private EditText txtNoPart, txtNamaPart, txtJumlah, txtHargaBeliUnit, txtDiskonBeli;
 
     @Override
@@ -40,6 +35,41 @@ public class DetailPartDiterima extends AppActivity {
 
         initToolbar();
         initComponent();
+    }
+
+    private void initToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("DETAIL PART DITERIMA");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+    }
+
+    private void initComponent() {
+
+        txtNoPart = findViewById(R.id.txtNoPart);
+        txtNamaPart = findViewById(R.id.txtNamaPart);
+        txtJumlah = findViewById(R.id.txtJumlah);
+        txtHargaBeliUnit = findViewById(R.id.txtHargaBeliUnit);
+        txtDiskonBeli = findViewById(R.id.txtDiskonBeli);
+        spinnerLokasiSimpan = findViewById(R.id.spinnerLokasiSimpan);
+        spinnerPenempatan = findViewById(R.id.spinnerPenempatan);
+
+        find(R.id.btn_scan_terimaPart, Button.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), BarcodeActivity.class);
+                startActivityForResult(intent, REQUEST_BARCODE);
+            }
+        });
+
+        find(R.id.btn_simpan_terimaPart, Button.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                insertdata();
+            }
+        });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah_detailpart_terima);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -49,98 +79,14 @@ public class DetailPartDiterima extends AppActivity {
             }
         });
 
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
-            @Override
-            public void run() {
-                Map<String, String> args2 = AppApplication.getInstance().getArgsData();
-
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewterimapart"),args2)) ;
-                Log.d("NO_PART", result.get(0).get("NO_PART").asString());
-            }
-
-            @Override
-            public void runUI() {
-
-                if (result.get("status").asString().equalsIgnoreCase("OK")){
-                    find(R.id.txtNoPart, EditText.class).setText(result.get("data").get(0).get("NO_PART").asString());
-                    find(R.id.txtNamaPart, EditText.class).setText(result.get("data").get(0).get("NAMA_PART").asString());
-                    Log.d("NO_PART", result.get("data").get(0).get("NO_PART").asString());
-                }
-            }
-        });
     }
 
-    private void initToolbar(){
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("DETAIL PART DITERIMA");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-    }
-
-    private void initComponent(){
-
-        btnScan = findViewById(R.id.btnScan);
-        txtNoPart = findViewById(R.id.txtNoPart);
-        txtNamaPart = findViewById(R.id.txtNamaPart);
-        txtJumlah = findViewById(R.id.txtJumlah);
-        txtHargaBeliUnit = findViewById(R.id.txtHargaBeliUnit);
-        txtDiskonBeli = findViewById(R.id.txtDiskonBeli);
-        spinnerLokasiSimpan = findViewById(R.id.spinnerLokasiSimpan);
-        spinnerPenempatan = findViewById(R.id.spinnerPenempatan);
-
-//        spinnerView1();
-//
-//        spinnerLokasiSimpan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
-//                String item = parent.getItemAtPosition(position).toString();
-//                if (item.equalsIgnoreCase("GUDANG")) {
-//                    spinnerLokasiSimpan.setEnabled(false);
-//                } else if (item.equalsIgnoreCase("RUANG PART BENGKEL")) {
-//                    spinnerLokasiSimpan.setEnabled(true);
-//                }
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//            }
-//        });
-//
-//        spinnerView2();
-//
-//        spinnerPenempatan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
-//                String item = parent.getItemAtPosition(position).toString();
-//                if (item.equalsIgnoreCase("PALET001")) {
-//                    spinnerLokasiSimpan.setEnabled(true);
-//                }
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//            }
-//        });
-
-        find(R.id.btnTutup, Button.class).setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-
-                insertdata();
-            }
-        });
-
-    }
-
-    private void insertdata(){
+    private void insertdata() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson data;
             @Override
             public void run() {
+                Nson nson = Nson.readNson(getIntentStringExtra("detail"));
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 String jumlah = txtJumlah.getText().toString();
@@ -148,6 +94,16 @@ public class DetailPartDiterima extends AppActivity {
                 String diskonbeli = txtDiskonBeli.getText().toString();
                 String lokasisimpan = spinnerLokasiSimpan.getSelectedItem().toString();
                 String penempatan = spinnerPenempatan.getSelectedItem().toString();
+                //tipe, nama, nodo, tglpesan, tglterima, pembayaran, jatuhtempo, ongkir, namapart,
+                // nopart, jumlah, hargabeli, diskon, lokasi, penempatan
+                args.put("nodo", nson.get("nodo").asString());
+                args.put("tipe", nson.get("tipe").asString());
+                args.put("nama", nson.get("nama").asString());
+                args.put("tglpesam", nson.get("tglpesan").asString());
+                args.put("tglterima", nson.get("tglterima").asString());
+                args.put("pembayaran", nson.get("pembayaran").asString());
+                args.put("jatuhtempo", nson.get("jatuhtempo").asString());
+                args.put("ongkir", nson.get("ongkir").asString());
 
                 args.put("jumlah", jumlah);
                 args.put("hargabeliunit", hargabeliunit);
@@ -162,81 +118,66 @@ public class DetailPartDiterima extends AppActivity {
             @Override
             public void runUI() {
                 if (data.get("status").asString().equalsIgnoreCase("OK")) {
-                    Log.d(TAG, data.get("status").asString());
                     startActivity(new Intent(DetailPartDiterima.this, TerimaPart.class));
                     finish();
                 } else {
-                    showError(data.get("status").asString());
-                    Log.d(TAG, "error");
+                    showError("Gagal Menambahkan Aktifitas");
                 }
             }
         });
     }
 
-    private void addData(){
+    private void addData() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-
-                String jumlah = find(R.id.txtJumlah, EditText.class).getText().toString();
-                String hargabeliunit = find(R.id.txtHargaBeliUnit, EditText.class).getText().toString();
-                String diskonbeli = find(R.id.txtDiskonBeli, EditText.class).getText().toString();
-                String lokasisimpan = find(R.id.txtLokasiSimpan, Spinner.class).getSelectedItem().toString();
-                String penempatan = find(R.id.txtPenempatan, Spinner.class).getSelectedItem().toString();
-
-                args.put("action", "add");
-                args.put("jumlah", jumlah);
-                args.put("hargabeliunit", hargabeliunit);
-                args.put("diskonbeli", diskonbeli);
-                args.put("lokasi", lokasisimpan);
-                args.put("penempatan", penempatan);
-
-
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturterimapart"), args));
-                result.toJson().equalsIgnoreCase("data");
             }
 
             @Override
             public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    Log.d(TAG, result.get("status").asString());
-                    startActivity(new Intent(DetailPartDiterima.this, DetailPartDiterima.class));
-                    finish();
-                } else {
-                    showError(result.get("status").asString());
-                    Log.d(TAG, "error");
-                }
+                startActivity(new Intent(DetailPartDiterima.this, TerimaPart.class));
+                finish();
             }
         });
     }
 
-//    private void spinnerView1(){
-////        List<Integer> noFolder = new ArrayList<Integer>();
-////        for(int i = 1; i <= 100; i++){
-////            noFolder.add(i);
-////        }
-//        ArrayAdapter<CharSequence> lokasi_simpan = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
-//        lokasi_simpan.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        spinnerLokasiSimpan.setAdapter(lokasi_simpan);
-//    }
-//
-//    private void spinnerView2(){
-////        List<Integer> noFolder = new ArrayList<Integer>();
-////        for(int i = 1; i <= 100; i++){
-////            noFolder.add(i);
-////        }
-//        ArrayAdapter<CharSequence> penempatan = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
-//        penempatan.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        spinnerPenempatan.setAdapter(penempatan);
-//    }
+    public void barcode() {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+
+                args.put("custid", UtilityAndroid.getSetting(getApplicationContext(), "CID", ""));
+                args.put("email", UtilityAndroid.getSetting(getApplicationContext(), "EMA", ""));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturterimapart"), args));
+
+            }
+
+            @Override
+            public void runUI() {
+                txtNamaPart.setText(result.get("").asString());
+                txtNoPart.setText(result.get("").asString());
+                setResult(RESULT_OK);
+                finish();
+            }
+        });
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == RESULT_OK && resultCode == REQUEST_DETAIL_PART_DITERIMA){
-
+        if (requestCode == RESULT_OK && resultCode == AturTerimaPart.REQUEST_DETAIL_PART) {
+            setResult(RESULT_OK);
+            finish();
+        } else if (requestCode == REQUEST_BARCODE && resultCode == RESULT_OK) {
+            String barCode = getIntentStringExtra(data, "TEXT");
+            barcode();
         }
     }
 }

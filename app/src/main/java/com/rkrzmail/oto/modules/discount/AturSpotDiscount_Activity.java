@@ -52,6 +52,15 @@ public class AturSpotDiscount_Activity extends AppActivity {
         etTransaksi = findViewById(R.id.et_transaksi_disc);
         etSpot = findViewById(R.id.et_spotDiscount_disc);
 
+        etSpot.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if(hasFocus){
+                    etSpot.setText("Rp. ");
+                }
+            }
+        });
+
         cariNoponsel.setThreshold(7);
         cariNoponsel.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
             @Override
