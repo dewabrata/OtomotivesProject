@@ -44,7 +44,7 @@ public class LoginActivity extends AppActivity {
 
             @Override
             public void runUI() {
-                Nson nson = Nson.readNson(sResult);
+                Nson nson = Nson.readNson(sResult);//test
                 if (nson.get("status").asString().equalsIgnoreCase("OK")){
                     nson = nson.get("data").get(0);
                     setSetting("L","L");
