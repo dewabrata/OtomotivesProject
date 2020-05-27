@@ -71,7 +71,7 @@ public class CariPart_Activity extends AppActivity {
                 args.put("search", bookTitle);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("caripart"),args)) ;
 
-                return result;
+                return result.get("data");
             }
 
             @Override
@@ -80,7 +80,7 @@ public class CariPart_Activity extends AppActivity {
                     LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     convertView = inflater.inflate(R.layout.find_nama_part, parent, false);
                 }
-                ArrayList<String> data = new ArrayList<>();
+               /* ArrayList<String> data = new ArrayList<>();
                 StringBuilder str = new StringBuilder();
                 for(int i = 0; i < result.get("data").size(); i++){
                     data.add(result.get("data").get(i).get("NAMA").asString());
@@ -88,9 +88,9 @@ public class CariPart_Activity extends AppActivity {
                 for(String nama : data){
                     str.append(nama);
                     str.append(", ");
-                }
+                }*/
                 //find(R.id.tv_cari_merkPart, TextView.class).setText((getItem(position).get("").asString()));
-                findView(convertView, R.id.tv_find_cari_namaPart, TextView.class).setText((getItem(position).get(String.valueOf(str)).asString()));
+                findView(convertView, R.id.tv_find_cari_namaPart, TextView.class).setText(getItem(position).get("NAMA").asString());
 //               find(R.id.tv_cari_noPart, TextView.class).setText((getItem(position).get("NO_PART_ID").asString()));
 //               find(R.id.tv_cari_stockPart, TextView.class).setText((getItem(position).get("STOCK").asString()));
 
