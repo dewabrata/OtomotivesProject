@@ -62,7 +62,6 @@ public class Notifikasi_Alokasi_Fragment extends Fragment {
                     count.setText(jumlah + " " + "PART BELUM DI ALOKASIKAN");
 
                     }
-
             }
         });
 

@@ -40,8 +40,8 @@
 
         <LinearLayout
             android:id="@+id/layout_penugasan"
-            android:layout_width="348dp"
-            android:layout_height="466dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
             android:orientation="vertical"

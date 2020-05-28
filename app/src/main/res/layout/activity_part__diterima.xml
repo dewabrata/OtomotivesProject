@@ -275,7 +275,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:layout_marginTop="20dp"
-                            android:layout_marginLeft="50dp"
+                            android:layout_marginLeft="100dp"
                             android:layout_gravity="bottom"
                             android:background="@drawable/btn_rounded_accent"
                             android:text="Simpan"

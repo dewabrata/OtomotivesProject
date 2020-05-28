@@ -35,6 +35,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.gmod.BarcodeActivity;
 import com.rkrzmail.oto.modules.lokasi_part.stock_opname.StockOpname_Activity;
 import com.rkrzmail.oto.modules.part.AdapterSuggestionSearch;
 import com.rkrzmail.srv.NikitaAutoComplete;
@@ -51,8 +52,9 @@ import java.util.Map;
 public class LokasiPart_Activity extends AppActivity {
 
     private static final String TAG = "LokasiPart_Activity";
-    public static final int REQUEST_STOCK_OPNAME = 1212;
+    private static final int REQUEST_STOCK_OPNAME = 1212;
     private static final int REQUEST_PENYESUAIAN = 567;
+    private static final int REQUEST_BARCODE = 13;
 
     private View parent_view;
     private RecyclerView rvLokasi_part;
@@ -126,7 +128,8 @@ public class LokasiPart_Activity extends AppActivity {
                                         startActivityForResult(i, REQUEST_STOCK_OPNAME);
                                         break;
                                     case R.id.action_qrCode:
-//                                        Print QR code lokasi : mengirimkan image label QR code kode lokasi ke WA user
+                                        Intent intent = new Intent(getActivity(), BarcodeActivity.class);
+                                        startActivityForResult(intent, REQUEST_BARCODE);
                                         break;
                                     case R.id.action_hapusDaftar:
 //                                        Hapus daftar : menghapus part dari lokasi penempatan
@@ -147,11 +150,9 @@ public class LokasiPart_Activity extends AppActivity {
             @Override
             public Nson onFindNson(Context context, String bookTitle) {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-
                 args.put("data", bookTitle);
                 Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlokasipart"), args));
-
-                return result;
+                return result.get("data");
 
             }
 
@@ -172,12 +173,18 @@ public class LokasiPart_Activity extends AppActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long l) {
                 Nson n = Nson.readJson(String.valueOf(parent.getItemAtPosition(position)));
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append(n.get("NAMA").asString());
 
-                cariPart.setText(stringBuilder.toString());
+                cariPart.setText(n.get("NAMA").asString());
                 cariPart.setTag(String.valueOf(parent.getItemAtPosition(position)));
 
+            }
+        });
+
+        cariPart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String nama = cariPart.getText().toString().trim();
+                catchData(nama);
             }
         });
 
@@ -202,11 +209,7 @@ public class LokasiPart_Activity extends AppActivity {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
-                    rvLokasi_part.getAdapter().notifyDataSetChanged();
-                    Log.d(TAG, result.get("status").asString());
-                    Log.d("NAMA", result.get("search").get("data").asString());
-
-                    List<Nson> nson = new ArrayList<>();
+                    final List<Nson> nson = new ArrayList<>();
                     for (int i = 0; i < result.get("data").size(); i++) {
                         nson.add(result.get("data").get(i).get("NO_FOLDER"));
 
@@ -214,12 +217,16 @@ public class LokasiPart_Activity extends AppActivity {
                     Collections.sort(nson, new Comparator<Nson>() {
                         @Override
                         public int compare(Nson nson1, Nson nson2) {
-                            return nson1.size();
+                            if(nson1.get("NO_FOLDER").asInteger() < nson2.get("NO_FOLDER").asInteger()){
+                                return -1;
+                            }else{
+                                return 1;
+                            }
                         }
                     });
+                    rvLokasi_part.getAdapter().notifyDataSetChanged();
 
                 } else {
-                    Log.d(TAG, result.get("status").asString());
                     showError("Mohon Di Coba Kembali" + result.get("message").asString());
                 }
 
@@ -238,12 +245,15 @@ public class LokasiPart_Activity extends AppActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_STOCK_OPNAME && requestCode == RESULT_OK) {
+        if (resultCode == REQUEST_STOCK_OPNAME && requestCode == RESULT_OK) {
             setResult(RESULT_OK);
             catchData("");
             finish();
-        }else if(requestCode == REQUEST_PENYESUAIAN && requestCode == RESULT_OK){
+        }else if(resultCode == REQUEST_PENYESUAIAN && requestCode == RESULT_OK){
+            setResult(RESULT_OK);
             catchData("");
+        }else if(resultCode == REQUEST_BARCODE && requestCode == RESULT_OK){
+
         }
     }
 }

@@ -24,6 +24,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".modules.rekening_bank.AturRekening_Activity"/>
+        <activity android:name=".modules.rekening_bank.RekeningBank_Activity"/>
+        <activity android:name=".modules.discount.AturDiscountPart_Activity"/>
+        <activity android:name=".modules.discount.DiscountPart_Activity"/>
         <activity android:name=".modules.discount.AturSpotDiscount_Activity"></activity>
         <activity android:name=".modules.discount.SpotDiscount_Activity" />
         <activity android:name=".modules.booking.Booking3_Activity" />

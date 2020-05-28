@@ -70,11 +70,6 @@ public class CariPart_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("search", bookTitle);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("caripart"),args)) ;
-                /*if (result.get("status").asString().equalsIgnoreCase("OK")){
-
-                }else{
-                    showError(result.get("message").asString());
-                }*/
                 return result.get("data");
             }
 
@@ -84,41 +79,20 @@ public class CariPart_Activity extends AppActivity {
                     LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     convertView = inflater.inflate(R.layout.find_nama_part, parent, false);
                 }
-               /* ArrayList<String> data = new ArrayList<>();
-                StringBuilder str = new StringBuilder();
-                for(int i = 0; i < result.get("data").size(); i++){
-                    data.add(result.get("data").get(i).get("NAMA").asString());
-                }
-                for(String nama : data){
-                    str.append(nama);
-                    str.append(", ");
-                }*/
-                //find(R.id.tv_cari_merkPart, TextView.class).setText((getItem(position).get("").asString()));
                 findView(convertView, R.id.tv_find_cari_namaPart, TextView.class).setText(getItem(position).get("NAMA").asString());
-//               find(R.id.tv_cari_noPart, TextView.class).setText((getItem(position).get("NO_PART_ID").asString()));
-//               find(R.id.tv_cari_stockPart, TextView.class).setText((getItem(position).get("STOCK").asString()));
-
-
                 return convertView;
             }
         });
 
-        cariPart.setLoadingIndicator((android.widget.ProgressBar) findViewById(R.id.pb_tv_cariPart));
         cariPart.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append( n.get("NAMA").asString()  ).append(" ");
 
-                find(R.id.et_cariPart, NikitaAutoComplete.class).setText(stringBuilder.toString());
+                find(R.id.et_cariPart, NikitaAutoComplete.class).setText(n.get("NAMA").asString());
                 find(R.id.et_cariPart, NikitaAutoComplete.class).setTag(String.valueOf(adapterView.getItemAtPosition(position)));
-
-                find (R.id.tv_find_cari_namaPart, TextView.class).setText(n.get("NAMA").asString());
-
             }
         });
-
 
         rvCariPart.setLayoutManager(new LinearLayoutManager(this));
         rvCariPart.setHasFixedSize(true);
@@ -139,13 +113,8 @@ public class CariPart_Activity extends AppActivity {
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(Nson parent, View view, int position) {
-
                         Intent i = new Intent(getActivity(), AturLokasiPart_Activity.class);
-                        i.putExtra("MERK", nListArray.get(position).get("MERK").asString());
-                        i.putExtra("NAMA", nListArray.get(position).get("NAMA").asString());
-                        i.putExtra("NO_PART_ID", nListArray.get(position).get("NO_PART_ID"));
                         i.putExtra("NAMA", nListArray.get(position).toJson());
-
                         startActivity(i);
                     }
                 })
@@ -164,15 +133,11 @@ public class CariPart_Activity extends AppActivity {
 
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-            Nson result2;
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("search", cari);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("caripart"), args));
-                result2 = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlokasipart"), args));
-
-
             }
 
             @Override
@@ -186,23 +151,7 @@ public class CariPart_Activity extends AppActivity {
                 }else{
                     showError("Gagal Mencari Part");
                 }
-                if(result2.get("status").asString().equalsIgnoreCase("OK")){
-                    nListArray.asArray().clear();
-                    nListArray.asArray().addAll(result.get("data").asArray());
-                    rvCariPart.getAdapter().notifyDataSetChanged();
-                    Log.d("CARI PART", result2.get("data").get("STOCK").asString());
-                    Log.d("CARI PART", result2.get("status").asString());
-                }
-                else{
-                    showError("Gagal Mencari Part");
-                }
-
             }
         });
     }
-
-   private void getView(){
-
-
-   }
 }

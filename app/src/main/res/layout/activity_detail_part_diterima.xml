@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,21 +9,16 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.design.widget.CollapsingToolbarLayout
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:toolbarId="@+id/toolbar">
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize" />
-        </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
     <ScrollView
@@ -32,6 +27,7 @@
         app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
 
         <LinearLayout
+            android:id="@+id/ly_detailPart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -84,7 +80,7 @@
 
                 <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="wrap_content"
+                    android:layout_width="190dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:hint="JUMLAH">
@@ -93,10 +89,8 @@
                     <EditText
                         android:id="@+id/tv_jumlah_terimaPart"
                         android:layout_width="match_parent"
-                        android:layout_height="50sp"
-                        android:ems="10"
-                        android:enabled="false"
-                        android:inputType="textPersonName" />
+                        android:layout_height="wrap_content"
+                        android:inputType="number" />
 
 
                 </android.support.design.widget.TextInputLayout>
@@ -132,6 +126,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/tl_total_terimaPart"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -140,12 +135,12 @@
                 android:hint="DISKON BELI">
 
                 <EditText
+
                     android:id="@+id/txtDiskonBeli"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:ems="10"
-                    android:inputType="textPersonName" />
+                    android:inputType="numberDecimal" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -194,36 +189,39 @@
             </LinearLayout>
 
 
-            <LinearLayout
+            <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:orientation="horizontal"
                 android:layout_marginTop="20dp"
-                android:gravity="end"
-                android:orientation="horizontal">
+                android:stretchColumns="*">
+
+                <TableRow>
 
                 <Button
-                    android:id="@+id/btn_simpan_terimaPart"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="150dp"
-                    android:background="@drawable/btn_rounded_accent"
-                    android:gravity="center"
-                    android:text="SIMPAN"
-                    android:textColor="@color/white_transparency" />
+                        android:id="@+id/btn_simpan_terimaPart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/btn_rounded_accent"
+                        android:text="SIMPAN"
+                        android:layout_gravity="start"
+                        android:textColor="@color/white_transparency" />
 
-                <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/fab_tambah_detailpart_terima"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    app:srcCompat="@drawable/ic_add" />
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fab_tambah_detailpart_terima"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        app:srcCompat="@drawable/ic_add" />
 
-            </LinearLayout>
+                </TableRow>
+
+            </TableLayout>
 
         </LinearLayout>
+
 
     </ScrollView>
 
 
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>
