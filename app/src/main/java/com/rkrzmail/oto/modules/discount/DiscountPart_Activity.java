@@ -19,6 +19,7 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 
@@ -57,12 +58,14 @@ public class DiscountPart_Activity extends AppActivity {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
+                String tglDisc = Tools.setFormatDayAndMonth(nListArray.get(position).get("").asString());
+
                 viewHolder.find(R.id.tv_noPart_disc, TextView.class).setText(nListArray.get(position).get("").asString());
                 viewHolder.find(R.id.tv_namaPart_disc, TextView.class).setText(nListArray.get(position).get("").asString());
                 viewHolder.find(R.id.tv_hpp_disc, TextView.class).setText(nListArray.get(position).get("").asString());
                 viewHolder.find(R.id.tv_pekerjaan_disc, TextView.class).setText(nListArray.get(position).get("").asString());
                 viewHolder.find(R.id.tv_discount_disc, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_tgl_disc, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_tgl_disc, TextView.class).setText(tglDisc);
 
             }
         });

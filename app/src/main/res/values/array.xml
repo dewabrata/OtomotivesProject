@@ -126,6 +126,18 @@
         <item>DISPLAY</item>
     </string-array>
 
+    <string-array name="garansi_bengkel">
+        <item>YA</item>
+        <item>TIDAK</item>
+    </string-array>
+
+    <string-array name="layanan_booking1a">
+        <item>PAKET</item>
+        <item>AFTER SALES SERVICE</item>
+        <item>RECALL</item>
+        <item>OTOMOTIVES</item>
+    </string-array>
+
     <string-array name="penempatan_lokasi_part">
         <item>PALET</item>
         <item>RAK</item>

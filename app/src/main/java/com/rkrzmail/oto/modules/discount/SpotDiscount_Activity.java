@@ -22,6 +22,7 @@ import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.srv.NsonAutoCompleteAdapter;
+import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 
@@ -64,7 +65,9 @@ public class SpotDiscount_Activity extends AppActivity {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
-                viewHolder.find(R.id.tv_tanggal_spotDisc, TextView.class).setText(nListArray.get(position).get("").asString());
+                String tglSet = Tools.setFormatDayAndMonth(nListArray.get(position).get("").asString());
+
+                viewHolder.find(R.id.tv_tanggal_spotDisc, TextView.class).setText(tglSet);
                 viewHolder.find(R.id.tv_user_spotDisc, TextView.class).setText(nListArray.get(position).get("").asString());
                 viewHolder.find(R.id.tv_namaPelanggan_spotDisc, TextView.class).setText(nListArray.get(position).get("").asString());
                 viewHolder.find(R.id.tv_transaksi_spotDisc, TextView.class).setText(nListArray.get(position).get("").asString());

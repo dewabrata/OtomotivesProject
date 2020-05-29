@@ -1,11 +1,13 @@
 package com.rkrzmail.utils;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -404,7 +406,7 @@ public class Tools {
 
     public static String setFormatDayAndMonth(String date){
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        Date tgl = null;
+        Date tgl = new Date();
         try {
              tgl = sdf.parse(date);
         } catch (ParseException e) {
@@ -430,5 +432,20 @@ public class Tools {
             if(view instanceof ViewGroup && (((ViewGroup)view).getChildCount() > 0))
                 clearForm((ViewGroup)view);
         }
+    }
+
+    public static void alertDialog(Context context, String keterangan) {
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+        builder1.setMessage(keterangan);
+        builder1.setCancelable(true);
+        builder1.setPositiveButton(
+                "Edit",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
     }
 }

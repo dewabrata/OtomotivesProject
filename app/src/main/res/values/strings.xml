@@ -15,6 +15,11 @@
 
     </string-array>
 
+    <string-array name="pekerjaan_bengkel">
+        <item>SERVICE KECIL</item>
+        <item>SERVICE BESAR</item>
+    </string-array>
+
     <string-array name="penjualan_part">
         <item>KENDARAAN</item>
         <item>GROSIR</item>
@@ -178,8 +183,8 @@
 
     <string-array name="lokasi_simpan">
         <item>GUDANG</item>
-        <item>RUANG PART BENGKEL</item>
-
+        <item>RUANG PART</item>
+        <item>DISPLAY</item>
     </string-array>
 
     <string-array name="penempatan">

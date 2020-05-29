@@ -76,15 +76,15 @@
                     android:id="@+id/et_cariLokasiPart"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/grey_80"
                     android:maxLines="1"
                     android:inputType="text"
                     android:singleLine="true"
                     android:drawableRight="@android:drawable/ic_menu_search"
                     android:gravity="left|center"
                     android:hint="Cari Part"
-                    android:padding="10dp"
-                    android:textColorHint="@android:color/darker_gray" />
+                    android:textColor="@color/grey_80"
+                    android:textColorHint="@color/grey_80"
+                    android:padding="10dp" />
 
             </android.support.design.widget.TextInputLayout>
         </RelativeLayout>

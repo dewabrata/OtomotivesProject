@@ -26,6 +26,8 @@ public class AturDiscountPart_Activity extends AppActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_atur_discount_part_);
+
+        initComponent();
     }
 
     private void initToolbar() {

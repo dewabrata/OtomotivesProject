@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.booking;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -48,28 +49,28 @@ public class Booking2_Activity extends AppActivity implements View.OnClickListen
        jamJemput.setOnClickListener(this);
        jamBooking.setOnClickListener(this);
 
-       find(R.id.btn_partJasa_booking2, Button.class).setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-
-           }
-       });
+        find(R.id.btn_partJasa_booking2, Button.class).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_jamBooking_booking2:
-                Tools.getDatePickerDialogTextView(getActivity(), jamBooking);
+                Tools.getTimePickerDialogTextView(getActivity(), jamBooking);
                 break;
             case R.id.tv_tglBooking_booking2:
                 Tools.getDatePickerDialogTextView(getActivity(), tglBooking);
                 break;
             case R.id.tv_jamAntar_booking2:
-                Tools.getDatePickerDialogTextView(getActivity(), jamAntar);
+                Tools.getTimePickerDialogTextView(getActivity(), jamAntar);
                 break;
             case R.id.tv_jamJemput_booking2:
-                Tools.getDatePickerDialogTextView(getActivity(), jamJemput);
+                Tools.getTimePickerDialogTextView(getActivity(), jamJemput);
+                break;
+            case R.id.btn_simpan_booking2:
+                Intent i = new Intent(getActivity(), Booking3_Activity.class);
+                startActivity(i);
+                finish();
                 break;
 
         }

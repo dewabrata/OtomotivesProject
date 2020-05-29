@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -29,7 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class DetailPartDiterima extends AppActivity implements View.OnFocusChangeListener {
+public class DetailPartDiterima extends AppActivity implements View.OnFocusChangeListener, AdapterView.OnItemSelectedListener {
 
     private static final String TAG = "DetailPartDiterima";
     final int REQUEST_BARCODE = 13;
@@ -38,8 +39,6 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
     private EditText txtNoPart, txtNamaPart, txtJumlah, txtHargaBeliUnit, txtDiskonBeli;
     private StringBuilder tambah = new StringBuilder();
     private boolean isAdd = false;
-    private SharedPreferences prefs = getSharedPreferences(TAMBAH_PART, MODE_PRIVATE);
-    private SharedPreferences.Editor editor;
 
 
     @Override
@@ -68,6 +67,9 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
         txtDiskonBeli = findViewById(R.id.txtDiskonBeli);
         spinnerLokasiSimpan = findViewById(R.id.spinnerLokasiSimpan);
         spinnerPenempatan = findViewById(R.id.spinnerPenempatan);
+
+        spinnerLokasiSimpan.setOnItemSelectedListener(this);
+        spinnerPenempatan.setOnItemSelectedListener(this);
 
         txtHargaBeliUnit.setOnFocusChangeListener(this);
         txtDiskonBeli.setOnFocusChangeListener(this);
@@ -98,6 +100,8 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
     }
 
     private void insertdata() {
+        final SharedPreferences prefs = getSharedPreferences(TAMBAH_PART, MODE_PRIVATE);
+        SharedPreferences.Editor editor;
         newProses(new Messagebox.DoubleRunnable() {
             Nson data;
 
@@ -167,6 +171,8 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
     }
 
     private void addData() {
+        SharedPreferences prefs = getSharedPreferences(TAMBAH_PART, MODE_PRIVATE);
+        SharedPreferences.Editor editor;
 
         ArrayList<String> jumlahTotal = new ArrayList<>();
         ArrayList<String> hargaBeliUnit = new ArrayList<>();
@@ -257,7 +263,26 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        SharedPreferences prefs = getSharedPreferences(TAMBAH_PART, MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
         editor.clear();
         editor.commit();
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        switch (view.getId()) {
+            case R.id.spinnerLokasiSimpan:
+
+                break;
+            case R.id.spinnerPenempatan:
+
+                break;
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
     }
 }

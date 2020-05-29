@@ -43,7 +43,7 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
     public static final String TAG = "AturPenugasan_Activity";
     private NikitaAutoComplete etNama_Mekanik;
     private MultiSelectionSpinner spTipe_antrian;
-    private EditText etMulai_Kerja, etSelesai_Kerja, etMulai_istirahat, etSelesai_istirahat;
+    private TextView tvMulai_Kerja, tvSelesai_Kerja, tvMulai_istirahat, tvSelesai_istirahat;
     private RadioGroup rg_status;
     private Spinner spLokasi;
     private CheckBox cbHome, cbEmergency;
@@ -62,10 +62,10 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
         initToolbar();
 
         etNama_Mekanik = findViewById(R.id.et_namaMekanik);
-        etMulai_Kerja = findViewById(R.id.et_mulaiKerja);
-        etSelesai_Kerja = findViewById(R.id.et_selesaiKerja);
-        etMulai_istirahat = findViewById(R.id.et_mulaistirahat);
-        etSelesai_istirahat = findViewById(R.id.et_selesaistirahat);
+        tvMulai_Kerja = findViewById(R.id.tv_mulaiKerja);
+        tvSelesai_Kerja = findViewById(R.id.tv_selesaiKerja);
+        tvMulai_istirahat = findViewById(R.id.tv_mulaistirahat);
+        tvSelesai_istirahat = findViewById(R.id.tv_selesaistirahat);
         rg_status = findViewById(R.id.rg_status);
         spTipe_antrian = findViewById(R.id.sp_antrian);
         spLokasi = findViewById(R.id.sp_lokasi);
@@ -82,8 +82,8 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
 
             spLokasi.setSelection(Tools.getIndexSpinner(spLokasi, data.get("LOKASI").asString()));
             //spTipe_antrian.setSelection(Tools.getIndexSpinner(spTipe_antrian, data.get("TIPE_ANTRIAN").asString()));
-            etMulai_Kerja.setText(data.get("JAM_MASUK").asString());
-            etSelesai_Kerja.setText(data.get("JAM_PULANG").asString());
+            tvMulai_Kerja.setText(data.get("JAM_MASUK").asString());
+            tvSelesai_Kerja.setText(data.get("JAM_PULANG").asString());
 
             Log.d(TAG, data.get("ID").asString());
 
@@ -152,10 +152,10 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
             }
         });
 
-        etMulai_Kerja.setOnClickListener(this);
-        etSelesai_Kerja.setOnClickListener(this);
-        etMulai_istirahat.setOnClickListener(this);
-        etSelesai_istirahat.setOnClickListener(this);
+        tvMulai_Kerja.setOnClickListener(this);
+        tvSelesai_Kerja.setOnClickListener(this);
+        tvMulai_istirahat.setOnClickListener(this);
+        tvSelesai_istirahat.setOnClickListener(this);
 
         etNama_Mekanik.setThreshold(1);
         etNama_Mekanik.setAdapter(new NsonAutoCompleteAdapter(this) {
@@ -165,7 +165,7 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
                 args.put("data", bookTitle);
                 Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("daftarpenugasan"), args));
 
-                return result;
+                return result.get("data");
             }
 
             @Override
@@ -175,7 +175,7 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
                     convertView = inflater.inflate(R.layout.find_nama, parent, false);
                 }
 
-                findView(convertView, R.id.tv_find_nama, TextView.class).setText((getItem(position).get("data").get("NAMA_MEKANIK").asString()));
+                findView(convertView, R.id.tv_find_nama, TextView.class).setText((getItem(position).get("NAMA_MEKANIK").asString()));
 
                 return convertView;
 
@@ -239,10 +239,10 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
         final int selectedId = rg_status.getCheckedRadioButtonId();
         final String nama = etNama_Mekanik.getText().toString().trim().toUpperCase();
         final String lokasi = spLokasi.getSelectedItem().toString().toUpperCase();
-        final String masuk = etMulai_Kerja.getText().toString().trim();
-        final String selesai = etSelesai_Kerja.getText().toString().trim();
-        final String istirahat = etMulai_istirahat.getText().toString();
-        final String selesai_istirahat = etSelesai_istirahat.getText().toString();
+        final String masuk = tvMulai_Kerja.getText().toString().trim();
+        final String selesai = tvSelesai_Kerja.getText().toString().trim();
+        final String istirahat = tvMulai_istirahat.getText().toString();
+        final String selesai_istirahat = tvSelesai_istirahat.getText().toString();
         final String home = cbHome.getText().toString();
         final String emergency = cbEmergency.getText().toString();
 
@@ -290,18 +290,6 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
 
             @Override
             public void runUI() {
-                if (etNama_Mekanik.getText().toString().equalsIgnoreCase("")) {
-                    etNama_Mekanik.setError("Harus di isi");
-                } else if (etMulai_Kerja.getText().toString().equalsIgnoreCase("")) {
-                    find(R.id.et_mulaiKerja, EditText.class).setError("Harus di isi");
-                } else if (etSelesai_Kerja.getText().toString().equalsIgnoreCase("")) {
-                    etSelesai_Kerja.setError("Harus di isi");
-                } else if (etMulai_istirahat.getText().toString().equalsIgnoreCase("")) {
-                    etMulai_istirahat.setError("Harus di isi");
-                } else if (etSelesai_istirahat.getText().toString().equalsIgnoreCase("")) {
-                    etSelesai_istirahat.setError("Harus di isi");
-                } else {
-
                     try {
                         Date jamMasuk = new SimpleDateFormat("HH:mm").parse(masuk);
                         Date jamPulang = new SimpleDateFormat("HH:mm").parse(selesai);
@@ -325,7 +313,7 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
                         e.printStackTrace();
                     }
 
-                }
+
             }
         });
     }
@@ -369,10 +357,10 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
                 String nama = etNama_Mekanik.getText().toString().trim().toUpperCase();
                 String antrian = spTipe_antrian.getSelectedItem().toString().toUpperCase();
                 String lokasi = spLokasi.getSelectedItem().toString().toUpperCase();
-                String masuk = etMulai_Kerja.getText().toString().trim();
-                String selesai = etSelesai_Kerja.getText().toString().trim();
-                String istirahat = etMulai_istirahat.getText().toString();
-                String selesai_istirahat = etSelesai_istirahat.getText().toString();
+                String masuk = tvMulai_Kerja.getText().toString().trim();
+                String selesai = tvSelesai_Kerja.getText().toString().trim();
+                String istirahat = tvMulai_istirahat.getText().toString();
+                String selesai_istirahat = tvSelesai_istirahat.getText().toString();
                 String home = cbHome.getText().toString();
                 String emergency = cbEmergency.getText().toString();
 
@@ -424,17 +412,17 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
     public void onClick(View v) {
 
         switch (v.getId()) {
-            case R.id.et_mulaiKerja:
-                Tools.getTimePickerDialog(getActivity(), etMulai_Kerja);
+            case R.id.tv_mulaiKerja:
+                Tools.getTimePickerDialogTextView(getActivity(), tvMulai_Kerja);
                 break;
-            case R.id.et_selesaiKerja:
-                Tools.getTimePickerDialog(getActivity(), etSelesai_Kerja);
+            case R.id.tv_selesaiKerja:
+                Tools.getTimePickerDialogTextView(getActivity(), tvSelesai_Kerja);
                 break;
-            case R.id.et_mulaistirahat:
-                Tools.getTimePickerDialog(getActivity(), etMulai_istirahat);
+            case R.id.tv_mulaistirahat:
+                Tools.getTimePickerDialogTextView(getActivity(), tvMulai_istirahat);
                 break;
-            case R.id.et_selesaistirahat:
-                Tools.getTimePickerDialog(getActivity(), etSelesai_istirahat);
+            case R.id.tv_selesaistirahat:
+                Tools.getTimePickerDialogTextView(getActivity(), tvSelesai_istirahat);
                 break;
         }
     }

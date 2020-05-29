@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
     android:layout_width="match_parent"
@@ -10,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -41,6 +41,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ly_namaPrincipal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="10dp"
@@ -95,15 +96,24 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:focusable="true"
                     android:enabled="false"
                     android:ems="10"
                     android:hint="BIAYA MINIMAL"
                     android:inputType="number"
-                    android:padding="5dp"
-                    android:textAlignment="center" />
+                    android:padding="5dp" />
 
             </android.support.design.widget.TextInputLayout>
+
+            <Button
+                android:id="@+id/btn_deskripsi_aturLayanan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="DESKRISI LAYANAN"
+                android:background="@drawable/btn_rounded_accent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/white_transparency" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -137,7 +147,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp">
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp">
 
 
                     <EditText
@@ -148,8 +159,7 @@
                         android:ems="10"
                         android:hint="BIAYA LAYANAN"
                         android:inputType="number"
-                        android:padding="5dp"
-                        android:textAlignment="center" />
+                        android:padding="5dp" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -158,7 +168,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp">
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp">
 
 
                     <EditText
@@ -169,8 +180,7 @@
                         android:ems="10"
                         android:hint="DISC. BOOKING"
                         android:inputType="number"
-                        android:padding="5dp"
-                        android:textAlignment="center" />
+                        android:padding="5dp" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -179,6 +189,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
                     android:layout_marginRight="10dp">
 
 
@@ -190,8 +201,7 @@
                         android:ems="10"
                         android:hint="H+ DP"
                         android:inputType="number"
-                        android:padding="5dp"
-                        android:textAlignment="center" />
+                        android:padding="5dp" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -200,6 +210,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
                     android:layout_marginRight="10dp">
 
 
@@ -209,9 +220,8 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:ems="10"
-                        android:hint="JASA LAIN +++"
-                        android:padding="5dp"
-                        android:textAlignment="center" />
+                        android:hint="JASA LAIN +"
+                        android:padding="5dp" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -220,7 +230,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp">
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp">
 
 
                     <EditText
@@ -229,9 +240,8 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:ems="10"
-                        android:hint="JASA LAIN +++"
-                        android:padding="5dp"
-                        android:textAlignment="center" />
+                        android:hint="JASA LAIN +"
+                        android:padding="5dp" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -240,7 +250,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp">
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp">
 
 
                     <EditText
@@ -251,8 +262,7 @@
                         android:ems="10"
                         android:hint="DISC. PART"
                         android:inputType="number"
-                        android:padding="5dp"
-                        android:textAlignment="center" />
+                        android:padding="5dp" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -260,6 +270,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:layout_marginTop="5dp"
                     android:gravity="center"
                     android:orientation="horizontal">
 
@@ -277,8 +288,7 @@
 
                             android:hint="%"
                             android:inputType="number"
-                            android:padding="5dp"
-                            android:textAlignment="center" />
+                            android:padding="5dp" />
 
                     </android.support.design.widget.TextInputLayout>
 
@@ -297,8 +307,7 @@
                             android:ems="5"
                             android:hint="%"
                             android:inputType="number"
-                            android:padding="5dp"
-                            android:textAlignment="center" />
+                            android:padding="5dp" />
 
                     </android.support.design.widget.TextInputLayout>
 
@@ -310,7 +319,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp">
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp">
 
 
                     <EditText
@@ -321,8 +331,7 @@
                         android:ems="10"
                         android:hint="DISC. PART"
                         android:inputType="number"
-                        android:padding="5dp"
-                        android:textAlignment="center" />
+                        android:padding="5dp" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -331,6 +340,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
+                    android:layout_marginTop="5dp"
                     android:orientation="horizontal">
 
                     <android.support.design.widget.TextInputLayout
@@ -346,8 +356,7 @@
                             android:ems="5"
                             android:hint="%"
                             android:inputType="number"
-                            android:padding="5dp"
-                            android:textAlignment="center" />
+                            android:padding="5dp" />
 
                     </android.support.design.widget.TextInputLayout>
 
@@ -366,8 +375,7 @@
                             android:ems="5"
                             android:hint="%"
                             android:inputType="number"
-                            android:padding="5dp"
-                            android:textAlignment="center" />
+                            android:padding="5dp" />
 
                     </android.support.design.widget.TextInputLayout>
 
@@ -377,12 +385,60 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/ly_garansi"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView361"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="GARANSI BENGKEL LAINYA"
+                    android:textColor="#F44336" />
+
+                <Spinner
+                    android:id="@+id/sp_garansi_atur_layanan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/garansi_bengkel"
+                    android:textAlignment="center"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp">
+
+
+                <EditText
+                    android:id="@+id/et_penggantian_part"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:enabled="false"
+                    android:hint="PENGGANTIAN"
+                    android:inputType="number"
+                    android:padding="5dp"
+                    android:textAlignment="center" />
+
+            </android.support.design.widget.TextInputLayout>
+
+
             <Button
                 android:id="@+id/btn_simpan_atur_layanan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="20dp"
+                android:layout_gravity="end"
+                android:layout_margin="10dp"
                 android:background="@drawable/btn_rounded_accent"
                 android:text="SIMPAN"
                 android:textColor="@color/white_transparency" />
@@ -394,13 +450,16 @@
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="true"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar_atur_layanan"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:layout_scrollFlags="scroll|enterAlways"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
             android:minHeight="?attr/actionBarSize"/>
 
     </android.support.design.widget.AppBarLayout>

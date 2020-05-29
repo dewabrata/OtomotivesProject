@@ -33,7 +33,7 @@
                     android:textStyle="bold"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:textAlignment="textStart"
+                    android:textAlignment="center"
                     android:drawableRight="@drawable/icon_tanggal"
                     android:text="TANGGAL BOOKING"
                     tools:ignore="RtlCompat" />
@@ -61,7 +61,6 @@
 
 
                 <TextView
-                    android:id="@+id/tv_jamJemput_booking2"
                     android:layout_width="10dp"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
@@ -70,7 +69,7 @@
                     android:text="JAM JEMPUT" />
 
                 <TextView
-                    android:id="@+id/btn_getJemput_booking2"
+                    android:id="@+id/tv_jamJemput_booking2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/icon_jam"
@@ -153,6 +152,7 @@
                     android:drawableLeft="@drawable/icon_jam"
                     android:gravity="center"
                     android:layout_weight="1"
+                    android:textStyle="bold"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"/>
 

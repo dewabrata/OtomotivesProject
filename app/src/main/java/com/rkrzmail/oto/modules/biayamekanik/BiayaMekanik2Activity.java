@@ -19,6 +19,7 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 
@@ -55,12 +56,15 @@ public class BiayaMekanik2Activity extends AppActivity {
 
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                viewHolder.find(R.id.tv_tgl_biayaMekanik, TextView.class).setText(nListArray.get(position).get("TANGGAL_SET").asString());
+                String tglSet = Tools.setFormatDayAndMonth(nListArray.get(position).get("TANGGAL_SET").asString());
+
+                viewHolder.find(R.id.tv_tgl_biayaMekanik, TextView.class).setText(tglSet);
                 viewHolder.find(R.id.tv_user_biayaMekanik, TextView.class).setText(nListArray.get(position).get("USER").asString());
                 viewHolder.find(R.id.tv_minBayar_biayaMekanik, TextView.class).setText("Rp. " + nListArray.get(position).get("UPAH_MINIM").asString());
                 viewHolder.find(R.id.tv_mekanik1_biayaMekanik, TextView.class).setText("Rp. " + nListArray.get(position).get("MEKANIK_1").asString());
                 viewHolder.find(R.id.tv_mekanik2_biayaMekanik, TextView.class).setText("Rp. " + nListArray.get(position).get("MEKANIK_2").asString());
                 viewHolder.find(R.id.tv_mekanik3_biayaMekanik, TextView.class).setText("Rp. " + nListArray.get(position).get("MEKANIK_3").asString());
+
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override

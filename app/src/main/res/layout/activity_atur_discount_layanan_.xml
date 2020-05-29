@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ScrollView
@@ -14,60 +14,59 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="5dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
-                android:orientation="horizontal">
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp">
 
                 <TextView
-                    android:id="@+id/txttittle10"
-                    android:layout_width="100dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="LOKASI PEKERJAAN"
-                    android:textSize="16sp"
+                    android:text="PAKET LAYANAN"
                     android:textStyle="bold" />
 
                 <Spinner
-                    android:id="@+id/sp_pekerjaan_booking1b"
-                    android:layout_width="100dp"
+                    android:id="@+id/sp_paketLayanan_discLayanan"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:textAlignment="center" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
-                android:orientation="horizontal">
+                android:layout_marginRight="10dp">
 
-                <CheckBox
-                    android:id="@+id/cb_antar_booking1b"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:layout_weight="1"
-                    android:text="ANTAR" />
-
-                <CheckBox
-                    android:id="@+id/cb_jemput_booking1b"
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="JEMPUT" />
+                    android:text="PEKERJAAN"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/sp_pekerjaan_discLayanan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="center" />
 
             </LinearLayout>
 
+
             <android.support.design.widget.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
@@ -77,92 +76,83 @@
                 android:layout_marginRight="10dp">
 
                 <EditText
-                    android:id="@+id/et_longlat_booking1b"
+                    android:id="@+id/et_discPart_discLayanan"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="LONGLAT"
-                    android:enabled="false"
+                    android:hint="DISCOUNT"
                     android:inputType="number"
-                    android:maxLines="1"
-                    android:singleLine="true" />
-
+                    android:maxLines="1" />
 
             </android.support.design.widget.TextInputLayout>
 
-
-            <Button
-                android:id="@+id/btn_radius_booking1b"
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp">
+
+                <EditText
+                    android:id="@+id/et_tglEffect_discLayanan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:hint="TANGGAL EFEKTIVE"
+                    android:inputType="date"
+                    android:maxLines="1" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <CheckBox
+                android:id="@+id/cb_mssg_discLayanan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="10dp"
-                android:background="@drawable/btn_rounded_accent"
-                android:text="CHECK RADIUS"
-                android:textColor="@color/white_transparency" />
+                android:text="MESSAGE PELANGGAN" />
 
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp">
-
-                <EditText
-                    android:id="@+id/et_alamat_booking1b"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:gravity="top|left"
-                    android:enabled="false"
-                    android:hint="ALAMAT"
-                    android:inputType="textMultiLine" />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:orientation="horizontal"
-                android:stretchColumns="*">
-
-                <TableRow>
+                android:gravity="end">
 
                 <Button
-                    android:id="@+id/btn_batal_booking1b"
+                    android:id="@+id/btn_simpan_discLayanan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="start"
+                    android:layout_margin="10dp"
                     android:background="@drawable/btn_rounded_accent"
-                    android:text="BATAL"
+                    android:text="SIMPAN"
                     android:textColor="@color/white_transparency" />
 
                 <Button
-                    android:id="@+id/btn_lanjut_booking1b"
+                    android:id="@+id/btn_hapus_discLayanan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
                     android:background="@drawable/btn_rounded_accent"
-                    android:text="LANJUT"
-                    android:layout_gravity="end"
-                    android:textColor="@color/white_transparency" />
-                </TableRow>
+                    android:text="HAPUS"
+                    android:textColor="@color/white_transparency"
+                    android:visibility="gone" />
 
-            </TableLayout>
-
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
-        android:theme="@style/AppTheme.AppBarOverlay"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
 
         <android.support.v7.widget.Toolbar
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            android:id="@+id/toolbar_booking1b"
+            android:id="@+id/toolbar_atur_discLayanan"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize" />
 

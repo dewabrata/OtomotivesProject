@@ -27,24 +27,23 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.fragment.PageAdapter;
 import com.rkrzmail.oto.fragment.SlideFragment;
 import com.rkrzmail.oto.fragment.pageindicator.CirclePageIndicator;
-import com.rkrzmail.oto.gmod.BiayaMekanikActivity;
 import com.rkrzmail.oto.gmod.DaftarTugasPartActivity;
-import com.rkrzmail.oto.gmod.Komisi_Karyawan_Activity;
 import com.rkrzmail.oto.gmod.LayananActivity;
-import com.rkrzmail.oto.gmod.Loyalti_ProgramActivity;
 import com.rkrzmail.oto.gmod.MessageWA;
 import com.rkrzmail.oto.gmod.Part_DiterimaActivity;
-import com.rkrzmail.oto.gmod.Penampung_ItemActivity;
 import com.rkrzmail.oto.gmod.DaftarPenjualanPartActivity;
 import com.rkrzmail.oto.gmod.Penerimaan_PartAcitivity;
 import com.rkrzmail.oto.gmod.SparepartActivity;
-import com.rkrzmail.oto.gmod.Stock_OpnameActivity;
 import com.rkrzmail.oto.modules.biayamekanik.BiayaMekanik2Activity;
 import com.rkrzmail.oto.modules.LoginActivity;
 import com.rkrzmail.oto.modules.booking.Booking1A_Activity;
+import com.rkrzmail.oto.modules.discount.DiscountJasaLain_Activity;
+import com.rkrzmail.oto.modules.discount.DiscountLayanan_Activity;
 import com.rkrzmail.oto.modules.discount.DiscountPart_Activity;
 import com.rkrzmail.oto.modules.discount.SpotDiscount_Activity;
 import com.rkrzmail.oto.modules.jurnal.DaftarJurnal_Activity;
+import com.rkrzmail.oto.modules.komisi.KomisiJasaLain_Activity;
+import com.rkrzmail.oto.modules.komisi.KomisiLayanan_Activity;
 import com.rkrzmail.oto.modules.layanan.Layanan_Avtivity;
 import com.rkrzmail.oto.modules.lokasi_part.LokasiPart_Activity;
 import com.rkrzmail.oto.modules.part.PartActivity;
@@ -87,6 +86,10 @@ public class MenuActivity extends AppActivity {
     public static final int MN_DISCOUNT_PART = 27;
     public static final int MN_REKENING = 28;
     public static final int MN_BOOKING = 29;
+    public static final int MN_DISCOUNT_JASALAIN = 30;
+    public static final int MN_DISCOUNT_LAYANAN = 31;
+    public static final int MN_KOMISI_LAYANAN = 32;
+    public static final int MN_KOMISI_JASA_LAIN = 33;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -210,8 +213,19 @@ public class MenuActivity extends AppActivity {
                 } else if ((nPopulate.get(position).get("id").asInteger() == MN_BOOKING)) {
                     Intent intent = new Intent(MenuActivity.this, Booking1A_Activity.class);
                     startActivity(intent);
+                } else if ((nPopulate.get(position).get("id").asInteger() == MN_DISCOUNT_LAYANAN)) {
+                    Intent intent = new Intent(MenuActivity.this, DiscountLayanan_Activity.class);
+                    startActivity(intent);
+                } else if ((nPopulate.get(position).get("id").asInteger() == MN_DISCOUNT_JASALAIN)) {
+                    Intent intent = new Intent(MenuActivity.this, DiscountJasaLain_Activity.class);
+                    startActivity(intent);
+                } else if ((nPopulate.get(position).get("id").asInteger() == MN_KOMISI_LAYANAN)) {
+                    Intent intent = new Intent(MenuActivity.this, KomisiLayanan_Activity.class);
+                    startActivity(intent);
+                } else if ((nPopulate.get(position).get("id").asInteger() == MN_KOMISI_JASA_LAIN)) {
+                    Intent intent = new Intent(MenuActivity.this, KomisiJasaLain_Activity.class);
+                    startActivity(intent);
                 }
-
 
             }
         });
@@ -313,6 +327,11 @@ public class MenuActivity extends AppActivity {
         nPopulate.add(Nson.newObject().set("id", MN_DISCOUNT_PART).set("icon", R.drawable.mn_belanja).set("text", "DISKON PART"));
         nPopulate.add(Nson.newObject().set("id", MN_REKENING).set("icon", R.drawable.mn_pembayaran).set("text", "REKENING BANK"));
         nPopulate.add(Nson.newObject().set("id", MN_BOOKING).set("icon", R.drawable.mn_booking).set("text", "BOOKING"));
+        nPopulate.add(Nson.newObject().set("id", MN_DISCOUNT_LAYANAN).set("icon", R.drawable.mn_belanja).set("text", "DISCOUNT LAYANAN"));
+        nPopulate.add(Nson.newObject().set("id", MN_DISCOUNT_JASALAIN).set("icon", R.drawable.mn_belanja).set("text", "DISCOUNT JASA LAIN"));
+        nPopulate.add(Nson.newObject().set("id", MN_KOMISI_LAYANAN).set("icon", R.drawable.mn_inspeksi).set("text", "KOMISI LAYANAN"));
+        nPopulate.add(Nson.newObject().set("id", MN_KOMISI_JASA_LAIN).set("icon", R.drawable.mn_inspeksi).set("text", "KOMISI JASA LAIN"));
+
 
 //        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_KomisiKaryawan).set("icon", R.drawable.sample).set("text", "MESSAGE"));
 //        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_LoyaltiProgram).set("icon", R.drawable.sample).set("text", "MESSAGE"));

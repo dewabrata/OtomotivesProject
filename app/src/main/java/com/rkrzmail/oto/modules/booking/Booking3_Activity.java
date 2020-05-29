@@ -69,18 +69,19 @@ public class Booking3_Activity extends AppActivity implements View.OnClickListen
         find(R.id.btn_simpan_booking3, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                catchData();
+                saveData();
             }
         });
     }
 
-    private void catchData() {
+    private void saveData() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "add");
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("booking3"), args));
             }
 

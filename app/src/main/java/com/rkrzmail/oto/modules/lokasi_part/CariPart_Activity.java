@@ -70,7 +70,16 @@ public class CariPart_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("search", bookTitle);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("caripart"),args)) ;
-                return result.get("data");
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < result.get("data").size(); i++) {
+                    sb.append(result.get("data").get(i).get("NAMA").asJson());
+                    if (result.get("data").get(i).get("NAMA").asArray().contains(bookTitle)) {
+                        return result;
+                    } else {
+                        return result.get("data");
+                    }
+                }
+                return result.get("search");
             }
 
             @Override

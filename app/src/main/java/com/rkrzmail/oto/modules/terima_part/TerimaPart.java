@@ -32,6 +32,7 @@ import com.rkrzmail.oto.modules.penugasan.AturPenugasan_Activity;
 import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 
@@ -81,12 +82,15 @@ public class TerimaPart extends AppActivity {
 
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                viewHolder.find(R.id.txtTanggal, TextView.class).setText(nListArray.get(position).get("TANGGAL_PENERIMAAN").asString());;
+                String tgl = Tools.setFormatDayAndMonth(nListArray.get(position).get("TANGGAL_PENERIMAAN").asString());
+                String tglInv = Tools.setFormatDayAndMonth(nListArray.get(position).get("JATUH_TEMPO_INV").asString());
+
+                viewHolder.find(R.id.txtTanggal, TextView.class).setText(tgl);
                 viewHolder.find(R.id.txtSupplier, TextView.class).setText(nListArray.get(position).get("SUPPLIER").asString());;
                 viewHolder.find(R.id.txtPembayaran, TextView.class).setText(nListArray.get(position).get("PEMBAYARAN").asString());;
                 viewHolder.find(R.id.txtTotal, TextView.class).setText(nListArray.get(position).get("NET").asString());;
                 viewHolder.find(R.id.txtNoDo, TextView.class).setText(nListArray.get(position).get("NO_DO").asString());;
-                viewHolder.find(R.id.txtJatuhTempo, TextView.class).setText(nListArray.get(position).get("JATUH_TEMPO_INV").asString());;
+                viewHolder.find(R.id.txtJatuhTempo, TextView.class).setText(tglInv);
                 viewHolder.find(R.id.txtUser, TextView.class).setText("USER :" + nListArray.get(position).get("USER").asString());;
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {

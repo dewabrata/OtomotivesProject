@@ -42,6 +42,7 @@ import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.srv.NsonAutoCompleteAdapter;
+import com.rkrzmail.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -102,11 +103,13 @@ public class LokasiPart_Activity extends AppActivity {
             @Override
             public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, final int position) {
 
+                String tglOpname = Tools.setFormatDayAndMonth(nListArray.get(position).get("TANGGAL_OPNAME").asString());
+
                 viewHolder.find(R.id.tv_noFolder, TextView.class).setText(nListArray.get(position).get("NO_FOLDER").asString());
                 viewHolder.find(R.id.tv_lokasiPart, TextView.class).setText(nListArray.get(position).get("LOKASI").asString());
                 viewHolder.find(R.id.tv_namaPart, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
                 viewHolder.find(R.id.tv_nomor_part, TextView.class).setText(nListArray.get(position).get("NO_PART_ID").asString());
-                viewHolder.find(R.id.tv_tglOpname, TextView.class).setText(nListArray.get(position).get("TANGGAL_OPNAME").asString());
+                viewHolder.find(R.id.tv_tglOpname, TextView.class).setText(tglOpname);
                 viewHolder.find(R.id.tv_penempatan, TextView.class).setText(nListArray.get(position).get("PENEMPATAN").asString());
                 viewHolder.find(R.id.tv_stock, TextView.class).setText(nListArray.get(position).get("STOCK").asString());
                 viewHolder.find(R.id.tv_user, TextView.class).setText(nListArray.get(position).get("USER").asString());
@@ -150,10 +153,18 @@ public class LokasiPart_Activity extends AppActivity {
             @Override
             public Nson onFindNson(Context context, String bookTitle) {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("data", bookTitle);
+                args.put("search", bookTitle);
                 Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlokasipart"), args));
-                return result.get("data");
-
+                // StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < result.get("data").size(); i++) {
+                    // sb.append(result.get("data").get(i).get("NAMA").asJson());
+                    if (result.get("data").get(i).get("NAMA").asArray().contains(bookTitle)) {
+                        return result;
+                    } else {
+                        return result.get("data");
+                    }
+                }
+                return result.get("search");
             }
 
             @Override

@@ -190,6 +190,7 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
+                    android:entries="@array/pekerjaan_bengkel"
                     android:layout_weight="1" />
 
             </LinearLayout>
@@ -260,7 +261,8 @@
                     android:id="@+id/sp_layanan_booking1a"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:entries="@array/layanan_booking1a" />
 
             </LinearLayout>
 

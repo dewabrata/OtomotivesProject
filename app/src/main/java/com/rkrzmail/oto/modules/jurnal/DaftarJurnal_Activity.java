@@ -24,6 +24,7 @@ import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.srv.NsonAutoCompleteAdapter;
+import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 
@@ -65,8 +66,9 @@ public class DaftarJurnal_Activity extends AppActivity {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
+                String tglJurnal = Tools.setFormatDayAndMonth(nListArray.get(position).get("TANGGAL_SET").asString());
 
-                viewHolder.find(R.id.tv_tanggal_jurnal, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_tanggal_jurnal, TextView.class).setText(tglJurnal);
                 viewHolder.find(R.id.tv_transaksi_jurnal, TextView.class).setText(nListArray.get(position).get("").asString());
                 viewHolder.find(R.id.tv_pos_jurnal, TextView.class).setText(nListArray.get(position).get("").asString());
                 viewHolder.find(R.id.tv_ket_jurnal, TextView.class).setText(nListArray.get(position).get("").asString());

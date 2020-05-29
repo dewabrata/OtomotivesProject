@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:id="@+id/cardView"
+    android:layout_width="match_parent"
+    android:layout_height="90dp"
+    android:layout_gravity="center"
+    android:layout_marginLeft="7dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginRight="7dp"
+    android:layout_marginBottom="4dp"
+    android:layout_weight="5"
+    android:padding="10dp"
+    app:cardElevation="3dp"
+    app:cardCornerRadius="10dp">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
+        android:gravity="center"
+        android:stretchColumns="*">
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tv_paketLayanan_discLayanan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Paket Layanan"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_harga_discLayanan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Harga"
+                android:layout_gravity="center"
+                android:textStyle="bold" />
+
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tv_pekerjaan_discLayanan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pekerjaan"
+                android:textStyle="bold" />
+
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tv_disc_discLayanan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Discount"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_tgl_discLayanan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tanggal"
+                android:layout_gravity="center"
+                android:textStyle="bold" />
+
+        </TableRow>
+
+    </TableLayout>
+
+</android.support.v7.widget.CardView>

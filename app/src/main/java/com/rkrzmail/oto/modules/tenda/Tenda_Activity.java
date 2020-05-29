@@ -25,6 +25,7 @@ import com.rkrzmail.oto.modules.lokasi_part.CariPart_Activity;
 import com.rkrzmail.oto.modules.penugasan.AturPenugasan_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.utils.Tools;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -62,6 +63,7 @@ public class Tenda_Activity extends AppActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), AturTenda_Activity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -73,16 +75,15 @@ public class Tenda_Activity extends AppActivity {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
 
+                String tgl = Tools.setFormatDayAndMonth(nListArray.get(position).get("TANGGAL").asString());
                 //DataGenerator.getStringsShort(getActivity());
 
-                viewHolder.find(R.id.tv_tanggalMulai_tenda, TextView.class).setText(nListArray.get(position).get("TANGGAL").asString());
+                viewHolder.find(R.id.tv_tanggalMulai_tenda, TextView.class).setText(tgl);
                 viewHolder.find(R.id.tv_tipeTenda, TextView.class).setText(nListArray.get(position).get("TIPE").asString());
                 viewHolder.find(R.id.tv_namaLokasi_tenda, TextView.class).setText(nListArray.get(position).get("NAMA_LOKASI").asString());
                 viewHolder.find(R.id.tv_jamBuka_tenda, TextView.class).setText(nListArray.get(position).get("JAM_BUKA").asString());
                 viewHolder.find(R.id.tv_tanggalSelesai_tenda, TextView.class).setText(nListArray.get(position).get("").asString());
                 viewHolder.find(R.id.tv_jamTutup_tenda, TextView.class).setText(nListArray.get(position).get("JAM_TUTUP").asString());
-
-
             }
         });
         catchData();

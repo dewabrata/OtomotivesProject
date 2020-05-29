@@ -62,6 +62,7 @@ public class Layanan_Avtivity extends AppActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), AturLayanan_Activity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -74,11 +75,11 @@ public class Layanan_Avtivity extends AppActivity {
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
 
-                viewHolder.find(R.id.tv_jenis_layanan, TextView.class).setText("JENIS LAYANAN : " + nListArray.get(position).get("JENIS_LAYANAN").asString());
-                viewHolder.find(R.id.tv_nama_layanan, TextView.class).setText("NAMA LAYANAN : " + nListArray.get(position).get("NAMA_LAYANAN").asString());
-                viewHolder.find(R.id.tv_lokasi_layanan, TextView.class).setText("LOKASI : " + nListArray.get(position).get("LOKASI").asString());
-                viewHolder.find(R.id.tv_status_layanan, TextView.class).setText("STATUS : " + nListArray.get(position).get("LOKASI").asString());
-                viewHolder.find(R.id.tv_biaya_layanan, TextView.class).setText("BIAYA : " + nListArray.get(position).get("BIAYA").asString());
+                viewHolder.find(R.id.tv_jenis_layanan, TextView.class).setText(nListArray.get(position).get("JENIS_LAYANAN").asString());
+                viewHolder.find(R.id.tv_nama_layanan, TextView.class).setText(nListArray.get(position).get("NAMA_LAYANAN").asString());
+                viewHolder.find(R.id.tv_lokasi_layanan, TextView.class).setText(nListArray.get(position).get("LOKASI_LAYANAN").asString());
+                viewHolder.find(R.id.tv_status_layanan, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
+                viewHolder.find(R.id.tv_biaya_layanan, TextView.class).setText(nListArray.get(position).get("BIAYA").asString());
 
             }
         });

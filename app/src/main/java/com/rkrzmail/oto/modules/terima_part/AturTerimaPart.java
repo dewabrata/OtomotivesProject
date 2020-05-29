@@ -3,7 +3,10 @@ package com.rkrzmail.oto.modules.terima_part;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -33,9 +37,10 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
 
     private static final String TAG = "AturTerimaPart";
     public static final int REQUEST_DETAIL_PART = 90;
+    public static final int REQUEST_CONTACT = 91;
     private Spinner spinnerSupplier, spinnerPembayaran;
-    private TextView tglPesan, tglTerima, tglJatuhTempo;
-    private EditText txtNoDo, txtNamaSupplier, txtOngkosKirim;
+    private TextView tglPesan, tglTerima, tglJatuhTempo, txtNamaSupplier;
+    private EditText txtNoDo, txtOngkosKirim;
     private Button btnSelanjutnya;
 
     @Override
@@ -70,15 +75,16 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
         tglPesan.setOnClickListener(this);
         tglTerima.setOnClickListener(this);
         tglJatuhTempo.setOnClickListener(this);
+        txtNamaSupplier.setOnClickListener(this);
 
         spinnerSupplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
                 String item = parent.getItemAtPosition(position).toString();
                 if (item.equalsIgnoreCase("PRINCIPAL")) {
-                    find(R.id.tl_namaSup_terimaPart, TextInputLayout.class).setEnabled(false);
+                    find(R.id.ly_namaSup_terimaPart).setVisibility(View.GONE);
                 } else {
-                    find(R.id.tl_namaSup_terimaPart, TextInputLayout.class).setEnabled(true);
+                    find(R.id.ly_namaSup_terimaPart).setVisibility(View.VISIBLE);
                 }
             }
 
@@ -93,10 +99,9 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
             public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
                 String item = parent.getItemAtPosition(position).toString();
                 if (item.equalsIgnoreCase("INVOICE")) {
-                    Tools.setViewAndChildrenEnabled(find(R.id.layout_jatuh_tempo), true);
+                    find(R.id.layout_jatuh_tempo).setVisibility(View.VISIBLE);
                 } else {
-                    Tools.setViewAndChildrenEnabled(find(R.id.layout_jatuh_tempo), false);
-
+                    find(R.id.layout_jatuh_tempo).setVisibility(View.GONE);
                 }
             }
 
@@ -129,7 +134,14 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                setBtnSelanjutnya();
+                if (tglTerima.getText().toString().equalsIgnoreCase("TANGGAL TERIMA")) {
+                    showInfo("Masukkan Tanggal Terima");
+                } else if (tglPesan.getText().toString().equalsIgnoreCase("TANGGAL PESAN")) {
+                    showInfo("Masukkan Tanggal PESAN");
+                } else {
+                    setBtnSelanjutnya();
+                }
+
             }
         });
     }
@@ -137,8 +149,8 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
 
     private void setBtnSelanjutnya() {
 
-        final String tglpesan = Tools.setFormatDayAndMonth(tglPesan.getText().toString());
-        final String tglterima = Tools.setFormatDayAndMonth(tglTerima.getText().toString());
+        final String tglpesan = tglPesan.getText().toString();
+        final String tglterima = tglTerima.getText().toString();
         final String jatuhtempo = tglJatuhTempo.getText().toString();
         final String tipe = spinnerSupplier.getSelectedItem().toString().toUpperCase();
         final String nama = txtNamaSupplier.getText().toString().toUpperCase();
@@ -148,10 +160,11 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
 
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args2 = AppApplication.getInstance().getArgsData();
-                result =  Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewterimapart"), args2));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewterimapart"), args2));
             }
 
             @Override
@@ -172,10 +185,10 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
                     data.add(result.get("data").get(i).get("TANGGAL_PENERIMAAN").asString());
                 }
                 if (data.contains(tglpesan)) {
-                    alertDialog();
+                    Tools.alertDialog(getActivity(), "Penerimaan Part Telah Tercatat Sebelumnya");
                 } else if (data.contains(tglterima)) {
-                    alertDialog();
-                }else{
+                    Tools.alertDialog(getActivity(), "Penerimaan Part Telah Tercatat Sebelumnya");
+                } else {
                     Intent i = new Intent(AturTerimaPart.this, DetailPartDiterima.class);
                     i.putExtra("detail", nson.toJson());
                     startActivityForResult(i, REQUEST_DETAIL_PART);
@@ -198,22 +211,19 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
             case R.id.jatuhTempo:
                 Tools.getDatePickerDialogTextView(getActivity(), tglJatuhTempo);
                 break;
+            case R.id.txtNamaSupplier:
+//                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+//                startActivityForResult(intent, REQUEST_CONTACT);
+                try {
+                    Uri uri = Uri.parse("content://contacts");
+                    Intent intent = new Intent(Intent.ACTION_PICK, uri);
+                    intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
+                    startActivityForResult(intent, REQUEST_CONTACT);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
         }
-    }
-
-    private void alertDialog() {
-        AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
-        builder1.setMessage("Penerimaan Part Telah Tercatat Sebelumnya");
-        builder1.setCancelable(true);
-        builder1.setPositiveButton(
-                "Edit",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alert11 = builder1.create();
-        alert11.show();
     }
 
     @Override
@@ -223,7 +233,18 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
             setResult(RESULT_OK);
             finish();
         }
+        if (requestCode == REQUEST_CONTACT) {
+            if (resultCode == RESULT_OK) {
+                Uri contactData = data.getData();
+                Cursor cursor = managedQuery(contactData, null, null, null, null);
+                cursor.moveToFirst();
+                String number = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                String contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                txtNamaSupplier.setText(contactName + "\n" + number);
+            }
+        }
     }
+}
 
 //    private void getAddMorePart(){
 //        Nson nson = Nson.readNson(getIntentStringExtra("tambah"));
@@ -234,4 +255,4 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
 //            spinnerSupplier.setSelection(Tools.getIndexSpinner(spinnerSupplier, nson.get("LOKASI").asString()));
 //        }
 //    }
-}
+
