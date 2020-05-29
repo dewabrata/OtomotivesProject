@@ -207,6 +207,11 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
+            android:name=".HomeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
             android:name=".modules.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
