@@ -96,8 +96,8 @@
                     android:id="@+id/tv_optionMenu"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
                     android:layout_gravity="end"
-                    android:paddingLeft="@dimen/activity_horizontal_margin"
                     android:text="&#8942;"
                     android:textAppearance="?android:textAppearanceLarge"
                     android:textStyle="bold" />

@@ -34,7 +34,8 @@
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar_daftar_jurnal"
@@ -42,8 +43,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:titleTextColor="@color/white_transparency"/>
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
 
         <RelativeLayout
             android:id="@+id/search_layout"
@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/toolbar"
             android:background="@color/colorPrimary"
-            android:padding="@dimen/activity_horizontal_margin">
+            android:padding="5dp">
 
 
             <android.support.design.widget.TextInputLayout

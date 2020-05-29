@@ -87,7 +87,7 @@ public class TerimaPart extends AppActivity {
                 viewHolder.find(R.id.txtTotal, TextView.class).setText(nListArray.get(position).get("NET").asString());;
                 viewHolder.find(R.id.txtNoDo, TextView.class).setText(nListArray.get(position).get("NO_DO").asString());;
                 viewHolder.find(R.id.txtJatuhTempo, TextView.class).setText(nListArray.get(position).get("JATUH_TEMPO_INV").asString());;
-                //viewHolder.find(R.id.txtUser, TextView.class).setText("USER :" + nListArray.get(position).get("USER").asString());;
+                viewHolder.find(R.id.txtUser, TextView.class).setText("USER :" + nListArray.get(position).get("USER").asString());;
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
@@ -124,10 +124,9 @@ public class TerimaPart extends AppActivity {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
                     recyclerView_terimaPart.getAdapter().notifyDataSetChanged();
-                    Log.d(TAG, "reload data");
                 }else {
                     Log.d(TAG, "error");
-                    showError("Mohon Di Coba Kembali" + result.get("message").asString());
+                    showError("Mohon Di Coba Kembali" + result.get("status").asString());
                 }
             }
         });

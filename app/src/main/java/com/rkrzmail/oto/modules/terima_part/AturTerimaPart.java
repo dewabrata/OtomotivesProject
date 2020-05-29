@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -25,7 +26,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 
@@ -55,6 +55,7 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
     }
 
     private void initComponent() {
+
 
         spinnerSupplier = findViewById(R.id.spinnerSupplier);
         spinnerPembayaran = findViewById(R.id.spinnerPembayaran);
@@ -108,7 +109,7 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
         txtOngkosKirim.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                if(hasFocus){
+                if (hasFocus) {
                     txtOngkosKirim.setText("Rp. ");
                 }
             }
@@ -118,8 +119,8 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
             @Override
             public void onClick(View view) {
                 try {
-                    Date jatuhTempo = new SimpleDateFormat("dd/MM").parse(String.valueOf(tglJatuhTempo));
-                    Date tanggalTerima = new SimpleDateFormat("dd/MM").parse(String.valueOf(tglTerima));
+                    Date jatuhTempo = new SimpleDateFormat("dd/MM/yyyy").parse(String.valueOf(tglJatuhTempo));
+                    Date tanggalTerima = new SimpleDateFormat("dd/MM/yyyy").parse(String.valueOf(tglTerima));
                     if (find(R.id.layout_jatuh_tempo).isEnabled()) {
                         if (!jatuhTempo.after(tanggalTerima) && !tanggalTerima.before(jatuhTempo)) {
                             showInfo("Tanggal Jatuh Tempo Invoice / Tanggal Terima Tidak Sesuai");
@@ -136,8 +137,8 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
 
     private void setBtnSelanjutnya() {
 
-        final String tglpesan = tglPesan.getText().toString();
-        final String tglterima = tglTerima.getText().toString();
+        final String tglpesan = Tools.setFormatDayAndMonth(tglPesan.getText().toString());
+        final String tglterima = Tools.setFormatDayAndMonth(tglTerima.getText().toString());
         final String jatuhtempo = tglJatuhTempo.getText().toString();
         final String tipe = spinnerSupplier.getSelectedItem().toString().toUpperCase();
         final String nama = txtNamaSupplier.getText().toString().toUpperCase();
@@ -147,40 +148,34 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
 
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-            Nson result2;
-
             @Override
             public void run() {
-                final Map<String, String> args = AppApplication.getInstance().getArgsData();
-                final Map<String, String> args2 = AppApplication.getInstance().getArgsData();
-
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturterimapart"), args));
-                result2 = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewterimapart"), args2));
-
+                Map<String, String> args2 = AppApplication.getInstance().getArgsData();
+                result =  Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewterimapart"), args2));
             }
 
             @Override
             public void runUI() {
+                Nson nson = Nson.newObject();
+                nson.set("nodo", nodo);
+                nson.set("tglpesan", tglpesan);
+                nson.set("tglterima", tglterima);
+                nson.set("ongkir", ongkir);
+                nson.set("pembayaran", pembayaran);
+                nson.set("jatuhtempo", jatuhtempo);
+                nson.set("nama", nama);
+                nson.set("tipe", tipe);
+
                 ArrayList<String> data = new ArrayList<>();
-                for (int i = 0; i < result2.get("data").size(); i++) {
-                    data.add(result2.get("data").get(i).get("TANGGAL_PESAN").asString());
-                    data.add(result2.get("data").get(i).get("TANGGAL_PENERIMAAN").asString());
+                for (int i = 0; i < result.get("data").size(); i++) {
+                    data.add(result.get("data").get(i).get("TANGGAL_PESAN").asString());
+                    data.add(result.get("data").get(i).get("TANGGAL_PENERIMAAN").asString());
                 }
-                if (data.contains(tglpesan)){
+                if (data.contains(tglpesan)) {
                     alertDialog();
-                } else if(data.contains(tglterima)){
+                } else if (data.contains(tglterima)) {
                     alertDialog();
                 }else{
-                    Nson nson = Nson.newObject();
-                    nson.set("nodo", nodo);
-                    nson.set("tglpesan", tglpesan);
-                    nson.set("tglterima", tglterima);
-                    nson.set("ongkir", ongkir);
-                    nson.set("pembayaran", pembayaran);
-                    nson.set("jatuhtempo", jatuhtempo);
-                    nson.set("nama", nama);
-                    nson.set("tipe", tipe);
-
                     Intent i = new Intent(AturTerimaPart.this, DetailPartDiterima.class);
                     i.putExtra("detail", nson.toJson());
                     startActivityForResult(i, REQUEST_DETAIL_PART);
@@ -220,4 +215,23 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
         AlertDialog alert11 = builder1.create();
         alert11.show();
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_DETAIL_PART && resultCode == RESULT_OK) {
+            setResult(RESULT_OK);
+            finish();
+        }
+    }
+
+//    private void getAddMorePart(){
+//        Nson nson = Nson.readNson(getIntentStringExtra("tambah"));
+//        Intent intent = getIntent();
+//        if(intent.hasExtra("tambah")){
+//            tglPesan.setText(nson.get("tglpesan").asString());
+//            tglTerima.setText(nson.get("tglterima").asString());
+//            spinnerSupplier.setSelection(Tools.getIndexSpinner(spinnerSupplier, nson.get("LOKASI").asString()));
+//        }
+//    }
 }

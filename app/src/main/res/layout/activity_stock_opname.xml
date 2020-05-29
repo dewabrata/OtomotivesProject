@@ -1,72 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".modules.lokasi_part.stock_opname.StockOpname_Activity">
 
-    <LinearLayout
+
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <android.support.design.widget.AppBarLayout
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_stock_opname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.AppBarOverlay">
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
+            <ImageView
+                android:id="@+id/imgBarcode_stockOpname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                app:srcCompat="@drawable/scan"
+                android:layout_gravity="right|center_vertical"
+                tools:ignore="RtlHardcoded" />
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+        </FrameLayout>
+    </android.support.design.widget.AppBarLayout>
 
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar_stock_opname"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/colorPrimary"
-                    app:popupTheme="@style/AppTheme.PopupOverlay">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
 
-                </android.support.v7.widget.Toolbar>
-
-                <ImageView
-                    android:id="@+id/imgBarcode_stockOpname"
-                    android:layout_width="42dp"
-                    android:layout_height="42dp"
-                    android:layout_gravity="right|center_vertical"
-                    android:layout_marginRight="3dp"
-                    android:padding="5dp"
-                    app:srcCompat="@drawable/scan" />
-
-            </FrameLayout>
-
-        </android.support.design.widget.AppBarLayout>
-
-        <ScrollView
-            android:id="@+id/layout_penugasan"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/border_solid"
-            android:gravity="center"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="10dp">
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp">
 
-            <LinearLayout
+
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-
-                <android.support.design.widget.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="center">
+                android:textAlignment="center">
 
                 <EditText
                     android:id="@+id/et_noFolder_stockOpname"
@@ -82,14 +69,14 @@
                     android:padding="5dp"
                     android:textAlignment="center" />
 
-                </android.support.design.widget.TextInputLayout>
+            </android.support.design.widget.TextInputLayout>
 
 
-                <android.support.design.widget.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="center">
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center">
 
                 <EditText
                     android:id="@+id/et_noPart_stockOpname"
@@ -105,13 +92,13 @@
                     android:padding="5dp"
                     android:textAlignment="center" />
 
-                </android.support.design.widget.TextInputLayout>
+            </android.support.design.widget.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="center">
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center">
 
                 <EditText
                     android:id="@+id/et_namaPart_stockOpname"
@@ -127,13 +114,13 @@
                     android:padding="5dp"
                     android:textAlignment="center" />
 
-                </android.support.design.widget.TextInputLayout>
+            </android.support.design.widget.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="center">
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center">
 
                 <EditText
                     android:id="@+id/et_jumlahdata_stockOpname"
@@ -149,13 +136,13 @@
                     android:padding="5dp"
                     android:textAlignment="center" />
 
-                </android.support.design.widget.TextInputLayout>
+            </android.support.design.widget.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="center">
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center">
 
                 <EditText
                     android:id="@+id/et_jumlahakhir_stockOpname"
@@ -170,8 +157,7 @@
                     android:padding="5dp"
                     android:textAlignment="center" />
 
-                </android.support.design.widget.TextInputLayout>
-            </LinearLayout>
+            </android.support.design.widget.TextInputLayout>
 
             <Button
                 android:id="@+id/btn_simpan_stockOpname"
@@ -184,8 +170,8 @@
                 android:textColor="@color/white_transparency" />
 
 
-        </ScrollView>
+        </LinearLayout>
 
-    </LinearLayout>
+    </ScrollView>
 
-</FrameLayout>
+</android.support.design.widget.CoordinatorLayout>

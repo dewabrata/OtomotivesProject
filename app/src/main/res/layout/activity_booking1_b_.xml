@@ -139,7 +139,7 @@
                     android:id="@+id/btn_lanjut_booking1b"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="100dp"
+                    android:layout_marginLeft="160dp"
                     android:background="@drawable/btn_rounded_accent"
                     android:text="LANJUT"
                     android:textColor="@color/white_transparency" />
@@ -152,11 +152,13 @@
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
-
+        android:theme="@style/AppTheme.AppBarOverlay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <android.support.v7.widget.Toolbar
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
             android:id="@+id/toolbar_booking1b"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize" />

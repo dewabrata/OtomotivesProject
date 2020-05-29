@@ -44,7 +44,8 @@
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar_lokasi_part"
@@ -52,8 +53,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:titleTextColor="@color/white_transparency"/>
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
 
 
         <RelativeLayout
@@ -62,7 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/toolbar"
             android:background="@color/colorPrimary"
-            android:padding="@dimen/activity_horizontal_margin">
+            android:padding="5dp">
 
 
             <android.support.design.widget.TextInputLayout
@@ -84,7 +84,6 @@
                     android:gravity="left|center"
                     android:hint="Cari Part"
                     android:padding="10dp"
-                    android:cursorVisible="false"
                     android:textColorHint="@android:color/darker_gray" />
 
             </android.support.design.widget.TextInputLayout>

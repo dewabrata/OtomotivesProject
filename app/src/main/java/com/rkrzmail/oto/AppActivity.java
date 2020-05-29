@@ -241,7 +241,6 @@ public class AppActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction("com.rkrzmail.loyalty");
         registerReceiver(receiver, filter);
-
     }
 
     protected void onDestroyA() {
