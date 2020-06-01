@@ -30,7 +30,7 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="LOKASI PEKERJAAN"
+                    android:text="LOKASI LAYANAN"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -42,31 +42,19 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
-                android:orientation="horizontal">
+
 
                 <CheckBox
-                    android:id="@+id/cb_antar_booking1b"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:layout_weight="1"
-                    android:text="ANTAR" />
-
-                <CheckBox
-                    android:id="@+id/cb_jemput_booking1b"
+                    android:id="@+id/cb_layanan_booking1b"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="JEMPUT" />
+                    android:text="ANTAR - JEMPUT"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp" />
 
-            </LinearLayout>
+
 
             <android.support.design.widget.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -81,7 +69,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="LONGLAT"
-                    android:enabled="false"
                     android:inputType="number"
                     android:maxLines="1"
                     android:singleLine="true" />

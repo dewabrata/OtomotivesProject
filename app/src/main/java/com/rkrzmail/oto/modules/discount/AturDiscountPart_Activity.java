@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -15,12 +16,15 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.srv.PercentFormat;
+import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 
-public class AturDiscountPart_Activity extends AppActivity {
+public class AturDiscountPart_Activity extends AppActivity implements View.OnClickListener {
     private Spinner spPekerjaan;
-    private EditText etDiscPart, etDiscJasa, etNoPart, etNamaPart, etTglEfective;
+    private EditText etDiscPart, etDiscJasa, etNoPart, etNamaPart;
+    private TextView tvTgl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +35,9 @@ public class AturDiscountPart_Activity extends AppActivity {
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_spotDiscount);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Spot Discount");
+        // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_atur_discPart);
+        //setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Discount Part");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -44,7 +48,11 @@ public class AturDiscountPart_Activity extends AppActivity {
         etDiscJasa = findViewById(R.id.et_discJasa_disc);
         etNoPart = findViewById(R.id.et_noPart_disc);
         etNamaPart = findViewById(R.id.et_namaPart_disc);
-        etTglEfective = findViewById(R.id.et_tglEffect_disc);
+        tvTgl = findViewById(R.id.tv_tglEffect_discPart);
+
+        tvTgl.setOnClickListener(this);
+        etDiscJasa.addTextChangedListener(new PercentFormat(etDiscJasa));
+        etDiscPart.addTextChangedListener(new PercentFormat(etDiscPart));
 
         find(R.id.btn_simpanPart_disc, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,5 +82,14 @@ public class AturDiscountPart_Activity extends AppActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.tv_tglEffect_discPart:
+                Tools.getDatePickerDialogTextView(getActivity(), tvTgl);
+                break;
+        }
     }
 }

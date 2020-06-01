@@ -60,8 +60,8 @@ public class PenugasanActivity extends AppActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), AturPenugasan_Activity.class);
-
-                startActivityForResult(intent, REQUEST_PENUGASAN);
+                startActivity(intent);
+                finish();
             }
         });
 
@@ -86,13 +86,8 @@ public class PenugasanActivity extends AppActivity {
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
-                //Toast.makeText(getActivity(),"HHHHH "+position, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getActivity(), AturPenugasan_Activity.class);
-                intent.putExtra("ID", nListArray.get(position).get("ID").asString());
-                intent.putExtra("TIPE_ANTRIAN", nListArray.get(position).get("TIPE_ANTRIAN").asString());
-                intent.putExtra("LOKASI", nListArray.get(position).get("LOKASI").asString());
                 intent.putExtra("ID", nListArray.get(position).toJson());
-                //intent.putExtra("id", nListArray.get(position).get("id").asString());
                 startActivityForResult(intent, REQUEST_PENUGASAN);
             }
         }));
@@ -114,22 +109,10 @@ public class PenugasanActivity extends AppActivity {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
-                    List<Nson> sort = new ArrayList<>();
-                    for (int i = 0; i < result.get("data").size(); i++) {
-                        sort.add(result.get("data").get(i).get("NAMA_MEKANIK"));
-                    }
-                    Collections.sort(sort, new Comparator<Nson>() {
-                        @Override
-                        public int compare(Nson nson, Nson nson2) {
-                            return nson.get("NAMA_MEKANIK").asString().compareTo(nson2.get("NAMA_MEKANIK").asString());
-                        }
-                    });
-
-                    Log.d(TAG, "reload data");
                     rvPenugasan.getAdapter().notifyDataSetChanged();
                 } else {
                     Log.d(TAG, "error");
-                    showError("Mohon Di Coba Kembali" + result.get("message").asString());
+                    showError("Mohon Di Coba Kembali");
                 }
             }
         });

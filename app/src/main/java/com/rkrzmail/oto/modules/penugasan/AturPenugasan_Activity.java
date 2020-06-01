@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -28,7 +27,6 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NsonAutoCompleteAdapter;
-import com.rkrzmail.utils.CustomSpinner;
 import com.rkrzmail.utils.Tools;
 
 import java.text.ParseException;
@@ -219,6 +217,34 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
             @Override
             public void onClick(View view) {
 
+                String masuk = tvMulai_Kerja.getText().toString().trim();
+                String selesai = tvSelesai_Kerja.getText().toString().trim();
+                String istirahat = tvMulai_istirahat.getText().toString();
+                String selesai_istirahat = tvSelesai_istirahat.getText().toString();
+
+                try {
+                    Date jamMasuk = new SimpleDateFormat("HH:mm").parse(masuk);
+                    Date jamPulang = new SimpleDateFormat("HH:mm").parse(selesai);
+
+                    if (!jamMasuk.before(jamPulang)) {
+                        showInfo("Jam Selesai Tidak Sesuai / Jam Masuk Tidak Sesuai");
+                        return;
+                    }
+                    try {
+                        Date jamMulaiIstirahat = new SimpleDateFormat("HH:mm").parse(istirahat);
+                        Date jamSelesaiIstirahat = new SimpleDateFormat("HH:mm").parse(selesai_istirahat);
+
+                        if (!jamMulaiIstirahat.before(jamSelesaiIstirahat)) {
+                            showInfo("Jam Selesai Tidak Sesuai / Jam Masuk Tidak Sesuai");
+                            return;
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
                 insertData();
             }
 
@@ -246,11 +272,14 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
         final String home = cbHome.getText().toString();
         final String emergency = cbEmergency.getText().toString();
 
+
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
+
 
                 switch (selectedId) {
                     case R.id.rbOn:
@@ -290,30 +319,13 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
 
             @Override
             public void runUI() {
-                    try {
-                        Date jamMasuk = new SimpleDateFormat("HH:mm").parse(masuk);
-                        Date jamPulang = new SimpleDateFormat("HH:mm").parse(selesai);
-                        Date jamMulaiIstirahat = new SimpleDateFormat("HH:mm").parse(istirahat);
-                        Date jamSelesaiIstirahat = new SimpleDateFormat("HH:mm").parse(selesai_istirahat);
 
-                        if (jamMasuk.before(jamPulang) && jamMulaiIstirahat.before(jamSelesaiIstirahat)) {
-
-                            if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                                startActivity(new Intent(AturPenugasan_Activity.this, PenugasanActivity.class));
-                                finish();
-                            } else {
-                                showInfo("Menambahkan data gagal!" + result.get("status").asString());
-                            }
-
-                        } else {
-                            showInfo("Jam Selesai Tidak Sesuai!");
-                        }
-
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-
-
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    startActivity(new Intent(AturPenugasan_Activity.this, PenugasanActivity.class));
+                    finish();
+                } else {
+                    showInfo("Menambahkan data gagal!");
+                }
             }
         });
     }

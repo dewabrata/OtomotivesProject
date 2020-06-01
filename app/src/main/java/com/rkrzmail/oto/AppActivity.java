@@ -16,8 +16,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -29,13 +32,17 @@ import android.widget.Toast;
 import com.naa.data.Nson;
 import com.naa.data.Utility;
 import com.naa.data.UtilityAndroid;
+import com.naa.utils.InternetX;
 import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
+import com.rkrzmail.srv.NsonAutoCompleteAdapter;
 
 import java.io.FileOutputStream;
+import java.util.Map;
 
 
 public class AppActivity extends AppCompatActivity {
+
     public String getSetting(String key) {
         return UtilityAndroid.getSetting(getActivity(), key, "");
     }
@@ -319,6 +326,52 @@ public class AppActivity extends AppCompatActivity {
         }
     }
 
+
+    public void adapterSearchView(android.support.v7.widget.SearchView searchView, final String arguments, final String api, final String jsonObject) {
+        android.support.v7.widget.SearchView.SearchAutoComplete searchAutoComplete = (android.support.v7.widget.SearchView.SearchAutoComplete) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        searchAutoComplete.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
+            Nson result;
+
+            @Override
+            public Nson onFindNson(Context context, String bookTitle) {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+
+                args.put(arguments, bookTitle);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(api), args));
+
+                for (int i = 0; i < result.get("data").size(); i++) {
+                    // sb.append(result.get("data").get(i).get("NAMA").asJson());
+                    if (result.get("data").get(i).get(jsonObject).asArray().contains(bookTitle)) {
+                        return result;
+                    } else {
+                        return result.get("data");
+                    }
+                }
+                return result.get("search");
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                if (convertView == null) {
+                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    convertView = inflater.inflate(R.layout.find_nama_, parent, false);
+                }
+                findView(convertView, R.id.tv_find_cari_namaPart, TextView.class).setText(getItem(position).get(jsonObject).asString());
+                return convertView;
+            }
+        });
+
+        searchAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(i)));
+
+                find(android.support.v7.appcompat.R.id.search_src_text, android.support.v7.widget.SearchView.SearchAutoComplete.class).setText(n.get(jsonObject).asString());
+                find(android.support.v7.appcompat.R.id.search_src_text, android.support.v7.widget.SearchView.SearchAutoComplete.class).setTag(String.valueOf(adapterView.getItemAtPosition(i)));
+            }
+        });
+
+    }
 
 }
 

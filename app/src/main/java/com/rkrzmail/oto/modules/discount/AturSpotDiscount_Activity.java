@@ -18,6 +18,7 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NsonAutoCompleteAdapter;
+import com.rkrzmail.srv.RupiahFormat;
 
 import java.util.Map;
 
@@ -52,14 +53,8 @@ public class AturSpotDiscount_Activity extends AppActivity {
         etTransaksi = findViewById(R.id.et_transaksi_disc);
         etSpot = findViewById(R.id.et_spotDiscount_disc);
 
-        etSpot.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if(hasFocus){
-                    etSpot.setText("Rp. ");
-                }
-            }
-        });
+        etSpot.addTextChangedListener(new RupiahFormat(etSpot));
+
 
         cariNoponsel.setThreshold(7);
         cariNoponsel.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
@@ -72,7 +67,7 @@ public class AturSpotDiscount_Activity extends AppActivity {
             public View getView(int position, View convertView, ViewGroup parent) {
                 if (convertView == null) {
                     LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    convertView = inflater.inflate(R.layout.find_nama_part, parent, false);
+                    convertView = inflater.inflate(R.layout.find_nama_, parent, false);
                 }
 
                 etNoPonsel.setText(getItem(position).get("").asString());

@@ -24,6 +24,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.srv.RupiahFormat;
 import com.rkrzmail.utils.Tools;
 
 import java.text.ParseException;
@@ -111,29 +112,38 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
             }
         });
 
-        txtOngkosKirim.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (hasFocus) {
-                    txtOngkosKirim.setText("Rp. ");
-                }
-            }
-        });
+        txtOngkosKirim.addTextChangedListener(new RupiahFormat(txtOngkosKirim));
 
         find(R.id.btnSelanjutnya, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
-                    Date jatuhTempo = new SimpleDateFormat("dd/MM/yyyy").parse(String.valueOf(tglJatuhTempo));
                     Date tanggalTerima = new SimpleDateFormat("dd/MM/yyyy").parse(String.valueOf(tglTerima));
-                    if (find(R.id.layout_jatuh_tempo).isEnabled()) {
-                        if (!jatuhTempo.after(tanggalTerima) && !tanggalTerima.before(jatuhTempo)) {
-                            showInfo("Tanggal Jatuh Tempo Invoice / Tanggal Terima Tidak Sesuai");
+                    Date pesan = new SimpleDateFormat("dd/MM/yyyy").parse(String.valueOf(tglPesan));
+                    if (!tanggalTerima.after(pesan)) {
+                        showInfo("Tanggal Pesan / Tgl Terima Tidak Sesuai");
+                        return;
+                    }
+                    try {
+                        Date jatuhTempo = new SimpleDateFormat("dd/MM/yyyy").parse(String.valueOf(tglJatuhTempo));
+                        Date tanggalTerima2 = new SimpleDateFormat("dd/MM/yyyy").parse(String.valueOf(tglTerima));
+                        if (find(R.id.layout_jatuh_tempo).getVisibility() == View.VISIBLE) {
+                            if (!jatuhTempo.after(tanggalTerima2) && !tanggalTerima2.before(jatuhTempo)) {
+                                showInfo("Tanggal Jatuh Tempo Invoice / Tanggal Terima Tidak Sesuai");
+                                return;
+                            }
+
+                            if (tglJatuhTempo.getText().toString().equalsIgnoreCase("")) {
+                                showInfo("Masukkan Tanggal Invoice");
+                            }
                         }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
+
                 if (tglTerima.getText().toString().equalsIgnoreCase("TANGGAL TERIMA")) {
                     showInfo("Masukkan Tanggal Terima");
                 } else if (tglPesan.getText().toString().equalsIgnoreCase("TANGGAL PESAN")) {

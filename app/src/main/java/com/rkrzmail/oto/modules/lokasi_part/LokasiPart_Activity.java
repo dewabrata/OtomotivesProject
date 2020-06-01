@@ -60,7 +60,7 @@ public class LokasiPart_Activity extends AppActivity {
     private View parent_view;
     private RecyclerView rvLokasi_part;
     private AdapterSuggestionSearch adapterSuggestionSearch;
-    private NikitaAutoComplete cariPart;
+    //private NikitaAutoComplete cariPart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +94,7 @@ public class LokasiPart_Activity extends AppActivity {
     private void initComponent() {
 
         rvLokasi_part = (RecyclerView) findViewById(R.id.recyclerView_lokasiPart);
-        cariPart = (NikitaAutoComplete) findViewById(R.id.et_cariLokasiPart);
+        //cariPart = (NikitaAutoComplete) findViewById(R.id.et_cariLokasiPart);
 
         rvLokasi_part.setLayoutManager(new LinearLayoutManager(this));
         rvLokasi_part.setHasFixedSize(true);
@@ -148,57 +148,6 @@ public class LokasiPart_Activity extends AppActivity {
             }
         });
 
-        cariPart.setThreshold(3);
-        cariPart.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
-            @Override
-            public Nson onFindNson(Context context, String bookTitle) {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("search", bookTitle);
-                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlokasipart"), args));
-                // StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < result.get("data").size(); i++) {
-                    // sb.append(result.get("data").get(i).get("NAMA").asJson());
-                    if (result.get("data").get(i).get("NAMA").asArray().contains(bookTitle)) {
-                        return result;
-                    } else {
-                        return result.get("data");
-                    }
-                }
-                return result.get("search");
-            }
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                if (convertView == null) {
-                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    convertView = inflater.inflate(R.layout.find_nama_part, parent, false);
-                }
-
-                findView(convertView, R.id.tv_find_cari_namaPart, TextView.class).setText((getItem(position).get("NAMA").asString()));
-
-                return convertView;
-            }
-        });
-
-        cariPart.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long l) {
-                Nson n = Nson.readJson(String.valueOf(parent.getItemAtPosition(position)));
-
-                cariPart.setText(n.get("NAMA").asString());
-                cariPart.setTag(String.valueOf(parent.getItemAtPosition(position)));
-
-            }
-        });
-
-        cariPart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String nama = cariPart.getText().toString().trim();
-                catchData(nama);
-            }
-        });
-
         catchData("");
 
     }
@@ -223,7 +172,6 @@ public class LokasiPart_Activity extends AppActivity {
                     final List<Nson> nson = new ArrayList<>();
                     for (int i = 0; i < result.get("data").size(); i++) {
                         nson.add(result.get("data").get(i).get("NO_FOLDER"));
-
                     }
                     Collections.sort(nson, new Comparator<Nson>() {
                         @Override
@@ -266,5 +214,47 @@ public class LokasiPart_Activity extends AppActivity {
         }else if(resultCode == REQUEST_BARCODE && requestCode == RESULT_OK){
 
         }
+    }
+
+    SearchView mSearchView;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_part, menu);
+
+
+        // Get the SearchView and set the searchable configuration
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        mSearchView = new SearchView(getSupportActionBar().getThemedContext());
+        mSearchView.setQueryHint("Cari Part"); /// YOUR HINT MESSAGE
+        mSearchView.setMaxWidth(Integer.MAX_VALUE);
+
+        final MenuItem searchMenu = menu.findItem(R.id.action_search);
+        searchMenu.setActionView(mSearchView);
+        searchMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+
+
+        adapterSearchView(mSearchView, "search", "viewlokasipart", "NAMA");
+
+        //SearchView searchView = (SearchView)  menu.findItem(R.id.action_search).setActionView(mSearchView);
+        // Assumes current activity is the searchable activity
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        mSearchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+
+        SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+            public boolean onQueryTextChange(String newText) {
+                //filter(newText);
+                return true;
+            }
+
+            public boolean onQueryTextSubmit(String query) {
+                //searchMenu.collapseActionView();
+                //filter(null);
+                catchData(query);
+                return true;
+            }
+        };
+        mSearchView.setOnQueryTextListener(queryTextListener);
+        return true;
     }
 }

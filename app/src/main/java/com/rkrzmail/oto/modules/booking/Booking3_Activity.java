@@ -34,10 +34,9 @@ public class Booking3_Activity extends AppActivity implements View.OnClickListen
     }
 
     private void initToolbar() {
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_booking3);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Booking 3");
+        getSupportActionBar().setTitle("Booking");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 

@@ -48,7 +48,7 @@ public class Booking1A_Activity extends AppActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_booking1);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Booking 1A");
+        getSupportActionBar().setTitle("Booking");
         setTitleColor(getResources().getColor(R.color.white_transparency));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -137,6 +137,7 @@ public class Booking1A_Activity extends AppActivity {
 
                 Intent i = new Intent(getActivity(), Booking1B_Activity.class);
                 startActivity(i);
+                finish();
 
             }
         });
@@ -323,5 +324,11 @@ public class Booking1A_Activity extends AppActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
     }
 }

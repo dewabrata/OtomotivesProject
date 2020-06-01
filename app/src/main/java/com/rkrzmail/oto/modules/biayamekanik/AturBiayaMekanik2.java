@@ -13,12 +13,13 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.srv.RupiahFormat;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Map;
 
-public class AturBiayaMekanik2 extends AppActivity implements View.OnFocusChangeListener {
+public class AturBiayaMekanik2 extends AppActivity {
 
     public static final String TAG = "AturBiayaMekanik2";
 
@@ -48,10 +49,11 @@ public class AturBiayaMekanik2 extends AppActivity implements View.OnFocusChange
             find(R.id.et_upahJam_biayaMekanik, EditText.class).setText("Rp. " + data.get("UPAH_MINIM").asString());
         }
 
-        find(R.id.et_mekanik1_biayaMekanik, EditText.class).setOnFocusChangeListener(this);
-        find(R.id.et_mekanik2_biayaMekanik, EditText.class).setOnFocusChangeListener(this);
-        find(R.id.et_mekanik3_biayaMekanik, EditText.class).setOnFocusChangeListener(this);
-        find(R.id.et_upahMin_biayaMekanik, EditText.class).setOnFocusChangeListener(this);
+        find(R.id.et_mekanik1_biayaMekanik, EditText.class).addTextChangedListener(new RupiahFormat(find(R.id.et_mekanik1_biayaMekanik, EditText.class)));
+        find(R.id.et_mekanik2_biayaMekanik, EditText.class).addTextChangedListener(new RupiahFormat(find(R.id.et_mekanik2_biayaMekanik, EditText.class)));
+        find(R.id.et_mekanik3_biayaMekanik, EditText.class).addTextChangedListener(new RupiahFormat(find(R.id.et_mekanik3_biayaMekanik, EditText.class)));
+        find(R.id.et_upahMin_biayaMekanik, EditText.class).addTextChangedListener(new RupiahFormat(find(R.id.et_upahMin_biayaMekanik, EditText.class)));
+
 
         find(R.id.btn_simpan_biayaMekanik).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,11 +76,11 @@ public class AturBiayaMekanik2 extends AppActivity implements View.OnFocusChange
 
                 String waktu = find(R.id.et_upahMin_biayaMekanik, EditText.class).getText().toString();
                 String mekanik1 = find(R.id.et_mekanik1_biayaMekanik, EditText.class).getText().toString();
-                mekanik1 = mekanik1.trim().replace("Rp. ", " ");
+                mekanik1 = mekanik1.trim().replace("Rp", " ");
                 String mekanik2 = find(R.id.et_mekanik2_biayaMekanik, EditText.class).getText().toString();
-                mekanik2 = mekanik2.trim().replace("Rp. ", " ");
+                mekanik2 = mekanik2.trim().replace("Rp", " ");
                 String mekanik3 = find(R.id.et_mekanik3_biayaMekanik, EditText.class).getText().toString();
-                mekanik3 = mekanik3.trim().replace("Rp. ", " ");
+                mekanik3 = mekanik3.trim().replace("Rp", " ");
 
                 args.put("mekanik1", mekanik1);
                 args.put("mekanik2", mekanik2);
@@ -99,29 +101,5 @@ public class AturBiayaMekanik2 extends AppActivity implements View.OnFocusChange
                 }
             }
         });
-    }
-
-    @Override
-    public void onFocusChange(View view, boolean isFocus) {
-        switch (view.getId()) {
-            case R.id.et_mekanik1_biayaMekanik:
-                if (isFocus) {
-                    find(R.id.et_mekanik1_biayaMekanik, EditText.class).setText("Rp. ");
-                }
-                break;
-            case R.id.et_mekanik2_biayaMekanik:
-                if (isFocus) {
-                    find(R.id.et_mekanik2_biayaMekanik, EditText.class).setText("Rp. ");
-                }
-                break;
-            case R.id.et_mekanik3_biayaMekanik:
-                if (isFocus) {
-                    find(R.id.et_mekanik3_biayaMekanik, EditText.class).setText("Rp. ");
-                }
-                break;
-            case R.id.et_upahMin_biayaMekanik:
-                find(R.id.et_upahMin_biayaMekanik, EditText.class).setHint("HH:MM");
-                break;
-        }
     }
 }

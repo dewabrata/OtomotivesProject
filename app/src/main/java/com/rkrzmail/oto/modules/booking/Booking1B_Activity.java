@@ -17,7 +17,6 @@ public class Booking1B_Activity extends AppActivity implements View.OnClickListe
 
     private Spinner spLokasiLayanan;
     private EditText etLonglat, etAlamat;
-    private CheckBox cbAntar, cbJemput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +30,7 @@ public class Booking1B_Activity extends AppActivity implements View.OnClickListe
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_booking1b);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Booking 1B");
+        getSupportActionBar().setTitle("Booking");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -39,8 +38,9 @@ public class Booking1B_Activity extends AppActivity implements View.OnClickListe
         spLokasiLayanan = findViewById(R.id.sp_pekerjaan_booking1b);
         etLonglat = findViewById(R.id.et_longlat_booking1b);
         etAlamat = findViewById(R.id.et_alamat_booking1b);
-        cbAntar = findViewById(R.id.cb_antar_booking1b);
-        cbJemput = findViewById(R.id.cb_jemput_booking1b);
+
+        find(R.id.cb_layanan_booking1b, CheckBox.class);
+
 
         find(R.id.btn_radius_booking1b, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,10 +62,14 @@ public class Booking1B_Activity extends AppActivity implements View.OnClickListe
                 finish();
                 break;
             case R.id.btn_batal_booking1b:
-                Intent in = new Intent(getActivity(), Booking1A_Activity.class);
-                startActivity(in);
                 finish();
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
     }
 }

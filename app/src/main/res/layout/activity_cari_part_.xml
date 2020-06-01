@@ -43,39 +43,43 @@
             android:background="@color/colorPrimary"
             app:layout_scrollFlags="scroll|enterAlways"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-        <RelativeLayout
-            android:id="@+id/search_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/toolbar"
-            android:background="@color/colorPrimary"
-            android:padding="5dp">
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
 
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/border_shadow_left"
-                android:textAlignment="center"
-                android:layout_gravity="center">
+        </android.support.v7.widget.Toolbar>
 
-                <com.rkrzmail.srv.NikitaAutoComplete
-                    android:id="@+id/et_cariPart"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawableRight="@android:drawable/ic_menu_search"
-                    android:hint="Cari Part"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:textColor="@color/grey_80"
-                    android:textColorHint="@android:color/darker_gray" />
 
-            </android.support.design.widget.TextInputLayout>
-        </RelativeLayout>
+        <!--        <RelativeLayout-->
+        <!--            android:id="@+id/search_layout"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_below="@+id/toolbar"-->
+        <!--            android:background="@color/colorPrimary"-->
+        <!--            android:padding="5dp">-->
+
+
+        <!--            <android.support.design.widget.TextInputLayout-->
+        <!--                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:background="@drawable/border_shadow_left"-->
+        <!--                android:textAlignment="center"-->
+        <!--                android:layout_gravity="center">-->
+
+        <!--                <com.rkrzmail.srv.NikitaAutoComplete-->
+        <!--                    android:id="@+id/et_cariPart"-->
+        <!--                    android:layout_width="match_parent"-->
+        <!--                    android:layout_height="wrap_content"-->
+        <!--                    android:drawableRight="@android:drawable/ic_menu_search"-->
+        <!--                    android:hint="Cari Part"-->
+        <!--                    android:inputType="text"-->
+        <!--                    android:maxLines="1"-->
+        <!--                    android:singleLine="true"-->
+        <!--                    android:textColor="@color/grey_80"-->
+        <!--                    android:textColorHint="@android:color/darker_gray" />-->
+
+        <!--            </android.support.design.widget.TextInputLayout>-->
+        <!--        </RelativeLayout>-->
 
     </android.support.design.widget.AppBarLayout>
 

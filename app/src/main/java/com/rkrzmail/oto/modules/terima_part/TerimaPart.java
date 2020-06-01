@@ -40,10 +40,8 @@ public class TerimaPart extends AppActivity {
 
     public static final String TAG = "TerimaPart";
     private RecyclerView recyclerView_terimaPart;
-
-    private SearchView tsearchView;
     final int REQUEST_TERIMA_PART = 666;
-    private NikitaAutoComplete CariNoDO;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,13 +56,12 @@ public class TerimaPart extends AppActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //toolbar.setNavigationIcon(R.drawable.ic_menu);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("TERIMA PART");
+        getSupportActionBar().setTitle("Terima Part");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initComponent(){
 
-        CariNoDO = findViewById(R.id.CariNoDO);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_terima_part);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -101,13 +98,6 @@ public class TerimaPart extends AppActivity {
         }));
         reload("");
 
-        CariNoDO.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String data = CariNoDO.getText().toString();
-                reload(data);
-            }
-        });
     }
 
     private void reload(final String data){
@@ -115,7 +105,6 @@ public class TerimaPart extends AppActivity {
             Nson result;
             @Override
             public void run() {
-
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("search", data);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewterimapart"),args)) ;
@@ -135,4 +124,46 @@ public class TerimaPart extends AppActivity {
             }
         });
     }
+
+    SearchView mSearchView;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_part, menu);
+
+
+        // Get the SearchView and set the searchable configuration
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        mSearchView = new SearchView(getSupportActionBar().getThemedContext());
+        mSearchView.setQueryHint("Cari No. DO"); /// YOUR HINT MESSAGE
+        mSearchView.setMaxWidth(Integer.MAX_VALUE);
+
+        final MenuItem searchMenu = menu.findItem(R.id.action_search);
+        searchMenu.setActionView(mSearchView);
+        searchMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+
+        //SearchView searchView = (SearchView)  menu.findItem(R.id.action_search).setActionView(mSearchView);
+        // Assumes current activity is the searchable activity
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
+
+        adapterSearchView(mSearchView, "search", "viewterimapart", "NO_DO");
+        SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+            public boolean onQueryTextChange(String newText) {
+
+                return false;
+            }
+
+            public boolean onQueryTextSubmit(String query) {
+                searchMenu.collapseActionView();
+                //filter(null);
+                reload(query);
+
+                return true;
+            }
+        };
+        mSearchView.setOnQueryTextListener(queryTextListener);
+        return true;
+    }
+
 }

@@ -1,10 +1,12 @@
-package com.rkrzmail.oto.modules.lokasi_part;
+package com.rkrzmail.oto.modules.booking;
 
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -12,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -20,99 +23,93 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.gmod.Pendaftaran1;
-import com.rkrzmail.srv.NikitaAutoComplete;
+import com.rkrzmail.oto.modules.lokasi_part.Notifikasi_Alokasi_Fragment;
+import com.rkrzmail.oto.modules.terima_part.AturTerimaPart;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.utils.Tools;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 
-public class CariPart_Activity extends AppActivity {
+public class KontrolBooking_Activity extends AppActivity {
 
-    private Pendaftaran1.AutoSuggestAdapter autoSuggestAdapter;
-    private RecyclerView rvCariPart;
-    private NikitaAutoComplete cariPart;
-
+    private RecyclerView rvKontrolBooking;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cari_part_);
+        setContentView(R.layout.activity_kontrol_booking);
         initToolbar();
         initComponent();
     }
 
+
     private void initToolbar() {
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_cariPart);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_kontrolBooking);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Cari Part");
+        getSupportActionBar().setTitle("Kontrol Booking");
+        setTitleColor(getResources().getColor(R.color.white_transparency));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //toolbar.animate().translationY(-toolbar.getBottom()).setInterpolator(new AccelerateInterpolator()).start();
     }
 
-
-    private void initComponent(){
-
-        rvCariPart = (RecyclerView) findViewById(R.id.recyclerView_cariPart);
-        rvCariPart.setLayoutManager(new LinearLayoutManager(this));
-        rvCariPart.setHasFixedSize(true);
-
-        rvCariPart.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_daftar_cari_part){
+    private void initComponent() {
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah_kontrolBooking);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), Booking1A_Activity.class);
+                startActivity(intent);
+            }
+        });
+        rvKontrolBooking = findViewById(R.id.recyclerView_kontrolBooking);
+        rvKontrolBooking.setLayoutManager(new LinearLayoutManager(this));
+        rvKontrolBooking.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_kontrol_booking) {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
 
-                if(nListArray.get("MERK_PART").asString() == null){
-                    find(R.id.tv_cari_merkPart, TextView.class).setVisibility(View.GONE);
-                }
-                viewHolder.find(R.id.tv_cari_merkPart, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_cari_namaPart, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
-                viewHolder.find(R.id.tv_cari_noPart, TextView.class).setText(nListArray.get(position).get("NO_PART_ID").asString());
-                viewHolder.find(R.id.tv_cari_stockPart, TextView.class).setText(nListArray.get(position).get("STOCK").asString());
+                String tglSet = Tools.setFormatDayAndMonth(nListArray.get(position).get("CREATED_DATE").asString());
+
+                viewHolder.find(R.id.tv_status_kontrolBooking, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
+                viewHolder.find(R.id.tv_waktu_kontrolBooking, TextView.class).setText(tglSet);
+                viewHolder.find(R.id.tv_nopol_kontrolBooking, TextView.class).setText(nListArray.get(position).get("NOPOL").asString());
+                viewHolder.find(R.id.tv_noPhone_kontrolBooking, TextView.class).setText(nListArray.get(position).get("NO_PONSEL").asString());
+                viewHolder.find(R.id.tv_kondisi_kontrolBooking, TextView.class).setText(nListArray.get(position).get("KONDISI_KENDARAAN").asString());
+                viewHolder.find(R.id.tv_jenisBooking_kontrolBooking, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_ketPart_kontrolBooking, TextView.class).setText(nListArray.get(position).get("").asString());
+
             }
-        }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(Nson parent, View view, int position) {
-                        Intent i = new Intent(getActivity(), AturLokasiPart_Activity.class);
-                        i.putExtra("NAMA", nListArray.get(position).toJson());
-                        startActivity(i);
-                    }
-                })
-        );
+        });
+        catchData("");
     }
 
-    private void cariPart(final String cari){
-
+    private void catchData(final String cari) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "view");
                 args.put("search", cari);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("caripart"), args));
+
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturbooking"), args));
             }
 
             @Override
             public void runUI() {
-                if(result.get("status").asString().equalsIgnoreCase("OK")){
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
-                    rvCariPart.getAdapter().notifyDataSetChanged();
-
-                    autoSuggestAdapter = new Pendaftaran1.AutoSuggestAdapter(getActivity(), nListArray.size());
-                    ArrayList<String> stringList = new ArrayList<>();
-                    for (int i = 0; i < result.get("data").size(); i++) {
-                        stringList.add(result.get("data").get(i).get("NAMA").asString());
-                    }
-                    autoSuggestAdapter.setData(stringList);
-                    autoSuggestAdapter.notifyDataSetChanged();
-
-                }else{
-                    showError("Gagal Mencari Part");
+                    rvKontrolBooking.getAdapter().notifyDataSetChanged();
+                } else {
+                    showError("Mohon Di Coba Kembali");
                 }
-
             }
         });
     }
@@ -127,7 +124,7 @@ public class CariPart_Activity extends AppActivity {
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         mSearchView = new SearchView(getSupportActionBar().getThemedContext());
-        mSearchView.setQueryHint("Cari Part"); /// YOUR HINT MESSAGE
+        mSearchView.setQueryHint("Cari No. Polisi"); /// YOUR HINT MESSAGE
         mSearchView.setMaxWidth(Integer.MAX_VALUE);
 
         final MenuItem searchMenu = menu.findItem(R.id.action_search);
@@ -139,7 +136,7 @@ public class CariPart_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        adapterSearchView(mSearchView, "search", "caripart", "NAMA");
+        adapterSearchView(mSearchView, "search", "aturbooking", "NOPOL");
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
 
@@ -149,7 +146,7 @@ public class CariPart_Activity extends AppActivity {
             public boolean onQueryTextSubmit(String query) {
                 searchMenu.collapseActionView();
                 //filter(null);
-                cariPart(query);
+                catchData(query);
 
                 return true;
             }
@@ -157,5 +154,6 @@ public class CariPart_Activity extends AppActivity {
         mSearchView.setOnQueryTextListener(queryTextListener);
         return true;
     }
+
 
 }

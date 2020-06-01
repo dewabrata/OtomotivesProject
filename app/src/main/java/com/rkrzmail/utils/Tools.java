@@ -47,6 +47,7 @@ import com.rkrzmail.oto.R;
 
 import org.w3c.dom.Text;
 
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -417,10 +418,11 @@ public class Tools {
         return fotmatDate;
     }
 
-    public static String formatRupiah(Double number){
+    public static String formatRupiah(String number) {
         Locale localeID = new Locale("in", "ID");
         NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(localeID);
-        return formatRupiah.format(number);
+        double formatDouble = Tools.parseDouble(number);
+        return formatRupiah.format(formatDouble);
     }
 
     public static void clearForm(ViewGroup group) {
@@ -448,4 +450,25 @@ public class Tools {
         AlertDialog alert11 = builder1.create();
         alert11.show();
     }
+
+    public static String formatPercent(String number) {
+        Locale localeID = new Locale("in", "ID");
+        NumberFormat formatRupiah = NumberFormat.getPercentInstance(localeID);
+        formatRupiah.setMaximumFractionDigits(4);
+        String percentNumber = formatRupiah.format(Tools.parseDouble(number) / 1000);
+        //double formatDouble = Tools.parseDouble(number);
+        return percentNumber;
+    }
+
+    private static double parseDouble(String strNumber) {
+        if (strNumber != null && strNumber.length() > 0) {
+            try {
+                return Double.parseDouble(strNumber);
+            } catch (Exception e) {
+                return -1;   // or some value to mark this field is wrong. or make a function validates field first ...
+            }
+        } else return 0;
+    }
+
+
 }

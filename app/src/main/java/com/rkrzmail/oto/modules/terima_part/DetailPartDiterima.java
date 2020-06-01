@@ -22,6 +22,7 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.gmod.BarcodeActivity;
+import com.rkrzmail.srv.RupiahFormat;
 import com.rkrzmail.utils.Tools;
 
 import java.lang.reflect.Array;
@@ -30,16 +31,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class DetailPartDiterima extends AppActivity implements View.OnFocusChangeListener, AdapterView.OnItemSelectedListener {
+public class DetailPartDiterima extends AppActivity implements AdapterView.OnItemSelectedListener {
 
     private static final String TAG = "DetailPartDiterima";
     final int REQUEST_BARCODE = 13;
     private static final String TAMBAH_PART = "TAMBAH";
     private Spinner spinnerLokasiSimpan, spinnerPenempatan;
     private EditText txtNoPart, txtNamaPart, txtJumlah, txtHargaBeliUnit, txtDiskonBeli;
-    private StringBuilder tambah = new StringBuilder();
-    private boolean isAdd = false;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +69,8 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
         spinnerLokasiSimpan.setOnItemSelectedListener(this);
         spinnerPenempatan.setOnItemSelectedListener(this);
 
-        txtHargaBeliUnit.setOnFocusChangeListener(this);
-        txtDiskonBeli.setOnFocusChangeListener(this);
+        txtHargaBeliUnit.addTextChangedListener(new RupiahFormat(txtHargaBeliUnit));
+        txtDiskonBeli.addTextChangedListener(new RupiahFormat(txtDiskonBeli));
 
         find(R.id.btn_scan_terimaPart, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,7 +83,6 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
         find(R.id.btn_simpan_terimaPart, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 insertdata();
             }
         });
@@ -100,8 +97,6 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
     }
 
     private void insertdata() {
-        final SharedPreferences prefs = getSharedPreferences(TAMBAH_PART, MODE_PRIVATE);
-        SharedPreferences.Editor editor;
         newProses(new Messagebox.DoubleRunnable() {
             Nson data;
 
@@ -123,17 +118,18 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
                 //tipe,nama, nodo, tglpesan, tglterima, pembayaran, jatuhtempo, ongkir, namapart,
                 // nopart, jumlah, hargabeli, diskon, lokasi, penempatan
 
-                String spJumlah = prefs.getString("jumlah", "");
-                String spBeli = prefs.getString("hargabeli", "");
-                String spDiskon = prefs.getString("diskonbeli", "");
-                String spLokasi = prefs.getString("lokasisimpan", "");
-                String spTempat = prefs.getString("penempatan", "");
-                if(spJumlah.equals("") && spBeli.equals("") && spDiskon.equals("") && spLokasi.equals("") && spTempat.equals("")){
-                    args.put("jumlah", prefs.getString("jumlah", ""));
-                    args.put("hargabeliunit", prefs.getString("hargabeli", ""));
-                    args.put("diskonbeli", prefs.getString("diskonbeli", ""));
-                    args.put("lokasi", prefs.getString("lokasisimpan", ""));
-                    args.put("penempatan", prefs.getString("penempatan", ""));
+                String spJumlah = getSetting("jumlah");
+                String spBeli = getSetting("hargabeli");
+                String spDiskon = getSetting("diskonbeli");
+                String spLokasi = getSetting("lokasisimpan");
+                String spTempat = getSetting("penempatan");
+
+                if (find(R.id.fab_tambah_detailpart_terima, FloatingActionButton.class).callOnClick()) {
+                    args.put("jumlah", getSetting("jumlah"));
+                    args.put("hargabeliunit", getSetting("hargabeli"));
+                    args.put("diskonbeli", getSetting("diskonbeli"));
+                    args.put("lokasi", getSetting("lokasisimpan"));
+                    args.put("penempatan", getSetting("penempatan"));
                     Log.d("total", spJumlah);
                 }else{
                     args.put("namapart", "");
@@ -171,16 +167,12 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
     }
 
     private void addData() {
-        SharedPreferences prefs = getSharedPreferences(TAMBAH_PART, MODE_PRIVATE);
-        SharedPreferences.Editor editor;
 
         ArrayList<String> jumlahTotal = new ArrayList<>();
         ArrayList<String> hargaBeliUnit = new ArrayList<>();
         ArrayList<String> diskonBeli = new ArrayList<>();
         ArrayList<String> lokasiSimpan = new ArrayList<>();
         ArrayList<String> tempat = new ArrayList<>();
-
-        editor = prefs.edit();
 
         String[] jumlah = txtJumlah.getText().toString().trim().split(", ");
         String[] hargabeliunit = txtHargaBeliUnit.getText().toString().trim().split(", ");
@@ -194,12 +186,11 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
         lokasiSimpan.addAll(Arrays.asList(lokasisimpan));
         tempat.addAll(Arrays.asList(penempatan));
 
-        editor.putString("jumlah", String.valueOf(jumlahTotal));
-        editor.putString("hargabeliunit", String.valueOf(hargaBeliUnit));
-        editor.putString("diskonbeli", String.valueOf(diskonBeli));
-        editor.putString("lokasisimpan", String.valueOf(lokasiSimpan));
-        editor.putString("penempatan", String.valueOf(tempat));
-        editor.commit();
+        setSetting("jumlah", String.valueOf(jumlahTotal));
+        setSetting("hargabeliunit", String.valueOf(hargaBeliUnit));
+        setSetting("diskonbeli", String.valueOf(diskonBeli));
+        setSetting("lokasisimpan", String.valueOf(lokasiSimpan));
+        setSetting("penempatan", String.valueOf(tempat));
 
         Tools.clearForm(find(R.id.ly_detailPart, LinearLayout.class));
     }
@@ -240,33 +231,10 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
         }
     }
 
-    @Override
-    public void onFocusChange(View view, boolean hasFocus) {
-        switch (view.getId()) {
-            case R.id.txtHargaBeliUnit:
-                if (hasFocus) {
-                    txtHargaBeliUnit.setText("Rp. ");
-                }
-                break;
-            case R.id.txtDiskonBeli:
-                if (hasFocus) {
-                    String str = txtDiskonBeli.getText().toString();
-                    if (str.equalsIgnoreCase("")) {
-
-                    }
-                    txtDiskonBeli.setText(str + " %");
-                }
-                break;
-        }
-    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SharedPreferences prefs = getSharedPreferences(TAMBAH_PART, MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.clear();
-        editor.commit();
     }
 
     @Override

@@ -411,7 +411,7 @@ public class Pendaftaran1 extends AppActivity {
     final int REQUEST_PENDAFTARAN = 123;
     final int REQUEST_PART  = 15;
 
-    public class AutoSuggestAdapter extends ArrayAdapter<String> implements Filterable {
+    public static class AutoSuggestAdapter extends ArrayAdapter<String> implements Filterable {
         private List<String> mlistData;
         public AutoSuggestAdapter(@NonNull Context context, int resource) {
             super(context, resource);

@@ -34,7 +34,7 @@ public class Booking2_Activity extends AppActivity implements View.OnClickListen
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_booking2);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Booking 2");
+        getSupportActionBar().setTitle("Booking");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -100,5 +100,11 @@ public class Booking2_Activity extends AppActivity implements View.OnClickListen
                 }
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
     }
 }

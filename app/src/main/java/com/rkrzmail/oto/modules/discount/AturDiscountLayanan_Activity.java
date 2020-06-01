@@ -3,17 +3,23 @@ package com.rkrzmail.oto.modules.discount;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 
+import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.srv.PercentFormat;
+import com.rkrzmail.utils.Tools;
 
-public class AturDiscountLayanan_Activity extends AppCompatActivity {
+public class AturDiscountLayanan_Activity extends AppActivity implements View.OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_atur_discount_layanan_);
         initToolbar();
-
+        initComponent();
     }
 
     private void initToolbar() {
@@ -21,5 +27,19 @@ public class AturDiscountLayanan_Activity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Discount Layanan");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void initComponent() {
+        find(R.id.et_discPart_discLayanan, EditText.class).addTextChangedListener(new PercentFormat(find(R.id.et_discPart_discLayanan, EditText.class)));
+        find(R.id.tv_tglEffect_discLayanan).setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.tv_tglEffect_discLayanan:
+                Tools.getDatePickerDialogTextView(getActivity(), find(R.id.tv_tglEffect_discLayanan, TextView.class));
+                break;
+        }
     }
 }

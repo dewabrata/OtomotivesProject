@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:id="@+id/cardView"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:layout_gravity="center"
+    android:layout_marginLeft="7dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginRight="7dp"
+    android:layout_marginBottom="4dp"
+    android:layout_weight="5"
+    android:padding="10dp"
+    app:cardElevation="3dp"
+    app:cardCornerRadius="10dp">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tv_optionMenu_kontrolBooking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="end"
+            android:text="&#8942;"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:textStyle="bold" />
+
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            android:gravity="center"
+            android:stretchColumns="*">
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/tv_status_kontrolBooking"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Status"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_waktu_kontrolBooking"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="40dp"
+                    android:text="Waktu"
+                    android:textStyle="bold" />
+
+
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/tv_nopol_kontrolBooking"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No. Polisi"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_noPhone_kontrolBooking"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="40dp"
+                    android:text="No. Ponsel"
+                    android:textStyle="bold" />
+
+
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/tv_kondisi_kontrolBooking"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Kondisi"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_jenisBooking_kontrolBooking"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="40dp"
+                    android:text="Jenis Booking"
+                    android:textStyle="bold" />
+
+
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/tv_ketPart_kontrolBooking"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Part : Y/N"
+                    android:textStyle="bold" />
+
+            </TableRow>
+
+
+        </TableLayout>
+
+    </FrameLayout>
+
+</android.support.v7.widget.CardView>

@@ -73,6 +73,7 @@ public class BiayaMekanik2Activity extends AppActivity {
                 Intent intent =  new Intent(getActivity(), AturBiayaMekanik2.class);
                 intent.putExtra("USER", nListArray.get(position).toJson());
                 startActivity(intent);
+                finish();
             }
         }));
         reload();
