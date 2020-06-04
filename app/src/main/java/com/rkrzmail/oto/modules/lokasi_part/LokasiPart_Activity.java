@@ -6,27 +6,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.FrameLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -38,10 +32,9 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.gmod.BarcodeActivity;
 import com.rkrzmail.oto.modules.lokasi_part.stock_opname.StockOpname_Activity;
 import com.rkrzmail.oto.modules.part.AdapterSuggestionSearch;
-import com.rkrzmail.srv.NikitaAutoComplete;
+import com.rkrzmail.srv.FragmentsAdapter;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
-import com.rkrzmail.srv.NsonAutoCompleteAdapter;
 import com.rkrzmail.utils.Tools;
 
 import java.util.ArrayList;
@@ -53,37 +46,21 @@ import java.util.Map;
 public class LokasiPart_Activity extends AppActivity {
 
     private static final String TAG = "LokasiPart_Activity";
-    private static final int REQUEST_STOCK_OPNAME = 1212;
-    private static final int REQUEST_PENYESUAIAN = 567;
-    private static final int REQUEST_BARCODE = 13;
+    private ViewPager vpLokasiPart;
+    private TabLayout tabLayout;
+    private ArrayList<Fragment> fragments;
 
-    private View parent_view;
-    private RecyclerView rvLokasi_part;
-    private AdapterSuggestionSearch adapterSuggestionSearch;
-    //private NikitaAutoComplete cariPart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lokasi_part);
         initToolbar();
-        parent_view = findViewById(android.R.id.content);
         initComponent();
 
     }
 
-    private boolean loadFragment(Fragment fragment) {
-        if (fragment != null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.frame_notifikasi, fragment)
-                    .commit();
-            return true;
-        }
-        return false;
-    }
-
     private void initToolbar() {
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_lokasi_part);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Lokasi Part");
@@ -93,135 +70,29 @@ public class LokasiPart_Activity extends AppActivity {
 
     private void initComponent() {
 
-        rvLokasi_part = (RecyclerView) findViewById(R.id.recyclerView_lokasiPart);
-        //cariPart = (NikitaAutoComplete) findViewById(R.id.et_cariLokasiPart);
+        vpLokasiPart = findViewById(R.id.vp_lokasiPart);
+        tabLayout = findViewById(R.id.tablayout_lokasiPart);
+        fragments = new ArrayList<>();
 
-        rvLokasi_part.setLayoutManager(new LinearLayoutManager(this));
-        rvLokasi_part.setHasFixedSize(true);
+        fragments.add(new PartTeralokasikan_Fragment());
+        fragments.add(new PartNonLokasi_Fragment());
 
-        rvLokasi_part.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_lokasi_part) {
-            @Override
-            public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, final int position) {
+        FragmentsAdapter pagerAdapter = new FragmentsAdapter(getSupportFragmentManager(), getApplicationContext(), fragments);
 
-                String tglOpname = Tools.setFormatDayAndMonth(nListArray.get(position).get("TANGGAL_OPNAME").asString());
+        vpLokasiPart.setAdapter(pagerAdapter);
+        vpLokasiPart.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.setupWithViewPager(vpLokasiPart);
 
-                viewHolder.find(R.id.tv_noFolder, TextView.class).setText(nListArray.get(position).get("NO_FOLDER").asString());
-                viewHolder.find(R.id.tv_lokasiPart, TextView.class).setText(nListArray.get(position).get("LOKASI").asString());
-                viewHolder.find(R.id.tv_namaPart, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
-                viewHolder.find(R.id.tv_nomor_part, TextView.class).setText(nListArray.get(position).get("NO_PART_ID").asString());
-                viewHolder.find(R.id.tv_tglOpname, TextView.class).setText(tglOpname);
-                viewHolder.find(R.id.tv_penempatan, TextView.class).setText(nListArray.get(position).get("PENEMPATAN").asString());
-                viewHolder.find(R.id.tv_stock, TextView.class).setText(nListArray.get(position).get("STOCK").asString());
-                viewHolder.find(R.id.tv_user, TextView.class).setText(nListArray.get(position).get("USER").asString());
 
-                viewHolder.find(R.id.tv_optionMenu, TextView.class).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        PopupMenu popup = new PopupMenu(getActivity(), viewHolder.find(R.id.tv_optionMenu, TextView.class));
-                        popup.inflate(R.menu.menu_lokasi_part);
-                        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                            @Override
-                            public boolean onMenuItemClick(MenuItem menuItem) {
-
-                                switch (menuItem.getItemId()) {
-                                    case R.id.action_stockOpname:
-//                                        Stock opname : membuka form stock opname
-                                        Intent i = new Intent(getActivity(), StockOpname_Activity.class);
-                                        i.putExtra("NO_PART_ID", nListArray.get(position).toJson());
-                                        startActivityForResult(i, REQUEST_STOCK_OPNAME);
-                                        break;
-                                    case R.id.action_qrCode:
-                                        Intent intent = new Intent(getActivity(), BarcodeActivity.class);
-                                        startActivityForResult(intent, REQUEST_BARCODE);
-                                        break;
-                                    case R.id.action_hapusDaftar:
-//                                        Hapus daftar : menghapus part dari lokasi penempatan
-                                        break;
-                                }
-                                return true;
-                            }
-                        });
-                        popup.show();
-                    }
-                });
-                Log.d("NAMA", nListArray.get(position).get("search").asString());
-            }
-        });
-
-        catchData("");
-
+        //tabLayout.addOnTabSelectedListener();
     }
 
-    private void catchData(final String nama) {
-       newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
-
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("search", nama);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlokasipart"), args));
-
-            }
-
-            @Override
-            public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    nListArray.asArray().clear();
-                    nListArray.asArray().addAll(result.get("data").asArray());
-                    final List<Nson> nson = new ArrayList<>();
-                    for (int i = 0; i < result.get("data").size(); i++) {
-                        nson.add(result.get("data").get(i).get("NO_FOLDER"));
-                    }
-                    Collections.sort(nson, new Comparator<Nson>() {
-                        @Override
-                        public int compare(Nson nson1, Nson nson2) {
-                            if(nson1.get("NO_FOLDER").asInteger() < nson2.get("NO_FOLDER").asInteger()){
-                                return -1;
-                            }else{
-                                return 1;
-                            }
-                        }
-                    });
-                    rvLokasi_part.getAdapter().notifyDataSetChanged();
-
-                } else {
-                    showError("Mohon Di Coba Kembali" + result.get("message").asString());
-                }
-
-                if(nListArray.get("data").get("PENEMPATAN").asString().equalsIgnoreCase("")){
-                    find(R.id.frame_notifikasi, FrameLayout.class).setVisibility(View.VISIBLE);
-                    if (find(R.id.frame_notifikasi, FrameLayout.class).getVisibility() == View.VISIBLE) {
-                        loadFragment(new Notifikasi_Alokasi_Fragment());
-                    }
-                } else {
-                    find(R.id.frame_notifikasi, FrameLayout.class).setVisibility(View.GONE);
-                }
-            }
-        });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == REQUEST_STOCK_OPNAME && requestCode == RESULT_OK) {
-            setResult(RESULT_OK);
-            catchData("");
-            finish();
-        }else if(resultCode == REQUEST_PENYESUAIAN && requestCode == RESULT_OK){
-            setResult(RESULT_OK);
-            catchData("");
-        }else if(resultCode == REQUEST_BARCODE && requestCode == RESULT_OK){
-
-        }
-    }
 
     SearchView mSearchView;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_part, menu);
-
 
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -232,7 +103,6 @@ public class LokasiPart_Activity extends AppActivity {
         final MenuItem searchMenu = menu.findItem(R.id.action_search);
         searchMenu.setActionView(mSearchView);
         searchMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-
 
         adapterSearchView(mSearchView, "search", "viewlokasipart", "NAMA");
 
@@ -250,10 +120,19 @@ public class LokasiPart_Activity extends AppActivity {
             public boolean onQueryTextSubmit(String query) {
                 //searchMenu.collapseActionView();
                 //filter(null);
-                catchData(query);
-                return true;
+                List<Fragment> fragments = getSupportFragmentManager().getFragments();
+                if (fragments != null) {
+                    for (Fragment fragment : fragments) {
+                        if (fragment instanceof PartTeralokasikan_Fragment) {
+                            ((PartTeralokasikan_Fragment) fragment).initComponent(query);
+                            break;
+                        }
+                    }
+                }
+                return false;
             }
         };
+
         mSearchView.setOnQueryTextListener(queryTextListener);
         return true;
     }

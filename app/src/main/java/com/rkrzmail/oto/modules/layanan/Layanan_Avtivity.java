@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.layanan;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,9 +8,12 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
@@ -34,7 +38,6 @@ public class Layanan_Avtivity extends AppActivity {
 
     private static final String TAG = "Layanan_Activity";
     private RecyclerView rvLayanan;
-    private NikitaAutoComplete cariLayanan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +56,6 @@ public class Layanan_Avtivity extends AppActivity {
     }
 
     private void initComponent(){
-
-        cariLayanan = findViewById(R.id.et_cariLayanan);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah_layanan);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -85,51 +86,6 @@ public class Layanan_Avtivity extends AppActivity {
         });
 
         catchData("");
-
-        cariLayanan.setThreshold(3);
-        cariLayanan.setAdapter(new NsonAutoCompleteAdapter(getActivity()){
-            @Override
-            public Nson onFindNson(Context context, String bookTitle) {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("search", bookTitle);
-                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlayanan"),args)) ;
-                return result;
-            }
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                if (convertView == null) {
-                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    convertView = inflater.inflate(R.layout.find_jenis_layanan, parent, false);
-                }
-
-                findView(convertView, R.id.tv_find_cari_layanan, TextView.class).setText( (getItem(position).get("JENIS_LAYANAN").asString()));
-
-                return convertView;
-            }
-        });
-
-        cariLayanan.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append( n.get("JENIS_LAYANAN").asString()  ).append(" ");
-
-                find(R.id.et_cariLayanan, NikitaAutoComplete.class).setText(stringBuilder.toString());
-                find(R.id.et_cariLayanan, NikitaAutoComplete.class).setTag(String.valueOf(adapterView.getItemAtPosition(position)));
-
-                find (R.id.tv_find_cari_layanan, TextView.class).setText(n.get("JENIS_LAYANAN").asString());
-            }
-        });
-
-        cariLayanan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String getText = cariLayanan.getText().toString().toUpperCase();
-                catchData(getText);
-            }
-        });
     }
 
     private void catchData(final String nama) {
@@ -157,5 +113,45 @@ public class Layanan_Avtivity extends AppActivity {
                 }
             }
         });
+    }
+
+    SearchView mSearchView;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_part, menu);
+
+
+        // Get the SearchView and set the searchable configuration
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        mSearchView = new SearchView(getSupportActionBar().getThemedContext());
+        mSearchView.setQueryHint("Cari Layanan"); /// YOUR HINT MESSAGE
+        mSearchView.setMaxWidth(Integer.MAX_VALUE);
+
+        final MenuItem searchMenu = menu.findItem(R.id.action_search);
+        searchMenu.setActionView(mSearchView);
+        searchMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+
+        //SearchView searchView = (SearchView)  menu.findItem(R.id.action_search).setActionView(mSearchView);
+        // Assumes current activity is the searchable activity
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
+
+        adapterSearchView(mSearchView, "search", "viewlayanan", "NAMA_LAYANAN");
+        SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+            public boolean onQueryTextChange(String newText) {
+
+                return false;
+            }
+
+            public boolean onQueryTextSubmit(String query) {
+                searchMenu.collapseActionView();
+                //filter(null);
+                catchData(query);
+                return true;
+            }
+        };
+        mSearchView.setOnQueryTextListener(queryTextListener);
+        return true;
     }
 }

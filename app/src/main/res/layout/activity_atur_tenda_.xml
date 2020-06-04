@@ -118,8 +118,7 @@
                     android:hint="NAMA LOKASI"
                     android:focusedByDefault="false"
                     android:inputType="text"
-                    android:maxLines="1"
-                    android:textAlignment="center" />
+                    android:maxLines="1" />
 
 
             </android.support.design.widget.TextInputLayout>
@@ -160,7 +159,7 @@
                     android:layout_height="wrap_content"
                     android:hint="LONGLAT"
                     android:focusedByDefault="false"
-                    android:inputType="number" />
+                    android:inputType="numberDecimal" />
 
 
             </android.support.design.widget.TextInputLayout>

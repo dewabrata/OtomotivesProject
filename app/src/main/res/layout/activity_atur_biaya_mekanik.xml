@@ -48,6 +48,9 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
+                app:helperTextEnabled="true"
+                app:helperText="Disable"
+                app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText."
                 android:hint="UPAH MINIMUM KOTA">
 
                 <EditText
@@ -69,7 +72,10 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:hint="UPAH/JAM">
+                android:hint="UPAH/JAM"
+                app:helperTextEnabled="true"
+                app:helperText="Disable"
+                app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
 
 
                 <EditText
@@ -92,7 +98,6 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:hint="MINIMUM WAKTU BERBAYAR">
-
 
                 <EditText
                     android:id="@+id/et_minBayar_biayaMekanik"

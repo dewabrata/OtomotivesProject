@@ -24,7 +24,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".modules.booking.KontrolBooking_Activity"></activity>
+        <activity android:name=".modules.sparepart.DaftarJualPart_Activity"></activity>
+        <activity android:name=".modules.sparepart.DetailJualPart_Activity" />
+        <activity android:name=".modules.sparepart.AturPenjualanPart_Activity" />
+        <activity android:name=".modules.sparepart.PenjualanPart_Activity" />
+        <activity android:name=".modules.discount.AturFrekwensiDiscount_Acitivity" />
+        <activity android:name=".modules.discount.FrekwensiDiscount_Activity" />
+        <activity android:name=".modules.registrasi_bengkel.ReferensikanOtomotives_Activity" />
+        <activity android:name=".modules.registrasi_bengkel.Referal_Activity" />
+        <activity android:name=".modules.registrasi_bengkel.RegistrasiBengkel_Activity" />
+        <activity android:name=".modules.user.AturUser_Activity" />
+        <activity android:name=".modules.user.User_Activity" />
+        <activity android:name=".modules.booking.KontrolBooking_Activity" />
         <activity android:name=".modules.komisi.AturKomisiJasaLain_Activity" />
         <activity android:name=".modules.komisi.KomisiJasaLain_Activity" />
         <activity android:name=".modules.komisi.AturKomisiLayanan_Activity" />
@@ -46,7 +57,16 @@
         <activity android:name=".modules.booking.Booking1A_Activity" />
         <activity android:name=".modules.tenda.AturTenda_Activity" />
         <activity android:name=".modules.tenda.Tenda_Activity" />
-        <activity android:name=".modules.lokasi_part.CariPart_Activity" />
+        <activity android:name=".modules.lokasi_part.CariPart_Activity">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
         <activity android:name=".modules.layanan.AturLayanan_Activity" />
         <activity android:name=".modules.layanan.Layanan_Avtivity" />
         <activity android:name=".modules.jurnal.Pembayaran_Activity" />
@@ -60,8 +80,18 @@
         <activity android:name=".modules.terima_part.DetailPartDiterima" />
         <activity android:name=".modules.biayamekanik.AturBiayaMekanik2" />
         <activity android:name=".modules.biayamekanik.BiayaMekanik2Activity" />
-        <activity android:name=".modules.SparepartsNew" />
-        <activity android:name=".modules.part.AturPartsNew" />
+        <activity android:name=".modules.sparepart.Spareparts_Activity">
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable"
+                android:value="com.rkrzmail.oto.modules.lokasi_part.CariPart_Activity" />
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+        </activity>
+        <activity android:name=".modules.sparepart.AturParts_Activity" />
         <activity android:name=".gmod.PengambilanPartActivity" />
         <activity android:name=".gmod.DaftarTugasPartActivity" />
         <activity android:name=".gmod.JumlahPartActivity" />

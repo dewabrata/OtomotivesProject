@@ -12,15 +12,19 @@ import android.widget.TextView;
 
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.srv.PercentFormat;
 import com.rkrzmail.utils.Tools;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Locale;
 
 public class AturDiscountJasaLain_Activity extends AppActivity implements View.OnClickListener {
 
+    private MultiSelectionSpinner spPekerjaan;
+    private ArrayList<String> dummiesPekerjaan = new ArrayList<>();
     private EditText etDiscPart;
     private TextView tvTgl;
 
@@ -42,12 +46,15 @@ public class AturDiscountJasaLain_Activity extends AppActivity implements View.O
     private void initComponent() {
         etDiscPart = findViewById(R.id.et_discPart_discJasa);
         tvTgl = findViewById(R.id.tv_tglEffect_discJasa);
+        spPekerjaan = findViewById(R.id.sp_pekerjaan_discJasa);
+
+        setMultiSelectionSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN", dummiesPekerjaan);
+
 
         etDiscPart.addTextChangedListener(new PercentFormat(etDiscPart));
         tvTgl.setOnClickListener(this);
 
         find(R.id.sp_namaJasa_discJasa);
-        find(R.id.sp_pekerjaan_discJasa);
         find(R.id.cb_mssg_discJasa);
 
     }

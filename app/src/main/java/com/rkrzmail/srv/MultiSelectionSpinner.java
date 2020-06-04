@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
@@ -17,6 +18,7 @@ import java.util.List;
 @SuppressLint("AppCompatCustomView")
 public class MultiSelectionSpinner extends Spinner implements
         OnMultiChoiceClickListener {
+
 
     public interface OnMultipleItemsSelectedListener {
         void selectedIndices(List<Integer> indices);
@@ -67,7 +69,7 @@ public class MultiSelectionSpinner extends Spinner implements
     @Override
     public boolean performClick() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Silahkan Pilih Tipe Antrian");
+        builder.setTitle("Silahkan Pilih");
         builder.setMultiChoiceItems(_items, mSelection, this);
         _itemsAtStart = getSelectedItemsAsString();
         builder.setPositiveButton("Pilih", new DialogInterface.OnClickListener() {

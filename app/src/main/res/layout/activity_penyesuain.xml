@@ -38,13 +38,12 @@
 
         <LinearLayout
             android:id="@+id/layout_penugasan"
-            android:layout_width="348dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
-            android:background="@drawable/border_solid"
             android:orientation="vertical"
-            android:padding="10dp">
+            android:padding="5dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -112,8 +111,7 @@
                             android:id="@+id/et_ket_penyesuaian"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textAlignment="center"
-                            android:gravity="center"
+                            android:gravity="top|left"
                             android:hint="Tambahkan Keterangan"
                             android:maxLines="10"
                             android:lines="5"/>
@@ -128,8 +126,9 @@
                 android:id="@+id/btn_simpan_penyesuaian"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="end"
                 android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
                 android:background="@drawable/btn_rounded_accent"
                 android:text="SIMPAN"
                 android:textColor="@color/white_transparency" />

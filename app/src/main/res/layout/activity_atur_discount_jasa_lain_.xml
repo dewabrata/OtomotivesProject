@@ -57,7 +57,7 @@
                     android:text="PEKERJAAN"
                     android:textStyle="bold" />
 
-                <Spinner
+                <com.rkrzmail.srv.MultiSelectionSpinner
                     android:id="@+id/sp_pekerjaan_discJasa"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -9,11 +9,16 @@ import android.widget.TextView;
 
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.srv.PercentFormat;
 import com.rkrzmail.utils.Tools;
 
+import java.util.ArrayList;
+
 public class AturDiscountLayanan_Activity extends AppActivity implements View.OnClickListener {
 
+    private MultiSelectionSpinner spPekerjaan;
+    private ArrayList<String> dummiesPekerjaan = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +37,9 @@ public class AturDiscountLayanan_Activity extends AppActivity implements View.On
     private void initComponent() {
         find(R.id.et_discPart_discLayanan, EditText.class).addTextChangedListener(new PercentFormat(find(R.id.et_discPart_discLayanan, EditText.class)));
         find(R.id.tv_tglEffect_discLayanan).setOnClickListener(this);
+        spPekerjaan = findViewById(R.id.sp_pekerjaan_discLayanan);
+        setMultiSelectionSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN", dummiesPekerjaan);
+
     }
 
     @Override

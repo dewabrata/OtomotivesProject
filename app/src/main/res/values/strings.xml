@@ -1,13 +1,14 @@
 <resources>
     <string name="app_name">Otomotives</string>
+    <string name="spinner_no_default_hint"></string>
     <string-array name="pola_harga_jual">
-        <item>BELI</item>
-        <item>RATA RATA BELI</item>
         <item>FLEXIBLE</item>
+        <item>BELI + MARGIN</item>
+        <item>RATA - RATA + MARGIN</item>
         <item>NOMINAL</item>
-
     </string-array>
 
+    <string name="hint_cari_part">CARI PART</string>
     <string-array name="pekerjaan">
         <item>MAHASISWA</item>
         <item>OJOL</item>
@@ -215,5 +216,8 @@
         <item>EMG</item>
 
     </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

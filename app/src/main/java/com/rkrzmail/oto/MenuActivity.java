@@ -27,22 +27,25 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.fragment.PageAdapter;
 import com.rkrzmail.oto.fragment.SlideFragment;
 import com.rkrzmail.oto.fragment.pageindicator.CirclePageIndicator;
-import com.rkrzmail.oto.gmod.DaftarTugasPartActivity;
 import com.rkrzmail.oto.gmod.LayananActivity;
 import com.rkrzmail.oto.gmod.MessageWA;
 import com.rkrzmail.oto.gmod.Part_DiterimaActivity;
-import com.rkrzmail.oto.gmod.DaftarPenjualanPartActivity;
 import com.rkrzmail.oto.gmod.Penerimaan_PartAcitivity;
 import com.rkrzmail.oto.gmod.SparepartActivity;
 import com.rkrzmail.oto.modules.biayamekanik.BiayaMekanik2Activity;
 import com.rkrzmail.oto.modules.LoginActivity;
-import com.rkrzmail.oto.modules.booking.Booking1A_Activity;
 import com.rkrzmail.oto.modules.booking.KontrolBooking_Activity;
 import com.rkrzmail.oto.modules.discount.DiscountJasaLain_Activity;
 import com.rkrzmail.oto.modules.discount.DiscountLayanan_Activity;
 import com.rkrzmail.oto.modules.discount.DiscountPart_Activity;
+import com.rkrzmail.oto.modules.discount.FrekwensiDiscount_Activity;
 import com.rkrzmail.oto.modules.discount.SpotDiscount_Activity;
 import com.rkrzmail.oto.modules.jurnal.DaftarJurnal_Activity;
+import com.rkrzmail.oto.modules.lokasi_part.CariPart_Activity;
+import com.rkrzmail.oto.modules.registrasi_bengkel.Referal_Activity;
+import com.rkrzmail.oto.modules.registrasi_bengkel.RegistrasiBengkel_Activity;
+import com.rkrzmail.oto.modules.sparepart.Spareparts_Activity;
+import com.rkrzmail.oto.modules.user.User_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiJasaLain_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiLayanan_Activity;
 import com.rkrzmail.oto.modules.layanan.Layanan_Avtivity;
@@ -66,11 +69,11 @@ public class MenuActivity extends AppActivity {
     public final int MN_PART_SEARCH     =   5;
     public final int MN_MESSAGE_WA      =   7;
     public final int MN_SPAREPART =   8;
-    public final int MN_BIAYA_MEKANIK =   9;
+    public final int MN_REGISTRASI = 9;
     public final int MN_JUAL_PART =   10;
     public final int MN_MESSAGE_PenerimaanPart =   11;
     public final int MN_MESSAGE_PartDiterima =   12;
-    public final int MN_MESSAGE_AturDiskon =   13;
+    public final int MN_CARI_PART = 13;
     public final int MN_TUGAS_PART =   14;
     public final int MN_KOMISI_KARYAWAN =   15;
     public final int MN_LOYALTI_PROGRAM =   16;
@@ -91,6 +94,9 @@ public class MenuActivity extends AppActivity {
     public static final int MN_DISCOUNT_LAYANAN = 31;
     public static final int MN_KOMISI_LAYANAN = 32;
     public static final int MN_KOMISI_JASA_LAIN = 33;
+    public static final int MN_KARYAWAN = 34;
+    public static final int MN_REFERAL = 35;
+    public static final int MN_FREKWENSI_DISCOUNT = 36;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,7 +134,15 @@ public class MenuActivity extends AppActivity {
                     Intent intent =  new Intent(MenuActivity.this, MessageWA.class);
                     startActivity(intent);
                 } else if (nPopulate.get(position).get("id").asInteger() == MN_SPAREPART) {
-                    Intent intent = new Intent(MenuActivity.this, SparepartActivity.class);
+                    Intent intent = new Intent(MenuActivity.this, Spareparts_Activity.class);
+                    startActivity(intent);
+
+                } else if (nPopulate.get(position).get("id").asInteger() == MN_REGISTRASI) {
+                    Intent intent = new Intent(MenuActivity.this, RegistrasiBengkel_Activity.class);
+                    startActivity(intent);
+
+                } else if (nPopulate.get(position).get("id").asInteger() == MN_CARI_PART) {
+                    Intent intent = new Intent(MenuActivity.this, CariPart_Activity.class);
                     startActivity(intent);
 
                 }
@@ -227,7 +241,17 @@ public class MenuActivity extends AppActivity {
                 } else if ((nPopulate.get(position).get("id").asInteger() == MN_KOMISI_JASA_LAIN)) {
                     Intent intent = new Intent(MenuActivity.this, KomisiJasaLain_Activity.class);
                     startActivity(intent);
+                } else if ((nPopulate.get(position).get("id").asInteger() == MN_KARYAWAN)) {
+                    Intent intent = new Intent(MenuActivity.this, User_Activity.class);
+                    startActivity(intent);
+                } else if ((nPopulate.get(position).get("id").asInteger() == MN_REFERAL)) {
+                    Intent intent = new Intent(MenuActivity.this, Referal_Activity.class);
+                    startActivity(intent);
+                } else if ((nPopulate.get(position).get("id").asInteger() == MN_FREKWENSI_DISCOUNT)) {
+                    Intent intent = new Intent(MenuActivity.this, FrekwensiDiscount_Activity.class);
+                    startActivity(intent);
                 }
+
 
             }
         });
@@ -309,7 +333,10 @@ public class MenuActivity extends AppActivity {
     public void populate(GridView v){
         nPopulate.add(Nson.newObject().set("id", MN_CHECKIN).set("icon", R.drawable.mn_checkin).set("text", "CHECK IN"));
 //        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_WA).set("icon", R.drawable.wa).set("text", "MESSAGE"));
-      //nPopulate.add(Nson.newObject().set("id", MN_SPAREPART).set("icon", R.drawable.mn_jualpart).set("text", "SPAREPART"));
+        nPopulate.add(Nson.newObject().set("id", MN_SPAREPART).set("icon", R.drawable.mn_jualpart).set("text", "SPAREPART"));
+        nPopulate.add(Nson.newObject().set("id", MN_CARI_PART).set("icon", R.drawable.mn_jualpart).set("text", "CARI PART"));
+        nPopulate.add(Nson.newObject().set("id", MN_REGISTRASI).set("icon", R.drawable.mn_pelanggan).set("text", "REGISTRASI"));
+        //nPopulate.add(Nson.newObject().set("id", MN_PART_SEARCH).set("icon", R.drawable.mn_jualpart).set("text", "CARI PART"));
 
         //nPopulate.add(Nson.newObject().set("id", MN_BIAYA_MEKANIK).set("icon", R.drawable.mn_perawatan).set("text", "BIAYA MEKANIK"));
         //nPopulate.add(Nson.newObject().set("id", MN_LOKASI_PERSEDIAAN).set("icon", R.drawable.mn_booking).set("text", "LOKASI PERSEDIAAN"));
@@ -333,7 +360,9 @@ public class MenuActivity extends AppActivity {
         nPopulate.add(Nson.newObject().set("id", MN_DISCOUNT_JASALAIN).set("icon", R.drawable.mn_belanja).set("text", "DISCOUNT JASA LAIN"));
         nPopulate.add(Nson.newObject().set("id", MN_KOMISI_LAYANAN).set("icon", R.drawable.mn_inspeksi).set("text", "KOMISI LAYANAN"));
         nPopulate.add(Nson.newObject().set("id", MN_KOMISI_JASA_LAIN).set("icon", R.drawable.mn_inspeksi).set("text", "KOMISI JASA LAIN"));
-
+        nPopulate.add(Nson.newObject().set("id", MN_KARYAWAN).set("icon", R.drawable.mn_pelanggan).set("text", "USER"));
+        nPopulate.add(Nson.newObject().set("id", MN_REFERAL).set("icon", R.drawable.mn_belanja).set("text", "REFERAL"));
+        nPopulate.add(Nson.newObject().set("id", MN_FREKWENSI_DISCOUNT).set("icon", R.drawable.mn_belanja).set("text", "FREKWENSI DISCOUNT"));
 
 //        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_KomisiKaryawan).set("icon", R.drawable.sample).set("text", "MESSAGE"));
 //        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_LoyaltiProgram).set("icon", R.drawable.sample).set("text", "MESSAGE"));

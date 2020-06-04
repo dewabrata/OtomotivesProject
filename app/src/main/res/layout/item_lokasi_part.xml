@@ -74,14 +74,6 @@
                         android:text="No Part"
                         android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/tv_tglOpname"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Tanggal OPNAME"
-                        android:textStyle="bold" />
-
                 </LinearLayout>
 
 
@@ -105,8 +97,9 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="25dp"
                     android:layout_weight="1"
+
                     android:orientation="vertical">
 
                     <TextView
@@ -124,14 +117,6 @@
                         android:layout_marginTop="25dp"
                         android:layout_weight="1"
                         android:text="Stock"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tv_user"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="User"
                         android:textStyle="bold" />
 
                 </LinearLayout>

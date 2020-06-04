@@ -118,27 +118,27 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
             @Override
             public void onClick(View view) {
                 try {
-                    Date tanggalTerima = new SimpleDateFormat("dd/MM/yyyy").parse(String.valueOf(tglTerima));
-                    Date pesan = new SimpleDateFormat("dd/MM/yyyy").parse(String.valueOf(tglPesan));
+                    Date tanggalTerima = new SimpleDateFormat("dd/MM/yyyy").parse(tglTerima.getText().toString());
+                    Date pesan = new SimpleDateFormat("dd/MM/yyyy").parse(tglPesan.getText().toString());
                     if (!tanggalTerima.after(pesan)) {
                         showInfo("Tanggal Pesan / Tgl Terima Tidak Sesuai");
                         return;
                     }
-                    try {
-                        Date jatuhTempo = new SimpleDateFormat("dd/MM/yyyy").parse(String.valueOf(tglJatuhTempo));
-                        Date tanggalTerima2 = new SimpleDateFormat("dd/MM/yyyy").parse(String.valueOf(tglTerima));
-                        if (find(R.id.layout_jatuh_tempo).getVisibility() == View.VISIBLE) {
-                            if (!jatuhTempo.after(tanggalTerima2) && !tanggalTerima2.before(jatuhTempo)) {
-                                showInfo("Tanggal Jatuh Tempo Invoice / Tanggal Terima Tidak Sesuai");
-                                return;
-                            }
-
-                            if (tglJatuhTempo.getText().toString().equalsIgnoreCase("")) {
-                                showInfo("Masukkan Tanggal Invoice");
-                            }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    Date jatuhTempo = new SimpleDateFormat("dd/MM/yyyy").parse(tglJatuhTempo.getText().toString());
+                    Date tanggalTerima2 = new SimpleDateFormat("dd/MM/yyyy").parse(tglTerima.getText().toString());
+                    if (find(R.id.layout_jatuh_tempo).getVisibility() == View.VISIBLE) {
+                        if (!jatuhTempo.after(tanggalTerima2) && !tanggalTerima2.before(jatuhTempo)) {
+                            showInfo("Tanggal Jatuh Tempo Invoice / Tanggal Terima Tidak Sesuai");
+                            return;
                         }
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+                        if (tglJatuhTempo.getText().toString().equalsIgnoreCase("")) {
+                            showInfo("Masukkan Tanggal Invoice");
+                            return;
+                        }
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -146,11 +146,13 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
 
                 if (tglTerima.getText().toString().equalsIgnoreCase("TANGGAL TERIMA")) {
                     showInfo("Masukkan Tanggal Terima");
+                    return;
                 } else if (tglPesan.getText().toString().equalsIgnoreCase("TANGGAL PESAN")) {
                     showInfo("Masukkan Tanggal PESAN");
-                } else {
-                    setBtnSelanjutnya();
+                    return;
                 }
+                setBtnSelanjutnya();
+
 
             }
         });
@@ -196,18 +198,18 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
                 }
                 if (data.contains(tglpesan)) {
                     Tools.alertDialog(getActivity(), "Penerimaan Part Telah Tercatat Sebelumnya");
+                    return;
                 } else if (data.contains(tglterima)) {
                     Tools.alertDialog(getActivity(), "Penerimaan Part Telah Tercatat Sebelumnya");
+                    return;
                 } else {
                     Intent i = new Intent(AturTerimaPart.this, DetailPartDiterima.class);
                     i.putExtra("detail", nson.toJson());
                     startActivityForResult(i, REQUEST_DETAIL_PART);
-                    finish();
                 }
             }
         });
     }
-
 
     @Override
     public void onClick(View view) {
@@ -255,14 +257,3 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
         }
     }
 }
-
-//    private void getAddMorePart(){
-//        Nson nson = Nson.readNson(getIntentStringExtra("tambah"));
-//        Intent intent = getIntent();
-//        if(intent.hasExtra("tambah")){
-//            tglPesan.setText(nson.get("tglpesan").asString());
-//            tglTerima.setText(nson.get("tglterima").asString());
-//            spinnerSupplier.setSelection(Tools.getIndexSpinner(spinnerSupplier, nson.get("LOKASI").asString()));
-//        }
-//    }
-

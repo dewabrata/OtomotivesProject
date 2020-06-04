@@ -57,7 +57,10 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAlignment="center">
+                    android:textAlignment="center"
+                    app:helperTextEnabled="true"
+                    app:helperText="Disable"
+                    app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
 
                     <EditText
                         android:id="@+id/et_no_part"
@@ -79,7 +82,10 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAlignment="center">
+                    android:textAlignment="center"
+                    app:helperTextEnabled="true"
+                    app:helperText="Disable"
+                    app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
 
                     <EditText
                         android:id="@+id/et_nama_part"
@@ -101,7 +107,11 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAlignment="center">
+                    android:textAlignment="center"
+                    app:helperTextEnabled="true"
+                    app:helperText="Disable"
+                    app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
+
 
                     <EditText
                         android:id="@+id/et_merk_part"

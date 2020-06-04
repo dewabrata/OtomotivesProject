@@ -1,10 +1,14 @@
 package com.rkrzmail.oto.modules.discount;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -24,7 +28,6 @@ import java.util.Map;
 
 public class AturSpotDiscount_Activity extends AppActivity {
 
-    private NikitaAutoComplete cariNoponsel;
     private EditText etNoPonsel, etNama, etTransaksi, etDisc, etNet, etSpot, etTotal;
 
     @Override
@@ -44,7 +47,7 @@ public class AturSpotDiscount_Activity extends AppActivity {
     }
 
     private void initComponent() {
-        cariNoponsel = findViewById(R.id.et_cariNoPonsel_disc);
+
         etNama = findViewById(R.id.et_namaPelanggan_disc);
         etDisc = findViewById(R.id.et_discLain_disc);
         etNet = findViewById(R.id.et_netTransaksi_disc);
@@ -55,31 +58,6 @@ public class AturSpotDiscount_Activity extends AppActivity {
 
         etSpot.addTextChangedListener(new RupiahFormat(etSpot));
 
-
-        cariNoponsel.setThreshold(7);
-        cariNoponsel.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
-            @Override
-            public Nson onFindNson(Context context, String bookTitle) {
-                return super.onFindNson(context, bookTitle);
-            }
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                if (convertView == null) {
-                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    convertView = inflater.inflate(R.layout.find_nama_, parent, false);
-                }
-
-                etNoPonsel.setText(getItem(position).get("").asString());
-                etNama.setText(getItem(position).get("").asString());
-                etTransaksi.setText(getItem(position).get("").asString());
-                etDisc.setText(getItem(position).get("").asString());
-                etNet.setText(getItem(position).get("").asString());
-                etTotal.setText(getItem(position).get("").asString());
-
-                return convertView;
-            }
-        });
 
         find(R.id.btn_simpan_disc, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,4 +89,47 @@ public class AturSpotDiscount_Activity extends AppActivity {
         });
 
     }
+
+
+    SearchView mSearchView;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_part, menu);
+
+
+        // Get the SearchView and set the searchable configuration
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        mSearchView = new SearchView(getSupportActionBar().getThemedContext());
+        mSearchView.setQueryHint("Cari Part"); /// YOUR HINT MESSAGE
+        mSearchView.setMaxWidth(Integer.MAX_VALUE);
+
+        final MenuItem searchMenu = menu.findItem(R.id.action_search);
+        searchMenu.setActionView(mSearchView);
+        searchMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+
+        //SearchView searchView = (SearchView)  menu.findItem(R.id.action_search).setActionView(mSearchView);
+        // Assumes current activity is the searchable activity
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
+
+        adapterSearchView(mSearchView, "search", "caripart", "NAMA");
+        SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+            public boolean onQueryTextChange(String newText) {
+
+                return false;
+            }
+
+            public boolean onQueryTextSubmit(String query) {
+                searchMenu.collapseActionView();
+                //filter(null);
+                //cariPart(query);
+
+                return true;
+            }
+        };
+        mSearchView.setOnQueryTextListener(queryTextListener);
+        return true;
+    }
+
 }

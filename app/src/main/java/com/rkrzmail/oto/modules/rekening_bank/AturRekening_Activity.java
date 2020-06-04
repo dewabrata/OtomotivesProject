@@ -15,10 +15,15 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.discount.SpotDiscount_Activity;
+import com.rkrzmail.srv.MultiSelectionSpinner;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class AturRekening_Activity extends AppActivity {
+
+    private ArrayList<String> dummies = new ArrayList<>();
+    private Spinner spBank;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +43,10 @@ public class AturRekening_Activity extends AppActivity {
     private void initComponent() {
 
         EditText etNoRek = findViewById(R.id.et_noRek_rekening);
-        Spinner spBank = findViewById(R.id.sp_bank_rekening);
+        spBank = findViewById(R.id.sp_bank_rekening);
         EditText etNamaRek = findViewById(R.id.et_namaRek_rekening);
+
+        setSpinnerFromApi(spBank, "nama", "BANK", "viewmst", "BANK_NAME");
 
         find(R.id.btn_simpan_rekening, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override

@@ -68,6 +68,32 @@
         <item>OTOMOTIVES</item>
     </string-array>
 
+    <string-array name="jenis_kelamin">
+        <item>LAKI - LAKI</item>
+        <item>PEREMPUAN</item>
+    </string-array>
+
+    <string-array name="posisi_karyawan">
+        <item>MANAGEMENT</item>
+        <item>KEPALA BENGKEL</item>
+        <item>KEPALA MEKANIK</item>
+        <item>MEKANIK</item>
+        <item>SERVICES ADVISIOR</item>
+        <item>CUSTOMER SERVICES</item>
+        <item>FRONT DESK</item>
+        <item>KASIR</item>
+        <item>HELPER</item>
+        <item>ADMIN PART</item>
+    </string-array>
+
+    <string-array name="akses_app_karyawan">
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+    </string-array>
+
     <string-array name="status_layanan">
         <item>ACTIVE</item>
         <item>NON ACTIVE</item>

@@ -51,6 +51,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -396,10 +397,18 @@ public class Tools {
         datepicker = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
-//                String newDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
-//                newDate.replace(String.valueOf(year), "");
 
-                dateTime.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+//                newDate.replace(String.valueOf(year), "");
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                String newDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                Date date = null;
+                try {
+                    date = sdf.parse(newDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                String formattedTime = sdf.format(date);
+                dateTime.setText(formattedTime);
             }
         }, year, month, day);
         datepicker.show();
@@ -470,5 +479,16 @@ public class Tools {
         } else return 0;
     }
 
+    public static <T> ArrayList<T> removeDuplicates(ArrayList<T> list) {
 
+        ArrayList<T> newList = new ArrayList<T>();
+
+        for (T element : list) {
+            if (!newList.contains(element)) {
+                newList.add(element);
+            }
+        }
+
+        return newList;
+    }
 }

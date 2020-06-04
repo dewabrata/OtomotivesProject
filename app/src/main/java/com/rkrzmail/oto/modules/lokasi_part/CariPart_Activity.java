@@ -21,7 +21,7 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.gmod.Pendaftaran1;
-import com.rkrzmail.srv.NikitaAutoComplete;
+import com.rkrzmail.oto.modules.sparepart.AturParts_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
@@ -32,7 +32,6 @@ public class CariPart_Activity extends AppActivity {
 
     private Pendaftaran1.AutoSuggestAdapter autoSuggestAdapter;
     private RecyclerView rvCariPart;
-    private NikitaAutoComplete cariPart;
 
 
     @Override
@@ -67,24 +66,33 @@ public class CariPart_Activity extends AppActivity {
                 if(nListArray.get("MERK_PART").asString() == null){
                     find(R.id.tv_cari_merkPart, TextView.class).setVisibility(View.GONE);
                 }
+
                 viewHolder.find(R.id.tv_cari_merkPart, TextView.class).setText(nListArray.get(position).get("").asString());
                 viewHolder.find(R.id.tv_cari_namaPart, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
                 viewHolder.find(R.id.tv_cari_noPart, TextView.class).setText(nListArray.get(position).get("NO_PART_ID").asString());
                 viewHolder.find(R.id.tv_cari_stockPart, TextView.class).setText(nListArray.get(position).get("STOCK").asString());
+
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(Nson parent, View view, int position) {
-                        Intent i = new Intent(getActivity(), AturLokasiPart_Activity.class);
-                        i.putExtra("NAMA", nListArray.get(position).toJson());
-                        startActivity(i);
+                        Intent intent = getIntent();
+                        if (intent.hasExtra("cari")) {
+                            intent = new Intent(getActivity(), AturParts_Activity.class);
+                            intent.putExtra("NAMA", nListArray.get(position).toJson());
+                            startActivity(intent);
+                        } else if (intent.hasExtra("lokasi")) {
+                            intent = new Intent(getActivity(), AturLokasiPart_Activity.class);
+                            intent.putExtra("NAMA", nListArray.get(position).toJson());
+                            startActivity(intent);
+                        }
+
                     }
                 })
         );
     }
 
     private void cariPart(final String cari){
-
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
@@ -100,19 +108,9 @@ public class CariPart_Activity extends AppActivity {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
                     rvCariPart.getAdapter().notifyDataSetChanged();
-
-                    autoSuggestAdapter = new Pendaftaran1.AutoSuggestAdapter(getActivity(), nListArray.size());
-                    ArrayList<String> stringList = new ArrayList<>();
-                    for (int i = 0; i < result.get("data").size(); i++) {
-                        stringList.add(result.get("data").get(i).get("NAMA").asString());
-                    }
-                    autoSuggestAdapter.setData(stringList);
-                    autoSuggestAdapter.notifyDataSetChanged();
-
                 }else{
                     showError("Gagal Mencari Part");
                 }
-
             }
         });
     }
@@ -122,7 +120,6 @@ public class CariPart_Activity extends AppActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_part, menu);
-
 
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -150,12 +147,10 @@ public class CariPart_Activity extends AppActivity {
                 searchMenu.collapseActionView();
                 //filter(null);
                 cariPart(query);
-
                 return true;
             }
         };
         mSearchView.setOnQueryTextListener(queryTextListener);
         return true;
     }
-
 }

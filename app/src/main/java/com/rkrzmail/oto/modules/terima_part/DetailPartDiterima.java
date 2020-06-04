@@ -3,8 +3,11 @@ package com.rkrzmail.oto.modules.terima_part;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.naa.data.Nson;
 import com.naa.data.UtilityAndroid;
@@ -22,6 +26,8 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.gmod.BarcodeActivity;
+import com.rkrzmail.srv.NikitaRecyclerAdapter;
+import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.srv.RupiahFormat;
 import com.rkrzmail.utils.Tools;
 
@@ -38,6 +44,8 @@ public class DetailPartDiterima extends AppActivity implements AdapterView.OnIte
     private static final String TAMBAH_PART = "TAMBAH";
     private Spinner spinnerLokasiSimpan, spinnerPenempatan;
     private EditText txtNoPart, txtNamaPart, txtJumlah, txtHargaBeliUnit, txtDiskonBeli;
+    private RecyclerView rvTerimaPart;
+    private Nson dataAdd = Nson.newObject();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,12 +67,15 @@ public class DetailPartDiterima extends AppActivity implements AdapterView.OnIte
     private void initComponent() {
 
         txtNoPart = findViewById(R.id.txtNoPart);
-        txtNamaPart = findViewById(R.id.txtNamaPart);
+        txtNamaPart = findViewById(R.id.et_namaPart_terimaPart);
         txtJumlah = findViewById(R.id.tv_jumlah_terimaPart);
         txtHargaBeliUnit = findViewById(R.id.txtHargaBeliUnit);
         txtDiskonBeli = findViewById(R.id.txtDiskonBeli);
         spinnerLokasiSimpan = findViewById(R.id.spinnerLokasiSimpan);
         spinnerPenempatan = findViewById(R.id.spinnerPenempatan);
+        rvTerimaPart = findViewById(R.id.recyclerView_detailTerimaPart);
+
+        initRecylerView();
 
         spinnerLokasiSimpan.setOnItemSelectedListener(this);
         spinnerPenempatan.setOnItemSelectedListener(this);
@@ -168,31 +179,68 @@ public class DetailPartDiterima extends AppActivity implements AdapterView.OnIte
 
     private void addData() {
 
-        ArrayList<String> jumlahTotal = new ArrayList<>();
-        ArrayList<String> hargaBeliUnit = new ArrayList<>();
-        ArrayList<String> diskonBeli = new ArrayList<>();
-        ArrayList<String> lokasiSimpan = new ArrayList<>();
-        ArrayList<String> tempat = new ArrayList<>();
+        String diskonbeli = txtDiskonBeli.getText().toString();
+        diskonbeli = diskonbeli.trim().replace(" %", "");
+        final String lokasisimpan = spinnerLokasiSimpan.getSelectedItem().toString();
+        final String penempatan = spinnerPenempatan.getSelectedItem().toString();
+        final String finalDiskonbeli = diskonbeli;
 
-        String[] jumlah = txtJumlah.getText().toString().trim().split(", ");
-        String[] hargabeliunit = txtHargaBeliUnit.getText().toString().trim().split(", ");
-        String[] diskonbeli = txtDiskonBeli.getText().toString().trim().split(", ");
-        String[] lokasisimpan = spinnerLokasiSimpan.getSelectedItem().toString().trim().split(", ");
-        String[] penempatan = spinnerPenempatan.getSelectedItem().toString().trim().split(", ");
+        //final String noPart = add.set("nopart", txtNoPart.getText().toString()).asString();
+        //final String namaPart = add.set("namapart", txtNamaPart.getText().toString()).asString();
+        final String jumlahPart = dataAdd.set("jumlah", txtJumlah.getText().toString()).asString();
+        final String harga = dataAdd.set("harga", txtHargaBeliUnit.getText().toString()).asString();
 
-        jumlahTotal.addAll(Arrays.asList(jumlah));
-        hargaBeliUnit.addAll(Arrays.asList(hargabeliunit));
-        diskonBeli.addAll(Arrays.asList(diskonbeli));
-        lokasiSimpan.addAll(Arrays.asList(lokasisimpan));
-        tempat.addAll(Arrays.asList(penempatan));
+        newProses(new Messagebox.DoubleRunnable() {
+            @Override
+            public void run() {
 
-        setSetting("jumlah", String.valueOf(jumlahTotal));
-        setSetting("hargabeliunit", String.valueOf(hargaBeliUnit));
-        setSetting("diskonbeli", String.valueOf(diskonBeli));
-        setSetting("lokasisimpan", String.valueOf(lokasiSimpan));
-        setSetting("penempatan", String.valueOf(tempat));
+            }
+
+            @Override
+            public void runUI() {
+                Nson nson = Nson.readNson(getIntentStringExtra("detail"));
+
+                dataAdd.add(nson.get("nodo").asString());
+                dataAdd.add(nson.get("tipe").asString());
+                dataAdd.add(nson.get("nama").asString());
+                dataAdd.add(nson.get("tglpesan").asString());
+                dataAdd.add(nson.get("tglterima").asString());
+                dataAdd.add(nson.get("pembayaran").asString());
+                dataAdd.add(nson.get("jatuhtempo").asString());
+                dataAdd.add(nson.get("ongkir").asString());
+                dataAdd.add(finalDiskonbeli);
+                dataAdd.add(lokasisimpan);
+                dataAdd.add(penempatan);
+                //dataAdd.add(noPart);
+                //dataAdd.add(namaPart);
+                dataAdd.add(jumlahPart);
+                dataAdd.add(harga);
+
+                ArrayList<String> duplicateValidation = Tools.removeDuplicates((ArrayList<String>) dataAdd.asArray());
+
+                nListArray.asArray().clear();
+                nListArray.asArray().addAll(duplicateValidation);
+                rvTerimaPart.getAdapter().notifyDataSetChanged();
+            }
+        });
 
         Tools.clearForm(find(R.id.ly_detailPart, LinearLayout.class));
+    }
+
+    private void initRecylerView() {
+        rvTerimaPart.setLayoutManager(new LinearLayoutManager(this));
+        rvTerimaPart.setAdapter(new NikitaRecyclerAdapter(dataAdd, R.layout.item_detail_terima_part) {
+            @Override
+            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+                super.onBindViewHolder(viewHolder, position);
+                viewHolder.find(R.id.tv_noPart_detailTerimaPart, TextView.class).setText(dataAdd.get(position).get(dataAdd.get("nopart")).asString());
+                viewHolder.find(R.id.tv_namaPart_detailTerimaPart, TextView.class).setText(dataAdd.get(position).get(dataAdd.get("namapart")).asString());
+                viewHolder.find(R.id.tv_jumlah_detailTerimaPart, TextView.class).setText(dataAdd.get(position).get(dataAdd.get("jumlah")).asString());
+                // viewHolder.find(R.id.tv_pembayaran_detailTerimaPart, TextView.class).setText(nListArray.get(position).get().asString());
+                viewHolder.find(R.id.tv_harga_detailTerimaPart, TextView.class).setText(dataAdd.get(position).get(dataAdd.get("harga")).asString());
+            }
+        });
+
     }
 
     public void barcode() {
@@ -229,12 +277,6 @@ public class DetailPartDiterima extends AppActivity implements AdapterView.OnIte
             String barCode = getIntentStringExtra(data, "TEXT");
             barcode();
         }
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 
     @Override

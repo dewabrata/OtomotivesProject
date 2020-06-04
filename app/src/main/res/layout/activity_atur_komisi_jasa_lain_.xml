@@ -33,7 +33,7 @@
                     android:text="NAMA POSISI"
                     android:textStyle="bold" />
 
-                <Spinner
+                <com.rkrzmail.srv.MultiSelectionSpinner
                     android:id="@+id/sp_namaPosisi_komisiJasaLain"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

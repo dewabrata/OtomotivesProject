@@ -1,29 +1,14 @@
 package com.rkrzmail.oto.modules.tenda;
 
-import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -43,7 +28,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class AturTenda_Activity extends AppActivity implements View.OnClickListener{
+public class AturTenda_Activity extends AppActivity implements View.OnClickListener {
 
     private static final String TAG = "AturTenda_Activity";
     private EditText etLokasi, etAlamat, etLonglat;
@@ -124,8 +109,26 @@ public class AturTenda_Activity extends AppActivity implements View.OnClickListe
         find(R.id.btn_simpan_tenda, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final String tglMulai = tvTglBuka.getText().toString();
+                final String tglSelesai = tvTglSelesai.getText().toString();
+                final String jamBuka = tvJamMulai.getText().toString();
+                final String jamTutup = tvJamTutup.getText().toString();
 
-                    saveData();
+                if (jamBuka.equalsIgnoreCase("JAM MULAI")
+                        && jamTutup.equalsIgnoreCase("JAM SELESAI")) {
+                    showInfo("Silahkan Isi Jam Mulai / Jam Selesai");
+                    return;
+                }
+
+                if ((find(R.id.ly_hari_tenda, LinearLayout.class).getVisibility() == View.VISIBLE)) {
+                    if (tglMulai.equalsIgnoreCase("TANGGAL MULAI")
+                            && tglSelesai.equalsIgnoreCase("TANGGAL SELESAI")) {
+                        showInfo("Silahkan Isi Tanggal Mulai / Tanggal Selesai");
+                        return;
+                    }
+                }
+
+                validation();
 
             }
         });
@@ -168,6 +171,7 @@ public class AturTenda_Activity extends AppActivity implements View.OnClickListe
 
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -202,36 +206,83 @@ public class AturTenda_Activity extends AppActivity implements View.OnClickListe
 
             @Override
             public void runUI() {
-                try {
-                    Date tMulai = new SimpleDateFormat("dd/MM").parse(tglMulai);
-                    Date tSelesai = new SimpleDateFormat("dd/MM").parse(tglSelesai);
-                    Date jBuka = new SimpleDateFormat("HH:mm").parse(jamBuka);
-                    Date jTutup = new SimpleDateFormat("HH:mm").parse(jamTutup);
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    showInfo("Berhasil Menyimpan Aktifitas");
+                    startActivity(new Intent(getActivity(), Tenda_Activity.class));
+                    finish();
 
-                    if (find(R.id.ly_hari_tenda, LinearLayout.class).getVisibility() == View.VISIBLE) {
-                        if (!tMulai.before(tSelesai)) {
-                            showInfo("Tanggal Tidak Sesuai");
-                        }
-                    }
-                    if (jBuka.before(jTutup)) {
-                        if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                            showInfo("Berhasil Menyimpan Aktifitas");
-                            startActivity(new Intent(getActivity(), Tenda_Activity.class));
-                            finish();
-
-                        } else {
-                            showError("Gagal Menyiman Aktifitas ");
-                        }
-                    } else {
-                        showInfo("Jam Selesai Tidak Sesuai!");
-                    }
-
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                } else {
+                    showError("Gagal Menyiman Aktifitas ");
                 }
             }
 
         });
+    }
+
+    private boolean duplicateValidation() {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturtenda"), args));
+
+            }
+
+            @Override
+            public void runUI() {
+                ArrayList<String> dummies = new ArrayList<>();
+                for (int i = 0; i < result.get("data").size(); i++) {
+                    dummies.add(result.get("data").get(i).get("NAMA_LOKASI").asString());
+                    dummies.add(result.get("data").get(i).get("TANGGAL").asString());
+                    dummies.add(result.get("data").get(i).get("LOCATION").asString());
+                }
+                if (dummies.contains(etLokasi.getText().toString()) || dummies.contains(tvTglBuka.getText().toString())
+                        || dummies.contains(tvTglSelesai.getText().toString()) || dummies.contains(etLonglat.getText().toString())) {
+                    showInfo("Tenda Telah Terdaftar / Duplikasi");
+                    return;
+                }
+            }
+        });
+        return true;
+    }
+
+    private void validation() {
+        final String tglMulai = tvTglBuka.getText().toString();
+        final String tglSelesai = tvTglSelesai.getText().toString();
+        final String jamBuka = tvJamMulai.getText().toString();
+        final String jamTutup = tvJamTutup.getText().toString();
+
+        try {
+            Date tMulai = new SimpleDateFormat("dd/MM/yyyy").parse(tglMulai);
+            Date tSelesai = new SimpleDateFormat("dd/MM/yyyy").parse(tglSelesai);
+
+            if (!tMulai.before(tSelesai)) {
+                showInfo("Tanggal Tidak Sesuai");
+                return;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Date jBuka = new SimpleDateFormat("HH:mm").parse(jamBuka);
+            Date jTutup = new SimpleDateFormat("HH:mm").parse(jamTutup);
+
+            if (!jBuka.before(jTutup)) {
+                showInfo("Jam Selesai Tidak Sesuai");
+                return;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        if (duplicateValidation()) {
+            return;
+        }
+        saveData();
     }
 
     @Override

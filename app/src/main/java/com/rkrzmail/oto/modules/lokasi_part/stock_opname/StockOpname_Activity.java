@@ -44,40 +44,7 @@ public class StockOpname_Activity extends AppActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stock_opname);
         initToolbar();
-
-        noFolder = findViewById(R.id.et_noFolder_stockOpname);
-        noPart = findViewById(R.id.et_noPart_stockOpname);
-        jumlahData = findViewById(R.id.et_jumlahdata_stockOpname);
-        jumlahAkhir = findViewById(R.id.et_jumlahakhir_stockOpname);
-        namaPart = findViewById(R.id.et_namaPart_stockOpname);
-        imgBarcode = findViewById(R.id.imgBarcode_stockOpname);
-
         initComponent();
-        final Nson data = Nson.readJson(getIntentStringExtra("NO_PART_ID"));
-        Intent i = getIntent();
-        if(i.hasExtra("NO_PART_ID")){
-            noFolder.setText(data.get("NO_FOLDER").asString());
-            noPart.setText(data.get("NO_PART_ID").asString());
-            namaPart.setText(data.get("NAMA").asString());
-            jumlahData.setText(data.get("STOCK").asString());
-
-            indexOf_Opname.add(data.get("NO_FOLDER").asString());
-            indexOf_Opname.add(data.get("NO_PART_ID").asString());
-            indexOf_Opname.add(data.get("STOCK").asString());
-            indexOf_Opname.add(data.get("PENEMPATAN").asString());
-            indexOf_Opname.add(data.get("PALET").asString());
-            indexOf_Opname.add(data.get("RAK").asString());
-            indexOf_Opname.add(data.get("USER").asString());
-            indexOf_Opname.add(data.get("LOKASI").asString());
-
-
-            for(int in = 0; in < indexOf_Opname.size(); in++){
-                Log.d("OPNAME", indexOf_Opname.get(in));
-            }
-        }
-
-
-
     }
 
     private void initToolbar() {
@@ -88,6 +55,16 @@ public class StockOpname_Activity extends AppActivity {
     }
 
     private void initComponent(){
+
+        noFolder = findViewById(R.id.et_noFolder_stockOpname);
+        noPart = findViewById(R.id.et_noPart_stockOpname);
+        jumlahData = findViewById(R.id.et_jumlahdata_stockOpname);
+        jumlahAkhir = findViewById(R.id.et_jumlahakhir_stockOpname);
+        namaPart = findViewById(R.id.et_namaPart_stockOpname);
+        imgBarcode = findViewById(R.id.imgBarcode_stockOpname);
+
+        loadData();
+
         find(R.id.btn_simpan_stockOpname, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,72 +83,104 @@ public class StockOpname_Activity extends AppActivity {
         });
     }
 
-    private void saveUpdate(){
+    private void loadData() {
+        final Nson data = Nson.readJson(getIntentStringExtra("NO_PART_ID"));
+        Intent i = getIntent();
+        if (i.hasExtra("NO_PART_ID")) {
+            noFolder.setText(data.get("NO_FOLDER").asString());
+            noPart.setText(data.get("NO_PART_ID").asString());
+            namaPart.setText(data.get("NAMA").asString());
+            jumlahData.setText(data.get("STOCK").asString());
+        }
 
+
+    }
+
+    private void saveUpdate(){
+        final Nson data = Nson.readJson(getIntentStringExtra("NO_PART_ID"));
+
+        final String lokasi = data.get("LOKASI").asString();
+        final String tempat = data.get("PENEMPATAN").asString();
+        final String palet = data.get("PALET").asString();
+        final String rak = data.get("RAK").asString();
+        final String folder = data.get("NO_FOLDER").asString();
+        final String user = data.get("USER").asString();
+        final String nopart = data.get("NO_PART_ID").asString();
+        final String stock = data.get("STOCK").asString();
         final int stockAwal = Integer.parseInt(jumlahData.getText().toString());
         final int stockAkhir = Integer.parseInt(jumlahAkhir.getText().toString());
-        final String lokasi = indexOf_Opname.get(7);
-        final String tempat = indexOf_Opname.get(3);
-        final String palet = indexOf_Opname.get(4);
-        final String rak = indexOf_Opname.get(5);
-        final String folder = indexOf_Opname.get(0);
-        final String user = indexOf_Opname.get(6);
-        final String nopart = indexOf_Opname.get(1);
-        final String stock = indexOf_Opname.get(2);
 
+        if (stockAwal < stockAkhir || stockAwal > stockAkhir) {
+            int stockbeda = stockAkhir - stockAwal;
+            showInfo("Diperlukan Penyesuaian");
+            setSelanjutnya(stockbeda);
+        } else {
+            newProses(new Messagebox.DoubleRunnable() {
+                Nson result;
+
+                @Override
+                public void run() {
+                    Map<String, String> args = AppApplication.getInstance().getArgsData();
+
+                    Calendar calendar = Calendar.getInstance();
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy MMM dd");
+                    String tanggal = simpleDateFormat.format(calendar.getTime());
+
+                    //  CID, action(add), lokasi, tempat, palet, rak, folder, tanggal, user, nopart, stock
+
+                    args.put("action", "add");
+                    args.put("lokasi", lokasi);
+                    args.put("tempat", tempat);
+                    args.put("palet", palet);
+                    args.put("rak", rak);
+                    args.put("folder", folder);
+                    args.put("tanggal", tanggal);
+                    args.put("user", user);
+                    args.put("nopart", nopart);
+                    args.put("stock", stock);
+                    result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturlokasipart"), args));
+                }
+
+                @Override
+                public void runUI() {
+                    if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                        startActivity(new Intent(getActivity(), LokasiPart_Activity.class));
+                    } else {
+                        showInfo("Gagal Opname Part");
+                    }
+                }
+            });
+        }
+
+    }
+
+    private void setSelanjutnya(final int stockBeda) {
         newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
             @Override
             public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-
-                Calendar calendar = Calendar.getInstance();
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy MMM dd");
-                String tanggal = simpleDateFormat.format(calendar.getTime());
-
-                args.put("action", "add");
-                args.put("lokasi", lokasi);
-                args.put("tempat", tempat);
-                args.put("palet", palet);
-                args.put("rak", rak);
-                args.put("folder", folder);
-                args.put("tanggal", tanggal);
-                args.put("user", user);
-                args.put("nopart", nopart);
-                args.put("stock", stock);
-
-
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturlokasipart"), args));
-
             }
 
             @Override
             public void runUI() {
-                if(result.get("status").asString().equalsIgnoreCase("OK")){
+                final Nson data = Nson.readJson(getIntentStringExtra("NO_PART_ID"));
+                Nson nson = Nson.newObject();
 
-                    int stockBeda = 0;
-                    if(stockAwal > stockAkhir){
-                        stockBeda = stockAwal - stockAkhir;
+                // CID, action(update), lokasi, tempat, palet, rak, folder, tanggal, user, nopart, stock,
+                // folderlain, stockbeda, sebab, alasan
+                nson.set("folder", data.get("NO_FOLDER"));
+                nson.set("nopart", data.get("NO_PART_ID"));
+                nson.set("stock", data.get("STOCK"));
+                nson.set("lokasi", data.get("LOKASI"));
+                nson.set("user", data.get("USER"));
+                nson.set("tempat", data.get("PENEMPATAN"));
+                nson.set("palet", data.get("PALET"));
+                nson.set("rak", data.get("RAK"));
+                nson.set("stockbeda", stockBeda);
 
-                        Intent i = new Intent(getActivity(), Penyesuain_Activity.class);
-                        i.putExtra("NO_FOLDER", folder);
-                        i.putExtra("NO_PART_ID", nopart);
-                        i.putExtra("STOCK", stock);
-                        i.putExtra("LOKASI", lokasi);
-                        i.putExtra("USER", user);
-                        i.putExtra("PENEMPATAN", tempat);
-                        i.putExtra("PALET", palet);
-                        i.putExtra("RAK", rak);
-                        i.putExtra("STOCK_BEDA", stockBeda);
-                        startActivityForResult(i, REQUEST_PENYESUAIAN);
-                        Toast.makeText(getActivity(), "Diperlukan Penyesuaian", Toast.LENGTH_LONG).show();
-                        finish();
-                    }else{
-                        startActivity(new Intent(getActivity(), LokasiPart_Activity.class));
-                        Toast.makeText(getActivity(), "Sukses Opname Part", Toast.LENGTH_LONG).show();
-                        finish();
-                    }
-                }
+                Intent i = new Intent(getActivity(), Penyesuain_Activity.class);
+                i.putExtra("penyesuaian", nson.toJson());
+                startActivityForResult(i, REQUEST_PENYESUAIAN);
+
             }
         });
     }

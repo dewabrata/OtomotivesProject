@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:id="@+id/cardView"
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:layout_gravity="center"
+    android:layout_marginLeft="7dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginRight="7dp"
+    android:layout_marginBottom="4dp"
+    android:layout_weight="5"
+    android:padding="10dp"
+    app:cardElevation="5dp"
+    app:cardCornerRadius="10dp">
+
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:stretchColumns="*">
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tv_noPart_detailTerimaPart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No. Part"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_jumlah_detailTerimaPart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Jumlah"
+                android:textStyle="bold" />
+
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tv_namaPart_detailTerimaPart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nama Part"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_harga_detailTerimaPart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Harga Beli"
+                android:textStyle="bold" />
+
+        </TableRow>
+
+    </TableLayout>
+
+</android.support.v7.widget.CardView>

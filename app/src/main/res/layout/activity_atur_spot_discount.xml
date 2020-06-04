@@ -22,7 +22,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginRight="10dp"
+                app:helperTextEnabled="true"
+                app:helperText="Disable"
+                app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
+
 
                 <EditText
                     android:id="@+id/et_noPonsel_disc"
@@ -42,7 +46,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginRight="10dp"
+                app:helperTextEnabled="true"
+                app:helperText="Disable"
+                app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
+
 
                 <EditText
                     android:id="@+id/et_namaPelanggan_disc"
@@ -61,7 +69,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginRight="10dp"
+                app:helperTextEnabled="true"
+                app:helperText="Disable"
+                app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
+
 
                 <EditText
                     android:id="@+id/et_transaksi_disc"
@@ -81,7 +93,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginRight="10dp"
+                app:helperTextEnabled="true"
+                app:helperText="Disable"
+                app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
+
 
                 <EditText
                     android:id="@+id/et_discLain_disc"
@@ -100,7 +116,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginRight="10dp"
+                app:helperTextEnabled="true"
+                app:helperText="Disable"
+                app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
+
 
                 <EditText
                     android:id="@+id/et_netTransaksi_disc"
@@ -137,7 +157,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginRight="10dp"
+                app:helperTextEnabled="true"
+                app:helperText="Disable"
+                app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
+
 
                 <EditText
                     android:id="@+id/et_total_disc"
@@ -175,40 +199,6 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay"/>
-
-        <RelativeLayout
-            android:id="@+id/search_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/toolbar"
-            android:background="@color/colorPrimary"
-            android:padding="5dp">
-
-
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@drawable/border_shadow_left"
-                android:textAlignment="center">
-
-                <com.rkrzmail.srv.NikitaAutoComplete
-                    android:id="@+id/et_cariNoPonsel_disc"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawableRight="@android:drawable/ic_menu_search"
-                    android:hint="NO PONSEL"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:textAlignment="center"
-                    android:textColor="@color/grey_80"
-                    android:textColorHint="@android:color/darker_gray" />
-
-            </android.support.design.widget.TextInputLayout>
-        </RelativeLayout>
-
 
     </android.support.design.widget.AppBarLayout>
 

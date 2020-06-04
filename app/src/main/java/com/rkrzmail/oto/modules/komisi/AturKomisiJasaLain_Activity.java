@@ -4,15 +4,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
+import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.srv.MultiSelectionSpinner;
 
-public class AturKomisiJasaLain_Activity extends AppCompatActivity {
+import java.util.ArrayList;
+
+public class AturKomisiJasaLain_Activity extends AppActivity {
+
+    private MultiSelectionSpinner spPosisi;
+    private ArrayList<String> dummies = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_atur_komisi_jasa_lain_);
         initToolbar();
+        initComponent();
     }
 
     private void initToolbar() {
@@ -20,5 +28,11 @@ public class AturKomisiJasaLain_Activity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Atur Komisi Jasa Lain");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void initComponent() {
+        spPosisi = findViewById(R.id.sp_namaPosisi_komisiJasaLain);
+        setMultiSelectionSpinnerFromApi(spPosisi, "nama", "POSISI", "viewmst", "NAMA", dummies);
+
     }
 }

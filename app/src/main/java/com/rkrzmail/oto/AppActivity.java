@@ -2,6 +2,7 @@ package com.rkrzmail.oto;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,12 +17,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -35,9 +39,14 @@ import com.naa.data.UtilityAndroid;
 import com.naa.utils.InternetX;
 import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
+import com.rkrzmail.srv.MultiSelectionSpinner;
+import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NsonAutoCompleteAdapter;
+import com.rkrzmail.utils.Tools;
 
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 
@@ -335,19 +344,19 @@ public class AppActivity extends AppCompatActivity {
             @Override
             public Nson onFindNson(Context context, String bookTitle) {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-
+                args.put("action", "view");
                 args.put(arguments, bookTitle);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(api), args));
 
                 for (int i = 0; i < result.get("data").size(); i++) {
-                    // sb.append(result.get("data").get(i).get("NAMA").asJson());
-                    if (result.get("data").get(i).get(jsonObject).asArray().contains(bookTitle)) {
-                        return result;
+                    if (result.get("data").get(i).get(jsonObject).asString().equalsIgnoreCase(bookTitle)) {
+                        return result.get(jsonObject);
                     } else {
                         return result.get("data");
                     }
                 }
                 return result.get("search");
+
             }
 
             @Override
@@ -356,7 +365,18 @@ public class AppActivity extends AppCompatActivity {
                     LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     convertView = inflater.inflate(R.layout.find_nama_, parent, false);
                 }
-                findView(convertView, R.id.tv_find_cari_namaPart, TextView.class).setText(getItem(position).get(jsonObject).asString());
+
+                String search = null;
+
+                if (getItem(position).get("NAMA_LAIN").asString().equalsIgnoreCase("")) {
+                    search = getItem(position).get(jsonObject).asString();
+                } else {
+                    search = getItem(position).get(jsonObject).asString() + " ( " + getItem(position).get("NAMA_LAIN").asString() + " ) ";
+                }
+
+                findView(convertView, R.id.tv_find_cari_namaPart, TextView.class).setText(search);
+                //findView(convertView, R.id.tv_find_cari_namaPart, TextView.class).setText();
+
                 return convertView;
             }
         });
@@ -370,9 +390,123 @@ public class AppActivity extends AppCompatActivity {
                 find(android.support.v7.appcompat.R.id.search_src_text, android.support.v7.widget.SearchView.SearchAutoComplete.class).setTag(String.valueOf(adapterView.getItemAtPosition(i)));
             }
         });
-
     }
 
+    public void remakeAutoCompleteMaster(final NikitaAutoComplete editText, final String params, final String jsonObject) {
+
+        editText.setThreshold(2);
+        editText.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
+            Nson result;
+
+            @Override
+            public Nson onFindNson(Context context, String bookTitle) {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("nama", params);
+                args.put("search", bookTitle);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewmst"), args));
+                for (int i = 0; i < result.get("data").size(); i++) {
+                    if (result.get("data").get(i).get(jsonObject).asString().equalsIgnoreCase(bookTitle)) {
+                        return result.get("data").get(i).get(jsonObject);
+                    } else {
+                        return result.get("data");
+                    }
+                }
+                return result.get("data");
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                if (convertView == null) {
+                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    convertView = inflater.inflate(R.layout.item_suggestion, parent, false);
+                }
+                if (getItem(position).get("JENIS").asString() != null) {
+                    findView(convertView, R.id.title, TextView.class).setText(getItem(position).get("JENIS").asString());
+                }
+                findView(convertView, R.id.title2, TextView.class).setText(getItem(position).get(jsonObject).asString());
+                return convertView;
+            }
+        });
+
+        editText.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(i)));
+
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append(n.get("JENIS").asString()).append(" ");
+                stringBuilder.append(n.get("KOTA_KAB").asString()).append(" ");
+
+                editText.setText(stringBuilder.toString());
+                editText.setTag(String.valueOf(adapterView.getItemAtPosition(i)));
+            }
+        });
+    }
+
+    public void setMultiSelectionSpinnerFromApi(final MultiSelectionSpinner spinner, final String params, final String arguments, final String api, final String jsonObject, final ArrayList<String> dummies) {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put(params, arguments);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(api), args));
+            }
+
+            @Override
+            public void runUI() {
+                ArrayList<String> str = new ArrayList<>();
+                for (int i = 0; i < result.get("data").size(); i++) {
+                    // nListArray.add(result.get("data").get(i).get("NAMA"));
+                    str.add(result.get("data").get(i).get(jsonObject).asString());
+                }
+                ArrayList<String> newStr = Tools.removeDuplicates(str);
+                if (newStr.size() > -1) {
+                    spinner.setItems(newStr);
+                }
+                spinner.setSelection(new int[]{});
+                spinner.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
+                    @Override
+                    public void selectedIndices(List<Integer> indices) {
+
+                    }
+
+                    @Override
+                    public void selectedStrings(List<String> strings) {
+                        dummies.addAll(strings);
+                    }
+                });
+            }
+        });
+    }
+
+    public void setSpinnerFromApi(final Spinner spinner, final String params, final String arguments, final String api, final String jsonObject) {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put(params, arguments);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(api), args));
+            }
+
+            @Override
+            public void runUI() {
+                List<String> str = new ArrayList<>();
+                for (int i = 0; i < result.get("data").size(); i++) {
+                    // nListArray.add(result.get("data").get(i).get("NAMA"));
+                    str.add(result.get("data").get(i).get(jsonObject).asString());
+                }
+                if (str.size() > -1) {
+                    ArrayAdapter<String> folderAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, str);
+                    folderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinner.setAdapter(folderAdapter);
+                }
+            }
+        });
+    }
 }
 
 
