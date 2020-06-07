@@ -45,7 +45,7 @@ public class DetailPartDiterima extends AppActivity implements AdapterView.OnIte
     private Spinner spinnerLokasiSimpan, spinnerPenempatan;
     private EditText txtNoPart, txtNamaPart, txtJumlah, txtHargaBeliUnit, txtDiskonBeli;
     private RecyclerView rvTerimaPart;
-    private Nson dataAdd = Nson.newObject();
+    private Nson dataAdd = Nson.newArray();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,12 +102,18 @@ public class DetailPartDiterima extends AppActivity implements AdapterView.OnIte
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addData();
+               // addData();
+                //buka cari part
+
+                //scan barcode
+
             }
         });
     }
 
+
     private void insertdata() {
+        //send to servevr
         newProses(new Messagebox.DoubleRunnable() {
             Nson data;
 
@@ -177,20 +183,39 @@ public class DetailPartDiterima extends AppActivity implements AdapterView.OnIte
         });
     }
 
-    private void addData() {
+    private void addData(Nson rowPart, int jumalh) {
+        Nson dataAdd =  Nson.newObject();
+        for (int i = 0; i < nListArray.size(); i++) {
+            if (nListArray.get(i).get("idpart").asString().equalsIgnoreCase(rowPart.get("PART_ID").asString() )){
+                int jumlahbaru = nListArray.get(i).get("jumlah").asInteger()+jumalh;
+                nListArray.get(i).set("jumlah", jumlahbaru);
+                rvTerimaPart.getAdapter().notifyDataSetChanged();
+                return;
+            }
+        }
+        dataAdd.set("nopart", rowPart.get("NO_PART").asString());
+        dataAdd.set("idpart", rowPart.get("PART_ID").asString());
+        dataAdd.set("namapart", rowPart.get("NAMA_PART").asString());
+        dataAdd.set("jumlah", jumalh);
+        nListArray.add(dataAdd);
+        rvTerimaPart.getAdapter().notifyDataSetChanged();
 
-        String diskonbeli = txtDiskonBeli.getText().toString();
+
+
+
+       /* String diskonbeli = txtDiskonBeli.getText().toString();
         diskonbeli = diskonbeli.trim().replace(" %", "");
         final String lokasisimpan = spinnerLokasiSimpan.getSelectedItem().toString();
         final String penempatan = spinnerPenempatan.getSelectedItem().toString();
-        final String finalDiskonbeli = diskonbeli;
+        final String finalDiskonbeli = diskonbeli;*/
 
         //final String noPart = add.set("nopart", txtNoPart.getText().toString()).asString();
         //final String namaPart = add.set("namapart", txtNamaPart.getText().toString()).asString();
-        final String jumlahPart = dataAdd.set("jumlah", txtJumlah.getText().toString()).asString();
+       /* final String jumlahPart = dataAdd.set("jumlah", txtJumlah.getText().toString()).asString();
         final String harga = dataAdd.set("harga", txtHargaBeliUnit.getText().toString()).asString();
+*/
 
-        newProses(new Messagebox.DoubleRunnable() {
+        /*newProses(new Messagebox.DoubleRunnable() {
             @Override
             public void run() {
 
@@ -200,7 +225,7 @@ public class DetailPartDiterima extends AppActivity implements AdapterView.OnIte
             public void runUI() {
                 Nson nson = Nson.readNson(getIntentStringExtra("detail"));
 
-                dataAdd.add(nson.get("nodo").asString());
+                *//*dataAdd.add(nson.get("nodo").asString());
                 dataAdd.add(nson.get("tipe").asString());
                 dataAdd.add(nson.get("nama").asString());
                 dataAdd.add(nson.get("tglpesan").asString());
@@ -214,30 +239,33 @@ public class DetailPartDiterima extends AppActivity implements AdapterView.OnIte
                 //dataAdd.add(noPart);
                 //dataAdd.add(namaPart);
                 dataAdd.add(jumlahPart);
-                dataAdd.add(harga);
+                dataAdd.add(harga);*//*
 
-                ArrayList<String> duplicateValidation = Tools.removeDuplicates((ArrayList<String>) dataAdd.asArray());
+
+                nListArray.add(dataAdd);
+
+                *//*ArrayList<String> duplicateValidation = Tools.removeDuplicates((ArrayList<String>) dataAdd.asArray());
 
                 nListArray.asArray().clear();
-                nListArray.asArray().addAll(duplicateValidation);
+                nListArray.asArray().addAll(duplicateValidation);*//*
                 rvTerimaPart.getAdapter().notifyDataSetChanged();
             }
         });
 
-        Tools.clearForm(find(R.id.ly_detailPart, LinearLayout.class));
+        Tools.clearForm(find(R.id.ly_detailPart, LinearLayout.class));*/
     }
 
     private void initRecylerView() {
         rvTerimaPart.setLayoutManager(new LinearLayoutManager(this));
-        rvTerimaPart.setAdapter(new NikitaRecyclerAdapter(dataAdd, R.layout.item_detail_terima_part) {
+        rvTerimaPart.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_detail_terima_part) {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
-                viewHolder.find(R.id.tv_noPart_detailTerimaPart, TextView.class).setText(dataAdd.get(position).get(dataAdd.get("nopart")).asString());
-                viewHolder.find(R.id.tv_namaPart_detailTerimaPart, TextView.class).setText(dataAdd.get(position).get(dataAdd.get("namapart")).asString());
-                viewHolder.find(R.id.tv_jumlah_detailTerimaPart, TextView.class).setText(dataAdd.get(position).get(dataAdd.get("jumlah")).asString());
+                viewHolder.find(R.id.tv_noPart_detailTerimaPart, TextView.class).setText(dataAdd.get(position).get("nopart").asString());
+                viewHolder.find(R.id.tv_namaPart_detailTerimaPart, TextView.class).setText(dataAdd.get(position).get("namapart").asString());
+                viewHolder.find(R.id.tv_jumlah_detailTerimaPart, TextView.class).setText(dataAdd.get(position).get("jumlah").asString());
                 // viewHolder.find(R.id.tv_pembayaran_detailTerimaPart, TextView.class).setText(nListArray.get(position).get().asString());
-                viewHolder.find(R.id.tv_harga_detailTerimaPart, TextView.class).setText(dataAdd.get(position).get(dataAdd.get("harga")).asString());
+                viewHolder.find(R.id.tv_harga_detailTerimaPart, TextView.class).setText(dataAdd.get(position).get("harga").asString());
             }
         });
 
@@ -250,19 +278,26 @@ public class DetailPartDiterima extends AppActivity implements AdapterView.OnIte
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-
-                args.put("custid", UtilityAndroid.getSetting(getApplicationContext(), "CID", ""));
-                args.put("email", UtilityAndroid.getSetting(getApplicationContext(), "EMA", ""));
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturterimapart"), args));
+                args.put("barcode", "");
+                args.put("flag","NOPART");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("caripart"), args));
 
             }
 
             @Override
             public void runUI() {
-                txtNamaPart.setText(result.get("").asString());
-                txtNoPart.setText(result.get("").asString());
-                setResult(RESULT_OK);
-                finish();
+                if (result.get("status").asString().equalsIgnoreCase("OK")){
+                    if (result.get("data").size()>=1){
+                        addData(result.get("data"), 1);
+                    }else{
+                        //tidak ditemukan
+                        showError("tidak ditemukan");
+                    }
+                }else{
+                    //error
+                    showError(result.get("message").asString());
+                }
+
             }
         });
     }
@@ -273,6 +308,8 @@ public class DetailPartDiterima extends AppActivity implements AdapterView.OnIte
         if (requestCode == AturTerimaPart.REQUEST_DETAIL_PART && resultCode == RESULT_OK) {
             setResult(RESULT_OK);
             finish();
+
+            addData(Nson.readJson(data.getStringExtra("row")), 1);
         } else if (requestCode == REQUEST_BARCODE && resultCode == RESULT_OK) {
             String barCode = getIntentStringExtra(data, "TEXT");
             barcode();
