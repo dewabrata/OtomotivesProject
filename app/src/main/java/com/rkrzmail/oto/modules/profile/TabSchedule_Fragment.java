@@ -104,7 +104,7 @@ public class TabSchedule_Fragment extends Fragment implements View.OnClickListen
             public void onClick(View view) {
                 timeValidation(frameSchedule);
                 saveAllEditText(lySj);
-                Tools.addAllEditText(frameSchedule);
+                //Tools.addAllEditText(frameSchedule);
                 Log.d("operasional", String.valueOf(saveAllEditText(lySj).size()));
                 Log.d("operasional", ((ProfileBengkel_Activity) getActivity()).getSetting("operasional"));
             }
@@ -170,13 +170,38 @@ public class TabSchedule_Fragment extends Fragment implements View.OnClickListen
         etBuka.add(etBukaSab);
         etBuka.add(etBukaM);
         etBuka.add(etBukaL);
+
         etTutup.add(etTutupSJ);
         etTutup.add(etTutupJ);
         etTutup.add(etTutupSab);
         etTutup.add(etTutupM);
         etTutup.add(etTutupL);
 
-        String buka;
+
+
+
+        for (int i = 0; i < etBuka.size(); i++) {
+            if (etBuka.get(i).isEnabled() && etTutup.get(i).isEnabled() ){
+                String buka = etBuka.get(i).getText().toString();
+                String tutup = etTutup.get(i).getText().toString();
+
+                try {
+                    Date jamBuka = new SimpleDateFormat("HH:mm").parse(buka);
+                    Date jamTutup = new SimpleDateFormat("HH:mm").parse(tutup);
+                    if (!jamTutup.after(jamBuka)) {
+                        showInfo("Jam Buka Tidak Sesuai / Jam Tutup Tidak Sesuai");
+                        return;
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+
+
+
+       /* String buka;
         String tutup;
         for (int i = 0, count = group.getChildCount(); i < count; ++i) {
             View view = group.getChildAt(i);
@@ -206,7 +231,7 @@ public class TabSchedule_Fragment extends Fragment implements View.OnClickListen
             }
             if (view instanceof ViewGroup && (((ViewGroup) view).getChildCount() > 0))
                 timeValidation((ViewGroup) view);
-        }
+        }*/
     }
 
     private ArrayList<EditText> saveAllEditText(ViewGroup group) {
