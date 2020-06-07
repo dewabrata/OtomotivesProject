@@ -24,7 +24,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".modules.sparepart.DaftarJualPart_Activity"></activity>
+        <activity android:name=".modules.profile.ProfileBengkel_Activity"></activity>
+        <activity android:name=".modules.part_keluar.PengisianPartKeluar_Activity" />
+        <activity android:name=".modules.part_keluar.PartKeluar_Activity" />
+        <activity android:name=".modules.sparepart.DaftarJualPart_Activity" />
         <activity android:name=".modules.sparepart.DetailJualPart_Activity" />
         <activity android:name=".modules.sparepart.AturPenjualanPart_Activity" />
         <activity android:name=".modules.sparepart.PenjualanPart_Activity" />
@@ -60,6 +63,7 @@
         <activity android:name=".modules.lokasi_part.CariPart_Activity">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
@@ -81,15 +85,14 @@
         <activity android:name=".modules.biayamekanik.AturBiayaMekanik2" />
         <activity android:name=".modules.biayamekanik.BiayaMekanik2Activity" />
         <activity android:name=".modules.sparepart.Spareparts_Activity">
-
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable"
                 android:value="com.rkrzmail.oto.modules.lokasi_part.CariPart_Activity" />
+
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
-
         </activity>
         <activity android:name=".modules.sparepart.AturParts_Activity" />
         <activity android:name=".gmod.PengambilanPartActivity" />

@@ -507,6 +507,35 @@ public class AppActivity extends AppCompatActivity {
             }
         });
     }
+
+    private EditText traverseEditTexts(ViewGroup v) {
+        EditText invalid = null;
+        for (int i = 0; i < v.getChildCount(); i++) {
+            Object child = v.getChildAt(i);
+            if (child instanceof EditText) {
+                EditText e = (EditText) child;
+                if (e.getText().length() == 0) {    // Whatever logic here to determine if valid.
+
+                    return e;   // Stops at first invalid one. But you could add this to a list.
+                }
+            } else if (child instanceof ViewGroup) {
+                invalid = traverseEditTexts((ViewGroup) child);  // Recursive call.
+                if (invalid != null) {
+                    break;
+                }
+            }
+        }
+        return invalid;
+    }
+
+    public boolean validateFields(ViewGroup viewGroup) {
+        EditText emptyText = traverseEditTexts(viewGroup);
+        if (emptyText != null) {
+            showInfo("Tidak Boleh Kosong");
+            emptyText.requestFocus();      // Scrolls view to this field.
+        }
+        return emptyText == null;
+    }
 }
 
 

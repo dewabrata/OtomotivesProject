@@ -77,7 +77,7 @@ public class LokasiPart_Activity extends AppActivity {
         fragments.add(new PartTeralokasikan_Fragment());
         fragments.add(new PartNonLokasi_Fragment());
 
-        FragmentsAdapter pagerAdapter = new FragmentsAdapter(getSupportFragmentManager(), getApplicationContext(), fragments);
+        FragmentsAdapter pagerAdapter = new FragmentsAdapter(getSupportFragmentManager(), getActivity(), fragments);
 
         vpLokasiPart.setAdapter(pagerAdapter);
         vpLokasiPart.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));

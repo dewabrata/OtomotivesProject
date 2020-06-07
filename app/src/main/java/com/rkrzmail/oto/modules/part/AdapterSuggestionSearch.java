@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import com.naa.data.Nson;
 import com.rkrzmail.oto.R;
 
 import java.io.Serializable;

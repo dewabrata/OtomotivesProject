@@ -26,18 +26,18 @@
         <TableRow>
 
             <TextView
-                android:id="@+id/tv_jasaLain_discJasa"
+                android:id="@+id/tv_kategori_discJasa"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Jasa Lain"
+                android:text="@string/kategori_part"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tv_biaya_discJasa"
+                android:id="@+id/tv_pekerjaan_discJasa"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="40dp"
-                android:text="Biaya"
+                android:text="@string/pekerjaan"
                 android:textStyle="bold" />
 
         </TableRow>
@@ -48,7 +48,7 @@
                 android:id="@+id/tv_disc_discJasa"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Discount"
+                android:text="@string/discount"
                 android:textStyle="bold" />
 
             <TextView
@@ -56,7 +56,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="40dp"
-                android:text="Pekerjaan"
+                android:text="@string/tanggal"
                 android:textStyle="bold" />
 
 

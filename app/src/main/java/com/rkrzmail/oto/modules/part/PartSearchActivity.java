@@ -98,7 +98,7 @@ public class PartSearchActivity extends AppActivity {
                 et_search.setText(viewModel);
                 ViewAnimation.collapse(lyt_suggestion);
                 hideKeyboard();
-                searchAction();
+                searchAction(viewModel);
             }
         });
 
@@ -121,7 +121,7 @@ public class PartSearchActivity extends AppActivity {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     hideKeyboard();
-                    searchAction();
+                    searchAction("");
                     return true;
                 }
                 return false;
@@ -170,13 +170,13 @@ public class PartSearchActivity extends AppActivity {
         }
     }
 
-    private void searchAction() {
+    private void searchAction(final String cari) {
         progress_bar.setVisibility(View.VISIBLE);
         ViewAnimation.collapse(lyt_suggestion);
         lyt_no_result.setVisibility(View.GONE);
 
         final String query = et_search.getText().toString().trim();
-        /*if (!query.equals("")) {
+        if (!query.equals("")) {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -187,7 +187,7 @@ public class PartSearchActivity extends AppActivity {
             mAdapterSuggestion.addSearchHistory(query);
         } else {
             Toast.makeText(this, "Please fill search input", Toast.LENGTH_SHORT).show();
-        }*/
+        }
 
 
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
@@ -196,17 +196,17 @@ public class PartSearchActivity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
-                args.put("custid", UtilityAndroid.getSetting(getApplicationContext(),"CID",""));
-                args.put("email", UtilityAndroid.getSetting(getApplicationContext(),"EMA",""));
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrl("mstpart.php"),args)) ;
+                args.put("search", cari);
+                //  args.put("email", UtilityAndroid.getSetting(getApplicationContext(),"EMA",""));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("caripart"), args));
 
             }
 
             @Override
             public void runUI() {
-                if (result.isNsonArray()) {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
-                    nListArray.asArray().addAll(result.asArray());
+                    nListArray.asArray().addAll(result.get("data").asArray());
                     recyclerView.getAdapter().notifyDataSetChanged();
                 }
 

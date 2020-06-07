@@ -42,6 +42,7 @@ import com.rkrzmail.oto.modules.discount.FrekwensiDiscount_Activity;
 import com.rkrzmail.oto.modules.discount.SpotDiscount_Activity;
 import com.rkrzmail.oto.modules.jurnal.DaftarJurnal_Activity;
 import com.rkrzmail.oto.modules.lokasi_part.CariPart_Activity;
+import com.rkrzmail.oto.modules.profile.ProfileBengkel_Activity;
 import com.rkrzmail.oto.modules.registrasi_bengkel.Referal_Activity;
 import com.rkrzmail.oto.modules.registrasi_bengkel.RegistrasiBengkel_Activity;
 import com.rkrzmail.oto.modules.sparepart.Spareparts_Activity;
@@ -70,7 +71,7 @@ public class MenuActivity extends AppActivity {
     public final int MN_MESSAGE_WA      =   7;
     public final int MN_SPAREPART =   8;
     public final int MN_REGISTRASI = 9;
-    public final int MN_JUAL_PART =   10;
+    public final int MN_PROFILE = 10;
     public final int MN_MESSAGE_PenerimaanPart =   11;
     public final int MN_MESSAGE_PartDiterima =   12;
     public final int MN_CARI_PART = 13;
@@ -145,7 +146,12 @@ public class MenuActivity extends AppActivity {
                     Intent intent = new Intent(MenuActivity.this, CariPart_Activity.class);
                     startActivity(intent);
 
+                } else if (nPopulate.get(position).get("id").asInteger() == MN_PROFILE) {
+                    Intent intent = new Intent(MenuActivity.this, ProfileBengkel_Activity.class);
+                    startActivity(intent);
+
                 }
+
 //                else if (nPopulate.get(position).get("id").asInteger() == MN_BIAYA_MEKANIK) {
 //                    Intent intent = new Intent(MenuActivity.this, BiayaMekanikActivity.class);
 //                    startActivity(intent);
@@ -334,11 +340,11 @@ public class MenuActivity extends AppActivity {
         nPopulate.add(Nson.newObject().set("id", MN_CHECKIN).set("icon", R.drawable.mn_checkin).set("text", "CHECK IN"));
 //        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_WA).set("icon", R.drawable.wa).set("text", "MESSAGE"));
         nPopulate.add(Nson.newObject().set("id", MN_SPAREPART).set("icon", R.drawable.mn_jualpart).set("text", "SPAREPART"));
-        nPopulate.add(Nson.newObject().set("id", MN_CARI_PART).set("icon", R.drawable.mn_jualpart).set("text", "CARI PART"));
+        nPopulate.add(Nson.newObject().set("id", MN_PART_SEARCH).set("icon", R.drawable.mn_jualpart).set("text", "CARI PART"));
         nPopulate.add(Nson.newObject().set("id", MN_REGISTRASI).set("icon", R.drawable.mn_pelanggan).set("text", "REGISTRASI"));
         //nPopulate.add(Nson.newObject().set("id", MN_PART_SEARCH).set("icon", R.drawable.mn_jualpart).set("text", "CARI PART"));
 
-        //nPopulate.add(Nson.newObject().set("id", MN_BIAYA_MEKANIK).set("icon", R.drawable.mn_perawatan).set("text", "BIAYA MEKANIK"));
+        nPopulate.add(Nson.newObject().set("id", MN_PROFILE).set("icon", R.drawable.mn_pelanggan).set("text", "PROFILE"));
         //nPopulate.add(Nson.newObject().set("id", MN_LOKASI_PERSEDIAAN).set("icon", R.drawable.mn_booking).set("text", "LOKASI PERSEDIAAN"));
         //nPopulate.add(Nson.newObject().set("id", MN_JUAL_PART).set("icon", R.drawable.mn_belanja).set("text", "  PENJUALAN PART"));
         //nPopulate.add(Nson.newObject().set("id", MN_TUGAS_PART).set("icon", R.drawable.mn_tugaspart).set("text", "TUGAS PART"));
@@ -346,7 +352,7 @@ public class MenuActivity extends AppActivity {
         //nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_PartDiterima).set("icon", R.drawable.mn_tugaspart).set("text", "PART DI TERIMA"));
         //nPopulate.add(Nson.newObject().set("id", MN_STOCK_OPNAME).set("icon", R.drawable.mn_tugaspart).set("text", "STOCK OPNAME"));
         nPopulate.add(Nson.newObject().set("id", MN_PENUGASAN_MEKANIK).set("icon", R.drawable.mn_perawatan).set("text", "PENUGASAN MEKANIK"));
-        nPopulate.add(Nson.newObject().set("id", MN_BIAYA_MEKANIK2).set("icon", R.drawable.mn_perawatan).set("text", "BIAYA MEKANIK2"));
+        nPopulate.add(Nson.newObject().set("id", MN_BIAYA_MEKANIK2).set("icon", R.drawable.mn_perawatan).set("text", "BIAYA MEKANIK"));
         nPopulate.add(Nson.newObject().set("id", MN_LOKASI_PART).set("icon", R.drawable.mn_belanja).set("text", "LOKASI PART"));
         nPopulate.add(Nson.newObject().set("id", MN_TERIMA_PART).set("icon", R.drawable.mn_tugaspart).set("text", "TERIMA PART"));
         nPopulate.add(Nson.newObject().set("id", MN_LAYANAN).set("icon", R.drawable.mn_pelanggan).set("text", "LAYANAN"));

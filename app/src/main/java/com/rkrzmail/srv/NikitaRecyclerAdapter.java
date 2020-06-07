@@ -9,11 +9,13 @@ import android.widget.AdapterView;
 import com.naa.data.Nson;
 import com.naa.data.Utility;
 
+import java.util.ArrayList;
+
 public class NikitaRecyclerAdapter extends RecyclerView.Adapter<NikitaViewHolder> {
     Nson nson;
     int rlayout;
     public NikitaRecyclerAdapter(Nson nson, int rlayout){
-        this.nson = nson;;
+        this.nson = nson;
         this.rlayout = rlayout;
     }
     public Nson getItem(){
@@ -55,4 +57,5 @@ public class NikitaRecyclerAdapter extends RecyclerView.Adapter<NikitaViewHolder
     public interface OnItemClickListener {
         void onItemClick(Nson parent, View view, int position);
     }
+
 }

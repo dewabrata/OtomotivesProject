@@ -227,24 +227,23 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
                     Date jamPulang = new SimpleDateFormat("HH:mm").parse(selesai);
 
                     if (!jamMasuk.before(jamPulang)) {
-                        showInfo("Jam Selesai Tidak Sesuai / Jam Masuk Tidak Sesuai");
+                        showInfo("Jam Selesai Kerja Tidak Sesuai / Jam Masuk Kerja Tidak Sesuai");
                         return;
-                    }
-                    try {
-                        Date jamMulaiIstirahat = new SimpleDateFormat("HH:mm").parse(istirahat);
-                        Date jamSelesaiIstirahat = new SimpleDateFormat("HH:mm").parse(selesai_istirahat);
-
-                        if (!jamMulaiIstirahat.before(jamSelesaiIstirahat)) {
-                            showInfo("Jam Selesai Tidak Sesuai / Jam Masuk Tidak Sesuai");
-                            return;
-                        }
-                    } catch (ParseException e) {
-                        e.printStackTrace();
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
+                try {
+                    Date jamMulaiIstirahat = new SimpleDateFormat("HH:mm").parse(istirahat);
+                    Date jamSelesaiIstirahat = new SimpleDateFormat("HH:mm").parse(selesai_istirahat);
 
+                    if (!jamMulaiIstirahat.before(jamSelesaiIstirahat)) {
+                        showInfo("Jam Selesai Istirahat Tidak Sesuai / Jam Masuk Istirahat Tidak Sesuai");
+                        return;
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 insertData();
             }
 

@@ -54,7 +54,7 @@ public class AturDiscountJasaLain_Activity extends AppActivity implements View.O
         etDiscPart.addTextChangedListener(new PercentFormat(etDiscPart));
         tvTgl.setOnClickListener(this);
 
-        find(R.id.sp_namaJasa_discJasa);
+        find(R.id.sp_kategori_discJasa);
         find(R.id.cb_mssg_discJasa);
 
     }

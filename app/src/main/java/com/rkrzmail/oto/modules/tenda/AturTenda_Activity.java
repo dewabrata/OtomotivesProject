@@ -177,6 +177,7 @@ public class AturTenda_Activity extends AppActivity implements View.OnClickListe
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "save");
+                args.put("tipewaktu", spTipeWaktu.getSelectedItem().toString());
                 if (etLonglat.isEnabled() && etAlamat.isEnabled()) {
                     args.put("alamat", alamat);
                     args.put("lokasi", longlat);
@@ -190,7 +191,8 @@ public class AturTenda_Activity extends AppActivity implements View.OnClickListe
                     args.put("hari", "");
                 }
                 if (find(R.id.ly_tanggal_tenda, LinearLayout.class).getVisibility() == View.VISIBLE) {
-                    args.put("tanggal", tglMulai);
+                    args.put("tanggalmulai", tglMulai);
+                    args.put("tanggalselesai", tglSelesai);
                 } else {
                     args.put("tanggal", "");
                 }

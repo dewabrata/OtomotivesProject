@@ -30,11 +30,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="NAMA JASA LAIN"
+                    android:text="@string/kategori_part_uppercase"
                     android:textStyle="bold" />
 
                 <Spinner
-                    android:id="@+id/sp_namaJasa_discJasa"
+                    android:id="@+id/sp_kategori_discJasa"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -121,31 +121,35 @@
                 android:layout_marginRight="10dp"
                 android:text="MESSAGE PELANGGAN" />
 
-            <LinearLayout
+            <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="end">
+                android:stretchColumns="*">
 
-                <Button
-                    android:id="@+id/btn_simpan_discJasa"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/btn_rounded_accent"
-                    android:text="SIMPAN"
-                    android:textColor="@color/white_transparency" />
+                <TableRow>
 
-                <Button
-                    android:id="@+id/btn_hapus_discJasa"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/btn_rounded_accent"
-                    android:text="HAPUS"
-                    android:textColor="@color/white_transparency"
-                    android:visibility="gone" />
+                    <Button
+                        android:id="@+id/btn_hapus_discJasa"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/btn_rounded_accent"
+                        android:text="@string/hapus_uppercase"
+                        android:textColor="@android:color/white"
+                        android:visibility="gone" />
 
-            </LinearLayout>
+                    <Button
+                        android:id="@+id/btn_simpan_discJasa"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/btn_rounded_accent"
+                        android:text="@string/simpan_uppercase"
+                        android:textColor="@android:color/white"
+                        android:layout_column="20" />
+                </TableRow>
+
+            </TableLayout>
         </LinearLayout>
     </ScrollView>
 

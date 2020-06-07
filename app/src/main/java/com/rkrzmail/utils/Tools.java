@@ -54,6 +54,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class Tools {
@@ -480,15 +481,25 @@ public class Tools {
     }
 
     public static <T> ArrayList<T> removeDuplicates(ArrayList<T> list) {
-
         ArrayList<T> newList = new ArrayList<T>();
-
         for (T element : list) {
             if (!newList.contains(element)) {
                 newList.add(element);
             }
         }
-
         return newList;
+    }
+
+    public static ArrayList<EditText> getAllEditTexts(ViewGroup group) {
+        ArrayList<EditText> editTexts = new ArrayList<>();
+        for (int i = 0, count = group.getChildCount(); i < count; ++i) {
+            View view = group.getChildAt(i);
+            if (view instanceof EditText) {
+                editTexts.add((EditText) view);
+            }
+            if (view instanceof ViewGroup && (((ViewGroup) view).getChildCount() > 0))
+                getAllEditTexts((ViewGroup) view);
+        }
+        return editTexts;
     }
 }

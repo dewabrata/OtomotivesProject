@@ -28,4 +28,6 @@ public class NikitaViewHolder extends RecyclerView.ViewHolder {
     public <T extends View> T findView(View v, int id, Class<? super T> s) {
         return (T) v.findViewById(id);
     }
+
+
 }

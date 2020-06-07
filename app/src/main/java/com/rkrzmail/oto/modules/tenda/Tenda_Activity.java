@@ -78,11 +78,11 @@ public class Tenda_Activity extends AppActivity {
                 String tgl = Tools.setFormatDayAndMonth(nListArray.get(position).get("TANGGAL").asString());
                 //DataGenerator.getStringsShort(getActivity());
 
-                viewHolder.find(R.id.tv_tanggalMulai_tenda, TextView.class).setText(tgl);
+                viewHolder.find(R.id.tv_tanggalMulai_tenda, TextView.class).setText(nListArray.get(position).get("TANGGAL_MULAI").asString());
                 viewHolder.find(R.id.tv_tipeTenda, TextView.class).setText(nListArray.get(position).get("TIPE").asString());
                 viewHolder.find(R.id.tv_namaLokasi_tenda, TextView.class).setText(nListArray.get(position).get("NAMA_LOKASI").asString());
                 viewHolder.find(R.id.tv_jamBuka_tenda, TextView.class).setText(nListArray.get(position).get("JAM_BUKA").asString());
-                viewHolder.find(R.id.tv_tanggalSelesai_tenda, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_tanggalSelesai_tenda, TextView.class).setText(nListArray.get(position).get("TANGGAL_SELESAI").asString());
                 viewHolder.find(R.id.tv_jamTutup_tenda, TextView.class).setText(nListArray.get(position).get("JAM_TUTUP").asString());
             }
         });
@@ -104,15 +104,6 @@ public class Tenda_Activity extends AppActivity {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
-                    //sort berdasrkan tanggal dan kode tenda
-                    Collections.sort(nListArray.asArray(), new Comparator() {
-                        @Override
-                        public int compare(Object o1, Object o2) {
-                            return 0;
-                        }
-                    });
-
-                    Log.d(TAG, "reload data");
                     rvTenda.getAdapter().notifyDataSetChanged();
                 } else {
                     Log.d(TAG, "error");
