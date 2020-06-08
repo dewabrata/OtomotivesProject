@@ -146,7 +146,11 @@ public class MenuActivity extends AppActivity {
 
                 } else if (nPopulate.get(position).get("id").asInteger() == MN_CARI_PART) {
                     Intent intent = new Intent(MenuActivity.this, CariPart_Activity.class);
-                    startActivity(intent);
+                    intent.putExtra("flag","ALL");
+                    startActivityForResult(intent, 1);
+                } else if (nPopulate.get(position).get("id").asInteger() == MN_CARI_PART) {
+                    Intent intent = new Intent(MenuActivity.this, CariPart_Activity.class);
+                    startActivityForResult(intent, 2);
 
                 } else if (nPopulate.get(position).get("id").asInteger() == MN_PROFILE) {
                     Intent intent = new Intent(MenuActivity.this, ProfileBengkel_Activity.class);
