@@ -91,8 +91,6 @@ public class AturLokasiPart_Activity extends AppActivity {
                 insertData();
             }
         });
-
-
     }
 
     private void insertData() {
