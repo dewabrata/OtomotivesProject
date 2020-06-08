@@ -76,7 +76,7 @@ public class CariPart_Activity extends AppActivity {
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(Nson parent, View view, int position) {
-                        Intent intent = getIntent();
+                       /* Intent intent = getIntent();
                         if (intent.hasExtra("cari")) {
                             intent = new Intent(getActivity(), AturParts_Activity.class);
                             intent.putExtra("NAMA", nListArray.get(position).toJson());
@@ -85,7 +85,11 @@ public class CariPart_Activity extends AppActivity {
                             intent = new Intent(getActivity(), AturLokasiPart_Activity.class);
                             intent.putExtra("NAMA", nListArray.get(position).toJson());
                             startActivity(intent);
-                        }
+                        }*/
+
+                        Intent intent = new Intent();
+                        intent.putExtra("row", parent.get(position).toJson());
+                        setResult(RESULT_OK, intent);
 
                     }
                 })
@@ -99,6 +103,7 @@ public class CariPart_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("search", cari);
+                args.put("flag", getIntentStringExtra("flag"));
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("caripart"), args));
             }
 
