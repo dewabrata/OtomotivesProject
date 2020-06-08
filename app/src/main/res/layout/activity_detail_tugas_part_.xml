@@ -25,13 +25,26 @@
 
 
                 <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar"
+                    android:id="@+id/toolbar_detail_tugasPart"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:background="?attr/colorPrimary"
-                    app:popupTheme="@style/AppTheme.PopupOverlay" />
+                    app:popupTheme="@style/AppTheme.PopupOverlay">
+
+                    <ImageView
+                        android:id="@+id/imgBarcode_stockOpname"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        app:srcCompat="@drawable/scan"
+                        android:layout_gravity="right|center_vertical"
+                        tools:ignore="RtlHardcoded" />
+
+
+                </android.support.v7.widget.Toolbar>
 
             </FrameLayout>
+
         </android.support.design.widget.AppBarLayout>
 
         <LinearLayout
@@ -51,16 +64,15 @@
                 app:helperTextEnabled="true"
                 app:helperText="Disable"
                 app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText."
-                android:hint="UPAH MINIMUM KOTA">
+                android:hint="LAYANAN">
 
                 <EditText
-                    android:id="@+id/et_upahMin_biayaMekanik"
+                    android:id="@+id/et_layanan_tugasPart"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:editable="false"
-                    android:inputType="number"
-                    android:singleLine="true"
+                    android:enabled="false"
                     android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
@@ -72,19 +84,18 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:hint="UPAH/JAM"
+                android:hint="@string/pelanggan_uppercase"
                 app:helperTextEnabled="true"
                 app:helperText="Disable"
                 app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
 
 
                 <EditText
-                    android:id="@+id/et_upahJam_biayaMekanik"
+                    android:id="@+id/et_pelanggan_tugasPart"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:editable="false"
-                    android:inputType="number"
-                    android:singleLine="true"
+                    android:enabled="false"
                     android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
@@ -97,10 +108,13 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:hint="MINIMUM WAKTU BERBAYAR">
+                android:hint="@string/no_polisi_uppercase"
+                app:helperTextEnabled="true"
+                app:helperText="Disable"
+                app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
 
                 <EditText
-                    android:id="@+id/et_minBayar_biayaMekanik"
+                    android:id="@+id/et_nopol_tugasPart"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="time"
@@ -116,11 +130,14 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:hint="MEKANIK 1 /JAM">
+                android:hint="@string/mekanik_uppercase"
+                app:helperTextEnabled="true"
+                app:helperText="Disable"
+                app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
 
 
                 <EditText
-                    android:id="@+id/et_mekanik1_biayaMekanik"
+                    android:id="@+id/et_mekanik_tugasPart"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="number"
@@ -136,44 +153,35 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:hint="MEKANIK 2 /JAM">
+                android:hint="DI TERIMA"
+                app:helperTextEnabled="true"
+                app:helperText="Disable"
+                app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
 
                 <EditText
-                    android:id="@+id/et_mekanik2_biayaMekanik"
+                    android:id="@+id/et_diterima_tugasPart"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
                     android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView_detailTugasPart"
+                android:layout_marginTop="@dimen/spacing_medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:hint="MEKANIK 3 / JAM">
-
-                <EditText
-                    android:id="@+id/et_mekanik3_biayaMekanik"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:textSize="14sp" />
-
-            </android.support.design.widget.TextInputLayout>
+                android:padding="10dp" />
 
             <Button
-                android:id="@+id/btn_simpan_biayaMekanik"
+                android:id="@+id/btn_simpan_tugasPart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:layout_margin="10dp"
                 android:background="@drawable/btn_rounded_accent"
                 android:text="Simpan"
-                android:textColor="@color/white_transparency" />
+                android:textColor="@android:color/white" />
 
         </LinearLayout>
 

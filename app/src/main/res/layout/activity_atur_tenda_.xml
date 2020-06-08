@@ -116,7 +116,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="NAMA LOKASI"
-                    android:focusedByDefault="false"
+                    android:textSize="14sp"
                     android:inputType="text"
                     android:maxLines="1" />
 
@@ -136,8 +136,8 @@
                     android:id="@+id/et_alamat_tenda"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
-                    android:focusedByDefault="false"
                     android:gravity="top|left"
+                    android:textSize="14sp"
                     android:hint="ALAMAT"
                     android:inputType="textMultiLine" />
 
@@ -158,7 +158,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="LONGLAT"
-                    android:focusedByDefault="false"
+                    android:textSize="14sp"
                     android:inputType="numberDecimal" />
 
 

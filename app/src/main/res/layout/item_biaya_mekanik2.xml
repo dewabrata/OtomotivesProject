@@ -12,7 +12,7 @@
     android:layout_marginBottom="4dp"
     android:layout_weight="5"
     android:padding="10dp"
-    app:cardElevation="4dp"
+    app:cardElevation="3dp"
     app:cardCornerRadius="10dp">
 
     <TableLayout
@@ -27,7 +27,8 @@
                 android:id="@+id/tv_tgl_biayaMekanik"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tanggal"
+                android:text="@string/tanggal"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -39,21 +40,21 @@
 
         </TableRow>
 
-        <TableRow>
+        <TableRow android:layout_marginTop="5dp">
 
             <TextView
                 android:id="@+id/tv_minBayar_biayaMekanik"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Min Berbayar"
-                android:textStyle="bold" />
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/tv_mekanik1_biayaMekanik"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Mekanik 1 (Rp)"
-                android:textStyle="bold" />
+                android:textSize="12sp" />
 
 
         </TableRow>
@@ -65,14 +66,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Mekanik 2 (Rp)"
-                android:textStyle="bold" />
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/tv_mekanik3_biayaMekanik"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Mekanik 3 (Rp)"
-                android:textStyle="bold" />
+                android:textSize="12sp" />
 
         </TableRow>
 

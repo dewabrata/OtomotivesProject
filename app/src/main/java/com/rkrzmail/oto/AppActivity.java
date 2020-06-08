@@ -16,6 +16,8 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
@@ -349,11 +351,7 @@ public class AppActivity extends AppCompatActivity {
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(api), args));
 
                 for (int i = 0; i < result.get("data").size(); i++) {
-                    if (result.get("data").get(i).get(jsonObject).asString().equalsIgnoreCase(bookTitle)) {
-                        return result.get(jsonObject);
-                    } else {
                         return result.get("data");
-                    }
                 }
                 return result.get("search");
 
@@ -397,7 +395,6 @@ public class AppActivity extends AppCompatActivity {
         editText.setThreshold(2);
         editText.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
             Nson result;
-
             @Override
             public Nson onFindNson(Context context, String bookTitle) {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -443,17 +440,15 @@ public class AppActivity extends AppCompatActivity {
         });
     }
 
-    public void setMultiSelectionSpinnerFromApi(final MultiSelectionSpinner spinner, final String params, final String arguments, final String api, final String jsonObject, final ArrayList<String> dummies) {
+    public void setMultiSelectionSpinnerFromApi(final MultiSelectionSpinner spinner, final String params, final String arguments, final String api, final String jsonObject) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put(params, arguments);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(api), args));
             }
-
             @Override
             public void runUI() {
                 ArrayList<String> str = new ArrayList<>();
@@ -466,17 +461,6 @@ public class AppActivity extends AppCompatActivity {
                     spinner.setItems(newStr);
                 }
                 spinner.setSelection(new int[]{});
-                spinner.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
-                    @Override
-                    public void selectedIndices(List<Integer> indices) {
-
-                    }
-
-                    @Override
-                    public void selectedStrings(List<String> strings) {
-                        dummies.addAll(strings);
-                    }
-                });
             }
         });
     }
@@ -491,7 +475,6 @@ public class AppActivity extends AppCompatActivity {
                 args.put(params, arguments);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(api), args));
             }
-
             @Override
             public void runUI() {
                 List<String> str = new ArrayList<>();
@@ -536,6 +519,28 @@ public class AppActivity extends AppCompatActivity {
         }
         return emptyText == null;
     }
+
+    public void spinnerNoDefaultOffline(Spinner spinner, String[] resources) {
+        ArrayAdapter<String> tipeAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, resources) {
+            @NonNull
+            @Override
+            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View v = super.getView(position, convertView, parent);
+                if (position == getCount()) {
+                    ((TextView) v.findViewById(android.R.id.text1)).setText(null);
+                    ((TextView) v.findViewById(android.R.id.text1)).setHint(""); //"Hint to be displayed"
+                }
+                return v;
+            }
+
+            @Override
+            public int getCount() {
+                return super.getCount();            // you don't display last item. It is used as hint.
+            }
+        };
+        tipeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(tipeAdapter);
+        spinner.setSelection(resources.length - 1);
+        notifyDataSetChanged(spinner);
+    }
 }
-
-

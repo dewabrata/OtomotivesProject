@@ -148,9 +148,6 @@ public class DaftarTugasPartActivity extends AppActivity {
         ));
 
 
-
-
-
         reload("");
     }
 

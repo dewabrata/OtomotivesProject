@@ -33,6 +33,6 @@ public class AturKomisiLayanan_Activity extends AppActivity {
 
     private void initComponent() {
         spPosisi = findViewById(R.id.sp_namaPosisi_komisiLayanan);
-        setMultiSelectionSpinnerFromApi(spPosisi, "nama", "POSISI", "viewmst", "NAMA", dummies);
+        setMultiSelectionSpinnerFromApi(spPosisi, "nama", "POSISI", "viewmst", "NAMA");
     }
 }

@@ -27,8 +27,6 @@ public class AturUser_Activity extends AppActivity implements View.OnClickListen
 
     private static final String TAG = "AturUser_Activity";
     private MultiSelectionSpinner spAkses, spPosisi;
-    private ArrayList<String> dummiesPosisi = new ArrayList<>();
-    private ArrayList<String> dummiesAksesApp = new ArrayList<>();
     private Spinner spStatus;
     private Nson layanan = Nson.newArray();
 
@@ -53,7 +51,7 @@ public class AturUser_Activity extends AppActivity implements View.OnClickListen
         spPosisi = findViewById(R.id.spinnerPosisi);
         spStatus = (Spinner) findViewById(R.id.spinnerStatus);
 
-        setMultiSelectionSpinnerFromApi(spPosisi, "nama", "POSISI", "viewmst", "NAMA", dummiesPosisi);
+        setMultiSelectionSpinnerFromApi(spPosisi, "nama", "POSISI", "viewmst", "NAMA");
 
         find(R.id.spinnerStatus, Spinner.class).setSelection(-1);
 
@@ -91,21 +89,8 @@ public class AturUser_Activity extends AppActivity implements View.OnClickListen
     }
 
     private void addData() {
-        StringBuilder posisiDummies = new StringBuilder();
-        for (String data : dummiesPosisi) {
-            posisiDummies.append(data);
-            posisiDummies.append(", ");
-        }
-        StringBuilder aksesDummies = new StringBuilder();
-        for (String data : dummiesAksesApp) {
-            aksesDummies.append(data);
-            aksesDummies.append(", ");
-        }
-
-        final String aksesApp = aksesDummies.toString();
-        final String posisi = posisiDummies.toString();
-
-
+        final String aksesApp = spAkses.getSelectedItemsAsString();
+        final String posisi = spPosisi.getSelectedItemsAsString();
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -146,22 +131,8 @@ public class AturUser_Activity extends AppActivity implements View.OnClickListen
     }
 
     private void updateData() {
-
-        StringBuilder posisiDummies = new StringBuilder();
-        for (String data : dummiesPosisi) {
-            posisiDummies.append(data);
-            posisiDummies.append(", ");
-        }
-
-        StringBuilder aksesDummies = new StringBuilder();
-        for (String data : dummiesAksesApp) {
-            aksesDummies.append(data);
-            aksesDummies.append(", ");
-        }
-
-        final String aksesApp = aksesDummies.toString();
-        final String posisi = posisiDummies.toString();
-
+        final String aksesApp = spAkses.getSelectedItemsAsString();
+        final String posisi = spPosisi.getSelectedItemsAsString();
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -199,15 +170,12 @@ public class AturUser_Activity extends AppActivity implements View.OnClickListen
     private boolean componentValidation() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturkaryawan"), args));
-
             }
-
             @Override
             public void runUI() {
                 ArrayList<String> data = new ArrayList<>();
@@ -216,6 +184,7 @@ public class AturUser_Activity extends AppActivity implements View.OnClickListen
                 }
                 if (data.contains(find(R.id.txtNoPonsel, TextView.class).getText().toString())) {
                     Tools.alertDialog(getActivity(), "Nomor Ponsel Sudah Terdaftar");
+                    return;
                 }
             }
         });

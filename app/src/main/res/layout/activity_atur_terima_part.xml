@@ -102,6 +102,7 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="NO. DO"
+                    android:textSize="14sp"
                     android:inputType="text" />
             </android.support.design.widget.TextInputLayout>
 
@@ -236,6 +237,7 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="ONGKOS KIRIM"
+                    android:textSize="14sp"
                     android:inputType="numberDecimal" />
 
             </android.support.design.widget.TextInputLayout>

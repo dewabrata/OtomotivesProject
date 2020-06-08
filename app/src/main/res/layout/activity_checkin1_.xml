@@ -17,6 +17,26 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp">
+
+                <EditText
+                    android:id="@+id/et_keluhan_checkin1"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:inputType="textMultiLine"
+                    android:gravity="top|left"
+                    android:maxLength="200"
+                    android:textSize="14sp"
+                    android:hint="KELUHAN" />
+
+            </android.support.design.widget.TextInputLayout>
+
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -30,7 +50,7 @@
                     android:layout_marginTop="10dp">
 
                     <com.rkrzmail.srv.NikitaAutoComplete
-                        android:id="@+id/et_nopol_booking1a"
+                        android:id="@+id/et_nopol_checkin1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
@@ -54,7 +74,7 @@
             </FrameLayout>
 
             <Button
-                android:id="@+id/btn_history_booking1a"
+                android:id="@+id/btn_history_checkin1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="History"
@@ -63,7 +83,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:textColor="@color/white_transparency"/>
+                android:textColor="@color/white_transparency" />
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -78,41 +98,7 @@
                     android:layout_marginTop="5dp">
 
                     <com.rkrzmail.srv.NikitaAutoComplete
-                        android:id="@+id/et_jenisKendaraan_booking1a"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="text"
-                        android:textSize="14sp"
-                        android:maxLength="20"
-                        android:hint="JENIS KENDARAAN" />
-
-                </android.support.design.widget.TextInputLayout>
-
-                <ProgressBar
-                    android:id="@+id/pb_etJenisKendaraan_booking1a"
-                    style="?android:attr/progressBarStyleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical|right"
-                    android:layout_marginRight="20dp"
-                    android:visibility="gone" />
-
-            </FrameLayout>
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <android.support.design.widget.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="5dp">
-
-                    <com.rkrzmail.srv.NikitaAutoComplete
-                        android:id="@+id/et_noPonsel_booking1a"
+                        android:id="@+id/et_noPonsel_checkin1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="phone"
@@ -149,7 +135,7 @@
                     android:layout_marginTop="5dp">
 
                     <EditText
-                        android:id="@+id/et_namaPelanggan_booking1a"
+                        android:id="@+id/et_namaPelanggan_checkin1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textPersonName"
@@ -159,15 +145,15 @@
 
                 </android.support.design.widget.TextInputLayout>
 
-                    <CheckBox
-                        android:id="@+id/cb_pemilik_booking1a"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="PEMILIK"
-                        android:checked="false"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginLeft="5dp"/>
+                <CheckBox
+                    android:id="@+id/cb_pemilik_checkin1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="PEMILIK"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="5dp" />
 
             </LinearLayout>
 
@@ -190,83 +176,11 @@
                     android:text="PEKERJAAN" />
 
                 <Spinner
-                    android:id="@+id/sp_pekerjaan_booking1a"
+                    android:id="@+id/sp_pekerjaan_checkin1"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
                     android:layout_weight="1" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp">
-
-                <TextView
-                    android:id="@+id/txttittle1"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textStyle="bold"
-                    android:textSize="16sp"
-                    android:text="KONDISI KENDARAAN" />
-
-                <Spinner
-                    android:id="@+id/sp_kondisi_booking1a"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:entries="@array/kondisi_kendaraan_booking" />
-
-            </LinearLayout>
-
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp">
-
-                <EditText
-                    android:id="@+id/et_keluhan_booking1a"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:inputType="textMultiLine"
-                    android:gravity="top|left"
-                    android:maxLength="200"
-                    android:textSize="14sp"
-                    android:hint="KELUHAN" />
-
-
-            </android.support.design.widget.TextInputLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp">
-
-                <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textStyle="bold"
-                    android:textSize="16sp"
-                    android:text="LAYANAN"/>
-
-                <Spinner
-                    android:id="@+id/sp_layanan_booking1a"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:entries="@array/layanan_booking1a" />
 
             </LinearLayout>
 
@@ -279,7 +193,7 @@
                 android:layout_marginTop="5dp">
 
                 <com.rkrzmail.srv.NikitaAutoComplete
-                    android:id="@+id/et_km_booking1a"
+                    android:id="@+id/et_km_checkin1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="numberDecimal"
@@ -290,17 +204,15 @@
             </android.support.design.widget.TextInputLayout>
 
             <Button
-                android:id="@+id/btn_lanjut_booking1a"
+                android:id="@+id/btn_lanjut_checkin1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="LANJUT"
                 android:background="@drawable/btn_rounded_accent"
                 android:layout_gravity="end"
                 android:layout_marginRight="10dp"
-                android:textColor="@color/white_transparency"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginBottom="10dp"/>
+                android:textColor="@android:color/white"
+                android:layout_margin="10dp" />
 
         </LinearLayout>
     </ScrollView>
@@ -312,7 +224,7 @@
         android:layout_height="wrap_content">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_booking1"
+            android:id="@+id/toolbar_checkin1"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"

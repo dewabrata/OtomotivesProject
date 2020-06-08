@@ -24,9 +24,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".modules.profile.ProfileBengkel_Activity"></activity>
-        <activity android:name=".modules.part_keluar.PengisianPartKeluar_Activity" />
-        <activity android:name=".modules.part_keluar.PartKeluar_Activity" />
+        <activity android:name=".modules.checkin.Checkin1_Activity"></activity>
+        <activity android:name=".modules.sparepart.tugas_part.DetailTugasPart_Activity" />
+        <activity android:name=".modules.sparepart.tugas_part.TugasPart_Activity" />
+        <activity android:name=".modules.profile.ProfileBengkel_Activity" />
+        <activity android:name=".modules.sparepart.part_keluar.PengisianPartKeluar_Activity" />
+        <activity android:name=".modules.sparepart.part_keluar.PartKeluar_Activity" />
         <activity android:name=".modules.sparepart.DaftarJualPart_Activity" />
         <activity android:name=".modules.sparepart.DetailJualPart_Activity" />
         <activity android:name=".modules.sparepart.AturPenjualanPart_Activity" />

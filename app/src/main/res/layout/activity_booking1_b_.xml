@@ -69,7 +69,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="LONGLAT"
-                    android:inputType="number"
+                    android:textSize="14sp"
+                    android:inputType="numberDecimal"
                     android:maxLines="1"
                     android:singleLine="true" />
 
@@ -101,7 +102,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:gravity="top|left"
-                    android:enabled="false"
+                    android:editable="false"
+                    android:textSize="14sp"
                     android:hint="ALAMAT"
                     android:inputType="textMultiLine" />
 

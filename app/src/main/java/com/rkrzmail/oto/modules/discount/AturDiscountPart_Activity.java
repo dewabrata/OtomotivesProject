@@ -58,7 +58,7 @@ public class AturDiscountPart_Activity extends AppActivity implements View.OnCli
         etNamaPart = findViewById(R.id.et_namaPart_disc);
         tvTgl = findViewById(R.id.tv_tglEffect_discPart);
 
-        setMultiSelectionSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN", dummiesPekerjaan);
+        setMultiSelectionSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN");
 
         tvTgl.setOnClickListener(this);
         etDiscJasa.addTextChangedListener(new PercentFormat(etDiscJasa));

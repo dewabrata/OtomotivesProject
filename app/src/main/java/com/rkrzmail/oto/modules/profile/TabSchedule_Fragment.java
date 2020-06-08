@@ -2,6 +2,8 @@ package com.rkrzmail.oto.modules.profile;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.util.Log;
@@ -9,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -23,6 +26,7 @@ import com.naa.data.UtilityAndroid;
 import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.utils.SpinnerNoDefault;
 import com.rkrzmail.utils.Tools;
 
 import org.w3c.dom.Text;
@@ -39,7 +43,7 @@ import static com.naa.utils.InternetX.setSetting;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TabSchedule_Fragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public class TabSchedule_Fragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
 
     private CheckBox cbSeninJumat, cbJumat, cbSabtu, cbMingu, cbLibur;
     private TextView tvBukaSJ, tvTutupSJ, tvBukaJ, tvTutupJ, tvBukaSab, tvTutupSab, tvBukaM, tvTutupM, tvBukaL, tvTutupL;
@@ -102,11 +106,10 @@ public class TabSchedule_Fragment extends Fragment implements View.OnClickListen
         btnSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                timeValidation(frameSchedule);
-                saveAllEditText(lySj);
-                //Tools.addAllEditText(frameSchedule);
-                Log.d("operasional", String.valueOf(saveAllEditText(lySj).size()));
-                Log.d("operasional", ((ProfileBengkel_Activity) getActivity()).getSetting("operasional"));
+                timeValidation("");
+                Log.d("jamjadwal", ((ProfileBengkel_Activity) getActivity()).getSetting("jambuka" + "OPERASIONAL"));
+                Log.d("jamjadwal", ((ProfileBengkel_Activity) getActivity()).getSetting("jamtutup" + "OPERASIONAL"));
+
             }
         });
     }
@@ -147,115 +150,50 @@ public class TabSchedule_Fragment extends Fragment implements View.OnClickListen
         tvTutupM.setOnClickListener(this);
         tvBukaL.setOnClickListener(this);
         tvTutupL.setOnClickListener(this);
-        spTipeLayanan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                String item = adapterView.getItemAtPosition(position).toString();
-                ((ProfileBengkel_Activity) getActivity()).setSetting("operasional", item);
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
+        String[] tipe = getResources().getStringArray(R.array.tipe_schedule);
+        ((ProfileBengkel_Activity) getActivity()).spinnerNoDefaultOffline(spTipeLayanan, tipe);
+        spTipeLayanan.setOnItemSelectedListener(this);
     }
 
-    private void timeValidation(ViewGroup group) {
+    private void timeValidation(String items) {
         ArrayList<EditText> etBuka = new ArrayList<>();
         ArrayList<EditText> etTutup = new ArrayList<>();
-
         etBuka.add(etBukaSJ);
-        etBuka.add(etBukaJ);
-        etBuka.add(etBukaSab);
-        etBuka.add(etBukaM);
-        etBuka.add(etBukaL);
-
         etTutup.add(etTutupSJ);
+        etBuka.add(etBukaJ);
         etTutup.add(etTutupJ);
+        etBuka.add(etBukaSab);
         etTutup.add(etTutupSab);
+        etBuka.add(etBukaM);
         etTutup.add(etTutupM);
+        etBuka.add(etBukaL);
         etTutup.add(etTutupL);
-
-
-
-
         for (int i = 0; i < etBuka.size(); i++) {
-            if (etBuka.get(i).isEnabled() && etTutup.get(i).isEnabled() ){
-                String buka = etBuka.get(i).getText().toString();
-                String tutup = etTutup.get(i).getText().toString();
-
-                try {
-                    Date jamBuka = new SimpleDateFormat("HH:mm").parse(buka);
-                    Date jamTutup = new SimpleDateFormat("HH:mm").parse(tutup);
-                    if (!jamTutup.after(jamBuka)) {
-                        showInfo("Jam Buka Tidak Sesuai / Jam Tutup Tidak Sesuai");
-                        return;
-                    }
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }
-
-
-
-       /* String buka;
-        String tutup;
-        for (int i = 0, count = group.getChildCount(); i < count; ++i) {
-            View view = group.getChildAt(i);
-            if (view instanceof EditText) {
-                for (View v : ((EditText) view).getTouchables()) {
-                    if (v.isEnabled()) {
-                        for (EditText editText : etBuka) {
-                            buka = editText.getText().toString();
-                            for (EditText editText1 : etTutup) {
-                                tutup = editText1.getText().toString();
-                                try {
-                                    Date jamBuka = new SimpleDateFormat("HH:mm").parse(buka);
-                                    Date jamTutup = new SimpleDateFormat("HH:mm").parse(tutup);
-                                    if (!jamTutup.after(jamBuka)) {
-                                        showInfo("Jam Buka Tidak Sesuai / Jam Tutup Tidak Sesuai");
-                                        return;
-                                    }
-                                } catch (ParseException e) {
-                                    e.printStackTrace();
-                                }
-                            }
+            for (int j = 0; j < etTutup.size(); j++) {
+                if (etBuka.get(i).isEnabled() && etTutup.get(j).isEnabled()) {
+                    String buka = etBuka.get(i).getText().toString();
+                    String tutup = etTutup.get(j).getText().toString();
+                    ((ProfileBengkel_Activity) getActivity()).setSetting("jambuka" + items, buka);
+                    ((ProfileBengkel_Activity) getActivity()).setSetting("jamtutup" + items, tutup);
+                    try {
+                        Date jamBuka = new SimpleDateFormat("HH:mm").parse(buka);
+                        Date jamTutup = new SimpleDateFormat("HH:mm").parse(tutup);
+                        if (!jamTutup.after(jamBuka)) {
+                            ((ProfileBengkel_Activity) getActivity()).showInfo("Jam Buka Tidak Sesuai / Jam Tutup Tidak Sesuai");
+                            etBuka.get(i).requestFocus();
+                            etTutup.get(j).requestFocus();
                         }
-                    } else {
-                        break;
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
                 }
             }
-            if (view instanceof ViewGroup && (((ViewGroup) view).getChildCount() > 0))
-                timeValidation((ViewGroup) view);
-        }*/
-    }
-
-    private ArrayList<EditText> saveAllEditText(ViewGroup group) {
-        ArrayList<EditText> listEt = new ArrayList<>();
-        for (int i = 0, count = group.getChildCount(); i < count; ++i) {
-            View view = group.getChildAt(i);
-            if (view instanceof EditText) {
-                EditText editText = (EditText) view;
-                listEt.add(editText);
-            }
         }
-        return listEt;
     }
 
     @Override
     public void onClick(View view) {
-//        EditText editText;
-//        if(view instanceof TextView){
-//            for(View v : view.getTouchables()){
-//                if(v.isEnabled()){
-//                    //((TextView)view).
-//                }
-//            }
-//        }
         switch (view.getId()) {
             case R.id.tv_jamBukaSJ_schedule:
                 Tools.getTimePickerDialog(getContext(), etBukaSJ);
@@ -292,8 +230,6 @@ public class TabSchedule_Fragment extends Fragment implements View.OnClickListen
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-
-
         switch (compoundButton.getId()) {
             case R.id.cb_seninJumat_schedule:
                 if (b) {
@@ -334,13 +270,14 @@ public class TabSchedule_Fragment extends Fragment implements View.OnClickListen
 
     }
 
-    public String getSetting(String key) {
-        return UtilityAndroid.getSetting(getActivity(), key, "");
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        String item = adapterView.getItemAtPosition(i).toString();
+        timeValidation(item);
     }
 
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
 
-    public void showInfo(String text) {
-        Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
     }
-
 }

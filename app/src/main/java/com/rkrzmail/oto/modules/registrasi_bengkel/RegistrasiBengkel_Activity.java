@@ -58,7 +58,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
         tvLokasi = findViewById(R.id.tv_lokasi_regist);
 
         remakeAutoCompleteMaster(etKotaKab, "DAERAH", "KOTA_KAB");
-        setMultiSelectionSpinnerFromApi(spKendaraan, "nama", "BENGKEL", "viewmst", "TYPE", dummies);
+        setMultiSelectionSpinnerFromApi(spKendaraan, "nama", "BENGKEL", "viewmst", "TYPE");
 
 
         tvLokasi.setOnClickListener(this);

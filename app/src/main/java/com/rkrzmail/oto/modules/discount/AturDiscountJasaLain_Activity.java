@@ -48,7 +48,7 @@ public class AturDiscountJasaLain_Activity extends AppActivity implements View.O
         tvTgl = findViewById(R.id.tv_tglEffect_discJasa);
         spPekerjaan = findViewById(R.id.sp_pekerjaan_discJasa);
 
-        setMultiSelectionSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN", dummiesPekerjaan);
+        setMultiSelectionSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN");
 
 
         etDiscPart.addTextChangedListener(new PercentFormat(etDiscPart));

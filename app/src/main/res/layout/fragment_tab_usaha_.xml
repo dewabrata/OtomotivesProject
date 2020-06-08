@@ -230,9 +230,9 @@
                     android:id="@+id/sp_afiliasi_usaha"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:drawSelectorOnTop="true"
                     android:gravity="center"
                     android:textAlignment="center"
-                    android:entries="@array/afiliasi_usaha"
                     android:textStyle="bold" />
 
             </LinearLayout>
@@ -276,7 +276,7 @@
                     android:textStyle="bold"
                     android:text="@string/jenis_kendaraan_uppercase" />
 
-                <Spinner
+                <com.rkrzmail.srv.MultiSelectionSpinner
                     android:id="@+id/sp_jenisKendaraan_usaha"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -348,7 +348,7 @@
                     android:textStyle="bold"
                     android:text="@string/jumlah_user_uppercase" />
 
-                <com.rkrzmail.srv.MultiSelectionSpinner
+                <Spinner
                     android:id="@+id/sp_jumlahUser_usaha"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

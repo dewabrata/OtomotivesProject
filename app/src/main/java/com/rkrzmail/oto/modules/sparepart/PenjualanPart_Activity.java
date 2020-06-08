@@ -34,7 +34,6 @@ public class PenjualanPart_Activity extends AppActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_penjualan_part_);
-        initToolbar();
         initComponent();
     }
 
@@ -46,6 +45,7 @@ public class PenjualanPart_Activity extends AppActivity {
     }
 
     private void initComponent() {
+        initToolbar();
         FloatingActionButton fab = findViewById(R.id.fab_tambah_jualPart);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

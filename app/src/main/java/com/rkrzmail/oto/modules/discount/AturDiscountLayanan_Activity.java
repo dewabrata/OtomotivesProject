@@ -38,7 +38,7 @@ public class AturDiscountLayanan_Activity extends AppActivity implements View.On
         find(R.id.et_discPart_discLayanan, EditText.class).addTextChangedListener(new PercentFormat(find(R.id.et_discPart_discLayanan, EditText.class)));
         find(R.id.tv_tglEffect_discLayanan).setOnClickListener(this);
         spPekerjaan = findViewById(R.id.sp_pekerjaan_discLayanan);
-        setMultiSelectionSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN", dummiesPekerjaan);
+        setMultiSelectionSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN");
 
     }
 

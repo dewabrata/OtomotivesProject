@@ -32,6 +32,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"
+                    android:textSize="14sp"
                     android:inputType="text" />
 
             </android.support.design.widget.TextInputLayout>
@@ -60,6 +61,7 @@
                     android:id="@+id/et_namaPemilik_regist"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textSize="14sp"
                     android:inputType="text" />
 
             </android.support.design.widget.TextInputLayout>
@@ -78,6 +80,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="phone"
+                    android:textSize="14sp"
                     android:maxLength="14" />
 
             </android.support.design.widget.TextInputLayout>
@@ -95,6 +98,7 @@
                     android:id="@+id/et_email_regist"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textSize="14sp"
                     android:inputType="textEmailAddress" />
 
             </android.support.design.widget.TextInputLayout>
@@ -112,6 +116,7 @@
                     android:id="@+id/et_namaBengkel_regist"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textSize="14sp"
                     android:inputType="text" />
 
             </android.support.design.widget.TextInputLayout>
@@ -175,6 +180,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:gravity="top|left"
+                    android:textSize="14sp"
                     android:inputType="textMultiLine" />
 
             </android.support.design.widget.TextInputLayout>
@@ -192,6 +198,7 @@
                     android:id="@+id/et_kotakab_regist"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textSize="14sp"
                     android:inputType="text" />
 
             </android.support.design.widget.TextInputLayout>

@@ -170,8 +170,11 @@ public class AturLokasiPart_Activity extends AppActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == RESULT_OK && resultCode == REQUEST_ATUR_LOKASI_PART){
-
+        if (requestCode == RESULT_OK) {
+            Nson nson = Nson.readJson(getIntentStringExtra("row"));
+            no_part.setText(nson.get("NO_PART_ID").asString());
+            nama_part.setText(nson.get("NAMA").asString());
+            merk_part.setText(nson.get("MERK_PART").asString());
         }
     }
 }

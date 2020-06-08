@@ -21,6 +21,15 @@
         <item>@drawable/image_15</item>
     </integer-array>
 
+    <string-array name="max_jumlah_user">
+        <item>MAX 3</item>
+        <item>MAX 5</item>
+        <item>MAX 7</item>
+        <item>MAX 9</item>
+        <item>MAX 15</item>
+        <item></item>
+    </string-array>
+
     <string-array name="sample_images_name">
         <item>Night Street</item>
         <item>Architect Desk</item>

@@ -17,7 +17,8 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class SpinnerNoDefault extends android.support.v7.widget.AppCompatSpinner {
+@SuppressLint("AppCompatCustomView")
+public class SpinnerNoDefault extends Spinner {
 
 
     public SpinnerNoDefault(Context context) {

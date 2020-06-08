@@ -61,13 +61,9 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:ems="10"
+                    android:textSize="14sp"
                     android:enabled="false"
-                    android:hint="NO. FOLDER"
-                    android:inputType="number"
-                    android:padding="5dp"
-                    android:textAlignment="center" />
+                    android:hint="NO. FOLDER" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -84,13 +80,9 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:ems="10"
                     android:enabled="false"
                     android:hint="NO. PART"
-                    android:inputType="number"
-                    android:padding="5dp"
-                    android:textAlignment="center" />
+                    android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -104,15 +96,10 @@
                     android:id="@+id/et_namaPart_stockOpname"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_gravity="center"
                     android:layout_margin="5dp"
-                    android:layout_weight="2"
-                    android:ems="10"
                     android:enabled="false"
                     android:hint="NAMA PART"
-                    android:inputType="number"
-                    android:padding="5dp"
-                    android:textAlignment="center" />
+                    android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -128,13 +115,9 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:layout_margin="5dp"
-                    android:layout_weight="2"
-                    android:ems="10"
                     android:enabled="false"
                     android:hint="JUMLAH DATA"
-                    android:inputType="number"
-                    android:padding="5dp"
-                    android:textAlignment="center" />
+                    android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -150,12 +133,10 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:layout_margin="5dp"
-                    android:layout_weight="2"
-                    android:ems="10"
                     android:hint="JUMLAH AKHIR"
                     android:inputType="number"
-                    android:padding="5dp"
-                    android:textAlignment="center" />
+                    android:maxLength="10"
+                    android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -167,7 +148,7 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/btn_rounded_accent"
                 android:text="SIMPAN"
-                android:textColor="@color/white_transparency" />
+                android:textColor="@android:color/white" />
 
 
         </LinearLayout>

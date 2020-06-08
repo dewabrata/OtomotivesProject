@@ -18,15 +18,17 @@ import android.widget.TextView;
 import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.utils.Tools;
 
 public class TabUsaha_Fragment extends Fragment {
 
     private EditText etNamaBengkel, etAlamat, etBadanUsaha, etKotaKab, etNoponsel, etNib, etNpwp;
     private TextView tvLokasi;
-    private Spinner spAfiliasi, spJaringan, spJenisKendaraan, spBidangUsaha, spMerkKendaraan, spJumlahUser;
+    private Spinner spAfiliasi, spJaringan, spJumlahUser;
     private Button btnSimpan;
     private CheckBox cbPkp;
+    private MultiSelectionSpinner spJenisKendaraan, spBidangUsaha, spMerkKendaraan;
     private LinearLayout lyJaringan;
 
     public TabUsaha_Fragment() {
@@ -78,7 +80,6 @@ public class TabUsaha_Fragment extends Fragment {
             public void run() {
 
             }
-
             @Override
             public void runUI() {
 
@@ -87,6 +88,8 @@ public class TabUsaha_Fragment extends Fragment {
     }
 
     private void validation() {
+        ((ProfileBengkel_Activity) getActivity()).spinnerNoDefaultOffline(spJumlahUser, getResources().getStringArray(R.array.max_jumlah_user));
+        ((ProfileBengkel_Activity) getActivity()).spinnerNoDefaultOffline(spAfiliasi, getResources().getStringArray(R.array.afiliasi_usaha));
         spAfiliasi.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -95,10 +98,8 @@ public class TabUsaha_Fragment extends Fragment {
                     Tools.setViewAndChildrenEnabled(lyJaringan, false);
                 } else {
                     Tools.setViewAndChildrenEnabled(lyJaringan, true);
-
                 }
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 

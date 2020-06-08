@@ -56,10 +56,8 @@
                         android:id="@+id/txtNamaKaryawan"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:enabled="false"
-                        android:inputType="textEmailAddress"
-                        android:maxLines="1"
-                        android:singleLine="true"
+                        android:editable="false"
+                        android:textSize="14sp"
                         android:hint="NAMA" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -80,10 +78,8 @@
                         android:id="@+id/txtNik"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:enabled="false"
-                        android:inputType="textEmailAddress"
-                        android:maxLines="1"
-                        android:singleLine="true"
+                        android:editable="false"
+                        android:textSize="14sp"
                         android:hint="NIK" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -155,6 +151,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="NO. PONSEL"
+                        android:textSize="14sp"
                         android:maxLength="15"
                         android:inputType="phone" />
 
@@ -174,8 +171,7 @@
                         android:layout_height="wrap_content"
                         android:hint="EMAIL"
                         android:inputType="textEmailAddress"
-                        android:maxLines="1"
-                        android:singleLine="true" />
+                        android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -193,7 +189,8 @@
                         android:layout_height="100dp"
                         android:hint="ALAMAT"
                         android:gravity="top|left"
-                        android:inputType="textMultiLine" />
+                        android:inputType="textMultiLine"
+                        android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -313,6 +310,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="GAJI"
+                        android:textSize="14sp"
                         android:inputType="numberDecimal" />
 
                 </android.support.design.widget.TextInputLayout>

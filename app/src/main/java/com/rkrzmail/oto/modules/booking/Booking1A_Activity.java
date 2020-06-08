@@ -45,7 +45,6 @@ public class Booking1A_Activity extends AppActivity {
 
 
     private void initToolbar() {
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_booking1);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Booking");
@@ -91,8 +90,6 @@ public class Booking1A_Activity extends AppActivity {
         final String keluhan = etKeluhan.getText().toString();
         final String layanan = spLayanan.getSelectedItem().toString().toUpperCase();
         final String pekerjaan = spPekerjaan.getSelectedItem().toString().toUpperCase();
-
-
         newProses(new Messagebox.DoubleRunnable() {
             //Nson result;
             @Override
@@ -127,14 +124,6 @@ public class Booking1A_Activity extends AppActivity {
                 nson.set("layanan", layanan);
                 nson.set("pekerjaan", pekerjaan);
 
-                if (pekerjaan.equalsIgnoreCase("SERVICE KECIL")) {
-                    if (!find(R.id.cb_pemilik_booking1a, CheckBox.class).isChecked()) {
-                        Tools.alertDialog(getActivity(), "KM Wajib Di Isi!");
-                    }
-                } else if (pekerjaan.equalsIgnoreCase("SERVICE BESAR")) {
-
-                }
-
                 Intent i = new Intent(getActivity(), Booking1B_Activity.class);
                 startActivity(i);
                 finish();
@@ -151,21 +140,10 @@ public class Booking1A_Activity extends AppActivity {
             public Nson onFindNson(Context context, String bookTitle) {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 String nopol = bookTitle.replace(" ", "").toUpperCase();
+                args.put("nopol", nopol);
+                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewnopol"), args));
 
-                //   args.put("action", "view");
-                args.put("search", nopol);
-
-                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturbooking"), args));
-                //StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < result.get("data").size(); i++) {
-                    //sb.append(result.get("data").get(i).get("NOPOL").asJson());
-                    if (result.get("data").get(i).get("NOPOL").asArray().contains(nopol)) {
-                        return result;
-                    } else {
-                        return result.get("data");
-                    }
-                }
-                return result.get("search");
+                return result.get("nopol");
             }
 
             @Override
@@ -186,7 +164,6 @@ public class Booking1A_Activity extends AppActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
-
                 etNopol.setText(formatNopol(n.get("NOPOL").asString()));
                 etNoPonsel.setText(n.get("NO_PONSEL").asString());
                 etNamaPelanggan.setText(n.get("NAMA_PELANGGAN").asString());
@@ -196,7 +173,6 @@ public class Booking1A_Activity extends AppActivity {
                 }
             }
         });
-
 
         etJenisKendaraan.setThreshold(3);
         etJenisKendaraan.setAdapter(new NsonAutoCompleteAdapter(getActivity()){

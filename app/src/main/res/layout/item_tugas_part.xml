@@ -26,20 +26,19 @@
         <TableRow>
 
             <TextView
-                android:id="@+id/tv_noFolder_tugasPart"
+                android:id="@+id/tv_noAntrian_tugasPart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="No. Folder"
+                android:text="No. Antrian"
                 android:textStyle="bold"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
             <TextView
-                android:id="@+id/tv_stock_tugasPart"
+                android:id="@+id/tv_layanan_tugasPart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Stock"
-                android:textStyle="bold"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+                android:text="@string/layanan"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
 
         </TableRow>
@@ -47,10 +46,35 @@
         <TableRow android:layout_marginTop="@dimen/spacing_medium">
 
             <TextView
-                android:id="@+id/tv_namaPart_tugasPart"
+                android:id="@+id/tv_nopol_tugasPart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/nama_part"
+                android:text="@string/no_polisi"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+            <TextView
+                android:id="@+id/tv_pelanggan_tugasPart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pelanggan"
+                android:textSize="12sp" />
+
+        </TableRow>
+
+        <TableRow android:layout_marginTop="@dimen/spacing_medium">
+
+            <TextView
+                android:id="@+id/tv_mekanik_tugasPart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mekanik"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+            <TextView
+                android:id="@+id/tv_status_tugasPart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/status"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
         </TableRow>
@@ -58,17 +82,17 @@
         <TableRow android:layout_marginTop="@dimen/spacing_medium">
 
             <TextView
-                android:id="@+id/tv_noPart_tugasPart"
+                android:id="@+id/tv_user_tugasPart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/no_part"
+                android:text="User Part"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
             <TextView
-                android:id="@+id/tv_jumlah_tugasPart"
+                android:id="@+id/tv_jam_tugasPart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/jumlah_jumlah"
+                android:text="Jam"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
         </TableRow>

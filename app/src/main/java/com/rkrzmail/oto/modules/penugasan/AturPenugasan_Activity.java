@@ -254,13 +254,7 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
 
     private void insertData() {
 
-        StringBuilder antrianDummies = new StringBuilder();
-        for (String data : dummies) {
-            antrianDummies.append(data);
-            antrianDummies.append(", ");
-        }
-
-        final String antrian = antrianDummies.toString();
+        final String antrian = spTipe_antrian.getSelectedItemsAsString();
         final int selectedId = rg_status.getCheckedRadioButtonId();
         final String nama = etNama_Mekanik.getText().toString().trim().toUpperCase();
         final String lokasi = spLokasi.getSelectedItem().toString().toUpperCase();

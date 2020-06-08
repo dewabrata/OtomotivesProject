@@ -171,7 +171,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="BIAYA TRANSPORT"
-                    android:enabled="false"
+                    android:textSize="14sp"
+                    android:editable="false"
                     android:ems="10" />
 
             </android.support.design.widget.TextInputLayout>
@@ -189,7 +190,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="BIAYA LAYANAN"
-                    android:enabled="false"
+                    android:editable="false"
+                    android:textSize="14sp"
                     android:ems="10" />
 
             </android.support.design.widget.TextInputLayout>
@@ -206,8 +208,9 @@
                     android:id="@+id/et_totalBiaya_booking2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
+                    android:editable="false"
                     android:hint="TOTAL BIAYA"
+                    android:textSize="14sp"
                     android:ems="10" />
 
             </android.support.design.widget.TextInputLayout>
@@ -230,7 +233,8 @@
                         android:id="@+id/et_dp_booking2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:enabled="false"
+                        android:textSize="14sp"
+                        android:editable="false"
                         android:hint="DP"
                         android:ems="10" />
 
@@ -247,7 +251,8 @@
                         android:id="@+id/et_sisa_booking2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:enabled="false"
+                        android:editable="false"
+                        android:textSize="14sp"
                         android:hint="SISA"
                         android:ems="10" />
 

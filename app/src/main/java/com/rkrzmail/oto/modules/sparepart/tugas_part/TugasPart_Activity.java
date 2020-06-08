@@ -1,11 +1,9 @@
-package com.rkrzmail.oto.modules.part_keluar;
+package com.rkrzmail.oto.modules.sparepart.tugas_part;
 
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -21,78 +19,71 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.lokasi_part.AturLokasiPart_Activity;
-import com.rkrzmail.oto.modules.sparepart.AturParts_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
 import java.util.Map;
 
-public class PartKeluar_Activity extends AppActivity {
+public class TugasPart_Activity extends AppActivity {
 
-    private RecyclerView rvPartKeluar;
+    private RecyclerView rvTugasPart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_part_keluar_);
-        initToolbar();
+        setContentView(R.layout.activity_tugas_part_);
         initComponent();
     }
 
     private void initToolbar() {
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_partKeluar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_tugasPart);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Part Keluar");
+        getSupportActionBar().setTitle("Tugas Part");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //toolbar.animate().translationY(-toolbar.getBottom()).setInterpolator(new AccelerateInterpolator()).start();
     }
-
 
     private void initComponent() {
+        initToolbar();
+        rvTugasPart = findViewById(R.id.recyclerView_tugasPart);
+        rvTugasPart.setLayoutManager(new LinearLayoutManager(this));
+        rvTugasPart.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_tugas_part) {
+                    @Override
+                    public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+                        super.onBindViewHolder(viewHolder, position);
+                        viewHolder.find(R.id.tv_noAntrian_tugasPart, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_layanan_tugasPart, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_nopol_tugasPart, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_pelanggan_tugasPart, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_mekanik_tugasPart, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_status_tugasPart, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_user_tugasPart, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_jam_tugasPart, TextView.class).setText(nListArray.get(position).get("").asString());
+                    }
+                }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Nson parent, View view, int position) {
 
-        rvPartKeluar = (RecyclerView) findViewById(R.id.recyclerView_cariPart);
-        rvPartKeluar.setLayoutManager(new LinearLayoutManager(this));
-        rvPartKeluar.setHasFixedSize(true);
-
-        rvPartKeluar.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_daftar_cari_part) {
-            @Override
-            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                super.onBindViewHolder(viewHolder, position);
-
-                if (nListArray.get("MERK_PART").asString() == null) {
-                    find(R.id.tv_cari_merkPart, TextView.class).setVisibility(View.GONE);
-                }
-
-                viewHolder.find(R.id.tv_cari_merkPart, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_cari_namaPart, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
-                viewHolder.find(R.id.tv_cari_noPart, TextView.class).setText(nListArray.get(position).get("NO_PART_ID").asString());
-                viewHolder.find(R.id.tv_cari_stockPart, TextView.class).setText(nListArray.get(position).get("STOCK").asString());
-
-            }
-        });
+                    }
+                })
+        );
     }
 
-    private void catchData(final String cari) {
+    private void catchData() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("search", cari);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("partKeluar"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(""), args));
             }
 
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    nListArray.asArray().clear();
-                    nListArray.asArray().addAll(result.get("data").asArray());
-                    rvPartKeluar.getAdapter().notifyDataSetChanged();
+
                 } else {
-                    showError("Gagal Mencari Part");
+                    showInfo("Gagal");
                 }
             }
         });
@@ -119,7 +110,7 @@ public class PartKeluar_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        adapterSearchView(mSearchView, "search", "caripart", "NAMA");
+        //adapterSearchView(mSearchView, "search", "viewsparepart", "NAMA");
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
 
@@ -129,11 +120,12 @@ public class PartKeluar_Activity extends AppActivity {
             public boolean onQueryTextSubmit(String query) {
                 searchMenu.collapseActionView();
                 //filter(null);
-                catchData(query);
+                //reload(query);
                 return true;
             }
         };
         mSearchView.setOnQueryTextListener(queryTextListener);
         return true;
     }
+
 }

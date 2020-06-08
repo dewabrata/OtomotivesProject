@@ -98,6 +98,8 @@ public class MenuActivity extends AppActivity {
     public static final int MN_KARYAWAN = 34;
     public static final int MN_REFERAL = 35;
     public static final int MN_FREKWENSI_DISCOUNT = 36;
+    public static final int MN_PART_KELUAR = 37;
+    public static final int MN_JUAL_PART = 38;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
