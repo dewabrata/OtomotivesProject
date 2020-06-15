@@ -15,6 +15,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
+import com.naa.data.Utility;
 import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class Booking1A_Activity extends AppActivity {
-
+    private final String FNAME = "BOOKING 2";
     private static final int REQUEST_PENDAFTARAN = 23;
     private NikitaAutoComplete etJenisKendaraan, etNopol, etNoPonsel;
     private EditText etNamaPelanggan, etKeluhan, etKm;
@@ -41,6 +42,9 @@ public class Booking1A_Activity extends AppActivity {
         setContentView(R.layout.activity_booking1_a_);
         initToolbar();
         initComponent();
+
+       //PERINTAH DEREK, BATAL BOOK BENGKEL, BATAL BOOK PELANGGAN, CHECK IN
+        Nson nson= new Nson(Utility.splitTrim("",","));
     }
 
 
@@ -141,6 +145,8 @@ public class Booking1A_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 String nopol = bookTitle.replace(" ", "").toUpperCase();
                 args.put("nopol", nopol);
+                args.put("FORM", FNAME);
+
                 Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewnopol"), args));
 
                 return result.get("nopol");
