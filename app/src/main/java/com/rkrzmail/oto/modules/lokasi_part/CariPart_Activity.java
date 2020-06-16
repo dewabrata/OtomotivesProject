@@ -21,15 +21,15 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.gmod.Pendaftaran1;
-import com.rkrzmail.oto.modules.sparepart.AturParts_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 public class CariPart_Activity extends AppActivity {
 
+    private static final String SEARCH_HISTORY_KEY = "_SEARCH_HISTORY_KEY";
+    private static final int MAX_HISTORY_ITEMS = 10;
     private Pendaftaran1.AutoSuggestAdapter autoSuggestAdapter;
     private RecyclerView rvCariPart;
 
@@ -37,14 +37,13 @@ public class CariPart_Activity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cari_part_);
-        initToolbar();
+        setContentView(R.layout.activity_list_basic);
         initComponent();
     }
 
     private void initToolbar() {
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_cariPart);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Cari Part");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -53,8 +52,8 @@ public class CariPart_Activity extends AppActivity {
 
 
     private void initComponent(){
-
-        rvCariPart = (RecyclerView) findViewById(R.id.recyclerView_cariPart);
+        initToolbar();
+        rvCariPart = (RecyclerView) findViewById(R.id.recyclerView);
         rvCariPart.setLayoutManager(new LinearLayoutManager(this));
         rvCariPart.setHasFixedSize(true);
 
@@ -63,21 +62,21 @@ public class CariPart_Activity extends AppActivity {
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
 
-                if(nListArray.get("MERK_PART").asString() == null){
-                    find(R.id.tv_cari_merkPart, TextView.class).setVisibility(View.GONE);
-                }
-                viewHolder.find(R.id.tv_cari_merkPart, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_cari_merkPart, TextView.class).setText(nListArray.get(position).get("MERK").asString());
                 viewHolder.find(R.id.tv_cari_namaPart, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
-                viewHolder.find(R.id.tv_cari_noPart, TextView.class).setText(nListArray.get(position).get("NO_PART_ID").asString());
+                viewHolder.find(R.id.tv_cari_noPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
                 viewHolder.find(R.id.tv_cari_stockPart, TextView.class).setText(nListArray.get(position).get("STOCK").asString());
-
             }
+
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(Nson parent, View view, int position) {
                         Intent intent = new Intent();
-                        intent.putExtra("row", parent.get(position).toJson());
+                        intent.putExtra("part", nListArray.get(position).toJson());
+                        intent.putExtra("flag all", nListArray.get("flag").get("ALL").asString());
+                        intent.putExtra("flag no part", nListArray.get("flag").get("NOPART").asString());
                         setResult(RESULT_OK, intent);
+                        finish();
                     }
                 })
         );
@@ -89,6 +88,8 @@ public class CariPart_Activity extends AppActivity {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
+                //args.put("flag", "ALL");
+                //args.put("flag", "NOPART");
                 args.put("search", cari);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("caripart"), args));
             }
@@ -136,7 +137,6 @@ public class CariPart_Activity extends AppActivity {
 
             public boolean onQueryTextSubmit(String query) {
                 searchMenu.collapseActionView();
-                //filter(null);
                 cariPart(query);
                 return true;
             }

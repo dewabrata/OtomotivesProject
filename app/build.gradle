@@ -60,6 +60,8 @@ dependencies {
     //implementation 'com.google.firebase:firebase-analytics:17.0.1'
     implementation 'com.google.firebase:firebase-messaging:11.8.0'
     implementation 'com.journeyapps:zxing-android-embedded:3.5.0'
-    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.17' //minSdkVersion 17
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.17'
+    implementation 'android.arch.navigation:navigation-fragment:1.0.0'
+    implementation 'android.arch.navigation:navigation-ui:1.0.0'//minSdkVersion 17
 }
 apply plugin: 'com.google.gms.google-services'

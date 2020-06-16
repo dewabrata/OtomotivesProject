@@ -16,7 +16,6 @@
     <ImageView
         android:layout_width="@dimen/spacing_mlarge"
         android:layout_height="@dimen/spacing_mlarge"
-        android:tint="@color/grey_40"
         app:srcCompat="@drawable/ic_history" />
 
     <View
@@ -29,9 +28,9 @@
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:singleLine="true"
-        android:text="Text Suggestion"
+        android:textStyle="bold"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:textColor="@color/grey_40" />
+        android:textColor="@color/grey_80" />
 
     <TextView
         android:id="@+id/title2"
@@ -40,7 +39,6 @@
         android:layout_marginLeft="6dp"
         android:maxLines="1"
         android:singleLine="true"
-        android:text="Text Suggestion"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textColor="@color/grey_40" />
 

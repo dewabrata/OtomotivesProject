@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 
@@ -22,7 +23,6 @@ import java.util.Map;
 
 public class AturRekening_Activity extends AppActivity {
 
-    private ArrayList<String> dummies = new ArrayList<>();
     private Spinner spBank;
 
     @Override
@@ -45,6 +45,10 @@ public class AturRekening_Activity extends AppActivity {
         EditText etNoRek = findViewById(R.id.et_noRek_rekening);
         spBank = findViewById(R.id.sp_bank_rekening);
         EditText etNamaRek = findViewById(R.id.et_namaRek_rekening);
+
+        find(R.id.cb_offUs_rekening, CheckBox.class);
+        find(R.id.cb_edc_rekening, CheckBox.class);
+
 
         setSpinnerFromApi(spBank, "nama", "BANK", "viewmst", "BANK_NAME");
 

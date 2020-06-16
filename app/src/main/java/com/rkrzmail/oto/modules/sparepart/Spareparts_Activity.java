@@ -5,13 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -27,7 +27,6 @@ import com.rkrzmail.oto.modules.lokasi_part.CariPart_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 public class Spareparts_Activity extends AppActivity {
@@ -41,16 +40,10 @@ public class Spareparts_Activity extends AppActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spareparts);
-        Intent intent = getIntent();
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            reload(query);
-        }
-
         initToolbar();
         initComponent();
-
     }
+
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -58,20 +51,22 @@ public class Spareparts_Activity extends AppActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
+
     private void initComponent() {
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah_part2);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), CariPart_Activity.class);
-                startActivity(intent);
+                setResult(RESULT_OK);
+                startActivityForResult(intent, REQUEST_ATUR);
             }
         });
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_parts) {
+        recyclerView.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_spareparts) {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
 
@@ -82,19 +77,20 @@ public class Spareparts_Activity extends AppActivity {
                 viewHolder.find(R.id.txtTerjual, TextView.class).setText(nListArray.get(position).get("TERJUAL").asString());
                 viewHolder.find(R.id.txtMinStock, TextView.class).setText(nListArray.get(position).get("MIN_STOCK").asString());
                 viewHolder.find(R.id.txtMerk, TextView.class).setText(nListArray.get(position).get("MERK").asString());
-
             }
+
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
                 Intent intent = new Intent(getActivity(), AturParts_Activity.class);
-                intent.putExtra("NAMA", nListArray.get(position).toJson());
-                startActivityForResult(intent, REQUEST_ATUR);
+                intent.putExtra("part", nListArray.get(position).toJson());
+                startActivity(intent);
             }
         }));
 
         reload("");
     }
+
 
     private void reload(final String nama) {
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
@@ -154,5 +150,15 @@ public class Spareparts_Activity extends AppActivity {
         };
         mSearchView.setOnQueryTextListener(queryTextListener);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_ATUR && resultCode == RESULT_OK) {
+            Intent i = new Intent(getActivity(), AturParts_Activity.class);
+            i.putExtra("part", getIntentStringExtra(data, "part"));
+            startActivity(i);
+        }
     }
 }

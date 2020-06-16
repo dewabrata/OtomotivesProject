@@ -12,7 +12,6 @@
         android:layout_height="match_parent"
         app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -55,6 +54,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:inputType="number"
+                    android:textSize="14sp"
                     android:hint="NO. REKENING" />
 
             </android.support.design.widget.TextInputLayout>
@@ -72,45 +72,75 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:inputType="text"
+                    android:textSize="14sp"
                     android:hint="NAMA REKENING" />
 
             </android.support.design.widget.TextInputLayout>
 
-            <CheckBox
-                android:id="@+id/cb_edc_rekening"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginLeft="10dp"
-                android:text="EDC ACTIVE" />
-
             <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="end"
-                android:layout_margin="10dp">
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp">
 
-                <Button
-                    android:id="@+id/btn_simpan_rekening"
+                <CheckBox
+                    android:id="@+id/cb_edc_rekening"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/btn_rounded_accent"
-                    android:textColor="@color/white_transparency"
-                    android:layout_gravity="end"
-                    android:text="SIMPAN" />
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:text="EDC ACTIVE" />
 
-                <Button
-                    android:id="@+id/btn_hapus_rekening"
+                <CheckBox
+                    android:id="@+id/cb_offUs_rekening"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:background="@drawable/btn_rounded_accent"
-                    android:textColor="@color/white_transparency"
-                    android:layout_gravity="end"
-                    android:text="HAPUS" />
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:text="OFF US" />
+
 
             </LinearLayout>
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:stretchColumns="*">
+
+                <TableRow>
+
+                    <Button
+                        android:id="@+id/btn_hapus_rekening"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/btn_rounded_accent"
+                        android:textColor="@android:color/white"
+                        android:text="@string/hapus_uppercase"
+                        android:visibility="gone" />
+
+                    <Button
+                        android:id="@+id/btn_simpan_rekening"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/btn_rounded_accent"
+                        android:textColor="@android:color/white"
+                        android:layout_column="20"
+                        android:text="@string/simpan_uppercase" />
+
+                </TableRow>
+
+            </TableLayout>
+
         </LinearLayout>
     </ScrollView>
 

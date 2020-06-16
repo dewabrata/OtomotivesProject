@@ -147,7 +147,7 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    Intent i = new Intent(getActivity(), Pembayaran_Activity.class);
+                    Intent i = new Intent(getActivity(), PembayaranJurnal_Activity.class);
                     i.putExtra("tanggal", tanggal);
                     i.putExtra("msewa", mSewa);
                     i.putExtra("ssewa", sSewa);

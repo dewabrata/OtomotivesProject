@@ -81,7 +81,7 @@ public class AturLayanan_Activity extends AppActivity implements View.OnFocusCha
         et_percent3.setOnFocusChangeListener(this);
         et_percent4.setOnFocusChangeListener(this);
 
-        setSp_nama_layananLayanan();
+        setSpinnerFromApi(sp_nama_layanan, "", "", "viewlayanan", "NAMA_LAYANAN");
 
         find(R.id.btn_simpan_atur_layanan, Button.class).setOnClickListener(this);
         find(R.id.btn_deskripsi_aturLayanan, Button.class).setOnClickListener(this);

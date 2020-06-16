@@ -2,46 +2,22 @@ package com.rkrzmail.oto.modules.lokasi_part;
 
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.animation.AccelerateInterpolator;
-import android.widget.FrameLayout;
-import android.widget.PopupMenu;
-import android.widget.TextView;
 
-import com.naa.data.Nson;
-import com.naa.utils.InternetX;
-import com.naa.utils.MessageMsg;
-import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
-import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.gmod.BarcodeActivity;
-import com.rkrzmail.oto.modules.lokasi_part.stock_opname.StockOpname_Activity;
-import com.rkrzmail.oto.modules.part.AdapterSuggestionSearch;
 import com.rkrzmail.srv.FragmentsAdapter;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
-import com.rkrzmail.utils.Tools;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 public class LokasiPart_Activity extends AppActivity {
 

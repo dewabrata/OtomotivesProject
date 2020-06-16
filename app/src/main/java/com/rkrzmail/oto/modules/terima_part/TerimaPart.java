@@ -93,7 +93,9 @@ public class TerimaPart extends AppActivity {
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
-
+                Intent i = new Intent(getActivity(), DetailTerimaPart_Activity.class);
+                i.putExtra("part", nListArray.get(position).toJson());
+                startActivity(i);
             }
         }));
         reload("");

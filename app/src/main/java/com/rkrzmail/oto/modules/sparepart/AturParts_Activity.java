@@ -2,6 +2,7 @@ package com.rkrzmail.oto.modules.sparepart;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -46,27 +47,28 @@ public class AturParts_Activity extends AppActivity {
     }
 
     private void initComponent() {
-        final Nson data = Nson.readJson(getIntentStringExtra("NAMA"));
+        Nson nson = Nson.readJson(getIntentStringExtra("part"));
+
         Intent i = getIntent();
-        if (i.hasExtra("NAMA")) {
-            find(R.id.et_namaPart_part, EditText.class).setText(data.get("NAMA").asString());
-            find(R.id.et_noPart_part, EditText.class).setText(data.get("NO_PART").asString());
-            find(R.id.et_merk_part, EditText.class).setText(data.get("MERK").asString());
-            find(R.id.et_status_part, EditText.class).setText(data.get("STATUS").asString());
-            find(R.id.et_waktuGanti_part, EditText.class).setText(data.get("WAKTU_GANTI").asString());
-            find(R.id.et_waktuPesan_part, EditText.class).setText(data.get("HET").asString());
+        if (i.hasExtra("part")) {
+            find(R.id.et_namaPart_part, EditText.class).setText(nson.get("NAMA").asString());
+            find(R.id.et_noPart_part, EditText.class).setText(nson.get("NO_PART").asString());
+            find(R.id.et_merk_part, EditText.class).setText(nson.get("MERK").asString());
+            find(R.id.et_status_part, EditText.class).setText(nson.get("STATUS").asString());
+            find(R.id.et_waktuGanti_part, EditText.class).setText(nson.get("WAKTU_GANTI").asString());
+            find(R.id.et_het_part, EditText.class).setText(nson.get("HET").asString());
 
             find(R.id.btn_hapus_part, Button.class).setVisibility(View.VISIBLE);
             find(R.id.btn_hapus_part, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    int stock = Integer.parseInt(find(R.id.et_waktuPesan_part, EditText.class).getText().toString());
-                    if (stock < 0) {
+                    String stockMin = find(R.id.et_stockMin_part, EditText.class).getText().toString();
+                    String stockTersedia = find(R.id.et_stockTersedia_part, EditText.class).getText().toString();
+                    if (Integer.parseInt(stockTersedia) < Integer.parseInt(stockMin)) {
                         Tools.alertDialog(getActivity(), "Part Tidak Dapat Di hapus");
                         return;
-                    } else if (stock == 0) {
-                        deleteData();
                     }
+                    deleteData();
                 }
             });
 
@@ -76,15 +78,8 @@ public class AturParts_Activity extends AppActivity {
                     updateData();
                 }
             });
+
         }
-//        else if(i.hasExtra("NO_PART")){
-//            find(R.id.txtNamaPart, EditText.class).setText(data.get("NAMA").asString());
-//            find(R.id.txtNoPart, EditText.class).setText(data.get("NO_PART").asString());
-//            find(R.id.txtMerk, EditText.class).setText(data.get("MERK").asString());
-//            find(R.id.txtStatus, EditText.class).setText(data.get("STATUS").asString());
-//            find(R.id.txtWaktuGanti, EditText.class).setText(data.get("WAKTU_GANTI").asString());
-//            find(R.id.txtHet, EditText.class).setText(data.get("HET").asString());
-//        }
 
         setTextListener();
         find(R.id.sp_polaHarga_part, Spinner.class).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -110,17 +105,20 @@ public class AturParts_Activity extends AppActivity {
 
                 String waktu = find(R.id.et_waktuPesan_part, EditText.class).getText().toString().replace(" ", "").toUpperCase();
                 if (waktu.isEmpty()) {
-                    showError("Waktu Pesan Boleh Kosong");
+                    showError("Waktu Pesan Tidak Boleh Kosong");
                     return;
                 } else if (find(R.id.et_stockMin_part, EditText.class).getText().toString().isEmpty()) {
                     showError("Stock Minimum Tidak Boleh Kosong");
                     return;
-                } else if (find(R.id.et_marginHarga_part, EditText.class).getText().toString().isEmpty()) {
-                    showError("Margin / Harga Tidak Boleh Kosong");
-                    return;
                 } else if (find(R.id.et_stockTersedia_part, EditText.class).getText().toString().isEmpty()) {
                     showError("Stock Tersedia Tidak Boleh Kosong");
                     return;
+                }
+                if (find(R.id.et_marginHarga_part, EditText.class).isEnabled()) {
+                    if (find(R.id.et_marginHarga_part, EditText.class).getText().toString().isEmpty()) {
+                        showError("Margin / Harga Tidak Boleh Kosong");
+                        return;
+                    }
                 }
                 addData();
             }

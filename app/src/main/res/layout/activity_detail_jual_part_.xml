@@ -31,7 +31,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
-                    android:editable="false"
+                    android:enabled="false"
                     android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
@@ -69,7 +69,7 @@
                     android:layout_height="wrap_content"
                     android:inputType="text"
                     android:textSize="14sp"
-                    android:editable="false" />
+                    android:enabled="false" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -99,8 +99,8 @@
                 android:layout_gravity="end"
                 android:layout_margin="10dp"
                 android:background="@drawable/btn_rounded_accent"
-                android:text="Lanjut"
-                android:textColor="@color/white_transparency" />
+                android:text="@string/simpan_uppercase"
+                android:textColor="@android:color/white" />
 
         </LinearLayout>
     </ScrollView>

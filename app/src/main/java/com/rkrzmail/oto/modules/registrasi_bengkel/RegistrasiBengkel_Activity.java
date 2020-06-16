@@ -57,6 +57,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
         spKendaraan = findViewById(R.id.sp_jenisKendaraan_regist);
         tvLokasi = findViewById(R.id.tv_lokasi_regist);
 
+        etKotaKab.setLoadingIndicator((android.widget.ProgressBar) findViewById(R.id.pb_et_kotakab_regist));
         remakeAutoCompleteMaster(etKotaKab, "DAERAH", "KOTA_KAB");
         setMultiSelectionSpinnerFromApi(spKendaraan, "nama", "BENGKEL", "viewmst", "TYPE");
 
@@ -75,24 +76,27 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
+                //parameter : action : add, nohp, nama, email, namabengkel, jenis,
+                // kategori, alamat, daerah, lokasi
                 args.put("action", "add");
                 args.put("nohp", etNoPonsel.getText().toString());
                 args.put("nama", etNamaPemilik.getText().toString());
                 args.put("email", etEmail.getText().toString());
                 args.put("namabengkel", etNamaBengkel.getText().toString());
-                //args.put("jenis", spKendaraan.getSelectedItem().toString());
+                args.put("jenis", spKendaraan.getSelectedItemsAsString());
                 //args.put("kategori", spBidangUsaha.getSelectedItem().toString());
                 args.put("alamat", etAlamat.getText().toString());
                 args.put("daerah", etKotaKab.getText().toString());
                 //args.put("lokasi", tvLokasi.getText().toString());
 
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("registrasi"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("regristasi"), args));
             }
 
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     showInfo("Registrasi Berhasil");
+                    finish();
                 } else {
                     showInfo("Registrasi Gagal, Silahkan Cek Data Anda Kembali");
                 }
@@ -127,15 +131,38 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_simpan_regist:
-                if (etNoPonsel.getText().toString().isEmpty() && etNamaPemilik.getText().toString().isEmpty()
-                        && etNamaBengkel.getText().toString().isEmpty() && etKotaKab.getText().toString().isEmpty()
-                        && etEmail.getText().toString().isEmpty() && etAlamat.getText().toString().isEmpty()
-                        && tvLokasi.getText().toString().equalsIgnoreCase("")) {
-                    showInfo("Data Tidak Lengkap");
+                if (etNamaPemilik.getText().toString().isEmpty()) {
+                    etNamaPemilik.setError("Silahkan isi Nama Pemilik");
                     return;
                 }
+                if (etNoPonsel.getText().toString().isEmpty()) {
+                    etNoPonsel.setError("Silahkan isi No Ponsel");
+                    return;
+                }
+                if (etEmail.getText().toString().isEmpty()) {
+                    etEmail.setError("Silahkan Isi Email");
+                    return;
+                }
+                if (etNamaBengkel.getText().toString().isEmpty()) {
+                    etNamaBengkel.setError("Silahkan Isi Nama Bengkel");
+                    return;
+                }
+                if (spKendaraan.getSelectedItemsAsString().equalsIgnoreCase("")) {
+                    showInfo("Silahkan pilih Jenis Kendaraan");
+                    return;
+                }
+                if (etKotaKab.getText().toString().isEmpty()) {
+                    etKotaKab.setError("Silahkan Isi Kota / Kab");
+                    return;
+                }
+                if (etAlamat.getText().toString().isEmpty() && etAlamat.length() < 7) {
+                    etAlamat.setError("Silahkan Isi Alamat");
+                    return;
+                }
+//                if(tvLokasi.getText().toString().equalsIgnoreCase("")){
+//                    showInfo("Silahkan Isi Lokasi ");return;
+//                }
                 saveData();
-
                 break;
             case R.id.btn_check_regist:
 //                Intent i = new Intent(getActivity(), Referal_Activity.class);

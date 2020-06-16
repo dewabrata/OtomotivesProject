@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:text="CHECK"
                 android:background="@drawable/btn_rounded_accent"
-                android:textColor="@color/white_transparency"
+                android:textColor="@android:color/white"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp" />
@@ -185,23 +185,40 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:hint="KOTA / KAB">
+                android:layout_height="wrap_content">
 
-                <com.rkrzmail.srv.NikitaAutoComplete
-                    android:id="@+id/et_kotakab_regist"
+                <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:inputType="text" />
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:hint="KOTA / KAB">
 
-            </android.support.design.widget.TextInputLayout>
+                    <com.rkrzmail.srv.NikitaAutoComplete
+                        android:id="@+id/et_kotakab_regist"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:inputType="text" />
+
+                </android.support.design.widget.TextInputLayout>
+
+
+                <ProgressBar
+                    android:id="@+id/pb_et_kotakab_regist"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_gravity="center_vertical|right"
+                    android:layout_marginRight="20dp"
+                    android:visibility="gone" />
+
+            </FrameLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -234,7 +251,7 @@
                 android:text="SIMPAN"
                 android:background="@drawable/btn_rounded_accent"
                 android:layout_gravity="end"
-                android:textColor="@color/white_transparency"
+                android:textColor="@android:color/white"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp" />

@@ -3,7 +3,6 @@ package com.rkrzmail.oto.modules.tenda;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,7 +10,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -22,13 +20,10 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.lokasi_part.CariPart_Activity;
-import com.rkrzmail.oto.modules.penugasan.AturPenugasan_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Map;
 
 public class Tenda_Activity extends AppActivity {

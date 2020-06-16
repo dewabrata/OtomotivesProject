@@ -416,7 +416,7 @@ public class Tools {
     }
 
     public static String setFormatDayAndMonth(String date){
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date tgl = new Date();
         try {
              tgl = sdf.parse(date);

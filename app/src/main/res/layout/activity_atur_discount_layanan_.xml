@@ -117,37 +117,44 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp"
                 android:text="MESSAGE PELANGGAN" />
 
 
-            <LinearLayout
+            <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="end">
+                android:layout_margin="10dp"
+                android:stretchColumns="*">
 
-                <Button
-                    android:id="@+id/btn_simpan_discLayanan"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/btn_rounded_accent"
-                    android:text="SIMPAN"
-                    android:textColor="@color/white_transparency" />
+                <TableRow>
 
-                <Button
-                    android:id="@+id/btn_hapus_discLayanan"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/btn_rounded_accent"
-                    android:text="HAPUS"
-                    android:textColor="@color/white_transparency"
-                    android:visibility="gone" />
+                    <Button
+                        android:id="@+id/btn_hapus_discLayanan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/btn_rounded_accent"
+                        android:text="@string/hapus_uppercase"
+                        android:visibility="gone"
+                        android:textColor="@android:color/white" />
 
-            </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btn_simpan_discLayanan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="20"
+                        android:background="@drawable/btn_rounded_accent"
+                        android:text="@string/simpan_uppercase"
+                        android:textColor="@android:color/white" />
+
+                </TableRow>
+
+            </TableLayout>
+
         </LinearLayout>
+
     </ScrollView>
 
     <android.support.design.widget.AppBarLayout

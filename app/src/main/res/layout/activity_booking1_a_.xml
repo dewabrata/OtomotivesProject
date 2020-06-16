@@ -220,9 +220,19 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:textAlignment="center"
                     android:entries="@array/kondisi_kendaraan_booking" />
 
             </LinearLayout>
+
+            <CheckBox
+                android:id="@+id/cb_derek_booking1a"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:text="DEREK / PICK UP" />
 
             <android.support.design.widget.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -285,7 +295,6 @@
                     android:inputType="numberDecimal"
                     android:textSize="14sp"
                     android:hint="KM" />
-
 
             </android.support.design.widget.TextInputLayout>
 

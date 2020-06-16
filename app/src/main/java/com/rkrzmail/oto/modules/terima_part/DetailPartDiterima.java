@@ -3,18 +3,15 @@ package com.rkrzmail.oto.modules.terima_part;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,10 +20,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.naa.data.Nson;
-import com.naa.data.UtilityAndroid;
 import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
@@ -39,10 +34,6 @@ import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.srv.RupiahFormat;
 import com.rkrzmail.utils.Tools;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 public class DetailPartDiterima extends AppActivity implements AdapterView.OnItemSelectedListener {
@@ -113,7 +104,6 @@ public class DetailPartDiterima extends AppActivity implements AdapterView.OnIte
                 //buka cari part
 
                 //scan barcode
-
             }
         });
     }
@@ -200,6 +190,7 @@ public class DetailPartDiterima extends AppActivity implements AdapterView.OnIte
                 return;
             }
         }
+
         dataAdd.set("nopart", rowPart.get("NO_PART").asString());
         dataAdd.set("idpart", rowPart.get("PART_ID").asString());
         dataAdd.set("namapart", rowPart.get("NAMA_PART").asString());
@@ -216,11 +207,11 @@ public class DetailPartDiterima extends AppActivity implements AdapterView.OnIte
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
-                viewHolder.find(R.id.tv_noPart_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("nopart").asString());
-                viewHolder.find(R.id.tv_namaPart_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("namapart").asString());
-                viewHolder.find(R.id.tv_jumlah_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("jumlah").asString());
+                viewHolder.find(R.id.tv_noPart_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
+                viewHolder.find(R.id.tv_namaPart_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
+                viewHolder.find(R.id.tv_jumlah_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("JUMLAH").asString());
                 // viewHolder.find(R.id.tv_pembayaran_detailTerimaPart, TextView.class).setText(nListArray.get(position).get().asString());
-                viewHolder.find(R.id.tv_harga_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("harga").asString());
+                viewHolder.find(R.id.tv_harga_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("HARGA").asString());
             }
         });
 
@@ -283,28 +274,11 @@ public class DetailPartDiterima extends AppActivity implements AdapterView.OnIte
     public void onNothingSelected(AdapterView<?> adapterView) {
     }
 
-    android.support.v7.widget.SearchView mSearchView;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_part, menu);
+        getMenuInflater().inflate(R.menu.menu_search, menu);
 
-        // Get the SearchView and set the searchable configuration
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        mSearchView = new android.support.v7.widget.SearchView(getSupportActionBar().getThemedContext());
-        mSearchView.setQueryHint("Cari Part"); /// YOUR HINT MESSAGE
-        mSearchView.setMaxWidth(Integer.MAX_VALUE);
-
-        final MenuItem searchMenu = menu.findItem(R.id.action_search);
-        searchMenu.setActionView(mSearchView);
-        searchMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-
-        //SearchView searchView = (SearchView)  menu.findItem(R.id.action_search).setActionView(mSearchView);
-        // Assumes current activity is the searchable activity
-        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
-
-        adapterSearchView(mSearchView, "search", "caripart", "NAMA");
         return true;
     }
 
@@ -312,10 +286,8 @@ public class DetailPartDiterima extends AppActivity implements AdapterView.OnIte
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_searchPart) {
             Intent i = new Intent(this, CariPart_Activity.class);
-            i.putExtra("data", "data");
             startActivityForResult(i, RESULT_OK);
         }
         return super.onOptionsItemSelected(item);
     }
-
 }

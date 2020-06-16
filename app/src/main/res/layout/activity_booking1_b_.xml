@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:descendantFocusability="beforeDescendants"
-    android:focusableInTouchMode="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -38,76 +38,75 @@
                     android:id="@+id/sp_pekerjaan_booking1b"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:entries="@array/lokasi_layanan_booking"
+                    android:textAlignment="center" />
 
             </LinearLayout>
 
 
-
-                <CheckBox
-                    android:id="@+id/cb_layanan_booking1b"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="ANTAR - JEMPUT"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="10dp" />
-
-
-
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp">
-
-                <EditText
-                    android:id="@+id/et_longlat_booking1b"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="LONGLAT"
-                    android:textSize="14sp"
-                    android:inputType="numberDecimal"
-                    android:maxLines="1"
-                    android:singleLine="true" />
-
-
-            </android.support.design.widget.TextInputLayout>
-
-
-            <Button
-                android:id="@+id/btn_radius_booking1b"
+            <LinearLayout
+                android:id="@+id/ly_home_booking1b"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="10dp"
-                android:background="@drawable/btn_rounded_accent"
-                android:text="CHECK RADIUS"
-                android:textColor="@color/white_transparency" />
+                android:orientation="vertical">
 
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp">
+                <CheckBox
+                    android:id="@+id/cb_layanan_booking1b"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:text="ANTAR - JEMPUT" />
 
-                <EditText
-                    android:id="@+id/et_alamat_booking1b"
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:gravity="top|left"
-                    android:editable="false"
-                    android:textSize="14sp"
-                    android:hint="ALAMAT"
-                    android:inputType="textMultiLine" />
+                    android:layout_height="wrap_content">
 
-            </android.support.design.widget.TextInputLayout>
+                    <EditText
+                        android:id="@+id/et_longlat_booking1b"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="LONGLAT"
+                        android:inputType="numberDecimal"
+                        android:textSize="14sp" />
+
+
+                </android.support.design.widget.TextInputLayout>
+
+
+                <Button
+                    android:id="@+id/btn_radius_booking1b"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/btn_rounded_accent"
+                    android:text="CHECK RADIUS"
+                    android:textColor="@android:color/white" />
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/et_alamat_booking1b"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:gravity="top|left"
+                        android:hint="ALAMAT"
+                        android:inputType="textMultiLine"
+                        android:textSize="14sp" />
+
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
 
             <TableLayout
                 android:layout_width="match_parent"
@@ -118,23 +117,23 @@
 
                 <TableRow>
 
-                <Button
-                    android:id="@+id/btn_batal_booking1b"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:background="@drawable/btn_rounded_accent"
-                    android:text="BATAL"
-                    android:textColor="@color/white_transparency" />
+                    <Button
+                        android:id="@+id/btn_batal_booking1b"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:background="@drawable/btn_rounded_accent"
+                        android:text="BATAL"
+                        android:textColor="@android:color/white" />
 
-                <Button
-                    android:id="@+id/btn_lanjut_booking1b"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/btn_rounded_accent"
-                    android:text="LANJUT"
-                    android:layout_gravity="end"
-                    android:textColor="@color/white_transparency" />
+                    <Button
+                        android:id="@+id/btn_lanjut_booking1b"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:background="@drawable/btn_rounded_accent"
+                        android:text="LANJUT"
+                        android:textColor="@android:color/white" />
                 </TableRow>
 
             </TableLayout>
@@ -144,16 +143,16 @@
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
-        android:theme="@style/AppTheme.AppBarOverlay"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
             android:id="@+id/toolbar_booking1b"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize" />
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
 

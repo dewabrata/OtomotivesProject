@@ -113,12 +113,8 @@ public class Capture extends Activity {
                     mSignature.save(mView);
                     //Bundle b = new Bundle();
                    // b.putString("status", "done");
-                   
-                    
-                    
-                    
                     Intent intent = new Intent();
-                   // intent.putExtra("imagePath",mypath);                  
+                intent.putExtra("imagePath", mypath);
                     intent.putExtra("status", "done");
 
                     RatingBar ratingBar = (RatingBar)findViewById(R.id.ratingBar);

@@ -37,7 +37,6 @@ public class RupiahFormat implements TextWatcher {
             String formatted = Tools.formatRupiah(cleanString);
             editText.setText(formatted);
             editText.setSelection(formatted.length());
-
         } catch (Exception e) {
             e.printStackTrace();
         }

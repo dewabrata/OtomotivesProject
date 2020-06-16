@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:id="@+id/cardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginLeft="7dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginRight="7dp"
+    android:layout_marginBottom="4dp"
+    android:layout_weight="5"
+    android:padding="10dp"
+    app:cardElevation="2dp"
+    app:cardCornerRadius="10dp">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="10dp"
+            android:stretchColumns="*">
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/tv_tglCheckin_tungguPart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tanggal Checkin"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_lamaHari_tungguPart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lama Hari"
+                    android:textStyle="bold" />
+
+            </TableRow>
+
+            <TableRow android:layout_marginTop="@dimen/spacing_medium">
+
+                <TextView
+                    android:id="@+id/tv_nopol_tungguPart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No. Polisi"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_noHp_tungguPart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No. Hp"
+                    android:textStyle="bold" />
+
+            </TableRow>
+
+            <TableRow android:layout_marginTop="@dimen/spacing_medium">
+
+                <TextView
+                    android:id="@+id/tv_namaP_tungguPart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nama Pelanggan"
+                    android:textStyle="bold" />
+
+            </TableRow>
+
+            <TableRow android:layout_marginTop="@dimen/spacing_medium">
+
+                <TextView
+                    android:id="@+id/tv_noPart_tungguPart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No. Part"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_jumlah_tungguPart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Jumlah"
+                    android:textStyle="bold" />
+
+            </TableRow>
+
+            <TableRow android:layout_marginTop="@dimen/spacing_medium">
+
+                <TextView
+                    android:id="@+id/tv_namaPart_tungguPart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nama Part"
+                    android:textStyle="bold" />
+
+            </TableRow>
+
+            <TableRow android:layout_marginTop="@dimen/spacing_medium">
+
+                <TextView
+                    android:id="@+id/tv_status_tungguPart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Status"
+                    android:textStyle="bold" />
+
+
+                <TextView
+                    android:id="@+id/tv_tglUpdate_tungguPart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tanggal Update"
+                    android:textStyle="bold" />
+
+            </TableRow>
+
+        </TableLayout>
+
+    </FrameLayout>
+
+</android.support.v7.widget.CardView>

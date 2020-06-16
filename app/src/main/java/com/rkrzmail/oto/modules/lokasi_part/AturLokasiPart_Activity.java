@@ -83,7 +83,6 @@ public class AturLokasiPart_Activity extends AppActivity {
             }
         });
 
-
         find(R.id.btn_simpan_lokasi_part, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

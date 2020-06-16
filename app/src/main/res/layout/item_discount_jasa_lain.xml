@@ -4,7 +4,7 @@
     xmlns:card_view="http://schemas.android.com/tools"
     android:id="@+id/cardView"
     android:layout_width="match_parent"
-    android:layout_height="70dp"
+    android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:layout_marginLeft="7dp"
     android:layout_marginTop="4dp"
@@ -18,7 +18,6 @@
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="10dp"
         android:padding="10dp"
         android:gravity="center"
         android:stretchColumns="*">
@@ -32,17 +31,19 @@
                 android:text="@string/kategori_part"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tv_pekerjaan_discJasa"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="40dp"
-                android:text="@string/pekerjaan"
-                android:textStyle="bold" />
-
         </TableRow>
 
-        <TableRow>
+
+        <TextView
+            android:id="@+id/tv_aktifitas_discJasa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Aktivitas"
+            android:textStyle="bold" />
+
+
+        <TableRow android:layout_marginTop="@dimen/spacing_medium">
 
             <TextView
                 android:id="@+id/tv_disc_discJasa"

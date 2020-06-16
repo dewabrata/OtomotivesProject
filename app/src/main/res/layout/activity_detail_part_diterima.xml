@@ -49,9 +49,8 @@
                     android:id="@+id/tv_noPart_terimaPart"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ems="10"
                     android:enabled="false"
-                    android:inputType="textPersonName" />
+                    android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -66,9 +65,8 @@
                     android:id="@+id/et_namaPart_terimaPart"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ems="10"
                     android:enabled="false"
-                    android:inputType="textPersonName" />
+                    android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -90,7 +88,8 @@
                         android:id="@+id/tv_jumlah_terimaPart"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="number" />
+                        android:inputType="number"
+                        android:textSize="14sp" />
 
 
                 </android.support.design.widget.TextInputLayout>
@@ -103,7 +102,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/btn_rounded_accent"
                     android:text="SCAN"
-                    android:textColor="@color/white_transparency" />
+                    android:textColor="@android:color/white" />
 
             </LinearLayout>
 
@@ -120,8 +119,8 @@
                     android:id="@+id/txtHargaBeliUnit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:inputType="number" />
+                    android:inputType="numberDecimal"
+                    android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -139,8 +138,8 @@
                     android:id="@+id/txtDiskonBeli"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:inputType="numberDecimal" />
+                    android:inputType="numberDecimal"
+                    android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -192,20 +191,20 @@
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_marginTop="20dp"
+                android:orientation="horizontal"
                 android:stretchColumns="*">
 
                 <TableRow>
 
-                <Button
+                    <Button
                         android:id="@+id/btn_simpan_terimaPart"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/btn_rounded_accent"
-                        android:text="SIMPAN"
                         android:layout_gravity="start"
-                        android:textColor="@color/white_transparency" />
+                        android:background="@drawable/btn_rounded_accent"
+                        android:text="@string/simpan_uppercase"
+                        android:textColor="@android:color/white" />
 
                     <android.support.design.widget.FloatingActionButton
                         android:id="@+id/fab_tambah_detailpart_terima"

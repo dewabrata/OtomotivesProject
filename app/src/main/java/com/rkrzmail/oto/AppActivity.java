@@ -2,7 +2,6 @@ package com.rkrzmail.oto;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,9 +18,7 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -351,7 +348,7 @@ public class AppActivity extends AppCompatActivity {
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(api), args));
 
                 for (int i = 0; i < result.get("data").size(); i++) {
-                        return result.get("data");
+                    return result.get("data");
                 }
                 return result.get("search");
 
@@ -391,10 +388,10 @@ public class AppActivity extends AppCompatActivity {
     }
 
     public void remakeAutoCompleteMaster(final NikitaAutoComplete editText, final String params, final String jsonObject) {
-
         editText.setThreshold(2);
         editText.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
             Nson result;
+
             @Override
             public Nson onFindNson(Context context, String bookTitle) {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -443,12 +440,14 @@ public class AppActivity extends AppCompatActivity {
     public void setMultiSelectionSpinnerFromApi(final MultiSelectionSpinner spinner, final String params, final String arguments, final String api, final String jsonObject) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put(params, arguments);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(api), args));
             }
+
             @Override
             public void runUI() {
                 ArrayList<String> str = new ArrayList<>();
@@ -461,6 +460,17 @@ public class AppActivity extends AppCompatActivity {
                     spinner.setItems(newStr);
                 }
                 spinner.setSelection(new int[]{});
+                spinner.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
+                    @Override
+                    public void selectedIndices(List<Integer> indices) {
+
+                    }
+
+                    @Override
+                    public void selectedStrings(List<String> strings) {
+
+                    }
+                });
             }
         });
     }
@@ -475,18 +485,35 @@ public class AppActivity extends AppCompatActivity {
                 args.put(params, arguments);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(api), args));
             }
+
             @Override
             public void runUI() {
-                List<String> str = new ArrayList<>();
+                ArrayList<String> str = new ArrayList<>();
+                str.add("Belum Di Pilih");
                 for (int i = 0; i < result.get("data").size(); i++) {
-                    // nListArray.add(result.get("data").get(i).get("NAMA"));
                     str.add(result.get("data").get(i).get(jsonObject).asString());
                 }
-                if (str.size() > -1) {
-                    ArrayAdapter<String> folderAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, str);
-                    folderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spinner.setAdapter(folderAdapter);
-                }
+                ArrayList<String> newStr = Tools.removeDuplicates(str);
+                ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, newStr) {
+                    @NonNull
+                    @Override
+                    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                        View v = super.getView(position, convertView, parent);
+                        if (position == getCount()) {
+                            ((TextView) v.findViewById(android.R.id.text1)).setText(null);
+                            ((TextView) v.findViewById(android.R.id.text1)).setHint(""); //"Hint to be displayed"
+                        }
+                        return v;
+                    }
+
+                    @Override
+                    public int getCount() {
+                        return super.getCount();            // you don't display last item. It is used as hint.
+                    }
+                };
+                spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(spinnerAdapter);
+                notifyDataSetChanged(spinner);
             }
         });
     }

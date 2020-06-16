@@ -2,9 +2,9 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:descendantFocusability="beforeDescendants"
-    android:focusableInTouchMode="true"
-    android:layout_height="match_parent">
+    android:focusableInTouchMode="true">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -21,15 +21,66 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginRight="10dp"
+                android:orientation="horizontal">
 
                 <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/kategori_part_uppercase"
+                    android:textColor="@color/red_900"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/sp_kategori_komisiJasaLain"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:textAlignment="center" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="AKTIVITAS"
+                    android:textColor="@color/red_900"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/sp_aktifitas_komisiJasaLain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="center" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/grey_80"
                     android:text="NAMA POSISI"
                     android:textStyle="bold" />
 
@@ -55,36 +106,44 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="KOMISI"
-                    android:maxLines="1" />
+                    android:maxLines="1"
+                    android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
 
-            <LinearLayout
+            <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="end">
+                android:layout_margin="10dp"
+                android:stretchColumns="*">
 
-                <Button
-                    android:id="@+id/btn_simpan_komisiJasaLain"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/btn_rounded_accent"
-                    android:text="SIMPAN"
-                    android:textColor="@color/white_transparency" />
+                <TableRow>
 
-                <Button
-                    android:id="@+id/btn_hapus_komisiJasaLain"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/btn_rounded_accent"
-                    android:text="HAPUS"
-                    android:textColor="@color/white_transparency"
-                    android:visibility="gone" />
 
-            </LinearLayout>
+                    <Button
+                        android:id="@+id/btn_hapus_komisiJasaLain"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/btn_rounded_accent"
+                        android:text="HAPUS"
+                        android:visibility="gone"
+                        android:textColor="@android:color/white" />
+
+                    <Button
+                        android:id="@+id/btn_simpan_komisiJasaLain"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/btn_rounded_accent"
+                        android:text="SIMPAN"
+                        android:layout_column="20"
+                        android:textColor="@android:color/white" />
+
+                </TableRow>
+
+            </TableLayout>
+
         </LinearLayout>
+
     </ScrollView>
 
     <android.support.design.widget.AppBarLayout
@@ -93,13 +152,12 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-
         <android.support.v7.widget.Toolbar
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
             android:id="@+id/toolbar_atur_komisiJasaLain"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize" />
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
 

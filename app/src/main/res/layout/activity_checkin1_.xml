@@ -62,14 +62,13 @@
 
 
                 <ProgressBar
-                    android:id="@+id/pb_etNopol_booking1a"
+                    android:id="@+id/pb_nopol_checkin"
                     style="?android:attr/progressBarStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|right"
                     android:layout_marginRight="20dp"
                     android:visibility="gone" />
-
 
             </FrameLayout>
 
@@ -98,6 +97,40 @@
                     android:layout_marginTop="5dp">
 
                     <com.rkrzmail.srv.NikitaAutoComplete
+                        android:id="@+id/et_jenisKendaraan_checkin1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:maxLength="20"
+                        android:hint="JENIS KENDARAAN" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <ProgressBar
+                    android:id="@+id/pb_kendaraan_checkin"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|right"
+                    android:layout_marginRight="20dp"
+                    android:visibility="gone" />
+
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp">
+
+                    <com.rkrzmail.srv.NikitaAutoComplete
                         android:id="@+id/et_noPonsel_checkin1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -109,14 +142,13 @@
                 </android.support.design.widget.TextInputLayout>
 
                 <ProgressBar
-                    android:id="@+id/pb_etNoPonsel_booking1a"
+                    android:id="@+id/pb_etNoPonsel_checkin"
                     style="?android:attr/progressBarStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|right"
                     android:layout_marginRight="20dp"
                     android:visibility="gone" />
-
 
             </FrameLayout>
 
@@ -198,6 +230,7 @@
                     android:layout_height="wrap_content"
                     android:inputType="numberDecimal"
                     android:textSize="14sp"
+                    android:maxLength="6"
                     android:hint="KM" />
 
 
@@ -215,6 +248,7 @@
                 android:layout_margin="10dp" />
 
         </LinearLayout>
+
     </ScrollView>
 
     <android.support.design.widget.AppBarLayout
@@ -223,12 +257,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_checkin1"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            android:layout_height="wrap_content">
+
+            <include layout="@layout/toolbar" />
+
+            <ImageView
+                android:id="@+id/imgBarcode_checkin1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                app:srcCompat="@drawable/scan"
+                android:layout_gravity="right|center_vertical"
+                tools:ignore="RtlHardcoded" />
+
+        </FrameLayout>
 
     </android.support.design.widget.AppBarLayout>
 

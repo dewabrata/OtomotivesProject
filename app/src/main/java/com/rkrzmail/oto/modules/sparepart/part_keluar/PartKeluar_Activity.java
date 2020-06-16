@@ -2,8 +2,10 @@ package com.rkrzmail.oto.modules.sparepart.part_keluar;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -32,7 +34,6 @@ public class PartKeluar_Activity extends AppActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_part_keluar_);
-        initToolbar();
         initComponent();
     }
 
@@ -47,8 +48,17 @@ public class PartKeluar_Activity extends AppActivity {
 
 
     private void initComponent() {
+        initToolbar();
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah_partKeluar);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), PengisianPartKeluar_Activity.class));
+                finish();
+            }
+        });
 
-        rvPartKeluar = (RecyclerView) findViewById(R.id.recyclerView_cariPart);
+        rvPartKeluar = (RecyclerView) findViewById(R.id.recyclerView_partKeluar);
         rvPartKeluar.setLayoutManager(new LinearLayoutManager(this));
         rvPartKeluar.setHasFixedSize(true);
 

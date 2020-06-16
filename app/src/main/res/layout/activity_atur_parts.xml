@@ -57,15 +57,14 @@
                     app:helperText="Disable"
                     app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
 
-
                     <EditText
                         android:id="@+id/et_noPart_part"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:editable="false"
+                        android:enabled="false"
                         android:textSize="14sp"
-                        android:hint="NO. PART"
-                        android:singleLine="true" />
+                        android:hint="NO. PART" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -86,7 +85,7 @@
                         android:id="@+id/et_namaPart_part"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:editable="false"
+                        android:enabled="false"
                         android:textSize="14sp"
                         android:hint="NAMA PART"
                         android:inputType="textEmailAddress" />
