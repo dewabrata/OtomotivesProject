@@ -63,6 +63,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.Vector;
@@ -982,6 +983,18 @@ public class Utility {
 		}
 		nodes.removeAllElements();
 		return result;
+	}
+
+	public static List<String> splitTrim(String original, String separator) {
+		List<String> nodes = new ArrayList<>();
+		int index = original.indexOf(separator);
+		while (index >= 0) {
+			nodes.add(original.substring(0, index).trim());
+			original = original.substring(index + separator.length());
+			index = original.indexOf(separator);
+		}
+		nodes.add(original.trim());
+		return nodes;
 	}
 
 	/*public static String postHttpConnection(String stringURL, String... param) {
