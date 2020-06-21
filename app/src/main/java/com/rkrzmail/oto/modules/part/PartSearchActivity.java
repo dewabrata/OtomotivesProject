@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -35,6 +36,8 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.MainActivity;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.srv.NikitaRecyclerAdapter;
+import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
 import com.rkrzmail.utils.ViewAnimation;
 
@@ -90,17 +93,26 @@ public class PartSearchActivity extends AppActivity {
 
         //set data and list adapter suggestion
         mAdapterSuggestion = new AdapterSuggestionSearch(this);
-        recyclerView.setAdapter(mAdapterSuggestion);
-        showSuggestionSearch();
-        mAdapterSuggestion.setOnItemClickListener(new AdapterSuggestionSearch.OnItemClickListener() {
+        recyclerView.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_daftar_cari_part){
             @Override
-            public void onItemClick(View view, String viewModel, int pos) {
-                et_search.setText(viewModel);
-                ViewAnimation.collapse(lyt_suggestion);
-                hideKeyboard();
-                searchAction(viewModel);
+            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+                super.onBindViewHolder(viewHolder, position);
+                viewHolder.find(R.id.tv_cari_merkPart, TextView.class).setText(nListArray.get(position).get("MERK").asString());
+                viewHolder.find(R.id.tv_cari_namaPart, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
+                viewHolder.find(R.id.tv_cari_noPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
+                viewHolder.find(R.id.tv_cari_stockPart, TextView.class).setText(nListArray.get(position).get("STOCK").asString());
             }
         });
+//        showSuggestionSearch();
+//        mAdapterSuggestion.setOnItemClickListener(new AdapterSuggestionSearch.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(View view, String viewModel, int pos) {
+//                et_search.setText(viewModel);
+//                ViewAnimation.collapse(lyt_suggestion);
+//                hideKeyboard();
+//                searchAction(viewModel);
+//            }
+//        });
 
         bt_clear.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,7 +133,7 @@ public class PartSearchActivity extends AppActivity {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     hideKeyboard();
-                    searchAction("");
+                    searchAction(v.getText().toString());
                     return true;
                 }
                 return false;
@@ -189,8 +201,7 @@ public class PartSearchActivity extends AppActivity {
             Toast.makeText(this, "Please fill search input", Toast.LENGTH_SHORT).show();
         }
 
-
-        MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
+        newTask(new Messagebox.DoubleRunnable() {
             Nson result ;
             @Override
             public void run() {
@@ -205,6 +216,7 @@ public class PartSearchActivity extends AppActivity {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    lyt_suggestion.setVisibility(View.VISIBLE);
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
                     recyclerView.getAdapter().notifyDataSetChanged();

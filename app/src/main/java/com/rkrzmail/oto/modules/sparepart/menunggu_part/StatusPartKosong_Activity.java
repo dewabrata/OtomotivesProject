@@ -31,12 +31,12 @@ public class StatusPartKosong_Activity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_status_part_kosong);
+        setContentView(R.layout.activity_list_basic_3);
         initComponent();
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_discPart);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Discount Part");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -44,7 +44,7 @@ public class StatusPartKosong_Activity extends AppActivity {
 
     private void initComponent() {
         initToolbar();
-        FloatingActionButton fab = findViewById(R.id.fab_update_partKosong);
+        FloatingActionButton fab = findViewById(R.id.fab_tambah);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

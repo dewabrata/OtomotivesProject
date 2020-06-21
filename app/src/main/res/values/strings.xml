@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:color="http://schemas.android.com/apk/res-auto">
     <string name="app_name">Otomotives</string>
     <string name="spinner_no_default_hint"></string>
     <string-array name="pola_harga_jual">
@@ -74,22 +74,24 @@
     </string-array>
 
     <string-array name="status">
+        <item></item>
         <item>AKTIF</item>
         <item>NON-AKTIF</item>
-
     </string-array>
 
     <string-array name="penggajian">
         <item>HARIAN</item>
         <item>MINGGUAN</item>
         <item>BULANAN</item>
+    </string-array>
+
+    <string-array name="tipe_penerima">
 
     </string-array>
 
     <string-array name="akses_app">
         <item>CHECK IN</item>
         <item>PART</item>
-
     </string-array>
 
     <string-array name="penggunaan">
@@ -215,11 +217,21 @@
 
 
     <string-array name="pembayaran_bengkel">
+        <item>CASH</item>
+        <item>TRANSFER</item>
+        <item>INVOICE</item>
         <item>DEBIT</item>
         <item>CREDIT</item>
-        <item>E MONEY</item>
-        <item>INVOICE</item>
+    </string-array>
 
+    <string-array name="kondisi_part">
+        <item>BAIK</item>
+        <item>GANTI PART</item>
+    </string-array>
+
+    <string-array name="tipe_collection">
+        <item>CASH</item>
+        <item>SETOR CASH</item>
     </string-array>
 
     <string-array name="harga_jual_part">
@@ -287,5 +299,12 @@
     <string name="pelanggan_uppercase">PELANGGAN</string>
     <string name="mekanik_uppercase">MEKANIK</string>
     <string name="jasa_dan_part">JASA &amp; PART</string>
+    <string name="setuju_dengan_syarat_dan_ketentuan_bengkel">SETUJU DENGAN SYARAT DAN KETENTUAN BENGKEL</string>
+    <string name="stnk_di_terima">STNK DI TERIMA</string>
+    <string name="tanggal_jam">Tanggal / Jam</string>
+    <string name="user">User</string>
+    <string name="nama_pelanggan">Nama Pelanggan</string>
+    <string name="select_location"> Pilih Lokasi </string>
+
 
 </resources>

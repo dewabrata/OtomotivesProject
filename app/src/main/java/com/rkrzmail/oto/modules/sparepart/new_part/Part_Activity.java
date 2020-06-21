@@ -37,7 +37,7 @@ public class Part_Activity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_basic);
+        setContentView(R.layout.activity_list_basic_2);
         initComponent();
     }
 

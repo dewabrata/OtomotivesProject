@@ -32,14 +32,14 @@ public class BiayaMekanik2Activity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_biaya_mekanik);
+        setContentView(R.layout.activity_list_basic);
 
         initToolbar();
         initComponent();
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_biayaMekanik);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //toolbar.setNavigationIcon(R.drawable.ic_menu);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Biaya Mekanik");
@@ -48,11 +48,10 @@ public class BiayaMekanik2Activity extends AppActivity {
 
     private void initComponent() {
 
-        rvListBasic2 = findViewById(R.id.rvListBasic2);
-        rvListBasic2 = (RecyclerView) findViewById(R.id.rvListBasic2);
+        rvListBasic2 = findViewById(R.id.recyclerView);
         rvListBasic2.setLayoutManager(new LinearLayoutManager(this));
         rvListBasic2.setHasFixedSize(true);
-        rvListBasic2.setAdapter(new NikitaRecyclerAdapter(nListArray,R.layout.item_biaya_mekanik2){
+        rvListBasic2.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_biaya_mekanik2){
 
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {

@@ -63,5 +63,8 @@ dependencies {
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.17'
     implementation 'android.arch.navigation:navigation-fragment:1.0.0'
     implementation 'android.arch.navigation:navigation-ui:1.0.0'//minSdkVersion 17
+
+    //location picker without gmaps api
+    //implementation 'com.github.ibnux:Location-Picker:1.7'
 }
 apply plugin: 'com.google.gms.google-services'

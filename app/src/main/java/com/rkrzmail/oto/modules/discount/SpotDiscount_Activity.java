@@ -33,31 +33,32 @@ import java.util.Map;
 public class SpotDiscount_Activity extends AppActivity {
 
     private RecyclerView rvDisc;
-    private NikitaAutoComplete cariDiskon;
+    private SearchView mSearchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_spot_discount_);
-        initToolbar();
+        setContentView(R.layout.activity_list_basic_3);
         initComponent();
-
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_spotDiscount);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Spot Discount");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initComponent() {
-        rvDisc = findViewById(R.id.recyclerView_spotDiscount);
-        FloatingActionButton fab = findViewById(R.id.fab_tambah_discount);
+        initToolbar();
+
+        rvDisc = findViewById(R.id.recyclerView);
+        FloatingActionButton fab = findViewById(R.id.fab_tambah);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getActivity(), AturSpotDiscount_Activity.class));
+                finish();
             }
         });
 
@@ -77,16 +78,18 @@ public class SpotDiscount_Activity extends AppActivity {
                 viewHolder.find(R.id.tv_disc_spotDisc, TextView.class).setText(nListArray.get(position).get("").asString());
             }
         });
-
+        catchData("");
     }
 
-    private void catchData() {
+    private void catchData(final String cari) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("spotdiscount"), args));
+                args.put("action", "view");
+                args.put("search", cari);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturdiskonspot"), args));
             }
 
             @Override
@@ -100,13 +103,9 @@ public class SpotDiscount_Activity extends AppActivity {
         });
     }
 
-
-    SearchView mSearchView;
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_part, menu);
-
 
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -123,7 +122,7 @@ public class SpotDiscount_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        adapterSearchView(mSearchView, "search", "caripart", "NAMA");
+        adapterSearchView(mSearchView, "search", "aturdiskonspot", "NAMA");
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
 
@@ -133,7 +132,7 @@ public class SpotDiscount_Activity extends AppActivity {
             public boolean onQueryTextSubmit(String query) {
                 searchMenu.collapseActionView();
                 //filter(null);
-                //cariPart(query);
+                catchData(query);
 
                 return true;
             }

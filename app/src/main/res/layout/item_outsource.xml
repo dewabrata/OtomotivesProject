@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:id="@+id/cardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginLeft="7dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginRight="7dp"
+    android:layout_marginBottom="4dp"
+    android:layout_weight="5"
+    android:padding="10dp"
+    app:cardElevation="2dp"
+    app:cardCornerRadius="10dp">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="10dp"
+            android:stretchColumns="*">
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/tv_nopol_outS"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No. Polisi"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_tglCheckin_outS"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tanggal Checkin"
+                    android:textStyle="bold" />
+
+            </TableRow>
+
+            <TableRow android:layout_marginTop="@dimen/spacing_medium">
+
+                <TextView
+                    android:id="@+id/tv_tglOutS_outS"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tanggal Outsource"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_tglSelesai_outS"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tanggal Selesai"
+                    android:textStyle="bold" />
+
+            </TableRow>
+
+            <TableRow android:layout_marginTop="@dimen/spacing_medium">
+
+                <TextView
+                    android:id="@+id/tv_supplier_outS"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Supplier"
+                    android:textStyle="bold" />
+
+            </TableRow>
+
+            <TableRow android:layout_marginTop="@dimen/spacing_medium">
+
+                <TextView
+                    android:id="@+id/tv_biaya_outS"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Biaya"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_pembayaran_outS"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pembayaran"
+                    android:textStyle="bold" />
+
+            </TableRow>
+
+        </TableLayout>
+
+    </FrameLayout>
+
+</android.support.v7.widget.CardView>

@@ -14,15 +14,15 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp">
 
             <android.support.design.widget.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
                 app:helperTextEnabled="true"
                 app:helperText="Disable"
                 app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
@@ -34,8 +34,7 @@
                     android:layout_height="wrap_content"
                     android:enabled="false"
                     android:hint="NO PONSEL"
-                    android:inputType="text"
-                    android:maxLines="1" />
+                    android:textSize="14sp"/>
 
 
             </android.support.design.widget.TextInputLayout>
@@ -44,10 +43,8 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
                 app:helperTextEnabled="true"
+                android:layout_marginTop="5dp"
                 app:helperText="Disable"
                 app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
 
@@ -58,8 +55,7 @@
                     android:layout_height="wrap_content"
                     android:enabled="false"
                     android:hint="NAMA PELANGGAN"
-                    android:inputType="text"
-                    android:maxLines="1" />
+                    android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -67,13 +63,10 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
                 app:helperTextEnabled="true"
+                android:layout_marginTop="5dp"
                 app:helperText="Disable"
                 app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
-
 
                 <EditText
                     android:id="@+id/et_transaksi_disc"
@@ -81,9 +74,7 @@
                     android:layout_height="wrap_content"
                     android:enabled="false"
                     android:hint="TRANSAKSI"
-                    android:inputType="text"
-                    android:maxLines="1" />
-
+                    android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -91,11 +82,9 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
                 app:helperTextEnabled="true"
                 app:helperText="Disable"
+                android:layout_marginTop="5dp"
                 app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
 
 
@@ -105,8 +94,7 @@
                     android:layout_height="wrap_content"
                     android:enabled="false"
                     android:hint="DISCOUNT LAIN"
-                    android:inputType="text"
-                    android:maxLines="1" />
+                    android:textSize="14sp"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -114,11 +102,9 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
                 app:helperTextEnabled="true"
                 app:helperText="Disable"
+                android:layout_marginTop="5dp"
                 app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
 
 
@@ -128,8 +114,7 @@
                     android:layout_height="wrap_content"
                     android:enabled="false"
                     android:hint="NET TRANSAKSI"
-                    android:inputType="text"
-                    android:maxLines="1" />
+                    android:textSize="14sp"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -137,9 +122,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginTop="5dp">
 
                 <EditText
                     android:id="@+id/et_spotDiscount_disc"
@@ -147,6 +130,7 @@
                     android:layout_height="wrap_content"
                     android:hint="SPOT DISCOUNT"
                     android:inputType="numberDecimal"
+                    android:textSize="14sp"
                     android:maxLines="1" />
 
             </android.support.design.widget.TextInputLayout>
@@ -155,10 +139,8 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
                 app:helperTextEnabled="true"
+                android:layout_marginTop="5dp"
                 app:helperText="Disable"
                 app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
 
@@ -169,8 +151,7 @@
                     android:layout_height="wrap_content"
                     android:enabled="false"
                     android:hint="TOTAL TRANSAKSI"
-                    android:inputType="text"
-                    android:maxLines="1" />
+                    android:textSize="14sp"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -179,10 +160,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_margin="10dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/btn_rounded_accent"
                 android:text="SIMPAN"
-                android:textColor="@color/white_transparency" />
+                android:textColor="@android:color/white" />
 
         </LinearLayout>
     </ScrollView>

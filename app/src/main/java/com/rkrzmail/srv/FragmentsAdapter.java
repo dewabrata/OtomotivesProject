@@ -6,9 +6,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.rkrzmail.oto.modules.lokasi_part.LokasiPart_Activity;
-import com.rkrzmail.oto.modules.lokasi_part.PartNonLokasi_Fragment;
-import com.rkrzmail.oto.modules.lokasi_part.PartTeralokasikan_Fragment;
+import com.rkrzmail.oto.modules.sparepart.lokasi_part.LokasiPart_Activity;
+import com.rkrzmail.oto.modules.sparepart.lokasi_part.PartNonLokasi_Fragment;
+import com.rkrzmail.oto.modules.sparepart.lokasi_part.PartTeralokasikan_Fragment;
 import com.rkrzmail.oto.modules.profile.ProfileBengkel_Activity;
 import com.rkrzmail.oto.modules.profile.TabSchedule_Fragment;
 import com.rkrzmail.oto.modules.profile.TabTambahan_Fragment;

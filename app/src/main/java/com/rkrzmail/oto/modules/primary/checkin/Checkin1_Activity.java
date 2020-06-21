@@ -122,6 +122,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 for (int i = 0; i < result.get("data").size(); i++) {
                     data.add(result.get("data").get(i).get("NOPOL").asString());
                 }
+
                 if (keluhan.isEmpty()) {
                     showInfo("Silahkan Isi Keluhan");
                     return;

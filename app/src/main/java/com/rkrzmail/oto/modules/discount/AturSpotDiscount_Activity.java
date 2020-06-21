@@ -24,11 +24,14 @@ import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NsonAutoCompleteAdapter;
 import com.rkrzmail.srv.RupiahFormat;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Map;
 
 public class AturSpotDiscount_Activity extends AppActivity {
 
     private EditText etNoPonsel, etNama, etTransaksi, etDisc, etNet, etSpot, etTotal;
+    private  SearchView mSearchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,11 +74,25 @@ public class AturSpotDiscount_Activity extends AppActivity {
     private void saveData() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("spotdisc"), args));
+                //add : CID, action(add), tanggal, nama, transaksi, totaltransaksi, nettransaksi,
+                //diskonlain, diskonspot, user
+                Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                String dateTime = simpleDateFormat.format(calendar.getTime());
+
+                args.put("action", "add");
+                args.put("tanggal", dateTime);
+                args.put("nama", etNama.getText().toString());
+                args.put("transaksi", etTransaksi.getText().toString());
+                args.put("totaltransaksi", etTotal.getText().toString());
+                args.put("nettransaksi", etTransaksi.getText().toString());
+                args.put("diskonlain", etDisc.getText().toString());
+                args.put("diskonspot", etSpot.getText().toString());
+                args.put("user", getSetting("user"));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturdiskonspot"), args));
             }
 
             @Override
@@ -87,11 +104,58 @@ public class AturSpotDiscount_Activity extends AppActivity {
                 }
             }
         });
-
     }
 
 
-    SearchView mSearchView;
+    private void deleteData(final Nson id){
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                //                delete : CID, action(delete), id
+                args.put("action", "delete");
+                args.put("id", id.get("id").asString());
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturdiskonspot"), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    startActivity(new Intent(getActivity(), SpotDiscount_Activity.class));
+                } else {
+                    showInfo("GAGAL");
+                }
+            }
+        });
+    }
+
+    private void updateData(){
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                //                update : CID, action(update), id, diskonspot
+                args.put("action", "update");
+                args.put("diskonspot", etSpot.getText().toString());
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturdiskonspot"), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    startActivity(new Intent(getActivity(), SpotDiscount_Activity.class));
+                    finish();
+                } else {
+                    showInfo("GAGAL");
+                }
+            }
+        });
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -101,7 +165,7 @@ public class AturSpotDiscount_Activity extends AppActivity {
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         mSearchView = new SearchView(getSupportActionBar().getThemedContext());
-        mSearchView.setQueryHint("Cari Part"); /// YOUR HINT MESSAGE
+        mSearchView.setQueryHint("Cari No. Ponsel Pelanggan"); /// YOUR HINT MESSAGE
         mSearchView.setMaxWidth(Integer.MAX_VALUE);
 
         final MenuItem searchMenu = menu.findItem(R.id.action_search);
@@ -113,7 +177,7 @@ public class AturSpotDiscount_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        adapterSearchView(mSearchView, "search", "caripart", "NAMA");
+        //adapterSearchView(mSearchView, "search", "caripart", "NAMA");
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
 
@@ -131,5 +195,4 @@ public class AturSpotDiscount_Activity extends AppActivity {
         mSearchView.setOnQueryTextListener(queryTextListener);
         return true;
     }
-
 }

@@ -34,20 +34,20 @@ public class DiscountJasaLain_Activity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_discount_jasa_lain_);
+        setContentView(R.layout.activity_list_basic_3);
         initToolbar();
         initComponent();
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_discJasa);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Discount Jasa Lain");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initComponent() {
-        FloatingActionButton fab = findViewById(R.id.fab_tambah_discJasa);
+        FloatingActionButton fab = findViewById(R.id.fab_tambah);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,7 +56,7 @@ public class DiscountJasaLain_Activity extends AppActivity {
             }
         });
 
-        rvDiscJasa = findViewById(R.id.recyclerView_discJasa);
+        rvDiscJasa = findViewById(R.id.recyclerView);
         rvDiscJasa.setLayoutManager(new LinearLayoutManager(this));
         rvDiscJasa.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_discount_jasa_lain) {
                     @Override
@@ -119,7 +119,7 @@ public class DiscountJasaLain_Activity extends AppActivity {
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         mSearchView = new SearchView(getSupportActionBar().getThemedContext());
-        mSearchView.setQueryHint("Cari Layanan"); /// YOUR HINT MESSAGE
+        mSearchView.setQueryHint("Cari Jasa Lain"); /// YOUR HINT MESSAGE
         mSearchView.setMaxWidth(Integer.MAX_VALUE);
 
         final MenuItem searchMenu = menu.findItem(R.id.action_search);
@@ -148,6 +148,4 @@ public class DiscountJasaLain_Activity extends AppActivity {
         mSearchView.setOnQueryTextListener(queryTextListener);
         return true;
     }
-
-
 }

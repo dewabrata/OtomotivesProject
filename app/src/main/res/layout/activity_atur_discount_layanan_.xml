@@ -16,22 +16,53 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="5dp">
+            android:padding="10dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginTop="10dp">
 
                 <TextView
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:text="LOKASI LAYANAN"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:textColor="@color/grey_900"/>
+
+                <CheckBox
+                    android:id="@+id/cb_bengkel_discLayanan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:layout_marginStart="20dp"
+                    android:text="BENGKEL"/>
+
+                <CheckBox
+                    android:id="@+id/cb_tenda_discLayanan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="TENDA"/>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
                     android:text="PAKET LAYANAN"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:textColor="@color/grey_900"/>
 
                 <Spinner
                     android:id="@+id/sp_paketLayanan_discLayanan"
@@ -46,16 +77,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginTop="10dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:text="PEKERJAAN"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:textColor="@color/grey_900"/>
 
                 <com.rkrzmail.srv.MultiSelectionSpinner
                     android:id="@+id/sp_pekerjaan_discLayanan"
@@ -71,35 +101,31 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginTop="5dp">
 
                 <EditText
                     android:id="@+id/et_discPart_discLayanan"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="DISCOUNT"
-                    android:inputType="number"
+                    android:inputType="numberDecimal"
                     android:maxLength="5"
-                    android:maxLines="1" />
+                    android:textSize="14sp"/>
 
             </android.support.design.widget.TextInputLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:text="TANGGAL EFEKTIVE"
-                    android:layout_weight="1"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="@color/grey_900"/>
 
                 <TextView
                     android:id="@+id/tv_tglEffect_discLayanan"
@@ -108,6 +134,7 @@
                     android:drawableLeft="@drawable/icon_tanggal"
                     android:gravity="center"
                     android:layout_weight="1"
+                    android:layout_marginStart="20dp"
                     android:textStyle="bold" />
 
             </LinearLayout>
@@ -116,16 +143,14 @@
                 android:id="@+id/cb_mssg_discLayanan"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
                 android:text="MESSAGE PELANGGAN" />
-
 
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:stretchColumns="*">
 
                 <TableRow>
@@ -144,7 +169,7 @@
                         android:id="@+id/btn_simpan_discLayanan"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_column="20"
+                        android:layout_column="50"
                         android:background="@drawable/btn_rounded_accent"
                         android:text="@string/simpan_uppercase"
                         android:textColor="@android:color/white" />
@@ -163,13 +188,7 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-
-        <android.support.v7.widget.Toolbar
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            android:id="@+id/toolbar_atur_discLayanan"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize" />
+        <include layout="@layout/toolbar"/>
 
     </android.support.design.widget.AppBarLayout>
 

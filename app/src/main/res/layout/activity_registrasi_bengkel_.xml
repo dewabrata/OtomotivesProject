@@ -22,9 +22,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:hint="KODE REFERAL">
 
                 <EditText
@@ -42,19 +39,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="CHECK"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
                 android:background="@drawable/btn_rounded_accent"
-                android:textColor="@android:color/white"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp" />
+                android:textColor="@android:color/white"/>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
                 android:hint="NAMA PEMILIK">
 
                 <EditText
@@ -70,9 +64,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
                 android:hint="NO. PONSEL">
 
                 <EditText
@@ -89,9 +81,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
                 android:hint="EMAIL">
 
                 <EditText
@@ -107,9 +97,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
                 android:hint="NAMA BENGKEL">
 
                 <EditText
@@ -125,9 +113,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginTop="10dp">
 
                 <TextView
                     android:layout_width="150dp"
@@ -147,9 +133,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginTop="10dp">
 
                 <TextView
                     android:layout_width="150dp"
@@ -170,9 +154,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
                 android:hint="ALAMAT">
 
                 <EditText
@@ -193,9 +175,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp"
                     android:hint="KOTA / KAB">
 
                     <com.rkrzmail.srv.NikitaAutoComplete
@@ -224,9 +204,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginTop="10dp">
 
                 <TextView
                     android:layout_width="150dp"
@@ -244,6 +222,14 @@
 
             </LinearLayout>
 
+            <CheckBox
+                android:id="@+id/cb_setuju_regist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="10dp"
+                android:textSize="14sp"/>
+
             <Button
                 android:id="@+id/btn_simpan_regist"
                 android:layout_width="wrap_content"
@@ -253,8 +239,7 @@
                 android:layout_gravity="end"
                 android:textColor="@android:color/white"
                 android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp" />
+                android:layout_marginBottom="10dp"/>
 
         </LinearLayout>
 
@@ -267,14 +252,8 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.v7.widget.Toolbar
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            android:id="@+id/toolbar_register"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize" />
+        <include layout="@layout/toolbar"/>
 
     </android.support.design.widget.AppBarLayout>
-
 
 </android.support.design.widget.CoordinatorLayout>

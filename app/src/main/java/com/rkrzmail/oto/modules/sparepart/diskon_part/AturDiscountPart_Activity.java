@@ -4,7 +4,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -14,7 +13,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -23,15 +21,11 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.discount.SpotDiscount_Activity;
-import com.rkrzmail.oto.modules.lokasi_part.CariPart_Activity;
-import com.rkrzmail.oto.modules.sparepart.AturParts_Activity;
-import com.rkrzmail.oto.modules.sparepart.AturPenjualanPart_Activity;
+import com.rkrzmail.oto.modules.sparepart.lokasi_part.CariPart_Activity;
 import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.srv.PercentFormat;
 import com.rkrzmail.utils.Tools;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 public class AturDiscountPart_Activity extends AppActivity implements View.OnClickListener {
@@ -50,7 +44,7 @@ public class AturDiscountPart_Activity extends AppActivity implements View.OnCli
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_atur_discPart);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Discount Part");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -58,11 +52,11 @@ public class AturDiscountPart_Activity extends AppActivity implements View.OnCli
 
     private void initComponent() {
 
-        spPekerjaan = findViewById(R.id.sp_pekerjaan_disc);
-        etDiscPart = findViewById(R.id.et_discPart_disc);
-        etDiscJasa = findViewById(R.id.et_discJasa_disc);
-        etNoPart = findViewById(R.id.et_noPart_disc);
-        etNamaPart = findViewById(R.id.et_namaPart_disc);
+        spPekerjaan = findViewById(R.id.sp_pekerjaan_discPart);
+        etDiscPart = findViewById(R.id.et_discPart_discPart);
+        etDiscJasa = findViewById(R.id.et_discJasa_discPart);
+        etNoPart = findViewById(R.id.et_noPart_discPart);
+        etNamaPart = findViewById(R.id.et_namaPart_discPart);
         tvTgl = findViewById(R.id.tv_tglEffect_discPart);
 
         setMultiSelectionSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN");
@@ -71,7 +65,7 @@ public class AturDiscountPart_Activity extends AppActivity implements View.OnCli
         etDiscJasa.addTextChangedListener(new PercentFormat(etDiscJasa));
         etDiscPart.addTextChangedListener(new PercentFormat(etDiscPart));
 
-        find(R.id.btn_simpanPart_disc, Button.class).setOnClickListener(new View.OnClickListener() {
+        find(R.id.btn_simpan_discPart, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 saveData();
@@ -99,6 +93,8 @@ public class AturDiscountPart_Activity extends AppActivity implements View.OnCli
                 args.put("diskonpart", etDiscPart.getText().toString());
                 args.put("diskonjasa", etDiscJasa.getText().toString());
                 args.put("pesan", find(R.id.cb_mssg_discPart, CheckBox.class).isChecked() ? "YA" : "TIDAK");
+                //args.put("", find(R.id.cb_tenda_discPart, Checkbox.class).isChecked() ? "YA":"TIDAK");
+                //args.put("", find(R.id.cb_bengkel_discPart, Checkbox.class).isChecked() ? "YA":"TIDAK");
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturdiskonpart"), args));
             }
@@ -133,8 +129,10 @@ public class AturDiscountPart_Activity extends AppActivity implements View.OnCli
         searchMenu.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                startActivityForResult(new Intent(getActivity(), CariPart_Activity.class), REQUEST_CARI_PART);
-
+                Intent i = new Intent(getActivity(), CariPart_Activity.class);
+                //i.putExtra("flag", "ALL");
+                setResult(RESULT_OK);
+                startActivityForResult(i, REQUEST_CARI_PART);
                 return false;
             }
         });

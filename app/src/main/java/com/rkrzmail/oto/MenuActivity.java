@@ -38,31 +38,30 @@ import com.rkrzmail.oto.modules.perintah_kerja_mekanik.PerintahKerjaMekanik_Acti
 import com.rkrzmail.oto.modules.primary.KontrolLayanan_Activity;
 import com.rkrzmail.oto.modules.primary.booking.KontrolBooking_Activity;
 import com.rkrzmail.oto.modules.jasa.discount_jasa_lain.DiscountJasaLain_Activity;
-import com.rkrzmail.oto.modules.discount.DiscountLayanan_Activity;
+import com.rkrzmail.oto.modules.layanan.discount_layanan.DiscountLayanan_Activity;
 import com.rkrzmail.oto.modules.sparepart.diskon_part.DiscountPart_Activity;
 import com.rkrzmail.oto.modules.discount.FrekwensiDiscount_Activity;
 import com.rkrzmail.oto.modules.discount.SpotDiscount_Activity;
 import com.rkrzmail.oto.modules.jurnal.DaftarJurnal_Activity;
-import com.rkrzmail.oto.modules.lokasi_part.CariPart_Activity;
+import com.rkrzmail.oto.modules.sparepart.lokasi_part.CariPart_Activity;
 import com.rkrzmail.oto.modules.profile.ProfileBengkel_Activity;
 import com.rkrzmail.oto.modules.registrasi_bengkel.Referal_Activity;
 import com.rkrzmail.oto.modules.registrasi_bengkel.RegistrasiBengkel_Activity;
 import com.rkrzmail.oto.modules.sparepart.PenjualanPart_Activity;
 import com.rkrzmail.oto.modules.sparepart.Spareparts_Activity;
 import com.rkrzmail.oto.modules.sparepart.part_keluar.PartKeluar_Activity;
-import com.rkrzmail.oto.modules.sparepart.pengembalian_part.PengembalianPart_Activity;
 import com.rkrzmail.oto.modules.sparepart.tugas_part.TugasPart_Activity;
 import com.rkrzmail.oto.modules.user.User_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiJasaLain_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiLayanan_Activity;
 import com.rkrzmail.oto.modules.layanan.Layanan_Avtivity;
-import com.rkrzmail.oto.modules.lokasi_part.LokasiPart_Activity;
+import com.rkrzmail.oto.modules.sparepart.lokasi_part.LokasiPart_Activity;
 import com.rkrzmail.oto.modules.part.PartActivity;
 import com.rkrzmail.oto.modules.part.PartSearchActivity;
 import com.rkrzmail.oto.modules.penugasan.PenugasanActivity;
 import com.rkrzmail.oto.modules.rekening_bank.RekeningBank_Activity;
 import com.rkrzmail.oto.modules.tenda.Tenda_Activity;
-import com.rkrzmail.oto.modules.terima_part.TerimaPart;
+import com.rkrzmail.oto.modules.sparepart.terima_part.TerimaPart;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -153,16 +152,16 @@ public class MenuActivity extends AppActivity {
                 } else if (nPopulate.get(position).get("id").asInteger() == MN_REGISTRASI) {
                     Intent intent = new Intent(MenuActivity.this, RegistrasiBengkel_Activity.class);
                     startActivity(intent);
-
-                } else if (nPopulate.get(position).get("id").asInteger() == MN_CARI_PART) {
+                }
+                else if (nPopulate.get(position).get("id").asInteger() == MN_CARI_PART) {
                     Intent intent = new Intent(MenuActivity.this, CariPart_Activity.class);
                     intent.putExtra("flag","ALL");
                     startActivityForResult(intent, 1);
                 } else if (nPopulate.get(position).get("id").asInteger() == MN_CARI_PART) {
                     Intent intent = new Intent(MenuActivity.this, CariPart_Activity.class);
                     startActivityForResult(intent, 2);
-
-                } else if (nPopulate.get(position).get("id").asInteger() == MN_PROFILE) {
+                }
+                else if (nPopulate.get(position).get("id").asInteger() == MN_PROFILE) {
                     Intent intent = new Intent(MenuActivity.this, ProfileBengkel_Activity.class);
                     startActivity(intent);
 
@@ -287,9 +286,6 @@ public class MenuActivity extends AppActivity {
                 } else if ((nPopulate.get(position).get("id").asInteger() == MN_KERJA_MEKANIK)) {
                     Intent intent = new Intent(MenuActivity.this, PerintahKerjaMekanik_Activity.class);
                     startActivity(intent);
-                } else if ((nPopulate.get(position).get("id").asInteger() == MN_PENGEMBALIAN_PART)) {
-                    Intent intent = new Intent(MenuActivity.this, PengembalianPart_Activity.class);
-                    startActivity(intent);
                 }
 
 
@@ -409,7 +405,6 @@ public class MenuActivity extends AppActivity {
         nPopulate.add(Nson.newObject().set("id", MN_JUAL_PART).set("icon", R.drawable.mn_jualpart).set("text", "PENJUALAN PART"));
         nPopulate.add(Nson.newObject().set("id", MN_PEMBAYARAN).set("icon", R.drawable.mn_pembayaran).set("text", "PEMBAYARAN"));
         nPopulate.add(Nson.newObject().set("id", MN_KERJA_MEKANIK).set("icon", R.drawable.mn_homeservice).set("text", "PERINTAH KERJA MEKANIK"));
-        nPopulate.add(Nson.newObject().set("id", MN_PENGEMBALIAN_PART).set("icon", R.drawable.mn_tugaspart).set("text", "PENGEMBALIAN PART"));
 
 //        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_KomisiKaryawan).set("icon", R.drawable.sample).set("text", "MESSAGE"));
 //        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_LoyaltiProgram).set("icon", R.drawable.sample).set("text", "MESSAGE"));

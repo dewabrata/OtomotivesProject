@@ -53,33 +53,40 @@
                     android:textColor="@color/grey_80"
                     android:textStyle="bold" />
 
-                <FrameLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <SeekBar
                         android:id="@+id/seekBar_bbm"
-                        android:layout_width="200dp"
+                        android:layout_width="170dp"
                         android:layout_height="40dp"
-                        android:progressDrawable="@drawable/badges"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginStart="84dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginBottom="0dp"
+                        android:max="100"
                         android:progress="0"
-                        android:layout_marginStart="70dp"
-                        android:thumbTintMode="multiply"
-                        android:max="100" />
+                        android:thumb="@null"
+                        android:progressDrawable="@drawable/badges" />
 
                     <TextView
                         android:id="@+id/tv_ketBbbm_checkin4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginLeft="35dp"
-                        android:textSize="11sp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginStart="18dp"
+                        android:layout_marginTop="11dp"
+                        android:layout_marginBottom="11dp"
+                        android:layout_toEndOf="@+id/seekBar_bbm"
                         android:text="0"
-                        android:textColor="@color/grey_80"
+                        android:textColor="@color/grey_900"
                         android:textStyle="bold" />
 
-                </FrameLayout>
+                </RelativeLayout>
 
             </LinearLayout>
 
@@ -351,12 +358,7 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_checkin4"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+        <include layout="@layout/toolbar" />
 
     </android.support.design.widget.AppBarLayout>
 

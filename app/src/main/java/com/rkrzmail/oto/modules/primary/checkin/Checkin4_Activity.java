@@ -33,7 +33,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_checkin4);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Check-In");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

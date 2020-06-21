@@ -32,7 +32,7 @@
             android:layout_marginEnd="10dp"
             android:orientation="vertical"
             android:padding="10sp"
-            tools:context=".modules.terima_part.DetailPartDiterima">
+            tools:context=".modules.sparepart.terima_part.DetailPartDiterima">
 
 
             <android.support.design.widget.TextInputLayout

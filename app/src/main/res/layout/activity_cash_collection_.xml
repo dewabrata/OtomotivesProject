@@ -15,23 +15,23 @@
             android:id="@+id/ly_pembayaran"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp">
 
             <android.support.design.widget.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
                 android:textAlignment="center">
 
                 <EditText
-                    android:id="@+id/et_total_cashCollection"
+                    android:id="@+id/et_namaKasir_cashCollection"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:enabled="false"
-                    android:hint="TOTAL CASH"
+                    android:hint="NAMA KASIR"
                     android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
@@ -40,16 +40,95 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginTop="@dimen/spacing_medium"
                 android:textAlignment="center">
 
                 <EditText
-                    android:id="@+id/et_setoran_cashCollection"
+                    android:id="@+id/et_terhutang_cashCollection"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:hint="SETORAN CASH"
+                    android:enabled="false"
+                    android:hint="TERHUTANG"
+                    android:textSize="14sp" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="TIPE COLLECTION"
+                    android:textColor="@color/grey_900"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/sp_tipe_cashCollection"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="center"
+                    android:entries="@array/tipe_collection"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="NO. REKENING"
+                    android:textColor="@color/grey_900"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/sp_noRek_cashCollection"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="center"/>
+
+            </LinearLayout>
+
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center">
+
+                <EditText
+                    android:id="@+id/et_noTrack_cashCollection"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="NO. TRACK"
+                    android:textSize="14sp" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_medium"
+                android:textAlignment="center">
+
+                <EditText
+                    android:id="@+id/et_total_cashCollection"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="TOTAL COLLECTION"
                     android:inputType="numberDecimal"
                     android:textSize="14sp" />
 
@@ -59,18 +138,16 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginTop="@dimen/spacing_medium"
                 android:textAlignment="center">
 
                 <EditText
-                    android:id="@+id/et_lebihKurang_cashCollection"
+                    android:id="@+id/et_sisa_cashCollection"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:enabled="false"
-                    android:hint="LEBIH / KURANG"
+                    android:hint="SISA TERHUTANG"
                     android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>

@@ -24,19 +24,27 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".modules.collection.CashCollection_Activity"></activity>
-        <activity android:name=".modules.collection.NonCashCollection_Activity" />
+        <activity android:name=".modules.LocationPicker_Activity"></activity>
+        <activity android:name=".modules.sparepart.tugas_part.StatusTugasPart_Activity" />
+        <activity android:name=".modules.message.ManualMessage_Activity" />
+        <activity android:name=".modules.message.Message_Activity" />
+        <activity android:name=".modules.antar_jemput.SerahTerima_Activity" />
+        <activity android:name=".modules.antar_jemput.ChecklistAntarJemput_Activity" />
+        <activity android:name=".modules.antar_jemput.InformasiAntarJemput_Activity" />
+        <activity android:name=".modules.antar_jemput.AntarJemput_Activity" />
+        <activity android:name=".modules.outsource.AturOutSource_Activity" />
+        <activity android:name=".modules.outsource.OutSource_Activity" />
+        <activity android:name=".modules.inspection.InspectionFinal_Activity" />
+        <activity android:name=".modules.collection.CashCollection_Activity" />
         <activity android:name=".modules.collection.Collection_Activity" />
         <activity android:name=".modules.sparepart.menunggu_part.UpdatePartKosong_Activity" />
         <activity android:name=".modules.sparepart.menunggu_part.StatusPartKosong_Activity" />
         <activity android:name=".modules.sparepart.menunggu_part.MenungguPart_Activity" />
-        <activity android:name=".modules.terima_part.DetailTerimaPart_Activity" />
+        <activity android:name=".modules.sparepart.terima_part.DetailTerimaPart_Activity" />
         <activity android:name=".modules.primary.checkout.AturCheckout_Activity" />
         <activity android:name=".modules.primary.checkout.CheckOut_Activity" />
         <activity android:name=".modules.perintah_kerja_mekanik.PointLayanan_Activity" />
-        <activity android:name=".modules.sparepart.pengembalian_part.JumlahPengembalian_Activity" />
-        <activity android:name=".modules.sparepart.pengembalian_part.PartHarusDikembalikan_Activity" />
-        <activity android:name=".modules.sparepart.pengembalian_part.PengembalianPart_Activity" />
+        <activity android:name=".modules.sparepart.tugas_part.JumlahPart_TugasPart_Activity" />
         <activity android:name=".modules.perintah_kerja_mekanik.DetailKerjaMekanik_Activity" />
         <activity android:name=".modules.perintah_kerja_mekanik.PerintahKerjaMekanik_Activity" />
         <activity android:name=".modules.pembayaran.AturPembayaran_Activity" />
@@ -56,7 +64,6 @@
         <activity android:name=".modules.primary.checkin.Checkin3_Activity" />
         <activity android:name=".modules.primary.checkin.Checkin2_Activity" />
         <activity android:name=".modules.primary.checkin.Checkin1_Activity" />
-        <activity android:name=".modules.sparepart.tugas_part.DetailTugasPart_Activity" />
         <activity android:name=".modules.sparepart.tugas_part.TugasPart_Activity" />
         <activity android:name=".modules.profile.ProfileBengkel_Activity" />
         <activity android:name=".modules.sparepart.part_keluar.PengisianPartKeluar_Activity" />
@@ -79,8 +86,8 @@
         <activity android:name=".modules.komisi.KomisiLayanan_Activity" />
         <activity android:name=".modules.jasa.discount_jasa_lain.AturDiscountJasaLain_Activity" />
         <activity android:name=".modules.jasa.discount_jasa_lain.DiscountJasaLain_Activity" />
-        <activity android:name=".modules.discount.AturDiscountLayanan_Activity" />
-        <activity android:name=".modules.discount.DiscountLayanan_Activity" />
+        <activity android:name=".modules.layanan.discount_layanan.AturDiscountLayanan_Activity" />
+        <activity android:name=".modules.layanan.discount_layanan.DiscountLayanan_Activity" />
         <activity android:name=".modules.layanan.DeskripsiLayanan_Activiy" />
         <activity android:name=".modules.rekening_bank.AturRekening_Activity" />
         <activity android:name=".modules.rekening_bank.RekeningBank_Activity" />
@@ -94,7 +101,7 @@
         <activity android:name=".modules.primary.booking.Booking1A_Activity" />
         <activity android:name=".modules.tenda.AturTenda_Activity" />
         <activity android:name=".modules.tenda.Tenda_Activity" />
-        <activity android:name=".modules.lokasi_part.CariPart_Activity">
+        <activity android:name=".modules.sparepart.lokasi_part.CariPart_Activity">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
 
@@ -110,12 +117,12 @@
         <activity android:name=".modules.jurnal.PembayaranJurnal_Activity" />
         <activity android:name=".modules.jurnal.AturJurnal_Activity" />
         <activity android:name=".modules.jurnal.DaftarJurnal_Activity" />
-        <activity android:name=".modules.lokasi_part.Penyesuain_Activity" />
-        <activity android:name=".modules.lokasi_part.stock_opname.StockOpname_Activity" />
-        <activity android:name=".modules.terima_part.TerimaPart" />
-        <activity android:name=".modules.lokasi_part.AturLokasiPart_Activity" />
-        <activity android:name=".modules.terima_part.AturTerimaPart" />
-        <activity android:name=".modules.terima_part.DetailPartDiterima" />
+        <activity android:name=".modules.sparepart.lokasi_part.Penyesuain_Activity" />
+        <activity android:name=".modules.sparepart.lokasi_part.stock_opname.StockOpname_Activity" />
+        <activity android:name=".modules.sparepart.terima_part.TerimaPart" />
+        <activity android:name=".modules.sparepart.lokasi_part.AturLokasiPart_Activity" />
+        <activity android:name=".modules.sparepart.terima_part.AturTerimaPart" />
+        <activity android:name=".modules.sparepart.terima_part.DetailPartDiterima" />
         <activity android:name=".modules.biayamekanik.AturBiayaMekanik2" />
         <activity android:name=".modules.biayamekanik.BiayaMekanik2Activity" />
         <activity android:name=".modules.sparepart.Spareparts_Activity">
@@ -146,7 +153,7 @@
         <activity android:name=".gmod.Stock_OpnameActivity" />
         <activity android:name=".gmod.Penampung_Item_DetailActivity" />
         <activity android:name=".modules.penugasan.AturPenugasan_Activity" />
-        <activity android:name=".modules.lokasi_part.LokasiPart_Activity" />
+        <activity android:name=".modules.sparepart.lokasi_part.LokasiPart_Activity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

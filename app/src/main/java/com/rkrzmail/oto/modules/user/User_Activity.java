@@ -29,7 +29,6 @@ import com.rkrzmail.srv.NikitaViewHolder;
 import java.util.Map;
 
 public class User_Activity extends AppActivity {
-    private View parent_view;
 
     private RecyclerView recyclerView;
     private AdapterListBasic mAdapter;
@@ -38,10 +37,7 @@ public class User_Activity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user);
-        parent_view = findViewById(android.R.id.content);
-
-        initToolbar();
+        setContentView(R.layout.activity_list_basic_3);
         initComponent();
     }
     private void initToolbar() {
@@ -52,32 +48,9 @@ public class User_Activity extends AppActivity {
 
     }
 
-    private void reload(final String cari) {
-        MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
-            Nson result ;
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "view");
-                args.put("search", cari);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturkaryawan"), args));
-            }
-
-            @Override
-            public void runUI() {
-                if(result.get("status").asString().equalsIgnoreCase("OK")){
-                    nListArray.asArray().clear();
-                    nListArray.asArray().addAll(result.get("data").asArray());
-                    recyclerView.getAdapter().notifyDataSetChanged();
-                }else{
-                    showError("Mohon di coba kembali");
-                }
-            }
-        });
-    }
     private void initComponent() {
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah_karyawan);
+        initToolbar();
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -107,13 +80,37 @@ public class User_Activity extends AppActivity {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
                 Intent intent = new Intent(getActivity(), AturUser_Activity.class);
-                intent.putExtra("TANGGAL_MASUK", nListArray.get(position).get("TANGGAL_MASUK"));
-                intent.putExtra("NAMA", nListArray.get(position).toJson());
-                startActivityForResult(intent, REQUEST_ATUR);
+                intent.putExtra("data", nListArray.get(position).toJson());
+                startActivityForResult(intent, RESULT_OK);
             }
         }));
         reload("");
     }
+
+    private void reload(final String cari) {
+        MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
+            Nson result ;
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "view");
+                args.put("search", cari);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturkaryawan"), args));
+            }
+
+            @Override
+            public void runUI() {
+                if(result.get("status").asString().equalsIgnoreCase("OK")){
+                    nListArray.asArray().clear();
+                    nListArray.asArray().addAll(result.get("data").asArray());
+                    recyclerView.getAdapter().notifyDataSetChanged();
+                }else{
+                    showError("Mohon di coba kembali");
+                }
+            }
+        });
+    }
+
 
     SearchView mSearchView;
 

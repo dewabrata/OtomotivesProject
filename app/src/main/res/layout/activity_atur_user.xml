@@ -37,26 +37,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="5dp">
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp">
 
 
                 <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp"
-                    app:helperTextEnabled="true"
-                    app:helperText="Disable"
-                    app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
+                    android:layout_height="wrap_content">
 
 
                     <EditText
                         android:id="@+id/txtNamaKaryawan"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:editable="false"
                         android:textSize="14sp"
                         android:hint="NAMA" />
 
@@ -66,19 +61,13 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp"
-                    app:helperTextEnabled="true"
-                    app:helperText="Disable"
-                    app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
+                    android:layout_marginTop="5dp">
 
 
                     <EditText
                         android:id="@+id/txtNik"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:editable="false"
                         android:textSize="14sp"
                         android:hint="NIK" />
 
@@ -89,15 +78,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp">
+                    android:layout_marginTop="10dp">
 
                     <TextView
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:text="TANGGAL LAHIR"
-                        android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -105,8 +91,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:enabled="false"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="20dp"
                         android:gravity="center"
+                        android:layout_weight="1"
                         android:drawableLeft="@drawable/icon_tanggal" />
 
                 </LinearLayout>
@@ -114,9 +101,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -124,7 +109,6 @@
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:text="KELAMIN"
-                        android:textSize="18sp"
                         android:textStyle="bold" />
 
 
@@ -142,9 +126,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp">
+                    android:layout_marginTop="5dp">
 
                     <EditText
                         android:id="@+id/txtNoPonsel"
@@ -161,9 +143,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp">
+                    android:layout_marginTop="5dp">
 
                     <EditText
                         android:id="@+id/txtEmail"
@@ -179,9 +159,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp">
+                    android:layout_marginTop="5dp">
 
                     <EditText
                         android:id="@+id/txtAlamat"
@@ -198,24 +176,22 @@
                     android:layout_width="match_parent"
                     android:orientation="horizontal"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp">
+                    android:layout_marginTop="10dp">
 
                     <TextView
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:text="TANGGAL MASUK"
-                        android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/txtTglMasuk"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:textStyle="bold"
-                        android:layout_marginLeft="10dp"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="20dp"
                         android:drawableLeft="@drawable/icon_tanggal" />
 
                 </LinearLayout>
@@ -223,9 +199,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -233,7 +207,6 @@
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:text="POSISI"
-                        android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <com.rkrzmail.srv.MultiSelectionSpinner
@@ -248,9 +221,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -258,7 +229,6 @@
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:text="STATUS"
-                        android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <Spinner
@@ -268,15 +238,12 @@
                         android:textAlignment="center"
                         android:entries="@array/status" />
 
-
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -284,7 +251,6 @@
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:text="PENGGAJIAN"
-                        android:textSize="18sp"
                         android:textStyle="bold" />
 
 
@@ -292,7 +258,8 @@
                         android:id="@+id/spinnerPenggajian"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textAlignment="center" />
+                        android:textAlignment="center"
+                        android:entries="@array/penggajian"/>
 
 
                 </LinearLayout>
@@ -301,9 +268,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp">
+                    android:layout_marginTop="5dp">
 
                     <EditText
                         android:id="@+id/txtGaji"
@@ -318,9 +283,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -328,7 +291,6 @@
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:text="AKSES APP"
-                        android:textSize="17sp"
                         android:textStyle="bold" />
 
                     <com.rkrzmail.srv.MultiSelectionSpinner

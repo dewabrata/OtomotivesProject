@@ -69,22 +69,43 @@ public class AturUser_Activity extends AppActivity implements View.OnClickListen
     }
 
     private void loadData() {
-        final Nson data = Nson.readJson(getIntentStringExtra("NAMA"));
+        final Nson data = Nson.readJson(getIntentStringExtra("data"));
         final Intent i = getIntent();
-        if (i.hasExtra("NAMA")) {
-            Tools.setViewAndChildrenEnabled(find(R.id.ly_tglLahir_aturKaryawan, LinearLayout.class), false);
+        try {
+            if (i.hasExtra("data")) {
+                find(R.id.txtNamaKaryawan, EditText.class).setEnabled(false);
+                find(R.id.txtNik, EditText.class).setEnabled(false);
+                find(R.id.txtTglLahir, TextView.class).setEnabled(false);
+                find(R.id.spinnerKelamin, Spinner.class).setEnabled(false);
 
-            find(R.id.txtNamaKaryawan, EditText.class).setText(data.get("NAMA").asString());
-            find(R.id.txtNoPonsel, EditText.class).setText(data.get("NO_PONSEL").asString());
-            find(R.id.txtTglMasuk, TextView.class).setText(data.get("TANGGAL_MASUK").asString());
+                find(R.id.txtNamaKaryawan, EditText.class).setText(data.get("NAMA").asString());
+                find(R.id.txtNik, EditText.class).setText(data.get("NIK").asString());
+                find(R.id.txtTglLahir, TextView.class).setText(data.get("TANGGAL_LAHIR").asString());
+                find(R.id.spinnerKelamin, Spinner.class).setSelection(Tools.getIndexSpinner
+                        (find(R.id.spinnerKelamin, Spinner.class), data.get("KELAMIN").asString()));
+                find(R.id.txtNoPonsel, EditText.class).setText(data.get("NO_PONSEL").asString());
+                find(R.id.txtEmail, EditText.class).setText(data.get("EMAIL").asString());
+                find(R.id.txtAlamat, EditText.class).setText(data.get("ALAMAT").asString());
+                find(R.id.txtTglMasuk, TextView.class).setText(data.get("TANGGAL_MASUK").asString());
+                find(R.id.spinnerPosisi, MultiSelectionSpinner.class).setSelection(data.get("POSISI").asStringArray());
+                find(R.id.spinnerStatus, Spinner.class).setSelection(Tools.getIndexSpinner
+                        (find(R.id.spinnerStatus, Spinner.class), data.get("STATUS").asString()));
+                find(R.id.spinnerPenggajian, Spinner.class).setSelection(Tools.getIndexSpinner
+                        (find(R.id.spinnerStatus, Spinner.class), data.get("PENGGAJIAN").asString()));
+                find(R.id.txtGaji, TextView.class).setText(data.get("GAJI").asString());
+                find(R.id.spinnerAksesApp, MultiSelectionSpinner.class).setSelection(data.get("AKSES_APP").asStringArray());
 
-            find(R.id.tblSimpan, Button.class).setText("Update");
-            find(R.id.tblSimpan).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    updateData();
-                }
-            });
+
+                find(R.id.tblSimpan, Button.class).setText("Update");
+                find(R.id.tblSimpan).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        updateData();
+                    }
+                });
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -139,7 +160,8 @@ public class AturUser_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-//                update :  CID, action(update),  nopol, email, alamat, tanggalmasuk, posisi, status, penggajian, gaji, akses
+//                update :  CID, action(update),  nopol, email, alamat,
+//                tanggalmasuk, posisi, status, penggajian, gaji, akses
 
                 args.put("action", "update");
                 args.put("nopol", find(R.id.txtNoPonsel, TextView.class).getText().toString());
@@ -158,8 +180,8 @@ public class AturUser_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    setResult(RESULT_OK);
                     startActivity(new Intent(AturUser_Activity.this, User_Activity.class));
-                    finish();
                 } else {
                     showError("Gagal Memperbarui Data");
                 }

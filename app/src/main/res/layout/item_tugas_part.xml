@@ -26,56 +26,18 @@
         <TableRow>
 
             <TextView
-                android:id="@+id/tv_noAntrian_tugasPart"
+                android:id="@+id/tv_tglJam_tugasPart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="No. Antrian"
-                android:textStyle="bold"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+                android:text="@string/tanggal_jam"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tv_layanan_tugasPart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/layanan"
-                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
-
-
-        </TableRow>
-
-        <TableRow android:layout_marginTop="@dimen/spacing_medium">
-
-            <TextView
-                android:id="@+id/tv_nopol_tugasPart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/no_polisi"
-                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
-
-            <TextView
-                android:id="@+id/tv_pelanggan_tugasPart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Pelanggan"
-                android:textSize="12sp" />
-
-        </TableRow>
-
-        <TableRow android:layout_marginTop="@dimen/spacing_medium">
-
-            <TextView
-                android:id="@+id/tv_mekanik_tugasPart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/mekanik"
-                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
-
-            <TextView
-                android:id="@+id/tv_status_tugasPart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/status"
-                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+                android:textStyle="bold"
+                android:text="@string/status"/>
 
         </TableRow>
 
@@ -85,15 +47,26 @@
                 android:id="@+id/tv_user_tugasPart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="User Part"
-                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+                android:text="@string/user"
+                android:textStyle="bold"/>
+
+        </TableRow>
+
+        <TableRow android:layout_marginTop="@dimen/spacing_medium">
 
             <TextView
-                android:id="@+id/tv_jam_tugasPart"
+                android:id="@+id/tv_namaP_tugasPart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Jam"
-                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+                android:textStyle="bold"
+                android:text="@string/nama_pelanggan"/>
+
+            <TextView
+                android:id="@+id/tv_noAntrian_tugasPart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No. Antrian"
+                android:textStyle="bold"/>
 
         </TableRow>
 

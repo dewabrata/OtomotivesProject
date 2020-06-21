@@ -41,13 +41,13 @@ import com.rkrzmail.oto.modules.sparepart.diskon_part.DiscountPart_Activity;
 import com.rkrzmail.oto.modules.discount.SpotDiscount_Activity;
 import com.rkrzmail.oto.modules.jurnal.DaftarJurnal_Activity;
 import com.rkrzmail.oto.modules.layanan.Layanan_Avtivity;
-import com.rkrzmail.oto.modules.lokasi_part.LokasiPart_Activity;
+import com.rkrzmail.oto.modules.sparepart.lokasi_part.LokasiPart_Activity;
 import com.rkrzmail.oto.modules.part.PartActivity;
 import com.rkrzmail.oto.modules.part.PartSearchActivity;
 import com.rkrzmail.oto.modules.penugasan.PenugasanActivity;
 import com.rkrzmail.oto.modules.rekening_bank.RekeningBank_Activity;
 import com.rkrzmail.oto.modules.tenda.Tenda_Activity;
-import com.rkrzmail.oto.modules.terima_part.TerimaPart;
+import com.rkrzmail.oto.modules.sparepart.terima_part.TerimaPart;
 
 import java.util.ArrayList;
 import java.util.List;

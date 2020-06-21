@@ -30,21 +30,21 @@ public class FrekwensiDiscount_Activity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_frekwensi_discount_);
+        setContentView(R.layout.activity_list_basic_3);
         initToolbar();
         initComponent();
     }
 
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_freDisc);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Frekwensi Discount");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initComponent() {
-        FloatingActionButton fab = findViewById(R.id.fab_tambah_freDisc);
+        FloatingActionButton fab = findViewById(R.id.fab_tambah);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -52,7 +52,7 @@ public class FrekwensiDiscount_Activity extends AppActivity {
             }
         });
 
-        rvFreDisc = findViewById(R.id.recyclerView_freDisc);
+        rvFreDisc = findViewById(R.id.recyclerView);
         rvFreDisc.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvFreDisc.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_frekwensi_disc) {
             @Override

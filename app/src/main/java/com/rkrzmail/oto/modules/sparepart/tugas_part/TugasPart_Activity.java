@@ -2,6 +2,7 @@ package com.rkrzmail.oto.modules.sparepart.tugas_part;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -31,12 +32,12 @@ public class TugasPart_Activity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tugas_part_);
+        setContentView(R.layout.activity_list_basic);
         initComponent();
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_tugasPart);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Tugas Part");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -44,25 +45,34 @@ public class TugasPart_Activity extends AppActivity {
 
     private void initComponent() {
         initToolbar();
-        rvTugasPart = findViewById(R.id.recyclerView_tugasPart);
+        rvTugasPart = findViewById(R.id.recyclerView);
+
         rvTugasPart.setLayoutManager(new LinearLayoutManager(this));
+        rvTugasPart.setHasFixedSize(true);
         rvTugasPart.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_tugas_part) {
                     @Override
                     public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                         super.onBindViewHolder(viewHolder, position);
+
                         viewHolder.find(R.id.tv_noAntrian_tugasPart, TextView.class).setText(nListArray.get(position).get("").asString());
                         viewHolder.find(R.id.tv_layanan_tugasPart, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_nopol_tugasPart, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_pelanggan_tugasPart, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_mekanik_tugasPart, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_status_tugasPart, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_tglJam_tugasPart, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_namaP_tugasPart, TextView.class).setText(nListArray.get(position).get("").asString());
                         viewHolder.find(R.id.tv_user_tugasPart, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_jam_tugasPart, TextView.class).setText(nListArray.get(position).get("").asString());
                     }
+
                 }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(Nson parent, View view, int position) {
+                        String status = nListArray.get(position).get("").asString();
+                        Intent i;
+                        if(status.equalsIgnoreCase("SIAP")){
 
+                        }else if(status.equalsIgnoreCase("PERMINTAAN")){
+
+                        }else{
+
+                        }
                     }
                 })
         );
@@ -81,7 +91,9 @@ public class TugasPart_Activity extends AppActivity {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-
+                    nListArray.asArray().clear();
+                    nListArray.asArray().addAll(result.get("data").asArray());
+                    rvTugasPart.getAdapter().notifyDataSetChanged();
                 } else {
                     showInfo("Gagal");
                 }

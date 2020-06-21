@@ -14,27 +14,58 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:text="LOKASI LAYANAN"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:textColor="@color/grey_900"/>
+
+                <CheckBox
+                    android:id="@+id/cb_bengkel_discPart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="BENGKEL"/>
+
+                <CheckBox
+                    android:id="@+id/cb_tenda_discPart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="TENDA"/>
+
+            </LinearLayout>
 
             <android.support.design.widget.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
                 app:helperTextEnabled="true"
                 app:helperText="Disable"
                 app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
 
                 <EditText
-                    android:id="@+id/et_noPart_disc"
+                    android:id="@+id/et_noPart_discPart"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"
                     android:hint="NO PART"
-                    android:inputType="number"
-                    android:maxLines="1" />
+                    android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -42,52 +73,47 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
                 app:helperTextEnabled="true"
                 app:helperText="Disable"
                 app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
 
 
                 <EditText
-                    android:id="@+id/et_namaPart_disc"
+                    android:id="@+id/et_namaPart_discPart"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"
                     android:hint="NAMA PART"
-                    android:inputType="text"
-                    android:maxLines="1" />
+                    android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginTop="10dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:text="PEKERJAAN"
+                    android:textColor="@color/grey_900"
                     android:textStyle="bold" />
 
                 <com.rkrzmail.srv.MultiSelectionSpinner
-                    android:id="@+id/sp_pekerjaan_disc"
+                    android:id="@+id/sp_pekerjaan_discPart"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:textAlignment="center"
+                    android:layout_weight="1"/>
+
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
                 android:orientation="horizontal">
 
                 <android.support.design.widget.TextInputLayout
@@ -98,13 +124,12 @@
                     android:layout_weight="1">
 
                     <EditText
-                        android:id="@+id/et_discPart_disc"
+                        android:id="@+id/et_discPart_discPart"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="DISCOUNT PART"
                         android:inputType="number"
-                        android:maxLength="5"
-                        android:maxLines="1" />
+                        android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -115,13 +140,13 @@
                     android:layout_weight="1">
 
                     <EditText
-                        android:id="@+id/et_discJasa_disc"
+                        android:id="@+id/et_discJasa_discPart"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="DISCOUNT JASA"
                         android:maxLength="5"
                         android:inputType="number"
-                        android:maxLines="1" />
+                        android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -130,17 +155,15 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:text="TANGGAL EFEKTIVE"
-                    android:layout_weight="1"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="@color/grey_900"/>
 
                 <TextView
                     android:id="@+id/tv_tglEffect_discPart"
@@ -148,6 +171,7 @@
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/icon_tanggal"
                     android:gravity="center"
+                    android:layout_marginStart="20dp"
                     android:layout_weight="1"
                     android:textStyle="bold" />
 
@@ -157,37 +181,39 @@
                 android:id="@+id/cb_mssg_discPart"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
                 android:text="MESSAGE PELANGGAN" />
 
-
-            <LinearLayout
+            <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="end">
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:stretchColumns="*">
 
-                <Button
-                    android:id="@+id/btn_simpanPart_disc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/btn_rounded_accent"
-                    android:text="SIMPAN"
-                    android:textColor="@color/white_transparency" />
+                <TableRow>
 
-                <Button
-                    android:id="@+id/btn_hapusPart_disc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/btn_rounded_accent"
-                    android:text="HAPUS"
-                    android:textColor="@color/white_transparency"
-                    android:visibility="gone" />
+                    <Button
+                        android:id="@+id/btn_hapus_discPart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/btn_rounded_accent"
+                        android:text="HAPUS"
+                        android:visibility="gone"
+                        android:textColor="@android:color/white" />
 
-            </LinearLayout>
+                    <Button
+                        android:id="@+id/btn_simpan_discPart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/btn_rounded_accent"
+                        android:text="SIMPAN"
+                        android:layout_gravity="end"
+                        android:layout_column="30"
+                        android:textColor="@android:color/white" />
+
+                </TableRow>
+            </TableLayout>
         </LinearLayout>
     </ScrollView>
 
@@ -197,13 +223,7 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.v7.widget.Toolbar
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            android:id="@+id/toolbar_atur_discPart"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize" />
-
+        <include layout="@layout/toolbar" />
 
     </android.support.design.widget.AppBarLayout>
 

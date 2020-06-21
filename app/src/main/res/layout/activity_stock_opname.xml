@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".modules.lokasi_part.stock_opname.StockOpname_Activity">
+    tools:context=".modules.sparepart.lokasi_part.stock_opname.StockOpname_Activity">
 
 
     <android.support.design.widget.AppBarLayout
@@ -16,20 +16,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_stock_opname"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay"/>
+            <include layout="@layout/toolbar" />
 
             <ImageView
                 android:id="@+id/imgBarcode_stockOpname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
                 android:padding="5dp"
                 app:srcCompat="@drawable/scan"
-                android:layout_gravity="right|center_vertical"
                 tools:ignore="RtlHardcoded" />
 
         </FrameLayout>
@@ -43,10 +38,10 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:layout_marginLeft="10dp"
             android:layout_marginTop="20dp"
             android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp">
+            android:orientation="vertical">
 
 
             <android.support.design.widget.TextInputLayout
@@ -61,9 +56,9 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:layout_margin="5dp"
-                    android:textSize="14sp"
                     android:enabled="false"
-                    android:hint="NO. FOLDER" />
+                    android:hint="NO. FOLDER"
+                    android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
 

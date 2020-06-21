@@ -9,8 +9,6 @@ import android.view.animation.AccelerateInterpolator;
 
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.lokasi_part.PartNonLokasi_Fragment;
-import com.rkrzmail.oto.modules.lokasi_part.PartTeralokasikan_Fragment;
 import com.rkrzmail.srv.FragmentsAdapter;
 
 import java.util.ArrayList;

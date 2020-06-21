@@ -53,6 +53,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
 
     private void initComponent() {
         initToolbar();
+
         find(R.id.btn_jasaLain_checkin3, Button.class).setOnClickListener(this);
         find(R.id.btn_sparePart_checkin3, Button.class).setOnClickListener(this);
         find(R.id.btn_jasaLainBerkala_checkin3, Button.class).setOnClickListener(this);

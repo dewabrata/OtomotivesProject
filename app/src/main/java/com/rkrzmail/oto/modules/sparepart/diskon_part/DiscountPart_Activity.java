@@ -34,30 +34,29 @@ public class DiscountPart_Activity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_discount_part_);
+        setContentView(R.layout.activity_list_basic_3);
         initToolbar();
         initComponent();
     }
 
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_discPart);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Discount Part");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initComponent() {
-        FloatingActionButton fab = findViewById(R.id.fab_tambah_discountPart);
+        FloatingActionButton fab = findViewById(R.id.fab_tambah);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getActivity(), AturDiscountPart_Activity.class));
-                finish();
             }
         });
 
-        rvDiscPart = findViewById(R.id.recyclerView_discount_part);
+        rvDiscPart = findViewById(R.id.recyclerView);
         rvDiscPart.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvDiscPart.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_discount_part) {
             @Override
