@@ -336,7 +336,7 @@ public class AppActivity extends AppCompatActivity {
 
 
     public void adapterSearchView(android.support.v7.widget.SearchView searchView, final String arguments, final String api, final String jsonObject) {
-        android.support.v7.widget.SearchView.SearchAutoComplete searchAutoComplete = (android.support.v7.widget.SearchView.SearchAutoComplete) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        android.support.v7.widget.SearchView.SearchAutoComplete searchAutoComplete = (android.support.v7.widget.SearchView.SearchAutoComplete) searchView.findViewById(R.id.search_src_text);
         searchAutoComplete.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
             Nson result;
 
@@ -381,8 +381,8 @@ public class AppActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(i)));
 
-                find(android.support.v7.appcompat.R.id.search_src_text, android.support.v7.widget.SearchView.SearchAutoComplete.class).setText(n.get(jsonObject).asString());
-                find(android.support.v7.appcompat.R.id.search_src_text, android.support.v7.widget.SearchView.SearchAutoComplete.class).setTag(String.valueOf(adapterView.getItemAtPosition(i)));
+                find(R.id.search_src_text, android.support.v7.widget.SearchView.SearchAutoComplete.class).setText(n.get(jsonObject).asString());
+                find(R.id.search_src_text, android.support.v7.widget.SearchView.SearchAutoComplete.class).setTag(String.valueOf(adapterView.getItemAtPosition(i)));
             }
         });
     }

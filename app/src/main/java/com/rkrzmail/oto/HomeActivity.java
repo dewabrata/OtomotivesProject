@@ -36,7 +36,6 @@ import com.rkrzmail.oto.gmod.Penerimaan_PartAcitivity;
 import com.rkrzmail.oto.gmod.SparepartActivity;
 import com.rkrzmail.oto.modules.LoginActivity;
 import com.rkrzmail.oto.modules.biayamekanik.BiayaMekanik2Activity;
-import com.rkrzmail.oto.modules.primary.booking.Booking1A_Activity;
 import com.rkrzmail.oto.modules.sparepart.diskon_part.DiscountPart_Activity;
 import com.rkrzmail.oto.modules.discount.SpotDiscount_Activity;
 import com.rkrzmail.oto.modules.jurnal.DaftarJurnal_Activity;
@@ -203,8 +202,8 @@ public class HomeActivity extends MenuActivity{
                     Intent intent = new Intent(HomeActivity.this, RekeningBank_Activity.class);
                     startActivity(intent);
                 } else if ((nPopulate.get(position).get("id").asInteger() == MN_BOOKING)) {
-                    Intent intent = new Intent(HomeActivity.this, Booking1A_Activity.class);
-                    startActivity(intent);
+                    /*Intent intent = new Intent(HomeActivity.this, Booking1A_Activity.class);
+                    startActivity(intent);*/
                 }
 
 
