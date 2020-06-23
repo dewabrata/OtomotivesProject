@@ -30,10 +30,28 @@
             <TableRow>
 
                 <TextView
-                    android:id="@+id/tv_namaP_pembayaran"
+                    android:id="@+id/tv_nama_piutang"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Nama Pelanggan"
+                    android:text="Nama Terhutang"
+                    android:textStyle="bold" />
+
+            </TableRow>
+
+            <TableRow android:layout_marginTop="@dimen/spacing_medium">
+
+                <TextView
+                    android:id="@+id/tv_transaksi_piutang"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Jumlah Transaksi"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_tglTransaksi_piutang"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="DD/MM - DD/MM"
                     android:textStyle="bold" />
 
 
@@ -42,35 +60,17 @@
             <TableRow android:layout_marginTop="@dimen/spacing_medium">
 
                 <TextView
-                    android:id="@+id/tv_noPhone_pembayaran"
+                    android:id="@+id/tv_tipe_piutang"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="No. Ponsel"
+                    android:text="Tipe Piutang"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tv_nopol_pembayaran"
+                    android:id="@+id/tv_nominal_piutang"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="No. Polisi"
-                    android:textStyle="bold" />
-
-            </TableRow>
-
-            <TableRow android:layout_marginTop="@dimen/spacing_medium">
-
-                <TextView
-                    android:id="@+id/tv_tipePembayaran_pembayaran"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tipe Pemabyaran"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tv_user_pembayaran"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="User"
+                    android:text="Nominal"
                     android:textStyle="bold" />
 
             </TableRow>
@@ -78,19 +78,17 @@
             <TableRow android:layout_marginTop="@dimen/spacing_medium">
 
                 <TextView
-                    android:id="@+id/tv_waktuPembayaran_pembayaran"
+                    android:id="@+id/tv_status_piutang"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Waktu Pembayaran"
-                    android:textColor="@color/red_400"
+                    android:text="Status"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tv_total_pembayaran"
+                    android:id="@+id/tv_tglInv_piutang"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/red_400"
-                    android:text="Total"
+                    android:text="DD/MM"
                     android:textStyle="bold" />
 
             </TableRow>

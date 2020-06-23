@@ -350,8 +350,8 @@ public class AppActivity extends AppCompatActivity {
                 for (int i = 0; i < result.get("data").size(); i++) {
                     return result.get("data");
                 }
-                return result.get("search");
 
+                return result.get("search");
             }
 
             @Override
@@ -455,6 +455,7 @@ public class AppActivity extends AppCompatActivity {
                     // nListArray.add(result.get("data").get(i).get("NAMA"));
                     str.add(result.get("data").get(i).get(jsonObject).asString());
                 }
+
                 ArrayList<String> newStr = Tools.removeDuplicates(str);
                 if (newStr.size() > -1) {
                     spinner.setItems(newStr);

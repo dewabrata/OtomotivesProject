@@ -43,7 +43,7 @@ import com.rkrzmail.oto.modules.sparepart.diskon_part.DiscountPart_Activity;
 import com.rkrzmail.oto.modules.discount.FrekwensiDiscount_Activity;
 import com.rkrzmail.oto.modules.discount.SpotDiscount_Activity;
 import com.rkrzmail.oto.modules.jurnal.DaftarJurnal_Activity;
-import com.rkrzmail.oto.modules.sparepart.lokasi_part.CariPart_Activity;
+import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
 import com.rkrzmail.oto.modules.profile.ProfileBengkel_Activity;
 import com.rkrzmail.oto.modules.registrasi_bengkel.Referal_Activity;
 import com.rkrzmail.oto.modules.registrasi_bengkel.RegistrasiBengkel_Activity;

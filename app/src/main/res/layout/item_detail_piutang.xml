@@ -15,10 +15,15 @@
     app:cardElevation="2dp"
     app:cardCornerRadius="10dp">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
+        <CheckBox
+            android:id="@+id/cb_check_detailPiutang"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"/>
 
         <TableLayout
             android:layout_width="match_parent"
@@ -30,66 +35,72 @@
             <TableRow>
 
                 <TextView
-                    android:id="@+id/tv_namaP_pembayaran"
+                    android:id="@+id/tv_tgl_detailPiutang"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Nama Pelanggan"
-                    android:textStyle="bold" />
-
-
-            </TableRow>
-
-            <TableRow android:layout_marginTop="@dimen/spacing_medium">
-
-                <TextView
-                    android:id="@+id/tv_noPhone_pembayaran"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="No. Ponsel"
+                    android:text="DD/MM"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tv_nopol_pembayaran"
+                    android:id="@+id/tv_nopol_detailPiutang"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="No. Polisi"
                     android:textStyle="bold" />
 
-            </TableRow>
-
-            <TableRow android:layout_marginTop="@dimen/spacing_medium">
-
-                <TextView
-                    android:id="@+id/tv_tipePembayaran_pembayaran"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tipe Pemabyaran"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tv_user_pembayaran"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="User"
-                    android:textStyle="bold" />
 
             </TableRow>
 
             <TableRow android:layout_marginTop="@dimen/spacing_medium">
 
                 <TextView
-                    android:id="@+id/tv_waktuPembayaran_pembayaran"
+                    android:id="@+id/tv_jenisKendaraan_detailPiutang"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Waktu Pembayaran"
-                    android:textColor="@color/red_400"
+                    android:text="Jenis Kendaraan"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tv_total_pembayaran"
+                    android:id="@+id/tv_layanan_detailPiutang"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/red_400"
+                    android:text="Layanan"
+                    android:textStyle="bold" />
+
+
+            </TableRow>
+
+            <TableRow android:layout_marginTop="@dimen/spacing_medium">
+
+                <TextView
+                    android:id="@+id/tv_biaya_detailPiutang"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Biaya Layanan"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_part_detailPiutang"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Part"
+                    android:textStyle="bold" />
+
+            </TableRow>
+
+            <TableRow android:layout_marginTop="@dimen/spacing_medium">
+
+                <TextView
+                    android:id="@+id/tv_jasaLain_detailPiutang"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Jasa Lain"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_total_detailPiutang"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="Total"
                     android:textStyle="bold" />
 
@@ -97,6 +108,6 @@
 
         </TableLayout>
 
-    </FrameLayout>
+    </LinearLayout>
 
 </android.support.v7.widget.CardView>

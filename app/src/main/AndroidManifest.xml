@@ -24,7 +24,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".modules.LocationPicker_Activity"></activity>
+        <activity android:name=".modules.hutang.PembayaranHutang_Activity"></activity>
+        <activity android:name=".modules.hutang.Hutang_Activity" />
+        <activity android:name=".modules.hutang.PembayaranPiutang_Activity" />
+        <activity android:name=".modules.hutang.DetailPiutang_Activity" />
+        <activity android:name=".modules.hutang.Piutang_Activity" />
+        <activity android:name=".modules.LocationPicker_Activity" />
         <activity android:name=".modules.sparepart.tugas_part.StatusTugasPart_Activity" />
         <activity android:name=".modules.message.ManualMessage_Activity" />
         <activity android:name=".modules.message.Message_Activity" />
@@ -101,7 +106,7 @@
         <activity android:name=".modules.primary.booking.Booking1A_Activity" />
         <activity android:name=".modules.tenda.AturTenda_Activity" />
         <activity android:name=".modules.tenda.Tenda_Activity" />
-        <activity android:name=".modules.sparepart.lokasi_part.CariPart_Activity">
+        <activity android:name=".modules.sparepart.CariPart_Activity">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
 

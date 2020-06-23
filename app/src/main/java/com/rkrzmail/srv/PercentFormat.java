@@ -7,6 +7,8 @@ import android.widget.EditText;
 import com.rkrzmail.utils.Tools;
 
 import java.lang.ref.WeakReference;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 public class PercentFormat implements TextWatcher {
 
@@ -27,20 +29,17 @@ public class PercentFormat implements TextWatcher {
     @Override
     public void afterTextChanged(Editable editable) {
         EditText editText = editTextWeakReference.get();
-        if (editText == null) return;
-        String s = editable.toString();
-        if (s.isEmpty()) return;
+
         editText.removeTextChangedListener(this);
-        try {
-            String cleanString = s.replaceAll("[^0-9]", "");
-            String formatted = Tools.formatPercent(cleanString);
-            editText.setText(formatted);
-            editText.setSelection(formatted.length() - 1);
+        if (editText == null) return;
+        editText.removeTextChangedListener(this);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        NumberFormat format = NumberFormat.getPercentInstance(new Locale("in", "ID"));
+        format.setMinimumFractionDigits(1);
+        String percentNumber = format.format(Tools.convertToDoublePercentage(editText.getText().toString())/1000);
 
+        editText.setText(percentNumber);
+        editText.setSelection(percentNumber.length() -1 );
         editText.addTextChangedListener(this);
     }
 }

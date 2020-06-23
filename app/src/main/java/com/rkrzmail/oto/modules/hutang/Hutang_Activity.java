@@ -1,10 +1,9 @@
-package com.rkrzmail.oto.modules.jurnal;
+package com.rkrzmail.oto.modules.hutang;
 
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,8 +13,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -24,63 +21,52 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
-import com.rkrzmail.srv.NsonAutoCompleteAdapter;
-import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 
-public class DaftarJurnal_Activity extends AppActivity {
+public class Hutang_Activity extends AppActivity {
 
-    private RecyclerView rvJurnal;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_basic_3);
-        initToolbar();
+        setContentView(R.layout.activity_list_basic);
         initComponent();
     }
 
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Jurnal");
+        getSupportActionBar().setTitle("Hutang");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.animate().translationY(-toolbar.getBottom()).setInterpolator(new AccelerateInterpolator()).start();
     }
 
     private void initComponent() {
-        FloatingActionButton fab = findViewById(R.id.fab_tambah);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(), AturJurnal_Activity.class));
-            }
-        });
+        initToolbar();
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_hutang) {
+                    @Override
+                    public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+                        super.onBindViewHolder(viewHolder, position);
 
-        rvJurnal = findViewById(R.id.recyclerView);
+                        viewHolder.find(R.id.tv_tglJatuhTempo_hutang, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_nama_hutang, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_tipe_hutang, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_total_hutang, TextView.class).setText(nListArray.get(position).get("").asString());
+                    }
 
+                }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Nson parent, View view, int position) {
 
-        rvJurnal.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rvJurnal.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_jurnal) {
-            @Override
-            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                super.onBindViewHolder(viewHolder, position);
-                String tglJurnal = Tools.setFormatDayAndMonth(nListArray.get(position).get("TANGGAL_SET").asString());
-
-                viewHolder.find(R.id.tv_tgl_jurnal, TextView.class).setText(tglJurnal);
-                viewHolder.find(R.id.tv_transaksi_jurnal, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_transaksi_jurnal, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_ket_jurnal, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_nominal_jurnal, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_pembayaran_jurnal, TextView.class).setText(nListArray.get(position).get("").asString());
-
-            }
-        });
-
+                    }
+                })
+        );
     }
 
     private void catchData() {
@@ -90,13 +76,15 @@ public class DaftarJurnal_Activity extends AppActivity {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("spotdiscount"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(""), args));
             }
 
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-
+                    nListArray.asArray().clear();
+                    nListArray.asArray().addAll(result.get("data").asArray());
+                    recyclerView.getAdapter().notifyDataSetChanged();
                 } else {
                     showInfo("Gagal");
                 }
@@ -110,11 +98,10 @@ public class DaftarJurnal_Activity extends AppActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_part, menu);
 
-
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         mSearchView = new SearchView(getSupportActionBar().getThemedContext());
-        mSearchView.setQueryHint("Cari Part"); /// YOUR HINT MESSAGE
+        mSearchView.setQueryHint("Cari Nama Terhutang"); /// YOUR HINT MESSAGE
         mSearchView.setMaxWidth(Integer.MAX_VALUE);
 
         final MenuItem searchMenu = menu.findItem(R.id.action_search);
@@ -126,7 +113,7 @@ public class DaftarJurnal_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        adapterSearchView(mSearchView, "search", "caripart", "NAMA");
+        //adapterSearchView(mSearchView, "search", "viewsparepart", "NAMA");
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
 
@@ -136,8 +123,7 @@ public class DaftarJurnal_Activity extends AppActivity {
             public boolean onQueryTextSubmit(String query) {
                 searchMenu.collapseActionView();
                 //filter(null);
-                //cariPart(query);
-
+                //reload(query);
                 return true;
             }
         };

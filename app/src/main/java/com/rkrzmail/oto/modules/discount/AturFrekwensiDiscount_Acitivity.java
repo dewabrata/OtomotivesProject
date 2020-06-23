@@ -1,7 +1,6 @@
 package com.rkrzmail.oto.modules.discount;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -30,7 +29,7 @@ public class AturFrekwensiDiscount_Acitivity extends AppActivity implements View
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_atur_frekwensi_discount__acitivity);
+        setContentView(R.layout.activity_atur_frekwensi_discount);
         initToolbar();
         initComponent();
     }

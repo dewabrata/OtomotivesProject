@@ -1,7 +1,5 @@
 package com.rkrzmail.oto.modules.sparepart;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,10 +7,12 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -21,16 +21,16 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.sparepart.lokasi_part.CariPart_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.srv.RupiahFormat;
 
 import java.util.Map;
 
 public class DaftarJualPart_Activity extends AppActivity {
 
     private static final int REQUEST_DETAIL = 13;
-    private TextView tvTotal;
+    private EditText etTotal;
     private RecyclerView rvTotalJualPart;
     private static final int REQUEST_CARI_PART = 14;
     private SearchView mSearchView;
@@ -42,7 +42,15 @@ public class DaftarJualPart_Activity extends AppActivity {
         initComponent();
     }
 
+    private void initToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Daftar Jual Part");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
     private void initComponent() {
+        initToolbar();
         Intent i = getIntent();
         nListArray.add(Nson.readJson(getIntentStringExtra(i, "part")));
 
@@ -65,9 +73,10 @@ public class DaftarJualPart_Activity extends AppActivity {
                     public int getItemCount() {
                         if (nListArray.size() == 0) {
                             find(R.id.btn_simpan_jualPart, Button.class).setVisibility(View.GONE);
+                            find(R.id.et_totalHarga_jualPart, EditText.class).setVisibility(View.GONE);
                         } else {
                             find(R.id.btn_simpan_jualPart, Button.class).setVisibility(View.VISIBLE);
-
+                            find(R.id.et_totalHarga_jualPart, EditText.class).setVisibility(View.VISIBLE);
                         }
                         return super.getItemCount();
                     }
@@ -85,6 +94,14 @@ public class DaftarJualPart_Activity extends AppActivity {
             }
         });
 
+        find(R.id.et_totalHarga_jualPart, EditText.class).addTextChangedListener(new RupiahFormat(find(R.id.et_totalHarga_jualPart, EditText.class)));
+        for (int j = 0; j < nListArray.size(); j++) {
+            if(nListArray.containsValue("TOTAL")){
+                int total = nListArray.get(j).get("TOTAL").asInteger();
+                total += total;
+                find(R.id.et_totalHarga_jualPart, EditText.class).setText(String.valueOf(total));
+            }
+        }
     }
 
     private void deleteData() {
@@ -153,26 +170,17 @@ public class DaftarJualPart_Activity extends AppActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_part, menu);
 
-        // Get the SearchView and set the searchable configuration
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        mSearchView = new SearchView(getSupportActionBar().getThemedContext());
-        mSearchView.setMaxWidth(Integer.MAX_VALUE);
-
-        final MenuItem searchMenu = menu.findItem(R.id.action_search);
-        searchMenu.setActionView(mSearchView);
-
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_searchPart:
-                Intent i = new Intent(getActivity(), CariPart_Activity.class);
-                startActivityForResult(i, REQUEST_CARI_PART);
-                break;
+        if (item.getItemId() == R.id.action_search) {
+            Intent i = new Intent(this, CariPart_Activity.class);
+            i.putExtra("flag", "ALL");
+            startActivityForResult(i, REQUEST_CARI_PART);
         }
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -181,7 +189,7 @@ public class DaftarJualPart_Activity extends AppActivity {
         if (resultCode == RESULT_OK && requestCode == REQUEST_CARI_PART) {
             nListArray.add(Nson.readJson(getIntentStringExtra(data, "part")));
             rvTotalJualPart.getAdapter().notifyDataSetChanged();
-            find(R.id.tv_totalHarga_jualPart, TextView.class).setText("");
+            //find(R.id.et_totalHarga_jualPart, TextView.class).setText("");
         }
     }
 

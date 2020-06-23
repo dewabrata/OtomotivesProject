@@ -56,6 +56,7 @@
                     android:layout_height="wrap_content"
                     android:hint="FREKWENSI"
                     android:inputType="number"
+                    android:textSize="14sp"
                     android:maxLength="5"
                     android:maxLines="1" />
 
@@ -74,7 +75,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="DISCOUNT"
-                    android:inputType="number"
+                    android:inputType="numberDecimal"
+                    android:textSize="14sp"
                     android:maxLength="5"
                     android:maxLines="1" />
 
@@ -84,7 +86,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp"
                 android:orientation="horizontal">
 

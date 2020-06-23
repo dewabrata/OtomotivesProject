@@ -1,10 +1,15 @@
-package com.rkrzmail.oto.modules.sparepart.lokasi_part;
+package com.rkrzmail.oto.modules.hutang;
 
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -12,6 +17,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -20,87 +28,90 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.gmod.Pendaftaran1;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Calendar;
 import java.util.Map;
 
-public class CariPart_Activity extends AppActivity {
+public class DetailPiutang_Activity extends AppActivity {
 
-    private static final String SEARCH_HISTORY_KEY = "_SEARCH_HISTORY_KEY";
-    private static final int MAX_HISTORY_ITEMS = 10;
-    private Pendaftaran1.AutoSuggestAdapter autoSuggestAdapter;
-    private RecyclerView rvCariPart;
-
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search_toolbar_light);
-        initComponent();
+        setContentView(R.layout.activity_list_basic_2);
     }
 
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Cari Part");
+        getSupportActionBar().setTitle("Detail Piutang");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void initComponent(){
+    private void initComponent() {
         initToolbar();
-        rvCariPart = (RecyclerView) findViewById(R.id.recyclerView);
-        rvCariPart.setLayoutManager(new LinearLayoutManager(this));
-        rvCariPart.setHasFixedSize(true);
-
-        rvCariPart.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_daftar_cari_part){
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_detail_piutang) {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                super.onBindViewHolder(viewHolder, position);
 
-                viewHolder.find(R.id.tv_cari_merkPart, TextView.class).setText(nListArray.get(position).get("MERK").asString());
-                viewHolder.find(R.id.tv_cari_namaPart, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
-                viewHolder.find(R.id.tv_cari_noPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
-                viewHolder.find(R.id.tv_cari_stockPart, TextView.class).setText(nListArray.get(position).get("STOCK").asString());
+                viewHolder.find(R.id.cb_check_detailPiutang, CheckBox.class);
+                viewHolder.find(R.id.tv_biaya_detailPiutang, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_layanan_detailPiutang, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_nopol_detailPiutang, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_part_detailPiutang, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_tgl_detailPiutang, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_total_detailPiutang, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_jenisKendaraan_detailPiutang, TextView.class).setText(nListArray.get(position).get("").asString());
             }
 
-        }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(Nson parent, View view, int position) {
-                        Intent intent = new Intent();
-                        intent.putExtra("part", nListArray.get(position).toJson());
-                        intent.putExtra("flag all", nListArray.get("flag").get("ALL").asString());
-                        intent.putExtra("flag no part", nListArray.get("flag").get("NOPART").asString());
-                        setResult(RESULT_OK, intent);
-                        finish();
-                    }
-                })
-        );
+            @Override
+            public int getItemCount() {
+                if (nListArray.size() == 0) {
+                    find(R.id.btn_simpan).setVisibility(View.GONE);
+                } else {
+                    find(R.id.btn_simpan).setVisibility(View.VISIBLE);
 
-        cariPart("");
+                }
+                return super.getItemCount();
+            }
+        });
+        find(R.id.btn_simpan, Button.class).setText("XLS INVOICE");
+        find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        catchData();
     }
 
-    private void cariPart(final String cari){
+    private void catchData() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("flag", getIntentStringExtra("flag"));
-                //args.put("flag", "NOPART");
-                args.put("search", cari);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("caripart"), args));
+                args.put("action", "view");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(""), args));
             }
 
             @Override
             public void runUI() {
-                if(result.get("status").asString().equalsIgnoreCase("OK")){
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
-                    rvCariPart.getAdapter().notifyDataSetChanged();
-                }else{
-                    showError("Gagal Mencari Part");
+                    recyclerView.getAdapter().notifyDataSetChanged();
+                } else {
+                    showError("Mohon Di Coba Kembali");
                 }
             }
         });
@@ -127,7 +138,7 @@ public class CariPart_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        adapterSearchView(mSearchView, "search", "caripart", "NAMA");
+        //adapterSearchView(mSearchView, "search", "viewsparepart", "NAMA");
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
 
@@ -136,7 +147,8 @@ public class CariPart_Activity extends AppActivity {
 
             public boolean onQueryTextSubmit(String query) {
                 searchMenu.collapseActionView();
-                cariPart(query);
+                //filter(null);
+                //reload(query);
                 return true;
             }
         };
