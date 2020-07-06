@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -54,9 +55,7 @@ public class User_Activity extends AppActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AturUser_Activity.class);
-                startActivity(intent);
-                finish();
+                startActivityForResult(new Intent(getActivity(), AturUser_Activity.class), 10);
             }
         });
 
@@ -74,14 +73,14 @@ public class User_Activity extends AppActivity {
                 viewHolder.find(R.id.txtPosisi, TextView.class).setText(nListArray.get(position).get("POSISI").asString());
                 viewHolder.find(R.id.txtTglMasuk, TextView.class).setText(nListArray.get(position).get("TANGGAL_MASUK").asString());
                 viewHolder.find(R.id.txtStatus, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
-
             }
+
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
                 Intent intent = new Intent(getActivity(), AturUser_Activity.class);
                 intent.putExtra("data", nListArray.get(position).toJson());
-                startActivityForResult(intent, RESULT_OK);
+                startActivityForResult(intent, 10);
             }
         }));
         reload("");
@@ -111,6 +110,15 @@ public class User_Activity extends AppActivity {
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 10) {
+                reload("");
+            }
+        }
+    }
 
     SearchView mSearchView;
 

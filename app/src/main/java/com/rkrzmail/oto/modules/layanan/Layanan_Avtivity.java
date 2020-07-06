@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -42,13 +43,13 @@ public class Layanan_Avtivity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_layanan__avtivity);
+        setContentView(R.layout.activity_list_basic_3);
         initToolbar();
         initComponent();
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_layanan);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Layanan");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -56,18 +57,15 @@ public class Layanan_Avtivity extends AppActivity {
     }
 
     private void initComponent(){
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah_layanan);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AturLayanan_Activity.class);
-                startActivity(intent);
-                finish();
+                startActivityForResult(new Intent(getActivity(), AturLayanan_Activity.class), 10);
             }
         });
 
-        rvLayanan = (RecyclerView) findViewById(R.id.recyclerView_layanan);
+        rvLayanan = (RecyclerView) findViewById(R.id.recyclerView);
         rvLayanan.setLayoutManager(new LinearLayoutManager(this));
         rvLayanan.setHasFixedSize(true);
 
@@ -104,8 +102,6 @@ public class Layanan_Avtivity extends AppActivity {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
                     rvLayanan.getAdapter().notifyDataSetChanged();
-                    Log.d(TAG, result.get("status").asString());
-                    Log.d("NAMA", result.get("search").get("data").asString());
 
                 } else {
                     Log.d(TAG, result.get("status").asString());
@@ -113,6 +109,16 @@ public class Layanan_Avtivity extends AppActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 10) {
+                catchData("");
+            }
+        }
     }
 
     SearchView mSearchView;

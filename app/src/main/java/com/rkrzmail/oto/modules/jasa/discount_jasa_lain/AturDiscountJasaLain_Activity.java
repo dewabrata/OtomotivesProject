@@ -27,7 +27,7 @@ public class AturDiscountJasaLain_Activity extends AppActivity implements View.O
     private MultiSelectionSpinner spPekerjaan;
     private EditText etDiscPart;
     private TextView tvTgl;
-    private Spinner spAktifitas, spKategori;
+    private Spinner spAktifitas, spMasterPart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +49,9 @@ public class AturDiscountJasaLain_Activity extends AppActivity implements View.O
         tvTgl = findViewById(R.id.tv_tglEffect_discJasa);
         spPekerjaan = findViewById(R.id.sp_pekerjaan_discJasa);
         spAktifitas = findViewById(R.id.sp_aktifitas_discJasa);
-        spKategori = findViewById(R.id.sp_kategori_discJasa);
+        spMasterPart = findViewById(R.id.sp_masterPart_discJasa);
 
-        setSpinnerFromApi(spKategori, "nama", "PART", "viewmst", "KATEGORI");
+        setSpinnerFromApi(spMasterPart, "nama", "PART", "viewmst", "KATEGORI");
         setMultiSelectionSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN");
 
         etDiscPart.addTextChangedListener(new PercentFormat(etDiscPart));
@@ -78,7 +78,7 @@ public class AturDiscountJasaLain_Activity extends AppActivity implements View.O
                 args.put("action", "add");
                 args.put("tanggal", tvTgl.getText().toString());
                 args.put("pekerjaan", spPekerjaan.getSelectedItemsAsString());
-                args.put("kategori", spKategori.getSelectedItem().toString());
+                args.put("kategori", spMasterPart.getSelectedItem().toString());
                 //spAktifitas.getSelectedItem().toString()
                 args.put("aktivitas", "OKAY");
                 args.put("pesan", find(R.id.cb_mssg_discJasa, CheckBox.class).isChecked() ? "YA" : "TIDAK");
@@ -106,7 +106,7 @@ public class AturDiscountJasaLain_Activity extends AppActivity implements View.O
         if (intent.hasExtra("")) {
             etDiscPart.setText(data.get("").asString());
             spPekerjaan.setSelection(data.get("").asStringArray());
-            spKategori.setSelection(Tools.getIndexSpinner(spKategori, data.get("").asString()));
+            spMasterPart.setSelection(Tools.getIndexSpinner(spMasterPart, data.get("").asString()));
             spAktifitas.setSelection(Tools.getIndexSpinner(spAktifitas, data.get("").asString()));
             tvTgl.setText(data.get("").asString());
 
@@ -138,7 +138,7 @@ public class AturDiscountJasaLain_Activity extends AppActivity implements View.O
                 args.put("action", "update");
                 args.put("tanggal", tvTgl.getText().toString());
                 args.put("pekerjaan", spPekerjaan.getSelectedItemsAsString());
-                args.put("kategori", spKategori.getSelectedItem().toString());
+                args.put("kategori", spMasterPart.getSelectedItem().toString());
                 args.put("aktifitas", spAktifitas.getSelectedItem().toString());
                 args.put("pesan", find(R.id.cb_mssg_discJasa, CheckBox.class).isChecked() ? "YA" : "TIDAK");
                 args.put("diskon", etDiscPart.getText().toString());

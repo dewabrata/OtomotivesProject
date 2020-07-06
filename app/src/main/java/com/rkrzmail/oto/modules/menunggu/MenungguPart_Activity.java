@@ -1,11 +1,8 @@
-package com.rkrzmail.oto.modules.outsource;
+package com.rkrzmail.oto.modules.menunggu;
 
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,94 +19,75 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.jasa.discount_jasa_lain.AturDiscountJasaLain_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
-import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 
-public class OutSource_Activity extends AppActivity {
+public class MenungguPart_Activity extends AppActivity {
 
-    private RecyclerView recyclerView;
-    
+    private RecyclerView rvTungguPart;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_basic_3);
+        setContentView(R.layout.activity_list_basic);
         initComponent();
     }
 
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Out Source");
+        getSupportActionBar().setTitle("Menunggu Part");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initComponent() {
         initToolbar();
-        FloatingActionButton fab = findViewById(R.id.fab_tambah);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(), AturDiscountJasaLain_Activity.class));
-                finish();
-            }
-        });
-
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_outsource) {
+        rvTungguPart = findViewById(R.id.recyclerView);
+        rvTungguPart.setLayoutManager(new LinearLayoutManager(this));
+        rvTungguPart.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_menunggu_part) {
                     @Override
                     public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                         super.onBindViewHolder(viewHolder, position);
 
-                       // String tglSet = Tools.setFormatDayAndMonth(nListArray.get(position).get("TANGGAL").asString());
-
-                        viewHolder.find(R.id.tv_nopol_outS, TextView.class).setText(nListArray.get(position).get("KATEGORI_JASA_LAIN").asString());
-                        viewHolder.find(R.id.tv_tglCheckin_outS, TextView.class).setText("");
-                        viewHolder.find(R.id.tv_tglOutS_outS, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_tglSelesai_outS, TextView.class).setText(nListArray.get(position).get("DISC_JASA").asString());
-                        viewHolder.find(R.id.tv_biaya_outS, TextView.class).setText(nListArray.get(position).get("DISC_JASA").asString());
-                        viewHolder.find(R.id.tv_pembayaran_outS, TextView.class).setText(nListArray.get(position).get("DISC_JASA").asString());
-                        viewHolder.find(R.id.tv_supplier_outS, TextView.class).setText(nListArray.get(position).get("DISC_JASA").asString());
+                        viewHolder.find(R.id.tv_tglCheckin_tungguPart, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_lamaHari_tungguPart, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_nopol_tungguPart, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_noHp_tungguPart, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_namaP_tungguPart, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_status_tungguPart, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_noPart_tungguPart, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_jumlah_tungguPart, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_namaPart_tungguPart, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_tglUpdate_tungguPart, TextView.class).setText(nListArray.get(position).get("").asString());
 
                     }
                 }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(Nson parent, View view, int position) {
-                        Intent i = new Intent(getActivity(), AturDiscountJasaLain_Activity.class);
-                        i.putExtra("data", nListArray.get(position).toJson());
-                        startActivity(i);
+
                     }
                 })
         );
-
-        catchData("");
     }
 
-    private void catchData(final String cari) {
+    private void catchData() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-//                args.put("action", "view");
-//                args.put("search", cari);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(""), args));
             }
 
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    nListArray.asArray().clear();
-                    nListArray.asArray().addAll(result.get("data").asArray());
-                    recyclerView.getAdapter().notifyDataSetChanged();
+
                 } else {
-                    showInfo("GAGAL!");
+                    showInfo("Gagal");
                 }
             }
         });
@@ -121,11 +99,10 @@ public class OutSource_Activity extends AppActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_part, menu);
 
-
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         mSearchView = new SearchView(getSupportActionBar().getThemedContext());
-        mSearchView.setQueryHint("Cari No. Polisi"); /// YOUR HINT MESSAGE
+        mSearchView.setQueryHint("Cari Part"); /// YOUR HINT MESSAGE
         mSearchView.setMaxWidth(Integer.MAX_VALUE);
 
         final MenuItem searchMenu = menu.findItem(R.id.action_search);
@@ -137,7 +114,7 @@ public class OutSource_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        //adapterSearchView(mSearchView, "search", "aturdisconjasalain", "KATEGORI");
+        //adapterSearchView(mSearchView, "search", "viewsparepart", "NAMA");
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
 
@@ -147,11 +124,12 @@ public class OutSource_Activity extends AppActivity {
             public boolean onQueryTextSubmit(String query) {
                 searchMenu.collapseActionView();
                 //filter(null);
-                //catchData(query);
+                //reload(query);
                 return true;
             }
         };
         mSearchView.setOnQueryTextListener(queryTextListener);
         return true;
     }
+
 }

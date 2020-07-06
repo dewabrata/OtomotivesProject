@@ -18,7 +18,6 @@
             android:layout_height="wrap_content"
             android:theme="@style/AppTheme.AppBarOverlay">
 
-
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -251,6 +250,8 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginRight="10dp"
+                    android:background="@drawable/border_solid"
+                    android:padding="10dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -258,8 +259,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="POLA HARGA JUAL"
-                        android:textStyle="bold" />
+                        android:text="POLA HARGA JUAL" />
 
                     <Spinner
                         android:id="@+id/sp_polaHarga_part"
@@ -295,6 +295,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
                     android:stretchColumns="*">
 
                     <TableRow>
@@ -306,8 +307,8 @@
                             android:layout_gravity="start"
                             android:background="@drawable/btn_rounded_accent"
                             android:text="HAPUS"
-                            android:textColor="@android:color/white"
-                            android:visibility="gone" />
+                            android:visibility="gone"
+                            android:textColor="@android:color/white" />
 
 
                         <Button
@@ -315,6 +316,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="end"
+                            android:layout_column="50"
+                            android:layout_marginStart="5dp"
                             android:background="@drawable/btn_rounded_accent"
                             android:text="Simpan"
                             android:textColor="@android:color/white" />
@@ -324,7 +327,9 @@
                 </TableLayout>
 
             </LinearLayout>
+
         </ScrollView>
+
     </LinearLayout>
 
 </FrameLayout>

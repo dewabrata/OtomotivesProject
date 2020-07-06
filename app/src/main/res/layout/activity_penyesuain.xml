@@ -23,14 +23,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar_penyesuaian"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/colorPrimary"
-                    app:popupTheme="@style/AppTheme.PopupOverlay">
+                <include layout="@layout/toolbar" />
 
-                </android.support.v7.widget.Toolbar>
+                <ImageView
+                    android:id="@+id/imgBarcode_penyesuaian"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right|center_vertical"
+                    android:padding="5dp"
+                    app:srcCompat="@drawable/scan"
+                    tools:ignore="RtlHardcoded" />
 
             </FrameLayout>
 
@@ -41,7 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:orientation="vertical"
             android:padding="5dp">
 
@@ -53,16 +55,17 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:orientation="horizontal">
+                    android:background="@drawable/border_solid"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:padding="13dp">
 
                     <TextView
                         android:id="@+id/textView20"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="SEBAB PENYESUAIN"
-                        android:textStyle="bold" />
+                        android:text="SEBAB PENYESUAIN" />
 
                     <Spinner
                         android:id="@+id/sp_penyesuaian"
@@ -75,16 +78,18 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:orientation="horizontal">
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/border_solid"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:padding="13dp">
 
                     <TextView
                         android:id="@+id/textView21"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="NO. FOLDER LAIN"
-                        android:textStyle="bold" />
+                        android:text="NO. FOLDER LAIN" />
 
                     <Spinner
                         android:id="@+id/sp_noFolder_penyesuaian"
@@ -94,31 +99,39 @@
 
                 </LinearLayout>
 
-                <LinearLayout
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:orientation="horizontal">
+                    android:layout_marginTop="5dp">
 
-
-                    <android.support.design.widget.TextInputLayout
-                        android:layout_width="wrap_content"
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/et_ket_penyesuaian"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_weight="1">
+                        android:gravity="top|left"
+                        android:hint="KETERANGAN"
+                        android:inputType="textCapSentences|textMultiLine"
+                        android:maxLines="10"
+                        android:textSize="14sp" />
 
-                        <android.support.design.widget.TextInputEditText
-                            android:id="@+id/et_ket_penyesuaian"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="top|left"
-                            android:hint="Tambahkan Keterangan"
-                            android:maxLines="10"
-                            android:lines="5"/>
-                    </android.support.design.widget.TextInputLayout>
+                </android.support.design.widget.TextInputLayout>
 
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:hint="USER SAKSI">
 
-                </LinearLayout>
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/et_userSaksi_penyesuaian"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:textSize="14sp" />
+
+                </android.support.design.widget.TextInputLayout>
 
             </LinearLayout>
 
@@ -131,8 +144,7 @@
                 android:layout_marginRight="10dp"
                 android:background="@drawable/btn_rounded_accent"
                 android:text="SIMPAN"
-                android:textColor="@color/white_transparency" />
-
+                android:textColor="@android:color/white" />
 
         </LinearLayout>
 

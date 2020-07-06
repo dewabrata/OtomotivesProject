@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".modules.sparepart.lokasi_part.stock_opname.StockOpname_Activity">
 
-
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,11 +42,35 @@
             android:layout_marginRight="10dp"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/border_solid"
+                android:padding="10dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView35"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:text="LOKASI" />
+
+                <Spinner
+                    android:id="@+id/sp_lokasi_stockOpname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/lokasi_penempatan_part"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
 
             <android.support.design.widget.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:textAlignment="center">
 
                 <EditText
@@ -55,7 +78,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:layout_margin="5dp"
                     android:enabled="false"
                     android:hint="NO. FOLDER"
                     android:textSize="14sp" />
@@ -67,6 +89,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:textAlignment="center">
 
                 <EditText
@@ -74,7 +97,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:layout_margin="5dp"
                     android:enabled="false"
                     android:hint="NO. PART"
                     android:textSize="14sp" />
@@ -85,13 +107,13 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:textAlignment="center">
 
                 <EditText
                     android:id="@+id/et_namaPart_stockOpname"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="5dp"
                     android:enabled="false"
                     android:hint="NAMA PART"
                     android:textSize="14sp" />
@@ -102,6 +124,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:textAlignment="center">
 
                 <EditText
@@ -109,7 +132,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:layout_margin="5dp"
                     android:enabled="false"
                     android:hint="JUMLAH DATA"
                     android:textSize="14sp" />
@@ -120,6 +142,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:textAlignment="center">
 
                 <EditText
@@ -127,7 +150,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:layout_margin="5dp"
                     android:hint="JUMLAH AKHIR"
                     android:inputType="number"
                     android:maxLength="10"

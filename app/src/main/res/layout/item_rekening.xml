@@ -4,27 +4,23 @@
     xmlns:card_view="http://schemas.android.com/tools"
     android:id="@+id/cardView"
     android:layout_width="match_parent"
-    android:layout_height="30dp"
+    android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:layout_marginLeft="7dp"
     android:layout_marginTop="4dp"
     android:layout_marginRight="7dp"
     android:layout_marginBottom="4dp"
     android:padding="10dp"
-    app:cardElevation="5dp"
+    app:cardElevation="2dp"
     app:cardCornerRadius="10dp">
 
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:stretchColumns="*"
-        android:gravity="center"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp">
+        android:padding="10dp">
 
-        <TableRow
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp">
+        <TableRow>
 
             <TextView
                 android:id="@+id/tv_bank_rekening"
@@ -38,7 +34,39 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="No.Rekening"
+                android:layout_gravity="end"
                 android:textStyle="bold" />
+
+        </TableRow>
+
+        <TableRow android:layout_marginTop="5dp">
+
+            <TextView
+                android:id="@+id/tv_namaRek_rekening"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nama Rekening"
+                android:textStyle="bold" />
+
+        </TableRow>
+
+        <TableRow android:layout_marginTop="5dp">
+
+            <TextView
+                android:id="@+id/tv_edc_rekening"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="EDC"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_offUs_rekening"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="OFF US"
+                android:layout_gravity="end"
+                android:textStyle="bold" />
+
         </TableRow>
 
     </TableLayout>

@@ -200,27 +200,15 @@
 
             </FrameLayout>
 
-            <LinearLayout
+            <Button
+                android:id="@+id/btn_lokasi_regist"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="10dp">
-
-                <TextView
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:text="PETA LOKASI" />
-
-                <TextView
-                    android:id="@+id/tv_lokasi_regist"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textStyle="bold"
-                    android:drawableLeft="@drawable/ic_location" />
-
-            </LinearLayout>
+                android:text="PETA LOKASI"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/btn_rounded_accent"
+                android:textColor="@android:color/white" />
 
             <CheckBox
                 android:id="@+id/cb_setuju_regist"

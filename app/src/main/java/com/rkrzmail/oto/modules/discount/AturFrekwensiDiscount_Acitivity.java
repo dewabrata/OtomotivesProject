@@ -30,82 +30,140 @@ public class AturFrekwensiDiscount_Acitivity extends AppActivity implements View
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_atur_frekwensi_discount);
-        initToolbar();
         initComponent();
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_atur_freDisc);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Atur Frekwensi Discount");
+        getSupportActionBar().setTitle("Frekwensi Discount");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initComponent() {
-        Nson nson = Nson.readJson(getIntentStringExtra(""));
-        Intent intent = getIntent();
-
-        if (intent.hasExtra("")) {
-            find(R.id.btn_hapus_freDisc, Button.class).setVisibility(View.VISIBLE);
-            find(R.id.btn_hapus_freDisc, Button.class).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    deleteData();
-                }
-            });
-        }
-
+        initToolbar();
         tvTgl = findViewById(R.id.tv_tglEffect_freDisc);
         etDisc = findViewById(R.id.et_disc_freDisc);
         etFrekwensi = findViewById(R.id.et_frekwensi_freDisc);
+        spLayanan = findViewById(R.id.sp_paketLayanan_freDisc);
+
+        setSpinnerFromApi(spLayanan, "", "", "viewlayanan", "NAMA_LAYANAN");
 
         etDisc.addTextChangedListener(new PercentFormat(etDisc));
         tvTgl.setOnClickListener(this);
         find(R.id.btn_simpan_freDisc, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                catchData();
+                saveData();
             }
         });
+
+        loadData();
     }
 
-    private void catchData() {
+    private void loadData() {
+        final Nson nson = Nson.readJson(getIntentStringExtra("data"));
+        final Intent intent = getIntent();
+        if (intent.hasExtra("data")) {
+            tvTgl.setText(nson.get("TANGGAL").asString());
+            etDisc.setText(nson.get("DISCOUNT").asString());
+            etFrekwensi.setText(nson.get("TANGGAL").asString());
+            spLayanan.setSelection(Tools.getIndexSpinner(spLayanan, nson.get("PAKET_LAYANAN").asString()));
+
+            find(R.id.btn_hapus_freDisc, Button.class).setVisibility(View.VISIBLE);
+            find(R.id.btn_hapus_freDisc, Button.class).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    deleteData(nson);
+                }
+            });
+
+            find(R.id.btn_simpan_freDisc, Button.class).setText("UPDATE");
+            find(R.id.btn_simpan_freDisc, Button.class).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    updateData(nson);
+                }
+            });
+        }
+    }
+
+    private void saveData() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("referal"), args));
+//                add : CID, action(add), tanggal, paket, frekuensi, diskon
+                args.put("action", "add");
+                args.put("tanggal", tvTgl.getText().toString());
+                args.put("paket", spLayanan.getSelectedItem().toString());
+                args.put("frekuensi", etFrekwensi.getText().toString());
+                args.put("diskon", etDisc.getText().toString());
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturfrekuensidiskon"), args));
             }
 
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-
+                    setResult(RESULT_OK);
+                    finish();
                 } else {
-                    showInfo("Gagal");
+                    showInfo("Gagal menyimpan Aktifitas");
                 }
             }
         });
     }
 
-    private void deleteData() {
+    private void updateData(final Nson nson) {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+//                update : CID, action(update), id, tanggal, paket, frekuensi, diskon
+                args.put("action", "update");
+                args.put("id", nson.get("ID").asString());
+                args.put("tanggal", tvTgl.getText().toString());
+                args.put("paket", spLayanan.getSelectedItem().toString());
+                args.put("frekuensi", etFrekwensi.getText().toString());
+                args.put("diskon", etDisc.getText().toString());
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturfrekuensidiskon"), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    setResult(RESULT_OK);
+                    finish();
+                } else {
+                    showInfo("Gagal memperbaharui Aktifitas");
+                }
+            }
+        });
+    }
+
+    private void deleteData(final Nson nson) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("referal"), args));
+                //                delete : CID, action(delete), id
+//                update : CID, action(update), id, tanggal, paket, frekuensi, diskon
+                args.put("action", "delete");
+                args.put("id", nson.get("ID").asString());
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturfrekuensidiskon"), args));
             }
 
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-
+                    setResult(RESULT_OK);
+                    finish();
                 } else {
-                    showInfo("Gagal");
+                    showInfo("Gagal megnhapus Aktifitas");
                 }
             }
         });

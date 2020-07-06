@@ -15,25 +15,17 @@
         android:layout_gravity="center"
         android:orientation="vertical">
 
-
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="@style/AppTheme.AppBarOverlay">
 
-
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar_atur_lokasi_part"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/colorPrimary"
-                    app:popupTheme="@style/AppTheme.PopupOverlay">
+                <include layout="@layout/toolbar" />
 
-                </android.support.v7.widget.Toolbar>
             </FrameLayout>
 
         </android.support.design.widget.AppBarLayout>
@@ -43,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:orientation="vertical"
             android:padding="10dp">
 
@@ -51,7 +43,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
 
                 <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -66,14 +57,9 @@
                         android:id="@+id/et_no_part"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="5dp"
-                        android:layout_weight="1"
-                        android:ems="10"
                         android:enabled="false"
                         android:hint="NO. PART"
-                        android:inputType="number"
-                        android:padding="5dp"
-                        android:textAlignment="center" />
+                        android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -91,13 +77,9 @@
                         android:id="@+id/et_nama_part"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="5dp"
-                        android:layout_weight="1"
-                        android:ems="10"
                         android:enabled="false"
+                        android:textSize="14sp"
                         android:hint="NAMA PART"
-                        android:inputType="number"
-                        android:padding="5dp"
                         android:textAlignment="center" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -112,18 +94,13 @@
                     app:helperText="Disable"
                     app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
 
-
                     <EditText
                         android:id="@+id/et_merk_part"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="5dp"
-                        android:layout_weight="2"
-                        android:ems="10"
+                        android:textSize="14sp"
                         android:enabled="false"
                         android:hint="MERK PART"
-                        android:inputType="number"
-                        android:padding="5dp"
                         android:textAlignment="center" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -138,43 +115,46 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
+                    android:background="@drawable/border_solid"
+                    android:padding="10dp"
+                    android:layout_marginTop="10dp"
                     android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/textView20"
-                        android:layout_width="wrap_content"
+                        android:layout_width="150dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="LOKASI"
-                        android:textStyle="bold" />
+                        android:text="LOKASI" />
 
                     <Spinner
                         android:id="@+id/sp_lokasiPart"
-                        android:layout_width="160dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:entries="@array/lokasi_penempatan_part"
                         android:textAlignment="center" />
+
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
+                    android:background="@drawable/border_solid"
+                    android:padding="10dp"
+                    android:layout_marginTop="10dp"
                     android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/textView21"
-                        android:layout_width="wrap_content"
+                        android:layout_width="150dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="PENEMPATAN"
-                        android:textStyle="bold" />
+                        android:text="PENEMPATAN" />
 
                     <Spinner
                         android:id="@+id/sp_penempatan_part"
-                        android:layout_width="160dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:entries="@array/penempatan_lokasi_part"
                         android:textAlignment="center" />
 
@@ -183,21 +163,23 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
+                    android:background="@drawable/border_solid"
+                    android:padding="10dp"
+                    android:gravity="center"
+                    android:layout_marginTop="10dp"
                     android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/textView22"
-                        android:layout_width="wrap_content"
+                        android:layout_width="150dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="NO. RAK / PALET"
-                        android:textStyle="bold" />
+                        android:text="NO. RAK / PALET" />
 
                     <Spinner
                         android:id="@+id/sp_norakPalet_part"
-                        android:layout_width="100dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:textAlignment="center" />
 
                 </LinearLayout>
@@ -205,44 +187,47 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
+                    android:background="@drawable/border_solid"
+                    android:padding="10dp"
+                    android:gravity="center"
+                    android:layout_marginTop="10dp"
                     android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/textView27"
-                        android:layout_width="wrap_content"
+                        android:layout_width="150dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="TINKAT RAK"
-                        android:textStyle="bold" />
+                        android:text="TINKAT RAK" />
 
                     <Spinner
                         android:id="@+id/sp_tinggiRak"
-                        android:layout_width="100dp"
+                        android:layout_width="wrap_content"
+                        android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:textAlignment="center" />
 
                 </LinearLayout>
 
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
+                    android:background="@drawable/border_solid"
+                    android:padding="10dp"
+                    android:gravity="center"
+                    android:layout_marginTop="10dp"
                     android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/textView26"
-                        android:layout_width="wrap_content"
+                        android:layout_width="150dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="NO. FOLDER"
-                        android:textStyle="bold" />
+                        android:text="NO. FOLDER" />
 
                     <Spinner
                         android:id="@+id/sp_noFolder_part"
-                        android:layout_width="100dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:textAlignment="center" />
 
                 </LinearLayout>
@@ -255,12 +240,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-
                 android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:background="@drawable/btn_rounded_accent"
                 android:text="SIMPAN"
-                android:textColor="@color/white_transparency" />
-
+                android:textColor="@android:color/white" />
 
         </LinearLayout>
 

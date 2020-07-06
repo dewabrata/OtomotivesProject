@@ -22,15 +22,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="10dp">
+                android:background="@drawable/border_solid"
+                android:padding="10dp"
+                android:gravity="center">
 
                 <TextView
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:text="LOKASI LAYANAN"
-                    android:textStyle="bold"
-                    android:textSize="14sp"
-                    android:textColor="@color/grey_900"/>
+                    android:textSize="14sp" />
 
                 <CheckBox
                     android:id="@+id/cb_bengkel_discLayanan"
@@ -54,19 +54,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:background="@drawable/border_solid"
+                android:padding="10dp"
+                android:gravity="center"
                 android:layout_marginTop="10dp">
 
                 <TextView
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:text="PAKET LAYANAN"
-                    android:textStyle="bold"
-                    android:textSize="14sp"
-                    android:textColor="@color/grey_900"/>
+                    android:textSize="14sp" />
 
                 <Spinner
                     android:id="@+id/sp_paketLayanan_discLayanan"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textAlignment="center" />
@@ -77,19 +78,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="10dp"
+                android:background="@drawable/border_solid"
+                android:padding="10dp"
+                android:gravity="center">
 
                 <TextView
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:text="PEKERJAAN"
-                    android:textStyle="bold"
-                    android:textSize="14sp"
-                    android:textColor="@color/grey_900"/>
+                    android:textSize="14sp" />
 
                 <com.rkrzmail.srv.MultiSelectionSpinner
                     android:id="@+id/sp_pekerjaan_discLayanan"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textAlignment="center" />
@@ -118,14 +120,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:background="@drawable/border_solid"
+                android:padding="10dp"
+                android:gravity="center"
                 android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:text="TANGGAL EFEKTIVE"
-                    android:textStyle="bold"
-                    android:textColor="@color/grey_900"/>
+                    android:text="TANGGAL EFEKTIVE" />
 
                 <TextView
                     android:id="@+id/tv_tglEffect_discLayanan"
@@ -170,6 +173,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_column="50"
+                        android:layout_gravity="end"
                         android:background="@drawable/btn_rounded_accent"
                         android:text="@string/simpan_uppercase"
                         android:textColor="@android:color/white" />

@@ -200,6 +200,13 @@
         <item>KREDIT</item>
     </string-array>
 
+    <string-array name="aktivitas_usaha">
+        <item>AKTIVITAS USAHA</item>
+        <item>PERAWATAN/ PERBAIKAN</item>
+        <item>PENJUALAN / PENGGANTIAN PART</item>
+        <item>PENGGANTIAN PART EXTERNAL</item>
+    </string-array>
+
     <string-array name="pos_jurnal">
         <item>PENDAPATAN LAIN</item>
         <item>BIAYA PEMASARAN</item>

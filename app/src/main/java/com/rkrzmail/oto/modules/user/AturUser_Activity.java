@@ -142,7 +142,7 @@ public class AturUser_Activity extends AppActivity implements View.OnClickListen
 
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    startActivity(new Intent(AturUser_Activity.this, User_Activity.class));
+                    setResult(RESULT_OK);
                     finish();
                 } else {
                     showError("Gagal Menambahkan Aktifitas");
@@ -181,7 +181,7 @@ public class AturUser_Activity extends AppActivity implements View.OnClickListen
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     setResult(RESULT_OK);
-                    startActivity(new Intent(AturUser_Activity.this, User_Activity.class));
+                    finish();
                 } else {
                     showError("Gagal Memperbarui Data");
                 }

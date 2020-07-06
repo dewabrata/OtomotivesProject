@@ -4,7 +4,7 @@
     xmlns:card_view="http://schemas.android.com/tools"
     android:id="@+id/cardView"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:layout_marginLeft="7dp"
     android:layout_marginTop="4dp"
@@ -12,7 +12,7 @@
     android:layout_marginBottom="4dp"
     android:layout_weight="5"
     android:padding="10dp"
-    app:cardElevation="3dp"
+    app:cardElevation="2dp"
     app:cardCornerRadius="10dp">
 
     <TableLayout
@@ -20,7 +20,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:stretchColumns="*"
-        android:padding="5dp">
+        android:padding="10dp">
 
         <TableRow>
 
@@ -28,18 +28,18 @@
                 android:id="@+id/tv_namaBengkel_ref"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tanggal"
+                android:text="Nama Bengkel"
                 android:textStyle="bold" />
 
         </TableRow>
 
-        <TableRow>
+        <TableRow android:layout_marginTop="5dp">
 
             <TextView
                 android:id="@+id/tv_namaPemilik_ref"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nama Pelanggan"
+                android:text="Nama Pemilik"
                 android:textStyle="bold" />
 
             <TextView
@@ -51,7 +51,7 @@
 
         </TableRow>
 
-        <TableRow>
+        <TableRow android:layout_marginTop="5dp">
 
             <TextView
                 android:id="@+id/tv_kodeRef_ref"
@@ -62,7 +62,7 @@
 
         </TableRow>
 
-        <TableRow>
+        <TableRow android:layout_marginTop="5dp">
 
             <TextView
                 android:id="@+id/tv_tgl_ref"

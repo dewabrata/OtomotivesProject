@@ -17,23 +17,23 @@
             android:id="@+id/frame_schedule"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="10dp"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
+                android:background="@drawable/border_solid"
+                android:gravity="center"
+                android:padding="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:text="@string/tipe_schedule"
-                    android:textColor="@color/grey_80"
-                    android:textStyle="bold" />
+                    android:textColor="@color/grey_80" />
 
                 <Spinner
                     android:id="@+id/sp_tipe_schedule"
@@ -49,9 +49,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginRight="10dp"
                 android:background="@drawable/border_solid"
                 android:orientation="vertical"
                 android:padding="10dp">
@@ -136,9 +134,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginRight="10dp"
                 android:background="@drawable/border_solid"
                 android:orientation="vertical"
                 android:padding="10dp">
@@ -222,9 +218,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginRight="10dp"
                 android:background="@drawable/border_solid"
                 android:orientation="vertical"
                 android:padding="10dp">
@@ -306,13 +300,10 @@
 
             </LinearLayout>
 
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginRight="10dp"
                 android:background="@drawable/border_solid"
                 android:orientation="vertical"
                 android:padding="10dp">
@@ -398,9 +389,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginRight="10dp"
                 android:background="@drawable/border_solid"
                 android:orientation="vertical"
                 android:padding="10dp">
@@ -487,7 +476,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="20dp"
                 android:layout_marginBottom="30dp"
                 android:background="@drawable/btn_rounded_accent"
                 android:text="@string/simpan_uppercase"

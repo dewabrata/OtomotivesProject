@@ -12,13 +12,14 @@
     android:layout_marginBottom="4dp"
     android:layout_weight="5"
     android:padding="10dp"
-    app:cardElevation="3dp"
+    app:cardElevation="2dp"
     app:cardCornerRadius="10dp">
 
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="10dp"
+        android:padding="10dp"
         android:stretchColumns="*">
 
         <TableRow>
@@ -36,6 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="User"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
         </TableRow>
@@ -47,33 +49,37 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Min Berbayar"
-                android:textSize="12sp" />
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tv_mekanik1_biayaMekanik"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Mekanik 1 (Rp)"
-                android:textSize="12sp" />
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
 
         </TableRow>
 
-        <TableRow>
+        <TableRow android:layout_marginTop="5dp">
 
             <TextView
                 android:id="@+id/tv_mekanik2_biayaMekanik"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Mekanik 2 (Rp)"
-                android:textSize="12sp" />
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tv_mekanik3_biayaMekanik"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Mekanik 3 (Rp)"
-                android:textSize="12sp" />
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
         </TableRow>
 

@@ -24,11 +24,10 @@ import com.rkrzmail.utils.Tools;
 public class TabUsaha_Fragment extends Fragment {
 
     private EditText etNamaBengkel, etAlamat, etBadanUsaha, etKotaKab, etNoponsel, etNib, etNpwp;
-    private TextView tvLokasi;
     private Spinner spAfiliasi, spJaringan, spJumlahUser;
     private Button btnSimpan;
     private CheckBox cbPkp;
-    private MultiSelectionSpinner spJenisKendaraan, spBidangUsaha, spMerkKendaraan;
+    private MultiSelectionSpinner spJenisKendaraan, spBidangUsaha, spMerkKendaraan, spAktivitasUsaha;
     private LinearLayout lyJaringan;
 
     public TabUsaha_Fragment() {
@@ -53,7 +52,6 @@ public class TabUsaha_Fragment extends Fragment {
         etNoponsel = v.findViewById(R.id.et_noPhone_usaha);
         etNib = v.findViewById(R.id.et_nib_usaha);
         etNpwp = v.findViewById(R.id.et_npwp_usaha);
-        tvLokasi = v.findViewById(R.id.tv_lokasi_usaha);
         spAfiliasi = v.findViewById(R.id.sp_afiliasi_usaha);
         spJaringan = v.findViewById(R.id.sp_namaJaringan_usaha);
         spJenisKendaraan = v.findViewById(R.id.sp_jenisKendaraan_usaha);
@@ -63,6 +61,7 @@ public class TabUsaha_Fragment extends Fragment {
         btnSimpan = v.findViewById(R.id.btn_simpan_usaha);
         cbPkp = v.findViewById(R.id.cb_pkp_usaha);
         lyJaringan = v.findViewById(R.id.ly_jaringan_usaha);
+        spAktivitasUsaha = v.findViewById(R.id.sp_aktivitasUsaha_usaha);
 
         validation();
 
@@ -90,6 +89,12 @@ public class TabUsaha_Fragment extends Fragment {
     private void validation() {
         ((ProfileBengkel_Activity) getActivity()).spinnerNoDefaultOffline(spJumlahUser, getResources().getStringArray(R.array.max_jumlah_user));
         ((ProfileBengkel_Activity) getActivity()).spinnerNoDefaultOffline(spAfiliasi, getResources().getStringArray(R.array.afiliasi_usaha));
+        ((ProfileBengkel_Activity) getActivity()).setMultiSelectionSpinnerFromApi(
+                spJenisKendaraan, "nama", "BENGKEL", "viewmst", "TYPE");
+        String[] items = getResources().getStringArray(R.array.aktivitas_usaha);
+        spAktivitasUsaha.setItems(items);
+        spAktivitasUsaha.setSelection(new int[]{});
+
         spAfiliasi.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {

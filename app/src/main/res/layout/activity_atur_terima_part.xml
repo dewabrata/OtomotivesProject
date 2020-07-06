@@ -14,12 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                app:popupTheme="@style/AppTheme.PopupOverlay"/>
+            <include layout="@layout/toolbar" />
 
         </FrameLayout>
 
@@ -45,9 +40,8 @@
 
                 <TextView
                     android:id="@+id/textView46"
-                    android:layout_width="wrap_content"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:text="TIPE SUPPLIER"
                     android:textStyle="bold" />
 
@@ -69,12 +63,11 @@
                 android:layout_margin="10dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:text="NAMA SUPPLIER"
                     android:textColor="@color/red_900"
-                    android:textStyle="bold"
-                    android:layout_weight="1" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/txtNamaSupplier"
@@ -154,11 +147,6 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="5dp">
 
                 <LinearLayout
                     android:id="@+id/layout_pembayaran"
@@ -171,9 +159,8 @@
 
                     <TextView
                         android:id="@+id/textView41"
-                        android:layout_width="wrap_content"
+                        android:layout_width="150dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:text="PEMABAYARAN"
                         android:textStyle="bold" />
 
@@ -186,7 +173,30 @@
                         android:textAlignment="center" />
 
                 </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:text="REK. ASAL"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/sp_rekAsal_terimaPart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="center" />
+
             </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"

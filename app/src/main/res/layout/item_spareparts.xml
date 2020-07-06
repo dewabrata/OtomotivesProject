@@ -7,7 +7,7 @@
     <android.support.v7.widget.CardView
         android:layout_margin="5dp"
         app:cardCornerRadius="6dp"
-        app:cardElevation="3dp"
+        app:cardElevation="2dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -53,12 +53,21 @@
                         android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
                     <TextView
-                        android:id="@+id/txtStock"
+                        android:id="@+id/tv_StockMinStock_spareparts"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_medium"
-                        android:text="Stock"
+                        android:text="Stock / Min Stock"
                         android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+                <TextView
+                    android:id="@+id/tv_keluar_spareparts"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_medium"
+                    android:text="Keluar"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
 
             </LinearLayout>
 
@@ -89,21 +98,26 @@
                         android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
                     <TextView
-                        android:id="@+id/txtTerjual"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_medium"
-                        android:text="Terjual"
                         android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
                     <TextView
-                        android:id="@+id/txtMinStock"
+                        android:id="@+id/tv_pending_spareparts"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_medium"
-                        android:text="Min Stock"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                        android:textColor="#FF0000" />
+                        android:text="Pending"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+                <TextView
+                    android:id="@+id/tv_terpasang_spareparts"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_medium"
+                    android:text="Terpasang"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
             </LinearLayout>
         </LinearLayout>

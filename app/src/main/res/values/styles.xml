@@ -53,5 +53,10 @@
         <item name="colorAccent">@color/colorPrimary</item>
     </style>
 
+    <style name="Widget.MaterialComponents.TextInputEditText.OutlinedBox." parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:textViewStyle">
+            @style/Widget.MaterialComponents.TextInputLayout.OutlinedBox
+        </item>
+    </style>
 
     </resources>

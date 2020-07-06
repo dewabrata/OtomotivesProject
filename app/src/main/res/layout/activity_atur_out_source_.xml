@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    tools:context=".modules.outsource.AturOutSource_Activity">
+    tools:context=".modules.menunggu.AturOutSource_Activity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"

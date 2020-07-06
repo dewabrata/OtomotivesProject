@@ -24,7 +24,7 @@ public class DeskripsiLayanan_Activiy extends AppActivity {
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_deskripsi_layanan);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Deskripsi Layanan");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

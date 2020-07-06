@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +22,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
@@ -33,32 +35,29 @@ public class PartKeluar_Activity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_part_keluar_);
+        setContentView(R.layout.activity_list_basic_3);
         initComponent();
     }
 
     private void initToolbar() {
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_partKeluar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Part Keluar");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //toolbar.animate().translationY(-toolbar.getBottom()).setInterpolator(new AccelerateInterpolator()).start();
     }
 
 
     private void initComponent() {
         initToolbar();
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah_partKeluar);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), PengisianPartKeluar_Activity.class));
-                finish();
+                startActivityForResult(new Intent(getActivity(), CariPart_Activity.class), 10);
             }
         });
 
-        rvPartKeluar = (RecyclerView) findViewById(R.id.recyclerView_partKeluar);
+        rvPartKeluar = (RecyclerView) findViewById(R.id.recyclerView);
         rvPartKeluar.setLayoutManager(new LinearLayoutManager(this));
         rvPartKeluar.setHasFixedSize(true);
 
@@ -70,7 +69,7 @@ public class PartKeluar_Activity extends AppActivity {
                 if (nListArray.get("MERK_PART").asString() == null) {
                     find(R.id.tv_cari_merkPart, TextView.class).setVisibility(View.GONE);
                 }
-
+                //stock = jumlah sisa
                 viewHolder.find(R.id.tv_cari_merkPart, TextView.class).setText(nListArray.get(position).get("").asString());
                 viewHolder.find(R.id.tv_cari_namaPart, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
                 viewHolder.find(R.id.tv_cari_noPart, TextView.class).setText(nListArray.get(position).get("NO_PART_ID").asString());
@@ -78,6 +77,8 @@ public class PartKeluar_Activity extends AppActivity {
 
             }
         });
+
+        catchData("");
     }
 
     private void catchData(final String cari) {
@@ -87,8 +88,9 @@ public class PartKeluar_Activity extends AppActivity {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "view");
                 args.put("search", cari);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("partKeluar"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturpartkeluar"), args));
             }
 
             @Override
@@ -102,6 +104,23 @@ public class PartKeluar_Activity extends AppActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case 10:
+                    Intent i = new Intent(getActivity(), PengisianPartKeluar_Activity.class);
+                    i.putExtra("part", getIntentStringExtra(data, "part"));
+                    startActivityForResult(i, 11);
+                    break;
+                case 11:
+                    catchData("");
+                    break;
+            }
+        }
     }
 
     SearchView mSearchView;
@@ -125,7 +144,7 @@ public class PartKeluar_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        adapterSearchView(mSearchView, "search", "caripart", "NAMA");
+        adapterSearchView(mSearchView, "search", "aturpartkeluar", "NAMA");
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
 

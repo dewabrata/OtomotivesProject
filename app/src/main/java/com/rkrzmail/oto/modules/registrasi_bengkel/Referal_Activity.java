@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,34 +31,33 @@ import java.util.Map;
 
 public class Referal_Activity extends AppActivity {
 
+    private RecyclerView rvRef;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_referal_);
-        initToolbar();
+        setContentView(R.layout.activity_list_basic_3);
         initComponent();
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_referal);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Referal");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initComponent() {
-
-        FloatingActionButton fab = findViewById(R.id.fab_tambah_referal);
+        initToolbar();
+        FloatingActionButton fab = findViewById(R.id.fab_tambah);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), ReferensikanOtomotives_Activity.class));
-                finish();
+                startActivityForResult(new Intent(getActivity(), ReferensikanOtomotives_Activity.class), 10);
             }
         });
 
-
-        RecyclerView rvRef = findViewById(R.id.recyclerView_referal);
+        rvRef = findViewById(R.id.recyclerView);
         rvRef.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvRef.setHasFixedSize(true);
         rvRef.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_referal) {
@@ -94,6 +94,16 @@ public class Referal_Activity extends AppActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 10) {
+                catchData();
+            }
+        }
     }
 
     SearchView mSearchView;
