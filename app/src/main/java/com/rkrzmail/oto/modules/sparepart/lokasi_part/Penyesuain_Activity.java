@@ -39,7 +39,7 @@ public class Penyesuain_Activity extends AppActivity {
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_penyesuaian);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Penyesuaian");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

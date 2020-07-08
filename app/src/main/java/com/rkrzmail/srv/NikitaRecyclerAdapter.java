@@ -48,7 +48,9 @@ public class NikitaRecyclerAdapter extends RecyclerView.Adapter<NikitaViewHolder
     public int getItemCount() {
         return nson.size();
     }
+
     private OnItemClickListener onitemClickListener;
+
     public NikitaRecyclerAdapter setOnitemClickListener(OnItemClickListener onitemClickListener){
         this.onitemClickListener=onitemClickListener;
         return this;

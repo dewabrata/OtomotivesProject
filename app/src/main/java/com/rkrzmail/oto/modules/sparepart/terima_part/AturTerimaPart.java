@@ -186,6 +186,7 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
                 nson.set("jatuhtempo", jatuhtempo);
                 nson.set("nama", nama);
                 nson.set("tipe", tipe);
+                nson.set("rekening", find(R.id.sp_rekAsal_terimaPart, Spinner.class).getSelectedItem().toString());
 
                 ArrayList<String> data = new ArrayList<>();
                 for (int i = 0; i < result.get("data").size(); i++) {

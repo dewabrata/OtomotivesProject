@@ -388,7 +388,7 @@ public class AppActivity extends AppCompatActivity {
     }
 
     public void remakeAutoCompleteMaster(final NikitaAutoComplete editText, final String params, final String jsonObject) {
-        editText.setThreshold(2);
+        editText.setThreshold(0);
         editText.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
             Nson result;
 
@@ -429,7 +429,7 @@ public class AppActivity extends AppCompatActivity {
 
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append(n.get("JENIS").asString()).append(" ");
-                stringBuilder.append(n.get("KOTA_KAB").asString()).append(" ");
+                stringBuilder.append(n.get(jsonObject).asString()).append(" ");
 
                 editText.setText(stringBuilder.toString());
                 editText.setTag(String.valueOf(adapterView.getItemAtPosition(i)));
@@ -455,23 +455,24 @@ public class AppActivity extends AppCompatActivity {
                     // nListArray.add(result.get("data").get(i).get("NAMA"));
                     str.add(result.get("data").get(i).get(jsonObject).asString());
                 }
-
                 ArrayList<String> newStr = Tools.removeDuplicates(str);
-                if (newStr.size() > -1) {
+                try {
                     spinner.setItems(newStr);
+                    spinner.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
+                        @Override
+                        public void selectedIndices(List<Integer> indices) {
+
+                        }
+
+                        @Override
+                        public void selectedStrings(List<String> strings) {
+
+                        }
+                    });
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                spinner.setSelection(new int[]{});
-                spinner.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
-                    @Override
-                    public void selectedIndices(List<Integer> indices) {
-
-                    }
-
-                    @Override
-                    public void selectedStrings(List<String> strings) {
-
-                    }
-                });
             }
         });
     }
@@ -495,23 +496,7 @@ public class AppActivity extends AppCompatActivity {
                     str.add(result.get("data").get(i).get(jsonObject).asString());
                 }
                 ArrayList<String> newStr = Tools.removeDuplicates(str);
-                ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, newStr) {
-                    @NonNull
-                    @Override
-                    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                        View v = super.getView(position, convertView, parent);
-                        if (position == getCount()) {
-                            ((TextView) v.findViewById(android.R.id.text1)).setText(null);
-                            ((TextView) v.findViewById(android.R.id.text1)).setHint(""); //"Hint to be displayed"
-                        }
-                        return v;
-                    }
-
-                    @Override
-                    public int getCount() {
-                        return super.getCount();            // you don't display last item. It is used as hint.
-                    }
-                };
+                ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, newStr);
                 spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinner.setAdapter(spinnerAdapter);
                 notifyDataSetChanged(spinner);

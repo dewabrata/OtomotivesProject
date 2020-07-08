@@ -57,7 +57,7 @@ public class AturLokasiPart_Activity extends AppActivity {
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_atur_lokasi_part);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Atur Lokasi Part");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

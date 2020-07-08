@@ -46,7 +46,6 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
     private Spinner spLokasi;
     private CheckBox cbHome, cbEmergency;
     private String[] tipeAntrian = {"STANDARD", "EXPRESS", "H+"};
-    private List<String> dummies = new ArrayList<>();
 
     /*
        Note : Update Methode belum work, Nama Mekanik dropdown belum
@@ -138,17 +137,6 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
     private void initComponent() {
 
         spTipe_antrian.setItems(tipeAntrian);
-        spTipe_antrian.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
-            @Override
-            public void selectedIndices(List<Integer> indices) {
-
-            }
-
-            @Override
-            public void selectedStrings(List<String> strings) {
-                dummies.addAll(strings);
-            }
-        });
 
         tvMulai_Kerja.setOnClickListener(this);
         tvSelesai_Kerja.setOnClickListener(this);

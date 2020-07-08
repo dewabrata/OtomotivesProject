@@ -19,13 +19,15 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.srv.PercentFormat;
+import com.rkrzmail.srv.RupiahFormat;
 import com.rkrzmail.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class AturLayanan_Activity extends AppActivity implements View.OnFocusChangeListener, View.OnClickListener {
+public class AturLayanan_Activity extends AppActivity implements View.OnClickListener {
 
     private static final int REQUEST_DESKRIPSI = 12;
     private Spinner sp_jenis_layanan, sp_nama_principal, sp_nama_layanan, sp_status;
@@ -46,7 +48,7 @@ public class AturLayanan_Activity extends AppActivity implements View.OnFocusCha
     }
 
     private void initToolbar(){
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_atur_layanan);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Layanan");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -73,18 +75,35 @@ public class AturLayanan_Activity extends AppActivity implements View.OnFocusCha
         et_percent4 = findViewById(R.id.et_percent4);
         etPenggantian = findViewById(R.id.et_penggantian_part);
 
-        et_dp.setOnFocusChangeListener(this);
-        et_biaya_layanan.setOnFocusChangeListener(this);
-        et_disc_booking.setOnFocusChangeListener(this);
-        et_percent1.setOnFocusChangeListener(this);
-        et_percent2.setOnFocusChangeListener(this);
-        et_percent3.setOnFocusChangeListener(this);
-        et_percent4.setOnFocusChangeListener(this);
+        et_dp.addTextChangedListener(new RupiahFormat(et_dp));
+        et_biaya_layanan.addTextChangedListener(new RupiahFormat(et_biaya_layanan));
+        et_disc_booking.addTextChangedListener(new PercentFormat(et_disc_booking));
+        et_percent1.addTextChangedListener(new PercentFormat(et_percent1));
+        et_percent2.addTextChangedListener(new PercentFormat(et_percent2));
+        et_percent3.addTextChangedListener(new PercentFormat(et_percent3));
+        et_percent4.addTextChangedListener(new PercentFormat(et_percent4));
 
         setSpinnerFromApi(sp_nama_layanan, "", "", "viewlayanan", "NAMA_LAYANAN");
 
         find(R.id.btn_simpan_atur_layanan, Button.class).setOnClickListener(this);
         find(R.id.btn_deskripsi_aturLayanan, Button.class).setOnClickListener(this);
+
+        sp_status.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String item = parent.getItemAtPosition(position).toString();
+                if (item.equalsIgnoreCase("NON_ACTIVE")) {
+                    Tools.setViewAndChildrenEnabled(find(R.id.ly_layanan, LinearLayout.class), false);
+                } else {
+                    Tools.setViewAndChildrenEnabled(find(R.id.ly_layanan, LinearLayout.class), true);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         sp_jenis_layanan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -115,38 +134,35 @@ public class AturLayanan_Activity extends AppActivity implements View.OnFocusCha
     }
 
     private void saveData(){
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-
-                String jenisLayanan = sp_jenis_layanan.getSelectedItem().toString().toUpperCase();
-                String namaLayanan = sp_nama_layanan.getSelectedItem().toString().toUpperCase();
-                String status = sp_status.getSelectedItem().toString().toUpperCase();
+        final String jenisLayanan = sp_jenis_layanan.getSelectedItem().toString().toUpperCase();
+        final String namaLayanan = sp_nama_layanan.getSelectedItem().toString().toUpperCase();
+        final String status = sp_status.getSelectedItem().toString().toUpperCase();
 //                String namaPrincipal;
 //                if(sp_nama_principal.getSelectedItemPosition() != 0){
 //                    namaPrincipal = sp_nama_principal.getSelectedItem().toString().toUpperCase();
 //                }else{
 //                    namaPrincipal = null;
 //                }
-                String biayaMin = et_biaya_minimal.getText().toString();
-                String biayaLayanan = et_biaya_layanan.getText().toString();
-                String discBooking = et_disc_booking.getText().toString();
-                String dp = et_dp.getText().toString();
-                String jasaLain1 = et_jasa_lain1.getText().toString();
-                String jasaLain2 = et_jasa_lain2.getText().toString();
-                String disc1 = et_disc_part1.getText().toString();
-                String disc2 = et_disc_part2.getText().toString();
-                String percent1 = et_percent1.getText().toString();
-                String percent2 = et_percent2.getText().toString();
-//
+        String biayaMin = et_biaya_minimal.getText().toString();
+        final String biayaLayanan = et_biaya_layanan.getText().toString();
+        final String discBooking = et_disc_booking.getText().toString();
+        final String dp = et_dp.getText().toString();
+        final String jasaLain1 = et_jasa_lain1.getText().toString();
+        final String jasaLain2 = et_jasa_lain2.getText().toString();
+        final String disc1 = et_disc_part1.getText().toString();
+        final String disc2 = et_disc_part2.getText().toString();
+        String percent1 = et_percent1.getText().toString();
+        String percent2 = et_percent2.getText().toString();
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
 //                CID, action (update), namalayanan (4 jenis nama layanan, capslock, wajib),
 //                jenisservice, id, status (kalo nama layanan otomotif)
-//
 //                CID, action (update), namalayanan (4 jenis nama layanan, capslock, wajib),
 //                jenisservice, id, status, principal (kalo nama layanan recall/fasilitas)
-//
 //                CID, action (update), namalayanan (4 jenis nama layanan, capslock, wajib),
 //                jenisservice, id, status, biaya, dcbook, hpd, layananpartid, layananaktifitasid,
 //                diskonjasa,diskonpart (kalo nama layanan paketlayanan)
@@ -179,7 +195,8 @@ public class AturLayanan_Activity extends AppActivity implements View.OnFocusCha
             @Override
             public void runUI() {
                 if(result.get("status").asString().equalsIgnoreCase("OK")){
-                    startActivity(new Intent(getActivity(), Layanan_Avtivity.class));
+                    showInfo("Sukses Menambahkan Layanan");
+                    setResult(RESULT_OK);
                     finish();
                 } else {
                     showInfo("Gagal Menambahkan Layanan");
@@ -187,72 +204,6 @@ public class AturLayanan_Activity extends AppActivity implements View.OnFocusCha
 
             }
         });
-    }
-
-    private void setSp_nama_layananLayanan() {
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
-
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlayanan"), args));
-            }
-
-            @Override
-            public void runUI() {
-                List<String> layanan = new ArrayList<>();
-                for (int i = 0; i < result.get("data").size(); i++) {
-                    layanan.add(result.get("data").get(i).get("NAMA_LAYANAN").asString());
-                }
-                ArrayAdapter<String> rakAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, layanan);
-                rakAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                sp_nama_layanan.setAdapter(rakAdapter);
-            }
-        });
-
-    }
-
-    @Override
-    public void onFocusChange(View view, boolean b) {
-        switch (view.getId()) {
-            case R.id.et_biaya_layanan:
-                if (b) {
-                    et_biaya_layanan.setText("Rp. ");
-                }
-                break;
-            case R.id.et_disc_booking:
-                if (b) {
-                    et_disc_booking.setText("%");
-                }
-                break;
-            case R.id.et_dp_layanan:
-                if (b) {
-                    et_dp.setText("Rp. ");
-                }
-                break;
-            case R.id.et_percent1:
-                if (b) {
-                    et_percent1.setText("%");
-                }
-                break;
-            case R.id.et_percent2:
-                if (b) {
-                    et_percent2.setText("%");
-                }
-                break;
-            case R.id.et_percent3:
-                if (b) {
-                    et_percent3.setText("%");
-                }
-                break;
-            case R.id.et_percent4:
-                if (b) {
-                    et_percent4.setText("%");
-                }
-                break;
-
-        }
     }
 
     private void getDeskripsiLayanan() {

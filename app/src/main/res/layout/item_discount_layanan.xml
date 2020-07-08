@@ -12,7 +12,7 @@
     android:layout_marginBottom="4dp"
     android:layout_weight="5"
     android:padding="10dp"
-    app:cardElevation="3dp"
+    app:cardElevation="2dp"
     app:cardCornerRadius="10dp">
 
     <TableLayout
@@ -36,12 +36,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Harga"
-                android:layout_gravity="center"
                 android:textStyle="bold" />
 
         </TableRow>
 
-        <TableRow>
+        <TableRow android:layout_marginTop="5dp">
 
             <TextView
                 android:id="@+id/tv_pekerjaan_discLayanan"
@@ -52,7 +51,7 @@
 
         </TableRow>
 
-        <TableRow>
+        <TableRow android:layout_marginTop="5dp">
 
             <TextView
                 android:id="@+id/tv_disc_discLayanan"
@@ -66,7 +65,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tanggal"
-                android:layout_gravity="center"
                 android:textStyle="bold" />
 
         </TableRow>

@@ -1,11 +1,10 @@
-package com.rkrzmail.oto.modules.outsource;
+package com.rkrzmail.oto.modules.menunggu;
 
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -21,8 +20,6 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.utils.Tools;
-
-import org.w3c.dom.Text;
 
 import java.util.Map;
 

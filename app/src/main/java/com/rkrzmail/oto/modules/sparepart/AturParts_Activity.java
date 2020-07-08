@@ -151,7 +151,7 @@ public class AturParts_Activity extends AppActivity {
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     showInfo("Berhasil Menghapus Part");
-                    startActivity(new Intent(AturParts_Activity.this, Spareparts_Activity.class));
+                    setResult(RESULT_OK);
                     finish();
                 } else {
                     showInfo("Gagal Menghapus Part");
@@ -186,7 +186,7 @@ public class AturParts_Activity extends AppActivity {
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     showInfo("Berhasil Memperbarui Part");
-                    startActivity(new Intent(AturParts_Activity.this, Spareparts_Activity.class));
+                    setResult(RESULT_OK);
                     finish();
                 } else {
                     showInfo("Gagal Memperbarui Part");
@@ -243,7 +243,7 @@ public class AturParts_Activity extends AppActivity {
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     showInfo("Berhasil Menambahkan Part");
-                    startActivity(new Intent(AturParts_Activity.this, Spareparts_Activity.class));
+                    setResult(RESULT_OK);
                     finish();
                 } else {
                     showError("Gagal Menambahkan Part");

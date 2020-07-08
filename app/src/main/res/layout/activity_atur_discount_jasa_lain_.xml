@@ -15,27 +15,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="5dp">
+            android:padding="10dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp">
+                android:background="@drawable/border_solid"
+                android:padding="10dp"
+                android:gravity="center">
 
                 <TextView
-                    android:layout_width="100dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textColor="@color/red_900"
-                    android:text="@string/kategori_part_uppercase"
-                    android:textStyle="bold" />
+                    android:text="MASTER PART" />
 
                 <Spinner
-                    android:id="@+id/sp_kategori_discJasa"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/sp_masterPart_discJasa"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textAlignment="center" />
@@ -47,20 +45,18 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp">
+                android:background="@drawable/border_solid"
+                android:padding="10dp"
+                android:gravity="center">
 
                 <TextView
-                    android:layout_width="100dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="AKTIVITAS"
-                    android:textColor="@color/red_900"
-                    android:textStyle="bold" />
+                    android:text="AKTIVITAS" />
 
                 <Spinner
                     android:id="@+id/sp_aktifitas_discJasa"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textAlignment="center" />
@@ -72,15 +68,14 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp">
+                android:background="@drawable/border_solid"
+                android:padding="10dp"
+                android:gravity="center">
 
                 <TextView
-                    android:layout_width="100dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="PEKERJAAN"
-                    android:textStyle="bold" />
+                    android:text="PEKERJAAN" />
 
                 <com.rkrzmail.srv.MultiSelectionSpinner
                     android:id="@+id/sp_pekerjaan_discJasa"
@@ -96,9 +91,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginTop="5dp">
 
                 <EditText
                     android:id="@+id/et_discPart_discJasa"
@@ -106,6 +99,7 @@
                     android:layout_height="wrap_content"
                     android:hint="DISCOUNT"
                     android:maxLength="5"
+                    android:textSize="14sp"
                     android:inputType="numberDecimal"
                     android:maxLines="1" />
 
@@ -114,17 +108,16 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
+                android:background="@drawable/border_solid"
+                android:padding="10dp"
+                android:gravity="center"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:text="TANGGAL EFEKTIVE"
-                    android:layout_weight="1"
-                    android:textStyle="bold" />
+                    android:text="TANGGAL EFEKTIVE" />
 
                 <TextView
                     android:id="@+id/tv_tglEffect_discJasa"
@@ -132,6 +125,7 @@
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/icon_tanggal"
                     android:gravity="center"
+                    android:layout_marginStart="10dp"
                     android:layout_weight="1"
                     android:textStyle="bold" />
 
@@ -141,14 +135,14 @@
                 android:id="@+id/cb_mssg_discJasa"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
                 android:text="MESSAGE PELANGGAN" />
 
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:stretchColumns="*">
 
                 <TableRow>
@@ -157,21 +151,22 @@
                         android:id="@+id/btn_hapus_discJasa"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
                         android:background="@drawable/btn_rounded_accent"
                         android:text="@string/hapus_uppercase"
-                        android:textColor="@android:color/white"
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        android:textColor="@android:color/white" />
 
                     <Button
                         android:id="@+id/btn_simpan_discJasa"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
                         android:background="@drawable/btn_rounded_accent"
                         android:text="@string/simpan_uppercase"
+                        android:layout_gravity="end"
+                        android:layout_marginStart="10dp"
                         android:textColor="@android:color/white"
-                        android:layout_column="20" />
+                        android:layout_column="30" />
+
                 </TableRow>
 
             </TableLayout>

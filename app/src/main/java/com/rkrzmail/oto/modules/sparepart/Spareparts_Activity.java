@@ -38,7 +38,7 @@ public class Spareparts_Activity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_spareparts);
+        setContentView(R.layout.activity_list_basic_3);
         initToolbar();
         initComponent();
     }
@@ -52,13 +52,12 @@ public class Spareparts_Activity extends AppActivity {
     }
 
     private void initComponent() {
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah_part2);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), CariPart_Activity.class);
-                setResult(RESULT_OK);
-                startActivityForResult(intent, REQUEST_ATUR);
+                startActivityForResult(intent, REQUEST_CARI);
             }
         });
 
@@ -68,22 +67,24 @@ public class Spareparts_Activity extends AppActivity {
         recyclerView.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_spareparts) {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+                String stock = nListArray.get(position).get("STOCK").asString() + "/" + nListArray.get(position).get("STOCK_MINIMUM").asString();
 
                 viewHolder.find(R.id.txtNamaPart, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
                 viewHolder.find(R.id.txtNoPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
-                viewHolder.find(R.id.txtStock, TextView.class).setText(nListArray.get(position).get("STOCK").asString());
+                viewHolder.find(R.id.tv_StockMinStock_spareparts, TextView.class).setText(stock);
                 viewHolder.find(R.id.txtHargaJual, TextView.class).setText(nListArray.get(position).get("HARGA_JUAL").asString());
-                viewHolder.find(R.id.txtTerjual, TextView.class).setText(nListArray.get(position).get("TERJUAL").asString());
-                viewHolder.find(R.id.txtMinStock, TextView.class).setText(nListArray.get(position).get("MIN_STOCK").asString());
+                viewHolder.find(R.id.tv_keluar_spareparts, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_pending_spareparts, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_terpasang_spareparts, TextView.class).setText(nListArray.get(position).get("").asString());
                 viewHolder.find(R.id.txtMerk, TextView.class).setText(nListArray.get(position).get("MERK").asString());
-            }
 
+            }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
                 Intent intent = new Intent(getActivity(), AturParts_Activity.class);
                 intent.putExtra("part", nListArray.get(position).toJson());
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_ATUR);
             }
         }));
 
@@ -154,10 +155,12 @@ public class Spareparts_Activity extends AppActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_ATUR && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_CARI && resultCode == RESULT_OK) {
             Intent i = new Intent(getActivity(), AturParts_Activity.class);
             i.putExtra("part", getIntentStringExtra(data, "part"));
             startActivity(i);
+        } else if (requestCode == REQUEST_ATUR && resultCode == RESULT_OK) {
+            reload("");
         }
     }
 }

@@ -18,14 +18,7 @@
             android:layout_height="wrap_content"
             android:theme="@style/AppTheme.AppBarOverlay">
 
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/colorPrimary"
-                    app:popupTheme="@style/AppTheme.PopupOverlay">
-
-                </android.support.v7.widget.Toolbar>
+            <include layout="@layout/toolbar" />
 
         </android.support.design.widget.AppBarLayout>
 
@@ -63,7 +56,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp">
 
-
                     <EditText
                         android:id="@+id/txtNik"
                         android:layout_width="match_parent"
@@ -78,23 +70,25 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:background="@drawable/border_solid"
+                    android:padding="10dp"
+                    android:gravity="center"
                     android:layout_marginTop="10dp">
 
                     <TextView
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
-                        android:text="TANGGAL LAHIR"
-                        android:textStyle="bold" />
+                        android:text="TANGGAL LAHIR" />
 
                     <TextView
                         android:id="@+id/txtTglLahir"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:enabled="false"
-                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="20dp"
                         android:gravity="center"
                         android:layout_weight="1"
-                        android:drawableLeft="@drawable/icon_tanggal" />
+                        android:drawableStart="@drawable/icon_tanggal" />
 
                 </LinearLayout>
 
@@ -102,15 +96,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="10dp"
+                    android:background="@drawable/border_solid"
+                    android:padding="10dp"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/txtKelamin"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
-                        android:text="KELAMIN"
-                        android:textStyle="bold" />
-
+                        android:text="KELAMIN" />
 
                     <Spinner
                         android:id="@+id/spinnerKelamin"
@@ -118,7 +113,6 @@
                         android:layout_height="wrap_content"
                         android:entries="@array/jenis_kelamin"
                         android:textAlignment="center" />
-
 
                 </LinearLayout>
 
@@ -164,10 +158,11 @@
                     <EditText
                         android:id="@+id/txtAlamat"
                         android:layout_width="match_parent"
-                        android:layout_height="100dp"
+                        android:layout_height="wrap_content"
                         android:hint="ALAMAT"
                         android:gravity="top|left"
-                        android:inputType="textMultiLine"
+                        android:maxLength="2000"
+                        android:inputType="textMultiLine|textCapSentences"
                         android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -176,13 +171,15 @@
                     android:layout_width="match_parent"
                     android:orientation="horizontal"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/border_solid"
+                    android:padding="10dp"
+                    android:gravity="center"
                     android:layout_marginTop="10dp">
 
                     <TextView
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
-                        android:text="TANGGAL MASUK"
-                        android:textStyle="bold" />
+                        android:text="TANGGAL MASUK" />
 
                     <TextView
                         android:id="@+id/txtTglMasuk"
@@ -191,8 +188,8 @@
                         android:gravity="center"
                         android:textStyle="bold"
                         android:layout_weight="1"
-                        android:layout_marginLeft="20dp"
-                        android:drawableLeft="@drawable/icon_tanggal" />
+                        android:layout_marginStart="20dp"
+                        android:drawableStart="@drawable/icon_tanggal" />
 
                 </LinearLayout>
 
@@ -200,14 +197,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="10dp"
+                    android:background="@drawable/border_solid"
+                    android:padding="10dp"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/posisi"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
-                        android:text="POSISI"
-                        android:textStyle="bold" />
+                        android:text="POSISI" />
 
                     <com.rkrzmail.srv.MultiSelectionSpinner
                         android:id="@+id/spinnerPosisi"
@@ -215,21 +214,22 @@
                         android:layout_height="wrap_content"
                         android:textAlignment="center" />
 
-
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="10dp"
+                    android:background="@drawable/border_solid"
+                    android:padding="10dp"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/status"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
-                        android:text="STATUS"
-                        android:textStyle="bold" />
+                        android:text="STATUS" />
 
                     <Spinner
                         android:id="@+id/spinnerStatus"
@@ -244,15 +244,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="10dp"
+                    android:background="@drawable/border_solid"
+                    android:padding="10dp"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/penggajian"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
-                        android:text="PENGGAJIAN"
-                        android:textStyle="bold" />
-
+                        android:text="PENGGAJIAN" />
 
                     <Spinner
                         android:id="@+id/spinnerPenggajian"
@@ -260,7 +261,6 @@
                         android:layout_height="wrap_content"
                         android:textAlignment="center"
                         android:entries="@array/penggajian"/>
-
 
                 </LinearLayout>
 
@@ -283,6 +283,9 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/border_solid"
+                    android:padding="10dp"
+                    android:gravity="center"
                     android:layout_marginTop="10dp"
                     android:orientation="horizontal">
 
@@ -290,8 +293,7 @@
                         android:id="@+id/textView28"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
-                        android:text="AKSES APP"
-                        android:textStyle="bold" />
+                        android:text="AKSES APP" />
 
                     <com.rkrzmail.srv.MultiSelectionSpinner
                         android:id="@+id/spinnerAksesApp"

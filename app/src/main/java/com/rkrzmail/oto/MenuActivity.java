@@ -33,6 +33,7 @@ import com.rkrzmail.oto.gmod.Part_DiterimaActivity;
 import com.rkrzmail.oto.gmod.Penerimaan_PartAcitivity;
 import com.rkrzmail.oto.modules.biayamekanik.BiayaMekanik2Activity;
 import com.rkrzmail.oto.modules.LoginActivity;
+import com.rkrzmail.oto.modules.komisi.KomisiPart_Activity;
 import com.rkrzmail.oto.modules.pembayaran.DaftarPembayaran_Activity;
 import com.rkrzmail.oto.modules.perintah_kerja_mekanik.PerintahKerjaMekanik_Activity;
 import com.rkrzmail.oto.modules.primary.KontrolLayanan_Activity;
@@ -109,6 +110,7 @@ public class MenuActivity extends AppActivity {
     public static final int MN_PEMBAYARAN = 40;
     public static final int MN_KERJA_MEKANIK = 41;
     public static final int MN_PENGEMBALIAN_PART = 42;
+    public static final int MN_KOMISI_PART = 43;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,10 +159,11 @@ public class MenuActivity extends AppActivity {
                     Intent intent = new Intent(MenuActivity.this, CariPart_Activity.class);
                     intent.putExtra("flag","ALL");
                     startActivityForResult(intent, 1);
-                } else if (nPopulate.get(position).get("id").asInteger() == MN_CARI_PART) {
-                    Intent intent = new Intent(MenuActivity.this, CariPart_Activity.class);
-                    startActivityForResult(intent, 2);
                 }
+//                else if (nPopulate.get(position).get("id").asInteger() == MN_CARI_PART) {
+//                    Intent intent = new Intent(MenuActivity.this, CariPart_Activity.class);
+//                    startActivityForResult(intent, 2);
+//                }
                 else if (nPopulate.get(position).get("id").asInteger() == MN_PROFILE) {
                     Intent intent = new Intent(MenuActivity.this, ProfileBengkel_Activity.class);
                     startActivity(intent);
@@ -286,6 +289,9 @@ public class MenuActivity extends AppActivity {
                 } else if ((nPopulate.get(position).get("id").asInteger() == MN_KERJA_MEKANIK)) {
                     Intent intent = new Intent(MenuActivity.this, PerintahKerjaMekanik_Activity.class);
                     startActivity(intent);
+                } else if ((nPopulate.get(position).get("id").asInteger() == MN_KOMISI_PART)) {
+                    Intent intent = new Intent(MenuActivity.this, KomisiPart_Activity.class);
+                    startActivity(intent);
                 }
 
 
@@ -370,7 +376,7 @@ public class MenuActivity extends AppActivity {
         nPopulate.add(Nson.newObject().set("id", MN_CHECKIN).set("icon", R.drawable.mn_checkin).set("text", "CHECK IN"));
 //        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_WA).set("icon", R.drawable.wa).set("text", "MESSAGE"));
         nPopulate.add(Nson.newObject().set("id", MN_SPAREPART).set("icon", R.drawable.mn_jualpart).set("text", "SPAREPART"));
-        nPopulate.add(Nson.newObject().set("id", MN_PART_SEARCH).set("icon", R.drawable.mn_jualpart).set("text", "CARI PART"));
+        nPopulate.add(Nson.newObject().set("id", MN_CARI_PART).set("icon", R.drawable.mn_jualpart).set("text", "CARI PART"));
         nPopulate.add(Nson.newObject().set("id", MN_REGISTRASI).set("icon", R.drawable.mn_pelanggan).set("text", "REGISTRASI"));
         //nPopulate.add(Nson.newObject().set("id", MN_PART_SEARCH).set("icon", R.drawable.mn_jualpart).set("text", "CARI PART"));
 
@@ -405,6 +411,7 @@ public class MenuActivity extends AppActivity {
         nPopulate.add(Nson.newObject().set("id", MN_JUAL_PART).set("icon", R.drawable.mn_jualpart).set("text", "PENJUALAN PART"));
         nPopulate.add(Nson.newObject().set("id", MN_PEMBAYARAN).set("icon", R.drawable.mn_pembayaran).set("text", "PEMBAYARAN"));
         nPopulate.add(Nson.newObject().set("id", MN_KERJA_MEKANIK).set("icon", R.drawable.mn_homeservice).set("text", "PERINTAH KERJA MEKANIK"));
+        nPopulate.add(Nson.newObject().set("id", MN_KOMISI_PART).set("icon", R.drawable.mn_inspeksi).set("text", "KOMISI PART"));
 
 //        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_KomisiKaryawan).set("icon", R.drawable.sample).set("text", "MESSAGE"));
 //        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_LoyaltiProgram).set("icon", R.drawable.sample).set("text", "MESSAGE"));

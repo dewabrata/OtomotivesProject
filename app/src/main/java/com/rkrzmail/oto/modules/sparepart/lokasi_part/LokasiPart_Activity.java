@@ -31,13 +31,11 @@ public class LokasiPart_Activity extends AppActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lokasi_part);
-        initToolbar();
         initComponent();
-
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_lokasi_part);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Lokasi Part");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -45,11 +43,10 @@ public class LokasiPart_Activity extends AppActivity {
     }
 
     private void initComponent() {
-
+        initToolbar();
         vpLokasiPart = findViewById(R.id.vp_lokasiPart);
         tabLayout = findViewById(R.id.tablayout_lokasiPart);
         fragments = new ArrayList<>();
-
         fragments.add(new PartTeralokasikan_Fragment());
         fragments.add(new PartNonLokasi_Fragment());
 

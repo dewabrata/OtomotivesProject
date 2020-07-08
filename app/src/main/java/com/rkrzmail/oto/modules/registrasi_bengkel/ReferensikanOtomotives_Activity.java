@@ -19,6 +19,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NsonAutoCompleteAdapter;
 
@@ -26,10 +27,11 @@ import java.util.Map;
 
 public class ReferensikanOtomotives_Activity extends AppActivity implements View.OnClickListener {
 
-    private EditText etNamaPemilik, etNoPonsel, etEmail, etNamaBengkel, etAlamat;
+    private EditText etNamaPemilik, etEmail, etNamaBengkel, etAlamat;
     private NikitaAutoComplete etKotaKab;
+    private TextView tvNoPonsel;
     private Spinner spBidangUsaha;
-
+    private MultiSelectionSpinner spKendaraan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +43,7 @@ public class ReferensikanOtomotives_Activity extends AppActivity implements View
 
     private void initToolbar() {
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_refOto);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Referensikan Otomotives");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -53,9 +55,9 @@ public class ReferensikanOtomotives_Activity extends AppActivity implements View
         etKotaKab = findViewById(R.id.et_kotakab_ref);
         etNamaBengkel = findViewById(R.id.et_namaBengkel_ref);
         etNamaPemilik = findViewById(R.id.et_namaPemilik_ref);
-        etNoPonsel = findViewById(R.id.et_noPhone_ref);
+        tvNoPonsel = findViewById(R.id.tv_noPhone_ref);
         spBidangUsaha = findViewById(R.id.sp_usaha_ref);
-
+        spKendaraan = findViewById(R.id.sp_kendaraan_ref);
 
         remakeAutoCompleteMaster(etKotaKab, "DAERAH", "KOTA_KAB");
         find(R.id.btn_simpan_ref, Button.class).setOnClickListener(this);
@@ -75,7 +77,8 @@ public class ReferensikanOtomotives_Activity extends AppActivity implements View
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-
+                    setResult(RESULT_OK);
+                    finish();
                 } else {
                     showInfo("Registrasi Gagal, Silahkan Cek Data Anda Kembali");
                 }
@@ -88,7 +91,7 @@ public class ReferensikanOtomotives_Activity extends AppActivity implements View
         String namaPemilik = etNamaPemilik.getText().toString();
         String alamat = etAlamat.getText().toString();
         String email = etEmail.getText().toString();
-        String ponsel = etNoPonsel.getText().toString();
+        String ponsel = tvNoPonsel.getText().toString();
         String kotaKab = etKotaKab.getText().toString();
         if (namaBengkel.isEmpty() && namaPemilik.isEmpty() && alamat.isEmpty() && email.isEmpty() && ponsel.isEmpty() && kotaKab.isEmpty()) {
             showInfo("Silahkan Lengkapi Data Anda");

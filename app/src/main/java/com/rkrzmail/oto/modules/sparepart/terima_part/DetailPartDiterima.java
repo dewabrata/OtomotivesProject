@@ -216,6 +216,7 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
                 args.put("ongkir", nson.get("ongkir").asString());
                 //recyleview(array) to json
                 args.put("parts", nListArray.toJson());
+                args.put("rekening", nson.get("rekening").asString());
 
                 data = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturterimapart"), args));
             }

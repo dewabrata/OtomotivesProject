@@ -2,8 +2,6 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
-
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -37,7 +35,6 @@
                         android:id="@+id/tv_namalayanan_deskripsiLayanan"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:text="Nama Layanan"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -54,7 +51,6 @@
                         android:id="@+id/tv_jenislayanan_deskripsiLayanan"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:text="Jenis Layanan"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -71,7 +67,6 @@
                         android:id="@+id/tv_namaPrincipal_deskripsiLayanan"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:text="Nama Principal"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -88,7 +83,6 @@
                         android:id="@+id/tv_pelaksana_deskripsiLayanan"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:text="Pelaksana"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -106,7 +100,6 @@
                         android:id="@+id/tv_lokasi_deskripsiLayanan"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:text="Lokasi"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -131,7 +124,6 @@
                         android:id="@+id/tv_kendaraan_deskripsiLayanan"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:text="Kendaraan"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -148,7 +140,6 @@
                         android:id="@+id/tv_merk_deskripsiLayanan"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:text="Merk"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -165,7 +156,6 @@
                         android:id="@+id/tv_model_deskripsiLayanan"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:text="Jenis Layanan"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -182,7 +172,6 @@
                         android:id="@+id/tv_jenis_deskripsiLayanan"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:text="Jenis"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -199,7 +188,6 @@
                         android:id="@+id/tv_varian_deskripsiLayanan"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:text="Varian"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -223,7 +211,6 @@
                         android:id="@+id/tv_batasFailitas_deskripsiLayanan"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:text="Batasan Fasilitas"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -240,7 +227,6 @@
                         android:id="@+id/tv_biayaJasa_deskripsiLayanan"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:text="Biaya Jasa"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -257,7 +243,6 @@
                         android:id="@+id/tv_penggantian_deskripsiLayanan"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:text="Penggantian"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -282,7 +267,6 @@
                         android:id="@+id/tv_garansiLayanan_deskripsiLayanan"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:text="Garansi Layanan"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -300,7 +284,6 @@
                         android:id="@+id/tv_penggantian2_deskripsiLayanan"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:text="Penggantian"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -318,7 +301,6 @@
                         android:id="@+id/tv_ex_deskripsiLayanan"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:text="Expiration"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -365,7 +347,6 @@
                         android:id="@+id/tv_waktuLayanan_deskripsiLayanan"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:text="Waktu Layanan"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -382,7 +363,6 @@
                         android:id="@+id/tv_jenisAntrian_deskripsiLayanan"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:text="Jenis Antrian"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -400,7 +380,6 @@
                         android:id="@+id/tv_finalInspection_deskripsiLayanan"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:text="Final Inspection"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -452,14 +431,7 @@
         android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_deskripsi_layanan"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:layout_scrollFlags="scroll|enterAlways"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            android:minHeight="?attr/actionBarSize" />
+        <include layout="@layout/toolbar" />
 
     </android.support.design.widget.AppBarLayout>
 

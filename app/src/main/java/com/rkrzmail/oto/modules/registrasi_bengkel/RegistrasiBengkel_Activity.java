@@ -32,10 +32,8 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
     private static final int REQUEST_MAPS = 57;
     private EditText etKodeRef, etNamaPemilik, etNoPonsel, etEmail, etNamaBengkel, etAlamat;
     private Spinner spBidangUsaha;
-    private TextView tvLokasi;
     private MultiSelectionSpinner spKendaraan;
     private NikitaAutoComplete etKotaKab;
-    private ArrayList<String> dummies = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,16 +60,22 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
         etNoPonsel = findViewById(R.id.et_noPhone_regist);
         spBidangUsaha = findViewById(R.id.sp_usaha_regist);
         spKendaraan = findViewById(R.id.sp_jenisKendaraan_regist);
-        tvLokasi = findViewById(R.id.tv_lokasi_regist);
 
-        String aggrement = "Setuju dengan <font color=#F44336><u> Syarat & kondisi </u></font> pemakain Otomotives";
+
+        String aggrement = "Setuju dengan <font color=#F44336><u> Syarat & kondisi </u></font> pemakain Bengkel Pro";
         find(R.id.cb_setuju_regist, CheckBox.class).setText(Html.fromHtml(aggrement));
+
+        find(R.id.btn_lokasi_regist).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         etKotaKab.setLoadingIndicator((android.widget.ProgressBar) findViewById(R.id.pb_et_kotakab_regist));
         remakeAutoCompleteMaster(etKotaKab, "DAERAH", "KOTA_KAB");
         setMultiSelectionSpinnerFromApi(spKendaraan, "nama", "BENGKEL", "viewmst", "TYPE");
 
-        tvLokasi.setOnClickListener(this);
         find(R.id.btn_simpan_regist, Button.class).setOnClickListener(this);
         find(R.id.btn_check_regist, Button.class).setOnClickListener(this);
 
@@ -181,18 +185,12 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                     showInfo("Silahkan Seujui Syarat Dan Ketentuan Aplikasi");
                     return;
                 }
-                //if(tvLokasi.getText().toString().equalsIgnoreCase(""))
 
-//                    showInfo("Silahkan Isi Lokasi ");return;
-//
                 saveData();
                 break;
             case R.id.btn_check_regist:
 //                Intent i = new Intent(getActivity(), Referal_Activity.class);
 //                startActivityForResult(i, REQUEST_REFEREAL);
-                break;
-            case R.id.tv_lokasi_regist:
-                startActivityForResult(new Intent(getActivity(), LocationPicker_Activity.class), REQUEST_MAPS);
                 break;
         }
     }
@@ -200,18 +198,5 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK && requestCode == REQUEST_MAPS){
-            String latitude = data.getStringExtra("lat");
-            String longitude = data.getStringExtra("lon");
-            //to double
-            double lat = Double.parseDouble(latitude);
-            double lon = Double.parseDouble(longitude);
-            Log.d("cobacoba", "Lat : " + String.valueOf(lat) + "\n" +
-                    "Long : " + String.valueOf(lon));
-            String lokasi = "Lat : " + String.valueOf(lat) + "\n" +
-                    "Long : " + String.valueOf(lon);
-
-            tvLokasi.setText(lokasi);
-        }
     }
 }
