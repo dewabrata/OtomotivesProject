@@ -305,6 +305,8 @@
     <string name="user">User</string>
     <string name="nama_pelanggan">Nama Pelanggan</string>
     <string name="select_location"> Pilih Lokasi </string>
+    <string name="keterangan_uppercase">KETERANGAN</string>
+    <string name="aktivitas_uppercase">AKTIVITAS</string>
 
 
 </resources>

@@ -465,7 +465,7 @@ public class Tools {
         Locale localeID = new Locale("in", "ID");
         NumberFormat formatRupiah = NumberFormat.getPercentInstance(localeID);
         formatRupiah.setMaximumFractionDigits(4);
-        String percentNumber = formatRupiah.format(Tools.parseDouble(number) / 1000);
+        String percentNumber = formatRupiah.format(Tools.parseDouble(number) * 100);
         //double formatDouble = Tools.parseDouble(number);
         return percentNumber;
     }
@@ -478,6 +478,17 @@ public class Tools {
                 return -1;   // or some value to mark this field is wrong. or make a function validates field first ...
             }
         } else return 0;
+    }
+
+    public static double convertToDoublePercentage(String value) {
+        double convertedNumber = 0;
+        NumberFormat nf = new DecimalFormat("##,##");
+        try {
+            convertedNumber = nf.parse(value).doubleValue();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return convertedNumber;
     }
 
     public static <T> ArrayList<T> removeDuplicates(ArrayList<T> list) {

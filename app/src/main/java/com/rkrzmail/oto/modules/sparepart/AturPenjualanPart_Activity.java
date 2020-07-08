@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.naa.data.Nson;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.sparepart.lokasi_part.CariPart_Activity;
 
 public class AturPenjualanPart_Activity extends AppActivity {
 

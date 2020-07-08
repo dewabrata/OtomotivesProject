@@ -39,7 +39,6 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-
     private void initComponent() {
         initToolbar();
         find(R.id.btn_ttd_checkin4).setOnClickListener(new View.OnClickListener() {

@@ -21,7 +21,7 @@ import java.util.List;
 
 public class AdapterSuggestionSearch extends RecyclerView.Adapter<AdapterSuggestionSearch.ViewHolder> {
 
-    private static final String SEARCH_HISTORY_KEY = "_SEARCH_HISTORY_KEY";
+    public static final String SEARCH_HISTORY_KEY = "_SEARCH_HISTORY_KEY";
     private static final int MAX_HISTORY_ITEMS = 5;
 
     private List<String> items = new ArrayList<>();

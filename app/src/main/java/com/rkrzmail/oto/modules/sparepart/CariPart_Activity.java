@@ -1,12 +1,10 @@
-package com.rkrzmail.oto.modules.jurnal;
+package com.rkrzmail.oto.modules.sparepart;
 
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -14,8 +12,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -24,81 +20,86 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.srv.NikitaAutoComplete;
+import com.rkrzmail.oto.gmod.Pendaftaran1;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
-import com.rkrzmail.srv.NsonAutoCompleteAdapter;
-import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 
-public class DaftarJurnal_Activity extends AppActivity {
+public class CariPart_Activity extends AppActivity {
 
-    private RecyclerView rvJurnal;
+    private static final String SEARCH_HISTORY_KEY = "_SEARCH_HISTORY_KEY";
+    private static final int MAX_HISTORY_ITEMS = 10;
+    private Pendaftaran1.AutoSuggestAdapter autoSuggestAdapter;
+    private RecyclerView rvCariPart;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_basic_3);
-        initToolbar();
+        setContentView(R.layout.activity_list_basic);
         initComponent();
     }
 
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Jurnal");
+        getSupportActionBar().setTitle("Cari Part");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.animate().translationY(-toolbar.getBottom()).setInterpolator(new AccelerateInterpolator()).start();
     }
 
-    private void initComponent() {
-        FloatingActionButton fab = findViewById(R.id.fab_tambah);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(), AturJurnal_Activity.class));
-            }
-        });
-
-        rvJurnal = findViewById(R.id.recyclerView);
-
-
-        rvJurnal.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rvJurnal.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_jurnal) {
+    private void initComponent(){
+        initToolbar();
+        rvCariPart = (RecyclerView) findViewById(R.id.recyclerView);
+        rvCariPart.setLayoutManager(new LinearLayoutManager(this));
+        rvCariPart.setHasFixedSize(true);
+        rvCariPart.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_daftar_cari_part){
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
-                String tglJurnal = Tools.setFormatDayAndMonth(nListArray.get(position).get("TANGGAL_SET").asString());
 
-                viewHolder.find(R.id.tv_tgl_jurnal, TextView.class).setText(tglJurnal);
-                viewHolder.find(R.id.tv_transaksi_jurnal, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_transaksi_jurnal, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_ket_jurnal, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_nominal_jurnal, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_pembayaran_jurnal, TextView.class).setText(nListArray.get(position).get("").asString());
-
+                viewHolder.find(R.id.tv_cari_merkPart, TextView.class).setText(nListArray.get(position).get("MERK").asString());
+                viewHolder.find(R.id.tv_cari_namaPart, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
+                viewHolder.find(R.id.tv_cari_noPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
+                viewHolder.find(R.id.tv_cari_stockPart, TextView.class).setText(nListArray.get(position).get("STOCK").asString());
             }
-        });
 
+        }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Nson parent, View view, int position) {
+                        Intent intent = new Intent();
+                        intent.putExtra("part", nListArray.get(position).toJson());
+                        intent.putExtra("flag all", nListArray.get("flag").get("ALL").asString());
+                        intent.putExtra("flag no part", nListArray.get("flag").get("NOPART").asString());
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+                })
+        );
+
+        cariPart("");
     }
 
-    private void catchData() {
+    private void cariPart(final String cari){
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("spotdiscount"), args));
+                args.put("flag", getIntentStringExtra("flag"));
+                //args.put("flag", "NOPART");
+                args.put("search", cari);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("caripart"), args));
             }
 
             @Override
             public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-
-                } else {
-                    showInfo("Gagal");
+                if(result.get("status").asString().equalsIgnoreCase("OK")){
+                    nListArray.asArray().clear();
+                    nListArray.asArray().addAll(result.get("data").asArray());
+                    rvCariPart.getAdapter().notifyDataSetChanged();
+                }else{
+                    showError("Gagal Mencari Part");
                 }
             }
         });
@@ -109,7 +110,6 @@ public class DaftarJurnal_Activity extends AppActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_part, menu);
-
 
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -135,9 +135,7 @@ public class DaftarJurnal_Activity extends AppActivity {
 
             public boolean onQueryTextSubmit(String query) {
                 searchMenu.collapseActionView();
-                //filter(null);
-                //cariPart(query);
-
+                cariPart(query);
                 return true;
             }
         };

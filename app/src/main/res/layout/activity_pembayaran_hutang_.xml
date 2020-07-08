@@ -26,6 +26,23 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <EditText
+                        android:id="@+id/et_totalHutang_bayarHutang"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:textSize="14sp"
+                        android:hint="TOTAL HUTANG" />
+
+                </android.support.design.widget.TextInputLayout>
+
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -33,16 +50,15 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/textView34"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="TANGGAL"
+                        android:text="TANGGAL BAYAR"
                         android:textColor="@color/grey_900"
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/tv_tglTransaksi_jurnal"
+                        android:id="@+id/tv_tglBayar_bayarPiutang"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:gravity="center"
@@ -53,52 +69,6 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/textView21"
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:text="@string/aktivitas_uppercase"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold" />
-
-                    <Spinner
-                        android:id="@+id/sp_aktivitas_jurnal"
-                        android:layout_width="190dp"
-                        android:layout_weight="5"
-                        android:layout_height="wrap_content"
-                        android:entries="@array/pos_jurnal"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/textView20"
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:text="TRANSAKSI"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold" />
-
-                    <Spinner
-                        android:id="@+id/sp_transaksi_jurnal"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:entries="@array/jenis_jurnal"/>
-
-                </LinearLayout>
-
                 <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
@@ -106,61 +76,73 @@
                     android:layout_marginTop="10dp">
 
                     <EditText
-                        android:id="@+id/et_ket_jurnal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textMultiLine|textCapSentences"
-                        android:scrollbars="vertical"
-                        android:textSize="14sp"
-                        android:hint="@string/keterangan_uppercase" />
-
-                </android.support.design.widget.TextInputLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/textView26"
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:text="NAMA KONTAK"
-                        android:textColor="@color/grey_900"
-                        android:layout_gravity="center"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tv_kontak_jurnal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/icon_kontak"
-                        android:textAlignment="center"
-                        android:gravity="center"
-                        android:textStyle="bold"
-                        android:layout_marginStart="10dp"
-                        android:layout_weight="1" />
-
-                </LinearLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp">
-
-                    <EditText
-                        android:id="@+id/et_nominal_jurnal"
+                        android:id="@+id/et_discPembayaran_bayarHutang"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
                         android:inputType="numberDecimal"
-                        android:hint="NOMINAL" />
+                        android:hint="DISC PEMBAYARAN" />
 
                 </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <EditText
+                        android:id="@+id/et_totalBayar_bayarHutang"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:inputType="numberDecimal"
+                        android:hint="TOTAL BAYAR" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <EditText
+                        android:id="@+id/et_selisih_bayarHutang"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:enabled="false"
+                        android:hint="SELESIH" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="TGL. JATUH TEMPO"
+                        android:textColor="@color/grey_900"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_tglJatuhTempo_bayarHutang"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textStyle="bold"
+                        android:layout_weight="1"
+                        android:layout_marginStart="10dp"
+                        android:drawableStart="@drawable/icon_tanggal" />
+
+                </LinearLayout>
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -169,7 +151,6 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/textView201"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:text="PEMBAYARAN"
@@ -177,87 +158,31 @@
                         android:textStyle="bold" />
 
                     <Spinner
-                        android:id="@+id/sp_pembayaran_jurnal"
+                        android:id="@+id/sp_pembayaran_bayarHutang"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:entries="@array/jenis_jurnal"/>
+                        android:layout_weight="1" />
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/ly_jatuhTempo_jurnal"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/textView341"
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="JATUH TEMPO"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tv_tglJatuhTempo_jurnal"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:textStyle="bold"
-                        android:layout_weight="1"
-                        android:layout_marginStart="10dp"
-                        android:drawableStart="@drawable/icon_tanggal" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ly_rekAsal_jurnal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/textView216"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
-                        android:text="REKENING ASAL"
+                        android:text="REK ASAL"
                         android:textColor="@color/grey_900"
                         android:textStyle="bold" />
 
                     <Spinner
-                        android:id="@+id/sp_rekAsal_jurnal"
+                        android:id="@+id/sp_rekAsal_bayarHutang"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textAlignment="center" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ly_rekTujuan_jurnal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/textView2165"
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:text="REKENING TUJUAN"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold" />
-
-                    <Spinner
-                        android:id="@+id/sp_rekTujuan_jurnal"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textAlignment="center" />
+                        android:layout_weight="1" />
 
                 </LinearLayout>
 
@@ -268,129 +193,115 @@
                     android:layout_marginTop="10dp">
 
                     <EditText
-                        android:id="@+id/et_bankTerbayar_jurnal"
+                        android:id="@+id/et_bankBerbayar_bayarHutang"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
-                        android:inputType="text"
-                        android:hint="BANK TERBAYAR" />
-
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp">
-
-                    <EditText
-                        android:id="@+id/et_notaTrace_jurnal"
-                        android:layout_width="match_parent"
-                        android:inputType="text"
-                        android:textSize="14sp"
-                        android:layout_height="wrap_content"
-                        android:hint="NO. NOTA - TRACE" />
-
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp">
-
-                    <EditText
-                        android:id="@+id/et_biayaTf_jurnal"
-                        android:layout_width="match_parent"
                         android:inputType="numberDecimal"
-                        android:textSize="14sp"
+                        android:hint="BANK BERBAYAR" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <EditText
+                        android:id="@+id/et_noRek_bayarHutang"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:enabled="false"
+                        android:hint="NO. REKENING" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <EditText
+                        android:id="@+id/et_namaRek_bayarHutang"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:enabled="false"
+                        android:hint="NAMA REKEING" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <EditText
+                        android:id="@+id/et_noTrace_bayarHutang"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:inputType="number"
+                        android:hint="NO. TRACE" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <EditText
+                        android:id="@+id/et_biayaTf_bayarHutang"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:inputType="numberDecimal"
                         android:hint="BIAYA TRANSFER" />
 
                 </android.support.design.widget.TextInputLayout>
 
-
                 <LinearLayout
-                    android:id="@+id/ly_periodeSewa_jurnal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/tv_sewa"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
-                        android:text="PERIODE SEWA"
                         android:layout_gravity="center"
+                        android:text="BUKTI TRANSFER"
                         android:textColor="@color/grey_900"
                         android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/tv_mulaiSewa_jurnal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textSize="12sp"
-                        android:text="Tgl Mulai"
-                        android:gravity="center"
-                        android:textStyle="bold"
-                        android:drawableStart="@drawable/icon_tanggal" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:textStyle="bold"
-                        android:text="-" />
-
-
-                    <TextView
-                        android:id="@+id/tv_selesaiSewa_jurnal"
-                        android:layout_width="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:textStyle="bold"
-                        android:textSize="12sp"
-                        android:text="Tgl Selesai"
-                        android:drawableEnd="@drawable/icon_tanggal" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/textView206"
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:text="UMUR ASET"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold" />
-
-                    <Spinner
-                        android:id="@+id/sp_tahunAsset_jurnal"
+                    <ImageView
+                        android:id="@+id/img_camera_bayarHutang"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"/>
+                        android:textStyle="bold"
+                        android:scaleType="fitXY"
+                        android:layout_weight="1"
+                        android:src="@drawable/icon_camera_unfill"
+                        android:layout_marginStart="10dp" />
 
-                    <Spinner
-                        android:id="@+id/sp_bulanAsset_jurnal"
-                        android:layout_width="0dp"
+                    <CheckBox
+                        android:id="@+id/cb_kirimBukti_bayarHutang"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-
+                        android:text="KIRIM BUKTI" />
 
                 </LinearLayout>
 
             </LinearLayout>
 
             <Button
-                android:id="@+id/btn_simpan_jurnal"
+                android:id="@+id/btn_simpan_bayarHutang"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
@@ -408,7 +319,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
-
 
         <FrameLayout
             android:layout_width="match_parent"

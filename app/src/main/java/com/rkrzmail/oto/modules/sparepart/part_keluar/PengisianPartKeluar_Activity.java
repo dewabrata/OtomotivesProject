@@ -15,7 +15,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.sparepart.lokasi_part.CariPart_Activity;
+import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
 
 import java.util.Map;
 

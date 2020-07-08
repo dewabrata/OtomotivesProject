@@ -36,12 +36,12 @@ public class PenjualanPart_Activity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_penjualan_part_);
+        setContentView(R.layout.activity_list_basic_3);
         initComponent();
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_jualPart);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Penjualan Part");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -49,7 +49,7 @@ public class PenjualanPart_Activity extends AppActivity {
 
     private void initComponent() {
         initToolbar();
-        FloatingActionButton fab = findViewById(R.id.fab_tambah_jualPart);
+        FloatingActionButton fab = findViewById(R.id.fab_tambah);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -58,7 +58,7 @@ public class PenjualanPart_Activity extends AppActivity {
             }
         });
 
-        rvJualPart = findViewById(R.id.recyclerView_jualPart);
+        rvJualPart = findViewById(R.id.recyclerView);
         rvJualPart.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvJualPart.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_jual_part) {
             @Override

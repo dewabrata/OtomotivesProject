@@ -1,12 +1,11 @@
-package com.rkrzmail.oto.modules.sparepart;
+package com.rkrzmail.oto.modules.hutang;
 
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -18,7 +17,6 @@ import android.widget.TextView;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
-import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
@@ -28,78 +26,69 @@ import com.rkrzmail.srv.NikitaViewHolder;
 
 import java.util.Map;
 
-public class Spareparts_Activity extends AppActivity {
+public class Piutang_Activity extends AppActivity {
 
-    private static final int REQUEST_ATUR = 21;
-    public static final int REQUEST_CARI = 32;
     private RecyclerView recyclerView;
-    private SearchView mSearchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_spareparts);
-        initToolbar();
+        setContentView(R.layout.activity_list_basic);
         initComponent();
     }
 
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("SPAREPART");
+        getSupportActionBar().setTitle("Piutang");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
     }
 
     private void initComponent() {
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah_part2);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), CariPart_Activity.class);
-                setResult(RESULT_OK);
-                startActivityForResult(intent, REQUEST_ATUR);
-            }
-        });
-
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        initToolbar();
+        recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_spareparts) {
-            @Override
-            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+        recyclerView.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_piutang) {
+                    @Override
+                    public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+                        super.onBindViewHolder(viewHolder, position);
 
-                viewHolder.find(R.id.txtNamaPart, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
-                viewHolder.find(R.id.txtNoPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
-                viewHolder.find(R.id.txtStock, TextView.class).setText(nListArray.get(position).get("STOCK").asString());
-                viewHolder.find(R.id.txtHargaJual, TextView.class).setText(nListArray.get(position).get("HARGA_JUAL").asString());
-                viewHolder.find(R.id.txtTerjual, TextView.class).setText(nListArray.get(position).get("TERJUAL").asString());
-                viewHolder.find(R.id.txtMinStock, TextView.class).setText(nListArray.get(position).get("MIN_STOCK").asString());
-                viewHolder.find(R.id.txtMerk, TextView.class).setText(nListArray.get(position).get("MERK").asString());
-            }
+                        viewHolder.find(R.id.tv_tglTransaksi_piutang, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_nama_piutang, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_status_piutang, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_tipe_piutang, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_transaksi_piutang, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_nominal_piutang, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_tglInv_piutang, TextView.class).setText(nListArray.get(position).get("").asString());
 
-        }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Nson parent, View view, int position) {
-                Intent intent = new Intent(getActivity(), AturParts_Activity.class);
-                intent.putExtra("part", nListArray.get(position).toJson());
-                startActivity(intent);
-            }
-        }));
+                    }
 
-        reload("");
+                }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Nson parent, View view, int position) {
+                        String status = nListArray.get(position).get("").asString();
+                        Intent i;
+                        if(status.equalsIgnoreCase("SIAP")){
+
+                        }else if(status.equalsIgnoreCase("PERMINTAAN")){
+
+                        }else{
+
+                        }
+                    }
+                })
+        );
     }
 
-
-    private void reload(final String nama) {
-        MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
+    private void catchData() {
+        newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("search", nama);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewsparepart"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(""), args));
             }
 
             @Override
@@ -109,11 +98,13 @@ public class Spareparts_Activity extends AppActivity {
                     nListArray.asArray().addAll(result.get("data").asArray());
                     recyclerView.getAdapter().notifyDataSetChanged();
                 } else {
-                    showError("Mohon Di Coba Kembali");
+                    showInfo("Gagal");
                 }
             }
         });
     }
+
+    SearchView mSearchView;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -134,16 +125,17 @@ public class Spareparts_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        adapterSearchView(mSearchView, "search", "viewsparepart", "NAMA");
+        //adapterSearchView(mSearchView, "search", "viewsparepart", "NAMA");
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
 
                 return false;
             }
+
             public boolean onQueryTextSubmit(String query) {
                 searchMenu.collapseActionView();
                 //filter(null);
-                reload(query);
+                //reload(query);
                 return true;
             }
         };
@@ -151,13 +143,4 @@ public class Spareparts_Activity extends AppActivity {
         return true;
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_ATUR && resultCode == RESULT_OK) {
-            Intent i = new Intent(getActivity(), AturParts_Activity.class);
-            i.putExtra("part", getIntentStringExtra(data, "part"));
-            startActivity(i);
-        }
-    }
 }

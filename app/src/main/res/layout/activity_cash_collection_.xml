@@ -112,7 +112,7 @@
                     android:id="@+id/et_noTrack_cashCollection"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:hint="NO. TRACK"
+                    android:hint="NO. TRACE"
                     android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
