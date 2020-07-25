@@ -68,6 +68,14 @@ public class AturDiscountPart_Activity extends AppActivity implements View.OnCli
                 saveData();
             }
         });
+
+        find(R.id.btn_search, Button.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity(), CariPart_Activity.class);
+                startActivityForResult(i, REQUEST_CARI_PART);
+            }
+        });
     }
 
 
@@ -110,27 +118,10 @@ public class AturDiscountPart_Activity extends AppActivity implements View.OnCli
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_search, menu);
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_searchPart) {
-            Intent i = new Intent(this, CariPart_Activity.class);
-            i.putExtra("flag", "ALL");
-            startActivityForResult(i, REQUEST_CARI_PART);
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_tglEffect_discPart:
-                Tools.getDatePickerDialogTextView(getActivity(), tvTgl);
+                getDatePickerDialogTextView(getActivity(), tvTgl);
                 break;
         }
     }

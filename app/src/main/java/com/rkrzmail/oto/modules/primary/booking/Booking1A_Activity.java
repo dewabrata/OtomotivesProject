@@ -1,6 +1,7 @@
 package com.rkrzmail.oto.modules.primary.booking;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -32,7 +34,9 @@ import java.util.Map;
 
 public class Booking1A_Activity extends AppActivity {
 
-    public static final int REQUEST_BOOKING = 10;
+    public static final int REQUEST_HISTORY = 10;
+    public static final int REQUEST_BOOKING_TIGA = 11;
+    private static final int REQUEST_CHECKIN = 12;
     private NikitaAutoComplete etJenisKendaraan, etNopol, etNoPonsel;
     private EditText etNamaPelanggan, etKeluhan, etKm;
     private Spinner spKondisiKendaraan, spLayanan, spPekerjaan;
@@ -66,34 +70,31 @@ public class Booking1A_Activity extends AppActivity {
         spPekerjaan = findViewById(R.id.sp_pekerjaan_booking1a);
 
         setSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN");
-
-        componentValidation();
+        autoCompleteEditText();
 
         find(R.id.btn_history_booking1a, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), HistoryBookingCheckin_Activity.class));
+                Intent i = new Intent(getActivity(), HistoryBookingCheckin_Activity.class);
+                i.putExtra("NOPOL", etNopol.getText().toString().trim());
+                startActivityForResult(i, REQUEST_HISTORY);
             }
         });
 
         find(R.id.btn_lanjut_booking1a, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (spLayanan.getSelectedItem().toString().equalsIgnoreCase("AFTER SALES SERVICE")) {
-                    if (etKm.getText().toString().isEmpty()) {
-                        etKm.setError("KM Harus Di isi");
-                        return;
-                    }
+                if(!validateFields(find(R.id.ly_booking1a, LinearLayout.class))){
+                    nextBooking();
+                }else{
+                    showInfo("Silahkan Lengkapi Semua Field");
                 }
-
-                nextBooking();
             }
         });
     }
 
     private void nextBooking() {
         final String nopol = etNopol.getText().toString().replace(" ", "").toUpperCase();
-        ;
         final String nophone = etNoPonsel.getText().toString();
         final String namaPelanggan = etNamaPelanggan.getText().toString().toUpperCase();
         final String jenisKendaraan = etJenisKendaraan.getText().toString().toUpperCase();
@@ -105,64 +106,77 @@ public class Booking1A_Activity extends AppActivity {
 
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("nopol", nopol);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewnopol"), args));
             }
+
             @Override
             public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    Log.d("booking", result.get("data").asString());
-                } else {
-                    Log.d("booking", result.get("message").asString());
+                ArrayList<String> data = new ArrayList<>();
+                for (int i = 0; i < result.get("data").size(); i++) {
+                    data.add(result.get("data").get(i).get("NOPOL").asString());
                 }
-                // add : CID, action(add), nopol, jeniskendaraan, nopon, nama,
-                // pemilik, kondisi, keluhan, lokasi, jemput,
-                // antar, layanan, km, alamat, date, user, status,
-                // tanggalbook, jambook, jemput, antar, hari, jam, biayatrans, biayalayan, dp
-                Nson nson = Nson.newObject();
+
+                final Nson nson = Nson.newObject();
                 nson.set("nopol", nopol);
                 nson.set("jeniskendaraan", jenisKendaraan);
                 nson.set("nopon", nophone);
                 nson.set("nama", namaPelanggan);
-                nson.set("pemilik", find(R.id.cb_pemilik_booking1a, CheckBox.class).isChecked() ? "PEMILIK" : "BUKAN PEMILIK");
+                nson.set("pemilik", find(R.id.cb_pemilik_booking1a, CheckBox.class).isChecked() ? "YA" : "TIDAK");
                 nson.set("kondisi", kondisiKendaraan);
                 nson.set("keluhan", keluhan);
                 nson.set("km", km);
                 nson.set("layanan", layanan);
                 nson.set("pekerjaan", pekerjaan);
-
-                ArrayList<String> data = new ArrayList<>();
-                for (int i = 0; i < result.get("data").size(); i++) {
-                    data.add(result.get("data").get(i).get("NOPOL").asString());
+                nson.set("derek", find(R.id.cb_derek_booking1a, CheckBox.class).isChecked() ? "YA" : "TIDAK");
+                if(find(R.id.cb_derek_booking1a, CheckBox.class).isChecked()){
+                    nson.set("statusbook", "BOOK DEREK");
+                }else{
+                    nson.set("statusbook", "");
                 }
-                if (nopol.isEmpty() && jenisKendaraan.isEmpty()
-                        && nophone.isEmpty()
-                        && namaPelanggan.isEmpty()
-                        && pekerjaan.equalsIgnoreCase("BELUM DI PILIH")
-                        && keluhan.isEmpty()) {
-                    showInfo("Silahkan Lengkapi Semua Field");
+
+                if (spKondisiKendaraan.getSelectedItem().toString().equalsIgnoreCase("MASALAH MESIN/PENGGERAK")) {
+                    showInfoDialog("Konfirmasi", "Layanan hanya dapat di lakukan di Bengkel, Gunakan Antar - Jemput ? ", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //OK
+                            nson.set("statusbook", "BOOK JEMPUT");
+                            Intent i = new Intent(getActivity(), Booking1B_Activity.class);
+                            i.putExtra("data", nson.toJson());
+                            startActivityForResult(i, KontrolBooking_Activity.REQUEST_BOOKING_LAYANAN);
+                        }
+                    }, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //NO
+                            nson.set("statusbook", "BOOK  BENGKEL");
+                            Intent i = new Intent(getActivity(), Booking3_Activity.class);
+                            i.putExtra("data", nson.toJson());
+                            startActivityForResult(i, REQUEST_BOOKING_TIGA);
+                        }
+                    });
                     return;
                 }
+
                 Intent intent;
                 if (data.contains(nopol)) {
                     intent = new Intent(getActivity(), Booking1B_Activity.class);
                     intent.putExtra("data", nson.toJson());
-                    startActivity(intent);
-                    finish();
+                    startActivityForResult(intent, KontrolBooking_Activity.REQUEST_BOOKING_LAYANAN);
                 } else {
                     intent = new Intent(getActivity(), Checkin2_Activity.class);
                     intent.putExtra("data", nson.toJson());
-                    setResult(RESULT_OK);
-                    startActivityForResult(intent, REQUEST_BOOKING);
+                    startActivityForResult(intent, REQUEST_CHECKIN);
                 }
             }
         });
     }
 
-    private void componentValidation() {
+    private void autoCompleteEditText() {
         etNopol.setThreshold(3);
         etNopol.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
             @Override
@@ -173,6 +187,7 @@ public class Booking1A_Activity extends AppActivity {
                 Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewnopol"), args));
                 return result.get("data");
             }
+
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 if (convertView == null) {
@@ -190,8 +205,8 @@ public class Booking1A_Activity extends AppActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
                 etNopol.setText(formatNopol(n.get("NOPOL").asString()));
-                etNoPonsel.setText(n.get("PHONE").asString());
-                etNamaPelanggan.setText(n.get("NAMA").asString());
+                etNoPonsel.setText(n.get("NO_PONSEL").asString());
+                etNamaPelanggan.setText(n.get("NAMA_PELANGGAN").asString());
                 etJenisKendaraan.setText(n.get("MODEL").asString());
 
                 find(R.id.btn_history_booking1a).setEnabled(true);
@@ -279,16 +294,19 @@ public class Booking1A_Activity extends AppActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == REQUEST_BOOKING) {
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CHECKIN) {
             Intent i = new Intent(getActivity(), Booking1B_Activity.class);
-            i.putExtra("data", getIntentStringExtra(data, "data"));
-            startActivity(i);
-        }
-    }
+            i.putExtra("data", Nson.readJson(getIntentStringExtra(data, "data")).toJson());
+            startActivityForResult(i, KontrolBooking_Activity.REQUEST_BOOKING_LAYANAN);
+        } else if (resultCode == RESULT_OK && requestCode == REQUEST_BOOKING_TIGA) {
+            Intent i = new Intent(getActivity(), Booking2_Activity.class);
+            i.putExtra("data", Nson.readJson(getIntentStringExtra(data, "data")).toJson());
+            startActivityForResult(i, KontrolBooking_Activity.REQUEST_BOOKING_LAYANAN);
+        } else if (resultCode == RESULT_OK && requestCode == KontrolBooking_Activity.REQUEST_BOOKING_LAYANAN) {
+            setResult(RESULT_OK);
+            finish();
+        } else if(resultCode == RESULT_OK && requestCode == REQUEST_HISTORY){
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        finish();
+        }
     }
 }

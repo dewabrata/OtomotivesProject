@@ -1,45 +1,54 @@
 package com.rkrzmail.oto.modules.jasa;
 
-import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
+import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.srv.NikitaAutoComplete;
-import com.rkrzmail.srv.NsonAutoCompleteAdapter;
+import com.rkrzmail.srv.NikitaRecyclerAdapter;
+import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.utils.Tools;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class JasaLain_Activity extends AppActivity {
 
-    private Spinner spAktifitas;
-    private EditText etDeskripsi;
-    private NikitaAutoComplete etKategori;
+    private RecyclerView rvJasa;
+    private static final int REQUEST_BIAYA = 11;
+    private EditText etAktivitasLain;
+    private Nson nson = Nson.newArray();
+    private int counting = 0;
+    ArrayList<Boolean> flagChecked = new ArrayList<>();
+    boolean flag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_jasa_lain_);
+        setContentView(R.layout.activity_list_basic_2);
         initComponent();
 
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_jasaLain);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Jasa Lain");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -47,71 +56,90 @@ public class JasaLain_Activity extends AppActivity {
 
     private void initComponent() {
         initToolbar();
-        spAktifitas = findViewById(R.id.sp_aktifitas_jasaLain);
-        etKategori = findViewById(R.id.et_kategori_jasaLain);
-        etDeskripsi = findViewById(R.id.et_deskripsi_jasaLain);
+        rvJasa = findViewById(R.id.recyclerView);
+        etAktivitasLain = findViewById(R.id.editText_list_basic2);
+        etAktivitasLain.setVisibility(View.VISIBLE);
 
-        etKategori.setThreshold(3);
-        etKategori.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
+        catchData();
+        rvJasa.setLayoutManager(new LinearLayoutManager(this));
+        rvJasa.setHasFixedSize(true);
+        rvJasa.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_jasa_lain) {
             @Override
-            public Nson onFindNson(Context context, String bookTitle) {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-
-                args.put("nama", "PART");
-                args.put("search", bookTitle);
-                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewmst"), args));
-
-                return result.get("data");
+            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, final int position) {
+                viewHolder.find(R.id.cb_jasaLain_jasa, CheckBox.class).setTag("check");
+                viewHolder.find(R.id.cb_jasaLain_jasa, CheckBox.class).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (buttonView.isChecked()) {
+                            buttonView.setChecked(true);
+                            nson.add(nListArray.get(position));
+                        } else {
+                            buttonView.setChecked(false);
+                            nson.asArray().remove(nson.get(nListArray.get(position)));
+                        }
+                    }
+                });
+                viewHolder.find(R.id.tv_masterPart_jasaLain, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
+                viewHolder.find(R.id.tv_lepasPasang_jasaLain, TextView.class).setText(nListArray.get(position).get("LEPAS_PASANG").asString());
+                viewHolder.find(R.id.tv_waktu_jasaLain, TextView.class).setText(nListArray.get(position).get("WAKTU").asString());
+                viewHolder.find(R.id.tv_mekanik_jasaLain, TextView.class).setText(nListArray.get(position).get("TIPE_MEKANIK").asString());
             }
 
             @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                if (convertView == null) {
-                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    convertView = inflater.inflate(R.layout.item_suggestion, parent, false);
+            public Nson getItem() {
+                if (nListArray.size() == 0) {
+                    etAktivitasLain.setVisibility(View.GONE);
+                    find(R.id.btn_simpan, Button.class).setVisibility(View.GONE);
                 }
-                findView(convertView, R.id.title, TextView.class).setText(formatNopol(getItem(position).get("KATEGORI").asString()));
-                return convertView;
+                return nListArray;
             }
         });
 
-        etKategori.setLoadingIndicator((android.widget.ProgressBar) findViewById(R.id.pb));
-        etKategori.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
-                etKategori.setText(n.get("KATEGORI").asString());
-            }
-        });
-
-
-        find(R.id.btn_simpan_jasaLain, Button.class).setOnClickListener(new View.OnClickListener() {
+        find(R.id.btn_simpan, Button.class).setText("Lanjut");
+        find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveData();
+                Intent i = new Intent(getActivity(), BiayaJasa_Activity.class);
+                i.putExtra("data", nson.toJson());
+                i.putExtra("jasa_lain", "");
+                Log.d("JASA_LAIN_CLASS", "JASA : " + nson);
+                startActivityForResult(i, REQUEST_BIAYA);
             }
         });
     }
 
-    private void saveData() {
-        newProses(new Messagebox.DoubleRunnable() {
+    private void catchData() {
+        MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result;
 
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(""), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewjasalain"), args));
             }
 
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-
+                    nListArray.asArray().clear();
+                    nListArray.asArray().addAll(result.get("data").asArray());
+                    rvJasa.getAdapter().notifyDataSetChanged();
                 } else {
-                    showInfo("GAGAL!");
+                    showError("Mohon Di Coba Kembali" + result.get("status").asString());
                 }
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == REQUEST_BIAYA) {
+            Intent i = new Intent();
+            i.putExtra("data", Nson.readJson(getIntentStringExtra(data, "data")).toJson());
+            Log.d("JASA_LAIN_CLASS", "SENDD : " + Nson.readJson(getIntentStringExtra(data, "data")));
+            setResult(RESULT_OK, i);
+            finish();
+        }
     }
 }

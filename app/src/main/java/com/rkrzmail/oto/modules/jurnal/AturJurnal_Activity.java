@@ -80,15 +80,15 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_tglTransaksi_jurnal:
-                Tools.getDatePickerDialogTextView(getActivity(), tvTglTransaksi);
+               getDatePickerDialogTextView(getActivity(), tvTglTransaksi);
                 break;
             case R.id.tv_kontak_jurnal:
                 break;
             case R.id.tv_mulaiSewa_jurnal:
-                Tools.getDatePickerDialogTextView(getActivity(), tvTglMulaiSewa);
+                getDatePickerDialogTextView(getActivity(), tvTglMulaiSewa);
                 break;
             case R.id.tv_selesaiSewa_jurnal:
-                Tools.getDatePickerDialogTextView(getActivity(), tvTglSelesaiSewa);
+                getDatePickerDialogTextView(getActivity(), tvTglSelesaiSewa);
                 break;
         }
     }

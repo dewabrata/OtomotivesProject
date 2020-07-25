@@ -7,10 +7,9 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:layout_marginLeft="7dp"
-    android:layout_marginTop="4dp"
+    android:layout_marginTop="5dp"
     android:layout_marginRight="7dp"
-    android:layout_marginBottom="4dp"
-    android:layout_weight="5"
+    android:layout_marginBottom="5dp"
     android:padding="10dp"
     app:cardElevation="2dp"
     app:cardCornerRadius="10dp">
@@ -37,6 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="User Jual"
+                android:layout_gravity="end"
                 android:textStyle="bold" />
 
         </TableRow>
@@ -66,6 +66,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Harga"
+                android:layout_gravity="end"
                 android:textStyle="bold" />
 
         </TableRow>
@@ -84,6 +85,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Total"
+                android:layout_gravity="end"
                 android:textStyle="bold" />
 
         </TableRow>
@@ -102,6 +104,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="User Update"
+                android:layout_gravity="end"
                 android:textStyle="bold" />
 
         </TableRow>

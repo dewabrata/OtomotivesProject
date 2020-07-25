@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.sparepart.terima_part;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -39,6 +40,7 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
     private TextView tglPesan, tglTerima, tglJatuhTempo, txtNamaSupplier;
     private EditText txtNoDo, txtOngkosKirim;
     private Button btnSelanjutnya;
+    ArrayList<String> data = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +56,12 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("ATUR TERIMA PART");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkTgl();
     }
 
     private void initComponent() {
@@ -113,9 +121,11 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
         find(R.id.btnSelanjutnya, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final String tglpesan = tglPesan.getText().toString();
+                final String tglterima = tglTerima.getText().toString();
                 try {
-                    Date tanggalTerima = new SimpleDateFormat("dd/MM/yyyy").parse(tglTerima.getText().toString());
-                    Date pesan = new SimpleDateFormat("dd/MM/yyyy").parse(tglPesan.getText().toString());
+                    Date tanggalTerima = new SimpleDateFormat("dd/MM/yyyy").parse(tglterima);
+                    Date pesan = new SimpleDateFormat("dd/MM/yyyy").parse(tglpesan);
                     if (!tanggalTerima.after(pesan)) {
                         showInfo("Tanggal Pesan / Tgl Terima Tidak Sesuai");
                         return;
@@ -125,14 +135,10 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
                 }
                 try {
                     Date jatuhTempo = new SimpleDateFormat("dd/MM/yyyy").parse(tglJatuhTempo.getText().toString());
-                    Date tanggalTerima2 = new SimpleDateFormat("dd/MM/yyyy").parse(tglTerima.getText().toString());
+                    Date tanggalTerima2 = new SimpleDateFormat("dd/MM/yyyy").parse(tglterima);
                     if (find(R.id.layout_jatuh_tempo).getVisibility() == View.VISIBLE) {
                         if (!jatuhTempo.after(tanggalTerima2) && !tanggalTerima2.before(jatuhTempo)) {
                             showInfo("Tanggal Jatuh Tempo Invoice / Tanggal Terima Tidak Sesuai");
-                            return;
-                        }
-                        if (tglJatuhTempo.getText().toString().equalsIgnoreCase("")) {
-                            showInfo("Masukkan Tanggal Invoice");
                             return;
                         }
                     }
@@ -140,35 +146,43 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
                     e.printStackTrace();
                 }
 
-                if (tglTerima.getText().toString().equalsIgnoreCase("TANGGAL TERIMA")) {
+                if (tglterima.equalsIgnoreCase("TANGGAL TERIMA")) {
                     showInfo("Masukkan Tanggal Terima");
                     return;
-                } else if (tglPesan.getText().toString().equalsIgnoreCase("TANGGAL PESAN")) {
+                } else if (tglpesan.equalsIgnoreCase("TANGGAL PESAN")) {
                     showInfo("Masukkan Tanggal PESAN");
                     return;
                 }
-                setBtnSelanjutnya();
 
+                if (data.contains(tglpesan)) {
+                    showInfoDialog("Penerimaan Part Telah Tercatat Sebelumnya", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    return;
+                } else if (data.contains(tglterima)) {
+                    showInfoDialog("Penerimaan Part Telah Tercatat Sebelumnya", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    return;
+                }
 
+                Intent i = new Intent(AturTerimaPart.this, DetailPartDiterima.class);
+                i.putExtra("detail", sendObject().toJson());
+                startActivityForResult(i, REQUEST_DETAIL_PART);
             }
         });
     }
 
 
-    private void setBtnSelanjutnya() {
-
-        final String tglpesan = tglPesan.getText().toString();
-        final String tglterima = tglTerima.getText().toString();
-        final String jatuhtempo = tglJatuhTempo.getText().toString();
-        final String tipe = spinnerSupplier.getSelectedItem().toString().toUpperCase();
-        final String nama = txtNamaSupplier.getText().toString().toUpperCase();
-        final String nodo = txtNoDo.getText().toString().toUpperCase();
-        final String ongkir = txtOngkosKirim.getText().toString().toUpperCase();
-        final String pembayaran = spinnerPembayaran.getSelectedItem().toString().toUpperCase();
-
-        newProses(new Messagebox.DoubleRunnable() {
+    private void checkTgl() {
+        newTask(new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args2 = AppApplication.getInstance().getArgsData();
@@ -177,48 +191,51 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
 
             @Override
             public void runUI() {
-                Nson nson = Nson.newObject();
-                nson.set("nodo", nodo);
-                nson.set("tglpesan", tglpesan);
-                nson.set("tglterima", tglterima);
-                nson.set("ongkir", ongkir);
-                nson.set("pembayaran", pembayaran);
-                nson.set("jatuhtempo", jatuhtempo);
-                nson.set("nama", nama);
-                nson.set("tipe", tipe);
-                nson.set("rekening", find(R.id.sp_rekAsal_terimaPart, Spinner.class).getSelectedItem().toString());
-
-                ArrayList<String> data = new ArrayList<>();
                 for (int i = 0; i < result.get("data").size(); i++) {
                     data.add(result.get("data").get(i).get("TANGGAL_PESAN").asString());
                     data.add(result.get("data").get(i).get("TANGGAL_PENERIMAAN").asString());
-                }
-                if (data.contains(tglpesan)) {
-                    Tools.alertDialog(getActivity(), "Penerimaan Part Telah Tercatat Sebelumnya");
-                    return;
-                } else if (data.contains(tglterima)) {
-                    Tools.alertDialog(getActivity(), "Penerimaan Part Telah Tercatat Sebelumnya");
-                    return;
-                } else {
-                    Intent i = new Intent(AturTerimaPart.this, DetailPartDiterima.class);
-                    i.putExtra("detail", nson.toJson());
-                    startActivityForResult(i, REQUEST_DETAIL_PART);
                 }
             }
         });
     }
 
+    private Nson sendObject() {
+        String tglpesan = tglPesan.getText().toString();
+        String tglterima = tglTerima.getText().toString();
+        String jatuhtempo = tglJatuhTempo.getText().toString();
+        String tipe = spinnerSupplier.getSelectedItem().toString().toUpperCase();
+        String nama = txtNamaSupplier.getText().toString().toUpperCase();
+        String nodo = txtNoDo.getText().toString().toUpperCase();
+        String ongkir = txtOngkosKirim.getText().toString().toUpperCase();
+        String pembayaran = spinnerPembayaran.getSelectedItem().toString().toUpperCase();
+
+        Nson nson = Nson.newObject();
+        nson.set("nodo", nodo);
+        nson.set("tglpesan", tglpesan);
+        nson.set("tglterima", tglterima);
+        nson.set("ongkir", ongkir);
+        nson.set("pembayaran", pembayaran);
+        nson.set("jatuhtempo", jatuhtempo);
+        nson.set("nama", nama);
+        nson.set("tipe", tipe);
+        nson.set("rekening", find(R.id.sp_rekAsal_terimaPart, Spinner.class).getSelectedItem().toString());
+
+        return nson;
+    }
+
+
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tglPesan:
-                Tools.getDatePickerDialogTextView(getActivity(), tglPesan);
+                getDatePickerDialogTextView(getActivity(), tglPesan);
                 break;
             case R.id.tglTerima:
-                Tools.getDatePickerDialogTextView(getActivity(), tglTerima);
+                getDatePickerDialogTextView(getActivity(), tglTerima);
                 break;
             case R.id.jatuhTempo:
-                Tools.getDatePickerDialogTextView(getActivity(), tglJatuhTempo);
+                getDatePickerDialogTextView(getActivity(), tglJatuhTempo);
                 break;
             case R.id.txtNamaSupplier:
 //                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
@@ -252,5 +269,9 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
                 txtNamaSupplier.setText(contactName + "\n" + number);
             }
         }
+    }
+
+    private void dialog() {
+
     }
 }

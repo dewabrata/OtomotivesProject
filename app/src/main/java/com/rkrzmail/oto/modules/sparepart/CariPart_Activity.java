@@ -69,8 +69,12 @@ public class CariPart_Activity extends AppActivity {
                     public void onItemClick(Nson parent, View view, int position) {
                         Intent intent = new Intent();
                         intent.putExtra("part", nListArray.get(position).toJson());
+                        intent.putExtra("nopart", nListArray.get(position).get("PART_ID"));
                         intent.putExtra("flag all", nListArray.get("flag").get("ALL").asString());
-                        intent.putExtra("flag no part", nListArray.get("flag").get("NOPART").asString());
+                        intent.putExtra("flag no part", nListArray.get("flag").get("NO_PART").asString());
+                        intent.putExtra("flag master part", nListArray.get("flag").get("MASTER_PART").asString());
+                        intent.putExtra("flag kelompok part", nListArray.get("flag").get("KELOMPOK_PART").asString());
+
                         setResult(RESULT_OK, intent);
                         finish();
                     }
@@ -126,20 +130,37 @@ public class CariPart_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        adapterSearchView(mSearchView, "search", "caripart", "NAMA");
-        SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
-            public boolean onQueryTextChange(String newText) {
+        Intent i = getIntent();
+        if(i.hasExtra("flag master part") && i.hasExtra("flag kelompok part")){
+            SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+                public boolean onQueryTextChange(String newText) {
+                    return false;
+                }
 
-                return false;
-            }
+                public boolean onQueryTextSubmit(String query) {
+                    searchMenu.collapseActionView();
+                    cariPart(query);
+                    return true;
+                }
+            };
+            mSearchView.setOnQueryTextListener(queryTextListener);
+            return true;
+        }else{
+            adapterSearchView(mSearchView, "search", "caripart", "NAMA");
+            SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+                public boolean onQueryTextChange(String newText) {
 
-            public boolean onQueryTextSubmit(String query) {
-                searchMenu.collapseActionView();
-                cariPart(query);
-                return true;
-            }
-        };
-        mSearchView.setOnQueryTextListener(queryTextListener);
-        return true;
+                    return false;
+                }
+
+                public boolean onQueryTextSubmit(String query) {
+                    searchMenu.collapseActionView();
+                    cariPart(query);
+                    return true;
+                }
+            };
+            mSearchView.setOnQueryTextListener(queryTextListener);
+            return true;
+        }
     }
 }

@@ -195,7 +195,7 @@ public class AturDiscountLayanan_Activity extends AppActivity implements View.On
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_tglEffect_discLayanan:
-                Tools.getDatePickerDialogTextView(getActivity(), find(R.id.tv_tglEffect_discLayanan, TextView.class));
+                getDatePickerDialogTextView(getActivity(), find(R.id.tv_tglEffect_discLayanan, TextView.class));
                 break;
         }
     }

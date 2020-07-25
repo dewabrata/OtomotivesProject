@@ -24,7 +24,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".modules.komisi.AturKomisiPart_Activity"></activity>
+        <activity android:name=".modules.layanan.TambahLayanan"></activity>
+        <activity android:name=".modules.komisi.AturKomisiPart_Activity" />
         <activity android:name=".modules.komisi.KomisiPart_Activity" />
         <activity android:name=".modules.pembayaran.AturPembayaranElektronik_Activity" />
         <activity android:name=".modules.pembayaran.PembayaranElektronik_Activity" />

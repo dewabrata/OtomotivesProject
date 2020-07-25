@@ -27,11 +27,10 @@
                 android:layout_marginRight="10dp">
 
                 <EditText
-                    android:id="@+id/et_waktuKerja_biayaJasa"
+                    android:id="@+id/et_masterPart_biayaJasa"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="WAKTU KERJA"
-                    android:inputType="time"
+                    android:hint="MASTER PART"
                     android:enabled="false"
                     android:textSize="14sp" />
 
@@ -46,61 +45,123 @@
                 android:layout_marginRight="10dp">
 
                 <EditText
-                    android:id="@+id/et_mekanik_biayaJasa"
+                    android:id="@+id/et_aktivitas_biayaJasa"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="MEKANIK / JAM"
-                    android:enabled="false"
-                    android:textSize="14sp" />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp">
-
-                <EditText
-                    android:id="@+id/et_total_biayaJasa"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="TOTAL"
-                    android:inputType="numberDecimal"
-                    android:textSize="14sp" />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp">
-
-                <EditText
-                    android:id="@+id/et_biaya_biayaJasa"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:hint="AKTIVITAS"
                     android:textSize="14sp"
-                    android:hint="BIAYA JASA"
-                    android:inputType="numberDecimal" />
+                    android:inputType="text"/>
 
             </android.support.design.widget.TextInputLayout>
 
-
-            <Button
-                android:id="@+id/btn_simpan_biayaJasa"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_margin="10dp"
-                android:background="@drawable/btn_rounded_accent"
-                android:text="@string/simpan_uppercase"
-                android:textColor="@android:color/white" />
+                android:orientation="horizontal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp">
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="10dp">
+
+                    <EditText
+                        android:id="@+id/et_kerjaMulai_biayaJasa"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="WAKTU KERJA"
+                        android:inputType="time"
+                        android:textSize="14sp" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <EditText
+                        android:id="@+id/et_kerjaSelesai_biayaJasa"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="PENGERJAAN"
+                        android:enabled="false"
+                        android:textSize="14sp" />
+
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp">
+
+                    <EditText
+                        android:id="@+id/et_biaya_biayaJasa"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:hint="BIAYA JASA LAIN"
+                        android:inputType="numberDecimal" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <ImageButton
+                    android:id="@+id/img_clear"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:background="@android:color/transparent"
+                    app:srcCompat="@drawable/ic_close"
+                    android:tint="@color/grey_80"
+                    android:visibility="gone"
+                    android:layout_marginTop="11dp"
+                    android:layout_marginStart="300dp"/>
+
+            </FrameLayout>
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:stretchColumns="*">
+
+            <TableRow>
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="OUTSOURCE"/>
+
+                <Button
+                    android:id="@+id/btn_simpan_biayaJasa"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/btn_rounded_accent"
+                    android:text="@string/simpan_uppercase"
+                    android:textColor="@android:color/white" />
+
+            </TableRow>
+
+
+        </TableLayout>
+
+
 
         </LinearLayout>
 
@@ -112,12 +173,7 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_jasaLain"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+       <include layout="@layout/toolbar"/>
 
     </android.support.design.widget.AppBarLayout>
 

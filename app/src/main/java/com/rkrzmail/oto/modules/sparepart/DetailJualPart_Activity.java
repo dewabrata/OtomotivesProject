@@ -1,6 +1,8 @@
 package com.rkrzmail.oto.modules.sparepart;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -29,6 +31,7 @@ public class DetailJualPart_Activity extends AppActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_jual_part_);
+        //Log.d("detailpartttt", "data" + Nson.readJson(getIntentStringExtra("part")));
         initToolbar();
         initComponent();
     }
@@ -57,6 +60,26 @@ public class DetailJualPart_Activity extends AppActivity {
                 }
             }
         });
+        etJumlah.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//                if(!s.toString().equals("") && !etJumlah.getText().toString().equals("")) {
+//                    etJumlah.setText("1");
+//                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                if(!s.toString().equals("")) {
+//
+//                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         find(R.id.btn_simpan_detailPart).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,6 +91,8 @@ public class DetailJualPart_Activity extends AppActivity {
                 saveData();
             }
         });
+
+
     }
 
     private void loadData() {
@@ -77,14 +102,22 @@ public class DetailJualPart_Activity extends AppActivity {
     }
 
     private void saveData() {
-        Nson n = Nson.readJson(getIntentStringExtra("part"));
+        Intent i = this.getIntent();
+        Nson n = Nson.readJson(getIntentStringExtra(i, "part"));
+//        if(n.asArray().contains("HARGA_JUAL")){
+//
+//        }
+        n.set("HARGA_JUAL", etHargaJual.getText().toString());
         n.set("JUMLAH", etJumlah.getText().toString());
-        n.set("TOTAL", etJumlah.getText().toString());
-        n.set("hpp", etHpp.getText().toString());
+        n.set("HPP", etHpp.getText().toString());
         n.set("DISC", etDisc.getText().toString());
-        Intent i = new Intent(getActivity(), DaftarJualPart_Activity.class);
-        i.putExtra("part", n.toJson());
-        startActivity(i);
+        n.set("TOTAL",
+                Integer.parseInt(etJumlah.getText().toString()) * Integer.parseInt(etHargaJual.getText().toString().trim().replaceAll("[^0-9]", "")));
+
+        Intent intent = new Intent();
+        intent.putExtra("part", n.toJson());
+        Log.d("partcuy", "part " + n.toJson());
+        setResult(RESULT_OK, intent);
         finish();
     }
 }

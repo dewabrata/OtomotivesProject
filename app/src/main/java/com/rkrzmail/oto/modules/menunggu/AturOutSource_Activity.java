@@ -91,7 +91,7 @@ public class AturOutSource_Activity extends AppActivity implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.tv_tglSelesai_outS:
-                Tools.getDatePickerDialogTextView(getActivity(), find(R.id.tv_tglSelesai_outS, TextView.class));
+                getDatePickerDialogTextView(getActivity(), find(R.id.tv_tglSelesai_outS, TextView.class));
                 break;
             case R.id.tv_supplier_outS:
                 try {

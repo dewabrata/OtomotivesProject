@@ -60,6 +60,7 @@ public class PengisianPartKeluar_Activity extends AppActivity {
                 if (!jumlah.equals("") && !stock.equals("")) {
                     if (Integer.parseInt(jumlah) > Integer.parseInt(stock)) {
                         showInfo("Jumlah Permintaan Melebihi Stock");
+                        find(R.id.btn_simpan, Button.class).setEnabled(false);
                     }
                 }
 //                int jumlah = Integer.parseInt(find(R.id.et_jumlah_partKeluar, EditText.class).getText().toString());

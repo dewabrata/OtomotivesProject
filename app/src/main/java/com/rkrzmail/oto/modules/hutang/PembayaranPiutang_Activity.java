@@ -52,7 +52,7 @@ public class PembayaranPiutang_Activity extends AppActivity {
         tvTgl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Tools.getDatePickerDialogTextView(getActivity(), tvTgl);
+                getDatePickerDialogTextView(getActivity(), tvTgl);
             }
         });
 

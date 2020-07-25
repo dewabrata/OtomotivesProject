@@ -2,7 +2,7 @@ package com.rkrzmail.oto.modules.biayamekanik;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
+import android.support.annotation.Nullable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,6 +26,7 @@ import java.util.Map;
 public class BiayaMekanik2Activity extends AppActivity {
 
     public static final String TAG = "BiayaMekanik2Activity";
+    private static final int REQUEST_ATUR = 10;
     private RecyclerView rvListBasic2;
     private TextView txtTgl;
 
@@ -55,7 +56,7 @@ public class BiayaMekanik2Activity extends AppActivity {
 
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                String tglSet = Tools.setFormatDayAndMonth(nListArray.get(position).get("TANGGAL_SET").asString());
+                String tglSet = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("TANGGAL_SET").asString());
 
                 viewHolder.find(R.id.tv_tgl_biayaMekanik, TextView.class).setText(tglSet);
                 viewHolder.find(R.id.tv_user_biayaMekanik, TextView.class).setText(nListArray.get(position).get("USER").asString());
@@ -71,8 +72,7 @@ public class BiayaMekanik2Activity extends AppActivity {
                 //Toast.makeText(getActivity(),"HHHHH "+position, Toast.LENGTH_SHORT).show();
                 Intent intent =  new Intent(getActivity(), AturBiayaMekanik2.class);
                 intent.putExtra("USER", nListArray.get(position).toJson());
-                startActivity(intent);
-                finish();
+                startActivityForResult(intent, REQUEST_ATUR);
             }
         }));
         reload();
@@ -84,8 +84,7 @@ public class BiayaMekanik2Activity extends AppActivity {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewbiayamekanik"),args)) ;
-
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewbiayamekanik"),args));
             }
 
             @Override
@@ -99,5 +98,13 @@ public class BiayaMekanik2Activity extends AppActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK && requestCode == REQUEST_ATUR){
+            reload();
+        }
     }
 }

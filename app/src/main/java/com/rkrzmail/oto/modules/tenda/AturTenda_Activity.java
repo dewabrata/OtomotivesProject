@@ -139,16 +139,16 @@ public class AturTenda_Activity extends AppActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_tglMulai_tenda:
-                Tools.getDatePickerDialogTextView(getActivity(), tvTglBuka);
+                getDatePickerDialogTextView(getActivity(), tvTglBuka);
                 break;
             case R.id.tv_tglSelesai_tenda:
-                Tools.getDatePickerDialogTextView(getActivity(), tvTglSelesai);
+                getDatePickerDialogTextView(getActivity(), tvTglSelesai);
                 break;
             case R.id.tv_jamMulai_tenda:
-                Tools.getTimePickerDialogTextView(getActivity(), tvJamMulai);
+                getTimePickerDialogTextView(getActivity(), tvJamMulai);
                 break;
             case R.id.tv_jamSelesai_tenda:
-                Tools.getTimePickerDialogTextView(getActivity(), tvJamTutup);
+                getTimePickerDialogTextView(getActivity(), tvJamTutup);
                 break;
 
         }

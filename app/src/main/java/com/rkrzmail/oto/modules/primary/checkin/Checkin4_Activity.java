@@ -88,7 +88,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_waktu_checkin4:
-                Tools.getDatePickerDialogTextView(getActivity(), find(R.id.tv_waktu_checkin4, TextView.class));
+                getDatePickerDialogTextView(getActivity(), find(R.id.tv_waktu_checkin4, TextView.class));
                 break;
         }
     }

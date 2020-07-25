@@ -13,6 +13,7 @@
         app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
 
         <LinearLayout
+            android:id="@+id/ly_booking1a"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -34,7 +35,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
-                        android:inputType="text"
+                        android:inputType="textCapWords|textCapSentences"
                         android:maxLength="10"
                         android:hint="NO. POLISI" />
 
@@ -75,7 +76,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="5dp">
+                    android:layout_marginTop="10dp">
 
                     <com.rkrzmail.srv.NikitaAutoComplete
                         android:id="@+id/et_jenisKendaraan_booking1a"
@@ -109,7 +110,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="5dp">
+                    android:layout_marginTop="10dp">
 
                     <com.rkrzmail.srv.NikitaAutoComplete
                         android:id="@+id/et_noPonsel_booking1a"
@@ -141,12 +142,12 @@
 
                 <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="5dp"
                     android:layout_weight="1"
-                    android:layout_marginTop="5dp">
+                    android:layout_marginTop="10dp">
 
                     <EditText
                         android:id="@+id/et_namaPelanggan_booking1a"
@@ -177,21 +178,19 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="10dp">
 
                 <TextView
                     android:id="@+id/txttittle9"
-                    android:layout_width="100dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:textStyle="bold"
-                    android:textSize="16sp"
-                    android:textColor="@color/red_900"
+                    android:textSize="14sp"
                     android:text="PEKERJAAN" />
 
                 <Spinner
                     android:id="@+id/sp_pekerjaan_booking1a"
-                    android:layout_width="100dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
                     android:layout_weight="1" />
@@ -204,20 +203,19 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="10dp">
 
                 <TextView
                     android:id="@+id/txttittle1"
-                    android:layout_width="100dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:textStyle="bold"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:text="KONDISI KENDARAAN" />
 
                 <Spinner
                     android:id="@+id/sp_kondisi_booking1a"
-                    android:layout_width="100dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textAlignment="center"
@@ -231,7 +229,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="10dp"
                 android:text="DEREK / PICK UP" />
 
             <android.support.design.widget.TextInputLayout
@@ -245,7 +243,7 @@
                 <EditText
                     android:id="@+id/et_keluhan_booking1a"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="wrap_content"
                     android:inputType="textMultiLine"
                     android:gravity="top|left"
                     android:maxLength="200"
@@ -261,19 +259,18 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="10dp">
 
                 <TextView
-                    android:layout_width="100dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:textStyle="bold"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:text="LAYANAN"/>
 
                 <Spinner
                     android:id="@+id/sp_layanan_booking1a"
-                    android:layout_width="100dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:entries="@array/layanan_booking1a" />
@@ -306,7 +303,7 @@
                 android:background="@drawable/btn_rounded_accent"
                 android:layout_gravity="end"
                 android:layout_marginRight="10dp"
-                android:textColor="@color/white_transparency"
+                android:textColor="@android:color/white"
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginBottom="10dp"/>

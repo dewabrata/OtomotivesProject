@@ -30,11 +30,11 @@ import java.util.Map;
 public class Checkin3_Activity extends AppActivity implements View.OnClickListener {
 
     private RecyclerView rvCheckin3;
-    final int REQUEST_PART = 15;
-    final int REQUEST_JASA_LAIN = 16;
-    final int REQUEST_JASA_BERKALA = 17;
-    final int REQUEST_PART_BERKALA = 19;
-    final int REQUEST_PART_EXTERNAL = 20;
+    final int REQUEST_PART = 20;
+    final int REQUEST_JASA_LAIN = 21;
+    final int REQUEST_JASA_BERKALA = 22;
+    final int REQUEST_PART_BERKALA = 23;
+    final int REQUEST_PART_EXTERNAL = 24;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

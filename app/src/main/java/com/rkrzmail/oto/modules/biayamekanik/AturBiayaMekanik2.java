@@ -42,6 +42,7 @@ public class AturBiayaMekanik2 extends AppActivity {
     private void initComponent() {
 
         final Nson data = Nson.readJson(getIntentStringExtra("USER"));
+        Log.d("BIAYA_MEKANIK.CLASS", "Data : " + data);
         final Intent i = getIntent();
 
         if (i.hasExtra("USER")) {
@@ -94,7 +95,7 @@ public class AturBiayaMekanik2 extends AppActivity {
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     showInfo("Sukses Menyimpan Aktifitas");
-                    startActivity(new Intent(AturBiayaMekanik2.this, BiayaMekanik2Activity.class));
+                    setResult(RESULT_OK);
                     finish();
                 } else {
                     showError("Gagal Menyimpan Aktifitas");

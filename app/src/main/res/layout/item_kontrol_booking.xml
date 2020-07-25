@@ -19,16 +19,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/tv_optionMenu_kontrolBooking"
+        <ImageButton
+            android:id="@+id/img_more_booking"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:tint="@color/grey_40"
             android:layout_marginTop="5dp"
             android:layout_marginRight="10dp"
             android:layout_gravity="end"
-            android:text="&#8942;"
-            android:textAppearance="?android:textAppearanceLarge"
-            android:textStyle="bold" />
+            app:srcCompat="@drawable/ic_more_vert" />
 
 
         <TableLayout
@@ -51,7 +51,7 @@
                     android:id="@+id/tv_waktu_kontrolBooking"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="40dp"
+
                     android:text="Waktu"
                     android:textStyle="bold" />
 
@@ -71,7 +71,6 @@
                     android:id="@+id/tv_noPhone_kontrolBooking"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="40dp"
                     android:text="No. Ponsel"
                     android:textStyle="bold" />
 
@@ -91,7 +90,6 @@
                     android:id="@+id/tv_jenisBooking_kontrolBooking"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="40dp"
                     android:text="Jenis Booking"
                     android:textStyle="bold" />
 

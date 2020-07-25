@@ -174,7 +174,7 @@ public class AturFrekwensiDiscount_Acitivity extends AppActivity implements View
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_tglEffect_freDisc:
-                Tools.getDatePickerDialogTextView(getActivity(), tvTgl);
+                getDatePickerDialogTextView(getActivity(), tvTgl);
                 break;
         }
     }

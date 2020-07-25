@@ -13,7 +13,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -22,10 +21,8 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
-import com.rkrzmail.srv.NsonAutoCompleteAdapter;
 import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
@@ -69,7 +66,7 @@ public class SpotDiscount_Activity extends AppActivity {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
-                String tglSet = Tools.setFormatDayAndMonth(nListArray.get(position).get("").asString());
+                String tglSet = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("").asString());
 
                 viewHolder.find(R.id.tv_tanggal_spotDisc, TextView.class).setText(tglSet);
                 viewHolder.find(R.id.tv_user_spotDisc, TextView.class).setText(nListArray.get(position).get("").asString());

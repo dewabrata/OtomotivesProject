@@ -1,14 +1,11 @@
 package com.rkrzmail.utils;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -23,13 +20,13 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -44,8 +41,6 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.android.gms.maps.GoogleMap;
 import com.rkrzmail.oto.R;
 
-
-import org.w3c.dom.Text;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -336,33 +331,6 @@ public class Tools {
         timePickerDialog.show();
     }
 
-    public static void getTimePickerDialogTextView(Context context, final TextView textView) {
-
-        Calendar calendar = Calendar.getInstance();
-        int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
-        int currentMinute = calendar.get(Calendar.MINUTE);
-
-        TimePickerDialog timePickerDialog = new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker timePicker, int hourOfDay, int minutes) {
-                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-                String time = hourOfDay + ":" + minutes;
-                Date date = null;
-                try {
-                    date = sdf.parse(time);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                String formattedTime = sdf.format(date);
-                textView.setText(formattedTime);
-            }
-        }, currentHour, currentMinute, true);
-
-        timePickerDialog.setTitle("Pilih Jam");
-        timePickerDialog.show();
-    }
-
-
     public static int getIndexSpinner(Spinner spinner, String value){
         for (int i=0;i<spinner.getCount();i++){
             if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(value)){
@@ -372,50 +340,20 @@ public class Tools {
         return 0;
     }
 
-    public static void getDatePickerDialog(Context context, final EditText dateTime){
-        DatePickerDialog datepicker;
-        final Calendar cldr = Calendar.getInstance();
-        final int day = cldr.get(Calendar.DAY_OF_MONTH);
-        final int month = cldr.get(Calendar.MONTH);
-        final int year = cldr.get(Calendar.YEAR);
-
-        datepicker = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
-                dateTime.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
-            }
-        }, year, month, day);
-        datepicker.show();
+    public static String setFormatDayAndMonthToDb(String date){
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        Date tgl = new Date();
+        try {
+            tgl = sdf.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String fotmatDate = sdf.format(tgl);
+        return fotmatDate;
     }
 
-    public static void getDatePickerDialogTextView(Context context, final TextView dateTime) {
-        DatePickerDialog datepicker;
-        final Calendar cldr = Calendar.getInstance();
-        final int day = cldr.get(Calendar.DAY_OF_MONTH);
-        final int month = cldr.get(Calendar.MONTH);
-        final int year = cldr.get(Calendar.YEAR);
-
-        datepicker = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
-
-//                newDate.replace(String.valueOf(year), "");
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                String newDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
-                Date date = null;
-                try {
-                    date = sdf.parse(newDate);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                String formattedTime = sdf.format(date);
-                dateTime.setText(formattedTime);
-            }
-        }, year, month, day);
-        datepicker.show();
-    }
-
-    public static String setFormatDayAndMonth(String date){
+    public static String setFormatDayAndMonthFromDb(String date){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date tgl = new Date();
         try {
@@ -446,21 +384,6 @@ public class Tools {
         }
     }
 
-    public static void alertDialog(Context context, String keterangan) {
-        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-        builder1.setMessage(keterangan);
-        builder1.setCancelable(true);
-        builder1.setPositiveButton(
-                "Edit",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alert11 = builder1.create();
-        alert11.show();
-    }
-
     public static String formatPercent(String number) {
         Locale localeID = new Locale("in", "ID");
         NumberFormat formatRupiah = NumberFormat.getPercentInstance(localeID);
@@ -470,7 +393,7 @@ public class Tools {
         return percentNumber;
     }
 
-    private static double parseDouble(String strNumber) {
+    public static double parseDouble(String strNumber) {
         if (strNumber != null && strNumber.length() > 0) {
             try {
                 return Double.parseDouble(strNumber);
@@ -501,16 +424,22 @@ public class Tools {
         return newList;
     }
 
-    public static ArrayList<EditText> getAllEditTexts(ViewGroup group) {
-        ArrayList<EditText> editTexts = new ArrayList<>();
-        for (int i = 0, count = group.getChildCount(); i < count; ++i) {
-            View view = group.getChildAt(i);
-            if (view instanceof EditText) {
-                editTexts.add((EditText) view);
+    public static <T> List<T> removeDuplicates(List<T> list) {
+        ArrayList<T> newList = new ArrayList<T>();
+        for (T element : list) {
+            if (!newList.contains(element)) {
+                newList.add(element);
             }
-            if (view instanceof ViewGroup && (((ViewGroup) view).getChildCount() > 0))
-                getAllEditTexts((ViewGroup) view);
         }
-        return editTexts;
+        return newList;
     }
+
+    public static void hideKeyboard(Activity context) {
+        View view = context.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
 }
