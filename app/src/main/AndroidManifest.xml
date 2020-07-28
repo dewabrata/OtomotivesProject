@@ -304,7 +304,7 @@
         <activity
             android:name=".MenuActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
+            android:theme="@style/AppThemeFull"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".HomeActivity"
