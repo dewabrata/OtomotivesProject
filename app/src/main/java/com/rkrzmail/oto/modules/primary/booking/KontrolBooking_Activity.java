@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -31,19 +33,20 @@ import java.util.Map;
 
 public class KontrolBooking_Activity extends AppActivity {
 
+    public static final int REQUEST_BOOKING_LAYANAN = 69;
+    private static final int REQUEST_HISTORY = 70;
     private RecyclerView rvKontrolBooking;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_kontrol_booking);
+        setContentView(R.layout.activity_list_basic_3);
         initToolbar();
         initComponent();
     }
 
-
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_kontrolBooking);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Kontrol Booking");
         setTitleColor(getResources().getColor(R.color.white_transparency));
@@ -51,35 +54,35 @@ public class KontrolBooking_Activity extends AppActivity {
     }
 
     private void initComponent() {
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah_kontrolBooking);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), Booking1A_Activity.class);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_BOOKING_LAYANAN);
             }
         });
-        rvKontrolBooking = findViewById(R.id.recyclerView_kontrolBooking);
+        rvKontrolBooking = findViewById(R.id.recyclerView);
         rvKontrolBooking.setLayoutManager(new LinearLayoutManager(this));
         rvKontrolBooking.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_kontrol_booking) {
             @Override
             public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, final int position) {
                 super.onBindViewHolder(viewHolder, position);
 
-                String tglSet = Tools.setFormatDayAndMonth(nListArray.get(position).get("CREATED_DATE").asString());
+                String tglSet = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("CREATED_DATE").asString());
 
                 viewHolder.find(R.id.tv_status_kontrolBooking, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
-                viewHolder.find(R.id.tv_waktu_kontrolBooking, TextView.class).setText(tglSet);
+                viewHolder.find(R.id.tv_waktu_kontrolBooking, TextView.class).setText(nListArray.get(position).get("WAKTU_PENGERJAAN").asString());
                 viewHolder.find(R.id.tv_nopol_kontrolBooking, TextView.class).setText(nListArray.get(position).get("NOPOL").asString());
-                viewHolder.find(R.id.tv_noPhone_kontrolBooking, TextView.class).setText(nListArray.get(position).get("NO_PONSEL").asString());
+                viewHolder.find(R.id.tv_noPhone_kontrolBooking, TextView.class).setText(nListArray.get(position).get("PHONE").asString());
                 viewHolder.find(R.id.tv_kondisi_kontrolBooking, TextView.class).setText(nListArray.get(position).get("KONDISI_KENDARAAN").asString());
-                viewHolder.find(R.id.tv_jenisBooking_kontrolBooking, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_jenisBooking_kontrolBooking, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
                 viewHolder.find(R.id.tv_ketPart_kontrolBooking, TextView.class).setText(nListArray.get(position).get("").asString());
 
-                viewHolder.find(R.id.tv_optionMenu_kontrolBooking, TextView.class).setOnClickListener(new View.OnClickListener() {
+                viewHolder.find(R.id.img_more_booking, TextView.class).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        PopupMenu popup = new PopupMenu(getActivity(), viewHolder.find(R.id.tv_optionMenu_kontrolBooking, TextView.class));
+                        PopupMenu popup = new PopupMenu(getActivity(), viewHolder.find(R.id.img_more_booking, ImageButton.class));
                         popup.inflate(R.menu.menu_history);
                         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                             @Override
@@ -87,8 +90,8 @@ public class KontrolBooking_Activity extends AppActivity {
                                 switch (menuItem.getItemId()) {
                                     case R.id.action_history:
                                         Intent i = new Intent(getActivity(), HistoryBookingCheckin_Activity.class);
-                                        i.putExtra("nopol", nListArray.get(position).toJson());
-                                        startActivity(i);
+                                        i.putExtra("NOPOL", nListArray.get(position).get("NOPOL").asString().trim());
+                                        startActivityForResult(i, REQUEST_HISTORY);
                                         break;
                                 }
                                 return true;
@@ -98,7 +101,12 @@ public class KontrolBooking_Activity extends AppActivity {
                     }
                 });
             }
-        });
+        }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Nson parent, View view, int position) {
+
+            }
+        }));
         catchData("");
     }
 
@@ -111,10 +119,8 @@ public class KontrolBooking_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 args.put("search", cari);
-
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturbooking"), args));
             }
-
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
@@ -169,5 +175,13 @@ public class KontrolBooking_Activity extends AppActivity {
         return true;
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK && requestCode == REQUEST_BOOKING_LAYANAN){
+            catchData("");
+        }else if(resultCode == RESULT_OK && requestCode == REQUEST_HISTORY){
+            catchData("");
+        }
+    }
 }

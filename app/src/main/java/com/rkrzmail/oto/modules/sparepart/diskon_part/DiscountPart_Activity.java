@@ -62,14 +62,14 @@ public class DiscountPart_Activity extends AppActivity {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
-                String tglDisc = Tools.setFormatDayAndMonth(nListArray.get(position).get("").asString());
+                //String tglDisc = Tools.setFormatDayAndMonth(nListArray.get(position).get("").asString());
 
-                viewHolder.find(R.id.tv_noPart_disc, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_namaPart_disc, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_hpp_disc, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_pekerjaan_disc, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_discount_disc, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_tgl_disc, TextView.class).setText(tglDisc);
+                viewHolder.find(R.id.tv_noPart_disc, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
+                viewHolder.find(R.id.tv_namaPart_disc, TextView.class).setText(nListArray.get(position).get("NAMA_PART").asString());
+                viewHolder.find(R.id.tv_hpp_disc, TextView.class).setText(nListArray.get(position).get("TOTAL").asString());
+                viewHolder.find(R.id.tv_pekerjaan_disc, TextView.class).setText(nListArray.get(position).get("PEKERJAAN").asString());
+                viewHolder.find(R.id.tv_discount_disc, TextView.class).setText(nListArray.get(position).get("DISCOUNT_PART").asString());
+                viewHolder.find(R.id.tv_tgl_disc, TextView.class).setText(nListArray.get(position).get("TANGGAL").asString());
 
             }
         });
@@ -122,7 +122,7 @@ public class DiscountPart_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        //adapterSearchView(mSearchView, "search", "caripart", "NAMA");
+        adapterSearchView(mSearchView, "search", "aturdiskonpart", "NAMA_PART");
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
 

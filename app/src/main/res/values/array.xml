@@ -78,6 +78,13 @@
         <item>OTOMOTIVES</item>
     </string-array>
 
+    <string-array name="atur_layanan">
+        <item>PAKET LAYANAN</item>
+        <item>AFTER SALES SERVICE</item>
+        <item>RECALL</item>
+        <item>OTOMOTIVES</item>
+    </string-array>
+
     <string-array name="jenis_kelamin">
         <item>LAKI - LAKI</item>
         <item>PEREMPUAN</item>

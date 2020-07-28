@@ -14,17 +14,21 @@ import java.util.ArrayList;
 public class NikitaRecyclerAdapter extends RecyclerView.Adapter<NikitaViewHolder> {
     Nson nson;
     int rlayout;
+
     public NikitaRecyclerAdapter(Nson nson, int rlayout){
         this.nson = nson;
         this.rlayout = rlayout;
     }
+
     public Nson getItem(){
         return nson;
     }
+
     @Override
     public final int getItemViewType(int position) {
         return position;
     }
+
     @Override
     public NikitaViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int position) {
         NikitaViewHolder nikitaViewHolder = NikitaViewHolder.getInstance(viewGroup, rlayout);
@@ -40,10 +44,12 @@ public class NikitaRecyclerAdapter extends RecyclerView.Adapter<NikitaViewHolder
         }
         return nikitaViewHolder;
     }
+
     @Override
     public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
 
     }
+
     @Override
     public int getItemCount() {
         return nson.size();

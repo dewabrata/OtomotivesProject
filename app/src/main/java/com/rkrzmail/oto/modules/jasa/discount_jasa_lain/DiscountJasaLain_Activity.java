@@ -63,7 +63,7 @@ public class DiscountJasaLain_Activity extends AppActivity {
                     public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                         super.onBindViewHolder(viewHolder, position);
 
-                        String tglSet = Tools.setFormatDayAndMonth(nListArray.get(position).get("TANGGAL").asString());
+                        String tglSet = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("TANGGAL").asString());
 
                         viewHolder.find(R.id.tv_kategori_discJasa, TextView.class).setText(nListArray.get(position).get("KATEGORI_JASA_LAIN").asString());
                         viewHolder.find(R.id.tv_disc_discJasa, TextView.class).setText(tglSet);

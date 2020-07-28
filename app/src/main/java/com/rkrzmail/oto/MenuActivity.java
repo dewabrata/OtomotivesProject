@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -27,6 +28,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.fragment.PageAdapter;
 import com.rkrzmail.oto.fragment.SlideFragment;
 import com.rkrzmail.oto.fragment.pageindicator.CirclePageIndicator;
+import com.rkrzmail.oto.gmod.AturSparepartActivity;
 import com.rkrzmail.oto.gmod.LayananActivity;
 import com.rkrzmail.oto.gmod.MessageWA;
 import com.rkrzmail.oto.gmod.Part_DiterimaActivity;
@@ -37,9 +39,11 @@ import com.rkrzmail.oto.modules.komisi.KomisiPart_Activity;
 import com.rkrzmail.oto.modules.pembayaran.DaftarPembayaran_Activity;
 import com.rkrzmail.oto.modules.perintah_kerja_mekanik.PerintahKerjaMekanik_Activity;
 import com.rkrzmail.oto.modules.primary.KontrolLayanan_Activity;
+import com.rkrzmail.oto.modules.primary.booking.Booking3_Activity;
 import com.rkrzmail.oto.modules.primary.booking.KontrolBooking_Activity;
 import com.rkrzmail.oto.modules.jasa.discount_jasa_lain.DiscountJasaLain_Activity;
 import com.rkrzmail.oto.modules.layanan.discount_layanan.DiscountLayanan_Activity;
+import com.rkrzmail.oto.modules.sparepart.AturParts_Activity;
 import com.rkrzmail.oto.modules.sparepart.diskon_part.DiscountPart_Activity;
 import com.rkrzmail.oto.modules.discount.FrekwensiDiscount_Activity;
 import com.rkrzmail.oto.modules.discount.SpotDiscount_Activity;
@@ -149,7 +153,8 @@ public class MenuActivity extends AppActivity {
                     startActivity(intent);
                 } else if (nPopulate.get(position).get("id").asInteger() == MN_SPAREPART) {
                     Intent intent = new Intent(MenuActivity.this, Spareparts_Activity.class);
-                    startActivity(intent);
+                    intent.putExtra("flag", "atur_sparepart");
+                    startActivityForResult(intent, MN_SPAREPART);
 
                 } else if (nPopulate.get(position).get("id").asInteger() == MN_REGISTRASI) {
                     Intent intent = new Intent(MenuActivity.this, RegistrasiBengkel_Activity.class);
@@ -484,5 +489,17 @@ public class MenuActivity extends AppActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){
+            if(requestCode == MN_SPAREPART){
+                Intent i = new Intent(getActivity(), AturParts_Activity.class);
+                i.putExtra("part", getIntentStringExtra(data, "part"));
+                startActivityForResult(i, 112);
+            }
+        }
     }
 }

@@ -187,7 +187,7 @@ public class AturDiscountJasaLain_Activity extends AppActivity implements View.O
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_tglEffect_discJasa:
-                Tools.getDatePickerDialogTextView(getActivity(), tvTgl);
+                getDatePickerDialogTextView(getActivity(), tvTgl);
                 break;
         }
     }

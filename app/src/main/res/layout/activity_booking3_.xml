@@ -36,11 +36,11 @@
                     android:textColor="@android:color/white" />
 
                 <Button
-                    android:id="@+id/btn_sparePart_booking3"
+                    android:id="@+id/btn_part_booking3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="SPARE PART"
+                    android:text="PART"
                     android:textColor="@android:color/white"
                     android:background="@drawable/btn_rounded_accent" />
 

@@ -25,49 +25,40 @@
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:stretchColumns="*">
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp">
 
             <TableRow>
 
                 <TextView
-                    android:id="@+id/tv_nama_booking3"
+                    android:id="@+id/tv_namaLayanan_layanan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:text="NAMA JASA/JASA LAIN/PART"
-                    android:layout_weight="1"/>
-
-
-                <TextView
-                    android:id="@+id/tv_harga_booking3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="(HARGA)"
-                    android:textStyle="bold"
-                    android:layout_gravity="end"/>
+                    android:layout_weight="1"
+                    android:text="Nama Master Part / Kelompok Part" />
 
             </TableRow>
 
             <TableRow android:layout_marginTop="10dp">
 
                 <TextView
-                    android:id="@+id/tv_disc_booking3"
+                    android:id="@+id/tv_discAktivitas_layanan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:layout_weight="1"
-                    android:text="DISC" />
+                    android:text="Disc Part / Aktivitas" />
 
                 <TextView
-                    android:id="@+id/tv_net_booking3"
+                    android:id="@+id/tv_discWaktuKerja_layanan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:layout_gravity="end"
-                    android:text="NET" />
-
+                    android:text="Disc Jasa / Waktu Kerja" />
 
             </TableRow>
+
         </TableLayout>
 
     </LinearLayout>

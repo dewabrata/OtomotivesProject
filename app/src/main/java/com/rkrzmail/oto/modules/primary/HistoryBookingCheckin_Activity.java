@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -20,6 +21,7 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 
@@ -42,86 +44,44 @@ public class HistoryBookingCheckin_Activity extends AppActivity {
     }
 
     private void initComponent() {
+        final String nopol = getIntentStringExtra("NOPOL");
         initToolbar();
         rvHistory = findViewById(R.id.recyclerView);
-        rvHistory.setLayoutManager(new LinearLayoutManager(this));
-        rvHistory.setHasFixedSize(true);
-        rvHistory.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_history_booking) {
-            @Override
-            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
 
-                viewHolder.find(R.id.tv_status_historyBooking, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_ket_historyBooking, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_jam_historyBooking, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_user_historyBooking, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_tgl_historyBooking, TextView.class).setText(nListArray.get(position).get("").asString());
-
-            }
-        });
-
-        catchData();
-    }
-
-    private void catchData() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "view");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(""), args));
+                args.put("history", nopol);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturbooking"), args));
             }
-
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
                     rvHistory.getAdapter().notifyDataSetChanged();
+                    Log.d("Booking2List", "" +  result.get("data"));
                 } else {
                     showError("Mohon Di Coba Kembali");
                 }
             }
         });
-    }
 
-    SearchView mSearchView;
+        rvHistory.setLayoutManager(new LinearLayoutManager(this));
+        rvHistory.setHasFixedSize(true);
+        rvHistory.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_history_booking) {
+            @Override
+            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+                String date = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("TANGGAL_IN").asString());
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_part, menu);
-        // Get the SearchView and set the searchable configuration
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        mSearchView = new SearchView(getSupportActionBar().getThemedContext());
-        mSearchView.setQueryHint("Cari Nama Karyawan"); /// YOUR HINT MESSAGE
-        mSearchView.setMaxWidth(Integer.MAX_VALUE);
-
-        final MenuItem searchMenu = menu.findItem(R.id.action_search);
-        searchMenu.setActionView(mSearchView);
-        searchMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-
-
-        //SearchView searchView = (SearchView)  menu.findItem(R.id.action_search).setActionView(mSearchView);
-        // Assumes current activity is the searchable activity
-        adapterSearchView(mSearchView, "search", "aturkaryawan", "NAMA");
-        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        mSearchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
-
-        SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
-            public boolean onQueryTextChange(String newText) {
-                //filter(newText);
-                return true;
+                viewHolder.find(R.id.tv_status_historyBooking, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
+                viewHolder.find(R.id.tv_ket_historyBooking, TextView.class).setText(nListArray.get(position).get("KELUHAN").asString());
+                viewHolder.find(R.id.tv_jam_historyBooking, TextView.class).setText(nListArray.get(position).get("JAM_BOOKING").asString());
+                viewHolder.find(R.id.tv_user_historyBooking, TextView.class).setText(nListArray.get(position).get("CREATED_USER").asString());
+                viewHolder.find(R.id.tv_tgl_historyBooking, TextView.class).setText(date);
             }
-
-            public boolean onQueryTextSubmit(String query) {
-                //searchMenu.collapseActionView();
-                //filter(null);
-                //reload(query);
-                return true;
-            }
-        };
-        mSearchView.setOnQueryTextListener(queryTextListener);
-        return true;
+        });
     }
 }

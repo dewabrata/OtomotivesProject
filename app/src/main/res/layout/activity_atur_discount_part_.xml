@@ -27,7 +27,7 @@
                 android:layout_marginTop="10dp">
 
                 <TextView
-                    android:layout_width="150dp"
+                    android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:text="LOKASI LAYANAN"
                     android:textSize="14sp" />
@@ -38,7 +38,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:layout_marginStart="20dp"
+                    android:layout_marginStart="10dp"
                     android:text="BENGKEL"/>
 
                 <CheckBox
@@ -227,7 +227,7 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <include layout="@layout/toolbar" />
+       <include layout="@layout/btn_search"/>
 
     </android.support.design.widget.AppBarLayout>
 

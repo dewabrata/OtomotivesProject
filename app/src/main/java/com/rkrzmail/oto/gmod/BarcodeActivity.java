@@ -3,6 +3,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -29,7 +30,7 @@ public class BarcodeActivity extends Activity {
 				intent.putExtra("FORMAT", "");
 				intent.putExtra("STATUS", "CANCEL");
 			} else {
-				//Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+				Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
 				intent.putExtra("TEXT", result.getContents());
 				intent.putExtra("FORMAT", result.getFormatName());
 				intent.putExtra("STATUS", "SCAN");

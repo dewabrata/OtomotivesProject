@@ -1,9 +1,12 @@
-package com.rkrzmail.oto.modules.booking;
+package com.rkrzmail.oto.modules.primary.booking;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,27 +14,29 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
-import com.naa.data.Utility;
 import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.booking.Booking1B_Activity;
+import com.rkrzmail.oto.modules.primary.HistoryBookingCheckin_Activity;
+import com.rkrzmail.oto.modules.primary.checkin.Checkin2_Activity;
 import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NsonAutoCompleteAdapter;
-import com.rkrzmail.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.Map;
 
 public class Booking1A_Activity extends AppActivity {
-    private final String FNAME = "BOOKING 2";
-    private static final int REQUEST_PENDAFTARAN = 23;
+
+    public static final int REQUEST_HISTORY = 10;
+    public static final int REQUEST_BOOKING_TIGA = 11;
+    private static final int REQUEST_CHECKIN = 12;
     private NikitaAutoComplete etJenisKendaraan, etNopol, etNoPonsel;
     private EditText etNamaPelanggan, etKeluhan, etKm;
     private Spinner spKondisiKendaraan, spLayanan, spPekerjaan;
@@ -40,11 +45,7 @@ public class Booking1A_Activity extends AppActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking1_a_);
-        initToolbar();
         initComponent();
-
-       //PERINTAH DEREK, BATAL BOOK BENGKEL, BATAL BOOK PELANGGAN, CHECK IN
-        Nson nson= new Nson(Utility.splitTrim("",","));
     }
 
 
@@ -56,7 +57,8 @@ public class Booking1A_Activity extends AppActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void initComponent(){
+    private void initComponent() {
+        initToolbar();
         etNopol = (NikitaAutoComplete) findViewById(R.id.et_nopol_booking1a);
         etJenisKendaraan = (NikitaAutoComplete) findViewById(R.id.et_jenisKendaraan_booking1a);
         etNoPonsel = (NikitaAutoComplete) findViewById(R.id.et_noPonsel_booking1a);
@@ -67,25 +69,32 @@ public class Booking1A_Activity extends AppActivity {
         spLayanan = findViewById(R.id.sp_layanan_booking1a);
         spPekerjaan = findViewById(R.id.sp_pekerjaan_booking1a);
 
-        componentValidation();
+        setSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN");
+        autoCompleteEditText();
 
         find(R.id.btn_history_booking1a, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent i = new Intent(getActivity(), HistoryBookingCheckin_Activity.class);
+                i.putExtra("NOPOL", etNopol.getText().toString().trim());
+                startActivityForResult(i, REQUEST_HISTORY);
             }
         });
 
         find(R.id.btn_lanjut_booking1a, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                nextBooking();
+                if(!validateFields(find(R.id.ly_booking1a, LinearLayout.class))){
+                    nextBooking();
+                }else{
+                    showInfo("Silahkan Lengkapi Semua Field");
+                }
             }
         });
     }
 
-    private void nextBooking(){
-        final String nopol = etNopol.getText().toString().toUpperCase();
+    private void nextBooking() {
+        final String nopol = etNopol.getText().toString().replace(" ", "").toUpperCase();
         final String nophone = etNoPonsel.getText().toString();
         final String namaPelanggan = etNamaPelanggan.getText().toString().toUpperCase();
         final String jenisKendaraan = etJenisKendaraan.getText().toString().toUpperCase();
@@ -94,62 +103,89 @@ public class Booking1A_Activity extends AppActivity {
         final String keluhan = etKeluhan.getText().toString();
         final String layanan = spLayanan.getSelectedItem().toString().toUpperCase();
         final String pekerjaan = spPekerjaan.getSelectedItem().toString().toUpperCase();
+
         newProses(new Messagebox.DoubleRunnable() {
-            //Nson result;
+            Nson result;
+
             @Override
             public void run() {
-                //Map<String, String> args = AppApplication.getInstance().getArgsData();
-                //  result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("booking1"), args));
-
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("nopol", nopol);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewnopol"), args));
             }
 
             @Override
             public void runUI() {
-                // add : CID, action(add), nopol, jeniskendaraan, nopon, nama,
-                // pemilik, kondisi, keluhan, lokasi, jemput,
-                // antar, layanan, km, alamat, date, user, status,
-                // tanggalbook, jambook, jemput, antar, hari, jam, biayatrans, biayalayan, dp
-                Nson nson = Nson.newObject();
+                ArrayList<String> data = new ArrayList<>();
+                for (int i = 0; i < result.get("data").size(); i++) {
+                    data.add(result.get("data").get(i).get("NOPOL").asString());
+                }
+
+                final Nson nson = Nson.newObject();
                 nson.set("nopol", nopol);
                 nson.set("jeniskendaraan", jenisKendaraan);
                 nson.set("nopon", nophone);
                 nson.set("nama", namaPelanggan);
-
-                if (find(R.id.cb_pemilik_booking1a, CheckBox.class).isChecked()) {
-                    String pemilik = find(R.id.cb_pemilik_booking1a, CheckBox.class).getText().toString();
-                    nson.set("pemilik", pemilik);
-                } else {
-                    nson.set("pemilik", "");
-                }
-
+                nson.set("pemilik", find(R.id.cb_pemilik_booking1a, CheckBox.class).isChecked() ? "YA" : "TIDAK");
                 nson.set("kondisi", kondisiKendaraan);
                 nson.set("keluhan", keluhan);
                 nson.set("km", km);
                 nson.set("layanan", layanan);
                 nson.set("pekerjaan", pekerjaan);
+                nson.set("derek", find(R.id.cb_derek_booking1a, CheckBox.class).isChecked() ? "YA" : "TIDAK");
+                if(find(R.id.cb_derek_booking1a, CheckBox.class).isChecked()){
+                    nson.set("statusbook", "BOOK DEREK");
+                }else{
+                    nson.set("statusbook", "");
+                }
 
-                Intent i = new Intent(getActivity(), Booking1B_Activity.class);
-                startActivity(i);
-                finish();
+                if (spKondisiKendaraan.getSelectedItem().toString().equalsIgnoreCase("MASALAH MESIN/PENGGERAK")) {
+                    showInfoDialog("Konfirmasi", "Layanan hanya dapat di lakukan di Bengkel, Gunakan Antar - Jemput ? ", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //OK
+                            nson.set("statusbook", "BOOK JEMPUT");
+                            Intent i = new Intent(getActivity(), Booking1B_Activity.class);
+                            i.putExtra("data", nson.toJson());
+                            startActivityForResult(i, KontrolBooking_Activity.REQUEST_BOOKING_LAYANAN);
+                        }
+                    }, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //NO
+                            nson.set("statusbook", "BOOK  BENGKEL");
+                            Intent i = new Intent(getActivity(), Booking3_Activity.class);
+                            i.putExtra("data", nson.toJson());
+                            startActivityForResult(i, REQUEST_BOOKING_TIGA);
+                        }
+                    });
+                    return;
+                }
 
+                Intent intent;
+                if (data.contains(nopol)) {
+                    intent = new Intent(getActivity(), Booking1B_Activity.class);
+                    intent.putExtra("data", nson.toJson());
+                    startActivityForResult(intent, KontrolBooking_Activity.REQUEST_BOOKING_LAYANAN);
+                } else {
+                    intent = new Intent(getActivity(), Checkin2_Activity.class);
+                    intent.putExtra("data", nson.toJson());
+                    startActivityForResult(intent, REQUEST_CHECKIN);
+                }
             }
         });
-
     }
 
-    private void componentValidation(){
+    private void autoCompleteEditText() {
         etNopol.setThreshold(3);
-        etNopol.setAdapter(new NsonAutoCompleteAdapter(getActivity()){
+        etNopol.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
             @Override
             public Nson onFindNson(Context context, String bookTitle) {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 String nopol = bookTitle.replace(" ", "").toUpperCase();
                 args.put("nopol", nopol);
-                args.put("FORM", FNAME);
-
                 Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewnopol"), args));
-
-                return result.get("nopol");
+                return result.get("data");
             }
 
             @Override
@@ -159,10 +195,8 @@ public class Booking1A_Activity extends AppActivity {
                     convertView = inflater.inflate(R.layout.find_nopol, parent, false);
                 }
                 findView(convertView, R.id.txtNopol, TextView.class).setText(formatNopol(getItem(position).get("NOPOL").asString()));
-
                 return convertView;
             }
-
         });
 
         etNopol.setLoadingIndicator((android.widget.ProgressBar) findViewById(R.id.pb_etNopol_booking1a));
@@ -173,30 +207,22 @@ public class Booking1A_Activity extends AppActivity {
                 etNopol.setText(formatNopol(n.get("NOPOL").asString()));
                 etNoPonsel.setText(n.get("NO_PONSEL").asString());
                 etNamaPelanggan.setText(n.get("NAMA_PELANGGAN").asString());
-                etJenisKendaraan.setText(n.get("JENIS_KENDARAAN").asString());
-                if (!etNopol.getText().toString().isEmpty()) {
-                    find(R.id.btn_history_booking1a).setEnabled(true);
-                }
+                etJenisKendaraan.setText(n.get("MODEL").asString());
+
+                find(R.id.btn_history_booking1a).setEnabled(true);
+
             }
         });
 
         etJenisKendaraan.setThreshold(3);
-        etJenisKendaraan.setAdapter(new NsonAutoCompleteAdapter(getActivity()){
+        etJenisKendaraan.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
             @Override
             public Nson onFindNson(Context context, String bookTitle) {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("search", bookTitle);
-                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturbooking"), args));
-                for (int i = 0; i < result.get("data").size(); i++) {
-                    //sb.append(result.get("data").get(i).get("NOPOL").asJson());
-                    if (result.get("data").get(i).get("JENIS_KENDARAAN").asArray().contains(bookTitle)) {
-                        return result;
-                    } else {
-                        return result.get("data");
-                    }
-                }
-                return result.get("search");
+                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("jeniskendaraan"), args));
+                return result.get("data");
             }
 
             @Override
@@ -206,9 +232,9 @@ public class Booking1A_Activity extends AppActivity {
                     convertView = inflater.inflate(R.layout.find_jenisken, parent, false);
                 }
 
-//                findView(convertView, R.id.txtMerk, TextView.class).setText((getItem(position).get("MERK").asString()));
-//                findView(convertView, R.id.txtModel, TextView.class).setText((getItem(position).get("MODEL").asString()));
-                findView(convertView, R.id.txtJenisVarian, TextView.class).setText((getItem(position).get("JENIS_KENDARAAN").asString()));
+                findView(convertView, R.id.txtMerk, TextView.class).setText((getItem(position).get("VARIAN").asString()));
+                findView(convertView, R.id.txtModel, TextView.class).setText((getItem(position).get("MODEL").asString()));
+                findView(convertView, R.id.txtJenisVarian, TextView.class).setText((getItem(position).get("JENIS").asString()));
 
                 return convertView;
             }
@@ -221,40 +247,25 @@ public class Booking1A_Activity extends AppActivity {
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
 
                 StringBuilder stringBuilder = new StringBuilder();
-//                stringBuilder.append(n.get("MERK").asString()).append(" ");
-//                stringBuilder.append(n.get("MODEL").asString()).append(" ");
-                stringBuilder.append(n.get("JENIS_KENDARAAN").asString()).append(" ");
-                // stringBuilder.append(n.get("VARIAN").asString()).append(" ");
+                stringBuilder.append(n.get("JENIS").asString()).append(" ");
+                stringBuilder.append(n.get("MODEL").asString()).append(" ");
+                stringBuilder.append(n.get("VARIAN").asString()).append(" ");
 
                 etJenisKendaraan.setText(stringBuilder.toString());
                 etJenisKendaraan.setTag(String.valueOf(adapterView.getItemAtPosition(position)));
-
-//                find(R.id.txtJenisVarian, TextView.class).setText(n.get("JENIS_KENDARAAN").asString());
-//                find(R.id.txtModel, TextView.class).setText(n.get("MODEL").asString());
-//                find(R.id.txtMerk, TextView.class).setText(n.get("MERK").asString());
-
-
             }
         });
 
-
         etNoPonsel.setThreshold(7);
-        etNoPonsel.setAdapter(new NsonAutoCompleteAdapter(getActivity()){
+        etNoPonsel.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
             @Override
             public Nson onFindNson(Context context, String bookTitle) {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 String phone = bookTitle.replace(" ", "").toUpperCase();
-                args.put("search", phone);
-                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturbooking"), args));
-                for (int i = 0; i < result.get("data").size(); i++) {
-                    //sb.append(result.get("data").get(i).get("NOPOL").asJson());
-                    if (result.get("data").get(i).get("NO_PONSEL").asArray().contains(bookTitle)) {
-                        return result;
-                    } else {
-                        return result.get("data");
-                    }
-                }
-                return result.get("search");
+                args.put("nomorponsel", phone);
+                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("nomorponsel"), args));
+
+                return result.get("nomorponsel");
             }
 
             @Override
@@ -280,37 +291,22 @@ public class Booking1A_Activity extends AppActivity {
         });
     }
 
-    private void checkHistory() {
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "view");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrl("aturbooking"), args));
-            }
-
-            public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    if (result.containsKey("PHONE")) {
-                        etNoPonsel.setText(result.get("data").get("PHONE").asString());
-                    }
-                    if (result.containsKey("NAMA")) {
-                        etNamaPelanggan.setText(result.get("data").get("NAMA").asString());
-                    }
-                    if (result.containsKey("IS_PEMILIK") && result.get("IS_PEMILIK").asBoolean()) {
-                        find(R.id.cb_pemilik_booking1a, CheckBox.class).setChecked(true);
-                    }
-                    if (result.containsKey("JENIS_KENDARAAN")) {
-                        etJenisKendaraan.setText(result.get("data").get("JENIS_KENDARAAN").asString());
-                    }
-                }
-            }
-        });
-    }
-
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        finish();
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CHECKIN) {
+            Intent i = new Intent(getActivity(), Booking1B_Activity.class);
+            i.putExtra("data", Nson.readJson(getIntentStringExtra(data, "data")).toJson());
+            startActivityForResult(i, KontrolBooking_Activity.REQUEST_BOOKING_LAYANAN);
+        } else if (resultCode == RESULT_OK && requestCode == REQUEST_BOOKING_TIGA) {
+            Intent i = new Intent(getActivity(), Booking2_Activity.class);
+            i.putExtra("data", Nson.readJson(getIntentStringExtra(data, "data")).toJson());
+            startActivityForResult(i, KontrolBooking_Activity.REQUEST_BOOKING_LAYANAN);
+        } else if (resultCode == RESULT_OK && requestCode == KontrolBooking_Activity.REQUEST_BOOKING_LAYANAN) {
+            setResult(RESULT_OK);
+            finish();
+        } else if(resultCode == RESULT_OK && requestCode == REQUEST_HISTORY){
+
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.rkrzmail.oto;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -24,12 +25,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.naa.data.Nson;
@@ -42,9 +45,14 @@ import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NsonAutoCompleteAdapter;
 import com.rkrzmail.utils.Tools;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.io.FileOutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -108,6 +116,10 @@ public class AppActivity extends AppCompatActivity {
         return getIntentStringExtra(getIntent(), key);
     }
 
+    public String editTextToString(EditText editText){
+        return editText.getText().toString();
+    }
+
     public String getIntentStringExtra(Intent intent, String key) {
         if (intent != null && intent.getStringExtra(key) != null) {
             return intent.getStringExtra(key);
@@ -120,6 +132,20 @@ public class AppActivity extends AppCompatActivity {
             onClickListener = onClickListenerDismiss;
         }
         Messagebox.showDialog(getActivity(), "", message, "OK", "", onClickListener, null);
+    }
+
+    public String currentDateTime(){
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+
+        return simpleDateFormat.format(calendar.getTime());
+    }
+
+    public void showInfoDialog(String tittle, String message, DialogInterface.OnClickListener onClickListenerOK, DialogInterface.OnClickListener onClickListenerNO) {
+        if (onClickListenerOK == null) {
+            onClickListenerOK = onClickListenerDismiss;
+        }
+        Messagebox.showDialog(getActivity(), tittle, message, "OK", "TIDAK", onClickListenerOK, onClickListenerNO);
     }
 
     private final DialogInterface.OnClickListener onClickListenerDismiss = new DialogInterface.OnClickListener() {
@@ -334,6 +360,56 @@ public class AppActivity extends AppCompatActivity {
         }
     }
 
+    public void getDatePickerDialogTextView(Context context, final TextView dateTime) {
+        final Calendar cldr = Calendar.getInstance();
+        final int day = cldr.get(Calendar.DAY_OF_MONTH);
+        final int month = cldr.get(Calendar.MONTH);
+        final int year = cldr.get(Calendar.YEAR);
+
+        DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                String newDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                Date date = null;
+                try {
+                    date = sdf.parse(newDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                String formattedTime = sdf.format(date);
+                dateTime.setText(formattedTime);
+            }
+        }, year, month, day);
+        datePickerDialog.setMinDate(cldr);
+        datePickerDialog.show(getFragmentManager(), "Datepickerdialog");
+    }
+
+    public static void getTimePickerDialogTextView(Context context, final TextView textView) {
+        Calendar calendar = Calendar.getInstance();
+        int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
+        int currentMinute = calendar.get(Calendar.MINUTE);
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int hourOfDay, int minutes) {
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                String time = hourOfDay + ":" + minutes;
+                Date date = null;
+                try {
+                    date = sdf.parse(time);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                String formattedTime = sdf.format(date);
+                textView.setText(formattedTime);
+            }
+        }, currentHour, currentMinute, true);
+
+        timePickerDialog.setTitle("Pilih Jam");
+        timePickerDialog.show();
+    }
+
 
     public void adapterSearchView(android.support.v7.widget.SearchView searchView, final String arguments, final String api, final String jsonObject) {
         android.support.v7.widget.SearchView.SearchAutoComplete searchAutoComplete = (android.support.v7.widget.SearchView.SearchAutoComplete) searchView.findViewById(R.id.search_src_text);
@@ -504,7 +580,7 @@ public class AppActivity extends AppCompatActivity {
         });
     }
 
-    private EditText traverseEditTexts(ViewGroup v) {
+    private EditText getAllEditText(ViewGroup v) {
         EditText invalid = null;
         for (int i = 0; i < v.getChildCount(); i++) {
             Object child = v.getChildAt(i);
@@ -515,7 +591,7 @@ public class AppActivity extends AppCompatActivity {
                     return e;   // Stops at first invalid one. But you could add this to a list.
                 }
             } else if (child instanceof ViewGroup) {
-                invalid = traverseEditTexts((ViewGroup) child);  // Recursive call.
+                invalid = getAllEditText((ViewGroup) child);  // Recursive call.
                 if (invalid != null) {
                     break;
                 }
@@ -525,12 +601,12 @@ public class AppActivity extends AppCompatActivity {
     }
 
     public boolean validateFields(ViewGroup viewGroup) {
-        EditText emptyText = traverseEditTexts(viewGroup);
+        EditText emptyText = getAllEditText(viewGroup);
         if (emptyText != null) {
-            showInfo("Tidak Boleh Kosong");
-            emptyText.requestFocus();      // Scrolls view to this field.
+            emptyText.setError("Harus di isi");
+            emptyText.requestFocus();
         }
-        return emptyText == null;
+        return emptyText != null;
     }
 
     public void spinnerNoDefaultOffline(Spinner spinner, String[] resources) {

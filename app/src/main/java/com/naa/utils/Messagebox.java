@@ -33,15 +33,9 @@ public class Messagebox {
 	public static void showDialog(Context context, View layout, boolean cancelable){
 		Builder dlg = new AlertDialog.Builder(context);
 		dlg.setView(layout);
-
 		dlg.setCancelable(cancelable);
 		AlertDialog dialog = dlg.create();
 		layout.setTag(dialog);
-
-
-
-
-
 		dialog.show();
 	}
 }

@@ -69,7 +69,7 @@ public class Tenda_Activity extends AppActivity {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
 
-                String tgl = Tools.setFormatDayAndMonth(nListArray.get(position).get("TANGGAL").asString());
+                String tgl = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("TANGGAL").asString());
                 //DataGenerator.getStringsShort(getActivity());
 
                 viewHolder.find(R.id.tv_tanggalMulai_tenda, TextView.class).setText(nListArray.get(position).get("TANGGAL_MULAI").asString());

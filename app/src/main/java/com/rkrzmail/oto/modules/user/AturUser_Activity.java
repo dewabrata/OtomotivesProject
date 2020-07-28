@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.user;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -29,6 +30,7 @@ public class AturUser_Activity extends AppActivity implements View.OnClickListen
     private MultiSelectionSpinner spAkses, spPosisi;
     private Spinner spStatus;
     private Nson layanan = Nson.newArray();
+    ArrayList<String> data = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,14 +202,19 @@ public class AturUser_Activity extends AppActivity implements View.OnClickListen
             }
             @Override
             public void runUI() {
-                ArrayList<String> data = new ArrayList<>();
                 for (int i = 0; i < result.get("data").size(); i++) {
                     data.add(result.get("data").get(i).get("NO_PONSEL").asString());
                 }
                 if (data.contains(find(R.id.txtNoPonsel, TextView.class).getText().toString())) {
-                    Tools.alertDialog(getActivity(), "Nomor Ponsel Sudah Terdaftar");
+                    showInfoDialog("Nomor Ponsel Sudah Terdaftar", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
                     return;
                 }
+
             }
         });
         return true;
@@ -217,7 +224,7 @@ public class AturUser_Activity extends AppActivity implements View.OnClickListen
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.txtTglMasuk:
-                Tools.getDatePickerDialogTextView(getActivity(), find(R.id.txtTglMasuk, TextView.class));
+               getDatePickerDialogTextView(getActivity(), find(R.id.txtTglMasuk, TextView.class));
                 break;
         }
     }

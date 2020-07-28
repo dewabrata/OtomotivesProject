@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.sparepart;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -65,7 +66,12 @@ public class AturParts_Activity extends AppActivity {
                     String stockMin = find(R.id.et_stockMin_part, EditText.class).getText().toString();
                     String stockTersedia = find(R.id.et_stockTersedia_part, EditText.class).getText().toString();
                     if (Integer.parseInt(stockTersedia) < Integer.parseInt(stockMin)) {
-                        Tools.alertDialog(getActivity(), "Part Tidak Dapat Di hapus");
+                        showInfoDialog("Part Tidak Dapat Di hapus", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
                         return;
                     }
                     deleteData();

@@ -72,8 +72,8 @@ public class TerimaPart extends AppActivity {
 
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                String tgl = Tools.setFormatDayAndMonth(nListArray.get(position).get("TANGGAL_PENERIMAAN").asString());
-                String tglInv = Tools.setFormatDayAndMonth(nListArray.get(position).get("JATUH_TEMPO_INV").asString());
+                String tgl = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("TANGGAL_PENERIMAAN").asString());
+                String tglInv = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("JATUH_TEMPO_INV").asString());
 
                 viewHolder.find(R.id.txtTanggal, TextView.class).setText(tgl);
                 viewHolder.find(R.id.txtSupplier, TextView.class).setText(nListArray.get(position).get("SUPPLIER").asString());;

@@ -63,7 +63,7 @@ public class Checkin2_Activity extends AppActivity {
         tvTgl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Tools.getDatePickerDialogTextView(getActivity(), tvTgl);
+               getDatePickerDialogTextView(getActivity(), tvTgl);
             }
         });
         find(R.id.btn_lanjut_checkin2).setOnClickListener(new View.OnClickListener() {

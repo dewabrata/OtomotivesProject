@@ -406,16 +406,16 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
 
         switch (v.getId()) {
             case R.id.tv_mulaiKerja:
-                Tools.getTimePickerDialogTextView(getActivity(), tvMulai_Kerja);
+                getTimePickerDialogTextView(getActivity(), tvMulai_Kerja);
                 break;
             case R.id.tv_selesaiKerja:
-                Tools.getTimePickerDialogTextView(getActivity(), tvSelesai_Kerja);
+                getTimePickerDialogTextView(getActivity(), tvSelesai_Kerja);
                 break;
             case R.id.tv_mulaistirahat:
-                Tools.getTimePickerDialogTextView(getActivity(), tvMulai_istirahat);
+                getTimePickerDialogTextView(getActivity(), tvMulai_istirahat);
                 break;
             case R.id.tv_selesaistirahat:
-                Tools.getTimePickerDialogTextView(getActivity(), tvSelesai_istirahat);
+                getTimePickerDialogTextView(getActivity(), tvSelesai_istirahat);
                 break;
         }
     }

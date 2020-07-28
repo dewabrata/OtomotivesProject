@@ -152,7 +152,7 @@ public class PartSearchActivity extends AppActivity {
 
     private void showSuggestionSearch() {
         mAdapterSuggestion.refreshItems();
-        //ViewAnimation.expand(lyt_suggestion);
+        ViewAnimation.expand(lyt_suggestion);
     }
 
     TextWatcher textWatcher = new TextWatcher() {

@@ -5,6 +5,8 @@
  */
 package com.naa.data;
 
+import android.os.Bundle;
+
 import com.naa.data.google.gson.JsonReader;
 import com.naa.data.google.gson.JsonToken;
 import com.naa.data.google.gson.JsonWriter;
@@ -335,6 +337,10 @@ public class Nson implements Serializable {
         return addInternal(value);
     }
 
+    public Nson add(Bundle value) {
+        return addInternal(value);
+    }
+
     private Nson addInternal(Object value) {
         if (value == null) {
             value = Nson.newNull();
@@ -429,6 +435,15 @@ public class Nson implements Serializable {
             Map map = (Map) internalObject;
             if (map.containsKey(key)) {
                 map.remove(key);
+            }
+        }
+    }
+
+    public void remove(Nson nListArray) {
+        if (internalObject instanceof List) {
+            List list = (List) internalObject;
+            if (list.contains(nListArray)) {
+                list.remove(nListArray);
             }
         }
     }

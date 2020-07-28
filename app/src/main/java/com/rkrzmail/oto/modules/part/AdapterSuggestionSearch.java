@@ -27,6 +27,7 @@ public class AdapterSuggestionSearch extends RecyclerView.Adapter<AdapterSuggest
     private List<String> items = new ArrayList<>();
     private OnItemClickListener onItemClickListener;
     private SharedPreferences prefs;
+    Nson nson;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView title;

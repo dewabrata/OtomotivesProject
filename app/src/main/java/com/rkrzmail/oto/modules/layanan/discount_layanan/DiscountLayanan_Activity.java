@@ -63,7 +63,7 @@ public class DiscountLayanan_Activity extends AppActivity {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
-                String tglDisc = Tools.setFormatDayAndMonth(nListArray.get(position).get("").asString());
+                String tglDisc = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("").asString());
 
                 viewHolder.find(R.id.tv_paketLayanan_discLayanan, TextView.class).setText(nListArray.get(position).get("").asString());
                 viewHolder.find(R.id.tv_tgl_discLayanan, TextView.class).setText(nListArray.get(position).get("").asString());

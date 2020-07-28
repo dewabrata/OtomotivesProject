@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ly_coor"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,9 +26,8 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="80dp"
+                    android:layout_width="170dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:text="TANGGAL BOOKING"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -48,14 +47,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginRight="10dp"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="80dp"
+                    android:layout_width="170dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:text="JAM BOOKING"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -76,16 +74,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginRight="10dp"
                 android:orientation="horizontal">
 
 
                 <TextView
-                    android:layout_width="80dp"
+                    android:layout_width="170dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_weight="1"
                     android:text="JAM JEMPUT"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -141,6 +138,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:enabled="false"
+                        android:textSize="14sp"
                         android:text="HARI" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -158,6 +156,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:enabled="false"
+                        android:textSize="14sp"
                         android:text="MENIT" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -169,25 +168,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginRight="10dp"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="170dp"                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_weight="1"
                     android:text="JAM ANTAR"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tv_jamAntar_booking2"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
                     android:layout_weight="1"
                     android:drawableLeft="@drawable/icon_jam"
                     android:gravity="center"
@@ -200,7 +195,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp">
 
                 <EditText
@@ -247,8 +242,6 @@
                     android:id="@+id/et_totalBiaya_booking2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:editable="false"
-                    android:ems="10"
                     android:enabled="false"
                     android:hint="TOTAL BIAYA"
                     android:textSize="14sp" />
@@ -314,7 +307,7 @@
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/btn_rounded_accent"
                 android:text="SIMPAN"
-                android:textColor="@color/white_transparency" />
+                android:textColor="@android:color/white" />
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

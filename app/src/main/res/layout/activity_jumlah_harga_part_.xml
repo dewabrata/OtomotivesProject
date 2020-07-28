@@ -17,157 +17,257 @@
             android:orientation="vertical"
             android:padding="5dp">
 
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <LinearLayout
+                android:id="@+id/ly_jumlahHarga_part"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
-                android:hint="HPP">
+                android:orientation="vertical">
 
-                <EditText
-                    android:id="@+id/et_hpp_jumlah_harga_part"
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/ly_hpp_jumlah_harga_part"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:enabled="false"
-                    android:textSize="14sp" />
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
+                    android:visibility="gone"
+                    android:hint="HPP">
 
-            </android.support.design.widget.TextInputLayout>
+                    <EditText
+                        android:id="@+id/et_hpp_jumlah_harga_part"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:inputType="text"
+                        android:textSize="14sp" />
 
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                </android.support.design.widget.TextInputLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/ly_hargaJual_jumlah_harga_part"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
+                    android:hint="HARGA JUAL">
+
+                    <EditText
+                        android:id="@+id/et_hargaJual_jumlah_harga_part"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        android:textSize="14sp" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                    <ImageButton
+                        android:id="@+id/img_clear"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:background="@android:color/transparent"
+                        app:srcCompat="@drawable/ic_close"
+                        android:tint="@color/grey_80"
+                        android:visibility="gone"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginStart="300dp"/>
+
+                </FrameLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/ly_disc_jumlah_harga_part"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
+                    android:visibility="gone"
+                    android:hint="DISCOUNT">
+
+                    <EditText
+                        android:id="@+id/et_discPart_jumlah_harga_part"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:inputType="text"
+                        android:textSize="14sp" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
+                    android:hint="JUMLAH">
+
+                    <EditText
+                        android:id="@+id/et_jumlah_jumlah_harga_part"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:textSize="14sp" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp">
+
+                    <android.support.design.widget.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="10dp">
+
+                        <EditText
+                            android:id="@+id/et_kerjaMulai_jumlah_harga_part"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="WAKTU KERJA"
+                            android:inputType="time"
+                            android:textSize="14sp" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <EditText
+                            android:id="@+id/et_kerjaSelesai_jumlah_harga_part"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="PENGERJAAN"
+                            android:enabled="false"
+                            android:textSize="14sp" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                </LinearLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
+                    android:hint="JASA">
+
+                    <EditText
+                        android:id="@+id/et_jasa_jumlah_harga_part"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        android:textSize="14sp" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                    <ImageButton
+                        android:id="@+id/img_clear2"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:background="@android:color/transparent"
+                        app:srcCompat="@drawable/ic_close"
+                        android:tint="@color/grey_80"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginStart="300dp"
+                        android:visibility="gone"/>
+
+                </FrameLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/ly_discJasa_jumlah_harga_part"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
+                    android:visibility="gone"
+                    android:hint="DISCOUNT">
+
+                    <EditText
+                        android:id="@+id/et_discJasa_jumlah_harga_part"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:inputType="text"
+                        android:textSize="14sp" />
+
+                </android.support.design.widget.TextInputLayout>
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ly_jumlahHarga_partKosong"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
-                android:hint="HARGA JUAL">
+                android:orientation="vertical"
+                android:visibility="gone">
 
-                <EditText
-                    android:id="@+id/et_hargaJual_jumlah_harga_part"
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:inputType="numberDecimal"
-                    android:enabled="false" />
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
+                    android:hint="DP">
 
-            </android.support.design.widget.TextInputLayout>
+                    <EditText
+                        android:id="@+id/et_dp_jumlah_harga_part"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:inputType="text"
+                        android:textSize="14sp" />
 
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
-                android:hint="DISCOUNT">
+                </android.support.design.widget.TextInputLayout>
 
-                <EditText
-                    android:id="@+id/et_discPart_jumlah_harga_part"
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:textSize="14sp"
-                    android:enabled="false" />
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
+                    android:hint="WAKTU PESAN">
 
-            </android.support.design.widget.TextInputLayout>
+                    <EditText
+                        android:id="@+id/et_waktu_jumlah_harga_part"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:inputType="text"
+                        android:textSize="14sp" />
 
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
-                android:hint="JASA">
+                </android.support.design.widget.TextInputLayout>
 
-                <EditText
-                    android:id="@+id/et_jasa_jumlah_harga_part"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:textSize="14sp"
-                    android:enabled="false" />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
-                android:hint="DISCOUNT">
-
-                <EditText
-                    android:id="@+id/et_discJasa_jumlah_harga_part"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:textSize="14sp"
-                    android:enabled="false" />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
-                android:hint="DP">
-
-                <EditText
-                    android:id="@+id/et_dp_jumlah_harga_part"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:textSize="14sp"
-                    android:enabled="false" />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
-                android:hint="WAKTU PESAN">
-
-                <EditText
-                    android:id="@+id/et_waktu_jumlah_harga_part"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:textSize="14sp"
-                    android:enabled="false" />
-
-            </android.support.design.widget.TextInputLayout>
-
-
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
-                android:hint="JUMLAH">
-
-                <EditText
-                    android:id="@+id/et_jumlah_jumlah_harga_part"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:textSize="14sp" />
-
-            </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
 
             <Button
                 android:id="@+id/btn_simpan_jumlah_harga_part"
@@ -180,6 +280,7 @@
                 android:textColor="@android:color/white" />
 
         </LinearLayout>
+
     </ScrollView>
 
     <android.support.design.widget.AppBarLayout
@@ -188,13 +289,7 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_jumlah_harga_part"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+        <include layout="@layout/toolbar"/>
 
     </android.support.design.widget.AppBarLayout>
 
