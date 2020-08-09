@@ -36,6 +36,7 @@
             android:focusedByDefault="false">
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/tl_umk"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -43,7 +44,6 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 app:helperTextEnabled="true"
-                app:helperText="Disable"
                 app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText."
                 android:hint="UPAH MINIMUM KOTA">
 
@@ -68,7 +68,6 @@
                 android:layout_marginRight="10dp"
                 android:hint="UPAH/JAM"
                 app:helperTextEnabled="true"
-                app:helperText="Disable"
                 app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
 
 
@@ -104,6 +103,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/tl_mekanik1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -124,6 +124,7 @@
 
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/tl_mekanik2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -142,6 +143,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/tl_mekanik3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"

@@ -28,6 +28,7 @@ import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.srv.PercentFormat;
 import com.rkrzmail.utils.Tools;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -37,8 +38,9 @@ public class AturDiscountPart_Activity extends AppActivity implements View.OnCli
     private MultiSelectionSpinner spPekerjaan;
     private EditText etDiscPart, etDiscJasa, etNoPart, etNamaPart;
     private TextView tvTgl;
-    private Nson listChecked = Nson.newArray();
+    private List<String> listChecked = new ArrayList<>();
     private boolean flagTenda = false, flagBengkel = false, flagMssg = false;
+    private String lokasi = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,13 +82,6 @@ public class AturDiscountPart_Activity extends AppActivity implements View.OnCli
         tvTgl.setOnClickListener(this);
         etDiscJasa.addTextChangedListener(new PercentFormat(etDiscJasa));
         etDiscPart.addTextChangedListener(new PercentFormat(etDiscPart));
-
-        find(R.id.btn_simpan_discPart, Button.class).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveData();
-            }
-        });
 
         find(R.id.btn_search, ImageButton.class).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,11 +133,21 @@ public class AturDiscountPart_Activity extends AppActivity implements View.OnCli
                     updateData(nson);
                 }
             });
+        }else {
+            find(R.id.btn_simpan_discPart, Button.class).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    saveData();
+                }
+            });
         }
     }
 
 
     private void saveData() {
+        for(String lok : listChecked){
+            lokasi+=lok;
+        }
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
@@ -161,8 +166,7 @@ public class AturDiscountPart_Activity extends AppActivity implements View.OnCli
                 args.put("diskonpart", etDiscPart.getText().toString());
                 args.put("diskonjasa", etDiscJasa.getText().toString());
                 args.put("pesan", find(R.id.cb_mssg_discPart, CheckBox.class).isChecked() ? "YA" : "TIDAK");
-                args.put("lokasi", listChecked.toJson());
-
+                args.put("lokasi", lokasi);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturdiskonpart"), args));
             }
 
@@ -180,6 +184,9 @@ public class AturDiscountPart_Activity extends AppActivity implements View.OnCli
     }
 
     private void updateData(final Nson id) {
+        for(String lok : listChecked){
+            lokasi+=lok;
+        }
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
@@ -193,8 +200,9 @@ public class AturDiscountPart_Activity extends AppActivity implements View.OnCli
                 args.put("diskonpart", etDiscPart.getText().toString());
                 args.put("diskonjasa", etDiscJasa.getText().toString());
                 args.put("pesan", find(R.id.cb_mssg_discPart, CheckBox.class).isChecked() ? "YA" : "TIDAK");
-                args.put("lokasi", listChecked.toJson());
-
+                for(String lok : listChecked){
+                    args.put("lokasi", lok);
+                }
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturdiskonpart"), args));
             }
 
@@ -248,9 +256,8 @@ public class AturDiscountPart_Activity extends AppActivity implements View.OnCli
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if (isChecked) {
                 listChecked.add(buttonView.getText().toString());
-                Log.d("Disc___", "initComponent: " + listChecked);
             }else{
-                listChecked.asArray().remove(buttonView.getText().toString());
+                listChecked.remove(buttonView.getText().toString());
             }
         }
     };
