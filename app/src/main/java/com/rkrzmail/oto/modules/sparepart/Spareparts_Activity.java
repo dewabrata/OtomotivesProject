@@ -11,9 +11,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -25,6 +28,7 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.srv.NsonAutoCompleteAdapter;
 
 import java.util.Map;
 
@@ -46,7 +50,7 @@ public class Spareparts_Activity extends AppActivity {
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("SPAREPART");
+        getSupportActionBar().setTitle("Atur Parts");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
@@ -96,7 +100,6 @@ public class Spareparts_Activity extends AppActivity {
     private void reload(final String nama) {
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -135,18 +138,20 @@ public class Spareparts_Activity extends AppActivity {
         // Assumes current activity is the searchable activity
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
+        adapterSearchView(mSearchView, "search", "caripart", "NAMA");
 
-        adapterSearchView(mSearchView, "search", "viewsparepart", "NAMA");
-        SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+        final SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
-
+                if(newText.length() > 1){
+                    reload(newText);
+                }
                 return false;
             }
             public boolean onQueryTextSubmit(String query) {
-                searchMenu.collapseActionView();
-                //filter(null);
-                reload(query);
-                return true;
+                if(mSearchView.getQuery().length() > 0){
+                    reload(query);
+                }
+                return false;
             }
         };
         mSearchView.setOnQueryTextListener(queryTextListener);

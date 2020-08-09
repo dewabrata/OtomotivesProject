@@ -495,9 +495,6 @@ public class AppActivity extends AppCompatActivity {
                 }
 
                 findView(convertView, R.id.title, TextView.class).setText(search);
-                //findView(convertView, R.id.tv_find_cari_namaPart, TextView.class).setText(search);
-                //findView(convertView, R.id.tv_find_cari_namaPart, TextView.class).setText();
-
                 return convertView;
             }
         });
