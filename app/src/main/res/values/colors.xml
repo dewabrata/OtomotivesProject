@@ -70,7 +70,7 @@
     <color name="deep_purple_600">#5E35B1</color>
     <color name="deep_purple_700">#512DA8</color>
     <color name="deep_purple_800">#4527A0</color>
-    <color name="deep_purple_900">#311B92</color>
+    <color name="deep_purple_900">@color/colorPrimary</color>
     <color name="deep_purple_A100">#B388FF</color>
     <color name="deep_purple_A200">#7C4DFF</color>
     <color name="deep_purple_A400">#651FFF</color>

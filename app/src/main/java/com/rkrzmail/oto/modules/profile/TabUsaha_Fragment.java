@@ -21,6 +21,8 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.utils.Tools;
 
+import java.util.List;
+
 public class TabUsaha_Fragment extends Fragment {
 
     private EditText etNamaBengkel, etAlamat, etBadanUsaha, etKotaKab, etNoponsel, etNib, etNpwp;
@@ -90,7 +92,17 @@ public class TabUsaha_Fragment extends Fragment {
         ((ProfileBengkel_Activity) getActivity()).spinnerNoDefaultOffline(spJumlahUser, getResources().getStringArray(R.array.max_jumlah_user));
         ((ProfileBengkel_Activity) getActivity()).spinnerNoDefaultOffline(spAfiliasi, getResources().getStringArray(R.array.afiliasi_usaha));
         ((ProfileBengkel_Activity) getActivity()).setMultiSelectionSpinnerFromApi(
-                spJenisKendaraan, "nama", "BENGKEL", "viewmst", "TYPE");
+                spJenisKendaraan, "nama", "BENGKEL", "viewmst", new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
+                    @Override
+                    public void selectedIndices(List<Integer> indices) {
+
+                    }
+
+                    @Override
+                    public void selectedStrings(List<String> strings) {
+
+                    }
+                }, "TYPE", "");
         String[] items = getResources().getStringArray(R.array.aktivitas_usaha);
         spAktivitasUsaha.setItems(items);
         spAktivitasUsaha.setSelection(new int[]{});

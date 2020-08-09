@@ -35,14 +35,13 @@
     </string-array>
 
     <string-array name="tipe_supplier">
+        <item>--PILIH--</item>
         <item>PRINCIPAL</item>
         <item>MAIN SUPPLIER</item>
         <item>RETAIL SUPPLIER</item>
         <item>ECOMERCE</item>
         <item>BENGKEL LAIN</item>
         <item>LAINNYA</item>
-
-
     </string-array>
 
     <string-array name="pola_beli">
@@ -54,6 +53,7 @@
     </string-array>
 
     <string-array name="pembayaran">
+        <item>--PILIH--</item>
         <item>TRANSFER DIMUKA</item>
         <item>COD</item>
         <item>INVOICE</item>
@@ -61,25 +61,26 @@
     </string-array>
 
     <string-array name="gender">
+        <item>--PILIH--</item>
         <item>LAKI - LAKI</item>
         <item>PEREMPUAN</item>
-
     </string-array>
 
     <string-array name="posisi">
+        <item>--PILIH--</item>
         <item>MEKANIK</item>
         <item>ADMIN PART</item>
         <item>KASIR</item>
-
     </string-array>
 
     <string-array name="status">
-        <item></item>
+        <item>--PILIH--</item>
         <item>AKTIF</item>
         <item>NON-AKTIF</item>
     </string-array>
 
     <string-array name="penggajian">
+        <item>--PILIH--</item>
         <item>HARIAN</item>
         <item>MINGGUAN</item>
         <item>BULANAN</item>
@@ -90,6 +91,7 @@
     </string-array>
 
     <string-array name="akses_app">
+        <item>--PILIH--</item>
         <item>CHECK IN</item>
         <item>PART</item>
     </string-array>
@@ -125,6 +127,7 @@
     </string-array>
 
     <string-array name="tipe_penerimaan">
+        <item>--PILIH--</item>
         <item>PEMBELIAN</item>
         <item>PENGANTIAN RETURN</item>
         <item>PENGANTIAN FASILITAS</item>
@@ -136,6 +139,7 @@
     </string-array>
 
     <string-array name="lokasi">
+        <item>--PILIH--</item>
         <item>BENGKEL</item>
         <item>HOME</item>
         <item>TENDA</item>
@@ -147,7 +151,24 @@
         <item>INDIVIDUAL</item>
     </string-array>
 
+    <string-array name="jenis_booking">
+        <item>--PILIH--</item>
+        <item>BOOK DEREK</item>
+        <item>BOOK BENGEKL</item>
+        <item>BOOK HOME</item>
+        <item>BOOK JEMPUT</item>
+    </string-array>
+
+    <string-array name="aktifitas_kontrol">
+        <item>--PILIH--</item>
+        <item>TUGASKAN PENJEMPUT</item>
+        <item>CHECK IN</item>
+        <item>TUGASKAN PENGANTAR</item>
+        <item>DIBATALKAN PELANGGAN</item>
+    </string-array>
+
     <string-array name="tipe_schedule">
+        <item>--PILIH--</item>
         <item>OPERASIONAL</item>
         <item>LAYANAN BOOKING</item>
         <item>LAYANAN HOME SERVICES</item>

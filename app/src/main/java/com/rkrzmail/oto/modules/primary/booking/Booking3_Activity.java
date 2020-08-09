@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.gson.JsonArray;
 import com.naa.data.Nson;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
@@ -21,29 +20,23 @@ import com.rkrzmail.oto.modules.jasa.JasaLain_Activity;
 import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
 import com.rkrzmail.oto.modules.sparepart.new_part.JumlahHargaPart_Activity;
 import com.rkrzmail.oto.modules.sparepart.new_part.PartBerkala_Activity;
-import com.rkrzmail.oto.modules.sparepart.new_part.Part_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Booking3_Activity extends AppActivity implements View.OnClickListener {
 
     public static final String TAG = "Booking3_Activity_Log";
-    private static final int REQUEST_HARGA_PART = 20;
+    public static final int REQUEST_HARGA_PART = 20;
     private RecyclerView rvBooking3;
-    final int REQUEST_PENDAFTARAN = 14;
-    final int REQUEST_PART = 15;
-    final int REQUEST_JASA_LAIN = 16;
-    final int REQUEST_JASA_BERKALA = 17;
-    final int REQUEST_PART_BERKALA = 18;
-    final int REQUEST_PART_EXTERNAL = 19;
+    public static final int REQUEST_PART = 15;
+    public static final int REQUEST_JASA_LAIN = 16;
+    public static final int REQUEST_JASA_BERKALA = 17;
+    public static final int REQUEST_PART_BERKALA = 18;
+    public static final int REQUEST_PART_EXTERNAL = 19;
     private DecimalFormat formatter;
 
     @Override
@@ -82,15 +75,15 @@ public class Booking3_Activity extends AppActivity implements View.OnClickListen
                 String net = nListArray.get(position).get("NET").asString();
 
                 if (!hargaJasa.isEmpty()) {
-                    viewHolder.find(R.id.tv_harga_booking3, TextView.class).setText(hargaJasa);
-                    viewHolder.find(R.id.tv_net_booking3, TextView.class).setText(hargaJasa);
+                    viewHolder.find(R.id.tv_harga_booking3_checkin3, TextView.class).setText(hargaJasa);
+                    viewHolder.find(R.id.tv_net_booking3_checkin3, TextView.class).setText(hargaJasa);
                 } else if (!hargaPart.isEmpty()) {
-                    viewHolder.find(R.id.tv_harga_booking3, TextView.class).setText(hargaPart);
-                    viewHolder.find(R.id.tv_net_booking3, TextView.class).setText(hargaPart);
+                    viewHolder.find(R.id.tv_harga_booking3_checkin3, TextView.class).setText(hargaPart);
+                    viewHolder.find(R.id.tv_net_booking3_checkin3, TextView.class).setText(hargaPart);
                 }
-                viewHolder.find(R.id.tv_net_booking3, TextView.class).setText(net);
-                viewHolder.find(R.id.tv_nama_booking3, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
-                viewHolder.find(R.id.tv_disc_booking3, TextView.class).setText(nListArray.get(position).get("DISC").asString());
+                viewHolder.find(R.id.tv_net_booking3_checkin3, TextView.class).setText(net);
+                viewHolder.find(R.id.tv_nama_booking3_checkin3, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
+                viewHolder.find(R.id.tv_disc_booking3_checkin3, TextView.class).setText(nListArray.get(position).get("DISC").asString());
             }
 
             @Override

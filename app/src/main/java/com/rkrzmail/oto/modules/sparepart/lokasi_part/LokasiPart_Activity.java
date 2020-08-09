@@ -2,22 +2,30 @@ package com.rkrzmail.oto.modules.sparepart.lokasi_part;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.animation.AccelerateInterpolator;
 
+import com.naa.data.Nson;
+import com.naa.utils.InternetX;
+import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
+import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.FragmentsAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class LokasiPart_Activity extends AppActivity {
 
@@ -25,7 +33,7 @@ public class LokasiPart_Activity extends AppActivity {
     private ViewPager vpLokasiPart;
     private TabLayout tabLayout;
     private ArrayList<Fragment> fragments;
-
+    public static final int REQUEST_ATUR = 90;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +45,8 @@ public class LokasiPart_Activity extends AppActivity {
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Lokasi Part");
+        getSupportActionBar().setTitle("Ruang Part");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.animate().translationY(-toolbar.getBottom()).setInterpolator(new AccelerateInterpolator()).start();
     }
 
     private void initComponent() {
@@ -55,11 +62,8 @@ public class LokasiPart_Activity extends AppActivity {
         vpLokasiPart.setAdapter(pagerAdapter);
         vpLokasiPart.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setupWithViewPager(vpLokasiPart);
-
-
         //tabLayout.addOnTabSelectedListener();
     }
-
 
     SearchView mSearchView;
 
@@ -91,22 +95,35 @@ public class LokasiPart_Activity extends AppActivity {
             }
 
             public boolean onQueryTextSubmit(String query) {
-                //searchMenu.collapseActionView();
-                //filter(null);
+
                 List<Fragment> fragments = getSupportFragmentManager().getFragments();
                 if (fragments != null) {
                     for (Fragment fragment : fragments) {
                         if (fragment instanceof PartTeralokasikan_Fragment) {
                             ((PartTeralokasikan_Fragment) fragment).initComponent(query);
                             break;
+                        }else if(fragment instanceof PartNonLokasi_Fragment){
+                            ((PartNonLokasi_Fragment) fragment).initComponent(query);
+                            break;
                         }
                     }
                 }
+
                 return false;
             }
         };
 
         mSearchView.setOnQueryTextListener(queryTextListener);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK && requestCode == REQUEST_ATUR){
+
+        }
+//            ((PartTeralokasikan_Fragment) getSupportFragmentManager().getFragments()).getTeralokasikan("");
+//            ((PartNonLokasi_Fragment) getSupportFragmentManager().getFragments()).getNonTeralokasikan("");
     }
 }

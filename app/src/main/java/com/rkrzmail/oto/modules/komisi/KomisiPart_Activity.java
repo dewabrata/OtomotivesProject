@@ -135,7 +135,7 @@ public class KomisiPart_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        //adapterSearchView(mSearchView, "search", "caripart", "NAMA");
+        adapterSearchView(mSearchView, "search", "komisipart", "NAMA_PART");
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
 

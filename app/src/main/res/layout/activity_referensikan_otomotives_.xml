@@ -43,6 +43,7 @@
             </LinearLayout>
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/tl_cp"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -76,6 +77,7 @@
 
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/tl_email"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -92,6 +94,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/tl_namaBengkel"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -144,7 +147,7 @@
                     android:layout_height="wrap_content"
                     android:text="BIDANG USAHA" />
 
-                <Spinner
+                <com.rkrzmail.srv.MultiSelectionSpinner
                     android:id="@+id/sp_usaha_ref"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -154,6 +157,7 @@
 
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/tl_alamat"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -63,6 +63,8 @@ dependencies {
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.17'
     implementation 'android.arch.navigation:navigation-fragment:1.0.0'
     implementation 'android.arch.navigation:navigation-ui:1.0.0'//minSdkVersion 17
+    //custom toast
+    implementation 'com.valdesekamdem.library:md-toast:0.9.0'
 
 
 }

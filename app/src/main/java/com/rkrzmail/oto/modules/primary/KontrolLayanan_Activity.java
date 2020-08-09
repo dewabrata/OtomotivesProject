@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,6 +31,8 @@ import java.util.Map;
 
 public class KontrolLayanan_Activity extends AppActivity {
 
+    public static final int REQUEST_CHECKIN = 88;
+    private static final int REQUEST_DETAIL = 89;
     private RecyclerView rvKontrolLayanan;
 
     @Override
@@ -52,8 +55,7 @@ public class KontrolLayanan_Activity extends AppActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), Checkin1_Activity.class);
-                startActivity(intent);
+                startActivityForResult(new Intent(getActivity(), Checkin1_Activity.class), REQUEST_CHECKIN);
             }
         });
 
@@ -99,7 +101,7 @@ public class KontrolLayanan_Activity extends AppActivity {
                     public void onItemClick(Nson parent, View view, int position) {
                         Intent i = new Intent(getActivity(), DetailKontrolLayanan_Activity.class);
                         i.putExtra("data", nListArray.get(position).toJson());
-                        startActivity(i);
+                        startActivityForResult(i, REQUEST_DETAIL);
                     }
                 })
         );
@@ -115,7 +117,6 @@ public class KontrolLayanan_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 args.put("search", cari);
-
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(""), args));
             }
 
@@ -173,5 +174,12 @@ public class KontrolLayanan_Activity extends AppActivity {
         return true;
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK && requestCode == REQUEST_CHECKIN)
+            catchData("");
+        else if(resultCode == RESULT_OK && requestCode == REQUEST_DETAIL)
+            catchData("");
+    }
 }

@@ -35,7 +35,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_marginTop="10dp"
             android:orientation="vertical"
             android:padding="10dp">
 
@@ -71,6 +70,7 @@
                     android:textAlignment="center"
                     app:helperTextEnabled="true"
                     app:helperText="Disable"
+                    android:layout_marginTop="5dp"
                     app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
 
                     <EditText
@@ -79,8 +79,7 @@
                         android:layout_height="match_parent"
                         android:enabled="false"
                         android:textSize="14sp"
-                        android:hint="NAMA PART"
-                        android:textAlignment="center" />
+                        android:hint="NAMA PART" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -92,6 +91,7 @@
                     android:textAlignment="center"
                     app:helperTextEnabled="true"
                     app:helperText="Disable"
+                    android:layout_marginTop="5dp"
                     app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
 
                     <EditText
@@ -100,8 +100,7 @@
                         android:layout_height="match_parent"
                         android:textSize="14sp"
                         android:enabled="false"
-                        android:hint="MERK PART"
-                        android:textAlignment="center" />
+                        android:hint="MERK PART" />
 
                 </android.support.design.widget.TextInputLayout>
 

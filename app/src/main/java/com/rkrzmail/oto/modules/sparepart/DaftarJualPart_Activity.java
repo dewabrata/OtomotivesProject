@@ -46,12 +46,6 @@ public class DaftarJualPart_Activity extends AppActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_daftar_jual_part_);
-        //Bundle b = getIntent().getExtras();
-//        if (b != null) {
-//            for (String key : b.keySet()) {
-//                nListArray.add(b.get(key).toString().replace("\\", ""));
-//            }
-//
         initComponent();
     }
 
@@ -75,7 +69,7 @@ public class DaftarJualPart_Activity extends AppActivity {
         //Log.d("terimaData", "data "+  Nson.readJson(getIntentStringExtra( "data")));
         int harga = 0;
         for (int i = 0; i < nListArray.size(); i++) {
-            String hargaJual = nListArray.get(i).get("HARGA_JUAL").asString().replaceAll("[^0-9]", "");
+            String hargaJual = nListArray.get(i).get("TOTAL").asString().replaceAll("[^0-9]", "");
             harga = harga + Integer.parseInt(hargaJual);
         }
         String finalTotal = String.valueOf(harga);
@@ -140,7 +134,6 @@ public class DaftarJualPart_Activity extends AppActivity {
     private void saveData() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Nson n = Nson.readJson(getIntentStringExtra("part"));
@@ -189,11 +182,14 @@ public class DaftarJualPart_Activity extends AppActivity {
             rvTotalJualPart.getAdapter().notifyDataSetChanged();
             int harga = 0;
             for (int i = 0; i < nListArray.size(); i++) {
-                String hargaJual = nListArray.get(i).get("HARGA_JUAL").asString().replaceAll("[^0-9]", "");
+                String hargaJual = nListArray.get(i).get("TOTAL").asString().replaceAll("[^0-9]", "");
                 harga = harga + Integer.parseInt(hargaJual);
             }
             String finalTotal = String.valueOf(harga);
-            tvTotal.setText("Total : Rp. " + formatter.format(finalTotal));
+            Log.d("partpartpart", "data" + Nson.readJson(getIntentStringExtra(data,"part")));
+
+            tvTotal.setText("Total : Rp. " + formatter.format(Double.valueOf(finalTotal)));
+
         }
     }
 }

@@ -32,7 +32,8 @@ public class CariPart_Activity extends AppActivity {
     private static final int MAX_HISTORY_ITEMS = 10;
     private Pendaftaran1.AutoSuggestAdapter autoSuggestAdapter;
     private RecyclerView rvCariPart;
-
+    private boolean flag;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +43,15 @@ public class CariPart_Activity extends AppActivity {
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Cari Part");
+        if(getIntent().hasExtra("flag")){
+            getSupportActionBar().setTitle("Cari Part");
+            flag = true;
+        }else if(getIntent().hasExtra("KELOMPOK_PART")){
+            getSupportActionBar().setTitle("Cari Kelompok Part");
+            flag = false;
+        }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -57,11 +64,10 @@ public class CariPart_Activity extends AppActivity {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
-
-                viewHolder.find(R.id.tv_cari_merkPart, TextView.class).setText(nListArray.get(position).get("MERK").asString());
-                viewHolder.find(R.id.tv_cari_namaPart, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
-                viewHolder.find(R.id.tv_cari_noPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
-                viewHolder.find(R.id.tv_cari_stockPart, TextView.class).setText(nListArray.get(position).get("STOCK").asString());
+                viewHolder.find(R.id.tv_cari_merkPart, TextView.class).setText(flag ? nListArray.get(position).get("MERK").asString() : nListArray.get(position).get("KATEGORI").asString());
+                viewHolder.find(R.id.tv_cari_namaPart, TextView.class).setText(flag ? nListArray.get(position).get("NAMA").asString() : nListArray.get(position).get("KELOMPOK").asString());
+                viewHolder.find(R.id.tv_cari_noPart, TextView.class).setText(flag ? nListArray.get(position).get("NO_PART").asString() : nListArray.get(position).get("KELOMPOK_LAIN").asString());
+                viewHolder.find(R.id.tv_cari_stockPart, TextView.class).setText(flag ? nListArray.get(position).get("STOCK").asString() : nListArray.get(position).get("TYPE").asString());
             }
 
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
@@ -69,12 +75,6 @@ public class CariPart_Activity extends AppActivity {
                     public void onItemClick(Nson parent, View view, int position) {
                         Intent intent = new Intent();
                         intent.putExtra("part", nListArray.get(position).toJson());
-                        intent.putExtra("nopart", nListArray.get(position).get("PART_ID"));
-                        intent.putExtra("flag all", nListArray.get("flag").get("ALL").asString());
-                        intent.putExtra("flag no part", nListArray.get("flag").get("NO_PART").asString());
-                        intent.putExtra("flag master part", nListArray.get("flag").get("MASTER_PART").asString());
-                        intent.putExtra("flag kelompok part", nListArray.get("flag").get("KELOMPOK_PART").asString());
-
                         setResult(RESULT_OK, intent);
                         finish();
                     }
@@ -91,11 +91,16 @@ public class CariPart_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("flag", getIntentStringExtra("flag"));
-                //args.put("flag", "NOPART");
+                args.put("nama", getIntentStringExtra("KELOMPOK_PART"));
                 args.put("search", cari);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("caripart"), args));
+                if(getIntent().hasExtra("flag")){
+                    result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("caripart"), args));
+                    flag = true;
+                }else if(getIntent().hasExtra("KELOMPOK_PART")){
+                    flag = false;
+                    result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewmst"), args));
+                }
             }
-
             @Override
             public void runUI() {
                 if(result.get("status").asString().equalsIgnoreCase("OK")){

@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,6 +22,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.discount.AturFrekwensiDiscount_Acitivity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
@@ -52,7 +54,7 @@ public class DiscountPart_Activity extends AppActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), AturDiscountPart_Activity.class));
+                startActivityForResult(new Intent(getActivity(), AturDiscountPart_Activity.class), 10);
             }
         });
 
@@ -72,7 +74,15 @@ public class DiscountPart_Activity extends AppActivity {
                 viewHolder.find(R.id.tv_tgl_disc, TextView.class).setText(nListArray.get(position).get("TANGGAL").asString());
 
             }
-        });
+        }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Nson parent, View view, int position) {
+                        Intent i = new Intent(getActivity(), AturDiscountPart_Activity.class);
+                        i.putExtra("data", nListArray.get(position).toJson());
+                        startActivityForResult(i, 10);
+                    }
+                })
+        );
         catchData("");
     }
 
@@ -137,5 +147,13 @@ public class DiscountPart_Activity extends AppActivity {
         };
         mSearchView.setOnQueryTextListener(queryTextListener);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK && requestCode == 10){
+            catchData("");
+        }
     }
 }

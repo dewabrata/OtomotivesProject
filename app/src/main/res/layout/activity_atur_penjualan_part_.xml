@@ -17,42 +17,72 @@
             android:orientation="vertical"
             android:padding="5dp">
 
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
-                android:hint="JENIS KENDARAAN">
+                android:layout_height="wrap_content">
 
-                <EditText
-                    android:id="@+id/et_jenisKendaraan_jualPart"
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:inputType="text" />
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
+                    android:hint="JENIS KENDARAAN">
 
-            </android.support.design.widget.TextInputLayout>
+                    <com.rkrzmail.srv.NikitaAutoComplete
+                        android:id="@+id/et_jenisKendaraan_jualPart"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textCapSentences"
+                        android:textSize="14sp" />
 
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                </android.support.design.widget.TextInputLayout>
+
+                <ProgressBar
+                    android:id="@+id/pb"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|right"
+                    android:layout_marginRight="20dp"
+                    android:visibility="gone" />
+
+            </FrameLayout>
+
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
-                android:hint="NO. PONSEL">
+                android:layout_height="wrap_content">
 
-                <EditText
-                    android:id="@+id/et_noPhone_jualPart"
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:maxLength="14"
-                    android:inputType="phone" />
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
+                    android:hint="NO. PONSEL">
 
-            </android.support.design.widget.TextInputLayout>
+                    <com.rkrzmail.srv.NikitaAutoComplete
+                        android:id="@+id/et_noPhone_jualPart"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="phone"
+                        android:maxLength="14"
+                        android:textSize="14sp" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <ProgressBar
+                    android:id="@+id/pb2"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|right"
+                    android:layout_marginRight="20dp"
+                    android:visibility="gone" />
+
+            </FrameLayout>
 
             <android.support.design.widget.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -67,8 +97,8 @@
                     android:id="@+id/et_namaPelanggan_jualPart"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPersonName|textCapSentences"
+                    android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -86,8 +116,8 @@
                     android:id="@+id/et_namaUsaha_jualPart"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPersonName|textCapSentences"
+                    android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
 

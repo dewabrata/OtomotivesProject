@@ -104,16 +104,46 @@
     </string-array>
 
     <string-array name="akses_app_karyawan">
-        <item></item>
-        <item></item>
-        <item></item>
-        <item></item>
-        <item></item>
+        <item>CHECK IN</item>
+        <item>BOOKING</item>
+        <item>TUGAS PART</item>
+        <item>TERIMA PART</item>
+        <item>LOKASI PART</item>
+        <item>BIAYA MEKANIK</item>
+        <item>PROFILE</item>
+        <item>PENUGASAN MEKANIK</item>
+        <item>LAYANAN</item>
+        <item>TENDA</item>
+        <item>DISKON PART</item>
+        <item>DISKON LAYANAN</item>
+        <item>DISKON JASA LAIN</item>
+        <item>FREKWENSI DISKON</item>
+        <item>KOMISI LAYANAN</item>
+        <item>KOMISI JASA LAIN</item>
+        <item>KOMISI PART</item>
+        <item>USER</item>
+        <item>REFERRAL</item>
+        <item>PENJUALAN PART</item>
+        <item>PEMBAYARAN</item>
     </string-array>
 
     <string-array name="status_layanan">
         <item>ACTIVE</item>
         <item>NON ACTIVE</item>
+    </string-array>
+
+    <string-array name="status_kontrol">
+        <item>DEREK OTW</item>
+        <item>BOOK BENGKEL</item>
+        <item>BOOK DEREK</item>
+        <item>BOOK HOME</item>
+        <item>BOOK JEMPUT</item>
+        <item>CHECKIN</item>
+        <item>MESSAGE / CALL</item>
+        <item>PENJEMPUT ASSIGN</item>
+        <item>MEKANIK ASSIGN</item>
+        <item>BATAL</item>
+        <item>EXPIRED</item>
     </string-array>
 
     <string-array name="people_names">

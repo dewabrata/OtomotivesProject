@@ -26,6 +26,7 @@ import java.util.Map;
 
 public class JumlahHargaPart_Activity extends AppActivity implements View.OnClickListener {
 
+    private static final String TAG = "HargaPart____";
     private EditText etHpp, etHargaJual, etDiscPart, etJasa, etDiscJasa, etDp, etWaktuPesan, etJumlah;
     private Toolbar toolbar;
 
@@ -43,9 +44,13 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
     }
 
     private void initComponent() {
+        Tools.setViewAndChildrenEnabled(find(R.id.ly_waktu, LinearLayout.class), false);
+
         initToolbar();
         Nson n = Nson.readJson(getIntentStringExtra("data"));
-        Log.d("JUMLAH_HARGA_PART", "INTENT : "   + n.toJson());
+        Log.d(TAG, "initComponent: " + n);
+//        find(R.id.et_kerjaMulai, EditText.class).setText(n.get());
+//        find(R.id.et_kerjaSelesai, EditText.class).setText();
         int stock = n.get("STOCK").asInteger();
         if(stock == 0){
             Messagebox.showDialog(getActivity(),
@@ -81,7 +86,10 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
 
         watcher(find(R.id.img_clear, ImageButton.class), etHargaJual);
         watcher(find(R.id.img_clear2, ImageButton.class), etJasa);
+        watcherWaktu(find(R.id.img_clear3, ImageButton.class), find(R.id.et_kerjaMulai_jumlah_harga_part, EditText.class));
+        watcherWaktu(find(R.id.img_clear4, ImageButton.class), find(R.id.et_kerjaSelesai_jumlah_harga_part, EditText.class));
 
+        etHargaJual.setText(n.get("HARGA_JUAL").asString());
         find(R.id.ly_jumlahHarga_part, LinearLayout.class);
         find(R.id.ly_jumlahHarga_partKosong, LinearLayout.class);
         find(R.id.btn_simpan_jumlah_harga_part, Button.class).setOnClickListener(new View.OnClickListener() {
@@ -154,7 +162,34 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
         editText.addTextChangedListener(textWatcher);
     }
 
+    void watcherWaktu (final ImageButton imageButton, final EditText editText){
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                if (s.toString().length() == 0) {
+                    imageButton.setVisibility(View.GONE);
+                } else {
+                    imageButton.setVisibility(View.VISIBLE);
+                }
+            }
 
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(editText == find(R.id.et_kerjaSelesai_jumlah_harga_part, EditText.class)){
+                    if(s.length() > 1){
+
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
+
+        editText.addTextChangedListener(textWatcher);
+    }
 
     @Override
     public void onClick(View v) {

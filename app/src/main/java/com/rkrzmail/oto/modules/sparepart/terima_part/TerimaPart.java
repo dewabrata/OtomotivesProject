@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -31,16 +32,16 @@ import java.util.Map;
 
 public class TerimaPart extends AppActivity {
 
-    public static final String TAG = "TerimaPart";
+    private static final String TAG = "TerimaPart";
+    private static final int REQUEST_DETAIL = 667;
     private RecyclerView recyclerView_terimaPart;
-    final int REQUEST_TERIMA_PART = 666;
+    public static final int REQUEST_TERIMA_PART = 666;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_terima_part);
-
+        setContentView(R.layout.activity_list_basic_3);
         initToolbar();
         initComponent();
     }
@@ -54,22 +55,18 @@ public class TerimaPart extends AppActivity {
     }
 
     private void initComponent(){
-
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_terima_part);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AturTerimaPart.class);
-                startActivityForResult(intent, REQUEST_TERIMA_PART);
+                startActivityForResult( new Intent(getActivity(), AturTerimaPart.class), REQUEST_TERIMA_PART);
             }
         });
 
-        recyclerView_terimaPart = (RecyclerView) findViewById(R.id.recyclerView_terimaPart);
+        recyclerView_terimaPart = findViewById(R.id.recyclerView);
         recyclerView_terimaPart.setLayoutManager(new LinearLayoutManager(this));
         recyclerView_terimaPart.setHasFixedSize(true);
         recyclerView_terimaPart.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_terima_part){
-
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 String tgl = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("TANGGAL_PENERIMAAN").asString());
@@ -88,7 +85,7 @@ public class TerimaPart extends AppActivity {
             public void onItemClick(Nson parent, View view, int position) {
                 Intent i = new Intent(getActivity(), DetailTerimaPart_Activity.class);
                 i.putExtra("part", nListArray.get(position).toJson());
-                startActivity(i);
+                startActivityForResult(i, REQUEST_DETAIL);
             }
         }));
         reload("");
@@ -103,7 +100,6 @@ public class TerimaPart extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("search", data);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewterimapart"),args)) ;
-
             }
 
             @Override
@@ -161,4 +157,12 @@ public class TerimaPart extends AppActivity {
         return true;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK && requestCode == REQUEST_TERIMA_PART)
+            reload("");
+        else if(resultCode == RESULT_OK && requestCode == REQUEST_DETAIL)
+            reload("");
+    }
 }

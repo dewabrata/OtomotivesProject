@@ -34,7 +34,7 @@
                         android:id="@+id/et_masterPart_layanan"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="MASTER PART"
+                        android:hint="KELOMPOK PART"
                         android:textSize="14sp"
                         android:enabled="false"/>
 
@@ -69,8 +69,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="DISC. JASA"
-                        android:inputType="textPersonName"
-                        android:maxLength="30"
+                        android:inputType="numberDecimal"
+                        android:maxLength="5"
                         android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -97,7 +97,6 @@
                     android:hint="KELOMPOK PART"
                     android:enabled="false"
                     android:textSize="14sp" />
-
 
             </android.support.design.widget.TextInputLayout>
 
@@ -126,30 +125,22 @@
 
             </LinearLayout>
 
-            <LinearLayout
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/border_solid"
-                android:padding="9dp"
-                android:gravity="center">
+                android:layout_marginTop="5dp">
 
-                <TextView
-                    android:layout_width="150dp"
+                <EditText
+                    android:id="@+id/et_waktu_layanan"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="PEKERJAAN"
+                    android:hint="WAKTU"
+                    android:enabled="false"
                     android:textSize="14sp" />
 
-                <TextView
-                    android:id="@+id/tv_waktuKerja_layanan"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAlignment="center"
-                    android:drawableStart="@drawable/icon_jam"/>
 
-            </LinearLayout>
+            </android.support.design.widget.TextInputLayout>
 
         </LinearLayout>
 

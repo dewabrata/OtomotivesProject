@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
@@ -20,6 +21,7 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.PercentFormat;
+import com.rkrzmail.srv.RupiahFormat;
 import com.rkrzmail.utils.Tools;
 
 import java.text.DecimalFormat;
@@ -43,13 +45,12 @@ public class AturParts_Activity extends AppActivity {
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_part);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("SPAREPART");
+        getSupportActionBar().setTitle("Sparepart");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initComponent() {
         Nson nson = Nson.readJson(getIntentStringExtra("part"));
-
         Intent i = getIntent();
         if (i.hasExtra("part")) {
             find(R.id.et_namaPart_part, EditText.class).setText(nson.get("NAMA").asString());
@@ -59,8 +60,8 @@ public class AturParts_Activity extends AppActivity {
             find(R.id.et_waktuGanti_part, EditText.class).setText(nson.get("WAKTU_GANTI").asString());
             find(R.id.et_het_part, EditText.class).setText(nson.get("HET").asString());
 
-            find(R.id.btn_hapus_part, Button.class).setVisibility(View.VISIBLE);
-            find(R.id.btn_hapus_part, Button.class).setOnClickListener(new View.OnClickListener() {
+            find(R.id.btn_hapus, Button.class).setVisibility(View.VISIBLE);
+            find(R.id.btn_hapus, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     String stockMin = find(R.id.et_stockMin_part, EditText.class).getText().toString();
@@ -78,13 +79,38 @@ public class AturParts_Activity extends AppActivity {
                 }
             });
 
-            find(R.id.btn_simpan_part, Button.class).setOnClickListener(new View.OnClickListener() {
+            find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     updateData();
                 }
             });
 
+        }else{
+            find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    String waktu = find(R.id.et_waktuPesan_part, EditText.class).getText().toString().replace(" ", "").toUpperCase();
+                    if (waktu.isEmpty()) {
+                        showError("Waktu Pesan Tidak Boleh Kosong");
+                        return;
+                    } else if (find(R.id.et_stockMin_part, EditText.class).getText().toString().isEmpty()) {
+                        showError("Stock Minimum Tidak Boleh Kosong");
+                        return;
+                    } else if (find(R.id.et_stockTersedia_part, EditText.class).getText().toString().isEmpty()) {
+                        showError("Stock Tersedia Tidak Boleh Kosong");
+                        return;
+                    }
+                    if (find(R.id.et_marginHarga_part, EditText.class).isEnabled()) {
+                        if (find(R.id.et_marginHarga_part, EditText.class).getText().toString().isEmpty()) {
+                            showError("Margin / Harga Tidak Boleh Kosong");
+                            return;
+                        }
+                    }
+                    addData();
+                }
+            });
         }
 
         setTextListener();
@@ -93,8 +119,16 @@ public class AturParts_Activity extends AppActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String item = adapterView.getItemAtPosition(i).toString();
                 if (item.equalsIgnoreCase("FLEXIBLE")) {
+                    find(R.id.et_marginHarga_part, EditText.class).setText("");
                     find(R.id.et_marginHarga_part, EditText.class).setEnabled(false);
-                } else {
+                }else if(item.equalsIgnoreCase("NOMINAL")){
+                    find(R.id.et_marginHarga_part, EditText.class).setText("");
+                    find(R.id.et_marginHarga_part, EditText.class).setEnabled(true);
+                }else if(item.equalsIgnoreCase("BELI + MARGIN")){
+                    find(R.id.et_marginHarga_part, EditText.class).setText("");
+                    find(R.id.et_marginHarga_part, EditText.class).setEnabled(true);
+                }
+                else {
                     find(R.id.et_marginHarga_part, EditText.class).setEnabled(true);
                 }
             }
@@ -104,32 +138,6 @@ public class AturParts_Activity extends AppActivity {
 
             }
         });
-
-        find(R.id.btn_simpan_part, Button.class).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                String waktu = find(R.id.et_waktuPesan_part, EditText.class).getText().toString().replace(" ", "").toUpperCase();
-                if (waktu.isEmpty()) {
-                    showError("Waktu Pesan Tidak Boleh Kosong");
-                    return;
-                } else if (find(R.id.et_stockMin_part, EditText.class).getText().toString().isEmpty()) {
-                    showError("Stock Minimum Tidak Boleh Kosong");
-                    return;
-                } else if (find(R.id.et_stockTersedia_part, EditText.class).getText().toString().isEmpty()) {
-                    showError("Stock Tersedia Tidak Boleh Kosong");
-                    return;
-                }
-                if (find(R.id.et_marginHarga_part, EditText.class).isEnabled()) {
-                    if (find(R.id.et_marginHarga_part, EditText.class).getText().toString().isEmpty()) {
-                        showError("Margin / Harga Tidak Boleh Kosong");
-                        return;
-                    }
-                }
-                addData();
-            }
-        });
-
     }
 
     private void deleteData() {
@@ -259,7 +267,53 @@ public class AturParts_Activity extends AppActivity {
     }
 
     private void setTextListener() {
-        find(R.id.et_marginHarga_part, EditText.class).addTextChangedListener(new PercentFormat(find(R.id.et_marginHarga_part, EditText.class)));
+        find(R.id.et_marginHarga_part, EditText.class).addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                find(R.id.et_marginHarga_part, EditText.class).removeTextChangedListener(this);
+                String s = editable.toString();
+                if(!find(R.id.sp_polaHarga_part, Spinner.class).getSelectedItem().equals("")){
+                    if(find(R.id.sp_polaHarga_part, Spinner.class).getSelectedItem().toString().equalsIgnoreCase("NOMINAL")){
+                        try {
+                            String cleanString = s.replaceAll("[^0-9]", "");
+                            String formatted = Tools.formatRupiah(cleanString);
+                            find(R.id.et_marginHarga_part, EditText.class).setText(formatted);
+                            find(R.id.et_marginHarga_part, EditText.class).setFilters(new InputFilter[]{new InputFilter.LengthFilter(12)});
+                            find(R.id.et_marginHarga_part, EditText.class).setSelection(formatted.length());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }else if(find(R.id.sp_polaHarga_part, Spinner.class).getSelectedItem().toString().equalsIgnoreCase("BELI + MARGIN")){
+                        NumberFormat format = NumberFormat.getPercentInstance(new Locale("in", "ID"));
+                        format.setMinimumFractionDigits(1);
+                        format.setMaximumFractionDigits(1);
+                        String percentNumber = format.format(Tools.convertToDoublePercentage(find(R.id.et_marginHarga_part, EditText.class).getText().toString())/1000);
+                        find(R.id.et_marginHarga_part, EditText.class).setText(percentNumber);
+                        find(R.id.et_marginHarga_part, EditText.class).setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+                        find(R.id.et_marginHarga_part, EditText.class).setSelection(percentNumber.length() -1 );
+                    }else if(find(R.id.sp_polaHarga_part, Spinner.class).getSelectedItem().toString().equalsIgnoreCase("RATA - RATA + MARGIN")){
+                        NumberFormat format = NumberFormat.getPercentInstance(new Locale("in", "ID"));
+                        format.setMinimumFractionDigits(1);
+                        format.setMaximumFractionDigits(1);
+                        String percentNumber = format.format(Tools.convertToDoublePercentage(find(R.id.et_marginHarga_part, EditText.class).getText().toString())/1000);
+                        find(R.id.et_marginHarga_part, EditText.class).setText(percentNumber);
+                        find(R.id.et_marginHarga_part, EditText.class).setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+                        find(R.id.et_marginHarga_part, EditText.class).setSelection(percentNumber.length() - 1);
+                    }
+                }
+                find(R.id.et_marginHarga_part, EditText.class).addTextChangedListener(this);
+            }
+        });
         find(R.id.et_stockMin_part, EditText.class).addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

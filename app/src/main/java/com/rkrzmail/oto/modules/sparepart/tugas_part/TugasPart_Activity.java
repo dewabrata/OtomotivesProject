@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -22,11 +23,13 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 
 public class TugasPart_Activity extends AppActivity {
 
+    private static final int REQUEST_STATUS = 6;
     private RecyclerView rvTugasPart;
 
     @Override
@@ -54,38 +57,37 @@ public class TugasPart_Activity extends AppActivity {
                     public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                         super.onBindViewHolder(viewHolder, position);
 
-                        viewHolder.find(R.id.tv_noAntrian_tugasPart, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_layanan_tugasPart, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_tglJam_tugasPart, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_namaP_tugasPart, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_user_tugasPart, TextView.class).setText(nListArray.get(position).get("").asString());
+                        String date = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("TANGGAL").asString());
+                        String time = nListArray.get(position).get("JAM").asString();
+
+                        viewHolder.find(R.id.tv_noAntrian_tugasPart, TextView.class).setText(nListArray.get(position).get("NO_ANTRIAN").asString());
+                        viewHolder.find(R.id.tv_layanan_tugasPart, TextView.class).setText(nListArray.get(position).get("LAYANAN").asString());
+                        viewHolder.find(R.id.tv_tglJam_tugasPart, TextView.class).setText(date + " / " + time);
+                        viewHolder.find(R.id.tv_namaP_tugasPart, TextView.class).setText(nListArray.get(position).get("NAMA_PELANGGAN").asString());
+                        viewHolder.find(R.id.tv_user_tugasPart, TextView.class).setText(nListArray.get(position).get("USER").asString());
                     }
 
                 }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(Nson parent, View view, int position) {
-                        String status = nListArray.get(position).get("").asString();
-                        Intent i;
-                        if(status.equalsIgnoreCase("SIAP")){
-
-                        }else if(status.equalsIgnoreCase("PERMINTAAN")){
-
-                        }else{
-
-                        }
+                        String status = nListArray.get(position).get("STATUS").asString();
+                        Intent i = new Intent(getActivity(), StatusTugasPart_Activity.class);
+                        i.putExtra("data", status);
+                        startActivityForResult(i, REQUEST_STATUS);
                     }
                 })
         );
+        catchData("");
     }
 
-    private void catchData() {
+    private void catchData(final String cari) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(""), args));
+                args.put("search", cari);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturtugaspart"), args));
             }
 
             @Override
@@ -95,7 +97,7 @@ public class TugasPart_Activity extends AppActivity {
                     nListArray.asArray().addAll(result.get("data").asArray());
                     rvTugasPart.getAdapter().notifyDataSetChanged();
                 } else {
-                    showInfo("Gagal");
+                    showInfo("Gagal Memperbaharui Status");
                 }
             }
         });
@@ -122,7 +124,7 @@ public class TugasPart_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        //adapterSearchView(mSearchView, "search", "viewsparepart", "NAMA");
+        adapterSearchView(mSearchView, "search", "aturtugaspart", "USER");
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
 
@@ -132,7 +134,7 @@ public class TugasPart_Activity extends AppActivity {
             public boolean onQueryTextSubmit(String query) {
                 searchMenu.collapseActionView();
                 //filter(null);
-                //reload(query);
+                catchData(query);
                 return true;
             }
         };
@@ -140,4 +142,10 @@ public class TugasPart_Activity extends AppActivity {
         return true;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK && requestCode == REQUEST_STATUS)
+            catchData("");
+    }
 }

@@ -102,42 +102,9 @@
 
             </LinearLayout>
 
-
-            <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:stretchColumns="*">
-
-                <TableRow>
-
-
-                    <Button
-                        android:id="@+id/btn_hapus_freDisc"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:background="@drawable/btn_rounded_accent"
-                        android:text="HAPUS"
-                        android:textColor="@android:color/white"
-                        android:visibility="gone" />
-
-                    <Button
-                        android:id="@+id/btn_simpan_freDisc"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_column="100"
-                        android:layout_gravity="end"
-                        android:background="@drawable/btn_rounded_accent"
-                        android:text="SIMPAN"
-                        android:textColor="@android:color/white" />
-
-                </TableRow>
-
-            </TableLayout>
+            <include layout="@layout/layout_btn_simpan_hapus"/>
 
         </LinearLayout>
-
     </ScrollView>
 
     <android.support.design.widget.AppBarLayout

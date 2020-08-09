@@ -24,7 +24,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".modules.layanan.TambahLayanan"></activity>
+        <activity android:name=".modules.primary.DetailKontrolBooking_Activity"></activity>
+        <activity android:name=".modules.layanan.TambahLayanan" />
         <activity android:name=".modules.komisi.AturKomisiPart_Activity" />
         <activity android:name=".modules.komisi.KomisiPart_Activity" />
         <activity android:name=".modules.pembayaran.AturPembayaranElektronik_Activity" />
@@ -91,7 +92,7 @@
         <activity android:name=".modules.registrasi_bengkel.RegistrasiBengkel_Activity" />
         <activity android:name=".modules.user.AturUser_Activity" />
         <activity android:name=".modules.user.User_Activity" />
-        <activity android:name=".modules.primary.booking.KontrolBooking_Activity" />
+        <activity android:name=".modules.primary.KontrolBooking_Activity" />
         <activity android:name=".modules.komisi.AturKomisiJasaLain_Activity" />
         <activity android:name=".modules.komisi.KomisiJasaLain_Activity" />
         <activity android:name=".modules.komisi.AturKomisiLayanan_Activity" />

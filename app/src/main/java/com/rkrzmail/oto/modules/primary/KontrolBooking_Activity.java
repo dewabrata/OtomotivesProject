@@ -1,5 +1,6 @@
-package com.rkrzmail.oto.modules.primary.booking;
+package com.rkrzmail.oto.modules.primary;
 
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +27,7 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.primary.HistoryBookingCheckin_Activity;
+import com.rkrzmail.oto.modules.primary.booking.Booking1A_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
@@ -35,6 +38,9 @@ public class KontrolBooking_Activity extends AppActivity {
 
     public static final int REQUEST_BOOKING_LAYANAN = 69;
     private static final int REQUEST_HISTORY = 70;
+    private static final int REQUEST_DETAIL = 71;
+    private static final String TAG = "Kontrol_bookking__";
+
     private RecyclerView rvKontrolBooking;
 
     @Override
@@ -66,10 +72,10 @@ public class KontrolBooking_Activity extends AppActivity {
         rvKontrolBooking.setLayoutManager(new LinearLayoutManager(this));
         rvKontrolBooking.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_kontrol_booking) {
             @Override
-            public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, final int position) {
+            public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
                 super.onBindViewHolder(viewHolder, position);
 
-                String tglSet = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("CREATED_DATE").asString());
+               // String tglSet = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("CREATED_DATE").asString());
 
                 viewHolder.find(R.id.tv_status_kontrolBooking, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
                 viewHolder.find(R.id.tv_waktu_kontrolBooking, TextView.class).setText(nListArray.get(position).get("WAKTU_PENGERJAAN").asString());
@@ -77,9 +83,9 @@ public class KontrolBooking_Activity extends AppActivity {
                 viewHolder.find(R.id.tv_noPhone_kontrolBooking, TextView.class).setText(nListArray.get(position).get("PHONE").asString());
                 viewHolder.find(R.id.tv_kondisi_kontrolBooking, TextView.class).setText(nListArray.get(position).get("KONDISI_KENDARAAN").asString());
                 viewHolder.find(R.id.tv_jenisBooking_kontrolBooking, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
-                viewHolder.find(R.id.tv_ketPart_kontrolBooking, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_ketPart_kontrolBooking, TextView.class).setText(nListArray.get(position).get("PART").asString());
 
-                viewHolder.find(R.id.img_more_booking, TextView.class).setOnClickListener(new View.OnClickListener() {
+                viewHolder.find(R.id.img_more_booking, ImageButton.class).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         PopupMenu popup = new PopupMenu(getActivity(), viewHolder.find(R.id.img_more_booking, ImageButton.class));
@@ -90,7 +96,7 @@ public class KontrolBooking_Activity extends AppActivity {
                                 switch (menuItem.getItemId()) {
                                     case R.id.action_history:
                                         Intent i = new Intent(getActivity(), HistoryBookingCheckin_Activity.class);
-                                        i.putExtra("NOPOL", nListArray.get(position).get("NOPOL").asString().trim());
+                                        i.putExtra("NOPOL", nListArray.get(position).toJson());
                                         startActivityForResult(i, REQUEST_HISTORY);
                                         break;
                                 }
@@ -104,26 +110,33 @@ public class KontrolBooking_Activity extends AppActivity {
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
-
+                Intent i = new Intent(getActivity(), DetailKontrolBooking_Activity.class);
+                i.putExtra("data", parent.get(position).toJson());
+                startActivityForResult(i, REQUEST_DETAIL);
             }
         }));
+
         catchData("");
     }
 
     private void catchData(final String cari) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 args.put("search", cari);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturbooking"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturkontrolbooking"), args));
             }
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    if(result.get("data").asArray().contains("DATA")){
+                        for (int i = 0; i < result.size(); i++) {
+                            Log.d(TAG, "runUI: " + result.get("data"));
+                        }
+                    }
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
                     rvKontrolBooking.getAdapter().notifyDataSetChanged();
@@ -181,6 +194,8 @@ public class KontrolBooking_Activity extends AppActivity {
         if(resultCode == RESULT_OK && requestCode == REQUEST_BOOKING_LAYANAN){
             catchData("");
         }else if(resultCode == RESULT_OK && requestCode == REQUEST_HISTORY){
+            catchData("");
+        }else if(resultCode == RESULT_OK && requestCode == REQUEST_DETAIL){
             catchData("");
         }
     }

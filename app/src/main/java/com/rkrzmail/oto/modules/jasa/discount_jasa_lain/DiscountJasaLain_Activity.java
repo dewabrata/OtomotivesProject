@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -51,8 +52,7 @@ public class DiscountJasaLain_Activity extends AppActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), AturDiscountJasaLain_Activity.class));
-                finish();
+                startActivityForResult(new Intent(getActivity(), AturDiscountJasaLain_Activity.class), 10);
             }
         });
 
@@ -62,12 +62,11 @@ public class DiscountJasaLain_Activity extends AppActivity {
                     @Override
                     public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                         super.onBindViewHolder(viewHolder, position);
-
                         String tglSet = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("TANGGAL").asString());
 
                         viewHolder.find(R.id.tv_kategori_discJasa, TextView.class).setText(nListArray.get(position).get("KATEGORI_JASA_LAIN").asString());
                         viewHolder.find(R.id.tv_disc_discJasa, TextView.class).setText(tglSet);
-                        viewHolder.find(R.id.tv_aktifitas_discJasa, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_aktifitas_discJasa, TextView.class).setText(nListArray.get(position).get("AKTIVITAS").asString());
                         viewHolder.find(R.id.tv_tgl_discJasa, TextView.class).setText(nListArray.get(position).get("DISC_JASA").asString());
 
                     }
@@ -76,7 +75,7 @@ public class DiscountJasaLain_Activity extends AppActivity {
                     public void onItemClick(Nson parent, View view, int position) {
                         Intent i = new Intent(getActivity(), AturDiscountJasaLain_Activity.class);
                         i.putExtra("data", nListArray.get(position).toJson());
-                        startActivity(i);
+                        startActivityForResult(i, 10);
                     }
                 })
         );
@@ -87,7 +86,6 @@ public class DiscountJasaLain_Activity extends AppActivity {
     private void catchData(final String cari) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -131,7 +129,7 @@ public class DiscountJasaLain_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        adapterSearchView(mSearchView, "search", "aturdisconjasalain", "KATEGORI");
+        adapterSearchView(mSearchView, "search", "aturdiskonjasalain", "KATEGORI_JASA_LAIN");
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
 
@@ -147,5 +145,13 @@ public class DiscountJasaLain_Activity extends AppActivity {
         };
         mSearchView.setOnQueryTextListener(queryTextListener);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK && requestCode == 10){
+            catchData("");
+        }
     }
 }

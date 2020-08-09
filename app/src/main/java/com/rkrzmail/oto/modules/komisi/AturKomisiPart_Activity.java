@@ -20,6 +20,7 @@ import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.PercentFormat;
 import com.rkrzmail.utils.Tools;
 
+import java.util.List;
 import java.util.Map;
 
 public class AturKomisiPart_Activity extends AppActivity {
@@ -50,15 +51,18 @@ public class AturKomisiPart_Activity extends AppActivity {
         etKomisiJasa.addTextChangedListener(new PercentFormat(etKomisiJasa));
         etKomisiPart.addTextChangedListener(new PercentFormat(etKomisiPart));
 
-        setMultiSelectionSpinnerFromApi(find(R.id.sp_namaPosisi_komisiPart, MultiSelectionSpinner.class), "nama", "POSISI", "viewmst", "NAMA");
-        remakeAutoCompleteMaster(etMasterPart, "PART", "KELOMPOK");
-
-        find(R.id.btn_simpan_komisiPart).setOnClickListener(new View.OnClickListener() {
+        setMultiSelectionSpinnerFromApi(find(R.id.sp_namaPosisi_komisiPart, MultiSelectionSpinner.class), "nama", "POSISI", "viewmst", new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
             @Override
-            public void onClick(View v) {
-                saveData();
+            public void selectedIndices(List<Integer> indices) {
+
             }
-        });
+
+            @Override
+            public void selectedStrings(List<String> strings) {
+
+            }
+        }, "NAMA", "");
+        remakeAutoCompleteMaster(etMasterPart, "PART", "KELOMPOK");
         loadData();
     }
 
@@ -80,11 +84,11 @@ public class AturKomisiPart_Activity extends AppActivity {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    showInfo("Berhasil Menyimpan Aktivitas");
+                    showSuccess("Berhasil Menyimpan Aktivitas");
                     setResult(RESULT_OK);
                     finish();
                 } else {
-                    showInfo("Gagal Menyimpan Aktivitas!");
+                    showError("Gagal Menyimpan Aktivitas!");
                 }
             }
         });
@@ -94,24 +98,29 @@ public class AturKomisiPart_Activity extends AppActivity {
         final Nson data = Nson.readJson(getIntentStringExtra("data"));
         Intent intent = getIntent();
         if (intent.hasExtra("data")) {
-
             etKomisiJasa.setText(data.get("KOMISI_JASA").asString());
             etKomisiPart.setText(data.get("KOMISI_JUAL").asString());
             etMasterPart.setText(data.get("NAMA_PART").asString());
-            //spPosisi.setSelection(data.get("AKTIVITAS").asStringArray());
-            find(R.id.btn_hapus_komisiPart, Button.class).setVisibility(View.VISIBLE);
-            find(R.id.btn_hapus_komisiPart, Button.class).setOnClickListener(new View.OnClickListener() {
+            find(R.id.btn_hapus, Button.class).setVisibility(View.VISIBLE);
+            find(R.id.btn_hapus, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     deleteData(data);
                 }
             });
 
-            find(R.id.btn_simpan_komisiPart, Button.class).setText("UPDATE");
-            find(R.id.btn_simpan_komisiPart, Button.class).setOnClickListener(new View.OnClickListener() {
+            find(R.id.btn_simpan, Button.class).setText("UPDATE");
+            find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     updateData(data);
+                }
+            });
+        }else{
+            find(R.id.btn_simpan).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    saveData();
                 }
             });
         }
@@ -136,11 +145,11 @@ public class AturKomisiPart_Activity extends AppActivity {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    showInfo("Berhasil Memperbarui Aktivitas");
+                    showSuccess("Berhasil Memperbarui Aktivitas");
                     setResult(RESULT_OK);
                     finish();
                 } else {
-                    showInfo("Gagal Memperbarui Aktivitas!");
+                    showSuccess("Gagal Memperbarui Aktivitas!");
                 }
             }
         });
@@ -161,11 +170,11 @@ public class AturKomisiPart_Activity extends AppActivity {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    showInfo("Berhasil Menyimpan Aktivitas");
+                    showSuccess("Berhasil Menyimpan Aktivitas");
                     setResult(RESULT_OK);
                     finish();
                 } else {
-                    showInfo("Gagal Menyimpan Aktivitas!");
+                    showError("Gagal Menyimpan Aktivitas!");
                 }
             }
         });

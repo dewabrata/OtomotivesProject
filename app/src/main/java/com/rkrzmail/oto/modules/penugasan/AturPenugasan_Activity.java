@@ -1,6 +1,7 @@
 package com.rkrzmail.oto.modules.penugasan;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
@@ -39,13 +41,13 @@ import java.util.Map;
 public class AturPenugasan_Activity extends AppActivity implements View.OnClickListener {
 
     public static final String TAG = "AturPenugasan_Activity";
-    private NikitaAutoComplete etNama_Mekanik;
     private MultiSelectionSpinner spTipe_antrian;
     private TextView tvMulai_Kerja, tvSelesai_Kerja, tvMulai_istirahat, tvSelesai_istirahat;
     private RadioGroup rg_status;
-    private Spinner spLokasi;
+    private Spinner spLokasi, spMekanik;
     private CheckBox cbHome, cbEmergency;
     private String[] tipeAntrian = {"STANDARD", "EXPRESS", "H+"};
+    private Nson mekanikArray = Nson.newArray();
 
     /*
        Note : Update Methode belum work, Nama Mekanik dropdown belum
@@ -58,7 +60,7 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
 
         initToolbar();
 
-        etNama_Mekanik = findViewById(R.id.et_namaMekanik);
+        spMekanik = findViewById(R.id.sp_namaMekanik);
         tvMulai_Kerja = findViewById(R.id.tv_mulaiKerja);
         tvSelesai_Kerja = findViewById(R.id.tv_selesaiKerja);
         tvMulai_istirahat = findViewById(R.id.tv_mulaistirahat);
@@ -69,14 +71,14 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
         cbHome = findViewById(R.id.cb_home);
         cbEmergency = findViewById(R.id.cb_emergency);
 
+        getMekanik();
         final Nson data = Nson.readJson(getIntentStringExtra("ID"));
         final Intent i = getIntent();
         if (i.hasExtra("ID")) {
 
             getSupportActionBar().setTitle("Edit Penugasan Mekanik");
 
-            etNama_Mekanik.setText(data.get("NAMA_MEKANIK").asString());
-
+            spMekanik.setSelection(Tools.getIndexSpinner(spMekanik, data.get("").asString()));
             spLokasi.setSelection(Tools.getIndexSpinner(spLokasi, data.get("LOKASI").asString()));
             //spTipe_antrian.setSelection(Tools.getIndexSpinner(spTipe_antrian, data.get("TIPE_ANTRIAN").asString()));
             tvMulai_Kerja.setText(data.get("JAM_MASUK").asString());
@@ -135,54 +137,23 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
     }
 
     private void initComponent() {
-
         spTipe_antrian.setItems(tipeAntrian);
+        spTipe_antrian.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
+            @Override
+            public void selectedIndices(List<Integer> indices) {
+
+            }
+
+            @Override
+            public void selectedStrings(List<String> strings) {
+
+            }
+        });
 
         tvMulai_Kerja.setOnClickListener(this);
         tvSelesai_Kerja.setOnClickListener(this);
         tvMulai_istirahat.setOnClickListener(this);
         tvSelesai_istirahat.setOnClickListener(this);
-
-        etNama_Mekanik.setThreshold(1);
-        etNama_Mekanik.setAdapter(new NsonAutoCompleteAdapter(this) {
-            @Override
-            public Nson onFindNson(Context context, String bookTitle) {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("data", bookTitle);
-                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("daftarpenugasan"), args));
-
-                return result.get("data");
-            }
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                if (convertView == null) {
-                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    convertView = inflater.inflate(R.layout.find_nama, parent, false);
-                }
-
-                findView(convertView, R.id.tv_find_nama, TextView.class).setText((getItem(position).get("NAMA_MEKANIK").asString()));
-
-                return convertView;
-
-            }
-        });
-
-        etNama_Mekanik.setLoadingIndicator((android.widget.ProgressBar) findViewById(R.id.pb_namaMekanik_penugasan));
-        etNama_Mekanik.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append(n.get("NAMA_MEKANIK").asString());
-
-                etNama_Mekanik.setText(stringBuilder.toString());
-                etNama_Mekanik.setTag(String.valueOf(adapterView.getItemAtPosition(position)));
-
-                //find(R.id.tv_find_nama, TextView.class).setText(n.get("NAMA_MEKANIK").asString());
-            }
-        });
-
         spLokasi.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
@@ -244,7 +215,7 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
 
         final String antrian = spTipe_antrian.getSelectedItemsAsString();
         final int selectedId = rg_status.getCheckedRadioButtonId();
-        final String nama = etNama_Mekanik.getText().toString().trim().toUpperCase();
+        final String nama = spMekanik.getSelectedItem().toString();
         final String lokasi = spLokasi.getSelectedItem().toString().toUpperCase();
         final String masuk = tvMulai_Kerja.getText().toString().trim();
         final String selesai = tvSelesai_Kerja.getText().toString().trim();
@@ -338,6 +309,38 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
         });
     }
 
+    private void getMekanik() {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson data;
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                data = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("mekanik"), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (data.get("status").asString().equalsIgnoreCase("OK")) {
+                    for (int i = 0; i < data.get("data").size(); i++) {
+                        mekanikArray.add(data.get("data").get(i).get("NAMA").asString());
+                    }
+                    ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, mekanikArray.asArray());
+                    spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spMekanik.setAdapter(spinnerAdapter);
+                    notifyDataSetChanged(spMekanik);
+                } else {
+                    showInfoDialog("Nama Mekanik Gagal Di Muat, Muat Ulang ?", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            getMekanik();
+                        }
+                    });
+                }
+
+            }
+        });
+    }
+
     private void updateData() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson data;
@@ -347,7 +350,7 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 int selectedId = rg_status.getCheckedRadioButtonId();
-                String nama = etNama_Mekanik.getText().toString().trim().toUpperCase();
+                String nama = spMekanik.getSelectedItem().toString();
                 String antrian = spTipe_antrian.getSelectedItem().toString().toUpperCase();
                 String lokasi = spLokasi.getSelectedItem().toString().toUpperCase();
                 String masuk = tvMulai_Kerja.getText().toString().trim();

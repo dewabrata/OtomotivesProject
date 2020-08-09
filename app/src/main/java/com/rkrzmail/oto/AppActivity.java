@@ -18,13 +18,18 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -35,6 +40,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.zxing.integration.android.IntentIntegrator;
 import com.naa.data.Nson;
 import com.naa.data.Utility;
 import com.naa.data.UtilityAndroid;
@@ -45,12 +51,14 @@ import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NsonAutoCompleteAdapter;
 import com.rkrzmail.utils.Tools;
+import com.valdesekamdem.library.mdtoast.MDToast;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.io.FileOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -97,7 +105,19 @@ public class AppActivity extends AppCompatActivity {
     }
 
     public void showInfo(String text) {
-        Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
+        MDToast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT, MDToast.TYPE_INFO).show();
+    }
+
+    public void showSuccess(String text) {
+        MDToast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT, MDToast.TYPE_SUCCESS).show();
+    }
+
+    public void showError(String text) {
+        MDToast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT, MDToast.TYPE_ERROR).show();
+    }
+
+    public void showWarning(String text) {
+        MDToast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT, MDToast.TYPE_WARNING).show();
     }
 
     public String getSelectedSpinnerText(int id) {
@@ -106,10 +126,6 @@ public class AppActivity extends AppCompatActivity {
             return to(v, TextView.class).getText().toString();
         }
         return "";
-    }
-
-    public void showError(String text) {
-        Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
     }
 
     public String getIntentStringExtra(String key) {
@@ -236,6 +252,10 @@ public class AppActivity extends AppCompatActivity {
         }
     }
 
+    public void scanBarcode(View view, Activity activity) {
+        new IntentIntegrator(activity).initiateScan();
+    }
+
     public static void rotate(String file, final int move) {
         //mmust on other thread
         try {
@@ -360,6 +380,34 @@ public class AppActivity extends AppCompatActivity {
         }
     }
 
+    public void minEntryEditText(EditText editText, final int min, final TextInputLayout textLayout, final String message) {
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                if (s.toString().length() == 0) {
+                    textLayout.setErrorEnabled(false);
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String text = s.toString();
+                if (text.length() < min) {
+                    textLayout.setError(message);
+                } else {
+                    textLayout.setErrorEnabled(false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.toString().length() == 0) {
+                    textLayout.setErrorEnabled(false);
+                }
+            }
+        });
+    }
+
     public void getDatePickerDialogTextView(Context context, final TextView dateTime) {
         final Calendar cldr = Calendar.getInstance();
         final int day = cldr.get(Calendar.DAY_OF_MONTH);
@@ -381,7 +429,7 @@ public class AppActivity extends AppCompatActivity {
                 dateTime.setText(formattedTime);
             }
         }, year, month, day);
-        datePickerDialog.setMinDate(cldr);
+        //datePickerDialog.setMinDate(cldr);
         datePickerDialog.show(getFragmentManager(), "Datepickerdialog");
     }
 
@@ -412,7 +460,8 @@ public class AppActivity extends AppCompatActivity {
 
 
     public void adapterSearchView(android.support.v7.widget.SearchView searchView, final String arguments, final String api, final String jsonObject) {
-        android.support.v7.widget.SearchView.SearchAutoComplete searchAutoComplete = (android.support.v7.widget.SearchView.SearchAutoComplete) searchView.findViewById(R.id.search_src_text);
+        android.support.v7.widget.SearchView.SearchAutoComplete searchAutoComplete = (android.support.v7.widget.SearchView.SearchAutoComplete) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        searchAutoComplete.setDropDownBackgroundResource(R.drawable.bg_radius_white);
         searchAutoComplete.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
             Nson result;
 
@@ -434,7 +483,7 @@ public class AppActivity extends AppCompatActivity {
             public View getView(int position, View convertView, ViewGroup parent) {
                 if (convertView == null) {
                     LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    convertView = inflater.inflate(R.layout.find_nama_, parent, false);
+                    convertView = inflater.inflate(R.layout.item_suggestion, parent, false);
                 }
 
                 String search = null;
@@ -445,7 +494,8 @@ public class AppActivity extends AppCompatActivity {
                     search = getItem(position).get(jsonObject).asString() + " ( " + getItem(position).get("NAMA_LAIN").asString() + " ) ";
                 }
 
-                findView(convertView, R.id.tv_find_cari_namaPart, TextView.class).setText(search);
+                findView(convertView, R.id.title, TextView.class).setText(search);
+                //findView(convertView, R.id.tv_find_cari_namaPart, TextView.class).setText(search);
                 //findView(convertView, R.id.tv_find_cari_namaPart, TextView.class).setText();
 
                 return convertView;
@@ -456,14 +506,13 @@ public class AppActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(i)));
-
-                find(R.id.search_src_text, android.support.v7.widget.SearchView.SearchAutoComplete.class).setText(n.get(jsonObject).asString());
-                find(R.id.search_src_text, android.support.v7.widget.SearchView.SearchAutoComplete.class).setTag(String.valueOf(adapterView.getItemAtPosition(i)));
+                find(android.support.v7.appcompat.R.id.search_src_text, android.support.v7.widget.SearchView.SearchAutoComplete.class).setText(n.get(jsonObject).asString());
+                find(android.support.v7.appcompat.R.id.search_src_text, android.support.v7.widget.SearchView.SearchAutoComplete.class).setTag(String.valueOf(adapterView.getItemAtPosition(i)));
             }
         });
     }
 
-    public void remakeAutoCompleteMaster(final NikitaAutoComplete editText, final String params, final String jsonObject) {
+    public void remakeAutoCompleteMaster(final NikitaAutoComplete editText, final String params, final String... jsonObject) {
         editText.setThreshold(0);
         editText.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
             Nson result;
@@ -475,8 +524,8 @@ public class AppActivity extends AppCompatActivity {
                 args.put("search", bookTitle);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewmst"), args));
                 for (int i = 0; i < result.get("data").size(); i++) {
-                    if (result.get("data").get(i).get(jsonObject).asString().equalsIgnoreCase(bookTitle)) {
-                        return result.get("data").get(i).get(jsonObject);
+                    if (result.get("data").get(i).get(jsonObject[0]).asString().equalsIgnoreCase(bookTitle)) {
+                        return result.get("data").get(i).get(jsonObject[0]);
                     } else {
                         return result.get("data");
                     }
@@ -493,7 +542,7 @@ public class AppActivity extends AppCompatActivity {
                 if (getItem(position).get("JENIS").asString() != null) {
                     findView(convertView, R.id.title, TextView.class).setText(getItem(position).get("JENIS").asString());
                 }
-                findView(convertView, R.id.title2, TextView.class).setText(getItem(position).get(jsonObject).asString());
+                findView(convertView, R.id.title2, TextView.class).setText(getItem(position).get(jsonObject[0]).asString());
                 return convertView;
             }
         });
@@ -505,7 +554,7 @@ public class AppActivity extends AppCompatActivity {
 
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append(n.get("JENIS").asString()).append(" ");
-                stringBuilder.append(n.get(jsonObject).asString()).append(" ");
+                stringBuilder.append(n.get(jsonObject[0]).asString()).append(" ");
 
                 editText.setText(stringBuilder.toString());
                 editText.setTag(String.valueOf(adapterView.getItemAtPosition(i)));
@@ -513,41 +562,30 @@ public class AppActivity extends AppCompatActivity {
         });
     }
 
-    public void setMultiSelectionSpinnerFromApi(final MultiSelectionSpinner spinner, final String params, final String arguments, final String api, final String jsonObject) {
+    public void setMultiSelectionSpinnerFromApi(final MultiSelectionSpinner spinner, final String params, final String arguments, final String api,  final MultiSelectionSpinner.OnMultipleItemsSelectedListener listener, final String... jsonObject) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put(params, arguments);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(api), args));
             }
-
             @Override
             public void runUI() {
                 ArrayList<String> str = new ArrayList<>();
                 for (int i = 0; i < result.get("data").size(); i++) {
-                    // nListArray.add(result.get("data").get(i).get("NAMA"));
-                    str.add(result.get("data").get(i).get(jsonObject).asString());
+                    str.add(result.get("data").get(i).get(jsonObject[0]).asString() + " " + result.get("data").get(i).get(jsonObject[1]).asString());
                 }
+                str.removeAll(Arrays.asList("", null));
                 ArrayList<String> newStr = Tools.removeDuplicates(str);
                 try {
                     spinner.setItems(newStr);
-                    spinner.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
-                        @Override
-                        public void selectedIndices(List<Integer> indices) {
-
-                        }
-
-                        @Override
-                        public void selectedStrings(List<String> strings) {
-
-                        }
-                    });
-
+                    spinner.setSelection(newStr, false);
+                    spinner.setListener(listener);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    showInfo("Perlu di Muat Ulang");
                 }
             }
         });
@@ -556,7 +594,6 @@ public class AppActivity extends AppCompatActivity {
     public void setSpinnerFromApi(final Spinner spinner, final String params, final String arguments, final String api, final String jsonObject) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -570,6 +607,32 @@ public class AppActivity extends AppCompatActivity {
                 str.add("Belum Di Pilih");
                 for (int i = 0; i < result.get("data").size(); i++) {
                     str.add(result.get("data").get(i).get(jsonObject).asString());
+                }
+                ArrayList<String> newStr = Tools.removeDuplicates(str);
+                ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, newStr);
+                spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(spinnerAdapter);
+                notifyDataSetChanged(spinner);
+            }
+        });
+    }
+
+    public void setSpinnerFromApi(final Spinner spinner, final String params, final String arguments, final String api, final String... jsonObject) {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put(params, arguments);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(api), args));
+            }
+
+            @Override
+            public void runUI() {
+                ArrayList<String> str = new ArrayList<>();
+                str.add("Belum Di Pilih");
+                for (int i = 0; i < result.get("data").size(); i++) {
+                    str.add(result.get("data").get(i).get(jsonObject[0]).asString() + " - " + result.get("data").get(i).get(jsonObject[1]).asString());
                 }
                 ArrayList<String> newStr = Tools.removeDuplicates(str);
                 ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, newStr);
@@ -600,14 +663,14 @@ public class AppActivity extends AppCompatActivity {
         return invalid;
     }
 
-    public boolean validateFields(ViewGroup viewGroup) {
+    /*public boolean validateFields(ViewGroup viewGroup) {
         EditText emptyText = getAllEditText(viewGroup);
         if (emptyText != null) {
             emptyText.setError("Harus di isi");
             emptyText.requestFocus();
         }
         return emptyText != null;
-    }
+    }*/
 
     public void spinnerNoDefaultOffline(Spinner spinner, String[] resources) {
         ArrayAdapter<String> tipeAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, resources) {

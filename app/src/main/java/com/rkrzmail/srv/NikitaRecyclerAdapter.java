@@ -37,7 +37,7 @@ public class NikitaRecyclerAdapter extends RecyclerView.Adapter<NikitaViewHolder
             nikitaViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     if (onitemClickListener!=null){
-                        onitemClickListener.onItemClick(nson, v , Utility.getInt(String .valueOf(v.getTag())));
+                        onitemClickListener.onItemClick(nson, v , Utility.getInt(String.valueOf(v.getTag())));
                     }
                 }
             });

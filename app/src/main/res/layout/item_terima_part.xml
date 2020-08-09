@@ -37,7 +37,8 @@
                         android:layout_height="wrap_content"
                         android:padding="5dp"
                         android:textStyle="bold"
-                        android:text="Tanggal" />
+                        android:text="Tanggal"
+                        android:gravity="start"/>
 
                     <TextView
                         android:id="@+id/txtSupplier"
@@ -45,7 +46,8 @@
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
                         android:padding="5dp"
-                        android:text="Supplier" />
+                        android:text="Supplier"
+                        android:gravity="start"/>
 
                     <TextView
                         android:id="@+id/txtPembayaran"
@@ -53,7 +55,8 @@
                         android:layout_height="wrap_content"
                         android:padding="5dp"
                         android:textStyle="bold"
-                        android:text="Pembayaran" />
+                        android:text="Pembayaran"
+                        android:gravity="start"/>
 
                     <TextView
                         android:id="@+id/txtTotal"
@@ -61,7 +64,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="5dp"
-                        android:text="Total" />
+                        android:text="Total"
+                        android:gravity="start"/>
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -75,7 +80,8 @@
                         android:layout_height="wrap_content"
                         android:padding="5dp"
                         android:textStyle="bold"
-                        android:text="No. DO" />
+                        android:text="No. DO"
+                        android:gravity="end"/>
 
                     <TextView
                         android:id="@+id/textView38"
@@ -89,7 +95,8 @@
                         android:layout_height="wrap_content"
                         android:text="Jatuh Tempo"
                         android:textStyle="bold"
-                        android:padding="5dp"/>
+                        android:padding="5dp"
+                        android:gravity="end"/>
 
                     <TextView
                         android:id="@+id/txtUser"
@@ -97,7 +104,8 @@
                         android:layout_height="wrap_content"
                         android:text="User"
                         android:textStyle="bold"
-                        android:padding="5dp"/>
+                        android:padding="5dp"
+                        android:gravity="end"/>
                 </LinearLayout>
 
             </LinearLayout>

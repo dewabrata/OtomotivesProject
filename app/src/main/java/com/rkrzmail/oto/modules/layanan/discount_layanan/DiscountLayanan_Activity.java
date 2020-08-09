@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +23,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.sparepart.diskon_part.AturDiscountPart_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
@@ -52,8 +54,7 @@ public class DiscountLayanan_Activity extends AppActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), AturDiscountLayanan_Activity.class));
-                finish();
+                startActivityForResult(new Intent(getActivity(), AturDiscountLayanan_Activity.class), 10);
             }
         });
 
@@ -63,16 +64,23 @@ public class DiscountLayanan_Activity extends AppActivity {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
-                String tglDisc = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("").asString());
+                String tglDisc = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("TANGGAL").asString());
 
-                viewHolder.find(R.id.tv_paketLayanan_discLayanan, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_tgl_discLayanan, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_harga_discLayanan, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_pekerjaan_discLayanan, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_disc_discLayanan, TextView.class).setText(nListArray.get(position).get("").asString());
-
+                viewHolder.find(R.id.tv_paketLayanan_discLayanan, TextView.class).setText(nListArray.get(position).get("NAMA_LAYANAN").asString());
+                viewHolder.find(R.id.tv_tgl_discLayanan, TextView.class).setText(tglDisc);
+                viewHolder.find(R.id.tv_harga_discLayanan, TextView.class).setText(nListArray.get(position).get("HARGA").asString());
+                viewHolder.find(R.id.tv_pekerjaan_discLayanan, TextView.class).setText(nListArray.get(position).get("PEKERJAAN").asString());
+                viewHolder.find(R.id.tv_disc_discLayanan, TextView.class).setText(nListArray.get(position).get("DISKON").asString());
             }
-        });
+        }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Nson parent, View view, int position) {
+                        Intent i = new Intent(getActivity(), AturDiscountLayanan_Activity.class);
+                        i.putExtra("data", nListArray.get(position).toJson());
+                        startActivityForResult(i, 10);
+                    }
+                })
+        );
         catchData("");
         
     }
@@ -80,7 +88,6 @@ public class DiscountLayanan_Activity extends AppActivity {
     private void catchData(final String nama) {
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -88,7 +95,6 @@ public class DiscountLayanan_Activity extends AppActivity {
                 args.put("search", nama);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturdiskonlayanan"), args));
             }
-
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
@@ -124,7 +130,7 @@ public class DiscountLayanan_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        adapterSearchView(mSearchView, "search", "aturdiskonlayanan", "NAMA");
+        adapterSearchView(mSearchView, "search", "aturdiskonlayanan", "NAMA_LAYANAN");
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
 
@@ -141,5 +147,12 @@ public class DiscountLayanan_Activity extends AppActivity {
         };
         mSearchView.setOnQueryTextListener(queryTextListener);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK && requestCode == 10)
+            catchData("");
     }
 }
