@@ -29,6 +29,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Paket Layanan"
+                android:layout_gravity="start"
                 android:textStyle="bold" />
 
             <TextView
@@ -36,6 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Harga"
+                android:layout_gravity="end"
                 android:textStyle="bold" />
 
         </TableRow>
@@ -47,7 +49,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Pekerjaan"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_gravity="start"/>
 
         </TableRow>
 
@@ -58,6 +61,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Discount"
+                android:layout_gravity="start"
                 android:textStyle="bold" />
 
             <TextView
@@ -65,7 +69,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tanggal"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_gravity="end"/>
 
         </TableRow>
 

@@ -2,6 +2,8 @@ package com.rkrzmail.oto.modules.tenda;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -31,6 +33,7 @@ import java.util.Map;
 public class AturTenda_Activity extends AppActivity implements View.OnClickListener {
 
     private static final String TAG = "AturTenda_Activity";
+    private static final int REQUEST_LOKASI = 18;
     private EditText etLokasi, etAlamat, etLonglat;
     private String[] hari;
     private TextView tvTglBuka, tvTglSelesai, tvJamMulai, tvJamTutup;
@@ -56,6 +59,7 @@ public class AturTenda_Activity extends AppActivity implements View.OnClickListe
     }
 
     private void initComponent() {
+        Tools.setViewAndChildrenEnabled(find(R.id.tl_longlat, TextInputLayout.class), false);
 
         tvTglBuka = findViewById(R.id.tv_tglMulai_tenda);
         tvTglSelesai = findViewById(R.id.tv_tglSelesai_tenda);
@@ -67,7 +71,7 @@ public class AturTenda_Activity extends AppActivity implements View.OnClickListe
         spHari = findViewById(R.id.sp_hari_tenda);
         spTipeWaktu = findViewById(R.id.sp_tipeWaktu_tenda);
 
-
+        minEntryEditText(etAlamat, 20, find(R.id.tl_alamat, TextInputLayout.class), "Entry Alamat Min. 20 Karakter");
         hari = getResources().getStringArray(R.array.hari_tenda);
         spHari.setItems(hari);
         spHari.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
@@ -114,21 +118,61 @@ public class AturTenda_Activity extends AppActivity implements View.OnClickListe
                 final String jamBuka = tvJamMulai.getText().toString();
                 final String jamTutup = tvJamTutup.getText().toString();
 
-                if (jamBuka.equalsIgnoreCase("JAM MULAI")
-                        && jamTutup.equalsIgnoreCase("JAM SELESAI")) {
-                    showInfo("Silahkan Isi Jam Mulai / Jam Selesai");
+                if (etLokasi.getText().toString().isEmpty() && etLokasi.getText().toString().length() < 5) {
+                    etLokasi.setError("Lengkapi Lokasi");
+                    etLokasi.requestFocus();
                     return;
-                }
-
-                if ((find(R.id.ly_hari_tenda, LinearLayout.class).getVisibility() == View.VISIBLE)) {
-                    if (tglMulai.equalsIgnoreCase("TANGGAL MULAI")
-                            && tglSelesai.equalsIgnoreCase("TANGGAL SELESAI")) {
-                        showInfo("Silahkan Isi Tanggal Mulai / Tanggal Selesai");
+                } else if (etAlamat.getText().toString().isEmpty() && etAlamat.getText().toString().length() < 20) {
+                    etAlamat.setError("Lengkap Alamat");
+                    etAlamat.requestFocus();
+                    return;
+                } else if (etLonglat.isEnabled()) {
+                    if (etLonglat.getText().toString().isEmpty()) {
+                        etLonglat.setError("Lengkapi Longlat");
                         return;
                     }
                 }
+                if (jamBuka.equalsIgnoreCase("JAM MULAI")
+                        && jamTutup.equalsIgnoreCase("JAM SELESAI")) {
+                    showWarning("Silahkan Isi Jam Mulai / Jam Selesai");
+                    return;
+                }else{
+                    try {
+                        Date jBuka = new SimpleDateFormat("HH:mm").parse(jamBuka);
+                        Date jTutup = new SimpleDateFormat("HH:mm").parse(jamTutup);
+                        if (jTutup.before(jBuka)) {
+                            showWarning("Jam Selesai Tidak Sesuai");
+                            return;
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                        return;
+                    }
+                }
+                if ((find(R.id.ly_tanggal_tenda, LinearLayout.class).getVisibility() == View.VISIBLE)) {
+                    if (tglMulai.equalsIgnoreCase("TANGGAL MULAI")
+                            && tglSelesai.equalsIgnoreCase("TANGGAL SELESAI")) {
+                        showWarning("Silahkan Isi Tanggal Mulai / Tanggal Selesai");
+                        return;
+                    }
+                    try {
+                        Date tMulai = new SimpleDateFormat("dd/MM/yyyy").parse(tglMulai);
+                        Date tSelesai = new SimpleDateFormat("dd/MM/yyyy").parse(tglSelesai);
+                        if (!tMulai.before(tSelesai)) {
+                            showWarning("Tanggal Tidak Sesuai");
+                            return;
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+                duplicateValidation();
+            }
+        });
 
-                validation();
+        find(R.id.btn_peta_tenda, Button.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
             }
         });
@@ -209,7 +253,7 @@ public class AturTenda_Activity extends AppActivity implements View.OnClickListe
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    showInfo("Berhasil Menyimpan Aktifitas");
+                    showSuccess("Berhasil Menyimpan Aktifitas");
                     startActivity(new Intent(getActivity(), Tenda_Activity.class));
                     finish();
 
@@ -221,16 +265,13 @@ public class AturTenda_Activity extends AppActivity implements View.OnClickListe
         });
     }
 
-    private boolean duplicateValidation() {
+    private void duplicateValidation() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturtenda"), args));
-
             }
 
             @Override
@@ -241,55 +282,20 @@ public class AturTenda_Activity extends AppActivity implements View.OnClickListe
                     dummies.add(result.get("data").get(i).get("TANGGAL").asString());
                     dummies.add(result.get("data").get(i).get("LOCATION").asString());
                 }
-                if (dummies.contains(etLokasi.getText().toString()) || dummies.contains(tvTglBuka.getText().toString())
-                        || dummies.contains(tvTglSelesai.getText().toString()) || dummies.contains(etLonglat.getText().toString())) {
-                    showInfo("Tenda Telah Terdaftar / Duplikasi");
-                    return;
-                }
             }
         });
-        return true;
-    }
-
-    private void validation() {
-        final String tglMulai = tvTglBuka.getText().toString();
-        final String tglSelesai = tvTglSelesai.getText().toString();
-        final String jamBuka = tvJamMulai.getText().toString();
-        final String jamTutup = tvJamTutup.getText().toString();
-
-        try {
-            Date tMulai = new SimpleDateFormat("dd/MM/yyyy").parse(tglMulai);
-            Date tSelesai = new SimpleDateFormat("dd/MM/yyyy").parse(tglSelesai);
-
-            if (!tMulai.before(tSelesai)) {
-                showInfo("Tanggal Tidak Sesuai");
-                return;
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if (dummies.contains(etLokasi.getText().toString())) {
+            showWarning("Tenda Telah Terdaftar / Duplikasi");
+        }else{
+            saveData();
         }
-
-        try {
-            Date jBuka = new SimpleDateFormat("HH:mm").parse(jamBuka);
-            Date jTutup = new SimpleDateFormat("HH:mm").parse(jamTutup);
-
-            if (!jBuka.before(jTutup)) {
-                showInfo("Jam Selesai Tidak Sesuai");
-                return;
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        if (duplicateValidation()) {
-            return;
-        }
-        saveData();
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        finish();
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == REQUEST_LOKASI) {
+
+        }
     }
 }

@@ -3,7 +3,9 @@ package com.rkrzmail.oto.modules.komisi;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -19,6 +21,7 @@ import com.rkrzmail.srv.PercentFormat;
 import com.rkrzmail.utils.Tools;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class AturKomisiJasaLain_Activity extends AppActivity {
@@ -26,6 +29,9 @@ public class AturKomisiJasaLain_Activity extends AppActivity {
     private MultiSelectionSpinner spPosisi;
     private Spinner spKategori, spAktifitas;
     private EditText etKomisi;
+    private String aktivitas = "", kelompokPart = "", pekerjaan = "";
+    private List<String> partList = new ArrayList<>(), aktivitasList = new ArrayList<>(), dummy = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,17 +55,25 @@ public class AturKomisiJasaLain_Activity extends AppActivity {
         etKomisi = findViewById(R.id.et_komisi_komisiJasaLain);
 
         etKomisi.addTextChangedListener(new PercentFormat(etKomisi));
-        setSpinnerFromApi(spKategori, "nama", "PART", "viewmst", "KATEGORI");
-        setMultiSelectionSpinnerFromApi(spPosisi, "nama", "POSISI", "viewmst", "NAMA");
-
-        find(R.id.btn_simpan_komisiJasaLain, Button.class).setOnClickListener(new View.OnClickListener() {
+        setMultiSelectionSpinnerFromApi(spPosisi, "nama", "POSISI", "viewmst", new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
             @Override
-            public void onClick(View v) {
-                saveData();
-            }
-        });
+            public void selectedIndices(List<Integer> indices) {
 
-        loadData();
+            }
+
+            @Override
+            public void selectedStrings(List<String> strings) {
+
+            }
+        }, "NAMA", "");
+
+        try{
+            setSpKelompokPart();
+            loadData();
+        }catch (Exception e){
+            Log.d("Exception___", "initComponent: " + e.getMessage());
+        }
+
     }
 
     private void saveData() {
@@ -93,24 +107,28 @@ public class AturKomisiJasaLain_Activity extends AppActivity {
         final Nson data = Nson.readJson(getIntentStringExtra("data"));
         Intent intent = getIntent();
         if (intent.hasExtra("data")) {
-
+            kelompokPart = data.get("KATEGORI_PART").asString();
             etKomisi.setText(data.get("KOMISI").asString());
-            //spAktifitas.setSelection(Tools.getIndexSpinner(spAktifitas, data.get("AKTIVITAS").asString()));
-            //spPosisi.setSelection(data.get("AKTIVITAS").asStringArray());
-            spKategori.setSelection(Tools.getIndexSpinner(spKategori, data.get("KATEGORI_PART").asString()));
-            find(R.id.btn_hapus_komisiJasaLain, Button.class).setVisibility(View.VISIBLE);
-            find(R.id.btn_hapus_komisiJasaLain, Button.class).setOnClickListener(new View.OnClickListener() {
+            find(R.id.btn_hapus, Button.class).setVisibility(View.VISIBLE);
+            find(R.id.btn_hapus, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     deleteData(data);
                 }
             });
 
-            find(R.id.btn_simpan_komisiJasaLain, Button.class).setText("UPDATE");
-            find(R.id.btn_simpan_komisiJasaLain, Button.class).setOnClickListener(new View.OnClickListener() {
+            find(R.id.btn_simpan, Button.class).setText("UPDATE");
+            find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     updateData(data);
+                }
+            });
+        }else{
+            find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    saveData();
                 }
             });
         }
@@ -170,4 +188,36 @@ public class AturKomisiJasaLain_Activity extends AppActivity {
         });
     }
 
+    private void setSpKelompokPart() {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("nama", "PART");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewmst"), args));
+            }
+
+            @Override
+            public void runUI() {
+                partList.add("Belum Di Pilih");
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    for (int i = 0; i < result.get("data").size(); i++) {
+                        partList.add(result.get("data").get(i).get("KELOMPOK").asString() + " - " + result.get("data").get(i).get("KELOMPOK_LAIN").asString());
+                    }
+                    ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, partList);
+                    spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spKategori.setAdapter(spinnerAdapter);
+                    if (!kelompokPart.isEmpty()) {
+                        for (int in = 0; in < spKategori.getCount(); in++) {
+                            if (spKategori.getItemAtPosition(in).toString().contains(kelompokPart)) {
+                                spKategori.setSelection(in);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
 }

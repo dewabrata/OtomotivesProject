@@ -21,14 +21,14 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="10dp">
 
                 <com.rkrzmail.srv.NikitaAutoComplete
                     android:id="@+id/et_masterPart_komisiPart"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:hint="NAMA MASTER PART"
-                    android:inputType="text"
+                    android:inputType="textCapWords"
                     android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
@@ -105,37 +105,7 @@
 
             </LinearLayout>
 
-            <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:stretchColumns="*">
-
-                <TableRow>
-
-                    <Button
-                        android:id="@+id/btn_hapus_komisiPart"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/btn_rounded_accent"
-                        android:text="HAPUS"
-                        android:textColor="@android:color/white"
-                        android:visibility="gone" />
-
-                    <Button
-                        android:id="@+id/btn_simpan_komisiPart"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_column="20"
-                        android:layout_gravity="end"
-                        android:background="@drawable/btn_rounded_accent"
-                        android:text="SIMPAN"
-                        android:textColor="@android:color/white" />
-
-                </TableRow>
-
-            </TableLayout>
+            <include layout="@layout/layout_btn_simpan_hapus"/>
 
         </LinearLayout>
 
@@ -150,6 +120,4 @@
         <include layout="@layout/toolbar" />
 
     </android.support.design.widget.AppBarLayout>
-
-
 </android.support.design.widget.CoordinatorLayout>

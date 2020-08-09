@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.naa.data.Nson;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.gmod.Capture;
@@ -22,7 +24,9 @@ import com.rkrzmail.utils.Tools;
 public class Checkin4_Activity extends AppActivity implements View.OnClickListener {
 
     public static final int REQUEST_CODE_SIGN = 10;
+    private static final String TAG = "Checking4____";
     private Bitmap ttd;
+    private SeekBar seekBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,15 +49,14 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), Capture.class);
-                intent.putExtra("STATUS", "");
-                setResult(RESULT_OK);
                 startActivityForResult(intent, REQUEST_CODE_SIGN);
             }
         });
-
-        find(R.id.seekBar_bbm, SeekBar.class).setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int seekBarProgress = 0;
-
+        seekBar = findViewById(R.id.seekBar_bbm);
+        //seekBar.setMax(100);
+        //seekBar.setProgress(10);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int seekBarProgress = 10;
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 seekBarProgress = progress;
@@ -70,6 +73,9 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             }
         });
 
+        Nson getData = Nson.readJson(getIntentStringExtra("data"));
+        Log.d(TAG, "initComponent: " + getData);
+
         find(R.id.et_antrian_checkin4, EditText.class);
         find(R.id.et_Emulai_checkin4, EditText.class);
         find(R.id.et_Eselesai_checkin4, EditText.class);
@@ -79,7 +85,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         find(R.id.et_sisa_checkin4, EditText.class);
         find(R.id.tv_waktu_checkin4, TextView.class).setOnClickListener(this);
         find(R.id.cb_aggrement_checkin4, CheckBox.class);
-        find(R.id.cb_buangPart_checkin4, CheckBox.class);
+        //find(R.id.cb_buangPart_checkin4, CheckBox.class).setChecked(true);
         find(R.id.cb_konfirmTambah_checkin4, CheckBox.class);
         find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class);
     }
@@ -97,6 +103,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_SIGN) {
+            Log.d(TAG, "onActivityResult: " + getIntentStringExtra(data, "imagePath"));
             ttd = (Bitmap) data.getExtras().get("imagePath");
             find(R.id.img_tandaTangan_checkin4, ImageView.class).setImageBitmap(ttd);
         }

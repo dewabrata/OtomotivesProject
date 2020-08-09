@@ -15,27 +15,30 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="10dp">
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginLeft="10dp">
+                android:layout_marginTop="5dp"
+                android:background="@drawable/border_solid"
+                android:padding="10dp"
+                android:layout_gravity="center"
+                android:gravity="center">
 
                 <TextView
                     android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
+                    android:layout_width="150dp"
                     android:text="BANK"
-                    android:layout_weight="1"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textSize="14sp"/>
 
                 <Spinner
                     android:id="@+id/sp_bank_rekening"
                     android:layout_weight="1"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAlignment="center" />
 
@@ -45,8 +48,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginLeft="10dp"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                 <EditText
@@ -63,15 +64,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginLeft="10dp"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                 <EditText
                     android:id="@+id/et_namaRek_rekening"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inputType="text"
+                    android:inputType="textCapCharacters"
                     android:textSize="14sp"
                     android:hint="NAMA REKENING" />
 
@@ -81,16 +80,15 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:layout_marginLeft="10dp">
+                android:layout_marginTop="10dp"
+                android:background="@drawable/border_solid"
+                android:padding="10dp"
+                >
 
                 <CheckBox
                     android:id="@+id/cb_edc_rekening"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginLeft="10dp"
                     android:layout_weight="1"
                     android:text="EDC ACTIVE" />
 
@@ -98,47 +96,12 @@
                     android:id="@+id/cb_offUs_rekening"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginLeft="10dp"
                     android:layout_weight="1"
                     android:text="OFF US" />
 
-
             </LinearLayout>
 
-            <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginLeft="10dp"
-                android:stretchColumns="*">
-
-                <TableRow>
-
-                    <Button
-                        android:id="@+id/btn_hapus_rekening"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/btn_rounded_accent"
-                        android:textColor="@android:color/white"
-                        android:text="@string/hapus_uppercase"
-                        android:visibility="gone" />
-
-                    <Button
-                        android:id="@+id/btn_simpan_rekening"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/btn_rounded_accent"
-                        android:textColor="@android:color/white"
-                        android:layout_column="50"
-                        android:text="@string/simpan_uppercase" />
-
-                </TableRow>
-
-            </TableLayout>
-
+            <include layout="@layout/layout_btn_simpan_hapus"/>
         </LinearLayout>
     </ScrollView>
 

@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,11 +25,11 @@ import android.widget.TextView;
 
 import com.naa.data.Nson;
 import com.naa.data.UtilityAndroid;
+import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.fragment.PageAdapter;
 import com.rkrzmail.oto.fragment.SlideFragment;
 import com.rkrzmail.oto.fragment.pageindicator.CirclePageIndicator;
-import com.rkrzmail.oto.gmod.AturSparepartActivity;
 import com.rkrzmail.oto.gmod.LayananActivity;
 import com.rkrzmail.oto.gmod.MessageWA;
 import com.rkrzmail.oto.gmod.Part_DiterimaActivity;
@@ -39,11 +40,11 @@ import com.rkrzmail.oto.modules.komisi.KomisiPart_Activity;
 import com.rkrzmail.oto.modules.pembayaran.DaftarPembayaran_Activity;
 import com.rkrzmail.oto.modules.perintah_kerja_mekanik.PerintahKerjaMekanik_Activity;
 import com.rkrzmail.oto.modules.primary.KontrolLayanan_Activity;
-import com.rkrzmail.oto.modules.primary.booking.Booking3_Activity;
-import com.rkrzmail.oto.modules.primary.booking.KontrolBooking_Activity;
+import com.rkrzmail.oto.modules.primary.KontrolBooking_Activity;
 import com.rkrzmail.oto.modules.jasa.discount_jasa_lain.DiscountJasaLain_Activity;
 import com.rkrzmail.oto.modules.layanan.discount_layanan.DiscountLayanan_Activity;
 import com.rkrzmail.oto.modules.sparepart.AturParts_Activity;
+import com.rkrzmail.oto.modules.sparepart.DetailCariPart_Activity;
 import com.rkrzmail.oto.modules.sparepart.diskon_part.DiscountPart_Activity;
 import com.rkrzmail.oto.modules.discount.FrekwensiDiscount_Activity;
 import com.rkrzmail.oto.modules.discount.SpotDiscount_Activity;
@@ -70,11 +71,13 @@ import com.rkrzmail.oto.modules.sparepart.terima_part.TerimaPart;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 public class MenuActivity extends AppActivity {
 
     Nson nPopulate = Nson.newArray();
+    Nson dataBengkel = Nson.newObject();
     public final int MN_CHECKIN         =   3;
     public final int MN_PART            =   4;
     public final int MN_PART_SEARCH     =   5;
@@ -122,7 +125,7 @@ public class MenuActivity extends AppActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        sendDataBengkel();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -163,7 +166,7 @@ public class MenuActivity extends AppActivity {
                 else if (nPopulate.get(position).get("id").asInteger() == MN_CARI_PART) {
                     Intent intent = new Intent(MenuActivity.this, CariPart_Activity.class);
                     intent.putExtra("flag","ALL");
-                    startActivityForResult(intent, 1);
+                    startActivityForResult(intent, 90);
                 }
 //                else if (nPopulate.get(position).get("id").asInteger() == MN_CARI_PART) {
 //                    Intent intent = new Intent(MenuActivity.this, CariPart_Activity.class);
@@ -224,6 +227,8 @@ public class MenuActivity extends AppActivity {
 
                 }else if (nPopulate.get(position).get("id").asInteger() == MN_BIAYA_MEKANIK2) {
                     Intent intent = new Intent(MenuActivity.this, BiayaMekanik2Activity.class);
+                    intent.putExtra("data", dataBengkel.toJson());
+                    //Log.d("main_____", "onItemClick: " + dataBengkel);
                     startActivity(intent);
 
                 }else if(nPopulate.get(position).get("id").asInteger() == MN_LOKASI_PART){
@@ -382,7 +387,7 @@ public class MenuActivity extends AppActivity {
 //        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_WA).set("icon", R.drawable.wa).set("text", "MESSAGE"));
         nPopulate.add(Nson.newObject().set("id", MN_SPAREPART).set("icon", R.drawable.mn_jualpart).set("text", "SPAREPART"));
         nPopulate.add(Nson.newObject().set("id", MN_CARI_PART).set("icon", R.drawable.mn_jualpart).set("text", "CARI PART"));
-        nPopulate.add(Nson.newObject().set("id", MN_REGISTRASI).set("icon", R.drawable.mn_pelanggan).set("text", "REGISTRASI"));
+        //nPopulate.add(Nson.newObject().set("id", MN_REGISTRASI).set("icon", R.drawable.mn_pelanggan).set("text", "REGISTRASI"));
         //nPopulate.add(Nson.newObject().set("id", MN_PART_SEARCH).set("icon", R.drawable.mn_jualpart).set("text", "CARI PART"));
 
         nPopulate.add(Nson.newObject().set("id", MN_PROFILE).set("icon", R.drawable.mn_pelanggan).set("text", "PROFILE"));
@@ -404,7 +409,6 @@ public class MenuActivity extends AppActivity {
         nPopulate.add(Nson.newObject().set("id", MN_REKENING).set("icon", R.drawable.mn_pembayaran).set("text", "REKENING BANK"));
         nPopulate.add(Nson.newObject().set("id", MN_BOOKING).set("icon", R.drawable.mn_booking).set("text", "BOOKING"));
         nPopulate.add(Nson.newObject().set("id", MN_KONTROL_LAYANAN).set("icon", R.drawable.mn_booking).set("text", "CHECK-IN"));
-
         nPopulate.add(Nson.newObject().set("id", MN_DISCOUNT_LAYANAN).set("icon", R.drawable.mn_belanja).set("text", "DISCOUNT LAYANAN"));
         nPopulate.add(Nson.newObject().set("id", MN_DISCOUNT_JASALAIN).set("icon", R.drawable.mn_belanja).set("text", "DISCOUNT JASA LAIN"));
         nPopulate.add(Nson.newObject().set("id", MN_KOMISI_LAYANAN).set("icon", R.drawable.mn_inspeksi).set("text", "KOMISI LAYANAN"));
@@ -449,6 +453,24 @@ public class MenuActivity extends AppActivity {
 
     }
 
+    private void sendDataBengkel(){
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("databengkel"), args));
+            }
+
+            @Override
+            public void runUI() {
+                if(result.get("status").asString().equalsIgnoreCase("OK")) {
+                    dataBengkel.set("BENGKEL", result.get("data"));
+                }
+            }
+        });
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -471,9 +493,7 @@ public class MenuActivity extends AppActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
-
                     UtilityAndroid.removeSettingAll(getActivity());
-
                     Intent intent = new Intent(getActivity(), LoginActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
@@ -499,6 +519,11 @@ public class MenuActivity extends AppActivity {
                 Intent i = new Intent(getActivity(), AturParts_Activity.class);
                 i.putExtra("part", getIntentStringExtra(data, "part"));
                 startActivityForResult(i, 112);
+            }
+            if(requestCode == 90){
+                Intent i = new Intent(getActivity(), DetailCariPart_Activity.class);
+                i.putExtra("part", Nson.readJson(getIntentStringExtra(data, "part")).toJson());
+                startActivityForResult(i, 109);
             }
         }
     }

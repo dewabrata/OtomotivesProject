@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:descendantFocusability="beforeDescendants"
-    android:focusableInTouchMode="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -14,20 +14,22 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="10dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp">
+                android:layout_gravity="center"
+                android:background="@drawable/border_solid"
+                android:gravity="center"
+                android:padding="10dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
                     android:text="TIPE WAKTU"
-                    android:textColor="@color/red_900" />
+                    android:textSize="14sp" />
 
                 <Spinner
                     android:id="@+id/sp_tipeWaktu_tenda"
@@ -44,19 +46,22 @@
                 android:id="@+id/ly_hari_tenda"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp">
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/border_solid"
+                android:gravity="center"
+                android:padding="10dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_weight="1"
                     android:text="HARI"
                     android:textColor="@color/red_900" />
 
                 <com.rkrzmail.srv.MultiSelectionSpinner
                     android:id="@+id/sp_hari_tenda"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textAlignment="center" />
@@ -65,60 +70,61 @@
 
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:id="@+id/ly_tanggal_tenda"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:gravity="center">
+                android:layout_marginTop="10dp"
+                android:background="@drawable/border_solid"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="10dp">
 
                 <TextView
                     android:id="@+id/tv_tglMulai_tenda"
                     android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:drawableLeft="@drawable/icon_tanggal"
                     android:gravity="center"
                     android:text="Tanggal Mulai"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
-                    android:drawableLeft="@drawable/icon_tanggal" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="-"
-                    android:textStyle="bold"
+                    android:textAlignment="center"
                     android:textSize="16sp"
-                    android:textAlignment="center" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tv_tglSelesai_tenda"
                     android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textStyle="bold"
-                    android:text="Tanggal Selesai"
                     android:drawableRight="@drawable/icon_tanggal"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:text="Tanggal Selesai"
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/tl_nama_lokasi"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginTop="5dp">
 
                 <EditText
                     android:id="@+id/et_namaLokasi_tenda"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="NAMA LOKASI"
-                    android:textSize="14sp"
                     android:inputType="text"
-                    android:maxLines="1" />
+                    android:maxLines="1"
+                    android:textSize="14sp" />
 
 
             </android.support.design.widget.TextInputLayout>
@@ -128,79 +134,84 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginTop="5dp">
 
                 <EditText
                     android:id="@+id/et_alamat_tenda"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="wrap_content"
                     android:gravity="top|left"
-                    android:textSize="14sp"
                     android:hint="ALAMAT"
-                    android:inputType="textMultiLine" />
-
+                    android:inputType="textMultiLine|textCapSentences"
+                    android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
+
+            <Button
+                android:id="@+id/btn_peta_tenda"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/btn_rounded_accent"
+                android:text="PETA LOKASI"
+                android:textColor="@android:color/white" />
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/tl_longlat"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginTop="5dp">
 
                 <EditText
                     android:id="@+id/et_longlat_tenda"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="top|left"
                     android:hint="LONGLAT"
-                    android:textSize="14sp"
-                    android:inputType="numberDecimal" />
-
+                    android:inputType="textMultiLine|textCapSentences"
+                    android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
 
-
-
             <LinearLayout
-                android:orientation="horizontal"
                 android:id="@+id/ly_jam_tenda"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:gravity="center">
+                android:background="@drawable/border_solid"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:layout_marginTop="10dp">
 
                 <TextView
                     android:id="@+id/tv_jamMulai_tenda"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:drawableLeft="@drawable/icon_jam"
                     android:gravity="center"
                     android:text="Jam Mulai"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
-                    android:drawableLeft="@drawable/icon_jam" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="-"
-                    android:textStyle="bold"
+                    android:textAlignment="center"
                     android:textSize="16sp"
-                    android:textAlignment="center" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tv_jamSelesai_tenda"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textStyle="bold"
+                    android:drawableRight="@drawable/icon_jam"
                     android:gravity="center"
                     android:text="Jam Selesai"
-                    android:drawableRight="@drawable/icon_jam" />
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
@@ -209,11 +220,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
                 android:background="@drawable/btn_rounded_accent"
                 android:text="SIMPAN"
-                android:textColor="@color/white_transparency" />
+                android:textColor="@android:color/white" />
 
 
         </LinearLayout>
@@ -230,7 +241,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay"/>
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
 

@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item>
-        <shape android:shape="rectangle">
-            <corners android:radius="5dp" />
-
-            <gradient
-                android:angle="180"
-                android:endColor="@color/green_500"
-                android:startColor="@color/green_400" />
-        </shape>
-    </item>
+   
     <item>
         <clip>
             <shape android:shape="rectangle">
@@ -18,20 +9,8 @@
 
                 <gradient
                     android:angle="180"
-                    android:endColor="@color/yellow_400"
-                    android:startColor="@color/yellow_500" />
-            </shape>
-        </clip>
-    </item>
-    <item>
-        <clip>
-            <shape android:shape="rectangle">
-                <corners android:radius="5dp" />
-
-                <gradient
-                    android:angle="180"
-                    android:endColor="@color/green_400"
-                    android:startColor="@color/green_500" />
+                    android:endColor="@color/green_800"
+                    android:startColor="@color/red_900" />
             </shape>
         </clip>
     </item>

@@ -40,6 +40,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.android.gms.maps.GoogleMap;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.srv.MultiSelectionSpinner;
 
 
 import java.text.DecimalFormat;
@@ -332,7 +333,7 @@ public class Tools {
     }
 
     public static int getIndexSpinner(Spinner spinner, String value){
-        for (int i=0;i<spinner.getCount();i++){
+        for (int i = 0; i < spinner.getCount(); i++){
             if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(value)){
                 return i;
             }
@@ -340,8 +341,17 @@ public class Tools {
         return 0;
     }
 
+    public static int getIndexSpinner(MultiSelectionSpinner multiSelectionSpinner, String value){
+        for (int i = 0; i < multiSelectionSpinner.getCount(); i++){
+            if (multiSelectionSpinner.getItemAtPosition(i).toString().equalsIgnoreCase(value)){
+                return i;
+            }
+        }
+        return 0;
+    }
+
     public static String setFormatDayAndMonthToDb(String date){
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         Date tgl = new Date();
         try {
             tgl = sdf.parse(date);
@@ -440,6 +450,21 @@ public class Tools {
             InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+
+    public static Bitmap getResizedBitmap(Bitmap image, int maxSize) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        float bitmapRatio = (float)width / (float) height;
+        if (bitmapRatio > 1) {
+            width = maxSize;
+            height = (int) (width / bitmapRatio);
+        } else {
+            height = maxSize;
+            width = (int) (height * bitmapRatio);
+        }
+        return Bitmap.createScaledBitmap(image, width, height, true);
     }
 
 }

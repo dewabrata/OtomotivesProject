@@ -1,7 +1,6 @@
 package com.rkrzmail.oto.modules.primary;
 
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -71,10 +70,10 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
-                viewHolder.find(R.id.tv_nama_booking3, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_harga_booking3, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_disc_booking3, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_net_booking3, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_nama_booking3_checkin3, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_harga_booking3_checkin3, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_disc_booking3_checkin3, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_net_booking3_checkin3, TextView.class).setText(nListArray.get(position).get("").asString());
             }
         });
 

@@ -256,14 +256,14 @@
 
                     <TextView
                         android:id="@+id/textView28"
-                        android:layout_width="wrap_content"
+                        android:layout_width="150dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                     android:textSize="14sp"
                         android:text="POLA HARGA JUAL" />
 
                     <Spinner
                         android:id="@+id/sp_polaHarga_part"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:entries="@array/pola_harga_jual"
@@ -273,6 +273,7 @@
                 </LinearLayout>
 
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/tl_margin"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -280,56 +281,19 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginRight="10dp">
 
-
                     <EditText
                         android:id="@+id/et_marginHarga_part"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="MARGIN / HARGA"
-                        android:textSize="14sp"
-                        android:maxLength="4" />
+                        android:inputType="numberDecimal"
+                        android:textSize="14sp"/>
 
                 </android.support.design.widget.TextInputLayout>
 
-                <TableLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:stretchColumns="*">
-
-                    <TableRow>
-
-                        <Button
-                            android:id="@+id/btn_hapus_part"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="start"
-                            android:background="@drawable/btn_rounded_accent"
-                            android:text="HAPUS"
-                            android:visibility="gone"
-                            android:textColor="@android:color/white" />
-
-
-                        <Button
-                            android:id="@+id/btn_simpan_part"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="end"
-                            android:layout_column="50"
-                            android:layout_marginStart="5dp"
-                            android:background="@drawable/btn_rounded_accent"
-                            android:text="Simpan"
-                            android:textColor="@android:color/white" />
-
-                    </TableRow>
-
-                </TableLayout>
+               <include layout="@layout/layout_btn_simpan_hapus"/>
 
             </LinearLayout>
-
         </ScrollView>
-
     </LinearLayout>
-
 </FrameLayout>

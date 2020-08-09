@@ -27,7 +27,7 @@
                 android:layout_marginTop="10dp">
 
                 <TextView
-                    android:layout_width="140dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:text="LOKASI LAYANAN"
                     android:textSize="14sp" />
@@ -38,7 +38,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:layout_marginStart="10dp"
                     android:text="BENGKEL"/>
 
                 <CheckBox
@@ -96,7 +95,8 @@
                 android:background="@drawable/border_solid"
                 android:padding="10dp"
                 android:gravity="center"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center">
 
                 <TextView
                     android:layout_width="150dp"
@@ -105,7 +105,7 @@
 
                 <com.rkrzmail.srv.MultiSelectionSpinner
                     android:id="@+id/sp_pekerjaan_discPart"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
                     android:layout_weight="1"/>

@@ -42,10 +42,13 @@ import java.util.Vector;
 
 public class MainActivity extends AppActivity {
 
+    private String[] aksesApp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        aksesApp = getResources().getStringArray(R.array.akses_app_karyawan);
 
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         //Log.i("Firebase", refreshedToken);

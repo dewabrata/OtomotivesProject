@@ -29,24 +29,27 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginRight="10dp"
+                android:orientation="vertical">
 
 
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/tl_nama_user"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    app:helperTextEnabled="true">
 
 
                     <EditText
                         android:id="@+id/txtNamaKaryawan"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="14sp"
-                        android:hint="NAMA" />
+                        android:hint="NAMA"
+                        android:inputType="textPersonName|textCapSentences"
+                        android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -60,8 +63,9 @@
                         android:id="@+id/txtNik"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="14sp"
-                        android:hint="NIK" />
+                        android:hint="NIK"
+                        android:inputType="textCapCharacters"
+                        android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -69,11 +73,11 @@
                     android:id="@+id/ly_tglLahir_aturKaryawan"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/border_solid"
-                    android:padding="10dp"
                     android:gravity="center"
-                    android:layout_marginTop="10dp">
+                    android:orientation="horizontal"
+                    android:padding="10dp">
 
                     <TextView
                         android:layout_width="150dp"
@@ -84,11 +88,10 @@
                         android:id="@+id/txtTglLahir"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:enabled="false"
                         android:layout_marginStart="20dp"
-                        android:gravity="center"
                         android:layout_weight="1"
-                        android:drawableStart="@drawable/icon_tanggal" />
+                        android:drawableStart="@drawable/icon_tanggal"
+                        android:gravity="center" />
 
                 </LinearLayout>
 
@@ -97,9 +100,9 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/border_solid"
-                    android:padding="10dp"
                     android:gravity="center"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:padding="10dp">
 
                     <TextView
                         android:id="@+id/txtKelamin"
@@ -117,27 +120,31 @@
                 </LinearLayout>
 
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/tl_nohp_user"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp">
+                    android:layout_marginTop="5dp"
+                    app:helperTextEnabled="true">
 
                     <EditText
                         android:id="@+id/txtNoPonsel"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="NO. PONSEL"
-                        android:textSize="14sp"
+                        android:inputType="phone"
                         android:maxLength="15"
-                        android:inputType="phone" />
+                        android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/tl_email_user"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp">
+                    android:layout_marginTop="5dp"
+                    app:helperTextEnabled="true">
 
                     <EditText
                         android:id="@+id/txtEmail"
@@ -150,31 +157,33 @@
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/tl_alamat_user"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp">
+                    android:layout_marginTop="5dp"
+                    app:helperTextEnabled="true">
 
                     <EditText
                         android:id="@+id/txtAlamat"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="ALAMAT"
                         android:gravity="top|left"
-                        android:maxLength="2000"
+                        android:hint="ALAMAT"
                         android:inputType="textMultiLine|textCapSentences"
+                        android:maxLength="200"
                         android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:orientation="horizontal"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/border_solid"
-                    android:padding="10dp"
                     android:gravity="center"
-                    android:layout_marginTop="10dp">
+                    android:orientation="horizontal"
+                    android:padding="10dp">
 
                     <TextView
                         android:layout_width="150dp"
@@ -185,11 +194,11 @@
                         android:id="@+id/txtTglMasuk"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:textStyle="bold"
-                        android:layout_weight="1"
                         android:layout_marginStart="20dp"
-                        android:drawableStart="@drawable/icon_tanggal" />
+                        android:layout_weight="1"
+                        android:drawableStart="@drawable/icon_tanggal"
+                        android:gravity="center"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
@@ -198,9 +207,9 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/border_solid"
-                    android:padding="10dp"
                     android:gravity="center"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:padding="10dp">
 
                     <TextView
                         android:id="@+id/posisi"
@@ -221,9 +230,9 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/border_solid"
-                    android:padding="10dp"
                     android:gravity="center"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:padding="10dp">
 
                     <TextView
                         android:id="@+id/status"
@@ -235,8 +244,8 @@
                         android:id="@+id/spinnerStatus"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textAlignment="center"
-                        android:entries="@array/status" />
+                        android:entries="@array/status"
+                        android:textAlignment="center" />
 
                 </LinearLayout>
 
@@ -245,9 +254,9 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/border_solid"
-                    android:padding="10dp"
                     android:gravity="center"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:padding="10dp">
 
                     <TextView
                         android:id="@+id/penggajian"
@@ -259,8 +268,8 @@
                         android:id="@+id/spinnerPenggajian"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textAlignment="center"
-                        android:entries="@array/penggajian"/>
+                        android:entries="@array/penggajian"
+                        android:textAlignment="center" />
 
                 </LinearLayout>
 
@@ -275,19 +284,19 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="GAJI"
-                        android:textSize="14sp"
-                        android:inputType="numberDecimal" />
+                        android:inputType="numberDecimal"
+                        android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/border_solid"
-                    android:padding="10dp"
-                    android:gravity="center"
                     android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
+                    android:background="@drawable/border_solid"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
 
                     <TextView
                         android:id="@+id/textView28"
@@ -301,22 +310,56 @@
                         android:layout_height="wrap_content"
                         android:textAlignment="center" />
 
-
                 </LinearLayout>
 
-                <Button
-                    android:id="@+id/tblSimpan"
-                    android:layout_width="150dp"
+                <TableLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|right"
                     android:layout_marginTop="20dp"
-                    android:background="@drawable/btn_rounded_accent"
-                    android:text="Simpan"
-                    android:textColor="@android:color/white" />
+                    android:layout_marginBottom="20dp"
+                    android:stretchColumns="*">
 
+                    <TableRow
+                        android:layout_gravity="center"
+                        android:gravity="center">
 
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/imgBtn_upload"
+                                android:layout_width="70dp"
+                                android:layout_height="70dp"
+                                android:layout_gravity="start|center_vertical"
+                                android:scaleType="fitXY"
+                                app:srcCompat="@drawable/ic_data"
+                                android:background="@drawable/border_solid"
+                                android:padding="10dp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="FOTO"
+                                android:layout_gravity="center_vertical"
+                                android:textStyle="bold"
+                                android:layout_marginStart="15dp"/>
+
+                        </LinearLayout>
+
+                        <Button
+                            android:id="@+id/tblSimpan"
+                            android:layout_width="150dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end|center_vertical"
+                            android:background="@drawable/btn_rounded_accent"
+                            android:text="@string/simpan_uppercase"
+                            android:textColor="@android:color/white" />
+
+                    </TableRow>
+                </TableLayout>
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
-
 </FrameLayout>

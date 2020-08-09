@@ -3,7 +3,9 @@ package com.rkrzmail.oto.modules.discount;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -18,6 +20,8 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.PercentFormat;
 import com.rkrzmail.utils.Tools;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class AturFrekwensiDiscount_Acitivity extends AppActivity implements View.OnClickListener {
@@ -25,6 +29,8 @@ public class AturFrekwensiDiscount_Acitivity extends AppActivity implements View
     private TextView tvTgl;
     private EditText etFrekwensi, etDisc;
     private Spinner spLayanan;
+    private List<String> layananList = new ArrayList<>();
+    private String layanan = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,48 +53,85 @@ public class AturFrekwensiDiscount_Acitivity extends AppActivity implements View
         etFrekwensi = findViewById(R.id.et_frekwensi_freDisc);
         spLayanan = findViewById(R.id.sp_paketLayanan_freDisc);
 
-        setSpinnerFromApi(spLayanan, "", "", "viewlayanan", "NAMA_LAYANAN");
-
         etDisc.addTextChangedListener(new PercentFormat(etDisc));
         tvTgl.setOnClickListener(this);
-        find(R.id.btn_simpan_freDisc, Button.class).setOnClickListener(new View.OnClickListener() {
+        try{
+            setSpBank();
+            loadData();
+        }catch (Exception e){
+            Log.d("Exception__", "initComponent: " + e.getMessage());
+        }
+    }
+
+    private void setSpBank() {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
             @Override
-            public void onClick(View view) {
-                saveData();
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "view");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlayanan"), args));
+            }
+
+            @Override
+            public void runUI() {
+                layananList.add("Belum Di Pilih");
+                if(result.get("status").asString().equalsIgnoreCase("OK")){
+                    for (int i = 0; i < result.get("data").size(); i++) {
+                        layananList.add(result.get("data").get(i).get("NAMA_LAYANAN").asString());
+                    }
+                    ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, layananList);
+                    spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spLayanan.setAdapter(spinnerAdapter);
+                    if (!layanan.isEmpty()) {
+                        for (int in = 0; in < spLayanan.getCount(); in++) {
+                            if (spLayanan.getItemAtPosition(in).toString().contains(layanan)) {
+                                spLayanan.setSelection(in);
+                            }
+                        }
+                    }
+                }
             }
         });
-
-        loadData();
     }
 
     private void loadData() {
         final Nson nson = Nson.readJson(getIntentStringExtra("data"));
         final Intent intent = getIntent();
         if (intent.hasExtra("data")) {
+            layanan = nson.get("PAKET_LAYANAN").asString();
             tvTgl.setText(nson.get("TANGGAL").asString());
             etDisc.setText(nson.get("DISCOUNT").asString());
             etFrekwensi.setText(nson.get("TANGGAL").asString());
-            spLayanan.setSelection(Tools.getIndexSpinner(spLayanan, nson.get("PAKET_LAYANAN").asString()));
 
-            find(R.id.btn_hapus_freDisc, Button.class).setVisibility(View.VISIBLE);
-            find(R.id.btn_hapus_freDisc, Button.class).setOnClickListener(new View.OnClickListener() {
+            find(R.id.btn_hapus, Button.class).setVisibility(View.VISIBLE);
+            find(R.id.btn_hapus, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     deleteData(nson);
                 }
             });
 
-            find(R.id.btn_simpan_freDisc, Button.class).setText("UPDATE");
-            find(R.id.btn_simpan_freDisc, Button.class).setOnClickListener(new View.OnClickListener() {
+            find(R.id.btn_simpan, Button.class).setText("UPDATE");
+            find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    showInfo("Update");
                     updateData(nson);
+                }
+            });
+        }else{
+            find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    saveData();
                 }
             });
         }
     }
 
     private void saveData() {
+        final String parseTgl = Tools.setFormatDayAndMonthToDb(tvTgl.getText().toString());
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
@@ -96,7 +139,7 @@ public class AturFrekwensiDiscount_Acitivity extends AppActivity implements View
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 //                add : CID, action(add), tanggal, paket, frekuensi, diskon
                 args.put("action", "add");
-                args.put("tanggal", tvTgl.getText().toString());
+                args.put("tanggal", parseTgl);
                 args.put("paket", spLayanan.getSelectedItem().toString());
                 args.put("frekuensi", etFrekwensi.getText().toString());
                 args.put("diskon", etDisc.getText().toString());
@@ -106,25 +149,26 @@ public class AturFrekwensiDiscount_Acitivity extends AppActivity implements View
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    showSuccess("Sukses Menyimpan Aktivitas");
                     setResult(RESULT_OK);
                     finish();
                 } else {
-                    showInfo("Gagal menyimpan Aktifitas");
+                    showError("Gagal menyimpan Aktifitas");
                 }
             }
         });
     }
 
     private void updateData(final Nson nson) {
+        final String parseTgl = Tools.setFormatDayAndMonthToDb(tvTgl.getText().toString());
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-//                update : CID, action(update), id, tanggal, paket, frekuensi, diskon
                 args.put("action", "update");
                 args.put("id", nson.get("ID").asString());
-                args.put("tanggal", tvTgl.getText().toString());
+                args.put("tanggal", parseTgl);
                 args.put("paket", spLayanan.getSelectedItem().toString());
                 args.put("frekuensi", etFrekwensi.getText().toString());
                 args.put("diskon", etDisc.getText().toString());
@@ -134,10 +178,11 @@ public class AturFrekwensiDiscount_Acitivity extends AppActivity implements View
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    showSuccess("Sukses Update Aktivitas");
                     setResult(RESULT_OK);
                     finish();
                 } else {
-                    showInfo("Gagal memperbaharui Aktifitas");
+                    showError("Gagal memperbaharui Aktifitas");
                 }
             }
         });
@@ -146,7 +191,6 @@ public class AturFrekwensiDiscount_Acitivity extends AppActivity implements View
     private void deleteData(final Nson nson) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -163,12 +207,11 @@ public class AturFrekwensiDiscount_Acitivity extends AppActivity implements View
                     setResult(RESULT_OK);
                     finish();
                 } else {
-                    showInfo("Gagal megnhapus Aktifitas");
+                    showError("Gagal megnhapus Aktifitas");
                 }
             }
         });
     }
-
 
     @Override
     public void onClick(View view) {

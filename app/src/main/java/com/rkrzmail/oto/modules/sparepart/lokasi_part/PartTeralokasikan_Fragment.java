@@ -1,6 +1,7 @@
 package com.rkrzmail.oto.modules.sparepart.lokasi_part;
 
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -37,13 +38,12 @@ public class PartTeralokasikan_Fragment extends Fragment {
     private View v;
 
     public PartTeralokasikan_Fragment() {
-        // Required empty public constructor
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_part_teralokasikan_, container, false);
         rvLokasi_part = (RecyclerView) v.findViewById(R.id.recyclerView_teralokasikan);
         initComponent("");
@@ -51,14 +51,13 @@ public class PartTeralokasikan_Fragment extends Fragment {
     }
 
     public void initComponent(String cari) {
-
+        getTeralokasikan(cari);
         rvLokasi_part.setLayoutManager(new LinearLayoutManager(getContext()));
         rvLokasi_part.setHasFixedSize(true);
-
         rvLokasi_part.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_lokasi_part) {
             @Override
-            public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, final int position) {
-
+            public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
+                super.onBindViewHolder(viewHolder, position);
                 viewHolder.find(R.id.tv_noFolder, TextView.class).setText(nListArray.get(position).get("NO_FOLDER").asString());
                 viewHolder.find(R.id.tv_lokasiPart, TextView.class).setText(nListArray.get(position).get("LOKASI").asString());
                 viewHolder.find(R.id.tv_namaPart, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
@@ -74,7 +73,6 @@ public class PartTeralokasikan_Fragment extends Fragment {
                         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                             @Override
                             public boolean onMenuItemClick(MenuItem menuItem) {
-
                                 switch (menuItem.getItemId()) {
                                     case R.id.action_stockOpname:
 //                                        Stock opname : membuka form stock opname
@@ -98,38 +96,28 @@ public class PartTeralokasikan_Fragment extends Fragment {
                 });
             }
         });
-
-        catchData(cari);
-
     }
 
-    public void catchData(final String nama) {
-        MessageMsg.newTask(getActivity(), new Messagebox.DoubleRunnable() {
+    public void getTeralokasikan(final String cari){
+        ((LokasiPart_Activity) getActivity()).newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("search", nama);
+                args.put("search", cari);
+                args.put("flag", "TERALOKASI");
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlokasipart"), args));
-
             }
-
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
                     rvLokasi_part.getAdapter().notifyDataSetChanged();
-                } else {
-                    showError("Mohon Di Coba Kembali");
+                }else{
+                    ((LokasiPart_Activity) getActivity()).showError("Mohon Di Coba Kembali");
                 }
             }
         });
     }
-
-    private void showError(String text) {
-        Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
-    }
-
 }

@@ -29,14 +29,16 @@
             android:id="@+id/layout_terimapart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="10dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:orientation="horizontal">
+                android:layout_gravity="center"
+                android:background="@drawable/border_solid"
+                android:orientation="horizontal"
+                android:padding="10dp">
 
                 <TextView
                     android:id="@+id/textView46"
@@ -51,6 +53,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:entries="@array/tipe_supplier"
+                    android:gravity="center"
                     android:textAlignment="center" />
 
             </LinearLayout>
@@ -59,22 +62,25 @@
                 android:id="@+id/ly_namaSup_terimaPart"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/border_solid"
                 android:orientation="horizontal"
-                android:layout_margin="10dp">
+                android:padding="10dp">
 
                 <TextView
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:text="NAMA SUPPLIER"
-                    android:textColor="@color/red_900"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/txtNamaSupplier"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_contact_phone"
                     android:layout_weight="1"
+                    android:drawableLeft="@drawable/ic_contact_phone"
                     android:gravity="center"
                     android:textStyle="bold" />
 
@@ -85,34 +91,32 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp">
+                android:layout_marginTop="5dp">
 
                 <EditText
                     android:id="@+id/txtNoDo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ems="10"
                     android:hint="NO. DO"
-                    android:textSize="14sp"
-                    android:inputType="text" />
+                    android:inputType="textCapCharacters"
+                    android:textSize="14sp" />
+
             </android.support.design.widget.TextInputLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="5dp">
+                android:layout_marginTop="5dp"
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
+                    android:layout_gravity="center"
                     android:layout_marginTop="10dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:orientation="horizontal">
+                    android:background="@drawable/border_solid"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
 
                     <TextView
                         android:id="@+id/tglPesan"
@@ -147,99 +151,95 @@
 
             </LinearLayout>
 
-
-                <LinearLayout
-                    android:id="@+id/layout_pembayaran"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="5dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/textView41"
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:text="PEMABAYARAN"
-                        android:textStyle="bold" />
-
-                    <Spinner
-                        android:id="@+id/spinnerPembayaran"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:entries="@array/pembayaran"
-                        android:textAlignment="center" />
-
-                </LinearLayout>
-
             <LinearLayout
+                android:id="@+id/layout_pembayaran"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
+                android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-                android:layout_marginRight="5dp"
-                android:orientation="horizontal">
+                android:background="@drawable/border_solid"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/textView41"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:text="PEMABAYARAN"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/spinnerPembayaran"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:entries="@array/pembayaran"
+                    android:textAlignment="center" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ly_rek"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/border_solid"
+                android:gravity="center"
+                android:visibility="gone"
+                android:orientation="horizontal"
+                android:padding="10dp">
 
                 <TextView
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:text="REK. ASAL"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
 
                 <Spinner
                     android:id="@+id/sp_rekAsal_terimaPart"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textAlignment="center" />
 
             </LinearLayout>
 
-
             <LinearLayout
+                android:id="@+id/layout_jatuh_tempo"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="match_parent"
+                android:background="@drawable/border_solid"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:layout_marginTop="10dp"
+                android:visibility="gone">
 
-                <LinearLayout
-                    android:id="@+id/layout_jatuh_tempo"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="5dp"
-                    android:visibility="gone"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="5dp"
-                    android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/textView40"
+                    android:layout_width="170dp"
+                    android:layout_height="wrap_content"
+                    android:text="JATUH TEMPO INVOICE"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/textView40"
-                        android:layout_width="25dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="JATUH TEMPO INVOICE"
-                        android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/jatuhTempo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:drawableLeft="@drawable/icon_tanggal"
+                    android:gravity="center"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/jatuhTempo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:drawableLeft="@drawable/icon_tanggal"
-                        android:gravity="center"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
             </LinearLayout>
 
             <android.support.design.widget.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="5dp">
+                android:layout_marginTop="5dp">
 
                 <EditText
                     android:id="@+id/txtOngkosKirim"
@@ -247,8 +247,8 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="ONGKOS KIRIM"
-                    android:textSize="14sp"
-                    android:inputType="numberDecimal" />
+                    android:inputType="numberDecimal"
+                    android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -257,11 +257,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_margin="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:background="@drawable/btn_rounded_accent"
-                android:gravity="center"
                 android:text="Selanjutnya"
-                android:textColor="@color/white_transparency" />
+                android:textColor="@android:color/white" />
 
         </LinearLayout>
 

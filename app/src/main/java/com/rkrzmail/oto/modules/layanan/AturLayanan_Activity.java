@@ -3,11 +3,13 @@ package com.rkrzmail.oto.modules.layanan;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.AdapterView;
@@ -64,20 +66,35 @@ public class AturLayanan_Activity extends AppActivity implements View.OnClickLis
         sp_nama_principal = findViewById(R.id.sp_nama_principal);
         rvLayanan = findViewById(R.id.recyclerView_layanan);
 
-        //find(R.id.et_ket_layanan, EditText.class).setText();
-        setSpinnerFromApi(sp_nama_layanan, "", "", "viewlayanan", "NAMA_LAYANAN");
+        Tools.setViewAndChildrenEnabled(find(R.id.tl_ketLayanan, TextInputLayout.class), false);
+        setSpinnerFromApi(sp_nama_layanan, "", "", "viewlayanan", "NAMA_LAYANAN", "");
 
         find(R.id.btn_simpan_atur_layanan, Button.class).setOnClickListener(this);
         find(R.id.btn_deskripsi_aturLayanan, Button.class).setOnClickListener(this);
+        find(R.id.sp_garansi_atur_layanan, Spinner.class).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String item = parent.getItemAtPosition(position).toString();
+                if(position == 0 && item.equalsIgnoreCase("YA")){
+                    Tools.setViewAndChildrenEnabled(find(R.id.tl_fee, TextInputLayout.class), false);
+                }else{
+                    Tools.setViewAndChildrenEnabled(find(R.id.tl_fee, TextInputLayout.class), true);
+                }
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         sp_status.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String item = parent.getItemAtPosition(position).toString();
                 if (item.equalsIgnoreCase("NON_ACTIVE")) {
-                    Tools.setViewAndChildrenEnabled(find(R.id.ly_layanan, LinearLayout.class), false);
+                    //Tools.setViewAndChildrenEnabled(find(R.id.ly_layanan, LinearLayout.class), false);
                 } else {
-                    Tools.setViewAndChildrenEnabled(find(R.id.ly_layanan, LinearLayout.class), true);
+                    //Tools.setViewAndChildrenEnabled(find(R.id.ly_layanan, LinearLayout.class), true);
                 }
             }
 
@@ -95,6 +112,7 @@ public class AturLayanan_Activity extends AppActivity implements View.OnClickLis
                 }
                 String item = parent.getItemAtPosition(position).toString();
                 if (item.equalsIgnoreCase("PAKET LAYANAN")) {
+                    find(R.id.et_biayaPaket_layanan, EditText.class).setEnabled(true);
                     //Tools.setViewAndChildrenEnabled(find(R.id.layout_biaya, LinearLayout.class), true);
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_namaPrincipal, LinearLayout.class), false);
                 } else if (item.equalsIgnoreCase("OTOMOTIVES")) {
@@ -102,6 +120,7 @@ public class AturLayanan_Activity extends AppActivity implements View.OnClickLis
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_garansi, LinearLayout.class), true);
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_namaPrincipal, LinearLayout.class), false);
                 }else{
+                    find(R.id.et_biayaPaket_layanan, EditText.class).setEnabled(false);
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_garansi, LinearLayout.class), false);
                     //Tools.setViewAndChildrenEnabled(find(R.id.layout_biaya, LinearLayout.class), false);
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_namaPrincipal, LinearLayout.class), true);
@@ -138,7 +157,7 @@ public class AturLayanan_Activity extends AppActivity implements View.OnClickLis
     private void initRecylerview(){
         rvLayanan.setHasFixedSize(true);
         rvLayanan.setLayoutManager(new LinearLayoutManager(this));
-        rvLayanan.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_komisi_jasa_lain){
+        rvLayanan.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_tambah_layanan){
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
@@ -161,12 +180,15 @@ public class AturLayanan_Activity extends AppActivity implements View.OnClickLis
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK){
             if(requestCode == REQUEST_DISC_PART){
-                nListArray.add(getIntentStringExtra(data, "data"));
+                nListArray.add(Nson.readJson(getIntentStringExtra(data, "data")));
+                Log.d("Tambah____", "Accept____: " + Nson.readJson(getIntentStringExtra(data, "data")).toJson());
                 rvLayanan.getAdapter().notifyDataSetChanged();
             }else if(requestCode == REQUEST_JASA_LAIN){
-                nListArray.add(getIntentStringExtra(data, "data"));
+                nListArray.add(Nson.readJson(getIntentStringExtra(data, "data")));
                 rvLayanan.getAdapter().notifyDataSetChanged();
             }
+
+
         }
     }
 

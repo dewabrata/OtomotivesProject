@@ -138,7 +138,7 @@ public class Checkin2_Activity extends AppActivity {
     }
 
     private void setSelanjutnya() {
-        Nson nson = Nson.readNson(getIntentStringExtra("data"));
+        Nson nson = Nson.readJson(getIntentStringExtra("data"));
 
         nson.set("warna", etWarna.getText().toString());
         nson.set("tahun", etTahun.getText().toString());

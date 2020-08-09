@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -28,6 +29,7 @@ import com.rkrzmail.utils.Tools;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 
 public class AturRekening_Activity extends AppActivity {
@@ -36,6 +38,10 @@ public class AturRekening_Activity extends AppActivity {
     private EditText etNoRek, etNamaRek;
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
     final String dateTime = simpleDateFormat.format(Calendar.getInstance().getTime());
+    private String namaBank = "";
+    private ArrayList<String> dataBank = new ArrayList<>();
+    private Nson n;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,17 +62,18 @@ public class AturRekening_Activity extends AppActivity {
         etNoRek = findViewById(R.id.et_noRek_rekening);
         spBank = findViewById(R.id.sp_bank_rekening);
         etNamaRek = findViewById(R.id.et_namaRek_rekening);
-
-        setSpBank();
-
-        loadData();
-        find(R.id.btn_simpan_rekening, Button.class).setOnClickListener(new View.OnClickListener() {
+        try{
+            setSpBank();
+            loadData();
+        }catch (Exception e){
+            Log.e("Exception__", "initComponent: " + e.getMessage() );
+        }
+        find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 saveData();
             }
         });
-
     }
 
     private void saveData() {
@@ -102,14 +109,14 @@ public class AturRekening_Activity extends AppActivity {
     }
 
     private void loadData() {
-        final Nson n = Nson.readJson(getIntentStringExtra("data"));
+        n = Nson.readJson(getIntentStringExtra("data"));
+        Log.d("Nson____", "loadData: " + n);
         Intent i = getIntent();
+
         if (i.hasExtra("data")) {
+            namaBank = n.get("BANK_NAME").asString();
             etNoRek.setText(n.get("NO_REKENING").asString());
             etNamaRek.setText(n.get("NAMA_REKENING").asString());
-            spBank.setSelection(Tools.getIndexSpinner(spBank, n.get("BANK_NAME").asString()));
-            Log.d("cobacoba", n.get("ID").asString());
-
             if (n.get("EDC_ACTIVE").asString().equalsIgnoreCase("ACTIVE")) {
                 find(R.id.cb_edc_rekening, CheckBox.class).setChecked(true);
             } else {
@@ -121,23 +128,21 @@ public class AturRekening_Activity extends AppActivity {
                 find(R.id.cb_offUs_rekening, CheckBox.class).setChecked(false);
             }
 
-            find(R.id.btn_hapus_rekening).setVisibility(View.VISIBLE);
-            find(R.id.btn_hapus_rekening).setOnClickListener(new View.OnClickListener() {
+            find(R.id.btn_hapus).setVisibility(View.VISIBLE);
+            find(R.id.btn_hapus).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     deleteData(n);
                 }
             });
-
-            find(R.id.btn_simpan_rekening, Button.class).setText("UPDATE");
-            find(R.id.btn_simpan_rekening, Button.class).setOnClickListener(new View.OnClickListener() {
+            find(R.id.btn_simpan, Button.class).setText("UPDATE");
+            find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     updateData();
                 }
             });
         }
-
     }
 
     private void updateData() {
@@ -161,11 +166,11 @@ public class AturRekening_Activity extends AppActivity {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    showInfo("Sukses Memperbaharui Aktifitas");
+                    showSuccess("Sukses Memperbaharui Aktifitas");
                     setResult(RESULT_OK);
                     finish();
                 } else {
-                    showInfo("GAGAL");
+                    showError("Gagal menambahkan Aktifitas");
                 }
             }
         });
@@ -186,17 +191,17 @@ public class AturRekening_Activity extends AppActivity {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    showInfo("Sukses Menghapus Aktifitas");
+                    showSuccess("Sukses Menghapus Aktifitas");
                     setResult(RESULT_OK);
                     finish();
                 } else {
-                    showInfo("GAGAL");
+                    showError("Gagal menghapus Aktifitas");
                 }
             }
         });
     }
 
-    public void setSpBank() {
+    private void setSpBank() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -209,33 +214,21 @@ public class AturRekening_Activity extends AppActivity {
 
             @Override
             public void runUI() {
-                ArrayList<String> str = new ArrayList<>();
-                str.add("Belum Di Pilih");
+                dataBank.add("Belum Di Pilih");
                 for (int i = 0; i < result.get("data").size(); i++) {
-                    str.add(result.get("data").get(i).get("BANK_CODE").asString() +
+                    dataBank.add(result.get("data").get(i).get("BANK_CODE").asString() +
                             " " + result.get("data").get(i).get("BANK_NAME").asString());
                 }
-                ArrayList<String> newStr = Tools.removeDuplicates(str);
-                ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, newStr) {
-                    @NonNull
-                    @Override
-                    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                        View v = super.getView(position, convertView, parent);
-                        if (position == getCount()) {
-                            ((TextView) v.findViewById(android.R.id.text1)).setText(null);
-                            ((TextView) v.findViewById(android.R.id.text1)).setHint(""); //"Hint to be displayed"
-                        }
-                        return v;
-                    }
-
-                    @Override
-                    public int getCount() {
-                        return super.getCount();            // you don't display last item. It is used as hint.
-                    }
-                };
+                ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, dataBank);
                 spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spBank.setAdapter(spinnerAdapter);
-                notifyDataSetChanged(spBank);
+                if (!namaBank.isEmpty()) {
+                    for (int in = 0; in < spBank.getCount(); in++) {
+                        if (spBank.getItemAtPosition(in).toString().contains(namaBank)) {
+                            spBank.setSelection(in);
+                        }
+                    }
+                }
             }
         });
     }

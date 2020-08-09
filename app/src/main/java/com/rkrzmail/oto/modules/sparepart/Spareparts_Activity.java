@@ -57,6 +57,7 @@ public class Spareparts_Activity extends AppActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), CariPart_Activity.class);
+                intent.putExtra("flag", "ALL");
                 startActivityForResult(intent, REQUEST_CARI);
             }
         });
@@ -82,10 +83,9 @@ public class Spareparts_Activity extends AppActivity {
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
-                Intent intent = new Intent();
+                Intent intent = new Intent(getActivity(), AturParts_Activity.class);
                 intent.putExtra("part", nListArray.get(position).toJson());
-                setResult(RESULT_OK, intent);
-                finish();
+                startActivityForResult(intent, REQUEST_ATUR);
             }
         }));
 

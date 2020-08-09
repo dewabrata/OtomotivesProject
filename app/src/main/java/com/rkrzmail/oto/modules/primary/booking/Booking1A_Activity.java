@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +24,7 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.primary.HistoryBookingCheckin_Activity;
+import com.rkrzmail.oto.modules.primary.KontrolBooking_Activity;
 import com.rkrzmail.oto.modules.primary.checkin.Checkin2_Activity;
 import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NsonAutoCompleteAdapter;
@@ -84,11 +84,8 @@ public class Booking1A_Activity extends AppActivity {
         find(R.id.btn_lanjut_booking1a, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!validateFields(find(R.id.ly_booking1a, LinearLayout.class))){
-                    nextBooking();
-                }else{
-                    showInfo("Silahkan Lengkapi Semua Field");
-                }
+                nextBooking();
+                showWarning("Silahkan Lengkapi Semua Field");
             }
         });
     }
@@ -133,9 +130,9 @@ public class Booking1A_Activity extends AppActivity {
                 nson.set("layanan", layanan);
                 nson.set("pekerjaan", pekerjaan);
                 nson.set("derek", find(R.id.cb_derek_booking1a, CheckBox.class).isChecked() ? "YA" : "TIDAK");
-                if(find(R.id.cb_derek_booking1a, CheckBox.class).isChecked()){
+                if (find(R.id.cb_derek_booking1a, CheckBox.class).isChecked()) {
                     nson.set("statusbook", "BOOK DEREK");
-                }else{
+                } else {
                     nson.set("statusbook", "");
                 }
 
@@ -305,7 +302,7 @@ public class Booking1A_Activity extends AppActivity {
         } else if (resultCode == RESULT_OK && requestCode == KontrolBooking_Activity.REQUEST_BOOKING_LAYANAN) {
             setResult(RESULT_OK);
             finish();
-        } else if(resultCode == RESULT_OK && requestCode == REQUEST_HISTORY){
+        } else if (resultCode == RESULT_OK && requestCode == REQUEST_HISTORY) {
 
         }
     }

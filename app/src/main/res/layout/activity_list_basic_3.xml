@@ -16,7 +16,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="5dp">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerView"
@@ -48,7 +49,7 @@
         <!--                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
         <!--                android:layout_width="match_parent"-->
         <!--                android:layout_height="wrap_content"-->
-        <!--                android:background="@drawable/border_shadow_left"-->
+        <!--                android:background="@drawable/bg_radius_white"-->
         <!--                android:textAlignment="center"-->
         <!--                android:layout_gravity="center">-->
 

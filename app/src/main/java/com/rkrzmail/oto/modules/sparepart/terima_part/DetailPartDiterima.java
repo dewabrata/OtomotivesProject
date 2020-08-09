@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.sparepart.terima_part;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,6 +22,8 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
@@ -40,13 +43,14 @@ import java.util.Map;
 
 public class DetailPartDiterima extends AppActivity implements View.OnFocusChangeListener {
 
-    private static final String TAG = "DetailPartDiterima";
+    private static final String TAG = "DetailPartDiterimaAAA";
     private static final int REQUEST_CARI_PART = 12;
     final int REQUEST_BARCODE = 13;
     private static final String TAMBAH_PART = "TAMBAH";
-    private Spinner spinnerLokasiSimpan, spinnerPenempatan;
-    private EditText txtNoPart, txtNamaPart, txtJumlah, txtHargaBeliUnit, etDiscRp, etDiscPercent, etHargaBersih;
+    private Spinner spinnerLokasiSimpan;
+    private EditText txtNoPart, txtNamaPart, txtJumlah, txtHargaBeliUnit, etDiscRp, etDiscPercent, etHargaBersih, etPenempatan;
     private RecyclerView rvTerimaPart;
+    private String scanResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,18 +69,17 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
     }
 
     private void initComponent() {
-
         txtNoPart = findViewById(R.id.et_noPart_terimaPart);
         txtNamaPart = findViewById(R.id.et_namaPart_terimaPart);
         txtJumlah = findViewById(R.id.et_jumlah_terimaPart);
         txtHargaBeliUnit = findViewById(R.id.et_hargaBeli_detailTerimaPart);
         spinnerLokasiSimpan = findViewById(R.id.sp_lokasiSimpan_terimaPart);
-        spinnerPenempatan = findViewById(R.id.sp_Penempatan_terimaPart);
         rvTerimaPart = findViewById(R.id.recyclerView_terimaPart);
         etDiscRp = findViewById(R.id.et_discRp_terimaPart);
         etDiscPercent = findViewById(R.id.et_discPercent_terimaPart);
         etHargaBersih = findViewById(R.id.et_hargaBersih_detailTerimaPart);
 
+        Tools.setViewAndChildrenEnabled(find(R.id.ly_lokasi, LinearLayout.class), false);
         componentValidation();
 
         find(R.id.img_scan_terimaPart, ImageView.class).setOnClickListener(new View.OnClickListener() {
@@ -97,17 +100,52 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               addData();
+                addData();
             }
         });
     }
 
-    private void componentValidation(){
+    private void componentValidation() {
         //        spinnerLokasiSimpan.setOnItemSelectedListener(this);
 //        spinnerPenempatan.setOnItemSelectedListener(this);
         etHargaBersih.addTextChangedListener(new RupiahFormat(etHargaBersih));
-        txtHargaBeliUnit.addTextChangedListener(new RupiahFormat(txtHargaBeliUnit));
+        txtHargaBeliUnit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String hargaBeli = txtHargaBeliUnit.getText().toString();
+                hargaBeli = hargaBeli.replace("Rp", "").replaceAll("\\W", "");
+                try {
+                    if (!hargaBeli.equals("")) {
+                        int totalHargaBeli = Integer.parseInt(txtJumlah.getText().toString()) * Integer.parseInt(hargaBeli);
+                        etHargaBersih.setText(String.valueOf(totalHargaBeli));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (txtHargaBeliUnit == null) return;
+                String strings = s.toString();
+                if (strings.isEmpty()) return;
+                txtHargaBeliUnit.removeTextChangedListener(this);
+                try {
+                    String cleanString = strings.replaceAll("[^0-9]", "");
+                    String formatted = Tools.formatRupiah(cleanString);
+                    txtHargaBeliUnit.setText(formatted);
+                    txtHargaBeliUnit.setSelection(formatted.length());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                txtHargaBeliUnit.addTextChangedListener(this);
+            }
+        });
         etDiscRp.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -126,7 +164,7 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
                         int finall = totalHargaBeli - Integer.parseInt(diskon);
                         etHargaBersih.setText(String.valueOf(finall));
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -166,10 +204,10 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
                         int totalHargaBeli = Integer.parseInt(txtJumlah.getText().toString()) * Integer.parseInt(hargaBeli);
                         int disc = (int) ((Double.parseDouble(diskon) * totalHargaBeli) / 10);
                         Log.d("hargaharga", String.valueOf(disc));
-                        int finall =  totalHargaBeli - disc;
+                        int finall = totalHargaBeli - disc;
                         etHargaBersih.setText(String.valueOf(finall));
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -182,25 +220,24 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
 
                 NumberFormat format = NumberFormat.getPercentInstance(new Locale("in", "ID"));
                 format.setMinimumFractionDigits(1);
-                String percentNumber = format.format(Tools.convertToDoublePercentage(etDiscPercent.getText().toString())/1000);
+                String percentNumber = format.format(Tools.convertToDoublePercentage(etDiscPercent.getText().toString()) / 1000);
 
                 etDiscPercent.setText(percentNumber);
-                etDiscPercent.setSelection(percentNumber.length() -1 );
+                etDiscPercent.setSelection(percentNumber.length() - 1);
                 etDiscPercent.addTextChangedListener(this);
             }
         });
-
         etDiscRp.setOnFocusChangeListener(this);
         etDiscPercent.setOnFocusChangeListener(this);
     }
 
     private void insertdata() {
-        //send to servevr
         newProses(new Messagebox.DoubleRunnable() {
             Nson data;
+
             @Override
             public void run() {
-                Nson nson = Nson.readNson(getIntentStringExtra("detail"));
+                Nson nson = Nson.readJson(getIntentStringExtra("detail"));
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 //tipe,nama, nodo, tglpesan, tglterima, pembayaran, jatuhtempo, ongkir, namapart,
@@ -209,8 +246,8 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
                 args.put("nodo", nson.get("nodo").asString());
                 args.put("tipe", nson.get("tipe").asString());
                 args.put("nama", nson.get("nama").asString());
-                args.put("tglpesan", nson.get("tglpesan").asString());
-                args.put("tglterima", nson.get("tglterima").asString());
+                args.put("tglpesan", Tools.setFormatDayAndMonthToDb(nson.get("tglpesan").asString()));
+                args.put("tglterima", Tools.setFormatDayAndMonthToDb(nson.get("tglpesan").asString()));
                 args.put("pembayaran", nson.get("pembayaran").asString());
                 args.put("jatuhtempo", nson.get("jatuhtempo").asString());
                 args.put("ongkir", nson.get("ongkir").asString());
@@ -218,13 +255,16 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
                 args.put("parts", nListArray.toJson());
                 args.put("rekening", nson.get("rekening").asString());
 
+                Log.d(TAG, "total_part : " + nListArray.toJson());
+                Log.d(TAG, "keterangan : " + nson);
                 data = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturterimapart"), args));
             }
 
             @Override
             public void runUI() {
                 if (data.get("status").asString().equalsIgnoreCase("OK")) {
-                    startActivity(new Intent(DetailPartDiterima.this, TerimaPart.class));
+                    showSuccess("Berhasil Menambahkan Part");
+                    setResult(RESULT_OK);
                     finish();
                 } else {
                     showError("Gagal Menambahkan Aktifitas");
@@ -234,68 +274,81 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
     }
 
     private void addData() {
-        Nson dataAdd =  Nson.newObject();
-
+        Nson dataAdd = Nson.newObject();
         dataAdd.set("NO_PART", txtNoPart.getText().toString());
-        dataAdd.set("NAMA", txtNamaPart.getText().toString());
+        dataAdd.set("NAMA_PART", txtNamaPart.getText().toString());
         dataAdd.set("JUMLAH", txtJumlah.getText().toString());
         dataAdd.set("HARGA_BELI", txtHargaBeliUnit.getText().toString());
         dataAdd.set("NET", etHargaBersih.getText().toString());
-        if(etDiscPercent.isEnabled()){
+        if (etDiscPercent.isEnabled()) {
             dataAdd.set("DISCOUNT", etDiscPercent.getText().toString());
-        }else if(etDiscRp.isEnabled()){
+        } else if (etDiscRp.isEnabled()) {
             dataAdd.set("DISCOUNT", etDiscRp.getText().toString());
         }
         dataAdd.set("LOKASI_SIMPAN", spinnerLokasiSimpan.getSelectedItem().toString());
-
         initRecylerView();
         nListArray.add(dataAdd);
         rvTerimaPart.getAdapter().notifyDataSetChanged();
-
+        if (nListArray == null) {
+            showInfo("Part Tidak Boleh Kosong");
+            return;
+        }
         Tools.clearForm(find(R.id.ly_detailPart, LinearLayout.class));
+        showInfo("Part Di tambahkan");
     }
 
     private void initRecylerView() {
         rvTerimaPart.setLayoutManager(new LinearLayoutManager(this));
         rvTerimaPart.setHasFixedSize(true);
         rvTerimaPart.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_detail_terima_part) {
-            @Override
-            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                super.onBindViewHolder(viewHolder, position);
-
-                viewHolder.find(R.id.tv_noPart_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
-                viewHolder.find(R.id.tv_namaPart_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
-                viewHolder.find(R.id.tv_jumlah_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("JUMLAH").asString());
-                viewHolder.find(R.id.tv_net_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("NET").asString());
-                viewHolder.find(R.id.tv_harga_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("HARGA_BELI").asString());
-                viewHolder.find(R.id.tv_disc_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("DISCOUNT").asString());
-                viewHolder.find(R.id.tv_lokasi_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("LOKASI_SIMPAN").asString());
-            }
-        });
+                    @Override
+                    public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+                        super.onBindViewHolder(viewHolder, position);
+                        viewHolder.find(R.id.tv_noPart_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
+                        viewHolder.find(R.id.tv_namaPart_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("NAMA_PART").asString());
+                        viewHolder.find(R.id.tv_jumlah_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("JUMLAH").asString());
+                        viewHolder.find(R.id.tv_net_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("NET").asString());
+                        viewHolder.find(R.id.tv_harga_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("HARGA_BELI").asString());
+                        viewHolder.find(R.id.tv_disc_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("DISCOUNT").asString());
+                        viewHolder.find(R.id.tv_lokasi_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("LOKASI_SIMPAN").asString());
+                    }
+                }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(final Nson parent, View view, final int position) {
+                        showInfoDialog("Hapus Part", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                nListArray.asArray().remove(parent.get(position).asArray());
+                            }
+                        });
+                    }
+                })
+        );
 
     }
 
     public void barcode() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("barcode", "");
-                args.put("flag","NOPART");
+                args.put("flag", "NOPART");
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("caripart"), args));
             }
 
             @Override
             public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")){
-                    if (result.get("data").size()>=1){
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    if (result.get("data").size() >= 1) {
                         //addData(result.get("data"), 1);
-                    }else{
+                    } else {
                         //tidak ditemukan
                         showError("tidak ditemukan");
                     }
-                }else{
+                } else {
                     //error
                     showError(result.get("message").asString());
                 }
@@ -306,34 +359,33 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_part, menu);
-
-        return super.onCreateOptionsMenu(menu);
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_searchPart) {
+        if (item.getItemId() == R.id.action_search) {
             Intent i = new Intent(this, CariPart_Activity.class);
             i.putExtra("flag", "ALL");
             startActivityForResult(i, REQUEST_CARI_PART);
         }
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.et_discPercent_terimaPart:
-                if(hasFocus){
+                if (hasFocus) {
                     etDiscRp.setEnabled(false);
-                }else{
+                } else {
                     etDiscRp.setEnabled(true);
                 }
                 break;
             case R.id.et_discRp_terimaPart:
-                if(hasFocus){
+                if (hasFocus) {
                     etDiscPercent.setEnabled(false);
-                }else{
+                } else {
                     etDiscPercent.setEnabled(true);
                 }
                 break;
@@ -351,6 +403,16 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
         } else if (requestCode == REQUEST_BARCODE && resultCode == RESULT_OK) {
             String barCode = getIntentStringExtra(data, "TEXT");
             barcode();
+        }
+
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null) {
+            scanResult = result.getContents();
+            if (scanResult == null) {
+                showError("Gagal Scan Barcode");
+            } else {
+                showError("Di tambahkan" + result.getContents());
+            }
         }
     }
 }

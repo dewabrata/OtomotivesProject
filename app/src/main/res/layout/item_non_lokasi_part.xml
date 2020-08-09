@@ -10,18 +10,15 @@
     android:layout_marginTop="4dp"
     android:layout_marginRight="7dp"
     android:layout_marginBottom="4dp"
-    android:layout_weight="5"
     android:padding="10dp"
-    app:cardElevation="5dp"
+    app:cardElevation="2dp"
     app:cardCornerRadius="10dp">
-
 
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:paddingRight="10dp"
-        android:paddingLeft="10dp"
+        android:padding="10dp"
         android:stretchColumns="*">
 
         <TableRow>
@@ -35,21 +32,23 @@
 
         </TableRow>
 
-        <TableRow>
+        <TableRow android:layout_marginTop="5dp">
 
             <TextView
                 android:id="@+id/tv_noPart_nonLokasiPart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="No. Part"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_gravity="start"/>
 
             <TextView
                 android:id="@+id/tv_merk_nonLokasiPart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Merk"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_gravity="end"/>
 
 
         </TableRow>

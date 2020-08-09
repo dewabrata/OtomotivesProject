@@ -4,8 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.text.Editable;
+import android.text.Selection;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +16,11 @@ import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.zxing.integration.android.IntentIntegrator;
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
@@ -24,6 +29,7 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.BarcodeActivity;
 import com.rkrzmail.oto.modules.primary.HistoryBookingCheckin_Activity;
+import com.rkrzmail.oto.modules.primary.KontrolLayanan_Activity;
 import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NsonAutoCompleteAdapter;
 
@@ -33,11 +39,12 @@ import java.util.Map;
 public class Checkin1_Activity extends AppActivity implements View.OnClickListener {
 
     private static final int REQUEST_BARCODE = 11;
+    private static final int REQUEST_HISTORY = 12;
+    private static final int REQUEST_NEW_CS = 13;
     private NikitaAutoComplete etJenisKendaraan, etNopol, etNoPonsel;
     private EditText etNamaPelanggan, etKeluhan, etKm;
     private Spinner spPekerjaan;
     private ImageView imgBarcode;
-    private static final int REQUEST_CHECKIN = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,21 +74,18 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
         imgBarcode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(getActivity(), BarcodeActivity.class), REQUEST_BARCODE);
+                IntentIntegrator intentIntegrator = new IntentIntegrator(getActivity());
             }
         });
 
         setSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN");
-
         componentValidation();
-
         find(R.id.btn_lanjut_checkin1).setOnClickListener(this);
         find(R.id.btn_history_checkin1).setOnClickListener(this);
 
     }
 
     private void setSelanjutnya() {
-
         final String nopol = etNopol.getText().toString().replace(" ", "").toUpperCase();
         final String nophone = etNoPonsel.getText().toString();
         final String namaPelanggan = etNamaPelanggan.getText().toString().toUpperCase();
@@ -102,63 +106,30 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
 
             @Override
             public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    Log.d("booking", result.get("data").asString());
-                } else {
-                    Log.d("booking", result.get("message").asString());
-                }
-
                 Nson nson = Nson.newObject();
-                nson.set("nopol", nopol);
-                nson.set("jeniskendaraan", jenisKendaraan);
-                nson.set("nopon", nophone);
-                nson.set("nama", namaPelanggan);
-                nson.set("pemilik", find(R.id.cb_pemilik_checkin1, CheckBox.class).isChecked() ? "YA" : "TIDAK");
-                nson.set("keluhan", keluhan);
-                nson.set("km", km);
-                nson.set("pekerjaan", pekerjaan);
+                nson.set("NOPOL", nopol);
+                nson.set("JENIS_KENDARAAN", jenisKendaraan);
+                nson.set("NO_PONSEL", nophone);
+                nson.set("NAMA_PELANGGAN", namaPelanggan);
+                nson.set("PEMILIK", find(R.id.cb_pemilik_checkin1, CheckBox.class).isChecked() ? "YA" : "TIDAK");
+                nson.set("KELUHAN", keluhan);
+                nson.set("KM", km);
+                nson.set("PEKERJAAN", pekerjaan);
 
                 ArrayList<String> data = new ArrayList<>();
                 for (int i = 0; i < result.get("data").size(); i++) {
                     data.add(result.get("data").get(i).get("NOPOL").asString());
                 }
 
-                if (keluhan.isEmpty()) {
-                    showInfo("Silahkan Isi Keluhan");
-                    return;
-                }
-                if (nopol.isEmpty()) {
-                    showInfo("Silahkan Isi No. Polisi");
-                    return;
-                }
-                if (jenisKendaraan.isEmpty()) {
-                    showInfo("Silahkan Isi Jenis Kendaraan");
-                    return;
-                }
-                if (nophone.isEmpty()) {
-                    showInfo("Silahkan Isi No. Hp");
-                    return;
-                }
-                if (namaPelanggan.isEmpty()) {
-                    showInfo("Silahkan Isi Nama");
-                    return;
-                }
-                if (pekerjaan.equalsIgnoreCase("BELUM DI PILIH")) {
-                    showInfo("Silahkan Pilih Pekerjaan");
-                    return;
-                }
-
                 Intent intent;
                 if (data.contains(nopol)) {
                     intent = new Intent(getActivity(), Checkin3_Activity.class);
                     intent.putExtra("data", nson.toJson());
-                    startActivity(intent);
-                    finish();
+                    startActivityForResult(intent, KontrolLayanan_Activity.REQUEST_CHECKIN);
                 } else {
                     intent = new Intent(getActivity(), Checkin2_Activity.class);
                     intent.putExtra("data", nson.toJson());
-                    setResult(RESULT_OK);
-                    startActivityForResult(intent, REQUEST_CHECKIN);
+                    startActivityForResult(intent, REQUEST_NEW_CS);
                 }
             }
         });
@@ -193,8 +164,8 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
                 etNopol.setText(formatNopol(n.get("NOPOL").asString()));
-                etNoPonsel.setText(n.get("PHONE").asString());
-                etNamaPelanggan.setText(n.get("NAMA").asString());
+                etNoPonsel.setText(n.get("NO_PONSEL").asString());
+                etNamaPelanggan.setText(n.get("NAMA_PELANGGAN").asString());
                 etJenisKendaraan.setText(n.get("MODEL").asString());
 
                 find(R.id.btn_history_checkin1).setEnabled(true);
@@ -277,18 +248,51 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 etNamaPelanggan.setText(n.get("NAMA_PELANGGAN").asString());
             }
         });
+
+        etNoPonsel.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                if (s.toString().length() == 0) {
+                    find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
+                }
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().length() < 6) {
+                    find(R.id.tl_nohp, TextInputLayout.class).setError("No. Hp Min. 6 Karakter");
+                } else {
+                    find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.toString().length() == 0) {
+                    find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
+                } else if (!s.toString().contains("+62 ")) {
+                    etNoPonsel.setText("+62 ");
+                    Selection.setSelection(etNoPonsel.getText(), etNoPonsel.getText().length());
+                }
+
+            }
+        });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == REQUEST_CHECKIN) {
-            Intent i = new Intent(getActivity(), Checkin3_Activity.class);
-            i.putExtra("data", getIntentStringExtra(data, "data"));
-            startActivity(i);
+        if (resultCode == RESULT_OK && requestCode == KontrolLayanan_Activity.REQUEST_CHECKIN) {
             finish();
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_BARCODE) {
 
+        } else if (resultCode == RESULT_OK && requestCode == REQUEST_HISTORY) {
+
+        } else if (resultCode == RESULT_OK && requestCode == REQUEST_NEW_CS) {
+            Intent i = new Intent(getActivity(), Checkin3_Activity.class);
+            i.putExtra("data", Nson.readJson(getIntentStringExtra(data, "data")).toJson());
+            startActivityForResult(i, KontrolLayanan_Activity.REQUEST_CHECKIN);
         }
     }
 
@@ -296,10 +300,24 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_lanjut_checkin1:
-                setSelanjutnya();
+                if (etNopol.getText().toString().isEmpty()) {
+                    etNopol.setError("Harus Di Isi");
+                } else if (etJenisKendaraan.getText().toString().isEmpty()) {
+                    etJenisKendaraan.setError("Harus Di Isi");
+                } else if (etNoPonsel.getText().toString().isEmpty() && etNoPonsel.getText().toString().length() < 6) {
+                    etNoPonsel.setError("Harus Di Isi");
+                } else if (etNamaPelanggan.getText().toString().isEmpty() && etNamaPelanggan.getText().toString().length() < 5) {
+                    etNamaPelanggan.setError("Harus Di Isi");
+                } else if (spPekerjaan.getSelectedItem().toString().equalsIgnoreCase("Belum Di Pilih")) {
+                    showWarning("Silahkan Pilih Pekerjaan");
+                } else if (etKm.getText().toString().isEmpty()) {
+                    etKm.setError("Harus Di Isi");
+                } else {
+                    setSelanjutnya();
+                }
                 break;
             case R.id.btn_history_checkin1:
-                startActivity(new Intent(getActivity(), HistoryBookingCheckin_Activity.class));
+                startActivityForResult(new Intent(getActivity(), HistoryBookingCheckin_Activity.class), REQUEST_HISTORY);
                 break;
         }
     }

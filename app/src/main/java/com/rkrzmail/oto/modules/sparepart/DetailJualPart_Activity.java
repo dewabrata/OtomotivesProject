@@ -84,6 +84,10 @@ public class DetailJualPart_Activity extends AppActivity {
         find(R.id.btn_simpan_detailPart).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(etJumlah.getText().toString().isEmpty()){
+                    showInfo("Jumlah Part Tidak Boleh Kosong");
+                    return;
+                }
                 if (etJumlah.getText().toString().equalsIgnoreCase("0")) {
                     showInfo("Jumlah Part Tidak Boleh Kosong");
                     return;

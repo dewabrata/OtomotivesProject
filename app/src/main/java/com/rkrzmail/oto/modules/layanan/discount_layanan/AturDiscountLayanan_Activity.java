@@ -3,10 +3,15 @@ package com.rkrzmail.oto.modules.layanan.discount_layanan;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -21,11 +26,19 @@ import com.rkrzmail.srv.PercentFormat;
 import com.rkrzmail.utils.Tools;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class AturDiscountLayanan_Activity extends AppActivity implements View.OnClickListener {
 
     private MultiSelectionSpinner spPekerjaan;
+    private String lokasi;
+    private List<String> listChecked = new ArrayList<>();
+    private ViewGroup layoutCheckBox;
+    private Spinner spLayanan;
+    private List<String> layananList = new ArrayList<>();
+    private String layanan = "";
+    private boolean flagTenda = false, flagBengkel = false, flagMssg = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,72 +57,98 @@ public class AturDiscountLayanan_Activity extends AppActivity implements View.On
 
     private void initComponent() {
         spPekerjaan = findViewById(R.id.sp_pekerjaan_discLayanan);
+        spLayanan = findViewById(R.id.sp_paketLayanan_discLayanan);
+
         find(R.id.et_discPart_discLayanan, EditText.class).addTextChangedListener(new PercentFormat
                 (find(R.id.et_discPart_discLayanan, EditText.class)));
         find(R.id.tv_tglEffect_discLayanan).setOnClickListener(this);
 
-        loadData();
+        try {
+            setSpLayanan();
+            loadData();
+        } catch (Exception e) {
+            Log.d("Exception__", "initComponent: " + e.getMessage());
+        }
 
+        find(R.id.cb_tenda_discLayanan, CheckBox.class).setOnCheckedChangeListener(listener);
+        find(R.id.cb_bengkel_discLayanan, CheckBox.class).setOnCheckedChangeListener(listener);
         setMultiSelectionSpinnerFromApi(spPekerjaan, "nama",
-                "PEKERJAAN", "viewmst", "PEKERJAAN");
-        setSpinnerFromApi(find(R.id.sp_paketLayanan_discLayanan, Spinner.class),
-                "", "", "viewlayanan", "NAMA_LAYANAN");
+                "PEKERJAAN", "viewmst", new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
+                    @Override
+                    public void selectedIndices(List<Integer> indices) {
 
-        find(R.id.btn_simpan_discLayanan, Button.class).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addData();
-            }
-        });
+                    }
+
+                    @Override
+                    public void selectedStrings(List<String> strings) {
+
+                    }
+                }, "PEKERJAAN", "");
     }
 
     private void loadData() {
-        Nson n = Nson.readJson(getIntentStringExtra("disc"));
+        final Nson n = Nson.readJson(getIntentStringExtra("data"));
         Intent i = getIntent();
-        if (i.hasExtra("disc")) {
-            find(R.id.tv_tglEffect_discLayanan, TextView.class).setText(n.get("").asString());
-            spPekerjaan.setSelection(n.get("").asStringArray());
-            find(R.id.sp_paketLayanan_discLayanan, Spinner.class)
-                    .setSelection(Tools.getIndexSpinner(
-                            find(R.id.sp_paketLayanan_discLayanan, Spinner.class), n.get("").asString()));
-            if (n.get("").asString().equalsIgnoreCase("YA")) {
-                find(R.id.cb_mssg_discLayanan, CheckBox.class).setChecked(true);
-            } else {
-                find(R.id.cb_mssg_discLayanan, CheckBox.class).setChecked(false);
-            }
+        if (n.get("LOKASI").asString().equalsIgnoreCase("TENDA") && n.get("LOKASI").asString().equalsIgnoreCase("BENGKEL")) {
+            flagTenda = true;
+            flagBengkel = true;
+        } else if (n.get("LOKASI").asString().equalsIgnoreCase("TENDA")) {
+            flagTenda = true;
+        } else if (n.get("LOKASI").asString().equalsIgnoreCase("BENGKEL")) {
+            flagBengkel = true;
+        }
+        if (n.get("MESSAGE_PELANGGAN").asString().equalsIgnoreCase("YA")) {
+            flagMssg = true;
+        }
+        if (i.hasExtra("data")) {
+            layanan = n.get("NAMA_LAYANAN").asString();
+            find(R.id.tv_tglEffect_discLayanan, TextView.class).setText(n.get("TANGGAL").asString());
+            find(R.id.et_discPart_discLayanan, EditText.class).setText(n.get("DISKON").asString());
+            find(R.id.cb_bengkel_discLayanan, CheckBox.class).setChecked(flagBengkel);
+            find(R.id.cb_tenda_discLayanan, CheckBox.class).setChecked(flagTenda);
+            find(R.id.cb_mssg_discLayanan, CheckBox.class).setChecked(flagMssg);
+
             find(R.id.btn_hapus_discLayanan, Button.class).setVisibility(View.VISIBLE);
             find(R.id.btn_hapus_discLayanan, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    deleteData(Nson.readJson(getIntentStringExtra("part")));
+                    deleteData(n);
                 }
             });
             find(R.id.btn_simpan_discLayanan, Button.class).setText("UPDATE");
             find(R.id.btn_simpan_discLayanan, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    updateData(Nson.readJson(getIntentStringExtra("part")));
+                    updateData(n);
+                }
+            });
+        } else {
+            find(R.id.btn_simpan_discLayanan, Button.class).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addData();
                 }
             });
         }
     }
 
     private void addData() {
+        final String parseTgl = Tools.setFormatDayAndMonthToDb(find(R.id.tv_tglEffect_discLayanan, TextView.class).getText().toString());
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-//                tambah data param : action(add), CID, tanggal, pekerjaan, nama, diskon, pesan
+
                 args.put("action", "add");
-                args.put("tanggal", find(R.id.tv_tglEffect_discLayanan, TextView.class).getText().toString());
+                args.put("tanggal", parseTgl);
                 args.put("pekerjaan", spPekerjaan.getSelectedItemsAsString());
                 args.put("nama", find(R.id.sp_paketLayanan_discLayanan, Spinner.class).getSelectedItem().toString());
                 args.put("diskon", find(R.id.et_discPart_discLayanan, EditText.class).getText().toString());
                 args.put("pesan", find(R.id.cb_mssg_discLayanan, CheckBox.class).isChecked() ? "YA" : "TIDAK");
-                //args.put("", find(R.id.cb_tenda_discLayanan, Checkbox.class).isChecked() ? "YA":"TIDAK");
-                //args.put("", find(R.id.cb_bengkel_discLayanan, Checkbox.class).isChecked() ? "YA":"TIDAK");
+                for(String str : listChecked){
+                    args.put("lokasi", str);
+                }
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturdiskonlayanan"), args));
             }
@@ -117,8 +156,8 @@ public class AturDiscountLayanan_Activity extends AppActivity implements View.On
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    showInfo("Sukses Menyimpan Aktifitas");
-                    startActivity(new Intent(getActivity(), DiscountLayanan_Activity.class));
+                    showSuccess("Sukses Menyimpan Aktifitas");
+                    setResult(RESULT_OK);
                     finish();
                 } else {
                     showError("Gagal Menyimpan Aktifitas");
@@ -128,20 +167,16 @@ public class AturDiscountLayanan_Activity extends AppActivity implements View.On
     }
 
     private void updateData(final Nson id) {
+        final String parseTgl = Tools.setFormatDayAndMonthToDb(find(R.id.tv_tglEffect_discLayanan, EditText.class).getText().toString());
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
-//                tambah data param : action(add), CID, tanggal, pekerjaan, nama, diskon, pesan
-//                delete : action(delete), id
-//                update param : action(upadate), nama, tanggal, pekerjaan, diskon, pesan, id
-
-                args.put("action", "add");
+                args.put("action", "update");
                 args.put("id", id.get("ID").asString());
-                args.put("tanggal", find(R.id.tv_tglEffect_discLayanan, TextView.class).getText().toString());
+                args.put("tanggal", parseTgl);
                 args.put("pekerjaan", spPekerjaan.getSelectedItemsAsString());
                 args.put("nama", find(R.id.sp_paketLayanan_discLayanan, Spinner.class).getSelectedItem().toString());
                 args.put("diskon", find(R.id.et_discPart_discLayanan, EditText.class).getText().toString());
@@ -154,7 +189,7 @@ public class AturDiscountLayanan_Activity extends AppActivity implements View.On
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     showInfo("Sukses Menyimpan Aktifitas");
-                    startActivity(new Intent(getActivity(), DiscountLayanan_Activity.class));
+                    setResult(RESULT_OK);
                     finish();
                 } else {
                     showError("Gagal Menyimpan Aktifitas");
@@ -170,7 +205,6 @@ public class AturDiscountLayanan_Activity extends AppActivity implements View.On
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-//                delete : action(delete), id
 
                 args.put("action", "delete");
                 args.put("id", id.get("ID").asString());
@@ -181,11 +215,56 @@ public class AturDiscountLayanan_Activity extends AppActivity implements View.On
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    showInfo("Sukses Menyimpan Aktifitas");
-                    startActivity(new Intent(getActivity(), DiscountLayanan_Activity.class));
+                    showSuccess("Sukses Menyimpan Aktifitas");
+                    setResult(RESULT_OK);
                     finish();
                 } else {
                     showError("Gagal Menyimpan Aktifitas");
+                }
+            }
+        });
+    }
+
+    CompoundButton.OnCheckedChangeListener listener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if (isChecked) {
+                listChecked.add(buttonView.getText().toString());
+                Log.d("Disc___", "initComponent: " + listChecked);
+            } else {
+                listChecked.remove(buttonView.getText().toString());
+            }
+        }
+    };
+
+    private void setSpLayanan() {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "view");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlayanan"), args));
+            }
+
+            @Override
+            public void runUI() {
+                layananList.add("Belum Di Pilih");
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    for (int i = 0; i < result.get("data").size(); i++) {
+                        layananList.add(result.get("data").get(i).get("NAMA_LAYANAN").asString());
+                    }
+                    ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, layananList);
+                    spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spLayanan.setAdapter(spinnerAdapter);
+                    if (!layanan.isEmpty()) {
+                        for (int in = 0; in < spLayanan.getCount(); in++) {
+                            if (spLayanan.getItemAtPosition(in).toString().contains(layanan)) {
+                                spLayanan.setSelection(in);
+                            }
+                        }
+                    }
                 }
             }
         });

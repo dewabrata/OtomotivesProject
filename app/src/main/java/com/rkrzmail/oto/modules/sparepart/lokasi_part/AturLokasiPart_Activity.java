@@ -46,13 +46,12 @@ public class AturLokasiPart_Activity extends AppActivity {
         sp_noFolder_part = findViewById(R.id.sp_noFolder_part);
 
         initComponent();
-        final Nson data = Nson.readJson(getIntentStringExtra("NAMA"));
-
+        final Nson data = Nson.readJson(getIntentStringExtra("data"));
         Intent i = getIntent();
-        if(i.hasExtra("NAMA")){
+        if(i.hasExtra("data")){
             no_part.setText(data.get("NO_PART_ID").asString());
-            nama_part.setText(data.get("NAMA").asString());
-            merk_part.setText(data.get("MERK_PART").asString());
+            nama_part.setText(data.get("NAMA_PART").asString());
+            merk_part.setText(data.get("MERK").asString());
         }
     }
 
@@ -118,19 +117,15 @@ public class AturLokasiPart_Activity extends AppActivity {
                 //args.put("stock", );
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturlokasipart"), args));
-                result.toJson().equalsIgnoreCase("data");
-
             }
-
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    Log.d(TAG, result.get("status").asString());
-                    startActivity(new Intent(AturLokasiPart_Activity.this, LokasiPart_Activity.class));
+                    showSuccess("Berhasil Menempatkan Part");
+                    setResult(RESULT_OK);
                     finish();
                 } else {
                     showError(result.get("status").asString());
-                    Log.d(TAG, "error");
                 }
             }
         });

@@ -2,6 +2,7 @@ package com.rkrzmail.oto.modules.biayamekanik;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +16,7 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.RupiahFormat;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Map;
@@ -22,6 +24,8 @@ import java.util.Map;
 public class AturBiayaMekanik2 extends AppActivity {
 
     public static final String TAG = "AturBiayaMekanik2";
+    private int upah = 0, average = 160, perJam;
+    private DecimalFormat formatter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,29 +36,29 @@ public class AturBiayaMekanik2 extends AppActivity {
     }
 
     private void initToolbar() {
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Atur Biaya Mekanik");
+        getSupportActionBar().setTitle("Biaya Mekanik");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initComponent() {
-
+        formatter = new DecimalFormat("###,###,###");
         final Nson data = Nson.readJson(getIntentStringExtra("USER"));
         Log.d("BIAYA_MEKANIK.CLASS", "Data : " + data);
         final Intent i = getIntent();
+        upah = Integer.parseInt(getIntent().getStringExtra("UMK"));
+        if(upah > 0){
+            perJam = upah / average;
+            find(R.id.et_upahMin_biayaMekanik, EditText.class).setText("Rp. " + String.valueOf(formatter.format(upah)));
+            find(R.id.et_upahJam_biayaMekanik, EditText.class).setText("Rp. " + String.valueOf(formatter.format(perJam)));
 
-        if (i.hasExtra("USER")) {
-            find(R.id.et_upahMin_biayaMekanik, EditText.class).setText("Rp. " + data.get("UMK").asString());
-            find(R.id.et_upahJam_biayaMekanik, EditText.class).setText("Rp. " + data.get("UPAH_MINIM").asString());
+            Log.d("BIAYA_MEKANIK.CLASS", "Data : " + perJam);
         }
 
         find(R.id.et_mekanik1_biayaMekanik, EditText.class).addTextChangedListener(new RupiahFormat(find(R.id.et_mekanik1_biayaMekanik, EditText.class)));
         find(R.id.et_mekanik2_biayaMekanik, EditText.class).addTextChangedListener(new RupiahFormat(find(R.id.et_mekanik2_biayaMekanik, EditText.class)));
         find(R.id.et_mekanik3_biayaMekanik, EditText.class).addTextChangedListener(new RupiahFormat(find(R.id.et_mekanik3_biayaMekanik, EditText.class)));
-        find(R.id.et_upahMin_biayaMekanik, EditText.class).addTextChangedListener(new RupiahFormat(find(R.id.et_upahMin_biayaMekanik, EditText.class)));
-
 
         find(R.id.btn_simpan_biayaMekanik).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,7 +71,6 @@ public class AturBiayaMekanik2 extends AppActivity {
     private void insertdata() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 

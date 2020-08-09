@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -21,21 +22,24 @@ import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class BiayaMekanik2Activity extends AppActivity {
 
-    public static final String TAG = "BiayaMekanik2Activity";
+    public static final String TAG = "BiayaMekanik2___";
     private static final int REQUEST_ATUR = 10;
     private RecyclerView rvListBasic2;
     private TextView txtTgl;
+    private Nson listUmk = Nson.newObject();
+    private String umk;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_basic);
-
-        initToolbar();
         initComponent();
     }
 
@@ -48,11 +52,18 @@ public class BiayaMekanik2Activity extends AppActivity {
     }
 
     private void initComponent() {
+        initToolbar();
+        final Nson data = Nson.readJson(getIntentStringExtra("data"));
+        for (int i = 0; i < data.get("BENGKEL").size(); i++) {
+            if(data.get("BENGKEL").get(i).containsKey("UMK")){
+               umk = data.get("BENGKEL").get(i).get("UMK").asString();
+            }
+        }
 
         rvListBasic2 = findViewById(R.id.recyclerView);
         rvListBasic2.setLayoutManager(new LinearLayoutManager(this));
         rvListBasic2.setHasFixedSize(true);
-        rvListBasic2.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_biaya_mekanik2){
+        rvListBasic2.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_biaya_mekanik2) {
 
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
@@ -70,8 +81,9 @@ public class BiayaMekanik2Activity extends AppActivity {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
                 //Toast.makeText(getActivity(),"HHHHH "+position, Toast.LENGTH_SHORT).show();
-                Intent intent =  new Intent(getActivity(), AturBiayaMekanik2.class);
+                Intent intent = new Intent(getActivity(), AturBiayaMekanik2.class);
                 intent.putExtra("USER", nListArray.get(position).toJson());
+                intent.putExtra("UMK", umk);
                 startActivityForResult(intent, REQUEST_ATUR);
             }
         }));
@@ -80,11 +92,12 @@ public class BiayaMekanik2Activity extends AppActivity {
 
     private void reload() {
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
-            Nson result ;
+            Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewbiayamekanik"),args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewbiayamekanik"), args));
             }
 
             @Override
@@ -93,7 +106,7 @@ public class BiayaMekanik2Activity extends AppActivity {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
                     rvListBasic2.getAdapter().notifyDataSetChanged();
-                }else {
+                } else {
                     showError("Mohon Di Coba Kembali" + result.get("status").asString());
                 }
             }
@@ -103,7 +116,7 @@ public class BiayaMekanik2Activity extends AppActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK && requestCode == REQUEST_ATUR){
+        if (resultCode == RESULT_OK && requestCode == REQUEST_ATUR) {
             reload();
         }
     }

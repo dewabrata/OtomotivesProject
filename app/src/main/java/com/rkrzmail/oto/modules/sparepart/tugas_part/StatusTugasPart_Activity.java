@@ -74,11 +74,10 @@ public class StatusTugasPart_Activity extends AppActivity {
     }
 
     private void loadData(){
-        Nson n = Nson.readJson(getIntentStringExtra(""));
+        Nson n = Nson.readJson(getIntentStringExtra("data"));
         String status = n.get("STATUS").asString();
-
         if(status.equalsIgnoreCase("PERMINTAAN")){
-            getSupportActionBar().setTitle("PENYEDIA PART");
+            getSupportActionBar().setTitle("PENYEDIAAN PART");
 
         }else if(status.equalsIgnoreCase("SIAP")){
             getSupportActionBar().setTitle("SERAH TERIMA PART");
@@ -87,16 +86,19 @@ public class StatusTugasPart_Activity extends AppActivity {
             getSupportActionBar().setTitle("PENGEMBALIAN");
             imgBarcode.setVisibility(View.VISIBLE);
         }
-
-        etTgl.setText(n.get("").asString());
-        etJam.setText(n.get("").asString());
-        etPelanggan.setText(n.get("").asString());
-        etUser.setText(n.get("").asString());
+        if(!n.get("NAMA_PELANGGAN").equals("")){
+            etPelanggan.setVisibility(View.VISIBLE);
+        }
+        etTgl.setText(n.get("TANGGAL").asString());
+        etJam.setText(n.get("JAM").asString());
+        etPelanggan.setText(n.get("NAMA_PELANGGAN").asString());
+        etUser.setText(n.get("USER").asString());
 
         initRecyclerView();
     }
 
     private void initRecyclerView(){
+        catchData();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_status_tugas_part) {
@@ -140,7 +142,7 @@ public class StatusTugasPart_Activity extends AppActivity {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(""), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturtugaspart"), args));
             }
 
             @Override
