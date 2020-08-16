@@ -61,7 +61,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:editable="false"
-                        android:enabled="false"
                         android:textSize="14sp"
                         android:hint="NO. PART" />
 
@@ -84,10 +83,9 @@
                         android:id="@+id/et_namaPart_part"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:enabled="false"
+                        android:editable="false"
                         android:textSize="14sp"
-                        android:hint="NAMA PART"
-                        android:inputType="textEmailAddress" />
+                        android:hint="NAMA PART" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -154,7 +152,6 @@
                         android:id="@+id/et_waktuGanti_part"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:enabled="false"
                         android:hint="WAKTU GANTI"
                         android:editable="false"
                         android:textSize="14sp" />
@@ -178,7 +175,6 @@
                         android:id="@+id/et_het_part"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:enabled="false"
                         android:hint="HET"
                         android:editable="false"
                         android:textSize="14sp" />
@@ -199,6 +195,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
+                        android:inputType="numberDecimal"
+                        android:maxLength="5"
                         android:hint="STOCK TERSEDIA" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -225,12 +223,14 @@
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/tl_stock_min"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"
-                    android:layout_marginRight="10dp">
+                    android:layout_marginRight="10dp"
+                    app:helperTextEnabled="true">
 
 
                     <EditText
@@ -279,13 +279,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"
-                    android:layout_marginRight="10dp">
+                    android:layout_marginRight="10dp"
+                    android:visibility="gone">
 
                     <EditText
-                        android:id="@+id/et_marginHarga_part"
+                        android:id="@+id/et_hargaJual_part"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="MARGIN / HARGA"
                         android:inputType="numberDecimal"
                         android:textSize="14sp"/>
 

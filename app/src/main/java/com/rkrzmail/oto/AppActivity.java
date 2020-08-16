@@ -485,9 +485,7 @@ public class AppActivity extends AppCompatActivity {
                     LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     convertView = inflater.inflate(R.layout.item_suggestion, parent, false);
                 }
-
                 String search = null;
-
                 if (getItem(position).get("NAMA_LAIN").asString().equalsIgnoreCase("")) {
                     search = getItem(position).get(jsonObject).asString();
                 } else {
@@ -627,7 +625,7 @@ public class AppActivity extends AppCompatActivity {
             @Override
             public void runUI() {
                 ArrayList<String> str = new ArrayList<>();
-                str.add("Belum Di Pilih");
+                str.add("--PILIH--");
                 for (int i = 0; i < result.get("data").size(); i++) {
                     str.add(result.get("data").get(i).get(jsonObject[0]).asString() + " - " + result.get("data").get(i).get(jsonObject[1]).asString());
                 }

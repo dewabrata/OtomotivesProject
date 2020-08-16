@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -40,6 +41,7 @@ import com.rkrzmail.utils.Tools;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Predicate;
 
 public class DetailPartDiterima extends AppActivity implements View.OnFocusChangeListener {
 
@@ -51,6 +53,7 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
     private EditText txtNoPart, txtNamaPart, txtJumlah, txtHargaBeliUnit, etDiscRp, etDiscPercent, etHargaBersih, etPenempatan;
     private RecyclerView rvTerimaPart;
     private String scanResult;
+    private boolean isDelete = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +88,7 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
         find(R.id.img_scan_terimaPart, ImageView.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(new Intent(getActivity(), BarcodeActivity.class), REQUEST_BARCODE);
+                scanBarcode(new FrameLayout(DetailPartDiterima.this), getActivity());
             }
         });
 
@@ -160,8 +163,9 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
                 diskon = diskon.replace("Rp", "").replaceAll("\\W", "");
                 try {
                     if (!hargaBeli.equals("") && !diskon.equals("")) {
+                        int disc = Integer.parseInt(txtJumlah.getText().toString()) * Integer.parseInt(diskon);
                         int totalHargaBeli = Integer.parseInt(txtJumlah.getText().toString()) * Integer.parseInt(hargaBeli);
-                        int finall = totalHargaBeli - Integer.parseInt(diskon);
+                        int finall = totalHargaBeli - disc;
                         etHargaBersih.setText(String.valueOf(finall));
                     }
                 } catch (Exception e) {
@@ -203,7 +207,6 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
                     if (!hargaBeli.equals("") && !diskon.equals("")) {
                         int totalHargaBeli = Integer.parseInt(txtJumlah.getText().toString()) * Integer.parseInt(hargaBeli);
                         int disc = (int) ((Double.parseDouble(diskon) * totalHargaBeli) / 10);
-                        Log.d("hargaharga", String.valueOf(disc));
                         int finall = totalHargaBeli - disc;
                         etHargaBersih.setText(String.valueOf(finall));
                     }
@@ -239,9 +242,6 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
             public void run() {
                 Nson nson = Nson.readJson(getIntentStringExtra("detail"));
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-
-                //tipe,nama, nodo, tglpesan, tglterima, pembayaran, jatuhtempo, ongkir, namapart,
-                // nopart, jumlah, hargabeli, diskon, lokasi, penempatan
 
                 args.put("nodo", nson.get("nodo").asString());
                 args.put("tipe", nson.get("tipe").asString());
@@ -318,13 +318,16 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
                         showInfoDialog("Hapus Part", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                nListArray.asArray().remove(parent.get(position).asArray());
+                                nListArray.remove(parent.get(position));
+                                isDelete = true;
                             }
                         });
+                        if(isDelete){
+                            rvTerimaPart.getAdapter().notifyDataSetChanged();
+                        }
                     }
                 })
         );
-
     }
 
     public void barcode() {
@@ -400,19 +403,13 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
             txtNoPart.setText(n.get("NO_PART").asString());
             txtNamaPart.setText(n.get("NAMA").asString());
             // addData(Nson.readJson(data.getStringExtra("row")), 1);
-        } else if (requestCode == REQUEST_BARCODE && resultCode == RESULT_OK) {
-            String barCode = getIntentStringExtra(data, "TEXT");
-            barcode();
         }
 
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null) {
-            scanResult = result.getContents();
-            if (scanResult == null) {
-                showError("Gagal Scan Barcode");
-            } else {
-                showError("Di tambahkan" + result.getContents());
-            }
+            showSuccess(result.getContents());
+        } else {
+            showError("Scan Failed");
         }
     }
 }

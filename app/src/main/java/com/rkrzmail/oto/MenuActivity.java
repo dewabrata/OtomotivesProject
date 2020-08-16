@@ -143,7 +143,7 @@ public class MenuActivity extends AppActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (nPopulate.get(position).get("id").asInteger() == MN_CHECKIN){
-                    Intent intent =  new Intent(MenuActivity.this, LayananActivity.class);
+                    Intent intent = new Intent(MenuActivity.this, KontrolLayanan_Activity.class);
                     startActivity(intent);
                 }else if (nPopulate.get(position).get("id").asInteger() == MN_PART){
                     Intent intent =  new Intent(MenuActivity.this, PartActivity.class);
@@ -165,7 +165,7 @@ public class MenuActivity extends AppActivity {
                 }
                 else if (nPopulate.get(position).get("id").asInteger() == MN_CARI_PART) {
                     Intent intent = new Intent(MenuActivity.this, CariPart_Activity.class);
-                    intent.putExtra("flag","ALL");
+                    intent.putExtra("global","");
                     startActivityForResult(intent, 90);
                 }
 //                else if (nPopulate.get(position).get("id").asInteger() == MN_CARI_PART) {
@@ -263,10 +263,7 @@ public class MenuActivity extends AppActivity {
                 } else if ((nPopulate.get(position).get("id").asInteger() == MN_BOOKING)) {
                     Intent intent = new Intent(MenuActivity.this, KontrolBooking_Activity.class);
                     startActivity(intent);
-                } else if ((nPopulate.get(position).get("id").asInteger() == MN_KONTROL_LAYANAN)) {
-                    Intent intent = new Intent(MenuActivity.this, KontrolLayanan_Activity.class);
-                    startActivity(intent);
-                } else if ((nPopulate.get(position).get("id").asInteger() == MN_DISCOUNT_LAYANAN)) {
+                }else if ((nPopulate.get(position).get("id").asInteger() == MN_DISCOUNT_LAYANAN)) {
                     Intent intent = new Intent(MenuActivity.this, DiscountLayanan_Activity.class);
                     startActivity(intent);
                 } else if ((nPopulate.get(position).get("id").asInteger() == MN_DISCOUNT_JASALAIN)) {
@@ -408,7 +405,7 @@ public class MenuActivity extends AppActivity {
         nPopulate.add(Nson.newObject().set("id", MN_DISCOUNT_PART).set("icon", R.drawable.mn_belanja).set("text", "DISKON PART"));
         nPopulate.add(Nson.newObject().set("id", MN_REKENING).set("icon", R.drawable.mn_pembayaran).set("text", "REKENING BANK"));
         nPopulate.add(Nson.newObject().set("id", MN_BOOKING).set("icon", R.drawable.mn_booking).set("text", "BOOKING"));
-        nPopulate.add(Nson.newObject().set("id", MN_KONTROL_LAYANAN).set("icon", R.drawable.mn_booking).set("text", "CHECK-IN"));
+        //nPopulate.add(Nson.newObject().set("id", MN_KONTROL_LAYANAN).set("icon", R.drawable.mn_booking).set("text", "CHECK-IN"));
         nPopulate.add(Nson.newObject().set("id", MN_DISCOUNT_LAYANAN).set("icon", R.drawable.mn_belanja).set("text", "DISCOUNT LAYANAN"));
         nPopulate.add(Nson.newObject().set("id", MN_DISCOUNT_JASALAIN).set("icon", R.drawable.mn_belanja).set("text", "DISCOUNT JASA LAIN"));
         nPopulate.add(Nson.newObject().set("id", MN_KOMISI_LAYANAN).set("icon", R.drawable.mn_inspeksi).set("text", "KOMISI LAYANAN"));

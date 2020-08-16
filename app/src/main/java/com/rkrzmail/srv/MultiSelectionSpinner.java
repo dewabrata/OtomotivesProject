@@ -68,7 +68,7 @@ public class MultiSelectionSpinner extends Spinner implements
     @Override
     public boolean performClick() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Silahkan Pilih");
+        builder.setTitle("Pilih");
         builder.setMultiChoiceItems(_items, mSelectionBool, this);
         _itemsAtStart = getSelectedItemsAsString();
         builder.setPositiveButton("Pilih", new DialogInterface.OnClickListener() {

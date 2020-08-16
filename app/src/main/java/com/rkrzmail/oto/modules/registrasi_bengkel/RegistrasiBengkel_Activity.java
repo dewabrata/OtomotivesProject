@@ -29,8 +29,10 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.srv.NikitaAutoComplete;
+import com.rkrzmail.utils.Tools;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +46,10 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
     private MultiSelectionSpinner spKendaraan, spBidangUsaha, spMerkKendaraan;
     private NikitaAutoComplete etKotaKab;
     private String[] itemsMerk;
-    private String typeKendaraan, bidangUsaha;
+    private String typeKendaraan, bidangUsaha = "";
+    private boolean isKategori;
+    private List<String> motorList = new ArrayList<>(), mobilList = new ArrayList<>(), allList = new ArrayList<>();
+    private int count = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,13 +89,19 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                 if (s.toString().length() == 0) {
                     find(R.id.tl_nohp_regist, TextInputLayout.class).setErrorEnabled(false);
                 }
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().length() < 6) {
+                int counting = (s == null) ? 0 : s.toString().length();
+                if (counting == 0) {
+                    find(R.id.tl_nohp_regist, TextInputLayout.class).setErrorEnabled(false);
+                } else if (counting < 4) {
+                    etNoPonsel.setText("+62 ");
+                    Selection.setSelection(etNoPonsel.getText(), etNoPonsel.getText().length());
+                } else if (counting < 6) {
                     find(R.id.tl_nohp_regist, TextInputLayout.class).setError("No. Hp Min. 6 Karakter");
+                    etNoPonsel.requestFocus();
                 } else {
                     find(R.id.tl_nohp_regist, TextInputLayout.class).setErrorEnabled(false);
                 }
@@ -98,12 +109,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.toString().length() == 0) {
-                    find(R.id.tl_nohp_regist, TextInputLayout.class).setErrorEnabled(false);
-                } else if (!s.toString().contains("+62 ")) {
-                    etNoPonsel.setText("+62 ");
-                    Selection.setSelection(etNoPonsel.getText(), etNoPonsel.getText().length());
-                }
+
 
             }
         });
@@ -173,21 +179,22 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
 
             @Override
             public void selectedStrings(List<String> strings) {
-
+                motorList.clear();
+                mobilList.clear();
+                allList.clear();
+                if(spKendaraan.getSelectedItemsAsString().equalsIgnoreCase("MOTOR ")){
+                    isKategori = true;
+                }else if (spKendaraan.getSelectedItemsAsString().equalsIgnoreCase("MOBIL ")){
+                    isKategori = false;
+                }else {
+                    count++;
+                }
+                setSpBidangUsaha();
             }
         }, "TYPE", "");
-        setMultiSelectionSpinnerFromApi(spBidangUsaha, "nama", "BENGKEL", "viewmst", new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
-            @Override
-            public void selectedIndices(List<Integer> indices) {
 
-            }
 
-            @Override
-            public void selectedStrings(List<String> strings) {
-
-            }
-        }, "KATEGORI", "TYPE");
-
+        Log.d(TAG, "initComponent: " + motorList.size());
         find(R.id.btn_simpan_regist, Button.class).setOnClickListener(this);
         find(R.id.btn_check_regist, Button.class).setOnClickListener(this);
     }
@@ -259,44 +266,99 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                     etNamaPemilik.setError(info + "Nama Pemilik");
                     etNamaPemilik.requestFocus();
                     return;
-                }else if (etNoPonsel.getText().toString().isEmpty() || etNoPonsel.getText().toString().length() < 6) {
+                }
+                if (etNoPonsel.getText().toString().isEmpty() || etNoPonsel.getText().toString().length() < 6) {
                     etNoPonsel.setError(info + "No. Ponsel");
                     etNoPonsel.requestFocus();
                     return;
-                }else if (etEmail.getText().toString().isEmpty() || !etEmail.getText().toString().contains("@")) {
+                }
+                if (etEmail.getText().toString().isEmpty() || !etEmail.getText().toString().contains("@")) {
                     etEmail.setError(info + "Email");
                     etEmail.requestFocus();
                     return;
-                }else if (etNamaBengkel.getText().toString().isEmpty() || etNamaBengkel.getText().toString().length() < 8) {
+                }
+                if (etNamaBengkel.getText().toString().isEmpty() || etNamaBengkel.getText().toString().length() < 8) {
                     etNamaBengkel.setError(info + "Nama Bengkel");
                     etNamaBengkel.requestFocus();
                     return;
-                }else if (spKendaraan.getSelectedItemsAsString().equalsIgnoreCase("")) {
+                }
+                if (spKendaraan.getSelectedItemsAsString().equalsIgnoreCase("")) {
                     showInfo(info + "Kendaraan");
                     spKendaraan.requestFocus();
                     return;
-                }else if (etKotaKab.getText().toString().isEmpty()) {
+                }
+                if (etKotaKab.getText().toString().isEmpty()) {
                     etKotaKab.setError(info + "Kota / Kab");
                     etKotaKab.requestFocus();
                     return;
-                }else if (etAlamat.getText().toString().isEmpty() || etAlamat.getText().toString().length() < 20) {
+                }
+                if (etAlamat.getText().toString().isEmpty() || etAlamat.getText().toString().length() < 20) {
                     etAlamat.setError(info + "Alamat");
                     etAlamat.requestFocus();
                     return;
                 }
                 if (!find(R.id.cb_setuju_regist, CheckBox.class).isChecked()) {
                     showInfo("Silahkan Setujui Syarat Dan Ketentuan Aplikasi");
-                }else{
-                    saveData();
+                    return;
                 }
 
-
+                    saveData();
                 break;
             case R.id.btn_check_regist:
 //                Intent i = new Intent(getActivity(), Referal_Activity.class);
 //                startActivityForResult(i, REQUEST_REFEREAL);
                 break;
         }
+    }
+
+    private void setSpBidangUsaha(){
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("nama", "BENGKEL");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewmst"), args));
+            }
+
+            @Override
+            public void runUI() {
+                for (int i = 0; i < result.get("data").size(); i++) {
+                    if(result.get("data").get(i).get("TYPE").asString().equalsIgnoreCase("MOTOR")){
+                        motorList.add(result.get("data").get(i).get("KATEGORI") + " - " + result.get("data").get(i).get("TYPE"));
+                    }else if(result.get("data").get(i).get("TYPE").asString().equalsIgnoreCase("MOBIL")){
+                        mobilList.add(result.get("data").get(i).get("KATEGORI") + " - " + result.get("data").get(i).get("TYPE"));
+                    }
+                }
+                try {
+                    allList.addAll(mobilList);
+                    allList.addAll(motorList);
+                    Log.d(TAG, "runUI: " + allList);
+                    if(count > 0){
+                        spBidangUsaha.setItems(allList);
+                        spBidangUsaha.setSelection(allList, false);
+                    }else{
+                        spBidangUsaha.setItems(isKategori ? motorList : mobilList);
+                        spBidangUsaha.setSelection(isKategori ? motorList : mobilList, false);
+                    }
+
+                    spBidangUsaha.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
+                        @Override
+                        public void selectedIndices(List<Integer> indices) {
+
+                        }
+
+                        @Override
+                        public void selectedStrings(List<String> strings) {
+
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    showInfo("Perlu di Muat Ulang");
+                }
+            }
+        });
     }
 
     @Override

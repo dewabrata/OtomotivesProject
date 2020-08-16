@@ -601,6 +601,24 @@ public class Nson implements Serializable {
         return false;
     }
 
+    public boolean containsValue(Object value) {
+        if (isNsonObject()) {
+            Nson keys = getObjectKeys();
+            for (int i = 0; i < keys.size(); i++) {
+                if (getData(keys.getData(i).asString()).asString().equals(value)) {
+                    return true;
+                }
+            }
+        } else if (isNsonArray()) {
+            for (int i = 0; i < size(); i++) {
+                if (getData(i).asString().equals(value)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public boolean isNsonArray() {
         return internalObject instanceof List;
     }

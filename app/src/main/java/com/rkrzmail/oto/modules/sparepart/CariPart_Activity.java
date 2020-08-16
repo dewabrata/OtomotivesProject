@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -32,9 +33,9 @@ public class CariPart_Activity extends AppActivity {
     private static final int MAX_HISTORY_ITEMS = 10;
     private Pendaftaran1.AutoSuggestAdapter autoSuggestAdapter;
     private RecyclerView rvCariPart;
-    private boolean flagCariPart = false, flagKelompokPart = false, flag;
+    private boolean flagCariPart = false, flagKelompokPart = false, flag, flagGlobal = false, flagBengkel = false;
     private Toolbar toolbar;
-    int count = 0;
+    int countForCariPart = 0;
     private String cari;
 
     @Override
@@ -47,6 +48,7 @@ public class CariPart_Activity extends AppActivity {
     private void initToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        //flag = true is for view part and flag false for else than part (MASTER)
         if (getIntent().hasExtra("flag")) {
             getSupportActionBar().setTitle("Cari Part");
             flag = true;
@@ -55,13 +57,21 @@ public class CariPart_Activity extends AppActivity {
             getSupportActionBar().setTitle("Cari Kelompok Part");
             flag = false;
             flagKelompokPart = true;
+        }else if(getIntent().hasExtra("global")){
+            getSupportActionBar().setTitle("Cari Part");
+            flagGlobal = true;
+            flag = true;
+        }else if(getIntent().hasExtra("bengkel")){
+            getSupportActionBar().setTitle("Cari Part Bengkel");
+            flagBengkel = true;
+            flag = false;
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initComponent() {
         initToolbar();
-        if(count == 0){
+        if(countForCariPart == 0){
             cariPart("");
         }
         rvCariPart = (RecyclerView) findViewById(R.id.recyclerView);
@@ -71,10 +81,20 @@ public class CariPart_Activity extends AppActivity {
                     @Override
                     public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                         super.onBindViewHolder(viewHolder, position);
-                        viewHolder.find(R.id.tv_cari_merkPart, TextView.class).setText(flag ? nListArray.get(position).get("MERK").asString() : nListArray.get(position).get("KATEGORI").asString());
-                        viewHolder.find(R.id.tv_cari_namaPart, TextView.class).setText(flag ? nListArray.get(position).get("NAMA").asString() : nListArray.get(position).get("KELOMPOK").asString());
-                        viewHolder.find(R.id.tv_cari_noPart, TextView.class).setText(flag ? nListArray.get(position).get("NO_PART").asString() : nListArray.get(position).get("KELOMPOK_LAIN").asString());
-                        viewHolder.find(R.id.tv_cari_stockPart, TextView.class).setText(flag ? nListArray.get(position).get("STOCK").asString() : nListArray.get(position).get("TYPE").asString());
+                        if(flagGlobal || flagBengkel){
+                            viewHolder.find(R.id.tv_cari_merkPart, TextView.class).setText(nListArray.get(position).get("MERK").asString());
+                            viewHolder.find(R.id.tv_cari_namaPart, TextView.class).setText(nListArray.get(position).get("NAMA_PART").asString());
+                            viewHolder.find(R.id.tv_cari_noPart, TextView.class).setText(flag ? nListArray.get(position).get("NOMOR_PART_NOMOR").asString() : nListArray.get(position).get("NO_PART").asString());
+                        }else{
+                            viewHolder.find(R.id.tv_cari_merkPart, TextView.class).setText(flag ?
+                                    nListArray.get(position).get("MERK").asString() : nListArray.get(position).get("KATEGORI").asString());
+                            viewHolder.find(R.id.tv_cari_namaPart, TextView.class).setText(flag ?
+                                    nListArray.get(position).get("NAMA").asString() : nListArray.get(position).get("KELOMPOK").asString());
+                            viewHolder.find(R.id.tv_cari_noPart, TextView.class).setText(flag ?
+                                    nListArray.get(position).get("NO_PART").asString() : nListArray.get(position).get("KELOMPOK_LAIN").asString());
+                        }
+
+                        //viewHolder.find(R.id.tv_cari_stockPart, TextView.class).setText(flag ? nListArray.get(position).get("STOCK").asString() : nListArray.get(position).get("TYPE").asString());
                     }
 
                 }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
@@ -98,12 +118,23 @@ public class CariPart_Activity extends AppActivity {
                 args.put("flag", getIntentStringExtra("flag"));
                 if (flagCariPart) {
                     flag = true;
-                    if(count > 0){
+                    if(countForCariPart > 0){
                         args.remove("flag");
                     }
                     args.put("search", cari);
                     result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("caripart"), args));
-                } else if (flagKelompokPart) {
+                }else if(flagGlobal){
+                    flag = true;
+                    args.put("action", "view");
+                    args.put("search", cari);
+                    result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewsparepart"), args));
+                }else if(flagBengkel){
+                    flag = false;
+                    args.put("action", "view");
+                    args.put("search", cari);
+                    args.put("spec", "Bengkel");
+                    result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewsparepart"), args));
+                }else if (flagKelompokPart) {
                     flag = false;
                     args.put("nama", getIntentStringExtra("KELOMPOK_PART"));
                     result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewmst"), args));
@@ -144,12 +175,12 @@ public class CariPart_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        adapterSearchView(mSearchView, "search", "caripart", "NAMA");
+        adapterSearchView(mSearchView, "search", "caripartsugestion", "NAMA_PART");
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
-                count++;
+                countForCariPart++;
                 if(newText.length() > 4){
-                    if(count > 0){
+                    if(countForCariPart > 0){
                         cariPart(newText);
                     }
                 }
@@ -157,15 +188,31 @@ public class CariPart_Activity extends AppActivity {
             }
 
             public boolean onQueryTextSubmit(String query) {
-                count++;
+                countForCariPart++;
                 cari = query;
                 flagCariPart = true;
-                if(count > 0){
+                flagGlobal = true;
+                flagBengkel = true;
+                if(countForCariPart > 0){
                     cariPart(query);
                 }
                 return true;
             }
         };
+        MenuItemCompat.setOnActionExpandListener( searchMenu, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                rvCariPart.getAdapter().notifyDataSetChanged();
+                return true;
+            }
+        });
+
         mSearchView.setOnQueryTextListener(queryTextListener);
         return true;
     }
