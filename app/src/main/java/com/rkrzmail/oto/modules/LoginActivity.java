@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -33,6 +34,8 @@ public class LoginActivity extends AppActivity {
             public void onClick(View v) {
                 if(find(R.id.user, EditText.class).getText().toString().isEmpty()){
                    showWarning("Email Harus Di isi");
+                }else if(find(R.id.password, EditText.class).getText().toString().isEmpty()){
+                    showWarning("Password Harus Di isi");
                 }else{
                     login();
                 }
@@ -42,6 +45,7 @@ public class LoginActivity extends AppActivity {
 
     private void initComponent(){
         String tittle = "<font color=#F44336><u>Registrasi</u></font>";
+        String requestOtp = "<font color=#F44336><u>Request OTP ?</u></font>";
         find(R.id.registrasi, TextView.class).setText(Html.fromHtml(tittle));
         find(R.id.registrasi, TextView.class).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,16 +53,50 @@ public class LoginActivity extends AppActivity {
                 startActivityForResult(new Intent(getActivity(), RegistrasiBengkel_Activity.class), 10);
             }
         });
+        find(R.id.otp, TextView.class).setText(Html.fromHtml(requestOtp));
+        find(R.id.otp, TextView.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(find(R.id.user, EditText.class).getText().toString().isEmpty()){
+                    showWarning("Masukkan User");
+                    find(R.id.user, EditText.class).requestFocus();
+                    return;
+                }
+                requestOtp();
+            }
+        });
+    }
+
+    private void requestOtp(){
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "Request");
+                args.put("user", find(R.id.user, EditText.class).getText().toString());
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("login"), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    showSuccess("Sukses Request OTP, Silahkan Login");
+                    find(R.id.password, EditText.class).setText("123456");
+                } else {
+                    showError("Gagal Request OTP");
+                }
+            }
+        });
     }
 
     private void login() {
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             String sResult;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-
+                args.put("action", "Login");
                 args.put("user", find(R.id.user, EditText.class).getText().toString());
                 args.put("password", find(R.id.password, EditText.class).getText().toString());
                 sResult = (InternetX.postHttpConnection(AppApplication.getBaseUrlV3("login"), args));
@@ -68,15 +106,16 @@ public class LoginActivity extends AppActivity {
             public void runUI() {
                 Nson nson = Nson.readNson(sResult);//test1
                 if (nson.get("status").asString().equalsIgnoreCase("OK")) {
+                    showSuccess("Berhasil Login");
                     nson = nson.get("data").get(0);
                     setSetting("L", "L");
-
                     setSetting("result", nson.toJson());
                     setSetting("CID", nson.get("CID").asString());
                     setSetting("NAMA", nson.get("NAMA").asString());
                     setSetting("session", nson.get("token").asString());
                     setSetting("user", find(R.id.user, EditText.class).getText().toString());
-
+                    Log.d("Login__", "runUI: " + nson);
+                    Log.d("Login__", "nama: " + getSetting("NAMA"));
                     Intent intent = new Intent(getActivity(), MenuActivity.class);
                     startActivity(intent);
                     finish();
