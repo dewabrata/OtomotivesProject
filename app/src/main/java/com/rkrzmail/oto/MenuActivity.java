@@ -152,7 +152,7 @@ public class MenuActivity extends AppActivity {
     private final String MY_BUSINESS_HUTANG = "HUTANG";
     private final String MY_BUSINESS_PIUTANG = "PIUTANG";
     private final String MY_BUSINESS_ASET= "ASET";
-
+    private final String LOKASI_PART= "LOKASI PART";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -622,6 +622,9 @@ public class MenuActivity extends AppActivity {
             subMenu.add(KOMISI_JASA_LAIN);
             subMenu.add(KOMISI_LAYANAN);
             subMenu.add(KOMISI_PART);
+        }
+        if (getAccess(LOKASI_PART)) {
+            menu.add(LOKASI_PART);
         }
         return true;
     }
