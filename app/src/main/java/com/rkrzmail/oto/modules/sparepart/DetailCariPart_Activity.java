@@ -30,8 +30,8 @@ public class DetailCariPart_Activity extends AppActivity {
         Nson getData = Nson.readJson(getIntentStringExtra("part"));
 
         find(R.id.tv_merk_cariPart, TextView.class).setText(getData.get("MERK").asString());
-        find(R.id.tv_namaPart_cariPart, TextView.class).setText(getData.get("NAMA").asString());
-        find(R.id.tv_noPart_cariPart, TextView.class).setText(getData.get("NO_PART").asString());
+        find(R.id.tv_namaPart_cariPart, TextView.class).setText(getData.get("NAMA_PART").asString());
+        find(R.id.tv_noPart_cariPart, TextView.class).setText(getData.get("NOMOR_PART_NOMOR").asString());
         find(R.id.tv_berkala_cariPart, TextView.class).setText(getData.get("BERKALA_KM").asString());
         find(R.id.tv_harga_cariPart, TextView.class).setText(getData.get("HARGA_JUAL").asString());
         find(R.id.tv_frt_cariPart, TextView.class).setText(getData.get("").asString());

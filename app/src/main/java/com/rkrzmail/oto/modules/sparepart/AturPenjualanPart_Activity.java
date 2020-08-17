@@ -4,7 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.Selection;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -93,6 +97,38 @@ public class AturPenjualanPart_Activity extends AppActivity {
 
                 find(R.id.et_jenisKendaraan_jualPart, NikitaAutoComplete.class).setText(stringBuilder.toString());
                 find(R.id.et_jenisKendaraan_jualPart, NikitaAutoComplete.class).setTag(String.valueOf(adapterView.getItemAtPosition(position)));
+            }
+        });
+
+        find(R.id.et_noPhone_jualPart, NikitaAutoComplete.class).addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                if (s.toString().length() == 0) {
+                    find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                int counting = (s == null) ? 0 : s.toString().length();
+                if (counting == 0) {
+                    find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
+                } else if (counting < 4) {
+                    find(R.id.et_noPhone_jualPart, NikitaAutoComplete.class).setText("+62 ");
+                    Selection.setSelection(find(R.id.et_noPhone_jualPart, NikitaAutoComplete.class).getText(),
+                            find(R.id.et_noPhone_jualPart, NikitaAutoComplete.class).getText().length());
+                } else if (counting < 6) {
+                    find(R.id.tl_nohp, TextInputLayout.class).setError("No. Hp Min. 6 Karakter");
+                    find(R.id.et_noPhone_jualPart, NikitaAutoComplete.class).requestFocus();
+                } else {
+                    find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+
             }
         });
 

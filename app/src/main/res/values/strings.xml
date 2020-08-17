@@ -6,6 +6,7 @@
         <item>BELI + MARGIN</item>
         <item>RATA - RATA + MARGIN</item>
         <item>NOMINAL</item>
+        <item>HET</item>
     </string-array>
 
     <string name="hint_cari_part">CARI PART</string>

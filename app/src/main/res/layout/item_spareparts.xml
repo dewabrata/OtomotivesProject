@@ -53,19 +53,19 @@
                         android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
                     <TextView
-                        android:id="@+id/tv_StockMinStock_spareparts"
+                        android:id="@+id/tv_stock_spareparts"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_medium"
-                        android:text="Stock / Min Stock"
+                        android:text="Stock"
                         android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
                 <TextView
-                    android:id="@+id/tv_keluar_spareparts"
+                    android:id="@+id/tv_pending_spareparts"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_medium"
-                    android:text="Keluar"
+                    android:text="Pending"
                     android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
 
@@ -94,7 +94,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_medium"
-                        android:text="MERK"
+                        android:text="Merk"
                         android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
                     <TextView
@@ -103,20 +103,13 @@
                         android:layout_marginTop="@dimen/spacing_medium"
                         android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
-                    <TextView
-                        android:id="@+id/tv_pending_spareparts"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_medium"
-                        android:text="Pending"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
                 <TextView
-                    android:id="@+id/tv_terpasang_spareparts"
+                    android:id="@+id/tv_stockMin_spareparts"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_medium"
-                    android:text="Terpasang"
+                    android:text="Min Stock"
                     android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
             </LinearLayout>

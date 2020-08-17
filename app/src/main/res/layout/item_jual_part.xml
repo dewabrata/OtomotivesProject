@@ -25,60 +25,12 @@
         <TableRow>
 
             <TextView
-                android:id="@+id/tv_tgl_jualPart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tanggal"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tv_userJual_jualPart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="User Jual"
-                android:layout_gravity="end"
-                android:textStyle="bold" />
-
-        </TableRow>
-
-        <TableRow android:layout_marginTop="@dimen/spacing_medium">
-
-            <TextView
-                android:id="@+id/tv_namaUsaha_jualPart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Nama / Nama Usaha"
-                android:textStyle="bold" />
-
-        </TableRow>
-
-        <TableRow android:layout_marginTop="@dimen/spacing_medium">
-
-            <TextView
                 android:id="@+id/tv_noPhone_jualPart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="No. Ponsel"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tv_harga_jualPart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Harga"
-                android:layout_gravity="end"
-                android:textStyle="bold" />
-
-        </TableRow>
-
-        <TableRow android:layout_marginTop="@dimen/spacing_medium">
-
-            <TextView
-                android:id="@+id/tv_disc_jualPart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Discount"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_gravity="start"/>
 
             <TextView
                 android:id="@+id/tv_total_jualPart"
@@ -93,19 +45,65 @@
         <TableRow android:layout_marginTop="@dimen/spacing_medium">
 
             <TextView
+                android:id="@+id/tv_nama_jualPart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nama"
+                android:textStyle="bold"
+                android:layout_gravity="start"/>
+
+        </TableRow>
+
+        <TableRow android:layout_marginTop="@dimen/spacing_medium">
+
+            <TextView
+                android:id="@+id/tv_namaUsaha_jualPart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nama Usaha"
+                android:textStyle="bold"
+                android:layout_gravity="start"/>
+
+        </TableRow>
+
+        <TableRow android:layout_marginTop="@dimen/spacing_medium">
+
+            <TextView
+                android:id="@+id/tv_harga_jualPart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Harga"
+                android:layout_gravity="start"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_disc_jualPart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Discount"
+                android:textStyle="bold"
+                android:layout_gravity="end"/>
+
+
+        </TableRow>
+
+        <TableRow android:layout_marginTop="@dimen/spacing_medium">
+
+            <TextView
+                android:id="@+id/tv_tgl_jualPart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tanggal"
+                android:textStyle="bold"
+                android:layout_gravity="start"/>
+
+            <TextView
                 android:id="@+id/tv_status_jualPart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Status"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tv_userUpdate_jualPart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="User Update"
-                android:layout_gravity="end"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_gravity="end"/>
 
         </TableRow>
 

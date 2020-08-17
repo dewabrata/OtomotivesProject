@@ -126,7 +126,6 @@
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:textColor="@color/red_400"
                     android:layout_gravity="center"
                     android:text="DISCOUNT BELI"/>
 
@@ -140,7 +139,6 @@
                     android:hint="Rp. ">
 
                     <EditText
-
                         android:id="@+id/et_discRp_terimaPart"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -151,10 +149,9 @@
 
                 <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="wrap_content"
+                    android:layout_width="70dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:layout_weight="1"
                     android:hint="%">
 
                     <EditText
@@ -162,7 +159,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
-                        android:maxLength="5"
+                        android:maxLength="6"
                         android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>

@@ -30,6 +30,7 @@ import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.srv.NsonAutoCompleteAdapter;
 
+import java.text.DecimalFormat;
 import java.util.Map;
 
 public class Spareparts_Activity extends AppActivity {
@@ -38,6 +39,7 @@ public class Spareparts_Activity extends AppActivity {
     public static final int REQUEST_CARI = 32;
     private RecyclerView recyclerView;
     private SearchView mSearchView;
+    private DecimalFormat formatter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,12 +58,14 @@ public class Spareparts_Activity extends AppActivity {
     }
 
     private void initComponent() {
+        formatter = new DecimalFormat("###,###,###");
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), CariPart_Activity.class);
-                intent.putExtra("flag", "ALL");
+                //intent.putExtra("flag", "ALL");
+                intent.putExtra("global", "");
                 startActivityForResult(intent, REQUEST_CARI);
             }
         });
@@ -72,15 +76,14 @@ public class Spareparts_Activity extends AppActivity {
         recyclerView.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_spareparts) {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                String stock = nListArray.get(position).get("STOCK").asString() + "/" + nListArray.get(position).get("STOCK_MINIMUM").asString();
+                String stock = nListArray.get(position).get("STOCK").asString();
 
-                viewHolder.find(R.id.txtNamaPart, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
+                viewHolder.find(R.id.txtNamaPart, TextView.class).setText(nListArray.get(position).get("NAMA_PART").asString());
                 viewHolder.find(R.id.txtNoPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
-                viewHolder.find(R.id.tv_StockMinStock_spareparts, TextView.class).setText(stock);
-                viewHolder.find(R.id.txtHargaJual, TextView.class).setText(nListArray.get(position).get("HARGA_JUAL").asString());
-                viewHolder.find(R.id.tv_keluar_spareparts, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_pending_spareparts, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_terpasang_spareparts, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_stock_spareparts, TextView.class).setText(stock);
+                viewHolder.find(R.id.txtHargaJual, TextView.class).setText("Rp. " + formatter.format(Double.parseDouble(nListArray.get(position).get("HARGA_JUAL").asString())));
+                viewHolder.find(R.id.tv_pending_spareparts, TextView.class).setText(nListArray.get(position).get("PENDING").asString());
+                viewHolder.find(R.id.tv_stockMin_spareparts, TextView.class).setText(nListArray.get(position).get("STOCK_MINIMUM").asString());
                 viewHolder.find(R.id.txtMerk, TextView.class).setText(nListArray.get(position).get("MERK").asString());
 
             }
@@ -88,7 +91,7 @@ public class Spareparts_Activity extends AppActivity {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
                 Intent intent = new Intent(getActivity(), AturParts_Activity.class);
-                intent.putExtra("part", nListArray.get(position).toJson());
+                intent.putExtra("atur_part", nListArray.get(position).toJson());
                 startActivityForResult(intent, REQUEST_ATUR);
             }
         }));
@@ -103,6 +106,8 @@ public class Spareparts_Activity extends AppActivity {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "view");
+                args.put("spec", "Bengkel");
                 args.put("search", nama);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewsparepart"), args));
             }
@@ -138,11 +143,11 @@ public class Spareparts_Activity extends AppActivity {
         // Assumes current activity is the searchable activity
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
-        adapterSearchView(mSearchView, "search", "caripart", "NAMA");
+        adapterSearchView(mSearchView, "search", "atursparepart", "NAMA");
 
         final SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
-                if(newText.length() > 1){
+                if(newText.length() > 3){
                     reload(newText);
                 }
                 return false;
@@ -163,8 +168,8 @@ public class Spareparts_Activity extends AppActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CARI && resultCode == RESULT_OK) {
             Intent i = new Intent(getActivity(), AturParts_Activity.class);
-            i.putExtra("part", getIntentStringExtra(data, "part"));
-            startActivity(i);
+            i.putExtra("data", getIntentStringExtra(data, "part"));
+            startActivityForResult(i, REQUEST_ATUR);
         } else if (requestCode == REQUEST_ATUR && resultCode == RESULT_OK) {
             reload("");
         }

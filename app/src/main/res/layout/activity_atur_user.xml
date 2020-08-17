@@ -115,7 +115,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:entries="@array/jenis_kelamin"
-                        android:textAlignment="center" />
+                        android:textAlignment="center"
+                        android:focusableInTouchMode="true"
+                        android:focusable="true"/>
 
                 </LinearLayout>
 
@@ -133,7 +135,7 @@
                         android:layout_height="wrap_content"
                         android:hint="NO. PONSEL"
                         android:inputType="phone"
-                        android:maxLength="15"
+                        android:maxLength="17"
                         android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -221,7 +223,9 @@
                         android:id="@+id/spinnerPosisi"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textAlignment="center" />
+                        android:textAlignment="center"
+                        android:focusableInTouchMode="true"
+                        android:focusable="true"/>
 
                 </LinearLayout>
 
@@ -245,7 +249,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:entries="@array/status"
-                        android:textAlignment="center" />
+                        android:textAlignment="center"
+                        android:focusableInTouchMode="true"
+                        android:focusable="true"/>
 
                 </LinearLayout>
 
@@ -269,7 +275,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:entries="@array/penggajian"
-                        android:textAlignment="center" />
+                        android:textAlignment="center"
+                        android:focusableInTouchMode="true"
+                        android:focusable="true"/>
 
                 </LinearLayout>
 
@@ -308,9 +316,16 @@
                         android:id="@+id/spinnerAksesApp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textAlignment="center" />
+                        android:textAlignment="center"
+                        android:focusableInTouchMode="true"
+                        android:focusable="true"/>
 
                 </LinearLayout>
+
+                <View
+                    android:id="@+id/view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
 
                 <TableLayout
                     android:layout_width="match_parent"

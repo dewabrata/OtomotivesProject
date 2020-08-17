@@ -66,14 +66,12 @@ public class PenjualanPart_Activity extends AppActivity {
                 String tgl = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("TANGGAL").asString());
 
                 viewHolder.find(R.id.tv_tgl_jualPart, TextView.class).setText(tgl);
-                viewHolder.find(R.id.tv_userJual_jualPart, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
                 viewHolder.find(R.id.tv_namaUsaha_jualPart, TextView.class).setText(nListArray.get(position).get("NAMA_USAHA").asString());
                 viewHolder.find(R.id.tv_noPhone_jualPart, TextView.class).setText(nListArray.get(position).get("PHONE").asString());
-                viewHolder.find(R.id.tv_harga_jualPart, TextView.class).setText("Rp. " + nListArray.get(position).get("HARGA_PART").asString());
-                viewHolder.find(R.id.tv_disc_jualPart, TextView.class).setText("Rp. " + nListArray.get(position).get("DISC").asString());
-                viewHolder.find(R.id.tv_total_jualPart, TextView.class).setText("Rp. " + nListArray.get(position).get("TOTAL").asString());
+                viewHolder.find(R.id.tv_harga_jualPart, TextView.class).setText(nListArray.get(position).get("HARGA_PART").asString());
+                viewHolder.find(R.id.tv_disc_jualPart, TextView.class).setText(nListArray.get(position).get("DISC").asString());
+                viewHolder.find(R.id.tv_total_jualPart, TextView.class).setText(nListArray.get(position).get("TOTAL").asString());
                 viewHolder.find(R.id.tv_status_jualPart, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
-                viewHolder.find(R.id.tv_userUpdate_jualPart, TextView.class).setText(nListArray.get(position).get("USER").asString());
             }
         });
         catchData("");
@@ -98,7 +96,7 @@ public class PenjualanPart_Activity extends AppActivity {
                     nListArray.asArray().addAll(result.get("data").asArray());
                     rvJualPart.getAdapter().notifyDataSetChanged();
                 } else {
-                    showInfo("Gagal Memuat Aktifitas");
+                    showError("Gagal Memuat Aktifitas");
                 }
             }
         });

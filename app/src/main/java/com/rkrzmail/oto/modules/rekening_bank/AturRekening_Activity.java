@@ -42,7 +42,6 @@ public class AturRekening_Activity extends AppActivity {
     private ArrayList<String> dataBank = new ArrayList<>();
     private Nson n;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,12 +67,6 @@ public class AturRekening_Activity extends AppActivity {
         }catch (Exception e){
             Log.e("Exception__", "initComponent: " + e.getMessage() );
         }
-        find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveData();
-            }
-        });
     }
 
     private void saveData() {
@@ -87,8 +80,8 @@ public class AturRekening_Activity extends AppActivity {
                 args.put("norek", etNoRek.getText().toString());
                 args.put("bank", spBank.getSelectedItem().toString());
                 args.put("namarek", etNamaRek.getText().toString());
-                args.put("edc", find(R.id.cb_edc_rekening, CheckBox.class).isChecked() ? "ACTIVE" : "TIDAK_ACTIVE");
-                args.put("off_us", find(R.id.cb_offUs_rekening, CheckBox.class).isChecked() ? "ACTIVE" : "TIDAK_ACTIVE");
+                args.put("edc", find(R.id.cb_edc_rekening, CheckBox.class).isChecked() ? "Y" : "N");
+                args.put("off_us", find(R.id.cb_offUs_rekening, CheckBox.class).isChecked() ? "Y" : "N");
                 args.put("status", "");
                 args.put("tanggal", dateTime);
 
@@ -139,24 +132,32 @@ public class AturRekening_Activity extends AppActivity {
             find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    updateData();
+                    updateData(n);
+                }
+            });
+        }else {
+            find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    saveData();
                 }
             });
         }
     }
 
-    private void updateData() {
+    private void updateData(final Nson id) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "update");
+                args.put("id", id.get("ID").asString());
                 args.put("norek", etNoRek.getText().toString());
                 args.put("bank", spBank.getSelectedItem().toString());
                 args.put("namarek", etNamaRek.getText().toString());
-                args.put("edc", find(R.id.cb_edc_rekening, CheckBox.class).isChecked() ? "ACTIVE" : "TIDAK ACTIVE");
-                args.put("off_us", find(R.id.cb_offUs_rekening, CheckBox.class).isChecked() ? "ACTIVE" : "TIDAK ACTIVE");
+                args.put("edc", find(R.id.cb_edc_rekening, CheckBox.class).isChecked() ? "Y" : "N");
+                args.put("off_us", find(R.id.cb_offUs_rekening, CheckBox.class).isChecked() ? "Y" : "N");
                 //args.put("status", );
                 args.put("tanggal", dateTime);
 

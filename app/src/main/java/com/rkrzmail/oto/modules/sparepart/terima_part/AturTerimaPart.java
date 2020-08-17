@@ -44,6 +44,7 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
     private Button btnSelanjutnya;
     private List<String> data = new ArrayList<>();
     private String tglPesan, tglTerima;
+    private boolean flagValidation = false;
 
 
     @Override
@@ -83,7 +84,7 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
         tvTglJatuhTempo.setOnClickListener(this);
         tvNamaSupplier.setOnClickListener(this);
 
-        setSpinnerFromApi(spRek, "action", "view", "setrekeningbank", "BANK_NAME", "NO_REKENING" );
+        setSpinnerFromApi(spRek, "action", "view", "setrekeningbank", "BANK_NAME", "NO_REKENING");
         spinnerSupplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
@@ -107,9 +108,11 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
                 String item = parent.getItemAtPosition(position).toString();
                 if (item.equalsIgnoreCase("INVOICE")) {
                     find(R.id.layout_jatuh_tempo).setVisibility(View.VISIBLE);
-                }else if(item.equalsIgnoreCase("TRANSFER DIMUKA")){
+                    find(R.id.ly_rek, LinearLayout.class).setVisibility(View.GONE);
+                } else if (item.equalsIgnoreCase("TRANSFER DIMUKA")) {
                     find(R.id.ly_rek, LinearLayout.class).setVisibility(View.VISIBLE);
-                }else {
+                    find(R.id.layout_jatuh_tempo).setVisibility(View.GONE);
+                } else {
                     find(R.id.ly_rek, LinearLayout.class).setVisibility(View.GONE);
                     find(R.id.layout_jatuh_tempo).setVisibility(View.GONE);
                 }
@@ -132,27 +135,69 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
                 final String tglpesan = tvTglPesan.getText().toString();
                 final String tglterima = tvTglTerima.getText().toString();
 
+                if (spinnerSupplier.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
+                    showWarning("Supplier Harus Di Pilih");
+                    spinnerSupplier.requestFocus();
+                    return;
+                }
+                if (find(R.id.ly_namaSup_terimaPart, LinearLayout.class).getVisibility() == View.VISIBLE) {
+                    if (tvNamaSupplier.getText().toString().isEmpty()) {
+                        tvNamaSupplier.setError("Supplier Tidak Boleh Kosong");
+                        tvNamaSupplier.requestFocus();
+                        return;
+                    }
+                }
+                if (txtNoDo.getText().toString().isEmpty()) {
+                    txtNoDo.setError("No. DO Tidak Boleh Kosong");
+                    txtNoDo.requestFocus();
+                    return;
+                }
+                if (spinnerPembayaran.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
+                    showWarning("Pembayaran Harus Di Pilih");
+                    spinnerSupplier.requestFocus();
+                    return;
+                }
+                if (find(R.id.ly_rek, LinearLayout.class).getVisibility() == View.VISIBLE) {
+                    if (spRek.getSelectedItem().toString().equalsIgnoreCase("Belum Di Pilih")) {
+                        spRek.requestFocus();
+                        showWarning("Nomor Rekening Harus di Pilih");
+                        return;
+                    }
+                }
+                if (txtOngkosKirim.getText().toString().isEmpty()) {
+                    txtOngkosKirim.setError("Masukkan Ongkos Kirim");
+                    txtOngkosKirim.requestFocus();
+                    return;
+                }
+                if (find(R.id.layout_jatuh_tempo).getVisibility() == View.VISIBLE) {
+                    if (tvTglJatuhTempo.getText().toString().isEmpty()) {
+                        tvTglJatuhTempo.setError("Masukkan Tanggal Jatuh Tempo");
+                        tvTglJatuhTempo.requestFocus();
+                        return;
+                    }
+                }
+                if (tglpesan.equalsIgnoreCase("TANGGAL PESAN")) {
+                    showWarning("Masukkan Tanggal Pesan");
+                    return;
+                }
+                if (tglterima.equalsIgnoreCase("TANGGAL TERIMA")) {
+                    showWarning("Masukkan Tanggal Terima");
+                    return;
+                }
                 try {
-                    Date sekarang = new SimpleDateFormat("dd/MM/yyyy").parse(tglSekarang);
+                    Date tanggalTerima = new SimpleDateFormat("dd/MM/yyyy").parse(tglterima);
                     Date pesan = new SimpleDateFormat("dd/MM/yyyy").parse(tglpesan);
-                    if(pesan.after(sekarang)){
-                        showWarning("Tanggal Pesan TidaK Boleh Melebihi Tanggal Sekarang");
+                    if (tanggalTerima.before(pesan)) {
+                        showWarning("Tanggal Pesan Tidak Boleh Melebihi Tanggal Terima");
+                        return;
+                    } else if (pesan.after(tanggalTerima)) {
+                        showWarning("Tanggal Terima Tidak Boleh Melebihi Tanggal Pesan");
                         return;
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
 
-                try {
-                    Date tanggalTerima = new SimpleDateFormat("dd/MM/yyyy").parse(tglterima);
-                    Date pesan = new SimpleDateFormat("dd/MM/yyyy").parse(tglpesan);
-                    if(!tanggalTerima.before(pesan) && !tanggalTerima.equals(pesan)){
-                        showWarning("Tanggal Terima TidaK Boleh Melebihi Tanggal Pesan");
-                        return;
-                    }
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
                 try {
                     Date jatuhTempo = new SimpleDateFormat("dd/MM/yyyy").parse(tvTglJatuhTempo.getText().toString());
                     Date tanggalTerima2 = new SimpleDateFormat("dd/MM/yyyy").parse(tglterima);
@@ -165,14 +210,15 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-
-                if(tglpesan.equalsIgnoreCase("TANGGAL PESAN")) {
-                    showWarning("Masukkan Tanggal PESAN");
-                    return;
-                }
-                if (tglterima.equalsIgnoreCase("TANGGAL TERIMA")) {
-                    showWarning("Masukkan Tanggal Terima");
-                    return;
+                try {
+                    Date sekarang = new SimpleDateFormat("dd/MM/yyyy").parse(tglSekarang);
+                    Date pesan = new SimpleDateFormat("dd/MM/yyyy").parse(tglpesan);
+                    if (pesan.after(sekarang)) {
+                        showWarning("Tanggal Pesan Tidak Boleh Melebihi Tanggal Sekarang");
+                        return;
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
                 if (data.contains(tglPesan)) {
                     showInfoDialog("Penerimaan Part Telah Tercatat Sebelumnya", new DialogInterface.OnClickListener() {
@@ -188,16 +234,12 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
+
                         }
                     });
                     return;
                 }
-                if(find(R.id.ly_rek, LinearLayout.class).getVisibility() == View.VISIBLE){
-                    if(spRek.getSelectedItem().toString().equalsIgnoreCase("Belum Di Pilih")){
-                        showWarning("Nomor Rekening Harus di Pilih");
-                        return;
-                    }
-                }
+
                 Intent i = new Intent(AturTerimaPart.this, DetailPartDiterima.class);
                 i.putExtra("detail", sendObject().toJson());
                 startActivityForResult(i, TerimaPart.REQUEST_TERIMA_PART);
@@ -213,6 +255,7 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
                 Map<String, String> args2 = AppApplication.getInstance().getArgsData();
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewterimapart"), args2));
             }
+
             @Override
             public void runUI() {
                 for (int i = 0; i < result.get("data").size(); i++) {
@@ -250,7 +293,6 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
     }
 
 
-
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -284,7 +326,7 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
         if (requestCode == TerimaPart.REQUEST_TERIMA_PART && resultCode == RESULT_OK) {
             setResult(RESULT_OK);
             finish();
-        }else if (requestCode == REQUEST_CONTACT) {
+        } else if (requestCode == REQUEST_CONTACT) {
             if (resultCode == RESULT_OK) {
                 Uri contactData = data.getData();
                 Cursor cursor = managedQuery(contactData, null, null, null, null);
