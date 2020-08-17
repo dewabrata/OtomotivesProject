@@ -47,8 +47,7 @@ public class MainActivity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        aksesApp = getResources().getStringArray(R.array.akses_app_karyawan);
+        setContentView(R.layout.activity_splash);
 
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         //Log.i("Firebase", refreshedToken);
@@ -56,15 +55,25 @@ public class MainActivity extends AppActivity {
             UtilityAndroid.setSetting(this, "FCMID", refreshedToken);
         }
 
-        if (getSetting("L").equalsIgnoreCase("L")){
-            //login
-            Intent intent = new Intent(getActivity(), MenuActivity.class);
-            startActivity(intent);
-        }else{
-            //menu
-            Intent intent = new Intent(getActivity(), LoginActivity.class);
-            startActivity(intent);
-        }
-        finish();
+        find(R.id.id).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (getSetting("L").equalsIgnoreCase("L")){
+                    //login
+                    Intent intent = new Intent(getActivity(), MenuActivity.class);
+                    startActivity(intent);
+                }else{
+                    //menu
+                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                    startActivity(intent);
+                }
+                finish();
+            }
+        },3000);
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 }

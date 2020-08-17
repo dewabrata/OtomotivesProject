@@ -120,6 +120,39 @@ public class MenuActivity extends AppActivity {
     public static final int MN_PENGEMBALIAN_PART = 42;
     public static final int MN_KOMISI_PART = 43;
 
+
+    private final String REFERAL = "REFERAL";
+    private final String CHECK_OUT = "CHECK OUT";
+    private final String COLLECTION = "COLLECTION";
+    private final String PART_KELUAR = "PART KELUAR";
+    private final String OUTSOURCE = "OUTSOURCE";
+    private final String MY_BUSINESS = "MY BUSINESS";
+    private final String PENGATURAN = "PENGATURAN";
+    private final String DISCOUNT = "DISCOUNT";
+    private final String KOMISI = "KOMISI";
+    private final String PENGATURAN_USER = "USER";
+    private final String PENGATURAN_PENUGASAN = "PENUGASAN MEKANIK";
+    private final String PENGATURAN_USER_LAYANAN= "LAYANAN";
+    private final String PENGATURAN_USER_BIAYA_MEKANIK = "BIAYA MEKANIK";
+    private final String PENGATURAN_USER_SPAREPARTS = "SPAREPARTS";
+    private final String PENGATURAN_USER_REKENING_BANK= "REKENING BANK";
+    private final String PENGATURAN_USER_LOKASI_PARTS = "LOKASI PARTS";
+    private final String PENGATURAN_USER_TENDA= "TENDA";
+    private final String KOMISI_JASA_LAIN = "JASA LAIN";
+    private final String KOMISI_LAYANAN = "LAYANAN";
+    private final String KOMISI_PART = "PART";
+    private final String DISCOUNT_JASA_LAIN = "JASA LAIN";
+    private final String DISCOUNT_LAYANAN = "LAYANAN";
+    private final String DISCOUNT_PART = "PART";
+    private final String DISCOUNT_SPOT= "SPOT";
+    private final String DISCOUNT_FREKWENSI = "FREKWENSI";
+
+    private final String MY_BUSINESS_BILLING = "BILLING";
+    private final String MY_BUSINESS_INFO_USAHA = "INFO USAHA";
+    private final String MY_BUSINESS_HUTANG = "HUTANG";
+    private final String MY_BUSINESS_PIUTANG = "PIUTANG";
+    private final String MY_BUSINESS_ASET= "ASET";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,15 +168,47 @@ public class MenuActivity extends AppActivity {
                         .setAction("Action", null).show();
             }
         });
-        setTitle("Otomotives ("+getSetting("NAMA_BENGKEL")+")");
-
+        setTitle(getSetting("NAMA_BENGKEL"));
         GridView gridView = findViewById(R.id.gridView);
         populate(gridView);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (nPopulate.get(position).get("id").asInteger() == MN_CHECKIN){
+                if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_ANTAR_JEMPUT) ){
+
+                }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_BOOKING)){
+                    Intent intent = new Intent(MenuActivity.this, KontrolBooking_Activity.class);
+                    startActivity(intent);
+                }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_CHECK_IN)){
+                    Intent intent = new Intent(MenuActivity.this, KontrolLayanan_Activity.class);
+                    startActivity(intent);
+                }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_DASHBOARD)){
+                }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_INSPEKSI)){
+                    Intent intent = new Intent(MenuActivity.this, KontrolLayanan_Activity.class);
+                    startActivity(intent);
+                }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_JUAL_PARTS)){
+                }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_JURNAL)){
+                }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_MEKANIK)){
+                }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_MENUNGGU)){
+                }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_MY_CODE)){
+                }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_PART)){
+                    Intent intent = new Intent(MenuActivity.this, PartActivity.class);
+                    startActivity(intent);
+                }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_MESSAGE)){
+                    Intent intent =  new Intent(MenuActivity.this, MessageWA.class);
+                    startActivity(intent);
+                }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_PEMBAYARAN)){
+                }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_STOCK_OPNAME)){
+
+                }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_TERIMA_PARTS)){
+                    Intent intent =  new Intent(MenuActivity.this, TerimaPart.class);
+                    startActivity(intent);
+                }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_TUGAS_PARTS)){
+                }
+
+
+                /*if (nPopulate.get(position).get("id").asInteger() == MN_CHECKIN){
                     Intent intent = new Intent(MenuActivity.this, KontrolLayanan_Activity.class);
                     startActivity(intent);
                 }else if (nPopulate.get(position).get("id").asInteger() == MN_PART){
@@ -300,14 +365,50 @@ public class MenuActivity extends AppActivity {
                 } else if ((nPopulate.get(position).get("id").asInteger() == MN_KOMISI_PART)) {
                     Intent intent = new Intent(MenuActivity.this, KomisiPart_Activity.class);
                     startActivity(intent);
-                }
+                }*/
 
 
             }
         });
 
-        banner();
+       // banner();
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            return true;
+        }else if (item.getTitle().toString().equalsIgnoreCase(REFERAL)){
+            Intent intent = new Intent(MenuActivity.this, Referal_Activity.class);
+            startActivity(intent);
+        }else if (item.getTitle().toString().equalsIgnoreCase(COLLECTION)){
+            Intent intent = new Intent(MenuActivity.this, KontrolBooking_Activity.class);
+            startActivity(intent);
+
+        }else if (item.getItemId() == R.id.action_logout){
+            Messagebox.showDialog(getActivity(), "Logout", "Yakin Logout ?", "Ya", "Tidak", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    UtilityAndroid.removeSettingAll(getActivity());
+                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
+                }
+            }, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+
+                }
+            });
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     private int count ;
     private Handler handler;
     private void banner(){
@@ -403,23 +504,6 @@ public class MenuActivity extends AppActivity {
     }
     public void populate(GridView v){
 
-       /* nPopulate.add(Nson.newObject().set("id", 1).set("icon", R.drawable.m_antarjemput).set("text", M_ANTAR_JEMPUT));
-        nPopulate.add(Nson.newObject().set("id", 2).set("icon", R.drawable.m_booking).set("text", M_BOOKING));
-        nPopulate.add(Nson.newObject().set("id", 3).set("icon", R.drawable.mn_checkin).set("text", M_CHECK_IN));
-        nPopulate.add(Nson.newObject().set("id", 4).set("icon", R.drawable.m_inspeksi).set("text", M_INSPEKSI));
-        nPopulate.add(Nson.newObject().set("id", 5).set("icon", R.drawable.m_jualpart).set("text", M_JUAL_PARTS));
-        nPopulate.add(Nson.newObject().set("id", 6).set("icon", R.drawable.m_jurnal).set("text", M_JURNAL));
-        nPopulate.add(Nson.newObject().set("id", 7).set("icon", R.drawable.speed).set("text", M_DASHBOARD));
-        nPopulate.add(Nson.newObject().set("id", 8).set("icon", R.drawable.mn_inspeksi).set("text", M_MEKANIK));
-        nPopulate.add(Nson.newObject().set("id", 9).set("icon", R.drawable.m_menunggu).set("text", M_MENUNGGU));
-        nPopulate.add(Nson.newObject().set("id", 10).set("icon", R.drawable.m_message).set("text", M_MESSAGE));
-        nPopulate.add(Nson.newObject().set("id", 11).set("icon", R.drawable.m_mycode).set("text", M_MY_CODE));
-        nPopulate.add(Nson.newObject().set("id", 12).set("icon", R.drawable.m_part).set("text", M_PART));
-        nPopulate.add(Nson.newObject().set("id", 13).set("icon", R.drawable.m_pembayaran).set("text", M_PEMBAYARAN));
-        nPopulate.add(Nson.newObject().set("id", 14).set("icon", R.drawable.m_stock).set("text", M_STOCK_OPNAME));
-        nPopulate.add(Nson.newObject().set("id", 15).set("icon", R.drawable.m_terimapart).set("text", M_TERIMA_PARTS));
-        nPopulate.add(Nson.newObject().set("id", 16).set("icon", R.drawable.m_tugaspart).set("text", M_TUGAS_PARTS));*/
-
         addHome(1,R.drawable.m_antarjemput, M_ANTAR_JEMPUT);
         addHome(2,R.drawable.m_booking, M_BOOKING);
         addHome(3,R.drawable.m_checkin, M_CHECK_IN);
@@ -436,41 +520,6 @@ public class MenuActivity extends AppActivity {
         addHome(14,R.drawable.m_stock, M_STOCK_OPNAME);
         addHome(15,R.drawable.m_terimapart, M_TERIMA_PARTS);
         addHome(15,R.drawable.m_tugaspart, M_TUGAS_PARTS);
-
-
-
-
-     /*   nPopulate.add(Nson.newObject().set("id", MN_CHECKIN).set("icon", R.drawable.mn_checkin).set("text", "CHECK IN"));
-       nPopulate.add(Nson.newObject().set("id", MN_SPAREPART).set("icon", R.drawable.mn_jualpart).set("text", "SPAREPART"));
-        nPopulate.add(Nson.newObject().set("id", MN_CARI_PART).set("icon", R.drawable.mn_jualpart).set("text", "CARI PART"));
-         nPopulate.add(Nson.newObject().set("id", MN_PROFILE).set("icon", R.drawable.mn_pelanggan).set("text", "PROFILE"));
-         nPopulate.add(Nson.newObject().set("id", MN_TUGAS_PART).set("icon", R.drawable.mn_tugaspart).set("text", "TUGAS PART"));
-          nPopulate.add(Nson.newObject().set("id", MN_PENUGASAN_MEKANIK).set("icon", R.drawable.mn_perawatan).set("text", "PENUGASAN MEKANIK"));
-        nPopulate.add(Nson.newObject().set("id", MN_BIAYA_MEKANIK2).set("icon", R.drawable.mn_perawatan).set("text", "BIAYA MEKANIK"));
-        nPopulate.add(Nson.newObject().set("id", MN_LOKASI_PART).set("icon", R.drawable.mn_belanja).set("text", "LOKASI PART"));
-        nPopulate.add(Nson.newObject().set("id", MN_TERIMA_PART).set("icon", R.drawable.mn_tugaspart).set("text", "TERIMA PART"));
-        nPopulate.add(Nson.newObject().set("id", MN_LAYANAN).set("icon", R.drawable.mn_pelanggan).set("text", "LAYANAN"));
-        nPopulate.add(Nson.newObject().set("id", MN_TENDA).set("icon", R.drawable.mn_lainnya).set("text", "TENDA"));
-        nPopulate.add(Nson.newObject().set("id", MN_JURNAL).set("icon", R.drawable.mn_perawatan).set("text", "JURNAL"));
-        nPopulate.add(Nson.newObject().set("id", MN_SPOT_DISKON).set("icon", R.drawable.mn_belanja).set("text", "SPOT DISKON"));
-        nPopulate.add(Nson.newObject().set("id", MN_DISCOUNT_PART).set("icon", R.drawable.mn_belanja).set("text", "DISKON PART"));
-        nPopulate.add(Nson.newObject().set("id", MN_REKENING).set("icon", R.drawable.mn_pembayaran).set("text", "REKENING BANK"));
-        nPopulate.add(Nson.newObject().set("id", MN_BOOKING).set("icon", R.drawable.mn_booking).set("text", "BOOKING"));
-         nPopulate.add(Nson.newObject().set("id", MN_DISCOUNT_LAYANAN).set("icon", R.drawable.mn_belanja).set("text", "DISCOUNT LAYANAN"));
-        nPopulate.add(Nson.newObject().set("id", MN_DISCOUNT_JASALAIN).set("icon", R.drawable.mn_belanja).set("text", "DISCOUNT JASA LAIN"));
-        nPopulate.add(Nson.newObject().set("id", MN_KOMISI_LAYANAN).set("icon", R.drawable.mn_inspeksi).set("text", "KOMISI LAYANAN"));
-        nPopulate.add(Nson.newObject().set("id", MN_KOMISI_JASA_LAIN).set("icon", R.drawable.mn_inspeksi).set("text", "KOMISI JASA LAIN"));
-        nPopulate.add(Nson.newObject().set("id", MN_KARYAWAN).set("icon", R.drawable.mn_pelanggan).set("text", "USER"));
-        nPopulate.add(Nson.newObject().set("id", MN_REFERAL).set("icon", R.drawable.mn_lainnya).set("text", "REFERAL"));
-        nPopulate.add(Nson.newObject().set("id", MN_FREKWENSI_DISCOUNT).set("icon", R.drawable.mn_lainnya).set("text", "FREKWENSI DISCOUNT"));
-        nPopulate.add(Nson.newObject().set("id", MN_PART_KELUAR).set("icon", R.drawable.mn_tugaspart).set("text", "PART KELUAR"));
-        nPopulate.add(Nson.newObject().set("id", MN_JUAL_PART).set("icon", R.drawable.mn_jualpart).set("text", "PENJUALAN PART"));
-        nPopulate.add(Nson.newObject().set("id", MN_PEMBAYARAN).set("icon", R.drawable.mn_pembayaran).set("text", "PEMBAYARAN"));
-        nPopulate.add(Nson.newObject().set("id", MN_KERJA_MEKANIK).set("icon", R.drawable.mn_homeservice).set("text", "PERINTAH KERJA MEKANIK"));
-        nPopulate.add(Nson.newObject().set("id", MN_KOMISI_PART).set("icon", R.drawable.mn_inspeksi).set("text", "KOMISI PART"));
-
-*/
-
 
 
 
@@ -517,41 +566,6 @@ public class MenuActivity extends AppActivity {
         });
     }
 
-    private final String REFERAL = "REFERAL";
-    private final String CHECK_OUT = "CHECK OUT";
-    private final String COLLECTION = "COLLECTION";
-    private final String PART_KELUAR = "PART KELUAR";
-    private final String OUTSOURCE = "OUTSOURCE";
-    private final String MY_BUSINESS = "MY BUSINESS";
-    private final String PENGATURAN = "PENGATURAN";
-    private final String DISCOUNT = "DISCOUNT";
-    private final String KOMISI = "KOMISI";
-
-    private final String PENGATURAN_USER = "USER";
-    private final String PENGATURAN_PENUGASAN = "PENUGASAN MEKANIK";
-    private final String PENGATURAN_USER_LAYANAN= "LAYANAN";
-    private final String PENGATURAN_USER_BIAYA_MEKANIK = "BIAYA MEKANIK";
-    private final String PENGATURAN_USER_SPAREPARTS = "SPAREPARTS";
-    private final String PENGATURAN_USER_REKENING_BANK= "REKENING BANK";
-    private final String PENGATURAN_USER_LOKASI_PARTS = "LOKASI PARTS";
-    private final String PENGATURAN_USER_TENDA= "TENDA";
-
-
-    private final String KOMISI_JASA_LAIN = "JASA LAIN";
-    private final String KOMISI_LAYANAN = "LAYANAN";
-    private final String KOMISI_PART = "PART";
-
-    private final String DISCOUNT_JASA_LAIN = "JASA LAIN";
-    private final String DISCOUNT_LAYANAN = "LAYANAN";
-    private final String DISCOUNT_PART = "PART";
-    private final String DISCOUNT_SPOT= "SPOT";
-    private final String DISCOUNT_FREKWENSI = "FREKWENSI";
-
-    private final String MY_BUSINESS_BILLING = "BILLING";
-    private final String MY_BUSINESS_INFO_USAHA = "INFO USAHA";
-    private final String MY_BUSINESS_HUTANG = "HUTANG";
-    private final String MY_BUSINESS_PIUTANG = "PIUTANG";
-    private final String MY_BUSINESS_ASET= "ASET";
 
 
 
@@ -612,38 +626,7 @@ public class MenuActivity extends AppActivity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }else if (item.getItemId() == R.id.action_logout){
-            Messagebox.showDialog(getActivity(), "Logout", "Yakin Logout ?", "Ya", "Tidak", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                    UtilityAndroid.removeSettingAll(getActivity());
-                    Intent intent = new Intent(getActivity(), LoginActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
-                }
-            }, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-
-                }
-            });
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
