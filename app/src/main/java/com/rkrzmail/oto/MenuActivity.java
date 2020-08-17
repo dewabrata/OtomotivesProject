@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -134,7 +135,7 @@ public class MenuActivity extends AppActivity {
                         .setAction("Action", null).show();
             }
         });
-        setTitle("Otomotives ("+getSetting("NAMA")+")");
+        setTitle("Otomotives ("+getSetting("NAMA_BENGKEL")+")");
 
         GridView gridView = findViewById(R.id.gridView);
         populate(gridView);
@@ -376,25 +377,75 @@ public class MenuActivity extends AppActivity {
         }
     }
 
+    public final String M_ANTAR_JEMPUT = "ANTAR JEMPUT";
+    public final String M_BOOKING = "BOOKING";
+    public final String M_CHECK_IN = "CHECK IN";
+    public final String M_INSPEKSI = "INSPEKSI";
+    public final String M_JUAL_PARTS = "JUAL PARTS";
+    public final String M_JURNAL = "JURNAL";
+    public final String M_DASHBOARD = "DASHBOARD";
+    public final String M_MEKANIK = "MEKANIK";
+    public final String M_MENUNGGU = "MENUNGGU";
+    public final String M_MESSAGE = "MESSAGE";
+    public final String M_MY_CODE = "MY CODE";
+    public final String M_PART = "PART";;
+    public final String M_PEMBAYARAN = "PEMBAYARAN";
+    public final String M_STOCK_OPNAME = "STOCK OPNAME";
+    public final String M_TERIMA_PARTS = "TERIMA PARTS";
+    public final String M_TUGAS_PARTS = "TUGAS PARTS";
 
 
 
+    private void addHome(int id, int icon, String text){
+        if (getAccess(text)) {
+            nPopulate.add(Nson.newObject().set("id", id).set("icon", icon).set("text", text));
+        }
+    }
     public void populate(GridView v){
-        nPopulate.add(Nson.newObject().set("id", MN_CHECKIN).set("icon", R.drawable.mn_checkin).set("text", "CHECK IN"));
-//        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_WA).set("icon", R.drawable.wa).set("text", "MESSAGE"));
-        nPopulate.add(Nson.newObject().set("id", MN_SPAREPART).set("icon", R.drawable.mn_jualpart).set("text", "SPAREPART"));
-        nPopulate.add(Nson.newObject().set("id", MN_CARI_PART).set("icon", R.drawable.mn_jualpart).set("text", "CARI PART"));
-        //nPopulate.add(Nson.newObject().set("id", MN_REGISTRASI).set("icon", R.drawable.mn_pelanggan).set("text", "REGISTRASI"));
-        //nPopulate.add(Nson.newObject().set("id", MN_PART_SEARCH).set("icon", R.drawable.mn_jualpart).set("text", "CARI PART"));
 
-        nPopulate.add(Nson.newObject().set("id", MN_PROFILE).set("icon", R.drawable.mn_pelanggan).set("text", "PROFILE"));
-        //nPopulate.add(Nson.newObject().set("id", MN_LOKASI_PERSEDIAAN).set("icon", R.drawable.mn_booking).set("text", "LOKASI PERSEDIAAN"));
-        //nPopulate.add(Nson.newObject().set("id", MN_JUAL_PART).set("icon", R.drawable.mn_belanja).set("text", "  PENJUALAN PART"));
-        nPopulate.add(Nson.newObject().set("id", MN_TUGAS_PART).set("icon", R.drawable.mn_tugaspart).set("text", "TUGAS PART"));
-        //nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_PenerimaanPart).set("icon", R.drawable.mn_tugaspart).set("text", "PENERIMAAN PART"));
-        //nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_PartDiterima).set("icon", R.drawable.mn_tugaspart).set("text", "PART DI TERIMA"));
-        //nPopulate.add(Nson.newObject().set("id", MN_STOCK_OPNAME).set("icon", R.drawable.mn_tugaspart).set("text", "STOCK OPNAME"));
-        nPopulate.add(Nson.newObject().set("id", MN_PENUGASAN_MEKANIK).set("icon", R.drawable.mn_perawatan).set("text", "PENUGASAN MEKANIK"));
+       /* nPopulate.add(Nson.newObject().set("id", 1).set("icon", R.drawable.m_antarjemput).set("text", M_ANTAR_JEMPUT));
+        nPopulate.add(Nson.newObject().set("id", 2).set("icon", R.drawable.m_booking).set("text", M_BOOKING));
+        nPopulate.add(Nson.newObject().set("id", 3).set("icon", R.drawable.mn_checkin).set("text", M_CHECK_IN));
+        nPopulate.add(Nson.newObject().set("id", 4).set("icon", R.drawable.m_inspeksi).set("text", M_INSPEKSI));
+        nPopulate.add(Nson.newObject().set("id", 5).set("icon", R.drawable.m_jualpart).set("text", M_JUAL_PARTS));
+        nPopulate.add(Nson.newObject().set("id", 6).set("icon", R.drawable.m_jurnal).set("text", M_JURNAL));
+        nPopulate.add(Nson.newObject().set("id", 7).set("icon", R.drawable.speed).set("text", M_DASHBOARD));
+        nPopulate.add(Nson.newObject().set("id", 8).set("icon", R.drawable.mn_inspeksi).set("text", M_MEKANIK));
+        nPopulate.add(Nson.newObject().set("id", 9).set("icon", R.drawable.m_menunggu).set("text", M_MENUNGGU));
+        nPopulate.add(Nson.newObject().set("id", 10).set("icon", R.drawable.m_message).set("text", M_MESSAGE));
+        nPopulate.add(Nson.newObject().set("id", 11).set("icon", R.drawable.m_mycode).set("text", M_MY_CODE));
+        nPopulate.add(Nson.newObject().set("id", 12).set("icon", R.drawable.m_part).set("text", M_PART));
+        nPopulate.add(Nson.newObject().set("id", 13).set("icon", R.drawable.m_pembayaran).set("text", M_PEMBAYARAN));
+        nPopulate.add(Nson.newObject().set("id", 14).set("icon", R.drawable.m_stock).set("text", M_STOCK_OPNAME));
+        nPopulate.add(Nson.newObject().set("id", 15).set("icon", R.drawable.m_terimapart).set("text", M_TERIMA_PARTS));
+        nPopulate.add(Nson.newObject().set("id", 16).set("icon", R.drawable.m_tugaspart).set("text", M_TUGAS_PARTS));*/
+
+        addHome(1,R.drawable.m_antarjemput, M_ANTAR_JEMPUT);
+        addHome(2,R.drawable.m_booking, M_BOOKING);
+        addHome(3,R.drawable.m_checkin, M_CHECK_IN);
+        addHome(4,R.drawable.m_inspeksi, M_INSPEKSI);
+        addHome(5,R.drawable.m_jualpart, M_JUAL_PARTS);
+        addHome(6,R.drawable.m_jurnal, M_JURNAL);
+        addHome(7,R.drawable.speed, M_DASHBOARD);
+        addHome(8,R.drawable.m_mekanik, M_MEKANIK);
+        addHome(9,R.drawable.m_menunggu, M_MENUNGGU);
+        addHome(10,R.drawable.m_message, M_MESSAGE);
+        addHome(11,R.drawable.m_mycode, M_MY_CODE);
+        addHome(12,R.drawable.m_part, M_PART);
+        addHome(13,R.drawable.m_pembayaran, M_PEMBAYARAN);
+        addHome(14,R.drawable.m_stock, M_STOCK_OPNAME);
+        addHome(15,R.drawable.m_terimapart, M_TERIMA_PARTS);
+        addHome(15,R.drawable.m_tugaspart, M_TUGAS_PARTS);
+
+
+
+
+     /*   nPopulate.add(Nson.newObject().set("id", MN_CHECKIN).set("icon", R.drawable.mn_checkin).set("text", "CHECK IN"));
+       nPopulate.add(Nson.newObject().set("id", MN_SPAREPART).set("icon", R.drawable.mn_jualpart).set("text", "SPAREPART"));
+        nPopulate.add(Nson.newObject().set("id", MN_CARI_PART).set("icon", R.drawable.mn_jualpart).set("text", "CARI PART"));
+         nPopulate.add(Nson.newObject().set("id", MN_PROFILE).set("icon", R.drawable.mn_pelanggan).set("text", "PROFILE"));
+         nPopulate.add(Nson.newObject().set("id", MN_TUGAS_PART).set("icon", R.drawable.mn_tugaspart).set("text", "TUGAS PART"));
+          nPopulate.add(Nson.newObject().set("id", MN_PENUGASAN_MEKANIK).set("icon", R.drawable.mn_perawatan).set("text", "PENUGASAN MEKANIK"));
         nPopulate.add(Nson.newObject().set("id", MN_BIAYA_MEKANIK2).set("icon", R.drawable.mn_perawatan).set("text", "BIAYA MEKANIK"));
         nPopulate.add(Nson.newObject().set("id", MN_LOKASI_PART).set("icon", R.drawable.mn_belanja).set("text", "LOKASI PART"));
         nPopulate.add(Nson.newObject().set("id", MN_TERIMA_PART).set("icon", R.drawable.mn_tugaspart).set("text", "TERIMA PART"));
@@ -405,8 +456,7 @@ public class MenuActivity extends AppActivity {
         nPopulate.add(Nson.newObject().set("id", MN_DISCOUNT_PART).set("icon", R.drawable.mn_belanja).set("text", "DISKON PART"));
         nPopulate.add(Nson.newObject().set("id", MN_REKENING).set("icon", R.drawable.mn_pembayaran).set("text", "REKENING BANK"));
         nPopulate.add(Nson.newObject().set("id", MN_BOOKING).set("icon", R.drawable.mn_booking).set("text", "BOOKING"));
-        //nPopulate.add(Nson.newObject().set("id", MN_KONTROL_LAYANAN).set("icon", R.drawable.mn_booking).set("text", "CHECK-IN"));
-        nPopulate.add(Nson.newObject().set("id", MN_DISCOUNT_LAYANAN).set("icon", R.drawable.mn_belanja).set("text", "DISCOUNT LAYANAN"));
+         nPopulate.add(Nson.newObject().set("id", MN_DISCOUNT_LAYANAN).set("icon", R.drawable.mn_belanja).set("text", "DISCOUNT LAYANAN"));
         nPopulate.add(Nson.newObject().set("id", MN_DISCOUNT_JASALAIN).set("icon", R.drawable.mn_belanja).set("text", "DISCOUNT JASA LAIN"));
         nPopulate.add(Nson.newObject().set("id", MN_KOMISI_LAYANAN).set("icon", R.drawable.mn_inspeksi).set("text", "KOMISI LAYANAN"));
         nPopulate.add(Nson.newObject().set("id", MN_KOMISI_JASA_LAIN).set("icon", R.drawable.mn_inspeksi).set("text", "KOMISI JASA LAIN"));
@@ -419,19 +469,10 @@ public class MenuActivity extends AppActivity {
         nPopulate.add(Nson.newObject().set("id", MN_KERJA_MEKANIK).set("icon", R.drawable.mn_homeservice).set("text", "PERINTAH KERJA MEKANIK"));
         nPopulate.add(Nson.newObject().set("id", MN_KOMISI_PART).set("icon", R.drawable.mn_inspeksi).set("text", "KOMISI PART"));
 
-//        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_KomisiKaryawan).set("icon", R.drawable.sample).set("text", "MESSAGE"));
-//        nPopulate.add(Nson.newObject().set("id", MN_MESSAGE_LoyaltiProgram).set("icon", R.drawable.sample).set("text", "MESSAGE"));
-       // nPopulate.add(Nson.newObject().set("id", 1).set("icon", R.drawable.mn_perawatan).set("text", "MEKANIK"));
-        /*nPopulate.add(Nson.newObject().set("id", 1).set("icon", R.drawable.mn_pembayaran).set("text", "KASIR"));
-        nPopulate.add(Nson.newObject().set("id", 1).set("icon", R.drawable.mn_inspeksi).set("text", "INSPEKSI"));
-        nPopulate.add(Nson.newObject().set("id", 1).set("icon", R.drawable.mn_tugaspart).set("text", "TUGAS PART"));
-        nPopulate.add(Nson.newObject().set("id", 1).set("icon", R.drawable.mn_alert).set("text", "SERVICE ALERT"));
-        nPopulate.add(Nson.newObject().set("id", 1).set("icon", R.drawable.mn_pelanggan).set("text", "DATA"));
-        //nPopulate.add(Nson.newObject().set("id", 1).set("icon", R.drawable.mn_belanja).set("text", "BOOKING"));
-        nPopulate.add(Nson.newObject().set("id", 1).set("icon", R.drawable.mn_lainnya).set("text", "LAINNYA"));
 */
-        //nPopulate.add(Nson.newObject().set("id", MN_PART).set("icon", R.drawable.mn_lainnya).set("text", "PART"));
-        //nPopulate.add(Nson.newObject().set("id", MN_PART_SEARCH).set("icon", R.drawable.mn_lainnya).set("text", "PART SEARCH"));
+
+
+
 
         ArrayAdapter<Vector<String>> arrayAdapter = new ArrayAdapter<Vector<String>>(MenuActivity.this, R.layout.activity_main_item, nPopulate.asArray()) {
             public View getView(int position, View convertView, ViewGroup parent) {
@@ -449,7 +490,15 @@ public class MenuActivity extends AppActivity {
 
 
     }
+    private boolean getAccess(String access){
 
+        if (getSetting("TIPE_USER").equalsIgnoreCase("ADMIN")){
+            return true;
+        }else if (getSetting("ACCESS_MENU").contains(access)) {
+            return true;
+        }
+        return false;
+    }
     private void sendDataBengkel(){
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
@@ -468,10 +517,98 @@ public class MenuActivity extends AppActivity {
         });
     }
 
+    private final String REFERAL = "REFERAL";
+    private final String CHECK_OUT = "CHECK OUT";
+    private final String COLLECTION = "COLLECTION";
+    private final String PART_KELUAR = "PART KELUAR";
+    private final String OUTSOURCE = "OUTSOURCE";
+    private final String MY_BUSINESS = "MY BUSINESS";
+    private final String PENGATURAN = "PENGATURAN";
+    private final String DISCOUNT = "DISCOUNT";
+    private final String KOMISI = "KOMISI";
+
+    private final String PENGATURAN_USER = "USER";
+    private final String PENGATURAN_PENUGASAN = "PENUGASAN MEKANIK";
+    private final String PENGATURAN_USER_LAYANAN= "LAYANAN";
+    private final String PENGATURAN_USER_BIAYA_MEKANIK = "BIAYA MEKANIK";
+    private final String PENGATURAN_USER_SPAREPARTS = "SPAREPARTS";
+    private final String PENGATURAN_USER_REKENING_BANK= "REKENING BANK";
+    private final String PENGATURAN_USER_LOKASI_PARTS = "LOKASI PARTS";
+    private final String PENGATURAN_USER_TENDA= "TENDA";
+
+
+    private final String KOMISI_JASA_LAIN = "JASA LAIN";
+    private final String KOMISI_LAYANAN = "LAYANAN";
+    private final String KOMISI_PART = "PART";
+
+    private final String DISCOUNT_JASA_LAIN = "JASA LAIN";
+    private final String DISCOUNT_LAYANAN = "LAYANAN";
+    private final String DISCOUNT_PART = "PART";
+    private final String DISCOUNT_SPOT= "SPOT";
+    private final String DISCOUNT_FREKWENSI = "FREKWENSI";
+
+    private final String MY_BUSINESS_BILLING = "BILLING";
+    private final String MY_BUSINESS_INFO_USAHA = "INFO USAHA";
+    private final String MY_BUSINESS_HUTANG = "HUTANG";
+    private final String MY_BUSINESS_PIUTANG = "PIUTANG";
+    private final String MY_BUSINESS_ASET= "ASET";
+
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu, menu);
+        SubMenu subMenu;
+
+        if (getAccess(REFERAL)) {
+            menu.add(REFERAL);
+        }
+        if (getAccess(CHECK_OUT)) {
+            menu.add(CHECK_OUT);
+        }
+        if (getAccess(COLLECTION)) {
+            menu.add(COLLECTION);
+        }
+        if (getAccess(CHECK_OUT)) {
+            menu.add(CHECK_OUT);
+        }
+        if (getAccess(OUTSOURCE)) {
+            menu.add(OUTSOURCE);
+        }
+        if (getAccess(MY_BUSINESS)) {
+            subMenu = menu.addSubMenu(MY_BUSINESS);
+            subMenu.add(MY_BUSINESS_BILLING);
+            subMenu.add(MY_BUSINESS_INFO_USAHA);
+            subMenu.add(MY_BUSINESS_HUTANG);
+            subMenu.add(MY_BUSINESS_PIUTANG);
+            subMenu.add(MY_BUSINESS_ASET);
+        }
+        if (getAccess(PENGATURAN)) {
+            subMenu = menu.addSubMenu(PENGATURAN);
+            subMenu.add(PENGATURAN_USER);
+            subMenu.add(PENGATURAN_PENUGASAN);
+            subMenu.add(PENGATURAN_USER_LAYANAN);
+            subMenu.add(PENGATURAN_USER_BIAYA_MEKANIK);
+            subMenu.add(PENGATURAN_USER_SPAREPARTS);
+            subMenu.add(PENGATURAN_USER_REKENING_BANK);
+            subMenu.add(PENGATURAN_USER_LOKASI_PARTS);
+            subMenu.add(PENGATURAN_USER_TENDA);
+        }
+        if (getAccess(DISCOUNT)) {
+            subMenu = menu.addSubMenu(DISCOUNT);
+            subMenu.add(DISCOUNT_JASA_LAIN);
+            subMenu.add(DISCOUNT_FREKWENSI);
+            subMenu.add(DISCOUNT_PART);
+            subMenu.add(DISCOUNT_SPOT);
+            subMenu.add(DISCOUNT_FREKWENSI);
+        }
+        if (getAccess(MY_BUSINESS)) {
+            subMenu = menu.addSubMenu(KOMISI);
+            subMenu.add(KOMISI_JASA_LAIN);
+            subMenu.add(KOMISI_LAYANAN);
+            subMenu.add(KOMISI_PART);
+        }
         return true;
     }
 

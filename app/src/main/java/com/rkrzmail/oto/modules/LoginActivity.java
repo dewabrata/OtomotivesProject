@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
+import com.naa.data.Utility;
 import com.naa.data.UtilityAndroid;
 import com.naa.utils.InternetX;
 import com.naa.utils.MessageMsg;
@@ -33,9 +34,9 @@ public class LoginActivity extends AppActivity {
             @Override
             public void onClick(View v) {
                 if(find(R.id.user, EditText.class).getText().toString().isEmpty()){
-                   showWarning("Email Harus Di isi");
+                   showWarning("Nomor Handphone Harus Di isi");
                 }else if(find(R.id.password, EditText.class).getText().toString().isEmpty()){
-                    showWarning("Password Harus Di isi");
+                    showWarning("Otp Harus Di isi");
                 }else{
                     login();
                 }
@@ -74,7 +75,7 @@ public class LoginActivity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "Request");
-                args.put("user", find(R.id.user, EditText.class).getText().toString());
+                args.put("user", formatPhone(find(R.id.user, EditText.class).getText().toString()));
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("login"), args));
             }
 
@@ -89,7 +90,15 @@ public class LoginActivity extends AppActivity {
             }
         });
     }
+    private String formatPhone(String phone){
+        if (phone.startsWith("+62")){
+            phone = phone.substring(1);
+        }else if (phone.startsWith("0")){
+            phone = "62" + phone.substring(1);
+        }
 
+        return phone.trim();
+    }
     private void login() {
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             String sResult;
@@ -97,8 +106,9 @@ public class LoginActivity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "Login");
-                args.put("user", find(R.id.user, EditText.class).getText().toString());
+                args.put("user", formatPhone(find(R.id.user, EditText.class).getText().toString()));
                 args.put("password", find(R.id.password, EditText.class).getText().toString());
+
                 sResult = (InternetX.postHttpConnection(AppApplication.getBaseUrlV3("login"), args));
             }
 
@@ -111,7 +121,10 @@ public class LoginActivity extends AppActivity {
                     setSetting("L", "L");
                     setSetting("result", nson.toJson());
                     setSetting("CID", nson.get("CID").asString());
-                    setSetting("NAMA", nson.get("NAMA").asString());
+                    setSetting("NAMA_USER", nson.get("NAMA_USER").asString());
+                    setSetting("NAMA_BENGKEL", nson.get("NAMA_BENGKEL").asString());
+                    setSetting("TIPE_USER", nson.get("TIPE_USER").asString());
+                    setSetting("ACCESS_MENU", nson.get("ACCESS_MENU").asString());
                     setSetting("session", nson.get("token").asString());
                     setSetting("user", find(R.id.user, EditText.class).getText().toString());
                     Log.d("Login__", "runUI: " + nson);
