@@ -91,13 +91,13 @@ public class LoginActivity extends AppActivity {
         });
     }
     private String formatPhone(String phone){
+        phone = phone.trim();
         if (phone.startsWith("+62")){
             phone = phone.substring(1);
         }else if (phone.startsWith("0")){
             phone = "62" + phone.substring(1);
         }
-         
-        return  Utility.getNumberOnly(phone.trim());
+        return Utility.getNumberOnly(phone.trim());
     }
     private void login() {
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
