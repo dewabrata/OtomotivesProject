@@ -96,8 +96,8 @@ public class LoginActivity extends AppActivity {
         }else if (phone.startsWith("0")){
             phone = "62" + phone.substring(1);
         }
-
-        return phone.trim();
+         
+        return  Utility.getNumberOnly(phone.trim());
     }
     private void login() {
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
