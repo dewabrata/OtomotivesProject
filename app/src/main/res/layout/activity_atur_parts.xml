@@ -52,8 +52,8 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginRight="10dp"
-                    app:helperTextEnabled="true"
                     app:helperText="Disable"
+                    app:helperTextEnabled="true"
                     app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
 
                     <EditText
@@ -61,8 +61,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:editable="false"
-                        android:textSize="14sp"
-                        android:hint="NO. PART" />
+                        android:hint="NO. PART"
+                        android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -74,8 +74,8 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginRight="10dp"
-                    app:helperTextEnabled="true"
                     app:helperText="Disable"
+                    app:helperTextEnabled="true"
                     app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
 
 
@@ -84,8 +84,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:editable="false"
-                        android:textSize="14sp"
-                        android:hint="NAMA PART" />
+                        android:hint="NAMA PART"
+                        android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -98,8 +98,8 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginRight="10dp"
-                    app:helperTextEnabled="true"
                     app:helperText="Disable"
+                    app:helperTextEnabled="true"
                     app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
 
 
@@ -108,8 +108,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:editable="false"
-                        android:textSize="14sp"
-                        android:hint="MERK" />
+                        android:hint="MERK"
+                        android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -121,8 +121,8 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginRight="10dp"
-                    app:helperTextEnabled="true"
                     app:helperText="Disable"
+                    app:helperTextEnabled="true"
                     app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
 
                     <EditText
@@ -130,8 +130,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:editable="false"
-                        android:textSize="14sp"
-                        android:hint="STATUS" />
+                        android:hint="STATUS"
+                        android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -143,8 +143,8 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginRight="10dp"
-                    app:helperTextEnabled="true"
                     app:helperText="Disable"
+                    app:helperTextEnabled="true"
                     app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
 
 
@@ -152,8 +152,8 @@
                         android:id="@+id/et_waktuGanti_part"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="WAKTU GANTI"
                         android:editable="false"
+                        android:hint="WAKTU GANTI"
                         android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -166,8 +166,8 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginRight="10dp"
-                    app:helperTextEnabled="true"
                     app:helperText="Disable"
+                    app:helperTextEnabled="true"
                     app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
 
 
@@ -175,8 +175,8 @@
                         android:id="@+id/et_het_part"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="HET"
                         android:editable="false"
+                        android:hint="HET"
                         android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -194,10 +194,10 @@
                         android:id="@+id/et_stockTersedia_part"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="14sp"
+                        android:hint="STOCK TERSEDIA"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
-                        android:hint="STOCK TERSEDIA" />
+                        android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -215,10 +215,10 @@
                         android:id="@+id/et_waktuPesan_part"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:textSize="14sp"
                         android:hint="WAKTU PESAN (HARI)"
-                        android:maxLength="2" />
+                        android:inputType="number"
+                        android:maxLength="2"
+                        android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -239,36 +239,65 @@
                         android:layout_height="wrap_content"
                         android:hint="STOCK MINIMUM"
                         android:inputType="numberDecimal"
-                        android:textSize="14sp"
-                        android:maxLength="7" />
+                        android:maxLength="7"
+                        android:textSize="14sp" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/tl_hpp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
+                    app:helperTextEnabled="true">
+
+                    <EditText
+                        android:id="@+id/et_hpp_part"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="HPP"
+                        android:inputType="numberDecimal"
+                        android:maxLength="16"
+                        android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@drawable/border_solid"
-                    android:padding="10dp"
-                    android:orientation="horizontal">
+                    android:layout_marginTop="@dimen/paddingMedium"
+                    android:layout_marginBottom="@dimen/paddingMedium"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/paddingMedium"
+                    android:paddingEnd="@dimen/paddingMedium">
 
                     <TextView
                         android:id="@+id/textView28"
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                     android:textSize="14sp"
-                        android:text="POLA HARGA JUAL" />
-
-                    <Spinner
-                        android:id="@+id/sp_polaHarga_part"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:entries="@array/pola_harga_jual"
-                        android:padding="5dp"
-                        android:textAlignment="center" />
+                        android:layout_weight="3"
+                        android:text="POLA HARGA JUAL"
+                        android:textColor="@color/grey_900"
+                        android:textStyle="bold" />
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="34dp"
+                        android:layout_weight="6"
+                        android:background="@drawable/background_edittext">
+
+                        <Spinner
+                            android:id="@+id/sp_polaHarga_part"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:entries="@array/pola_harga_jual"
+                            android:textAlignment="center" />
+
+                    </RelativeLayout>
 
                 </LinearLayout>
 
@@ -287,11 +316,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
-                        android:textSize="14sp"/>
+                        android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
-               <include layout="@layout/layout_btn_simpan_hapus"/>
+                <include layout="@layout/layout_btn_simpan_hapus" />
 
             </LinearLayout>
         </ScrollView>

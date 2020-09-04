@@ -3,9 +3,11 @@ package com.rkrzmail.oto.modules.primary.checkin;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +33,7 @@ import java.util.Map;
 
 public class Checkin2_Activity extends AppActivity {
 
-    private EditText etTahun, etNorangka, etNomesin;
+    private EditText etNorangka, etNomesin;
     private TextView tvTgl;
     private NikitaAutoComplete etWarna;
     private static final int REQUEST_BOOKING = 12;
@@ -54,7 +56,6 @@ public class Checkin2_Activity extends AppActivity {
     private void initComponent() {
         initToolbar();
         etWarna = findViewById(R.id.et_warna_checkin2);
-        etTahun = findViewById(R.id.et_tahun_checkin2);
         tvTgl = findViewById(R.id.tv_tanggal_checkin2);
         etNorangka = findViewById(R.id.et_noRangka_checkin2);
         etNomesin = findViewById(R.id.et_noMesin_checkin2);
@@ -63,12 +64,17 @@ public class Checkin2_Activity extends AppActivity {
         tvTgl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               getDatePickerDialogTextView(getActivity(), tvTgl);
+                getDatePickerDialogTextView(getActivity(), tvTgl);
             }
         });
         find(R.id.btn_lanjut_checkin2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (find(R.id.tv_tahun_checkin2, TextView.class).getText().toString().isEmpty()) {
+                    showInfo("Tahun Produksi Tidak Valid");
+                    find(R.id.tv_tahun_checkin2, TextView.class).performClick();
+                    return;
+                }
                 setSelanjutnya();
             }
         });
@@ -76,6 +82,12 @@ public class Checkin2_Activity extends AppActivity {
 
     private void componentValidation() {
         Tools.setViewAndChildrenEnabled(find(R.id.ly_tahun_checkin2, LinearLayout.class), false);
+        find(R.id.tv_tahun_checkin2, TextView.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getYearsDialog(find(R.id.tv_tahun_checkin2, TextView.class));
+            }
+        });
 
         etWarna.setThreshold(3);
         etWarna.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
@@ -106,23 +118,23 @@ public class Checkin2_Activity extends AppActivity {
             }
         });
 
-        etTahun.addTextChangedListener(new TextWatcher() {
+        etWarna.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
 
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
-                if (editable.length() == 4) {
+            public void afterTextChanged(Editable s) {
+                if (!s.toString().isEmpty() && !find(R.id.tv_tahun_checkin2, TextView.class).getText().toString().isEmpty()) {
                     int year = Calendar.getInstance().get(Calendar.YEAR);
                     try {
-                        Date inputYear = new SimpleDateFormat("yyyy").parse(editable.toString());
+                        Date inputYear = new SimpleDateFormat("yyyy").parse(find(R.id.tv_tahun_checkin2, TextView.class).getText().toString());
                         Date validationYear = new SimpleDateFormat("yyyy").parse(String.valueOf(year - 1));
                         if (validationYear.after(inputYear)) {
                             Tools.setViewAndChildrenEnabled(find(R.id.ly_tahun_checkin2, LinearLayout.class), true);
@@ -141,7 +153,7 @@ public class Checkin2_Activity extends AppActivity {
         Nson nson = Nson.readJson(getIntentStringExtra("data"));
 
         nson.set("warna", etWarna.getText().toString());
-        nson.set("tahun", etTahun.getText().toString());
+        nson.set("tahun", find(R.id.tv_tahun_checkin2, TextView.class).getText().toString());
         nson.set("norangka", etNorangka.getText().toString());
         nson.set("nomesin", etNomesin.getText().toString());
         nson.set("tanggal", tvTgl.getText().toString());

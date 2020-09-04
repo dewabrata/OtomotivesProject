@@ -37,7 +37,12 @@ public class Booking3_Activity extends AppActivity implements View.OnClickListen
     public static final int REQUEST_JASA_BERKALA = 17;
     public static final int REQUEST_PART_BERKALA = 18;
     public static final int REQUEST_PART_EXTERNAL = 19;
+    public static final int REQUEST_JASA_EXTERNAL = 21;
     private DecimalFormat formatter;
+    private Nson partList = Nson.newArray(),
+            jasaList = Nson.newArray();
+    private boolean isListRecylerview; // true = part, false = jasa
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,26 +71,24 @@ public class Booking3_Activity extends AppActivity implements View.OnClickListen
         rvBooking3.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvBooking3.setHasFixedSize(true);
 
-        rvBooking3.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_booking3_checkin3) {
+        rvBooking3.setAdapter(new NikitaRecyclerAdapter(isListRecylerview ? partList : jasaList, R.layout.item_part_booking3_checkin3) {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
-                String hargaPart = nListArray.get(position).get("HARGA_PART").asString();
-                String hargaJasa = nListArray.get(position).get("HARGA_JASA").asString();
-                String net = nListArray.get(position).get("NET").asString();
+                viewHolder.find(isListRecylerview ? R.id.tv_namaPart_booking3_checkin3 : R.id.tv_kelompokPart_booking3_checkin3, TextView.class)
+                        .setText(isListRecylerview ? nListArray.get(position).get("NAMA_PART").asString() : nListArray.get(position).get("NAMA_KELOMPOK_PART").asString());
 
-                if (!hargaJasa.isEmpty()) {
-                    viewHolder.find(R.id.tv_harga_booking3_checkin3, TextView.class).setText(hargaJasa);
-                    viewHolder.find(R.id.tv_net_booking3_checkin3, TextView.class).setText(hargaJasa);
-                } else if (!hargaPart.isEmpty()) {
-                    viewHolder.find(R.id.tv_harga_booking3_checkin3, TextView.class).setText(hargaPart);
-                    viewHolder.find(R.id.tv_net_booking3_checkin3, TextView.class).setText(hargaPart);
+                viewHolder.find(isListRecylerview ? R.id.tv_noPart_booking3_checkin3 : R.id.tv_aktifitas_booking3_checkin3, TextView.class)
+                        .setText(isListRecylerview ? nListArray.get(position).get("NO_PART").asString() : nListArray.get(position).get("AKTIVITAS").asString());
+
+                viewHolder.find(isListRecylerview ? R.id.tv_hargaNet_booking3_checkin3 : R.id.tv_jasaLainNet_booking3_checkin3, TextView.class)
+                        .setText(nListArray.get(position).get("HARGA_NET").asString());
+
+                if(isListRecylerview){
+                    viewHolder.find(R.id.tv_merk_booking3_checkin3, TextView.class).setText(nListArray.get(position).get("MERK").asString());
+                    viewHolder.find(R.id.tv_jasaNet_booking3_checkin3, TextView.class).setText(nListArray.get(position).get("BIAYA_JASA").asString());
                 }
-                viewHolder.find(R.id.tv_net_booking3_checkin3, TextView.class).setText(net);
-                viewHolder.find(R.id.tv_nama_booking3_checkin3, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
-                viewHolder.find(R.id.tv_disc_booking3_checkin3, TextView.class).setText(nListArray.get(position).get("DISC").asString());
             }
-
             @Override
             public int getItemCount() {
                 if (nListArray.size() == 0) {
@@ -163,15 +166,18 @@ public class Booking3_Activity extends AppActivity implements View.OnClickListen
         Intent i;
         switch (view.getId()) {
             case R.id.btn_jasaLain_booking3:
+                isListRecylerview = false;
                 i = new Intent(getActivity(), JasaLain_Activity.class);
                 startActivityForResult(i, REQUEST_JASA_LAIN);
                 break;
             case R.id.btn_part_booking3:
+                isListRecylerview = true;
                 i = new Intent(getActivity(), CariPart_Activity.class);
                 i.putExtra("flag", "ALL");
                 startActivityForResult(i, REQUEST_PART);
                 break;
             case R.id.btn_jasaLainBerkala_booking3:
+                isListRecylerview = false;
                 Nson n = Nson.readJson(getIntentStringExtra("KM_SEKARANG"));
                 String km = n.get("km").asString();
                 Log.d("Booking3List", "KM : " + n.get("km"));
@@ -182,10 +188,12 @@ public class Booking3_Activity extends AppActivity implements View.OnClickListen
                 startActivityForResult(i, REQUEST_JASA_BERKALA);
                 break;
             case R.id.btn_partBerkala_booking3:
+                isListRecylerview = true;
                 i = new Intent(getActivity(), PartBerkala_Activity.class);
                 startActivityForResult(i, REQUEST_PART_BERKALA);
                 break;
             case R.id.btn_partExternal_booking3:
+                isListRecylerview = true;
                 i = new Intent(getActivity(), CariPart_Activity.class);
                 i.putExtra("flag", "MASTER_PART");
                 startActivityForResult(i, REQUEST_PART_EXTERNAL);
@@ -211,14 +219,12 @@ public class Booking3_Activity extends AppActivity implements View.OnClickListen
                 case REQUEST_JASA_LAIN:
                     StringBuilder stringBuilder = new StringBuilder();
                     Nson nson = Nson.readJson(getIntentStringExtra(data, "data"));
-                    nListArray.add(nson);
+                    jasaList.add(nson);
                     Log.d(TAG, "REQUEST_JASA_LAIN : " + nson);
-                    rvBooking3.getAdapter().notifyDataSetChanged();
                     break;
                 case REQUEST_JASA_BERKALA:
-                    nListArray.add(Nson.readJson(getIntentStringExtra(data, "data")));
+                    jasaList.add(Nson.readJson(getIntentStringExtra(data, "data")));
                     Log.d(TAG, "REQUEST_JASA_BERKALA : " + nListArray);
-                    rvBooking3.getAdapter().notifyDataSetChanged();
                     break;
                 case REQUEST_PART:
                     i = new Intent(getActivity(), JumlahHargaPart_Activity.class);
@@ -226,8 +232,7 @@ public class Booking3_Activity extends AppActivity implements View.OnClickListen
                     startActivityForResult(i, REQUEST_HARGA_PART);
                     break;
                 case REQUEST_PART_BERKALA:
-                    nListArray.add(Nson.readJson(getIntentStringExtra(data, "data")));
-                    rvBooking3.getAdapter().notifyDataSetChanged();
+                    partList.add(Nson.readJson(getIntentStringExtra(data, "data")));
                     break;
                 case REQUEST_PART_EXTERNAL:
                     i = new Intent(getActivity(), JumlahHargaPart_Activity.class);
@@ -235,13 +240,12 @@ public class Booking3_Activity extends AppActivity implements View.OnClickListen
                     startActivityForResult(i, REQUEST_HARGA_PART);
                     break;
                 case REQUEST_HARGA_PART:
-                    nListArray.add(Nson.readJson(getIntentStringExtra(data, "data")));
+                    partList.add(Nson.readJson(getIntentStringExtra(data, "data")));
                     Log.d(TAG, "REQUEST_PART " + Nson.readJson(getIntentStringExtra(data, "data")));
-                    rvBooking3.getAdapter().notifyDataSetChanged();
                     break;
             }
         }
 
-        Log.d(TAG, "TOTAL : " + nListArray);
+        Log.d(TAG, "PART : " + partList + "\n" + "JASA : " + jasaList);
     }
 }

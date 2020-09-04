@@ -28,6 +28,8 @@ import java.util.Map;
 public class HistoryBookingCheckin_Activity extends AppActivity {
 
     private RecyclerView rvHistory;
+    private String nopol = "";
+    private boolean isCheckin = false, isBooking = false, flag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,15 +41,26 @@ public class HistoryBookingCheckin_Activity extends AppActivity {
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("History Booking");
+        if(getIntent().hasExtra("checkin")){
+            isCheckin = true;
+            flag = true;
+            getSupportActionBar().setTitle("History Checkin");
+        }else if(getIntent().hasExtra("booking")){
+            isBooking = true;
+            flag = false;
+            getSupportActionBar().setTitle("History Booking");
+        }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initComponent() {
-        final String nopol = getIntentStringExtra("NOPOL");
+        nopol = getIntentStringExtra("NOPOL");
         initToolbar();
-        rvHistory = findViewById(R.id.recyclerView);
+        initRecylerview();
+        loadData();
+    }
 
+    private void loadData(){
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
@@ -68,20 +81,31 @@ public class HistoryBookingCheckin_Activity extends AppActivity {
                 }
             }
         });
+    }
 
+    private void initRecylerview(){
+        rvHistory = findViewById(R.id.recyclerView);
         rvHistory.setLayoutManager(new LinearLayoutManager(this));
         rvHistory.setHasFixedSize(true);
-        rvHistory.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_history_booking) {
+        rvHistory.setAdapter(new NikitaRecyclerAdapter(nListArray, flag ? R.layout.item_history_checkin : R.layout.item_history_booking) {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 String date = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("TANGGAL_IN").asString());
 
-                viewHolder.find(R.id.tv_status_historyBooking, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
-                viewHolder.find(R.id.tv_ket_historyBooking, TextView.class).setText(nListArray.get(position).get("KELUHAN").asString());
-                viewHolder.find(R.id.tv_jam_historyBooking, TextView.class).setText(nListArray.get(position).get("JAM_BOOKING").asString());
-                viewHolder.find(R.id.tv_user_historyBooking, TextView.class).setText(nListArray.get(position).get("CREATED_USER").asString());
-                viewHolder.find(R.id.tv_tgl_historyBooking, TextView.class).setText(date);
+                if(flag){
+                    viewHolder.find(R.id.tv_tgl_historyCheckin, TextView.class).setText(nListArray.get(position).get("").asString());
+                    viewHolder.find(R.id.tv_km_historyCheckin, TextView.class).setText(nListArray.get(position).get("").asString());
+                    viewHolder.find(R.id.tv_namaLayanan_historyCheckin, TextView.class).setText(nListArray.get(position).get("").asString());
+                    viewHolder.find(R.id.tv_namaBengkel_historyCheckin, TextView.class).setText(nListArray.get(position).get("").asString());
+                }else{
+                    viewHolder.find(R.id.tv_status_historyBooking, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
+                    viewHolder.find(R.id.tv_ket_historyBooking, TextView.class).setText(nListArray.get(position).get("KELUHAN").asString());
+                    viewHolder.find(R.id.tv_jam_historyBooking, TextView.class).setText(nListArray.get(position).get("JAM_BOOKING").asString());
+                    viewHolder.find(R.id.tv_user_historyBooking, TextView.class).setText(nListArray.get(position).get("CREATED_USER").asString());
+                    viewHolder.find(R.id.tv_tgl_historyBooking, TextView.class).setText(date);
+                }
             }
         });
     }
+
 }

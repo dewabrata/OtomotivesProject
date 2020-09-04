@@ -30,14 +30,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tanggal_jam"
-                android:textStyle="bold" />
+                android:layout_gravity="start"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp"/>
 
             <TextView
                 android:id="@+id/tv_layanan_tugasPart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:text="@string/status"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp"
+                android:text="@string/status"
+                android:layout_gravity="end"/>
 
         </TableRow>
 
@@ -48,7 +52,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/user"
-                android:textStyle="bold"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp"
+                android:layout_gravity="start"/>
 
         </TableRow>
 
@@ -58,15 +64,19 @@
                 android:id="@+id/tv_namaP_tugasPart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:text="@string/nama_pelanggan"/>
+                android:textSize="12sp"
+                android:text="@string/nama_pelanggan"
+                android:layout_gravity="start"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
             <TextView
                 android:id="@+id/tv_noAntrian_tugasPart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="No. Antrian"
-                android:textStyle="bold"/>
+                android:layout_gravity="end"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp"/>
 
         </TableRow>
 

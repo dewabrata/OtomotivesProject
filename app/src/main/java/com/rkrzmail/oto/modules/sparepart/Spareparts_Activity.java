@@ -29,6 +29,7 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.srv.NsonAutoCompleteAdapter;
+import com.rkrzmail.utils.Tools;
 
 import java.text.DecimalFormat;
 import java.util.Map;
@@ -81,7 +82,11 @@ public class Spareparts_Activity extends AppActivity {
                 viewHolder.find(R.id.txtNamaPart, TextView.class).setText(nListArray.get(position).get("NAMA_PART").asString());
                 viewHolder.find(R.id.txtNoPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
                 viewHolder.find(R.id.tv_stock_spareparts, TextView.class).setText(stock);
-                viewHolder.find(R.id.txtHargaJual, TextView.class).setText("Rp. " + formatter.format(Double.parseDouble(nListArray.get(position).get("HARGA_JUAL").asString())));
+                if(Tools.isNumeric(nListArray.get(position).get("HARGA_JUAL").asString())){
+                    viewHolder.find(R.id.txtHargaJual, TextView.class).setText("Rp. " + formatter.format(Double.parseDouble(nListArray.get(position).get("HARGA_JUAL").asString())));
+                }else{
+                    viewHolder.find(R.id.txtHargaJual, TextView.class).setText(nListArray.get(position).get("HARGA_JUAL").asString());
+                }
                 viewHolder.find(R.id.tv_pending_spareparts, TextView.class).setText(nListArray.get(position).get("PENDING").asString());
                 viewHolder.find(R.id.tv_stockMin_spareparts, TextView.class).setText(nListArray.get(position).get("STOCK_MINIMUM").asString());
                 viewHolder.find(R.id.txtMerk, TextView.class).setText(nListArray.get(position).get("MERK").asString());
@@ -143,7 +148,46 @@ public class Spareparts_Activity extends AppActivity {
         // Assumes current activity is the searchable activity
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
-        adapterSearchView(mSearchView, "search", "atursparepart", "NAMA");
+
+        android.support.v7.widget.SearchView.SearchAutoComplete searchAutoComplete =
+                (android.support.v7.widget.SearchView.SearchAutoComplete)
+                        mSearchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+
+        searchAutoComplete.setDropDownBackgroundResource(R.drawable.bg_radius_white);
+        searchAutoComplete.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
+            Nson result;
+
+            @Override
+            public Nson onFindNson(Context context, String bookTitle) {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "view");
+                args.put("spec", "Bengkel");
+                args.put("search", bookTitle);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewsparepart"), args));
+
+                return result.get("data");
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                if (convertView == null) {
+                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    convertView = inflater.inflate(R.layout.item_suggestion, parent, false);
+                }
+
+                findView(convertView, R.id.title, TextView.class).setText( getItem(position).get("NAMA_PART").asString());
+                return convertView;
+            }
+        });
+
+        searchAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(i)));
+                find(android.support.v7.appcompat.R.id.search_src_text, android.support.v7.widget.SearchView.SearchAutoComplete.class).setText(n.get("NAMA_PART").asString());
+                find(android.support.v7.appcompat.R.id.search_src_text, android.support.v7.widget.SearchView.SearchAutoComplete.class).setTag(String.valueOf(adapterView.getItemAtPosition(i)));
+            }
+        });
 
         final SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {

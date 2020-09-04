@@ -1,6 +1,5 @@
 package com.rkrzmail.oto.gmod;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -27,11 +25,10 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.MenuActivity;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.jasa.JasaExternal_Activity;
 import com.rkrzmail.oto.modules.part.PartActivity;
-import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
-import com.rkrzmail.srv.NsonAutoCompleteAdapter;
 
 import java.util.List;
 import java.util.Map;
@@ -116,7 +113,7 @@ public class Pendaftaran3 extends AppActivity {
             @Override
             public void onClick(View v) {
 
-                Intent intent =  new Intent(getActivity(), JasaLainActivity.class);
+                Intent intent =  new Intent(getActivity(), JasaExternal_Activity.class);
 
                 startActivityForResult(intent,REQUEST_JASA);
             }

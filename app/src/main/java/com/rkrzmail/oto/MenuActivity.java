@@ -11,7 +11,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -31,19 +30,20 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.fragment.PageAdapter;
 import com.rkrzmail.oto.fragment.SlideFragment;
 import com.rkrzmail.oto.fragment.pageindicator.CirclePageIndicator;
-import com.rkrzmail.oto.gmod.LayananActivity;
 import com.rkrzmail.oto.gmod.MessageWA;
-import com.rkrzmail.oto.gmod.Part_DiterimaActivity;
-import com.rkrzmail.oto.gmod.Penerimaan_PartAcitivity;
+import com.rkrzmail.oto.modules.antar_jemput.AntarJemput_Activity;
 import com.rkrzmail.oto.modules.biayamekanik.BiayaMekanik2Activity;
 import com.rkrzmail.oto.modules.LoginActivity;
+import com.rkrzmail.oto.modules.hutang.Hutang_Activity;
+import com.rkrzmail.oto.modules.hutang.Piutang_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiPart_Activity;
+import com.rkrzmail.oto.modules.menunggu.MenungguPart_Activity;
 import com.rkrzmail.oto.modules.pembayaran.DaftarPembayaran_Activity;
-import com.rkrzmail.oto.modules.perintah_kerja_mekanik.PerintahKerjaMekanik_Activity;
 import com.rkrzmail.oto.modules.primary.KontrolLayanan_Activity;
 import com.rkrzmail.oto.modules.primary.KontrolBooking_Activity;
 import com.rkrzmail.oto.modules.jasa.discount_jasa_lain.DiscountJasaLain_Activity;
 import com.rkrzmail.oto.modules.layanan.discount_layanan.DiscountLayanan_Activity;
+import com.rkrzmail.oto.modules.primary.checkout.CheckOut_Activity;
 import com.rkrzmail.oto.modules.sparepart.AturParts_Activity;
 import com.rkrzmail.oto.modules.sparepart.DetailCariPart_Activity;
 import com.rkrzmail.oto.modules.sparepart.diskon_part.DiscountPart_Activity;
@@ -51,20 +51,16 @@ import com.rkrzmail.oto.modules.discount.FrekwensiDiscount_Activity;
 import com.rkrzmail.oto.modules.discount.SpotDiscount_Activity;
 import com.rkrzmail.oto.modules.jurnal.DaftarJurnal_Activity;
 import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
-import com.rkrzmail.oto.modules.profile.ProfileBengkel_Activity;
 import com.rkrzmail.oto.modules.registrasi_bengkel.Referal_Activity;
-import com.rkrzmail.oto.modules.registrasi_bengkel.RegistrasiBengkel_Activity;
 import com.rkrzmail.oto.modules.sparepart.PenjualanPart_Activity;
 import com.rkrzmail.oto.modules.sparepart.Spareparts_Activity;
-import com.rkrzmail.oto.modules.sparepart.part_keluar.PartKeluar_Activity;
+import com.rkrzmail.oto.modules.sparepart.stock_opname.HistoryStockOpname_Activity;
 import com.rkrzmail.oto.modules.sparepart.tugas_part.TugasPart_Activity;
 import com.rkrzmail.oto.modules.user.User_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiJasaLain_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiLayanan_Activity;
 import com.rkrzmail.oto.modules.layanan.Layanan_Avtivity;
 import com.rkrzmail.oto.modules.sparepart.lokasi_part.LokasiPart_Activity;
-import com.rkrzmail.oto.modules.part.PartActivity;
-import com.rkrzmail.oto.modules.part.PartSearchActivity;
 import com.rkrzmail.oto.modules.penugasan.PenugasanActivity;
 import com.rkrzmail.oto.modules.rekening_bank.RekeningBank_Activity;
 import com.rkrzmail.oto.modules.tenda.Tenda_Activity;
@@ -138,14 +134,14 @@ public class MenuActivity extends AppActivity {
     private final String PENGATURAN_USER_REKENING_BANK= "REKENING BANK";
     private final String PENGATURAN_USER_LOKASI_PARTS = "LOKASI PARTS";
     private final String PENGATURAN_USER_TENDA= "TENDA";
-    private final String KOMISI_JASA_LAIN = "JASA LAIN";
-    private final String KOMISI_LAYANAN = "LAYANAN";
-    private final String KOMISI_PART = "PART";
-    private final String DISCOUNT_JASA_LAIN = "JASA LAIN";
-    private final String DISCOUNT_LAYANAN = "LAYANAN";
-    private final String DISCOUNT_PART = "PART";
-    private final String DISCOUNT_SPOT= "SPOT";
-    private final String DISCOUNT_FREKWENSI = "FREKWENSI";
+    private final String KOMISI_JASA_LAIN = "KOMISI JASA LAIN";
+    private final String KOMISI_LAYANAN = "KOMISI LAYANAN";
+    private final String KOMISI_PART = "KOMISI PART";
+    private final String DISCOUNT_JASA_LAIN = "DISCOUNT JASA LAIN";
+    private final String DISCOUNT_LAYANAN = "DISCOUNT LAYANAN";
+    private final String DISCOUNT_PART = "DISCOUNT PART";
+    private final String DISCOUNT_SPOT= "DISCOUNT SPOT";
+    private final String DISCOUNT_FREKWENSI = "DISCOUNT FREKWENSI";
 
     private final String MY_BUSINESS_BILLING = "BILLING";
     private final String MY_BUSINESS_INFO_USAHA = "INFO USAHA";
@@ -159,6 +155,7 @@ public class MenuActivity extends AppActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getSetting("NAMA_BENGKEL"));
         sendDataBengkel();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -168,7 +165,7 @@ public class MenuActivity extends AppActivity {
                         .setAction("Action", null).show();
             }
         });
-        setTitle(getSetting("NAMA_BENGKEL"));
+
         GridView gridView = findViewById(R.id.gridView);
         populate(gridView);
 
@@ -176,7 +173,8 @@ public class MenuActivity extends AppActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_ANTAR_JEMPUT) ){
-
+                    Intent intent =  new Intent(MenuActivity.this, AntarJemput_Activity.class);
+                    startActivity(intent);
                 }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_BOOKING)){
                     Intent intent = new Intent(MenuActivity.this, KontrolBooking_Activity.class);
                     startActivity(intent);
@@ -184,193 +182,43 @@ public class MenuActivity extends AppActivity {
                     Intent intent = new Intent(MenuActivity.this, KontrolLayanan_Activity.class);
                     startActivity(intent);
                 }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_DASHBOARD)){
+
                 }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_INSPEKSI)){
                     Intent intent = new Intent(MenuActivity.this, KontrolLayanan_Activity.class);
                     startActivity(intent);
                 }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_JUAL_PARTS)){
+                    Intent intent = new Intent(MenuActivity.this, PenjualanPart_Activity.class);
+                    startActivity(intent);
                 }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_JURNAL)){
+                    Intent intent = new Intent(MenuActivity.this, DaftarJurnal_Activity.class);
+                    startActivity(intent);
                 }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_MEKANIK)){
                 }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_MENUNGGU)){
+                    Intent intent =  new Intent(MenuActivity.this, MenungguPart_Activity.class);
+                    startActivity(intent);
                 }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_MY_CODE)){
                 }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_PART)){
-                    Intent intent = new Intent(MenuActivity.this, PartActivity.class);
-                    startActivity(intent);
+                    Intent intent = new Intent(MenuActivity.this, CariPart_Activity.class);
+                    intent.putExtra("bengkel", "");
+                    startActivityForResult(intent, 90);
                 }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_MESSAGE)){
                     Intent intent =  new Intent(MenuActivity.this, MessageWA.class);
                     startActivity(intent);
                 }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_PEMBAYARAN)){
+                    Intent intent =  new Intent(MenuActivity.this, DaftarPembayaran_Activity.class);
+                    startActivity(intent);
                 }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_STOCK_OPNAME)){
-
+                    Intent intent =  new Intent(MenuActivity.this, HistoryStockOpname_Activity.class);
+                    startActivity(intent);
                 }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_TERIMA_PARTS)){
                     Intent intent =  new Intent(MenuActivity.this, TerimaPart.class);
                     startActivity(intent);
                 }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_TUGAS_PARTS)){
-                }
-
-
-                /*if (nPopulate.get(position).get("id").asInteger() == MN_CHECKIN){
-                    Intent intent = new Intent(MenuActivity.this, KontrolLayanan_Activity.class);
-                    startActivity(intent);
-                }else if (nPopulate.get(position).get("id").asInteger() == MN_PART){
-                    Intent intent =  new Intent(MenuActivity.this, PartActivity.class);
-                    startActivity(intent);
-                }else if (nPopulate.get(position).get("id").asInteger() == MN_PART_SEARCH){
-                    Intent intent =  new Intent(MenuActivity.this, PartSearchActivity.class);
-                    startActivity(intent);
-                }else if (nPopulate.get(position).get("id").asInteger() == MN_MESSAGE_WA){
-                    Intent intent =  new Intent(MenuActivity.this, MessageWA.class);
-                    startActivity(intent);
-                } else if (nPopulate.get(position).get("id").asInteger() == MN_SPAREPART) {
-                    Intent intent = new Intent(MenuActivity.this, Spareparts_Activity.class);
-                    intent.putExtra("flag", "atur_sparepart");
-                    startActivityForResult(intent, MN_SPAREPART);
-
-                } else if (nPopulate.get(position).get("id").asInteger() == MN_REGISTRASI) {
-                    Intent intent = new Intent(MenuActivity.this, RegistrasiBengkel_Activity.class);
+                    Intent intent =  new Intent(MenuActivity.this, TugasPart_Activity.class);
                     startActivity(intent);
                 }
-                else if (nPopulate.get(position).get("id").asInteger() == MN_CARI_PART) {
-                    Intent intent = new Intent(MenuActivity.this, CariPart_Activity.class);
-                    intent.putExtra("global","");
-                    startActivityForResult(intent, 90);
-                }
-//                else if (nPopulate.get(position).get("id").asInteger() == MN_CARI_PART) {
-//                    Intent intent = new Intent(MenuActivity.this, CariPart_Activity.class);
-//                    startActivityForResult(intent, 2);
-//                }
-                else if (nPopulate.get(position).get("id").asInteger() == MN_PROFILE) {
-                    Intent intent = new Intent(MenuActivity.this, ProfileBengkel_Activity.class);
-                    startActivity(intent);
-
-                }
-
-//                else if (nPopulate.get(position).get("id").asInteger() == MN_BIAYA_MEKANIK) {
-//                    Intent intent = new Intent(MenuActivity.this, BiayaMekanikActivity.class);
-//                    startActivity(intent);
-//                }
-//                else if (nPopulate.get(position).get("id").asInteger() == MN_JUAL_PART) {
-//                    Intent intent = new Intent(MenuActivity.this, DaftarPenjualanPartActivity.class);
-//                    startActivity(intent);
-//
-//                }
-                else if (nPopulate.get(position).get("id").asInteger() == MN_MESSAGE_PenerimaanPart) {
-                    Intent intent = new Intent(MenuActivity.this, Penerimaan_PartAcitivity.class);
-                    startActivity(intent);
-
-                } else if (nPopulate.get(position).get("id").asInteger() == MN_MESSAGE_PartDiterima) {
-                    Intent intent = new Intent(MenuActivity.this, Part_DiterimaActivity.class);
-                    startActivity(intent);
-
-                }
-//                else if (nPopulate.get(position).get("id").asInteger() == MN_STOCK_OPNAME) {
-//                    Intent intent = new Intent(MenuActivity.this, Stock_OpnameActivity.class);
-//                    startActivity(intent);
-//
-//                }
-                else if (nPopulate.get(position).get("id").asInteger() == MN_TUGAS_PART) {
-                    Intent intent = new Intent(MenuActivity.this, TugasPart_Activity.class);
-                    startActivity(intent);
-
-                }
-//                else if (nPopulate.get(position).get("id").asInteger() == MN_KOMISI_KARYAWAN) {
-//                    Intent intent = new Intent(MenuActivity.this, Komisi_Karyawan_Activity.class);
-//                    startActivity(intent);
-//
-//                }
-//                else if (nPopulate.get(position).get("id").asInteger() == MN_LOYALTI_PROGRAM) {
-//                    Intent intent = new Intent(MenuActivity.this, Loyalti_ProgramActivity.class);
-//                    startActivity(intent);
-//
-//                }
-//                else if (nPopulate.get(position).get("id").asInteger() == MN_LOKASI_PERSEDIAAN) {
-//                    Intent intent = new Intent(MenuActivity.this, Penampung_ItemActivity.class);
-//                    startActivity(intent);
-//
-//                }
-                else if (nPopulate.get(position).get("id").asInteger() == MN_PENUGASAN_MEKANIK) {
-                    Intent intent = new Intent(MenuActivity.this, PenugasanActivity.class);
-                    startActivity(intent);
-
-                }else if (nPopulate.get(position).get("id").asInteger() == MN_BIAYA_MEKANIK2) {
-                    Intent intent = new Intent(MenuActivity.this, BiayaMekanik2Activity.class);
-                    intent.putExtra("data", dataBengkel.toJson());
-                    //Log.d("main_____", "onItemClick: " + dataBengkel);
-                    startActivity(intent);
-
-                }else if(nPopulate.get(position).get("id").asInteger() == MN_LOKASI_PART){
-                    Intent intent = new Intent(MenuActivity.this, LokasiPart_Activity.class);
-                    startActivity(intent);
-
-                }else if(nPopulate.get(position).get("id").asInteger() == MN_TERIMA_PART){
-                    Intent intent = new Intent(MenuActivity.this, TerimaPart.class);
-                    startActivity(intent);
-
-                }else if((nPopulate.get(position).get("id").asInteger() == MN_LAYANAN)){
-                    Intent intent = new Intent(MenuActivity.this, Layanan_Avtivity.class);
-                    startActivity(intent);
-
-                }else if((nPopulate.get(position).get("id").asInteger() == MN_TENDA)){
-                    Intent intent = new Intent(MenuActivity.this, Tenda_Activity.class);
-                    startActivity(intent);
-
-                } else if ((nPopulate.get(position).get("id").asInteger() == MN_JURNAL)) {
-                    Intent intent = new Intent(MenuActivity.this, DaftarJurnal_Activity.class);
-                    startActivity(intent);
-
-                } else if ((nPopulate.get(position).get("id").asInteger() == MN_SPOT_DISKON)) {
-                    Intent intent = new Intent(MenuActivity.this, SpotDiscount_Activity.class);
-                    startActivity(intent);
-                } else if ((nPopulate.get(position).get("id").asInteger() == MN_DISCOUNT_PART)) {
-                    Intent intent = new Intent(MenuActivity.this, DiscountPart_Activity.class);
-                    startActivity(intent);
-                } else if ((nPopulate.get(position).get("id").asInteger() == MN_REKENING)) {
-                    Intent intent = new Intent(MenuActivity.this, RekeningBank_Activity.class);
-                    startActivity(intent);
-                } else if ((nPopulate.get(position).get("id").asInteger() == MN_BOOKING)) {
-                    Intent intent = new Intent(MenuActivity.this, KontrolBooking_Activity.class);
-                    startActivity(intent);
-                }else if ((nPopulate.get(position).get("id").asInteger() == MN_DISCOUNT_LAYANAN)) {
-                    Intent intent = new Intent(MenuActivity.this, DiscountLayanan_Activity.class);
-                    startActivity(intent);
-                } else if ((nPopulate.get(position).get("id").asInteger() == MN_DISCOUNT_JASALAIN)) {
-                    Intent intent = new Intent(MenuActivity.this, DiscountJasaLain_Activity.class);
-                    startActivity(intent);
-                } else if ((nPopulate.get(position).get("id").asInteger() == MN_KOMISI_LAYANAN)) {
-                    Intent intent = new Intent(MenuActivity.this, KomisiLayanan_Activity.class);
-                    startActivity(intent);
-                } else if ((nPopulate.get(position).get("id").asInteger() == MN_KOMISI_JASA_LAIN)) {
-                    Intent intent = new Intent(MenuActivity.this, KomisiJasaLain_Activity.class);
-                    startActivity(intent);
-                } else if ((nPopulate.get(position).get("id").asInteger() == MN_KARYAWAN)) {
-                    Intent intent = new Intent(MenuActivity.this, User_Activity.class);
-                    startActivity(intent);
-                } else if ((nPopulate.get(position).get("id").asInteger() == MN_REFERAL)) {
-                    Intent intent = new Intent(MenuActivity.this, Referal_Activity.class);
-                    startActivity(intent);
-                } else if ((nPopulate.get(position).get("id").asInteger() == MN_FREKWENSI_DISCOUNT)) {
-                    Intent intent = new Intent(MenuActivity.this, FrekwensiDiscount_Activity.class);
-                    startActivity(intent);
-                } else if ((nPopulate.get(position).get("id").asInteger() == MN_PART_KELUAR)) {
-                    Intent intent = new Intent(MenuActivity.this, PartKeluar_Activity.class);
-                    startActivity(intent);
-                } else if ((nPopulate.get(position).get("id").asInteger() == MN_JUAL_PART)) {
-                    Intent intent = new Intent(MenuActivity.this, PenjualanPart_Activity.class);
-                    startActivity(intent);
-                } else if ((nPopulate.get(position).get("id").asInteger() == MN_PEMBAYARAN)) {
-                    Intent intent = new Intent(MenuActivity.this, DaftarPembayaran_Activity.class);
-                    startActivity(intent);
-                } else if ((nPopulate.get(position).get("id").asInteger() == MN_KERJA_MEKANIK)) {
-                    Intent intent = new Intent(MenuActivity.this, PerintahKerjaMekanik_Activity.class);
-                    startActivity(intent);
-                } else if ((nPopulate.get(position).get("id").asInteger() == MN_KOMISI_PART)) {
-                    Intent intent = new Intent(MenuActivity.this, KomisiPart_Activity.class);
-                    startActivity(intent);
-                }*/
-
-
             }
         });
-
        // banner();
     }
 
@@ -382,11 +230,85 @@ public class MenuActivity extends AppActivity {
         }else if (item.getTitle().toString().equalsIgnoreCase(REFERAL)){
             Intent intent = new Intent(MenuActivity.this, Referal_Activity.class);
             startActivity(intent);
+        }else if(item.getTitle().toString().equalsIgnoreCase(CHECK_OUT)){
+            Intent intent = new Intent(MenuActivity.this, CheckOut_Activity.class);
+            startActivity(intent);
         }else if (item.getTitle().toString().equalsIgnoreCase(COLLECTION)){
             Intent intent = new Intent(MenuActivity.this, KontrolBooking_Activity.class);
             startActivity(intent);
+        }
+        //Business
+        else if(item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_HUTANG)){
+            Intent intent = new Intent(MenuActivity.this, Hutang_Activity.class);
+            startActivity(intent);
+        }else if(item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_PIUTANG)){
+            Intent intent = new Intent(MenuActivity.this, Piutang_Activity.class);
+            startActivity(intent);
+        }else if(item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_BILLING)){
 
-        }else if (item.getItemId() == R.id.action_logout){
+        }else if(item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_INFO_USAHA)){
+
+        }else if(item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_ASET)){
+
+        }
+        //Pengaturan
+        else if(item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER)){
+            Intent intent = new Intent(MenuActivity.this, User_Activity.class);
+            startActivity(intent);
+        }else if(item.getTitle().toString().equalsIgnoreCase(PENGATURAN_PENUGASAN)){
+            Intent intent = new Intent(MenuActivity.this, PenugasanActivity.class);
+            startActivity(intent);
+        }else if(item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_LAYANAN)){
+            Intent intent = new Intent(MenuActivity.this, Layanan_Avtivity.class);
+            startActivity(intent);
+        }else if(item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_BIAYA_MEKANIK)){
+            Intent intent = new Intent(MenuActivity.this, BiayaMekanik2Activity.class);
+            intent.putExtra("data", dataBengkel.toJson());
+            startActivity(intent);
+        }else if(item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_SPAREPARTS)){
+            Intent intent = new Intent(MenuActivity.this, Spareparts_Activity.class);
+            intent.putExtra("flag", "atur_sparepart");
+            startActivityForResult(intent, MN_SPAREPART);
+        }else if(item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_REKENING_BANK)){
+            Intent intent = new Intent(MenuActivity.this, RekeningBank_Activity.class);
+            startActivity(intent);
+        }else if(item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_LOKASI_PARTS)){
+            Intent intent = new Intent(MenuActivity.this, LokasiPart_Activity.class);
+            startActivity(intent);
+        }else if(item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_TENDA)){
+            Intent intent = new Intent(MenuActivity.this, Tenda_Activity.class);
+            startActivity(intent);
+        }
+        //Discount
+        else if(item.getTitle().toString().equalsIgnoreCase(DISCOUNT_FREKWENSI)){
+            Intent intent = new Intent(MenuActivity.this, FrekwensiDiscount_Activity.class);
+            startActivity(intent);
+        }else if(item.getTitle().toString().equalsIgnoreCase(DISCOUNT_JASA_LAIN)){
+            Intent intent = new Intent(MenuActivity.this, DiscountJasaLain_Activity.class);
+            startActivity(intent);
+        }else if(item.getTitle().toString().equalsIgnoreCase(DISCOUNT_LAYANAN)){
+            Intent intent = new Intent(MenuActivity.this, DiscountLayanan_Activity.class);
+            startActivity(intent);
+        }else if(item.getTitle().toString().equalsIgnoreCase(DISCOUNT_PART)){
+            Intent intent = new Intent(MenuActivity.this, DiscountPart_Activity.class);
+            startActivity(intent);
+        }else if(item.getTitle().toString().equalsIgnoreCase(DISCOUNT_SPOT)){
+            Intent intent = new Intent(MenuActivity.this, SpotDiscount_Activity.class);
+            startActivity(intent);
+        }
+        //Komisi
+        else if(item.getTitle().toString().equalsIgnoreCase(KOMISI_JASA_LAIN)){
+            Intent intent = new Intent(MenuActivity.this, KomisiJasaLain_Activity.class);
+            startActivity(intent);
+        }else if(item.getTitle().toString().equalsIgnoreCase(KOMISI_LAYANAN)){
+            Intent intent = new Intent(MenuActivity.this, KomisiLayanan_Activity.class);
+            startActivity(intent);
+        }else if(item.getTitle().toString().equalsIgnoreCase(KOMISI_PART)){
+            Intent intent = new Intent(MenuActivity.this, KomisiPart_Activity.class);
+            startActivity(intent);
+        }
+
+        else if (item.getItemId() == R.id.action_logout){
             Messagebox.showDialog(getActivity(), "Logout", "Yakin Logout ?", "Ya", "Tidak", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -495,15 +417,13 @@ public class MenuActivity extends AppActivity {
     public final String M_TERIMA_PARTS = "TERIMA PARTS";
     public final String M_TUGAS_PARTS = "TUGAS PARTS";
 
-
-
     private void addHome(int id, int icon, String text){
         if (getAccess(text)) {
             nPopulate.add(Nson.newObject().set("id", id).set("icon", icon).set("text", text));
         }
     }
-    public void populate(GridView v){
 
+    public void populate(GridView v){
         addHome(1,R.drawable.m_antarjemput, M_ANTAR_JEMPUT);
         addHome(2,R.drawable.m_booking, M_BOOKING);
         addHome(3,R.drawable.m_checkin, M_CHECK_IN);
@@ -521,12 +441,9 @@ public class MenuActivity extends AppActivity {
         addHome(15,R.drawable.m_terimapart, M_TERIMA_PARTS);
         addHome(15,R.drawable.m_tugaspart, M_TUGAS_PARTS);
 
-
-
         ArrayAdapter<Vector<String>> arrayAdapter = new ArrayAdapter<Vector<String>>(MenuActivity.this, R.layout.activity_main_item, nPopulate.asArray()) {
             public View getView(int position, View convertView, ViewGroup parent) {
                 View v = getLayoutInflater().inflate(R.layout.activity_main_item, null);
-
 
                 ((TextView)v.findViewById(R.id.txtIcon)).setText(  nPopulate.get(position).get("text").asString() );
                 ((ImageView)v.findViewById(R.id.imgIcon)).setImageResource(  nPopulate.get(position).get("icon").asInteger());
@@ -536,11 +453,9 @@ public class MenuActivity extends AppActivity {
         };
         GridView gridView = findViewById(R.id.gridView);
         gridView.setAdapter(arrayAdapter);
-
-
     }
-    private boolean getAccess(String access){
 
+    private boolean getAccess(String access){
         if (getSetting("TIPE_USER").equalsIgnoreCase("ADMIN")){
             return true;
         }else if (getSetting("ACCESS_MENU").contains(access)) {
@@ -548,15 +463,16 @@ public class MenuActivity extends AppActivity {
         }
         return false;
     }
+
     private void sendDataBengkel(){
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "Data_Bengkel");
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("databengkel"), args));
             }
-
             @Override
             public void runUI() {
                 if(result.get("status").asString().equalsIgnoreCase("OK")) {
@@ -584,9 +500,9 @@ public class MenuActivity extends AppActivity {
         if (getAccess(COLLECTION)) {
             menu.add(COLLECTION);
         }
-        if (getAccess(CHECK_OUT)) {
-            menu.add(CHECK_OUT);
-        }
+//        if (getAccess(CHECK_OUT)) {
+//            menu.add(CHECK_OUT);
+//        }
         if (getAccess(OUTSOURCE)) {
             menu.add(OUTSOURCE);
         }
@@ -616,16 +532,18 @@ public class MenuActivity extends AppActivity {
             subMenu.add(DISCOUNT_PART);
             subMenu.add(DISCOUNT_SPOT);
             subMenu.add(DISCOUNT_FREKWENSI);
+            subMenu.add(DISCOUNT_LAYANAN);
+
         }
-        if (getAccess(MY_BUSINESS)) {
+        if (getAccess(KOMISI)) {
             subMenu = menu.addSubMenu(KOMISI);
             subMenu.add(KOMISI_JASA_LAIN);
             subMenu.add(KOMISI_LAYANAN);
             subMenu.add(KOMISI_PART);
         }
-        if (getAccess(LOKASI_PART)) {
-            menu.add(LOKASI_PART);
-        }
+//        if (getAccess(LOKASI_PART)) {
+//            menu.add(LOKASI_PART);
+//        }
         return true;
     }
 

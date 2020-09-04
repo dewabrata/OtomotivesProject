@@ -47,8 +47,13 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
     private NikitaAutoComplete etKotaKab;
     private String[] itemsMerk;
     private String typeKendaraan, bidangUsaha = "";
-    private boolean isKategori;
-    private List<String> motorList = new ArrayList<>(), mobilList = new ArrayList<>(), allList = new ArrayList<>();
+    private boolean isKategori, isRegist = false;
+    private List<String> motorList = new ArrayList<>(),
+            mobilList = new ArrayList<>(),
+            allList = new ArrayList<>(),
+            noHpList = new ArrayList<>(),
+            merkMotorList = new ArrayList<>(),
+            merkMobilList = new ArrayList<>(), allMerkList = new ArrayList<>();
     private int count = 0;
 
     @Override
@@ -82,6 +87,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
         minEntryEditText(etNamaPemilik, 5, find(R.id.tl_cp_regist, TextInputLayout.class), "Panjang Nama Min. 5 Karakter");
         minEntryEditText(etNamaBengkel, 8, find(R.id.tl_namaBengkel_regist, TextInputLayout.class), "Nama Bengkel Min. 5 Karakter");
         minEntryEditText(etAlamat, 20, find(R.id.tl_alamat_regist, TextInputLayout.class), "Entry Alamat Min. 20 Karakter");
+        getNoPonsel();
 
         etNoPonsel.addTextChangedListener(new TextWatcher() {
             @Override
@@ -99,7 +105,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                 } else if (counting < 4) {
                     etNoPonsel.setText("+62 ");
                     Selection.setSelection(etNoPonsel.getText(), etNoPonsel.getText().length());
-                } else if (counting < 6) {
+                } else if (counting < 12) {
                     find(R.id.tl_nohp_regist, TextInputLayout.class).setError("No. Hp Min. 6 Karakter");
                     etNoPonsel.requestFocus();
                 } else {
@@ -109,7 +115,14 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                if (noHpList.size() > 0) {
+                    String noHp = etNoPonsel.getText().toString().replaceAll("[^0-9]+", "");
+                    for (String no : noHpList) {
+                        if (noHp.equalsIgnoreCase(no)) {
+                            find(R.id.tl_nohp_regist, TextInputLayout.class).setError("No. Hp Sudah Terdaftar");
+                        }
+                    }
+                }
 
             }
         });
@@ -155,22 +168,6 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
 
         etKotaKab.setLoadingIndicator((ProgressBar) findViewById(R.id.pb_et_kotakab_regist));
         remakeAutoCompleteMaster(etKotaKab, "DAERAH", "KOTA_KAB");
-
-        itemsMerk = new String[]{"HONDA", "YAMAHA", "SUZUKI"};
-        spMerkKendaraan.setItems(itemsMerk);
-        spMerkKendaraan.setSelection(Arrays.asList(itemsMerk), false);
-        spMerkKendaraan.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
-            @Override
-            public void selectedIndices(List<Integer> indices) {
-
-            }
-
-            @Override
-            public void selectedStrings(List<String> strings) {
-
-            }
-        });
-
         setMultiSelectionSpinnerFromApi(spKendaraan, "nama", "BENGKEL", "viewmst", new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
             @Override
             public void selectedIndices(List<Integer> indices) {
@@ -182,14 +179,18 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                 motorList.clear();
                 mobilList.clear();
                 allList.clear();
-                if(spKendaraan.getSelectedItemsAsString().equalsIgnoreCase("MOTOR ")){
+                merkMobilList.clear();
+                merkMotorList.clear();
+                allMerkList.clear();
+                if (spKendaraan.getSelectedItemsAsString().equalsIgnoreCase("MOTOR ")) {
                     isKategori = true;
-                }else if (spKendaraan.getSelectedItemsAsString().equalsIgnoreCase("MOBIL ")){
+                } else if (spKendaraan.getSelectedItemsAsString().equalsIgnoreCase("MOBIL ")) {
                     isKategori = false;
-                }else {
+                } else {
                     count++;
                 }
                 setSpBidangUsaha();
+                setSpMerkKendaraan();
             }
         }, "TYPE", "");
 
@@ -202,59 +203,67 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
     private void saveData() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 //nama, nohp, email, namabengkel, jenis, kategori, alamat, daerah, lokasi
                 args.put("action", "add");
-                args.put("nohp", etNoPonsel.getText().toString());
+                args.put("nohp", etNoPonsel.getText().toString().replaceAll("[^0-9]+", ""));
                 args.put("nama", etNamaPemilik.getText().toString());
                 args.put("email", etEmail.getText().toString());
                 args.put("nama_bengkel", etNamaBengkel.getText().toString());
-                args.put("jenis", spKendaraan.getSelectedItemsAsString());
+                args.put("jenis", spKendaraan.getSelectedItemsAsString().trim());
                 //args.put("jabatan", etJabatan.getText().toString());
-                args.put("kategori", spBidangUsaha.getSelectedItem().toString());
+                args.put("kategori", spBidangUsaha.getSelectedItem().toString().trim());
                 args.put("persetujuan", find(R.id.cb_setuju_regist, CheckBox.class).isChecked() ? "YA" : "TIDAK");
                 args.put("alamat", etAlamat.getText().toString());
                 args.put("daerah", etKotaKab.getText().toString());
                 //args.put("lokasi", tvLokasi.getText().toString());
-
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("regristrasi"), args));
             }
 
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    showInfo("Registrasi Berhasil");
+                    setSetting("noponsel", etNoPonsel.getText().toString().replaceAll("[^0-9]+", ""));
+                    showSuccess("Registrasi Berhasil");
                     finish();
                 } else {
-                    showInfo("Registrasi Gagal, Silahkan Cek Data Anda Kembali");
+                    if (result.get("message").asString().contains("Duplicate entry")) {
+                        showError("No Ponsel Sudah Terdaftar");
+                        etNoPonsel.setText("");
+                        etNoPonsel.requestFocus();
+                    } else {
+                        showError("Registrasi Gagal, Silahkan Cek Data Anda Kembali");
+                    }
                 }
             }
         });
     }
 
-    private boolean dataValidation() {
+    private void getNoPonsel() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("registrasi"), args));
+                args.put("action", "ALL");
+                args.put("CID", "KOSONG");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("nomorponsel"), args));
             }
 
             @Override
             public void runUI() {
-                for (int i = 0; i < result.get("data").size(); i++) {
-                    nListArray.add(result.get("data").get(i).get("NO_PONSEL"));
-                    nListArray.add(result.get("data").get(i).get("NAMA_BENGKEL"));
-                    nListArray.add(result.get("data").get(i).get("LOKASI"));
-                    nListArray.add(result.get("data").get(i).get("EMAIL"));
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    for (int i = 0; i < result.get("data").size(); i++) {
+                        noHpList.add(result.get("data").get(i).get("NO_PONSEL").asString());
+                    }
+                    Log.d(TAG, "getNoPonsel: " + noHpList);
                 }
             }
         });
-        return true;
     }
 
     @Override
@@ -262,22 +271,26 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
         String info = "Silahkan lengkapi ";
         switch (view.getId()) {
             case R.id.btn_simpan_regist:
-                if (etNamaPemilik.getText().toString().isEmpty() || etNamaPemilik.getText().toString().length() < 5) {
+                if (etNamaPemilik.getText().toString().isEmpty() || etNamaPemilik.getText().toString().length() < 5
+                        || find(R.id.tl_cp_regist, TextInputLayout.class).isHelperTextEnabled()) {
                     etNamaPemilik.setError(info + "Nama Pemilik");
                     etNamaPemilik.requestFocus();
                     return;
                 }
-                if (etNoPonsel.getText().toString().isEmpty() || etNoPonsel.getText().toString().length() < 6) {
+                if (etNoPonsel.getText().toString().isEmpty() || etNoPonsel.getText().toString().length() < 6
+                        || find(R.id.tl_nohp_regist, TextInputLayout.class).isHelperTextEnabled()) {
                     etNoPonsel.setError(info + "No. Ponsel");
                     etNoPonsel.requestFocus();
                     return;
                 }
-                if (etEmail.getText().toString().isEmpty() || !etEmail.getText().toString().contains("@")) {
+                if (etEmail.getText().toString().isEmpty() || !etEmail.getText().toString().contains("@") ||
+                        find(R.id.tl_email_regist, TextInputLayout.class).isHelperTextEnabled()) {
                     etEmail.setError(info + "Email");
                     etEmail.requestFocus();
                     return;
                 }
-                if (etNamaBengkel.getText().toString().isEmpty() || etNamaBengkel.getText().toString().length() < 8) {
+                if (etNamaBengkel.getText().toString().isEmpty() || etNamaBengkel.getText().toString().length() < 8 ||
+                        find(R.id.tl_namaBengkel_regist, TextInputLayout.class).isHelperTextEnabled()) {
                     etNamaBengkel.setError(info + "Nama Bengkel");
                     etNamaBengkel.requestFocus();
                     return;
@@ -292,7 +305,8 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                     etKotaKab.requestFocus();
                     return;
                 }
-                if (etAlamat.getText().toString().isEmpty() || etAlamat.getText().toString().length() < 20) {
+                if (etAlamat.getText().toString().isEmpty() || etAlamat.getText().toString().length() < 20 ||
+                        find(R.id.tl_alamat_regist, TextInputLayout.class).isHelperTextEnabled()) {
                     etAlamat.setError(info + "Alamat");
                     etAlamat.requestFocus();
                     return;
@@ -302,7 +316,8 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                     return;
                 }
 
-                    saveData();
+                saveData();
+
                 break;
             case R.id.btn_check_regist:
 //                Intent i = new Intent(getActivity(), Referal_Activity.class);
@@ -311,9 +326,62 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
         }
     }
 
-    private void setSpBidangUsaha(){
+    private void setSpMerkKendaraan(){
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("CID", "kosong");
+                args.put("flag", "Merk");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("jeniskendaraan"), args));
+            }
+
+            @Override
+            public void runUI() {
+                for (int i = 0; i < result.get("data").size(); i++) {
+                    if (result.get("data").get(i).get("TYPE").asString().equalsIgnoreCase("MOTOR")) {
+                        merkMotorList.add(result.get("data").get(i).get("MERK") + " - " + result.get("data").get(i).get("TYPE"));
+                    } else if (result.get("data").get(i).get("TYPE").asString().equalsIgnoreCase("MOBIL")) {
+                        merkMobilList.add(result.get("data").get(i).get("MERK") + " - " + result.get("data").get(i).get("TYPE"));
+                    }
+                }
+
+                try {
+                    allMerkList.addAll(merkMotorList);
+                    allMerkList.addAll(merkMobilList);
+                    Log.d(TAG, "runUI: " + allMerkList);
+                    if (count > 0) {
+                        spMerkKendaraan.setItems(allMerkList);
+                        spMerkKendaraan.setSelection(allMerkList, false);
+                    } else {
+                        spMerkKendaraan.setItems(isKategori ? merkMotorList : merkMobilList);
+                        spMerkKendaraan.setSelection(isKategori ? merkMotorList : merkMobilList, false);
+                    }
+
+                    spMerkKendaraan.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
+                        @Override
+                        public void selectedIndices(List<Integer> indices) {
+
+                        }
+
+                        @Override
+                        public void selectedStrings(List<String> strings) {
+
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    showInfo("Perlu di Muat Ulang");
+                }
+            }
+        });
+    }
+
+    private void setSpBidangUsaha() {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -324,9 +392,9 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
             @Override
             public void runUI() {
                 for (int i = 0; i < result.get("data").size(); i++) {
-                    if(result.get("data").get(i).get("TYPE").asString().equalsIgnoreCase("MOTOR")){
+                    if (result.get("data").get(i).get("TYPE").asString().equalsIgnoreCase("MOTOR")) {
                         motorList.add(result.get("data").get(i).get("KATEGORI") + " - " + result.get("data").get(i).get("TYPE"));
-                    }else if(result.get("data").get(i).get("TYPE").asString().equalsIgnoreCase("MOBIL")){
+                    } else if (result.get("data").get(i).get("TYPE").asString().equalsIgnoreCase("MOBIL")) {
                         mobilList.add(result.get("data").get(i).get("KATEGORI") + " - " + result.get("data").get(i).get("TYPE"));
                     }
                 }
@@ -334,10 +402,10 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                     allList.addAll(mobilList);
                     allList.addAll(motorList);
                     Log.d(TAG, "runUI: " + allList);
-                    if(count > 0){
+                    if (count > 0) {
                         spBidangUsaha.setItems(allList);
                         spBidangUsaha.setSelection(allList, false);
-                    }else{
+                    } else {
                         spBidangUsaha.setItems(isKategori ? motorList : mobilList);
                         spBidangUsaha.setSelection(isKategori ? motorList : mobilList, false);
                     }

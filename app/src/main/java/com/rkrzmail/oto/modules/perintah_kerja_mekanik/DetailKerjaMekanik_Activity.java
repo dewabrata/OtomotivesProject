@@ -26,6 +26,8 @@ public class DetailKerjaMekanik_Activity extends AppActivity {
 
     private EditText etNoAntrian, etJenis, etLayanan, etNopol, etNoKunci, etNamaPelanggan, etWaktu, etSelesai;
     private RecyclerView rvItem;
+    private Nson partList = Nson.newArray(),
+            jasaList = Nson.newArray();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,14 +58,14 @@ public class DetailKerjaMekanik_Activity extends AppActivity {
         loadData();
         rvItem.setLayoutManager(new LinearLayoutManager(this));
         rvItem.setHasFixedSize(true);
-        rvItem.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_booking3_checkin3) {
+        rvItem.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_part_booking3_checkin3) {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
-                viewHolder.find(R.id.tv_nama_booking3_checkin3, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_harga_booking3_checkin3, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_disc_booking3_checkin3, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_net_booking3_checkin3, TextView.class).setText(nListArray.get(position).get("").asString());
+//                viewHolder.find(R.id.tv_namaPart_booking3_checkin3, TextView.class).setText(nListArray.get(position).get("").asString());
+//                viewHolder.find(R.id.tv_harga_booking3_checkin3, TextView.class).setText(nListArray.get(position).get("").asString());
+//                viewHolder.find(R.id.tv_disc_booking3_checkin3, TextView.class).setText(nListArray.get(position).get("").asString());
+//                viewHolder.find(R.id.tv_net_booking3_checkin3, TextView.class).setText(nListArray.get(position).get("").asString());
             }
         });
 

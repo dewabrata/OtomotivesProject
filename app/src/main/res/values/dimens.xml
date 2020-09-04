@@ -24,4 +24,19 @@
     <dimen name="spacing_xxxlarge">55dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
 
+    <dimen name="et_search">34dp</dimen>
+    <dimen name="et_heigh">70dp</dimen>
+
+    <dimen name="paddingXXSmall">2dp</dimen>
+    <dimen name="paddingXSmall">4dp</dimen>
+    <dimen name="paddingSmall">6dp</dimen>
+    <dimen name="paddingMedium">8dp</dimen>
+    <dimen name="paddingSemiLarge">10dp</dimen>
+    <dimen name="paddingLarge">14dp</dimen>
+    <dimen name="paddingXLarge">18dp</dimen>
+    <dimen name="paddingXXLarge">24dp</dimen>
+    <dimen name="paddingXXXLarge">32dp</dimen>
+    <dimen name="civ_home">120dp</dimen>
+    <dimen name="et_login">50dp</dimen>
+
 </resources>

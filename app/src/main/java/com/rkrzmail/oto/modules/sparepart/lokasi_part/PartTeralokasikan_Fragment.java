@@ -12,18 +12,17 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
-import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.gmod.BarcodeActivity;
-import com.rkrzmail.oto.modules.sparepart.lokasi_part.stock_opname.StockOpname_Activity;
+import com.rkrzmail.oto.modules.sparepart.stock_opname.StockOpname_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
@@ -58,17 +57,20 @@ public class PartTeralokasikan_Fragment extends Fragment {
             @Override
             public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
                 super.onBindViewHolder(viewHolder, position);
+
+                String nama = nListArray.get(position).get("NAMA_MASTER").asString() + " / " + nListArray.get(position).get("NAMA_LAIN_MASTER").asString();
+
                 viewHolder.find(R.id.tv_noFolder, TextView.class).setText(nListArray.get(position).get("NO_FOLDER").asString());
                 viewHolder.find(R.id.tv_lokasiPart, TextView.class).setText(nListArray.get(position).get("LOKASI").asString());
-                viewHolder.find(R.id.tv_namaPart, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
-                viewHolder.find(R.id.tv_nomor_part, TextView.class).setText(nListArray.get(position).get("NO_PART_ID").asString());
-                viewHolder.find(R.id.tv_penempatan, TextView.class).setText(nListArray.get(position).get("PENEMPATAN").asString());
+                viewHolder.find(R.id.tv_namaPart, TextView.class).setText(nama);
+                viewHolder.find(R.id.tv_nomor_part, TextView.class).setText(nListArray.get(position).get("NOMOR_PART_NOMOR").asString());
+                viewHolder.find(R.id.tv_merk, TextView.class).setText(nListArray.get(position).get("MERK").asString());
                 viewHolder.find(R.id.tv_stock, TextView.class).setText(nListArray.get(position).get("STOCK").asString());
 
-                viewHolder.find(R.id.tv_optionMenu, TextView.class).setOnClickListener(new View.OnClickListener() {
+                viewHolder.find(R.id.img_optionMenu, ImageButton.class).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        PopupMenu popup = new PopupMenu(getActivity(), viewHolder.find(R.id.tv_optionMenu, TextView.class));
+                        PopupMenu popup = new PopupMenu(getActivity(), viewHolder.find(R.id.img_optionMenu, ImageButton.class));
                         popup.inflate(R.menu.menu_lokasi_part);
                         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                             @Override
@@ -119,5 +121,13 @@ public class PartTeralokasikan_Fragment extends Fragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == getActivity().RESULT_OK && requestCode == LokasiPart_Activity.REQUEST_ATUR){
+            getTeralokasikan("");
+        }
     }
 }

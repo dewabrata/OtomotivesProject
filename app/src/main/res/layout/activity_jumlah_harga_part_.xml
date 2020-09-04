@@ -72,12 +72,13 @@
                         android:id="@+id/img_clear"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
-                        android:layout_marginStart="300dp"
-                        android:layout_marginTop="12dp"
+                        android:layout_gravity="end"
+                        android:layout_marginEnd="15dp"
+                        android:layout_marginTop="15dp"
                         android:background="@android:color/transparent"
                         android:tint="@color/grey_80"
-                        android:visibility="gone"
-                        app:srcCompat="@drawable/ic_close" />
+                        app:srcCompat="@drawable/ic_close"
+                        android:visibility="gone"/>
 
                 </FrameLayout>
 
@@ -130,19 +131,39 @@
                     android:layout_marginRight="10dp"
                     android:orientation="horizontal">
 
+                    <TextView
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="3"
+                        android:textColor="@color/grey_900"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:text="WAKTU KERJA"
+                        android:layout_gravity="center"/>
+
+                    <ImageButton
+                        android:id="@+id/img_waktuKerja"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:tint="@color/grey_900"
+                        android:layout_gravity="center"
+                        android:layout_weight="2"
+                        app:srcCompat="@drawable/icon_stopwatch" />
+
                     <android.support.design.widget.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="10dp"
-                        android:layout_weight="1">
+                        android:layout_weight="2">
 
                         <EditText
-                            android:id="@+id/et_kerjaMulai"
+                            android:id="@+id/et_waktuSet"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:enabled="false"
-                            android:hint="WAKTU KERJA (JAM)"
+                            android:hint="HH:JJ:MM"
                             android:textSize="14sp" />
 
                     </android.support.design.widget.TextInputLayout>
@@ -151,92 +172,19 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        android:layout_weight="2">
 
                         <EditText
-                            android:id="@+id/et_kerjaSelesai"
+                            android:id="@+id/et_waktuDefault"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:enabled="false"
-                            android:hint="WAKTU KERJA (MENIT)"
+                            android:hint="@string/hh_jj_mm"
                             android:textSize="14sp" />
 
                     </android.support.design.widget.TextInputLayout>
 
                 </LinearLayout>
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginRight="10dp"
-                        android:orientation="horizontal">
-
-                        <android.support.design.widget.TextInputLayout
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="10dp"
-                            android:layout_weight="1">
-
-                            <EditText
-                                android:id="@+id/et_kerjaMulai_jumlah_harga_part"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:hint="WAKTU KERJA (JAM)"
-                                android:inputType="time"
-                                android:maxLength="2"
-                                android:textSize="14sp" />
-
-                        </android.support.design.widget.TextInputLayout>
-
-                        <android.support.design.widget.TextInputLayout
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1">
-
-                            <EditText
-                                android:id="@+id/et_kerjaSelesai_jumlah_harga_part"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:hint="WAKTU KERJA (MENIT)"
-                                android:inputType="time"
-                                android:maxLength="2"
-                                android:textSize="14sp" />
-
-                        </android.support.design.widget.TextInputLayout>
-
-                    </LinearLayout>
-
-                    <ImageButton
-                        android:id="@+id/img_clear3"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:background="@android:color/transparent"
-                        app:srcCompat="@drawable/ic_close"
-                        android:tint="@color/grey_80"
-                        android:layout_marginTop="18dp"
-                        android:layout_marginStart="159dp"
-                        android:visibility="gone"/>
-
-                    <ImageButton
-                        android:id="@+id/img_clear4"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:background="@android:color/transparent"
-                        app:srcCompat="@drawable/ic_close"
-                        android:tint="@color/grey_80"
-                        android:layout_marginTop="18dp"
-                        android:layout_marginStart="360dp"
-                        android:visibility="gone"/>
-
-                </FrameLayout>
 
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -264,12 +212,13 @@
                         android:id="@+id/img_clear2"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
-                        android:layout_marginStart="300dp"
-                        android:layout_marginTop="12dp"
+                       android:layout_gravity="end"
+                        android:layout_marginEnd="15dp"
+                        android:layout_marginTop="15dp"
                         android:background="@android:color/transparent"
                         android:tint="@color/grey_80"
-                        android:visibility="gone"
-                        app:srcCompat="@drawable/ic_close" />
+                        app:srcCompat="@drawable/ic_close"
+                        android:visibility="gone"/>
 
                 </FrameLayout>
 

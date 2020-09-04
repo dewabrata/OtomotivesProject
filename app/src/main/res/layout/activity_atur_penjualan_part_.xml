@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:descendantFocusability="beforeDescendants"
@@ -35,47 +36,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textCapSentences"
+                        android:padding="15dp"
                         android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
                 <ProgressBar
-                    android:id="@+id/pb"
-                    style="?android:attr/progressBarStyleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical|right"
-                    android:layout_marginRight="20dp"
-                    android:visibility="gone" />
-
-            </FrameLayout>
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/tl_nohp"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="10dp"
-                    android:hint="NO. PONSEL">
-
-                    <com.rkrzmail.srv.NikitaAutoComplete
-                        android:id="@+id/et_noPhone_jualPart"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="phone"
-                        android:maxLength="14"
-                        android:textSize="14sp" />
-
-                </android.support.design.widget.TextInputLayout>
-
-                <ProgressBar
-                    android:id="@+id/pb2"
+                    android:id="@+id/pb_jenisKendaraan"
                     style="?android:attr/progressBarStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -86,23 +53,60 @@
             </FrameLayout>
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/tl_nohp"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="10dp"
-                android:hint="NAMA PELANGGAN">
+                android:hint="NO. PONSEL">
 
-                <EditText
-                    android:id="@+id/et_namaPelanggan_jualPart"
+                <com.rkrzmail.srv.NikitaAutoComplete
+                    android:id="@+id/et_noPhone_jualPart"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPersonName|textCapSentences"
+                    android:inputType="phone"
+                    android:maxLength="17"
+                    android:padding="15dp"
                     android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
 
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
+                    android:hint="NAMA PELANGGAN">
+
+                    <com.rkrzmail.srv.NikitaAutoComplete
+                        android:id="@+id/et_namaPelanggan_jualPart"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="15dp"
+                        android:inputType="textPersonName|textCapSentences"
+                        android:textSize="14sp" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <ProgressBar
+                    android:id="@+id/pb_namaPelanggan"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|right"
+                    android:layout_marginRight="20dp"
+                    android:visibility="gone"
+                    tools:ignore="RtlHardcoded" />
+
+            </FrameLayout>
 
             <android.support.design.widget.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -118,6 +122,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPersonName|textCapSentences"
+                    android:padding="15dp"
                     android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>

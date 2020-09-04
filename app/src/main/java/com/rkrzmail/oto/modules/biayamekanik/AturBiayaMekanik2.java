@@ -24,8 +24,9 @@ import java.util.Map;
 public class AturBiayaMekanik2 extends AppActivity {
 
     public static final String TAG = "AturBiayaMekanik2";
-    private int upah = 0, average = 160, perJam;
+    private int upah = 0, average = 160, perJam, umk;
     private DecimalFormat formatter;
+    private String daerah = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,15 +45,13 @@ public class AturBiayaMekanik2 extends AppActivity {
 
     private void initComponent() {
         formatter = new DecimalFormat("###,###,###");
-        final Nson data = Nson.readJson(getIntentStringExtra("USER"));
+        final Nson data = Nson.readJson(getIntentStringExtra("UMK"));
         Log.d("BIAYA_MEKANIK.CLASS", "Data : " + data);
-        final Intent i = getIntent();
         upah = Integer.parseInt(getIntent().getStringExtra("UMK"));
         if(upah > 0){
             perJam = upah / average;
             find(R.id.et_upahMin_biayaMekanik, EditText.class).setText("Rp. " + String.valueOf(formatter.format(upah)));
             find(R.id.et_upahJam_biayaMekanik, EditText.class).setText("Rp. " + String.valueOf(formatter.format(perJam)));
-
             Log.d("BIAYA_MEKANIK.CLASS", "Data : " + perJam);
         }
 
@@ -63,7 +62,19 @@ public class AturBiayaMekanik2 extends AppActivity {
         find(R.id.btn_simpan_biayaMekanik).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                insertdata();
+                if(find(R.id.et_mekanik1_biayaMekanik, EditText.class).getText().toString().isEmpty()){
+                    find(R.id.et_mekanik1_biayaMekanik, EditText.class).setError("Harus Di isi");
+                    find(R.id.et_mekanik1_biayaMekanik, EditText.class).requestFocus();
+                }else if(find(R.id.et_mekanik2_biayaMekanik, EditText.class).getText().toString().isEmpty()){
+                    find(R.id.et_mekanik2_biayaMekanik, EditText.class).setError("Harus Di isi");
+                    find(R.id.et_mekanik2_biayaMekanik, EditText.class).requestFocus();
+                }else if(find(R.id.et_mekanik3_biayaMekanik, EditText.class).getText().toString().isEmpty()){
+                    find(R.id.et_mekanik3_biayaMekanik, EditText.class).setError("Harus Di isi");
+                    find(R.id.et_mekanik3_biayaMekanik, EditText.class).requestFocus();
+                }else {
+                    insertdata();
+                }
+
             }
         });
     }

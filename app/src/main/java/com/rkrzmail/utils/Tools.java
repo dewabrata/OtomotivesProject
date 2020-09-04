@@ -39,6 +39,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.android.gms.maps.GoogleMap;
+import com.naa.data.Nson;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.MultiSelectionSpinner;
 
@@ -46,6 +47,7 @@ import com.rkrzmail.srv.MultiSelectionSpinner;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -341,15 +343,6 @@ public class Tools {
         return 0;
     }
 
-    public static int getIndexSpinner(MultiSelectionSpinner multiSelectionSpinner, String value){
-        for (int i = 0; i < multiSelectionSpinner.getCount(); i++){
-            if (multiSelectionSpinner.getItemAtPosition(i).toString().equalsIgnoreCase(value)){
-                return i;
-            }
-        }
-        return 0;
-    }
-
     public static String setFormatDayAndMonthToDb(String date){
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         Date tgl = new Date();
@@ -444,6 +437,7 @@ public class Tools {
         return newList;
     }
 
+
     public static void hideKeyboard(Activity context) {
         View view = context.getCurrentFocus();
         if (view != null) {
@@ -467,4 +461,7 @@ public class Tools {
         return Bitmap.createScaledBitmap(image, width, height, true);
     }
 
+    public static boolean isNumeric(String str){
+        return str.matches("-?\\d+(.\\d+)?");
+    }
 }

@@ -26,13 +26,14 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:label">
-        <activity android:name=".modules.primary.DetailKontrolBooking_Activity"></activity>
+        <activity android:name=".modules.Otp_Activity"></activity>
+        <activity android:name=".modules.primary.DetailKontrolBooking_Activity" />
         <activity android:name=".modules.layanan.TambahLayanan" />
         <activity android:name=".modules.komisi.AturKomisiPart_Activity" />
         <activity android:name=".modules.komisi.KomisiPart_Activity" />
         <activity android:name=".modules.pembayaran.AturPembayaranElektronik_Activity" />
         <activity android:name=".modules.pembayaran.PembayaranElektronik_Activity" />
-        <activity android:name=".modules.sparepart.lokasi_part.stock_opname.HistoryStockOpname_Activity" />
+        <activity android:name=".modules.sparepart.stock_opname.HistoryStockOpname_Activity" />
         <activity android:name=".modules.sparepart.DetailCariPart_Activity" />
         <activity android:name=".modules.hutang.PembayaranHutang_Activity" />
         <activity android:name=".modules.hutang.Hutang_Activity" />
@@ -133,7 +134,7 @@
         <activity android:name=".modules.jurnal.AturJurnal_Activity" />
         <activity android:name=".modules.jurnal.DaftarJurnal_Activity" />
         <activity android:name=".modules.sparepart.lokasi_part.Penyesuain_Activity" />
-        <activity android:name=".modules.sparepart.lokasi_part.stock_opname.StockOpname_Activity" />
+        <activity android:name=".modules.sparepart.stock_opname.StockOpname_Activity" />
         <activity android:name=".modules.sparepart.terima_part.TerimaPart" />
         <activity android:name=".modules.sparepart.lokasi_part.AturLokasiPart_Activity" />
         <activity android:name=".modules.sparepart.terima_part.AturTerimaPart" />
@@ -154,7 +155,7 @@
         <activity android:name=".gmod.PengambilanPartActivity" />
         <activity android:name=".gmod.DaftarTugasPartActivity" />
         <activity android:name=".gmod.JumlahPartActivity" />
-        <activity android:name=".gmod.JasaLainActivity" />
+        <activity android:name=".modules.jasa.JasaExternal_Activity" />
         <activity android:name=".gmod.JasaLainDetail" />
         <activity android:name=".gmod.JasaLainBerkalaActivity" />
         <activity android:name=".gmod.PartBerkalaActivity" />
@@ -227,11 +228,6 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".gmod.HistoryActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
             android:name=".gmod.PartDetail"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
@@ -286,11 +282,6 @@
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".gmod.Pendaftaran3"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".gmod.SparepartActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />

@@ -28,7 +28,11 @@ import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.srv.PercentFormat;
 import com.rkrzmail.utils.Tools;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +45,8 @@ public class AturDiscountPart_Activity extends AppActivity implements View.OnCli
     private List<String> listChecked = new ArrayList<>();
     private boolean flagTenda = false, flagBengkel = false, flagMssg = false;
     private String lokasi = "";
+    private int partId;
+    private static final String ERROR = "Harus Di isi";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,27 +93,27 @@ public class AturDiscountPart_Activity extends AppActivity implements View.OnCli
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getActivity(), CariPart_Activity.class);
-                i.putExtra("flag", "ALL");
+                i.putExtra("bengkel", "");
                 startActivityForResult(i, REQUEST_CARI_PART);
             }
         });
     }
 
-    private void loadData(){
+    private void loadData() {
         Intent i = getIntent();
         final Nson nson = Nson.readJson(getIntentStringExtra("data"));
-        if(nson.get("LOKASI").asString().equalsIgnoreCase("TENDA") && nson.get("LOKASI").asString().equalsIgnoreCase("BENGKEL")){
+        if (nson.get("LOKASI").asString().equalsIgnoreCase("TENDA") && nson.get("LOKASI").asString().equalsIgnoreCase("BENGKEL")) {
             flagTenda = true;
             flagBengkel = true;
-        }else if(nson.get("LOKASI").asString().equalsIgnoreCase("TENDA")){
+        } else if (nson.get("LOKASI").asString().equalsIgnoreCase("TENDA")) {
             flagTenda = true;
-        }else if(nson.get("LOKASI").asString().equalsIgnoreCase("BENGKEL")){
+        } else if (nson.get("LOKASI").asString().equalsIgnoreCase("BENGKEL")) {
             flagBengkel = true;
         }
-        if(nson.get("MESSAGE_PELANGGAN").asString().equalsIgnoreCase("YA")){
+        if (nson.get("MESSAGE_PELANGGAN").asString().equalsIgnoreCase("YA")) {
             flagMssg = true;
         }
-        if(i.hasExtra("data")){
+        if (i.hasExtra("data")) {
             etDiscJasa.setText(nson.get("DISCOUNT_JASA_PASANG").asString());
             etDiscPart.setText(nson.get("DISCOUNT_PART").asString());
             etNamaPart.setText(nson.get("NAMA_PART").asString());
@@ -130,13 +136,96 @@ public class AturDiscountPart_Activity extends AppActivity implements View.OnCli
             find(R.id.btn_simpan_discPart, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if(listChecked.size() == 0){
+                        find(R.id.cb_bengkel_discPart, CheckBox.class).requestFocus();
+                        showWarning("Silahkan Pilih Lokasi");
+                        return;
+                    }
+                    if(etNoPart.getText().toString().isEmpty()){
+                        etNoPart.setError(ERROR);
+                        return;
+                    }
+                    if(etNamaPart.getText().toString().isEmpty()){
+                        etNamaPart.setError(ERROR);
+                        return;
+                    }
+                    if(spPekerjaan.getSelectedItemsAsString().isEmpty()){
+                        showWarning("Silahkan Pilih Pekerjaan");
+                        spPekerjaan.performClick();
+                        return;
+                    }
+                    if(etDiscPart.getText().toString().isEmpty() || etDiscJasa.getText().toString().isEmpty()){
+                        showWarning("Silahkan Isi Discount");
+                        return;
+                    }
+
+                    try {
+                        Date tglSekarang = new SimpleDateFormat("dd/MM/yyyy").parse(currentDateTime("dd/MM/yyyy"));
+                        Date tglEffective = new SimpleDateFormat("dd/MM/yyyy").parse(tvTgl.getText().toString());
+                        if (tglEffective.before(tglSekarang)) {
+                            showWarning("Tanggal Invalid");
+                            tvTgl.setText("");
+                            tvTgl.performClick();
+                            return;
+                        }
+
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (tvTgl.getText().toString().isEmpty()) {
+                        showWarning("Tanggal Effective Harus Di isi");
+                        return;
+                    }
                     updateData(nson);
                 }
             });
-        }else {
+        } else {
             find(R.id.btn_simpan_discPart, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    if(listChecked.size() == 0){
+                        find(R.id.cb_bengkel_discPart, CheckBox.class).requestFocus();
+                        showWarning("Silahkan Pilih Lokasi");
+                        return;
+                    }
+                    if(etNoPart.getText().toString().isEmpty()){
+                        etNoPart.setError(ERROR);
+                        return;
+                    }
+                    if(etNamaPart.getText().toString().isEmpty()){
+                        etNamaPart.setError(ERROR);
+                        return;
+                    }
+                    if(spPekerjaan.getSelectedItemsAsString().isEmpty()){
+                        showWarning("Silahkan Pilih Pekerjaan");
+                        spPekerjaan.performClick();
+                        return;
+                    }
+                    if(etDiscPart.getText().toString().isEmpty() || etDiscJasa.getText().toString().isEmpty()){
+                        showWarning("Silahkan Isi Discount");
+                        return;
+                    }
+
+                    try {
+                        Date tglSekarang = new SimpleDateFormat("dd/MM/yyyy").parse(currentDateTime("dd/MM/yyyy"));
+                        Date tglEffective = new SimpleDateFormat("dd/MM/yyyy").parse(tvTgl.getText().toString());
+                        if (tglEffective.before(tglSekarang)) {
+                            showWarning("Tanggal Invalid");
+                            tvTgl.setText("");
+                            tvTgl.performClick();
+                            return;
+                        }
+
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (tvTgl.getText().toString().isEmpty()) {
+                        showWarning("Tanggal Effective Harus Di isi");
+                        return;
+                    }
+
                     saveData();
                 }
             });
@@ -145,71 +234,68 @@ public class AturDiscountPart_Activity extends AppActivity implements View.OnCli
 
 
     private void saveData() {
-        for(String lok : listChecked){
-            lokasi+=lok;
+        for (String lok : listChecked) {
+            lokasi += lok;
         }
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
             public void run() {
-//                view biasa param : action(view)
-//                view search param : search, action(view)
-//                tambah data param : action(add), CID, tanggal, pekerjaan, nama, nopart, diskonpart, diskonjasa, pesan
-//                delete : action(delete), id
-//                update param : action(upadate), tanggal, pekerjaan, diskonpart, diskonjasa, pesan, id
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
+
                 args.put("action", "add");
-                args.put("tanggal", tvTgl.getText().toString());
+                args.put("tanggal", Tools.setFormatDayAndMonthToDb(tvTgl.getText().toString()));
                 args.put("pekerjaan", spPekerjaan.getSelectedItemsAsString());
-                args.put("nama", etNamaPart.getText().toString());
+                args.put("namapart", etNamaPart.getText().toString());
                 args.put("nopart", etNoPart.getText().toString());
+                args.put("partid", String.valueOf(partId));
                 args.put("diskonpart", etDiscPart.getText().toString());
                 args.put("diskonjasa", etDiscJasa.getText().toString());
                 args.put("pesan", find(R.id.cb_mssg_discPart, CheckBox.class).isChecked() ? "YA" : "TIDAK");
                 args.put("lokasi", lokasi);
+
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturdiskonpart"), args));
             }
 
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    showInfo("Sukses Menambahkan Diskon Part");
+                    showSuccess("Sukses Menambahkan Diskon Part");
                     setResult(RESULT_OK);
                     finish();
                 } else {
-                    showInfo("Gagal Menambahkan Diskon Part");
+                    showError("Gagal Menambahkan Diskon Part");
                 }
             }
         });
     }
 
     private void updateData(final Nson id) {
-        for(String lok : listChecked){
-            lokasi+=lok;
-        }
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "update");
                 args.put("id", id.get("ID").asString());
-                args.put("tanggal", find(R.id.tv_tglEffect_discPart, TextView.class).getText().toString());
+                args.put("tanggal", Tools.setFormatDayAndMonthToDb(tvTgl.getText().toString()));
                 args.put("pekerjaan", spPekerjaan.getSelectedItemsAsString());
                 args.put("diskonpart", etDiscPart.getText().toString());
                 args.put("diskonjasa", etDiscJasa.getText().toString());
                 args.put("pesan", find(R.id.cb_mssg_discPart, CheckBox.class).isChecked() ? "YA" : "TIDAK");
-                for(String lok : listChecked){
+                for (String lok : listChecked) {
                     args.put("lokasi", lok);
                 }
+
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturdiskonpart"), args));
             }
 
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    showInfo("Sukses Menyimpan Aktifitas");
+                    showSuccess("Sukses Menyimpan Aktifitas");
                     setResult(RESULT_OK);
                     finish();
                 } else {
@@ -222,17 +308,19 @@ public class AturDiscountPart_Activity extends AppActivity implements View.OnCli
     private void deleteData(final Nson id) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "delete");
-                args.put("namapart", id.get("NAMA_PART").asString());
+                args.put("id", id.get("ID").asString());
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturdiskonpart"), args));
             }
+
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    showInfo("Sukses Menyimpan Aktifitas");
+                    showSuccess("Berhasil Menghapus Aktifitas");
                     setResult(RESULT_OK);
                     finish();
                 } else {
@@ -256,7 +344,7 @@ public class AturDiscountPart_Activity extends AppActivity implements View.OnCli
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if (isChecked) {
                 listChecked.add(buttonView.getText().toString());
-            }else{
+            } else {
                 listChecked.remove(buttonView.getText().toString());
             }
         }
@@ -268,7 +356,8 @@ public class AturDiscountPart_Activity extends AppActivity implements View.OnCli
         if (resultCode == RESULT_OK && requestCode == REQUEST_CARI_PART) {
             Nson n = Nson.readJson(getIntentStringExtra(data, "part"));
             etNoPart.setText(n.get("NO_PART").asString());
-            etNamaPart.setText(n.get("NAMA").asString());
+            etNamaPart.setText(n.get("NAMA_PART").asString());
+            partId = n.get("PART_ID").asInteger();
         }
     }
 }

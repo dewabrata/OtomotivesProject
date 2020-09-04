@@ -79,12 +79,9 @@ public class AturSpotDiscount_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 //add : CID, action(add), tanggal, nama, transaksi, totaltransaksi, nettransaksi,
                 //diskonlain, diskonspot, user
-                Calendar calendar = Calendar.getInstance();
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                String dateTime = simpleDateFormat.format(calendar.getTime());
 
                 args.put("action", "add");
-                args.put("tanggal", dateTime);
+                args.put("tanggal", currentDateTime());
                 args.put("nama", etNama.getText().toString());
                 args.put("transaksi", etTransaksi.getText().toString());
                 args.put("totaltransaksi", etTotal.getText().toString());
@@ -92,6 +89,7 @@ public class AturSpotDiscount_Activity extends AppActivity {
                 args.put("diskonlain", etDisc.getText().toString());
                 args.put("diskonspot", etSpot.getText().toString());
                 args.put("user", getSetting("user"));
+
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturdiskonspot"), args));
             }
 
@@ -177,7 +175,7 @@ public class AturSpotDiscount_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        //adapterSearchView(mSearchView, "search", "caripart", "NAMA");
+        adapterSearchView(mSearchView, "search", "nomorponsel", "NO_PONSEL");
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
 

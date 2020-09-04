@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -22,6 +23,8 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.rekening_bank.AturRekening_Activity;
+import com.rkrzmail.oto.modules.rekening_bank.RekeningBank_Activity;
 import com.rkrzmail.srv.RupiahFormat;
 import com.rkrzmail.utils.Tools;
 
@@ -38,6 +41,8 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
 
     private static final String TAG = "AturTerimaPart";
     public static final int REQUEST_CONTACT = 91;
+    private static final int REQUEST_REKENING = 92;
+    public static final int MIN_SPINNER = 2;
     private Spinner spinnerSupplier, spinnerPembayaran, spRek;
     private TextView tvTglPesan, tvTglTerima, tvTglJatuhTempo, tvNamaSupplier;
     private EditText txtNoDo, txtOngkosKirim;
@@ -45,7 +50,8 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
     private List<String> data = new ArrayList<>();
     private String tglPesan, tglTerima;
     private boolean flagValidation = false;
-
+    private DialogInterface dialogInterface;
+    private ArrayAdapter<String> spRekAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +90,7 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
         tvTglJatuhTempo.setOnClickListener(this);
         tvNamaSupplier.setOnClickListener(this);
 
-        setSpinnerFromApi(spRek, "action", "view", "setrekeningbank", "BANK_NAME", "NO_REKENING");
+        setSpRek();
         spinnerSupplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
@@ -111,6 +117,15 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
                     find(R.id.ly_rek, LinearLayout.class).setVisibility(View.GONE);
                 } else if (item.equalsIgnoreCase("TRANSFER DIMUKA")) {
                     find(R.id.ly_rek, LinearLayout.class).setVisibility(View.VISIBLE);
+                    if(spRek.getCount() < MIN_SPINNER){
+                        showInfoDialog("Rekening Belum Di tambah, Tambah Rekening ? ", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialogInterface = dialog;
+                                startActivityForResult(new Intent(getActivity(), AturRekening_Activity.class), REQUEST_REKENING);
+                            }
+                        });
+                    }
                     find(R.id.layout_jatuh_tempo).setVisibility(View.GONE);
                 } else {
                     find(R.id.ly_rek, LinearLayout.class).setVisibility(View.GONE);
@@ -164,11 +179,11 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
                         return;
                     }
                 }
-                if (txtOngkosKirim.getText().toString().isEmpty()) {
-                    txtOngkosKirim.setError("Masukkan Ongkos Kirim");
-                    txtOngkosKirim.requestFocus();
-                    return;
-                }
+//                if (txtOngkosKirim.getText().toString().isEmpty()) {
+//                    txtOngkosKirim.setError("Masukkan Ongkos Kirim");
+//                    txtOngkosKirim.requestFocus();
+//                    return;
+//                }
                 if (find(R.id.layout_jatuh_tempo).getVisibility() == View.VISIBLE) {
                     if (tvTglJatuhTempo.getText().toString().isEmpty()) {
                         tvTglJatuhTempo.setError("Masukkan Tanggal Jatuh Tempo");
@@ -194,6 +209,18 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
                         showWarning("Tanggal Terima Tidak Boleh Melebihi Tanggal Pesan");
                         return;
                     }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    Date tanggalTerima = new SimpleDateFormat("dd/MM/yyyy").parse(tglterima);
+                    Date currentDate = new SimpleDateFormat("dd/MM/yyyy").parse(tglSekarang);
+                    if (tanggalTerima.after(currentDate)) {
+                        showWarning("Tanggal Terima Tidak Boleh Melebihi Tanggal Sekarang");
+                        return;
+                    }
+
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -247,6 +274,35 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
         });
     }
 
+    public void setSpRek() {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "view");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("setrekeningbank"), args));
+            }
+
+            @Override
+            public void runUI() {
+                ArrayList<String> str = new ArrayList<>();
+                str.add("--PILIH--");
+                for (int i = 0; i < result.get("data").size(); i++) {
+                    str.add(result.get("data").get(i).get("BANK_NAME").asString() + " - " + result.get("data").get(i).get("NO_REKENING").asString());
+                }
+                ArrayList<String> newStr = Tools.removeDuplicates(str);
+                spRekAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, newStr);
+                spRekAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                if(spRekAdapter.getCount() < 1){
+                    showWarning("Data Belum di Set");
+                }
+                spRek.setAdapter(spRekAdapter);
+                spRekAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
     private void checkTgl() {
         newTask(new Messagebox.DoubleRunnable() {
             Nson result;
@@ -267,10 +323,10 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
     }
 
     private Nson sendObject() {
-        String tglpesan = tvTglPesan.getText().toString();
-        String tglterima = tvTglTerima.getText().toString();
+        String tglpesan = Tools.setFormatDayAndMonthToDb(tvTglPesan.getText().toString());
+        String tglterima =  Tools.setFormatDayAndMonthToDb(tvTglTerima.getText().toString());
         String rek = spRek.getSelectedItem().toString();
-        String jatuhtempo = tvTglJatuhTempo.getText().toString();
+        String jatuhtempo =  Tools.setFormatDayAndMonthToDb(tvTglJatuhTempo.getText().toString());
         String tipe = spinnerSupplier.getSelectedItem().toString().toUpperCase();
         String nama = tvNamaSupplier.getText().toString().toUpperCase();
         String nodo = txtNoDo.getText().toString().toUpperCase();
@@ -335,6 +391,9 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
                 String contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
                 tvNamaSupplier.setText(contactName + "\n" + number);
             }
+        }else if(resultCode == RESULT_OK && requestCode == REQUEST_REKENING){
+            dialogInterface.dismiss();
+            setSpRek();
         }
     }
 

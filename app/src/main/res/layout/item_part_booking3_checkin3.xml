@@ -30,44 +30,60 @@
             <TableRow>
 
                 <TextView
-                    android:id="@+id/tv_nama_booking3_checkin3"
+                    android:id="@+id/tv_namaPart_booking3_checkin3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:text="NAMA JASA/JASA LAIN/PART"
-                    android:layout_weight="1"/>
-
-
-                <TextView
-                    android:id="@+id/tv_harga_booking3_checkin3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="(HARGA)"
-                    android:textStyle="bold"
-                    android:layout_gravity="end"/>
+                    android:text="NAMA PART"
+                    android:layout_gravity="start"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textSize="12sp"/>
 
             </TableRow>
 
-            <TableRow android:layout_marginTop="10dp">
+            <TableRow android:layout_marginTop="5dp">
 
                 <TextView
-                    android:id="@+id/tv_disc_booking3_checkin3"
+                    android:id="@+id/tv_noPart_booking3_checkin3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
-                    android:text="DISC" />
+                    android:layout_gravity="start"
+                    android:text="NO. PART"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textSize="12sp"/>
 
                 <TextView
-                    android:id="@+id/tv_net_booking3_checkin3"
+                    android:id="@+id/tv_merk_booking3_checkin3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
                     android:layout_gravity="end"
-                    android:text="NET" />
-
+                    android:text="MERK"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textSize="12sp"/>
 
             </TableRow>
+
+            <TableRow android:layout_marginTop="5dp">
+
+                <TextView
+                    android:id="@+id/tv_hargaNet_booking3_checkin3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="HARGA NET"
+                    android:layout_gravity="start"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:id="@+id/tv_jasaNet_booking3_checkin3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:text="JASA NET"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textSize="12sp"/>
+
+            </TableRow>
+
         </TableLayout>
 
     </LinearLayout>

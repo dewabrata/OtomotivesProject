@@ -28,6 +28,9 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             etDp, etSisa, etSebelum, etWaktu, etSelesai, etPengambilan, etAlasanBatal;
     private RecyclerView rvItem;
     private Spinner spAktifitas, spNamaMekanik;
+    private Nson partList = Nson.newArray(),
+            jasaList = Nson.newArray();
+    private boolean isListRecylerview; // true = part, false = jasa
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,18 +67,6 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         rvItem = findViewById(R.id.recyclerView_detailKontrolLayanan);
 
         loadData();
-        rvItem.setLayoutManager(new LinearLayoutManager(this));
-        rvItem.setHasFixedSize(true);
-        rvItem.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_booking3_checkin3) {
-            @Override
-            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                super.onBindViewHolder(viewHolder, position);
-                viewHolder.find(R.id.tv_nama_booking3_checkin3, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_harga_booking3_checkin3, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_disc_booking3_checkin3, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_net_booking3_checkin3, TextView.class).setText(nListArray.get(position).get("").asString());
-            }
-        });
 
         find(R.id.btn_simpan_kontrolLayanan, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,6 +92,30 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         etSelesai.setText(n.get("").asString());
         etPengambilan.setText(n.get("").asString());
         etAlasanBatal.setText(n.get("").asString());
+    }
+
+    private void initRecyclerview(){
+        rvItem.setLayoutManager(new LinearLayoutManager(this));
+        rvItem.setHasFixedSize(true);
+        rvItem.setAdapter(new NikitaRecyclerAdapter(isListRecylerview ? partList : jasaList, R.layout.item_part_booking3_checkin3) {
+            @Override
+            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+                super.onBindViewHolder(viewHolder, position);
+                viewHolder.find(isListRecylerview ? R.id.tv_namaPart_booking3_checkin3 : R.id.tv_kelompokPart_booking3_checkin3, TextView.class)
+                        .setText(isListRecylerview ? nListArray.get(position).get("NAMA_PART").asString() : nListArray.get(position).get("NAMA_KELOMPOK_PART").asString());
+
+                viewHolder.find(isListRecylerview ? R.id.tv_noPart_booking3_checkin3 : R.id.tv_aktifitas_booking3_checkin3, TextView.class)
+                        .setText(isListRecylerview ? nListArray.get(position).get("NO_PART").asString() : nListArray.get(position).get("AKTIVITAS").asString());
+
+                viewHolder.find(isListRecylerview ? R.id.tv_hargaNet_booking3_checkin3 : R.id.tv_jasaLainNet_booking3_checkin3, TextView.class)
+                        .setText(nListArray.get(position).get("HARGA_NET").asString());
+
+                if(isListRecylerview){
+                    viewHolder.find(R.id.tv_merk_booking3_checkin3, TextView.class).setText(nListArray.get(position).get("MERK").asString());
+                    viewHolder.find(R.id.tv_jasaNet_booking3_checkin3, TextView.class).setText(nListArray.get(position).get("BIAYA_JASA").asString());
+                }
+            }
+        });
     }
 
     private void updateData() {

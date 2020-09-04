@@ -27,7 +27,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Posisi"
-                android:textStyle="bold" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:layout_gravity="start"
+                android:textSize="12sp"/>
 
             <TextView
                 android:id="@+id/tv_kategoriPart_komisiJasaLain"
@@ -35,19 +37,21 @@
                 android:layout_height="wrap_content"
                 android:text="Kategori Part"
                 android:layout_gravity="end"
-                android:textStyle="bold" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp" />
 
         </TableRow>
 
-        <TableRow android:layout_marginTop="10dp">
+        <TableRow android:layout_marginTop="7dp">
 
             <TextView
                 android:id="@+id/tv_aktifitas_komisiJasaLain"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
+                android:layout_gravity="start"
                 android:text="Aktifitas"
-                android:textStyle="bold" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp"/>
 
             <TextView
                 android:id="@+id/tv_komisi_komisiJasaLain"
@@ -55,7 +59,8 @@
                 android:layout_height="wrap_content"
                 android:text="% Komisi"
                 android:layout_gravity="end"
-                android:textStyle="bold" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp"/>
 
         </TableRow>
 

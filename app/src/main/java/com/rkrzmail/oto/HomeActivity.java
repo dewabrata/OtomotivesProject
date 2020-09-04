@@ -14,8 +14,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
@@ -36,7 +34,6 @@ import com.rkrzmail.oto.gmod.LayananActivity;
 import com.rkrzmail.oto.gmod.MessageWA;
 import com.rkrzmail.oto.gmod.Part_DiterimaActivity;
 import com.rkrzmail.oto.gmod.Penerimaan_PartAcitivity;
-import com.rkrzmail.oto.gmod.SparepartActivity;
 import com.rkrzmail.oto.modules.LoginActivity;
 import com.rkrzmail.oto.modules.biayamekanik.BiayaMekanik2Activity;
 import com.rkrzmail.oto.modules.sparepart.diskon_part.DiscountPart_Activity;
@@ -137,10 +134,6 @@ public class HomeActivity extends MenuActivity{
                 }else if (nPopulate.get(position).get("id").asInteger() == MN_MESSAGE_WA){
                     Intent intent =  new Intent(HomeActivity.this, MessageWA.class);
                     startActivity(intent);
-                } else if (nPopulate.get(position).get("id").asInteger() == MN_SPAREPART) {
-                    Intent intent = new Intent(HomeActivity.this, SparepartActivity.class);
-                    startActivity(intent);
-
                 }
 //                else if (nPopulate.get(position).get("id").asInteger() == MN_BIAYA_MEKANIK) {
 //                    Intent intent = new Intent(HomeActivity.this, BiayaMekanikActivity.class);

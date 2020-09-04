@@ -162,9 +162,9 @@ public class PendaftaranLayananActivity extends AppActivity {
         find(R.id.tblHistory).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), HistoryActivity.class);
-                intent.putExtra("NOPOL", find(R.id.txtNopol,EditText.class).getText().toString());
-                startActivityForResult(intent, REQUEST_BARCODE);
+//                Intent intent = new Intent(getActivity(), HistoryActivity.class);
+//                intent.putExtra("NOPOL", find(R.id.txtNopol,EditText.class).getText().toString());
+//                startActivityForResult(intent, REQUEST_BARCODE);
             }
         });
 

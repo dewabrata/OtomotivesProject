@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -18,6 +19,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.sparepart.diskon_part.AturDiscountPart_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
@@ -39,7 +41,7 @@ public class BiayaMekanik2Activity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_basic);
+        setContentView(R.layout.activity_list_basic_3);
         initComponent();
     }
 
@@ -59,6 +61,17 @@ public class BiayaMekanik2Activity extends AppActivity {
                umk = data.get("BENGKEL").get(i).get("UMK").asString();
             }
         }
+        Log.d(TAG, "initComponent: " + umk);
+
+        FloatingActionButton fab = findViewById(R.id.fab_tambah);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), AturBiayaMekanik2.class);
+                intent.putExtra("UMK", umk);
+                startActivityForResult(intent, REQUEST_ATUR);
+            }
+        });
 
         rvListBasic2 = findViewById(R.id.recyclerView);
         rvListBasic2.setLayoutManager(new LinearLayoutManager(this));

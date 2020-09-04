@@ -19,28 +19,37 @@
             android:padding="10dp">
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/border_solid"
-                android:padding="10dp"
-                android:layout_gravity="center"
-                android:gravity="center">
+                android:layout_marginTop="@dimen/paddingMedium"
+                android:layout_marginBottom="@dimen/paddingMedium"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/paddingMedium"
+                android:paddingEnd="@dimen/paddingMedium">
 
                 <TextView
                     android:layout_height="wrap_content"
-                    android:layout_width="150dp"
                     android:text="BANK"
-                    android:textStyle="bold"
-                    android:textSize="14sp"/>
-
-                <Spinner
-                    android:id="@+id/sp_bank_rekening"
-                    android:layout_weight="1"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="center" />
+                    android:layout_weight="3"
+                    android:textColor="@color/grey_900"
+                    android:textStyle="bold"
+                    android:textSize="12sp"/>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
+
+                    <Spinner
+                        android:id="@+id/sp_bank_rekening"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textAlignment="center" />
+
+                </RelativeLayout>
 
             </LinearLayout>
 
@@ -77,27 +86,40 @@
             </android.support.design.widget.TextInputLayout>
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/border_solid"
-                android:padding="10dp"
-                >
+                android:layout_marginTop="@dimen/paddingMedium"
+                android:layout_marginBottom="@dimen/paddingMedium"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingStart="3dp"
+                android:paddingEnd="3dp">
 
-                <CheckBox
-                    android:id="@+id/cb_edc_rekening"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="EDC ACTIVE" />
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="39dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
 
-                <CheckBox
-                    android:id="@+id/cb_offUs_rekening"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="OFF US" />
+                    <CheckBox
+                        android:id="@+id/cb_edc_rekening"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:padding="10dp"
+                        android:layout_marginStart="20dp"
+                        android:text="EDC ACTIVE" />
+
+                    <CheckBox
+                        android:id="@+id/cb_offUs_rekening"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:padding="10dp"
+                        android:layout_marginEnd="20dp"
+                        android:text="OFF US" />
+
+                </RelativeLayout>
 
             </LinearLayout>
 

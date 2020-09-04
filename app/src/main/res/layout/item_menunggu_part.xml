@@ -33,14 +33,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Tanggal Checkin"
-                    android:textStyle="bold" />
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="start"/>
 
                 <TextView
                     android:id="@+id/tv_lamaHari_tungguPart"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Lama Hari"
-                    android:textStyle="bold" />
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="end"/>
 
             </TableRow>
 
@@ -51,14 +55,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="No. Polisi"
-                    android:textStyle="bold" />
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="start" />
 
                 <TextView
                     android:id="@+id/tv_noHp_tungguPart"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="No. Hp"
-                    android:textStyle="bold" />
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="end" />
 
             </TableRow>
 
@@ -69,7 +77,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Nama Pelanggan"
-                    android:textStyle="bold" />
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="start" />
 
             </TableRow>
 
@@ -80,14 +90,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="No. Part"
-                    android:textStyle="bold" />
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="start" />
 
                 <TextView
                     android:id="@+id/tv_jumlah_tungguPart"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Jumlah"
-                    android:textStyle="bold" />
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="end" />
 
             </TableRow>
 
@@ -98,7 +112,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Nama Part"
-                    android:textStyle="bold" />
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="start" />
 
             </TableRow>
 
@@ -109,7 +125,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Status"
-                    android:textStyle="bold" />
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="start" />
 
 
                 <TextView
@@ -117,7 +135,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Tanggal Update"
-                    android:textStyle="bold" />
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="end" />
 
             </TableRow>
 

@@ -28,50 +28,59 @@
             android:layout_height="match_parent"
             android:stretchColumns="*">
 
-            <TableRow>
+            <TableRow android:layout_marginTop="5dp">
 
                 <TextView
                     android:id="@+id/tv_tanggal_spotDisc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Tanggal"
-                    android:textStyle="bold" />
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="start"/>
 
                 <TextView
                     android:id="@+id/tv_user_spotDisc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="User"
-                    android:textStyle="bold" />
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="end"/>
 
             </TableRow>
 
-            <TableRow>
+            <TableRow android:layout_marginTop="5dp">
 
                 <TextView
                     android:id="@+id/tv_namaPelanggan_spotDisc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Nama Pelanggan"
-                    android:textStyle="bold" />
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="start"/>
 
             </TableRow>
 
-            <TableRow>
+            <TableRow android:layout_marginTop="5dp">
 
                 <TextView
                     android:id="@+id/tv_transaksi_spotDisc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Transaksi"
-                    android:textStyle="bold" />
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
                 <TextView
                     android:id="@+id/tv_disc_spotDisc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Spot Disc"
-                    android:textStyle="bold" />
+                    android:textSize="12sp"
+                    android:layout_gravity="end"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
             </TableRow>
 

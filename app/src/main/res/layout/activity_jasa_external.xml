@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <LinearLayout
+                android:id="@+id/ly_waktu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:textColor="@color/grey_900"
+                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:text="WAKTU KERJA"
+                    android:layout_gravity="center"/>
+
+                <ImageButton
+                    android:id="@+id/img_waktuKerja"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:tint="@color/grey_900"
+                    android:layout_gravity="center"
+                    android:layout_weight="2"
+                    app:srcCompat="@drawable/icon_stopwatch" />
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_weight="2">
+
+                    <EditText
+                        android:id="@+id/et_waktuSet"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:hint="HH:JJ:MM"
+                        android:textSize="14sp" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2">
+
+                    <EditText
+                        android:id="@+id/et_waktuDefault"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:hint="@string/hh_jj_mm"
+                        android:textSize="14sp" />
+
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
+                    android:hint="BIAYA JASA">
+
+                    <EditText
+                        android:id="@+id/et_biayaJasa"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        android:textSize="14sp" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <ImageButton
+                    android:id="@+id/img_clear2"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@android:color/transparent"
+                    android:tint="@color/grey_80"
+                    app:srcCompat="@drawable/ic_close"
+                    android:visibility="gone"/>
+
+            </FrameLayout>
+
+            <Button
+                android:id="@+id/btn_lanjut"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_margin="10dp"
+                android:background="@drawable/btn_rounded_accent"
+                android:text="Lanjut"
+                android:textColor="@android:color/white" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+      <include layout="@layout/toolbar"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>

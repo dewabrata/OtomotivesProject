@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -61,8 +62,7 @@ public class DetailTerimaPart_Activity extends AppActivity {
                 viewHolder.find(R.id.tv_net_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("NET").asString());
                 viewHolder.find(R.id.tv_harga_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("HARGA_BELI").asString());
                 viewHolder.find(R.id.tv_disc_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("DISCOUNT").asString());
-                viewHolder.find(R.id.tv_lokasi_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("LOKASI_SIMPAN").asString());
-
+                viewHolder.find(R.id.tv_merk_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("MERK").asString());
             }
         });
     }
@@ -70,6 +70,9 @@ public class DetailTerimaPart_Activity extends AppActivity {
     private void loadData() {
         Intent i = getIntent();
         Nson n = Nson.readJson(getIntentStringExtra(i, "part"));
+        if(n.get("SUPPLIER").asString().equalsIgnoreCase("")){
+            etNamaSup.setVisibility(View.GONE);
+        }
         etNamaSup.setText(n.get("SUPPLIER").asString());
         etUser.setText(n.get("NAMA_USER").asString());
         etTglTerima.setText(n.get("TANGGAL_PENERIMAAN").asString());

@@ -33,14 +33,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="No. Antrian"
-                    android:textStyle="bold" />
+                    android:textAppearance="@style/TextAppearance.AppCompat.SearchResult.Title"
+                    />
 
                 <TextView
                     android:id="@+id/tv_layanan_kerjaMekanik"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Layanan"
-                    android:textStyle="bold" />
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
             </TableRow>
 
@@ -51,14 +53,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Jenis"
-                    android:textStyle="bold" />
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
                 <TextView
                     android:id="@+id/tv_nopol_kerjaMekanik"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="No. Polisi"
-                    android:textStyle="bold" />
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
             </TableRow>
 
@@ -69,7 +73,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Nama Pelanggan"
-                    android:textStyle="bold" />
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
             </TableRow>
 

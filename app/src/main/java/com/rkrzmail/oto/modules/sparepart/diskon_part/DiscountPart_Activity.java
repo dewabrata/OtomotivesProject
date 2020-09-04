@@ -64,14 +64,14 @@ public class DiscountPart_Activity extends AppActivity {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
-                //String tglDisc = Tools.setFormatDayAndMonth(nListArray.get(position).get("").asString());
+                String tglDisc = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("TANGGAL").asString());
 
                 viewHolder.find(R.id.tv_noPart_disc, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
                 viewHolder.find(R.id.tv_namaPart_disc, TextView.class).setText(nListArray.get(position).get("NAMA_PART").asString());
                 viewHolder.find(R.id.tv_hpp_disc, TextView.class).setText(nListArray.get(position).get("TOTAL").asString());
                 viewHolder.find(R.id.tv_pekerjaan_disc, TextView.class).setText(nListArray.get(position).get("PEKERJAAN").asString());
                 viewHolder.find(R.id.tv_discount_disc, TextView.class).setText(nListArray.get(position).get("DISCOUNT_PART").asString());
-                viewHolder.find(R.id.tv_tgl_disc, TextView.class).setText(nListArray.get(position).get("TANGGAL").asString());
+                viewHolder.find(R.id.tv_tgl_disc, TextView.class).setText(tglDisc);
 
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
@@ -105,7 +105,7 @@ public class DiscountPart_Activity extends AppActivity {
                     nListArray.asArray().addAll(result.get("data").asArray());
                     rvDiscPart.getAdapter().notifyDataSetChanged();
                 } else {
-                    showInfo("Gagal Meload Aktifitas");
+                    showWarning("Gagal Meload Aktifitas");
                 }
             }
         });

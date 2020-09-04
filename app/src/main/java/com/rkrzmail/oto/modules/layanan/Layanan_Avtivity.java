@@ -32,13 +32,17 @@ import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.srv.NsonAutoCompleteAdapter;
+import com.rkrzmail.utils.Tools;
 
+import java.text.DecimalFormat;
 import java.util.Map;
 
 public class Layanan_Avtivity extends AppActivity {
 
     private static final String TAG = "Layanan_Activity";
     private RecyclerView rvLayanan;
+    private DecimalFormat formatter;
+    String lokasiLayanan = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,12 +60,15 @@ public class Layanan_Avtivity extends AppActivity {
         toolbar.animate().translationY(-toolbar.getBottom()).setInterpolator(new AccelerateInterpolator()).start();
     }
 
-    private void initComponent(){
+    private void initComponent() {
+        formatter = new DecimalFormat("###,###,###");
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(new Intent(getActivity(), AturLayanan_Activity.class), 10);
+                Intent i = new Intent(getActivity(), AturLayanan_Activity.class);
+                i.putExtra("add", "");
+                startActivityForResult(i, 10);
             }
         });
 
@@ -69,19 +76,33 @@ public class Layanan_Avtivity extends AppActivity {
         rvLayanan.setLayoutManager(new LinearLayoutManager(this));
         rvLayanan.setHasFixedSize(true);
 
-        rvLayanan.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_layanan){
+        rvLayanan.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_layanan) {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
+                 lokasiLayanan = nListArray.get(position).get("LOKASI_LAYANAN_EMG").asString()
+                        + ", " + nListArray.get(position).get("LOKASI_LAYANAN_HOME").asString()
+                        + ", " + nListArray.get(position).get("LOKASI_LAYANAN_TENDA").asString()
+                        + ", " + nListArray.get(position).get("LOKASI_LAYANAN_BENGKEL").asString();
 
                 viewHolder.find(R.id.tv_jenis_layanan, TextView.class).setText(nListArray.get(position).get("JENIS_LAYANAN").asString());
                 viewHolder.find(R.id.tv_nama_layanan, TextView.class).setText(nListArray.get(position).get("NAMA_LAYANAN").asString());
-                viewHolder.find(R.id.tv_lokasi_layanan, TextView.class).setText(nListArray.get(position).get("LOKASI_LAYANAN").asString());
+                viewHolder.find(R.id.tv_lokasi_layanan, TextView.class).setText(lokasiLayanan);
                 viewHolder.find(R.id.tv_status_layanan, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
-                viewHolder.find(R.id.tv_biaya_layanan, TextView.class).setText(nListArray.get(position).get("BIAYA").asString());
-
+                if(Tools.isNumeric(nListArray.get(position).get("HARGA_JUAL").asString())){
+                    viewHolder.find(R.id.tv_biaya_layanan, TextView.class).setText("Rp. " + formatter.format(Double.parseDouble(nListArray.get(position).get("BIAYA_PAKET").asString())));
+                }else{
+                    viewHolder.find(R.id.tv_biaya_layanan, TextView.class).setText(nListArray.get(position).get("BIAYA_PAKET").asString());
+                }
             }
-        });
+        }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Nson parent, View view, int position) {
+                Intent i = new Intent(getActivity(), AturLayanan_Activity.class);
+                i.putExtra("edit", nListArray.get(position).toJson());
+                startActivityForResult(i, 10);
+            }
+        }));
 
         catchData("");
     }
@@ -89,9 +110,12 @@ public class Layanan_Avtivity extends AppActivity {
     private void catchData(final String nama) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "view");
+                args.put("spec", "Bengkel");
                 args.put("search", nama);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlayanan"), args));
             }

@@ -96,7 +96,7 @@ public class KontrolBooking_Activity extends AppActivity {
                                 switch (menuItem.getItemId()) {
                                     case R.id.action_history:
                                         Intent i = new Intent(getActivity(), HistoryBookingCheckin_Activity.class);
-                                        i.putExtra("NOPOL", nListArray.get(position).toJson());
+                                        i.putExtra("booking", nListArray.get(position).toJson());
                                         startActivityForResult(i, REQUEST_HISTORY);
                                         break;
                                 }

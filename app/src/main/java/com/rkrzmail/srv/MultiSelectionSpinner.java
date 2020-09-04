@@ -21,7 +21,6 @@ public class MultiSelectionSpinner extends Spinner implements
 
     public interface OnMultipleItemsSelectedListener {
         void selectedIndices(List<Integer> indices);
-
         void selectedStrings(List<String> strings);
     }
 
@@ -152,14 +151,14 @@ public class MultiSelectionSpinner extends Spinner implements
         simple_adapter.add(buildSelectedItemString());
     }
 
-    public void setSelection(int index) {
+    public void setSelection(int index, boolean selected) {
         for (int i = 0; i < mSelectionBool.length; i++) {
-            mSelectionBool[i] = false;
-            mSelectionAtStartBool[i] = false;
+            mSelectionBool[i] = selected;
+            mSelectionAtStartBool[i] = selected;
         }
         if (index >= 0 && index < mSelectionBool.length) {
-            mSelectionBool[index] = true;
-            mSelectionAtStartBool[index] = true;
+            mSelectionBool[index] = selected;
+            mSelectionAtStartBool[index] = selected;
         } else {
             throw new IllegalArgumentException("Index " + index
                     + " is out of bounds.");

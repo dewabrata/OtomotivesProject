@@ -69,14 +69,9 @@ public class Tenda_Activity extends AppActivity {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
 
-                String tgl = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("TANGGAL").asString());
-                //DataGenerator.getStringsShort(getActivity());
-
-                viewHolder.find(R.id.tv_tanggalMulai_tenda, TextView.class).setText(nListArray.get(position).get("TANGGAL_MULAI").asString());
-                viewHolder.find(R.id.tv_tipeTenda, TextView.class).setText(nListArray.get(position).get("TIPE").asString());
                 viewHolder.find(R.id.tv_namaLokasi_tenda, TextView.class).setText(nListArray.get(position).get("NAMA_LOKASI").asString());
+                viewHolder.find(R.id.tv_tipeWaktu_tenda, TextView.class).setText(nListArray.get(position).get("TIPE_WAKTU").asString());
                 viewHolder.find(R.id.tv_jamBuka_tenda, TextView.class).setText(nListArray.get(position).get("JAM_BUKA").asString());
-                viewHolder.find(R.id.tv_tanggalSelesai_tenda, TextView.class).setText(nListArray.get(position).get("TANGGAL_SELESAI").asString());
                 viewHolder.find(R.id.tv_jamTutup_tenda, TextView.class).setText(nListArray.get(position).get("JAM_TUTUP").asString());
             }
         });

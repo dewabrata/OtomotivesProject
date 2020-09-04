@@ -13,6 +13,7 @@ import android.widget.ImageButton;
 import com.naa.data.Nson;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.utils.Tools;
 
 import java.lang.reflect.Array;
@@ -21,8 +22,9 @@ import java.text.SimpleDateFormat;
 
 public class BiayaJasa_Activity extends AppActivity {
 
-    private EditText etMasterPart, etAktivitas, etBiaya, etWaktuKerja, etTotalKerja;
+    private EditText etMasterPart, etAktivitas, etWaktuKerja, etWaktuDefault;
     private DecimalFormat formatter;
+    private NikitaAutoComplete etBiaya;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,14 +47,21 @@ public class BiayaJasa_Activity extends AppActivity {
         etBiaya = findViewById(R.id.et_biaya_biayaJasa);
         etMasterPart = findViewById(R.id.et_masterPart_biayaJasa);
         etAktivitas = findViewById(R.id.et_aktivitas_biayaJasa);
-        etWaktuKerja = findViewById(R.id.et_kerjaMulai_biayaJasa);
-        etTotalKerja = findViewById(R.id.et_kerjaSelesai_biayaJasa);
+        etWaktuKerja = findViewById(R.id.et_waktuSet);
+        etWaktuDefault = findViewById(R.id.et_waktuDefault);
 
         etBiaya.addTextChangedListener(textWatcher);
         find(R.id.img_clear, ImageButton.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 etBiaya.setText("");
+            }
+        });
+
+        find(R.id.img_waktuKerja, ImageButton.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getTimesDialog(find(R.id.et_waktuSet, EditText.class));
             }
         });
 
@@ -73,15 +82,15 @@ public class BiayaJasa_Activity extends AppActivity {
                 totalJam = totalJam + Integer.parseInt(n.get(j).get("WAKTU").asString().replace(":", ""));
             }
             etMasterPart.setText(namaStr.toString());
-            etTotalKerja.setText(totalJam + " Menit");
+            etWaktuDefault.setText(totalJam + " Menit");
             find(R.id.btn_simpan_biayaJasa).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Nson nson = Nson.newObject();
-                    nson.set("NAMA", namaStr.toString());
+                    nson.set("NAMA_KELOMPOK_PART", namaStr.toString());
                     nson.set("JASA_ID", idStr.toString());
-                    nson.set("HARGA_JASA", etBiaya.getText().toString());
-                    nson.set("AKTIVITAS_LAIN", etAktivitas.getText().toString());
+                    nson.set("HARGA_NET", etBiaya.getText().toString().replaceAll("[^0-9]+", ""));
+                    nson.set("AKTIVITAS", etAktivitas.getText().toString());
                     nson.set("LAMA_KERJA", etWaktuKerja.getText().toString());
 
                     Intent intent = new Intent();
@@ -93,16 +102,16 @@ public class BiayaJasa_Activity extends AppActivity {
             });
         } else if (getIntent().hasExtra("jasa_berkala")) {
             etMasterPart.setText(n.get("NAMA").asString());
-            etTotalKerja.setText(n.get("WAKTU").asString());
+            etWaktuDefault.setText(n.get("WAKTU").asString());
             find(R.id.btn_simpan_biayaJasa).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Nson nson2 = Nson.newObject();
 
-                    nson2.set("NAMA", n.get("NAMA").asString());
+                    nson2.set("NAMA_KELOMPOK_PART", n.get("NAMA").asString());
                     nson2.set("JASA_ID", n.get("JASA_ID").asString());
-                    nson2.set("HARGA_JASA", etBiaya.getText().toString());
-                    nson2.set("AKTIVITAS_LAIN", etAktivitas.getText().toString());
+                    nson2.set("HARGA_NET", etBiaya.getText().toString());
+                    nson2.set("AKTIVITAS", etAktivitas.getText().toString());
                     nson2.set("LAMA_KERJA", etWaktuKerja.getText().toString());
 
                     Intent intent = new Intent();

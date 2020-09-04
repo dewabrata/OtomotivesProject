@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:descendantFocusability="beforeDescendants"
-    android:focusableInTouchMode="true"
-    android:layout_height="match_parent">
+    android:focusableInTouchMode="true">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -15,38 +16,52 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
+            android:padding="5dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/paddingMedium"
+                android:layout_marginBottom="@dimen/paddingMedium"
+                android:gravity="center"
                 android:orientation="horizontal"
-                android:background="@drawable/border_solid"
-                android:padding="10dp"
-                android:layout_marginTop="10dp">
+                android:paddingStart="@dimen/paddingMedium"
+                android:paddingEnd="@dimen/paddingMedium">
 
                 <TextView
-                    android:layout_width="150dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:textColor="@color/grey_900"
+                    android:textStyle="bold"
+                    android:textSize="12sp"
                     android:layout_height="wrap_content"
-                    android:text="LOKASI LAYANAN"
-                    android:textSize="14sp" />
+                    android:text="LOKASI LAYANAN" />
 
-                <CheckBox
-                    android:id="@+id/cb_bengkel_discPart"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="BENGKEL"/>
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
 
-                <CheckBox
-                    android:id="@+id/cb_tenda_discPart"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="TENDA"/>
+                    <CheckBox
+                        android:id="@+id/cb_bengkel_discPart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:paddingStart="20dp"
+                        android:text="BENGKEL"
+                        tools:ignore="RtlSymmetry" />
+
+                    <CheckBox
+                        android:id="@+id/cb_tenda_discPart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:paddingEnd="20dp"
+                        android:text="TENDA"
+                        tools:ignore="RtlSymmetry" />
+
+                </RelativeLayout>
 
             </LinearLayout>
 
@@ -55,8 +70,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                app:helperTextEnabled="true"
                 app:helperText="Disable"
+                app:helperTextEnabled="true"
                 app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
 
                 <EditText
@@ -74,8 +89,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                app:helperTextEnabled="true"
                 app:helperText="Disable"
+                app:helperTextEnabled="true"
                 app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
 
 
@@ -92,23 +107,36 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/border_solid"
-                android:padding="10dp"
+                android:layout_marginTop="@dimen/paddingMedium"
+                android:layout_marginBottom="@dimen/paddingMedium"
                 android:gravity="center"
-                android:layout_marginTop="10dp"
-                android:layout_gravity="center">
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/paddingMedium"
+                android:paddingEnd="@dimen/paddingMedium">
 
                 <TextView
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:text="PEKERJAAN" />
-
-                <com.rkrzmail.srv.MultiSelectionSpinner
-                    android:id="@+id/sp_pekerjaan_discPart"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:textAlignment="center"
-                    android:layout_weight="1"/>
+                    android:layout_weight="3"
+                    android:text="PEKERJAAN"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
+
+                    <com.rkrzmail.srv.MultiSelectionSpinner
+                        android:id="@+id/sp_pekerjaan_discPart"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textAlignment="center" />
+
+                </RelativeLayout>
+
 
             </LinearLayout>
 
@@ -147,8 +175,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="DISCOUNT JASA"
-                        android:maxLength="5"
                         android:inputType="number"
+                        android:maxLength="5"
                         android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -158,25 +186,39 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/border_solid"
-                android:padding="10dp"
-                android:orientation="horizontal">
+                android:layout_marginTop="@dimen/paddingMedium"
+                android:layout_marginBottom="@dimen/paddingMedium"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/paddingMedium"
+                android:paddingEnd="@dimen/paddingMedium">
 
                 <TextView
-                    android:layout_width="150dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="TANGGAL EFEKTIVE" />
-
-                <TextView
-                    android:id="@+id/tv_tglEffect_discPart"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/icon_tanggal"
-                    android:gravity="center"
-                    android:layout_marginStart="20dp"
-                    android:layout_weight="1"
+                    android:layout_weight="3"
+                    android:text="TANGGAL EFEKTIVE"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
+
+                    <TextView
+                        android:id="@+id/tv_tglEffect_discPart"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        android:drawableStart="@drawable/icon_tanggal"
+                        android:gravity="center"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
+
 
             </LinearLayout>
 
@@ -202,18 +244,18 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/btn_rounded_accent"
                         android:text="HAPUS"
-                        android:visibility="gone"
-                        android:textColor="@android:color/white" />
+                        android:textColor="@android:color/white"
+                        android:visibility="gone" />
 
                     <Button
                         android:id="@+id/btn_simpan_discPart"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_column="30"
+                        android:layout_gravity="end"
+                        android:layout_marginStart="8dp"
                         android:background="@drawable/btn_rounded_accent"
                         android:text="SIMPAN"
-                        android:layout_gravity="end"
-                        android:layout_column="30"
-                        android:layout_marginStart="8dp"
                         android:textColor="@android:color/white" />
 
                 </TableRow>
@@ -227,7 +269,7 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-       <include layout="@layout/btn_search"/>
+        <include layout="@layout/btn_search" />
 
     </android.support.design.widget.AppBarLayout>
 

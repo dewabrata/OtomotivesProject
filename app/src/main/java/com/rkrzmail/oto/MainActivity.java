@@ -15,6 +15,9 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
@@ -55,6 +58,12 @@ public class MainActivity extends AppActivity {
             UtilityAndroid.setSetting(this, "FCMID", refreshedToken);
         }
 
+//        RotateAnimation anim = new RotateAnimation(0f, 350f, 15f, 15f);
+//        anim.setInterpolator(new LinearInterpolator());
+//        anim.setRepeatCount(Animation.INFINITE);
+//        anim.setDuration(700);
+
+        //find(R.id.img_splash, ImageView.class).setAnimation(anim);
         find(R.id.id).postDelayed(new Runnable() {
             @Override
             public void run() {

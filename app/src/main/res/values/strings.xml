@@ -226,6 +226,7 @@
     </string-array>
 
     <string-array name="lokasi_simpan">
+        <item>--PILIH--</item>
         <item>GUDANG</item>
         <item>RUANG PART</item>
         <item>DISPLAY</item>
@@ -329,6 +330,7 @@
     <string name="select_location"> Pilih Lokasi </string>
     <string name="keterangan_uppercase">KETERANGAN</string>
     <string name="aktivitas_uppercase">AKTIVITAS</string>
+    <string name="hh_jj_mm">HH:JJ:MM</string>
 
 
 </resources>

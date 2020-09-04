@@ -1,10 +1,9 @@
-package com.rkrzmail.oto.modules.sparepart.lokasi_part.stock_opname;
+package com.rkrzmail.oto.modules.sparepart.stock_opname;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +21,7 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.user.AturUser_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 
@@ -61,17 +61,16 @@ public class HistoryStockOpname_Activity extends AppActivity {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
 
-                // String tglMasuk = Tools.setFormatDayAndMonth(nListArray.get(position).get("TANGGAL_MASUK").asString());
+                 String tglMasuk = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("").asString());
 
                 viewHolder.find(R.id.tv_lokasi_historyStock, TextView.class).setText(nListArray.get(position).get("").asString());
                 viewHolder.find(R.id.tv_noFolder_historyStock, TextView.class).setText(nListArray.get(position).get("").asString());
                 viewHolder.find(R.id.tv_namaPart_historyStock, TextView.class).setText(nListArray.get(position).get("").asString());
                 viewHolder.find(R.id.tv_noPart_historyStock, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_user_historyStock, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_tgl_historyStock, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_userSaksi_historyStock, TextView.class).setText(nListArray.get(position).get("").asString());
                 viewHolder.find(R.id.tv_stock_historyStock, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_data_historyStock, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_merk_historyStock, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_pending_historyStock, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_opname_historyStock, TextView.class).setText(nListArray.get(position).get("").asString());
 
             }
 

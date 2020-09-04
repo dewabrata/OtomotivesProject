@@ -24,11 +24,12 @@
 
             <TextView
                 android:id="@+id/tv_posisi_komisiPart"
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:text="Posisi"
                 android:layout_gravity="start"
-                android:textStyle="bold" />
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
         </TableRow>
 
@@ -36,11 +37,12 @@
 
             <TextView
                 android:id="@+id/tv_namaPart_komisiPart"
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:text="Nama Part"
-                android:textStyle="bold" />
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
         </TableRow>
 
@@ -52,7 +54,8 @@
                 android:layout_height="wrap_content"
                 android:text="% Part"
                 android:layout_gravity="start"
-                android:textStyle="bold" />
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
             <TextView
                 android:id="@+id/tv_discJasa_komisiPart"
@@ -60,7 +63,8 @@
                 android:layout_height="wrap_content"
                 android:text="% Jasa"
                 android:layout_gravity="end"
-                android:textStyle="bold" />
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
         </TableRow>
 

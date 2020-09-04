@@ -66,12 +66,15 @@ public class PenjualanPart_Activity extends AppActivity {
                 String tgl = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("TANGGAL").asString());
 
                 viewHolder.find(R.id.tv_tgl_jualPart, TextView.class).setText(tgl);
-                viewHolder.find(R.id.tv_namaUsaha_jualPart, TextView.class).setText(nListArray.get(position).get("NAMA_USAHA").asString());
-                viewHolder.find(R.id.tv_noPhone_jualPart, TextView.class).setText(nListArray.get(position).get("PHONE").asString());
-                viewHolder.find(R.id.tv_harga_jualPart, TextView.class).setText(nListArray.get(position).get("HARGA_PART").asString());
-                viewHolder.find(R.id.tv_disc_jualPart, TextView.class).setText(nListArray.get(position).get("DISC").asString());
-                viewHolder.find(R.id.tv_total_jualPart, TextView.class).setText(nListArray.get(position).get("TOTAL").asString());
+                viewHolder.find(R.id.tv_nama_namaUsaha_jualPart, TextView.class).setText(nListArray.get(position).get("NAMA_PELANGGAN").asString() + " / "+nListArray.get(position).get("NAMA_USAHA").asString());
+                viewHolder.find(R.id.tv_noPhone_jualPart, TextView.class).setText(nListArray.get(position).get("NO_PONSEL").asString());
+                viewHolder.find(R.id.tv_disc_jualPart, TextView.class).setText(nListArray.get(position).get("DISCOUNT").asString());
                 viewHolder.find(R.id.tv_status_jualPart, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
+                viewHolder.find(R.id.tv_userJual_jualPart, TextView.class).setText(nListArray.get(position).get("USER_JUAL").asString());
+                viewHolder.find(R.id.tv_userUpdate_jualPart, TextView.class).setText(nListArray.get(position).get("USER_UPDATE").asString());
+                //HARGA KOTOR ?
+                viewHolder.find(R.id.tv_harga_jualPart, TextView.class).setText(nListArray.get(position).get("HARGA_BERSIH").asString());
+                viewHolder.find(R.id.tv_total_jualPart, TextView.class).setText(nListArray.get(position).get("TOTAL").asString());
             }
         });
         catchData("");
@@ -80,7 +83,6 @@ public class PenjualanPart_Activity extends AppActivity {
     private void catchData(final String cari) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -88,7 +90,6 @@ public class PenjualanPart_Activity extends AppActivity {
                 args.put("search", cari);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturjualpart"), args));
             }
-
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {

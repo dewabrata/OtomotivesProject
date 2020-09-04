@@ -12,80 +12,93 @@
     android:layout_marginBottom="4dp"
     android:layout_weight="5"
     android:padding="10dp"
-    app:cardElevation="2dp"
-    app:cardCornerRadius="10dp">
+    app:cardCornerRadius="10dp"
+    app:cardElevation="2dp">
 
 
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:padding="10dp"
+        android:padding="12dp"
         android:stretchColumns="*">
 
         <TableRow>
+
+            <TextView
+                android:id="@+id/tv_noPart_detailTerimaPart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="No. Part"
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Menu" />
+
+        </TableRow>
+
+        <TableRow android:layout_marginTop="5dp">
 
             <TextView
                 android:id="@+id/tv_namaPart_detailTerimaPart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nama Part"
-                android:textStyle="bold" />
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:layout_gravity="start"/>
 
+            <TextView
+                android:id="@+id/tv_merk_detailTerimaPart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="Merk"
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
         </TableRow>
 
         <TableRow android:layout_marginTop="5dp">
-
-            <TextView
-                android:id="@+id/tv_noPart_detailTerimaPart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="No. Part"
-                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tv_jumlah_detailTerimaPart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="start"
                 android:text="Jumlah"
-                android:textStyle="bold" />
-
-        </TableRow>
-
-        <TableRow android:layout_marginTop="5dp">
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
             <TextView
                 android:id="@+id/tv_harga_detailTerimaPart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="end"
                 android:text="Harga"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tv_disc_detailTerimaPart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Discount"
-                android:textStyle="bold" />
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
         </TableRow>
 
         <TableRow android:layout_marginTop="5dp">
 
             <TextView
+                android:id="@+id/tv_disc_detailTerimaPart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="Discount"
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+            <TextView
                 android:id="@+id/tv_net_detailTerimaPart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="end"
                 android:text="Net"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tv_lokasi_detailTerimaPart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Lokasi"
-                android:textStyle="bold" />
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
         </TableRow>
 

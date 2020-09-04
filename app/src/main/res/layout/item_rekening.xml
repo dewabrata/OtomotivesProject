@@ -27,7 +27,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Bank"
-                android:textStyle="bold" />
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:layout_gravity="start"/>
 
             <TextView
                 android:id="@+id/tv_noRek_rekening"
@@ -35,7 +37,8 @@
                 android:layout_height="wrap_content"
                 android:text="No.Rekening"
                 android:layout_gravity="end"
-                android:textStyle="bold" />
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
         </TableRow>
 
@@ -46,7 +49,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nama Rekening"
-                android:textStyle="bold" />
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:layout_gravity="start" />
 
         </TableRow>
 
@@ -57,7 +62,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="EDC"
-                android:textStyle="bold" />
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:layout_gravity="start" />
 
             <TextView
                 android:id="@+id/tv_offUs_rekening"
@@ -65,7 +72,8 @@
                 android:layout_height="wrap_content"
                 android:text="OFF US"
                 android:layout_gravity="end"
-                android:textStyle="bold" />
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
         </TableRow>
 

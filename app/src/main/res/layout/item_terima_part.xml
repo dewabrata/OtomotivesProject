@@ -36,7 +36,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="5dp"
-                        android:textStyle="bold"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12sp"
                         android:text="Tanggal"
                         android:gravity="start"/>
 
@@ -44,8 +45,8 @@
                         android:id="@+id/txtSupplier"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        android:padding="5dp"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12sp"                        android:padding="5dp"
                         android:text="Supplier"
                         android:gravity="start"/>
 
@@ -54,17 +55,18 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="5dp"
-                        android:textStyle="bold"
-                        android:text="Pembayaran"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12sp"                        android:text="Pembayaran"
                         android:gravity="start"/>
 
                     <TextView
                         android:id="@+id/txtTotal"
-                        android:textStyle="bold"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="5dp"
                         android:text="Total"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12sp"
                         android:gravity="start"/>
 
                 </LinearLayout>
@@ -79,8 +81,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="5dp"
-                        android:textStyle="bold"
                         android:text="No. DO"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12sp"
                         android:gravity="end"/>
 
                     <TextView
@@ -94,18 +97,21 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Jatuh Tempo"
-                        android:textStyle="bold"
                         android:padding="5dp"
-                        android:gravity="end"/>
+                        android:gravity="end"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12sp"/>
 
                     <TextView
                         android:id="@+id/txtUser"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="User"
-                        android:textStyle="bold"
                         android:padding="5dp"
-                        android:gravity="end"/>
+                        android:gravity="end"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12sp"/>
+
                 </LinearLayout>
 
             </LinearLayout>

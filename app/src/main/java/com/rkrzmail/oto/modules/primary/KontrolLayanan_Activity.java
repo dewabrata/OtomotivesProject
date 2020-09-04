@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.primary;
 
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -63,7 +64,7 @@ public class KontrolLayanan_Activity extends AppActivity {
         rvKontrolLayanan.setLayoutManager(new LinearLayoutManager(this));
         rvKontrolLayanan.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_kontrol_layanan) {
                     @Override
-                    public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, final int position) {
+                    public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
                         super.onBindViewHolder(viewHolder, position);
 
                         viewHolder.find(R.id.tv_jenis_kontrolLayanan, TextView.class).setText(nListArray.get(position).get("").asString());
@@ -74,10 +75,10 @@ public class KontrolLayanan_Activity extends AppActivity {
                         viewHolder.find(R.id.tv_namaP_kontrolLayanan, TextView.class).setText(nListArray.get(position).get("").asString());
                         viewHolder.find(R.id.tv_noAntrian_kontrolLayanan, TextView.class).setText(nListArray.get(position).get("").asString());
 
-                        viewHolder.find(R.id.tv_optionMenu_kontrolLayanan, TextView.class).setOnClickListener(new View.OnClickListener() {
+                        viewHolder.find(R.id.img_more_booking, TextView.class).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                PopupMenu popup = new PopupMenu(getActivity(), viewHolder.find(R.id.tv_optionMenu_kontrolLayanan, TextView.class));
+                                PopupMenu popup = new PopupMenu(getActivity(), viewHolder.find(R.id.img_more_booking, TextView.class));
                                 popup.inflate(R.menu.menu_history);
                                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                                     @Override
@@ -85,7 +86,7 @@ public class KontrolLayanan_Activity extends AppActivity {
                                         switch (menuItem.getItemId()) {
                                             case R.id.action_history:
                                                 Intent i = new Intent(getActivity(), HistoryBookingCheckin_Activity.class);
-                                                i.putExtra("nopol", nListArray.get(position).toJson());
+                                                i.putExtra("checkin", nListArray.get(position).toJson());
                                                 startActivity(i);
                                                 break;
                                         }
@@ -127,7 +128,7 @@ public class KontrolLayanan_Activity extends AppActivity {
                     nListArray.asArray().addAll(result.get("data").asArray());
                     rvKontrolLayanan.getAdapter().notifyDataSetChanged();
                 } else {
-                    showError("Mohon Di Coba Kembali");
+                    //showError("Mohon Di Coba Kembali");
                 }
             }
         });

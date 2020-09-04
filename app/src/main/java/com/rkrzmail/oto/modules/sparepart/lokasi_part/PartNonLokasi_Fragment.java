@@ -57,14 +57,16 @@ public class PartNonLokasi_Fragment extends Fragment {
             public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, final int position) {
                 super.onBindViewHolder(viewHolder, position);
                 viewHolder.find(R.id.tv_namaPart_nonLokasiPart, TextView.class).setText(nListArray.get(position).get("NAMA_PART").asString());
-                viewHolder.find(R.id.tv_noPart_nonLokasiPart, TextView.class).setText(nListArray.get(position).get("NO_PART_ID").asString());
+                viewHolder.find(R.id.tv_noPart_nonLokasiPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
                 viewHolder.find(R.id.tv_merk_nonLokasiPart, TextView.class).setText(nListArray.get(position).get("MERK").asString());
+                viewHolder.find(R.id.tv_stock_nonLokasiPart, TextView.class).setText(nListArray.get(position).get("STOCK_BENGKEL").asString());
+                viewHolder.find(R.id.tv_stock_nonLokasiPart, TextView.class).setText(nListArray.get(position).get("PENDING").asString());
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(Nson parent, View view, int position) {
                         Intent i = new Intent(getActivity(), AturLokasiPart_Activity.class);
-                        i.putExtra("data", nListArray.get(position).toJson());
+                        i.putExtra("non_alokasi", nListArray.get(position).toJson());
                         startActivityForResult(i, LokasiPart_Activity.REQUEST_ATUR);
                     }
                 })
@@ -92,5 +94,13 @@ public class PartNonLokasi_Fragment extends Fragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == getActivity().RESULT_OK && requestCode == LokasiPart_Activity.REQUEST_ATUR){
+            getNonTeralokasikan("");
+        }
     }
 }

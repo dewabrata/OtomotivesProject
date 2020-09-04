@@ -1,5 +1,6 @@
 package com.rkrzmail.oto;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
@@ -22,15 +23,12 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -47,6 +45,8 @@ import com.naa.data.UtilityAndroid;
 import com.naa.utils.InternetX;
 import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
+import com.rkrzmail.oto.modules.TimePicker_Dialog;
+import com.rkrzmail.oto.modules.YearPicker_Dialog;
 import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NsonAutoCompleteAdapter;
@@ -55,13 +55,13 @@ import com.valdesekamdem.library.mdtoast.MDToast;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.io.FileOutputStream;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 
@@ -108,12 +108,24 @@ public class AppActivity extends AppCompatActivity {
         MDToast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT, MDToast.TYPE_INFO).show();
     }
 
+    public void showInfo(String text, int timeToast) {
+        MDToast.makeText(getApplicationContext(), text, timeToast, MDToast.TYPE_INFO).show();
+    }
+
     public void showSuccess(String text) {
         MDToast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT, MDToast.TYPE_SUCCESS).show();
     }
 
+    public void showSuccess(String text, int timeToast) {
+        MDToast.makeText(getApplicationContext(), text, timeToast, MDToast.TYPE_SUCCESS).show();
+    }
+
     public void showError(String text) {
         MDToast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT, MDToast.TYPE_ERROR).show();
+    }
+
+    public void showWarning(String text, int timeToast) {
+        MDToast.makeText(getApplicationContext(), text, timeToast, MDToast.TYPE_WARNING).show();
     }
 
     public void showWarning(String text) {
@@ -126,6 +138,15 @@ public class AppActivity extends AppCompatActivity {
             return to(v, TextView.class).getText().toString();
         }
         return "";
+    }
+
+    public void getSelectionSpinner(Spinner spinner, String value){
+        for (int in = 0; in < spinner.getCount(); in++) {
+            if (spinner.getItemAtPosition(in).toString().contains(value)) {
+                spinner.setSelection(in);
+                break;
+            }
+        }
     }
 
     public String getIntentStringExtra(String key) {
@@ -152,7 +173,14 @@ public class AppActivity extends AppCompatActivity {
 
     public String currentDateTime(){
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        return simpleDateFormat.format(calendar.getTime());
+    }
+
+    public String currentDateTime(String pattern){
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
         return simpleDateFormat.format(calendar.getTime());
     }
@@ -413,7 +441,6 @@ public class AppActivity extends AppCompatActivity {
         final int day = cldr.get(Calendar.DAY_OF_MONTH);
         final int month = cldr.get(Calendar.MONTH);
         final int year = cldr.get(Calendar.YEAR);
-
         DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
@@ -430,6 +457,33 @@ public class AppActivity extends AppCompatActivity {
             }
         }, year, month, day);
         //datePickerDialog.setMinDate(cldr);
+        datePickerDialog.show(getFragmentManager(), "Datepickerdialog");
+    }
+
+    public void getDatePickerDialogTextView(Context context, final TextView dateTime, Calendar minDate, Calendar maxDate, Calendar[] disableDays) {
+        final Calendar cldr = Calendar.getInstance();
+        final int day = cldr.get(Calendar.DAY_OF_MONTH);
+        final int month = cldr.get(Calendar.MONTH);
+        final int year = cldr.get(Calendar.YEAR);
+        DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                String newDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                Date date = null;
+                try {
+                    date = sdf.parse(newDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                String formattedTime = sdf.format(date);
+                dateTime.setText(formattedTime);
+            }
+        }, year, month, day);
+
+        datePickerDialog.setMinDate(minDate);
+        datePickerDialog.setMaxDate(maxDate);
+        datePickerDialog.setDisabledDays(disableDays);
         datePickerDialog.show(getFragmentManager(), "Datepickerdialog");
     }
 
@@ -469,7 +523,8 @@ public class AppActivity extends AppCompatActivity {
             public Nson onFindNson(Context context, String bookTitle) {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
-                args.put(arguments, bookTitle);
+                args.put(arguments, "Bengkel");
+                args.put("search", bookTitle);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(api), args));
 
                 for (int i = 0; i < result.get("data").size(); i++) {
@@ -572,7 +627,7 @@ public class AppActivity extends AppCompatActivity {
                 for (int i = 0; i < result.get("data").size(); i++) {
                     str.add(result.get("data").get(i).get(jsonObject[0]).asString() + " " + result.get("data").get(i).get(jsonObject[1]).asString());
                 }
-                str.removeAll(Arrays.asList("", null));
+                str.removeAll(Arrays.asList(" ", null));
                 ArrayList<String> newStr = Tools.removeDuplicates(str);
                 try {
                     spinner.setItems(newStr);
@@ -632,6 +687,9 @@ public class AppActivity extends AppCompatActivity {
                 ArrayList<String> newStr = Tools.removeDuplicates(str);
                 ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, newStr);
                 spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                if(spinnerAdapter.getCount() < 1){
+                    showWarning("Data Belum di Set");
+                }
                 spinner.setAdapter(spinnerAdapter);
                 notifyDataSetChanged(spinner);
             }
@@ -645,7 +703,7 @@ public class AppActivity extends AppCompatActivity {
             if (child instanceof EditText) {
                 EditText e = (EditText) child;
                 if (e.getText().length() == 0) {    // Whatever logic here to determine if valid.
-
+                    e.setError("Harus Di isi");
                     return e;   // Stops at first invalid one. But you could add this to a list.
                 }
             } else if (child instanceof ViewGroup) {
@@ -658,14 +716,14 @@ public class AppActivity extends AppCompatActivity {
         return invalid;
     }
 
-    /*public boolean validateFields(ViewGroup viewGroup) {
+    public boolean validateFields(ViewGroup viewGroup) {
         EditText emptyText = getAllEditText(viewGroup);
         if (emptyText != null) {
             emptyText.setError("Harus di isi");
             emptyText.requestFocus();
         }
         return emptyText != null;
-    }*/
+    }
 
     public void spinnerNoDefaultOffline(Spinner spinner, String[] resources) {
         ArrayAdapter<String> tipeAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, resources) {
@@ -689,5 +747,42 @@ public class AppActivity extends AppCompatActivity {
         spinner.setAdapter(tipeAdapter);
         spinner.setSelection(resources.length - 1);
         notifyDataSetChanged(spinner);
+    }
+
+    public void getTimesDialog(final EditText ddHHmm){
+        TimePicker_Dialog timePickerDialog = new TimePicker_Dialog();
+        timePickerDialog.show(getSupportFragmentManager(), "TimePicker");
+        timePickerDialog.getTimes(new TimePicker_Dialog.OnClickDialog() {
+            @Override
+            public void getTime(int day, int hours, int minutes) {
+                ddHHmm.setText(String.format("%02d", day) + ":" + String.format("%02d", hours) + ":" + String.format("%02d", minutes));
+            }
+
+            @Override
+            public void getYear(int year) {
+
+            }
+        });
+    }
+
+    public void getYearsDialog(final TextView etYear){
+        YearPicker_Dialog dialog = new YearPicker_Dialog();
+        dialog.show(getSupportFragmentManager(), "YearPicker");
+        dialog.getYears(new TimePicker_Dialog.OnClickDialog() {
+            @Override
+            public void getTime(int day, int hours, int minutes) {
+
+            }
+
+            @Override
+            public void getYear(int year) {
+                etYear.setText(String.valueOf(year));
+            }
+        });
+    }
+
+    public String formatRp(String currency){
+        DecimalFormat formatter = new DecimalFormat("###,###,###");
+        return formatter.format(Double.parseDouble(currency));
     }
 }

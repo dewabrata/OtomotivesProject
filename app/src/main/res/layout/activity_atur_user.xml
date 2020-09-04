@@ -27,13 +27,11 @@
             android:layout_height="match_parent">
 
             <LinearLayout
+                android:id="@+id/ly_user"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
-                android:orientation="vertical">
-
+                android:orientation="vertical"
+                android:padding="5dp">
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/tl_nama_user"
@@ -73,51 +71,76 @@
                     android:id="@+id/ly_tglLahir_aturKaryawan"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/border_solid"
+                    android:layout_marginTop="@dimen/paddingMedium"
+                    android:layout_marginBottom="@dimen/paddingMedium"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:padding="10dp">
+                    android:paddingStart="@dimen/paddingMedium"
+                    android:paddingEnd="@dimen/paddingMedium">
 
                     <TextView
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:text="TANGGAL LAHIR" />
-
-                    <TextView
-                        android:id="@+id/txtTglLahir"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:layout_weight="1"
-                        android:drawableStart="@drawable/icon_tanggal"
-                        android:gravity="center" />
+                        android:layout_weight="3"
+                        android:text="TANGGAL LAHIR"
+                        android:textColor="@color/grey_900"
+                        android:textStyle="bold" />
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="34dp"
+                        android:layout_marginStart="@dimen/spacing_medium"
+                        android:layout_weight="6"
+                        android:background="@drawable/background_edittext"
+                        android:paddingStart="10dp"
+                        tools:ignore="RtlSymmetry">
+
+                        <TextView
+                            android:id="@+id/txtTglLahir"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:drawableStart="@drawable/icon_tanggal"
+                            android:textColor="@color/grey_900"
+                            android:gravity="center" />
+
+                    </RelativeLayout>
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/border_solid"
+                    android:layout_marginTop="@dimen/paddingMedium"
+                    android:layout_marginBottom="@dimen/paddingMedium"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:padding="10dp">
+                    android:paddingStart="@dimen/paddingMedium"
+                    android:paddingEnd="@dimen/paddingMedium">
 
                     <TextView
                         android:id="@+id/txtKelamin"
-                        android:layout_width="150dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="KELAMIN" />
+                        android:layout_weight="3"
+                        android:text="KELAMIN"
+                        android:textColor="@color/grey_900"
+                        android:textStyle="bold" />
 
-                    <Spinner
-                        android:id="@+id/spinnerKelamin"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:entries="@array/jenis_kelamin"
-                        android:textAlignment="center"
-                        android:focusableInTouchMode="true"
-                        android:focusable="true"/>
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="34dp"
+                        android:layout_marginStart="@dimen/spacing_medium"
+                        android:layout_weight="6"
+                        android:background="@drawable/background_edittext">
+
+                        <Spinner
+                            android:id="@+id/spinnerKelamin"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:entries="@array/jenis_kelamin"
+                            android:textAlignment="center" />
+
+                    </RelativeLayout>
 
                 </LinearLayout>
 
@@ -181,103 +204,147 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/border_solid"
+                    android:layout_marginTop="@dimen/paddingMedium"
+                    android:layout_marginBottom="@dimen/paddingMedium"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:padding="10dp">
+                    android:paddingStart="@dimen/paddingMedium"
+                    android:paddingEnd="@dimen/paddingMedium">
 
                     <TextView
-                        android:layout_width="150dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="TANGGAL MASUK" />
-
-                    <TextView
-                        android:id="@+id/txtTglMasuk"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:layout_weight="1"
-                        android:drawableStart="@drawable/icon_tanggal"
-                        android:gravity="center"
+                        android:layout_weight="3"
+                        android:text="TANGGAL MASUK"
+                        android:textColor="@color/grey_900"
                         android:textStyle="bold" />
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="34dp"
+                        android:layout_marginStart="@dimen/spacing_medium"
+                        android:layout_weight="6"
+                        android:background="@drawable/background_edittext"
+                        android:paddingStart="10dp"
+                        tools:ignore="RtlSymmetry">
+
+                        <TextView
+                            android:id="@+id/txtTglMasuk"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:drawableStart="@drawable/icon_tanggal"
+                            android:gravity="center"
+                            android:textColor="@color/grey_900" />
+
+                    </RelativeLayout>
+
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/border_solid"
+                    android:layout_marginTop="@dimen/paddingMedium"
+                    android:layout_marginBottom="@dimen/paddingMedium"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:padding="10dp">
+                    android:paddingStart="@dimen/paddingMedium"
+                    android:paddingEnd="@dimen/paddingMedium">
 
                     <TextView
                         android:id="@+id/posisi"
-                        android:layout_width="150dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="POSISI" />
+                        android:layout_weight="3"
+                        android:text="POSISI"
+                        android:textColor="@color/grey_900"
+                        android:textStyle="bold" />
 
-                    <com.rkrzmail.srv.MultiSelectionSpinner
-                        android:id="@+id/spinnerPosisi"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAlignment="center"
-                        android:focusableInTouchMode="true"
-                        android:focusable="true"/>
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="34dp"
+                        android:layout_weight="6"
+                        android:background="@drawable/background_edittext">
+
+                        <com.rkrzmail.srv.MultiSelectionSpinner
+                            android:id="@+id/spinnerPosisi"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAlignment="center" />
+
+                    </RelativeLayout>
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/border_solid"
+                    android:layout_marginTop="@dimen/paddingMedium"
+                    android:layout_marginBottom="@dimen/paddingMedium"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:padding="10dp">
+                    android:paddingStart="@dimen/paddingMedium"
+                    android:paddingEnd="@dimen/paddingMedium">
 
                     <TextView
                         android:id="@+id/status"
-                        android:layout_width="150dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="STATUS" />
+                        android:layout_weight="3"
+                        android:text="STATUS"
+                        android:textColor="@color/grey_900"
+                        android:textStyle="bold" />
 
-                    <Spinner
-                        android:id="@+id/spinnerStatus"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:entries="@array/status"
-                        android:textAlignment="center"
-                        android:focusableInTouchMode="true"
-                        android:focusable="true"/>
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="34dp"
+                        android:layout_weight="6"
+                        android:background="@drawable/background_edittext">
+
+                        <Spinner
+                            android:id="@+id/spinnerStatus"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:entries="@array/status"
+                            android:textAlignment="center" />
+
+                    </RelativeLayout>
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/border_solid"
+                    android:layout_marginTop="@dimen/paddingMedium"
+                    android:layout_marginBottom="@dimen/paddingMedium"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:padding="10dp">
+                    android:paddingStart="@dimen/paddingMedium"
+                    android:paddingEnd="@dimen/paddingMedium">
 
                     <TextView
                         android:id="@+id/penggajian"
-                        android:layout_width="150dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="PENGGAJIAN" />
+                        android:layout_weight="3"
+                        android:text="PENGGAJIAN"
+                        android:textColor="@color/grey_900"
+                        android:textStyle="bold" />
 
-                    <Spinner
-                        android:id="@+id/spinnerPenggajian"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:entries="@array/penggajian"
-                        android:textAlignment="center"
-                        android:focusableInTouchMode="true"
-                        android:focusable="true"/>
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="34dp"
+                        android:layout_weight="6"
+                        android:background="@drawable/background_edittext">
+
+                        <Spinner
+                            android:id="@+id/spinnerPenggajian"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:entries="@array/penggajian"
+                            android:textAlignment="center" />
+
+                    </RelativeLayout>
 
                 </LinearLayout>
 
@@ -300,32 +367,37 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/border_solid"
+                    android:layout_marginTop="@dimen/paddingMedium"
+                    android:layout_marginBottom="@dimen/paddingMedium"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:padding="10dp">
+                    android:paddingStart="@dimen/paddingMedium"
+                    android:paddingEnd="@dimen/paddingMedium">
 
                     <TextView
                         android:id="@+id/textView28"
-                        android:layout_width="150dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="AKSES APP" />
+                        android:layout_weight="3"
+                        android:text="AKSES APP"
+                        android:textColor="@color/grey_900"
+                        android:textStyle="bold" />
 
-                    <com.rkrzmail.srv.MultiSelectionSpinner
-                        android:id="@+id/spinnerAksesApp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAlignment="center"
-                        android:focusableInTouchMode="true"
-                        android:focusable="true"/>
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="34dp"
+                        android:layout_weight="6"
+                        android:background="@drawable/background_edittext">
+
+                        <com.rkrzmail.srv.MultiSelectionSpinner
+                            android:id="@+id/spinnerAksesApp"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAlignment="center" />
+
+                    </RelativeLayout>
 
                 </LinearLayout>
-
-                <View
-                    android:id="@+id/view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
 
                 <TableLayout
                     android:layout_width="match_parent"
@@ -348,18 +420,18 @@
                                 android:layout_width="70dp"
                                 android:layout_height="70dp"
                                 android:layout_gravity="start|center_vertical"
-                                android:scaleType="fitXY"
-                                app:srcCompat="@drawable/ic_data"
                                 android:background="@drawable/border_solid"
-                                android:padding="10dp"/>
+                                android:padding="10dp"
+                                android:scaleType="fitXY"
+                                app:srcCompat="@drawable/ic_data" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="FOTO"
                                 android:layout_gravity="center_vertical"
-                                android:textStyle="bold"
-                                android:layout_marginStart="15dp"/>
+                                android:layout_marginStart="15dp"
+                                android:text="FOTO"
+                                android:textStyle="bold" />
 
                         </LinearLayout>
 

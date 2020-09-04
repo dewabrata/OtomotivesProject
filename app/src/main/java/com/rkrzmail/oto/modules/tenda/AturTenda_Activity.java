@@ -26,6 +26,7 @@ import com.rkrzmail.utils.Tools;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -82,7 +83,7 @@ public class AturTenda_Activity extends AppActivity implements View.OnClickListe
 
             @Override
             public void selectedStrings(List<String> strings) {
-                dummies.addAll(strings);
+
             }
         });
 
@@ -117,6 +118,9 @@ public class AturTenda_Activity extends AppActivity implements View.OnClickListe
                 final String tglSelesai = tvTglSelesai.getText().toString();
                 final String jamBuka = tvJamMulai.getText().toString();
                 final String jamTutup = tvJamTutup.getText().toString();
+                Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                String tglSekarang = simpleDateFormat.format(calendar.getTime());
 
                 if (etLokasi.getText().toString().isEmpty() && etLokasi.getText().toString().length() < 5) {
                     etLokasi.setError("Lengkapi Lokasi");
@@ -136,7 +140,7 @@ public class AturTenda_Activity extends AppActivity implements View.OnClickListe
                         && jamTutup.equalsIgnoreCase("JAM SELESAI")) {
                     showWarning("Silahkan Isi Jam Mulai / Jam Selesai");
                     return;
-                }else{
+                } else {
                     try {
                         Date jBuka = new SimpleDateFormat("HH:mm").parse(jamBuka);
                         Date jTutup = new SimpleDateFormat("HH:mm").parse(jamTutup);
@@ -151,15 +155,28 @@ public class AturTenda_Activity extends AppActivity implements View.OnClickListe
                 }
                 if ((find(R.id.ly_tanggal_tenda, LinearLayout.class).getVisibility() == View.VISIBLE)) {
                     if (tglMulai.equalsIgnoreCase("TANGGAL MULAI")
-                            && tglSelesai.equalsIgnoreCase("TANGGAL SELESAI")) {
+                            || tglSelesai.equalsIgnoreCase("TANGGAL SELESAI")) {
                         showWarning("Silahkan Isi Tanggal Mulai / Tanggal Selesai");
                         return;
                     }
                     try {
                         Date tMulai = new SimpleDateFormat("dd/MM/yyyy").parse(tglMulai);
+                        Date tNow = new SimpleDateFormat("dd/MM/yyyy").parse(tglSekarang);
+                        if (tMulai.before(tNow)) {
+                            showWarning("Tanggal Mulai Tidak Sesuai");
+                            return;
+                        }else{
+                            showWarning("salah");
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    try {
+                        Date tMulai = new SimpleDateFormat("dd/MM/yyyy").parse(tglMulai);
                         Date tSelesai = new SimpleDateFormat("dd/MM/yyyy").parse(tglSelesai);
                         if (!tMulai.before(tSelesai)) {
-                            showWarning("Tanggal Tidak Sesuai");
+                            showWarning("Tanggal Selesai Tidak Sesuai");
                             return;
                         }
                     } catch (ParseException e) {
@@ -200,13 +217,9 @@ public class AturTenda_Activity extends AppActivity implements View.OnClickListe
 
     private void saveData() {
 
-        StringBuilder strHari = new StringBuilder();
-        for (String hari : dummies) {
-            strHari.append(hari);
-        }
-        final String tipeHari = strHari.toString();
-        final String tglMulai = tvTglBuka.getText().toString();
-        final String tglSelesai = tvTglSelesai.getText().toString();
+        final String tipeHari = spHari.getSelectedItemsAsString();
+        final String tglMulai = Tools.setFormatDayAndMonthToDb(tvTglBuka.getText().toString());
+        final String tglSelesai = Tools.setFormatDayAndMonthToDb(tvTglSelesai.getText().toString());
         final String lokasi = etLokasi.getText().toString();
         final String longlat = etLonglat.getText().toString();
         final String alamat = etAlamat.getText().toString();
@@ -286,7 +299,7 @@ public class AturTenda_Activity extends AppActivity implements View.OnClickListe
         });
         if (dummies.contains(etLokasi.getText().toString())) {
             showWarning("Tenda Telah Terdaftar / Duplikasi");
-        }else{
+        } else {
             saveData();
         }
     }

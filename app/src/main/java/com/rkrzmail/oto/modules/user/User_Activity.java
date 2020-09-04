@@ -34,6 +34,7 @@ public class User_Activity extends AppActivity {
     private RecyclerView recyclerView;
     private AdapterListBasic mAdapter;
     final int REQUEST_ATUR = 555;
+    private String isSuccess = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +70,7 @@ public class User_Activity extends AppActivity {
                 // String tglMasuk = Tools.setFormatDayAndMonth(nListArray.get(position).get("TANGGAL_MASUK").asString());
 
                 viewHolder.find(R.id.txtNamaKaryawan, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
-                viewHolder.find(R.id.txtNoPonsel, TextView.class).setText(nListArray.get(position).get("NO_PONSEL").asString());
+                viewHolder.find(R.id.txtNoPonsel, TextView.class).setText("+" + nListArray.get(position).get("NO_PONSEL").asString());
                 viewHolder.find(R.id.txtPosisi, TextView.class).setText(nListArray.get(position).get("POSISI").asString());
                 viewHolder.find(R.id.txtTglMasuk, TextView.class).setText(nListArray.get(position).get("TANGGAL_MASUK").asString());
                 viewHolder.find(R.id.txtStatus, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
@@ -84,6 +85,11 @@ public class User_Activity extends AppActivity {
             }
         }));
         reload("");
+        if(!isSuccess.equals("")){
+            if(isSuccess.equalsIgnoreCase("ERROR")){
+                reload("");
+            }
+        }
     }
 
     private void reload(final String cari) {
@@ -103,7 +109,9 @@ public class User_Activity extends AppActivity {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
                     recyclerView.getAdapter().notifyDataSetChanged();
+                    isSuccess = result.get("status").asString();
                 }else{
+                    isSuccess = result.get("status").asString();
                     showError("Mohon di coba kembali");
                 }
             }

@@ -1,18 +1,18 @@
 package com.rkrzmail.oto.modules.penugasan;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -26,40 +26,55 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.tenda.AturTenda_Activity;
+import com.rkrzmail.oto.modules.user.AturUser_Activity;
 import com.rkrzmail.srv.MultiSelectionSpinner;
-import com.rkrzmail.srv.NikitaAutoComplete;
-import com.rkrzmail.srv.NsonAutoCompleteAdapter;
 import com.rkrzmail.utils.Tools;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class AturPenugasan_Activity extends AppActivity implements View.OnClickListener {
 
-    public static final String TAG = "AturPenugasan_Activity";
+    private static final String TAG = "AturPenugasan___";
+    private static final int REQUEST_MEKANIK = 99;
+    private static final int REQUEST_LOKASI = 100;
+    private static final String ERROR = "Silahkan Pilih";
     private MultiSelectionSpinner spTipe_antrian;
     private TextView tvMulai_Kerja, tvSelesai_Kerja, tvMulai_istirahat, tvSelesai_istirahat;
     private RadioGroup rg_status;
     private Spinner spLokasi, spMekanik;
-    private CheckBox cbHome, cbEmergency;
-    private String[] tipeAntrian = {"STANDARD", "EXPRESS", "H+"};
-    private Nson mekanikArray = Nson.newArray();
+    private CheckBox cbHome, cbEmergency, cbInspection, cbBook;
+    private Nson mekanikArray = Nson.newArray(), idMekanikArray = Nson.newArray(), lokasiArray = Nson.newArray();
+    private boolean isRefresh = false, isAntrian, isLokasi;
+    private Handler handler;
+    private String namaMekanik = "", lokasi = "", userId = "";
+    private String[] tipeAntrian;
+    private List<String> listChecked = new ArrayList<>(), listAntrian = new ArrayList<>();
 
-    /*
-       Note : Update Methode belum work, Nama Mekanik dropdown belum
-            */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_atur_penugasan_);
-
         initToolbar();
+        initComponent();
+    }
 
+    private void initToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Atur Penugasan Mekanik");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void initComponent() {
         spMekanik = findViewById(R.id.sp_namaMekanik);
         tvMulai_Kerja = findViewById(R.id.tv_mulaiKerja);
         tvSelesai_Kerja = findViewById(R.id.tv_selesaiKerja);
@@ -70,107 +85,81 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
         spLokasi = findViewById(R.id.sp_lokasi);
         cbHome = findViewById(R.id.cb_home);
         cbEmergency = findViewById(R.id.cb_emergency);
+        cbInspection = findViewById(R.id.cb_inspection);
+        cbBook = findViewById(R.id.cb_bookBengkel);
 
-        getMekanik();
-        final Nson data = Nson.readJson(getIntentStringExtra("ID"));
-        final Intent i = getIntent();
-        if (i.hasExtra("ID")) {
+        cbHome.setOnCheckedChangeListener(listener);
+        cbEmergency.setOnCheckedChangeListener(listener);
+        cbInspection.setOnCheckedChangeListener(listener);
+        cbBook.setOnCheckedChangeListener(listener);
 
-            getSupportActionBar().setTitle("Edit Penugasan Mekanik");
+        final Nson data = Nson.readJson(getIntentStringExtra("data"));
+        namaMekanik = data.get("NAMA_MEKANIK").asString();
+        lokasi = data.get("LOKASI").asString();
+        Log.d(TAG, "listAntrian : " + data);
+        listAntrian.add(data.get("TIPE_ANTRIAN").asString());
 
-            spMekanik.setSelection(Tools.getIndexSpinner(spMekanik, data.get("").asString()));
-            spLokasi.setSelection(Tools.getIndexSpinner(spLokasi, data.get("LOKASI").asString()));
-            //spTipe_antrian.setSelection(Tools.getIndexSpinner(spTipe_antrian, data.get("TIPE_ANTRIAN").asString()));
-            tvMulai_Kerja.setText(data.get("JAM_MASUK").asString());
-            tvSelesai_Kerja.setText(data.get("JAM_PULANG").asString());
-
-            Log.d(TAG, data.get("ID").asString());
-
-            //gone visibility
+        if (getIntent().hasExtra("data")) {
+            isAntrian = true;
+            isLokasi = true;
             Tools.setViewAndChildrenEnabled(find(R.id.layout_penugasan, LinearLayout.class), false);
-            find(R.id.layout_status, LinearLayout.class).setVisibility(View.GONE);
-            find(R.id.layout_external, LinearLayout.class).setVisibility(View.GONE);
-            find(R.id.layout_istirahat, LinearLayout.class).setVisibility(View.GONE);
-
+            find(R.id.btn_simpan, Button.class).setVisibility(View.GONE);
             find(R.id.btn_hapus, Button.class).setVisibility(View.VISIBLE);
-            find(R.id.btn_hapus, Button.class).setEnabled(true);
             find(R.id.btn_hapus, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    deleteData(Nson.readJson(getIntentStringExtra("ID")));
+                    deleteData(data);
                 }
             });
-            find(R.id.btn_simpan, Button.class).setVisibility(View.GONE);
-            find(R.id.btn_update, Button.class).setVisibility(View.VISIBLE);
-            find(R.id.btn_update, Button.class).setEnabled(true);
-
-            find(R.id.btn_update, Button.class).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    Tools.setViewAndChildrenEnabled(find(R.id.layout_penugasan, LinearLayout.class), true);
-                    find(R.id.layout_status, LinearLayout.class).setVisibility(View.VISIBLE);
-                    find(R.id.layout_external, LinearLayout.class).setVisibility(View.VISIBLE);
-                    find(R.id.layout_istirahat, LinearLayout.class).setVisibility(View.VISIBLE);
-                    find(R.id.btn_hapus, Button.class).setVisibility(View.GONE);
-                    find(R.id.btn_simpan, Button.class).setVisibility(View.VISIBLE);
-
-                }
-            });
-
-            find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    updateData();
-                }
-            });
-
+        } else {
+            isAntrian = false;
+            isLokasi = false;
         }
-        initComponent();
-    }
 
-    private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_penugasan);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Atur Penugasan Mekanik");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
+        if (data.get("INSPECTION").asString().equalsIgnoreCase("Y")) {
+            cbInspection.setChecked(true);
+        }
+        if (data.get("BOOK_BENGKEL").asString().equalsIgnoreCase("Y")) {
+            cbBook.setChecked(true);
+        }
+        if (data.get("HOME").asString().equalsIgnoreCase("Y")) {
+            cbHome.setChecked(true);
+        }
+        if (data.get("EMERGENCY").asString().equalsIgnoreCase("Y")) {
+            cbEmergency.setChecked(true);
+        }
 
-    private void initComponent() {
-        spTipe_antrian.setItems(tipeAntrian);
-        spTipe_antrian.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
+        tvMulai_Kerja.setText(data.get("JAM_MASUK").asString());
+        tvSelesai_Kerja.setText(data.get("JAM_PULANG").asString());
+        tvMulai_istirahat.setText(data.get("JAM_ISTIRAHAT").asString());
+        tvSelesai_istirahat.setText(data.get("JAM_ISTIRAHAT_SELESAI").asString());
+
+        spMekanik.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void selectedIndices(List<Integer> indices) {
-
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String item = parent.getItemAtPosition(position).toString();
+                for (int i = 0; i < idMekanikArray.size(); i++) {
+                    if (idMekanikArray.get(i).get("NAMA").asString().equalsIgnoreCase(item)) {
+                        userId = idMekanikArray.get(i).get("ID").asString();
+                        break;
+                    }
+                }
             }
 
             @Override
-            public void selectedStrings(List<String> strings) {
+            public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
+
+        setSpTipe_antrian();
+        setSpMekanik();
+        setSpLokasi();
 
         tvMulai_Kerja.setOnClickListener(this);
         tvSelesai_Kerja.setOnClickListener(this);
         tvMulai_istirahat.setOnClickListener(this);
         tvSelesai_istirahat.setOnClickListener(this);
-        spLokasi.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
-                String item = parent.getItemAtPosition(position).toString();
-                if (item.equalsIgnoreCase("Tenda")) {
-                    Tools.setViewAndChildrenEnabled(find(R.id.layout_external), false);
-                } else if (item.equalsIgnoreCase("Bengkel")) {
-                    Tools.setViewAndChildrenEnabled(find(R.id.layout_external), true);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
 
         find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -181,6 +170,44 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
                 String istirahat = tvMulai_istirahat.getText().toString();
                 String selesai_istirahat = tvSelesai_istirahat.getText().toString();
 
+                if (spMekanik.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
+                    spMekanik.performClick();
+                    showWarning(ERROR + "Nama Mekanik");
+                    return;
+                }
+                if (spTipe_antrian.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
+                    spTipe_antrian.performClick();
+                    showWarning(ERROR + "Tipe Antrian");
+                    return;
+                }
+                if (spLokasi.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
+                    spLokasi.performClick();
+                    showWarning(ERROR + "Lokasi");
+                    return;
+                }
+//                if(listChecked.size() == 0){
+//                    showWarning("");
+//                }
+                if (tvMulai_Kerja.getText().toString().equalsIgnoreCase("MULAI")) {
+                    showWarning(ERROR + "Waktu Mulai Kerja");
+                    tvMulai_Kerja.performClick();
+                    return;
+                }
+                if (tvSelesai_Kerja.getText().toString().equalsIgnoreCase("SELESAI")) {
+                    showWarning(ERROR + "Waktu Selesai Kerja");
+                    tvSelesai_Kerja.performClick();
+                    return;
+                }
+                if (tvMulai_istirahat.getText().toString().equalsIgnoreCase("MULAI")) {
+                    showWarning(ERROR + "Waktu Mulai Istirahat");
+                    tvMulai_istirahat.performClick();
+                    return;
+                }
+                if (tvSelesai_istirahat.getText().toString().equalsIgnoreCase("SELESAI")) {
+                    showWarning(ERROR + "Waktu Selesai Istirahat");
+                    tvSelesai_istirahat.performClick();
+                    return;
+                }
                 try {
                     Date jamMasuk = new SimpleDateFormat("HH:mm").parse(masuk);
                     Date jamPulang = new SimpleDateFormat("HH:mm").parse(selesai);
@@ -210,9 +237,30 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
 
     }
 
+    private void setSpTipe_antrian() {
+        if (isAntrian) {
+            spTipe_antrian.setItems(listAntrian);
+            spTipe_antrian.setSelection(listAntrian, true);
+        } else {
+            tipeAntrian = new String[]{"--PILIH--", "STANDARD", "EXPRESS", "H+"};
+            spTipe_antrian.setItems(tipeAntrian);
+        }
+
+        spTipe_antrian.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
+            @Override
+            public void selectedIndices(List<Integer> indices) {
+
+            }
+
+            @Override
+            public void selectedStrings(List<String> strings) {
+
+            }
+        });
+    }
+
 
     private void insertData() {
-
         final String antrian = spTipe_antrian.getSelectedItemsAsString();
         final int selectedId = rg_status.getCheckedRadioButtonId();
         final String nama = spMekanik.getSelectedItem().toString();
@@ -221,9 +269,6 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
         final String selesai = tvSelesai_Kerja.getText().toString().trim();
         final String istirahat = tvMulai_istirahat.getText().toString();
         final String selesai_istirahat = tvSelesai_istirahat.getText().toString();
-        final String home = cbHome.getText().toString();
-        final String emergency = cbEmergency.getText().toString();
-
 
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result;
@@ -232,6 +277,8 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
+                args.put("action", "add");
+                args.put("userid", userId);
 
                 switch (selectedId) {
                     case R.id.rbOn:
@@ -249,22 +296,14 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
                 args.put("namamekanik", nama);
                 args.put("antrian", antrian);
                 args.put("lokasi", lokasi);
-                if (find(R.id.layout_external, LinearLayout.class).isEnabled()) {
-
-                    if (cbHome.isChecked()) {
-                        args.put("external", home);
-                        Log.d(TAG, home);
-                    } else if (cbEmergency.isChecked()) {
-                        args.put("external", emergency);
-                        Log.d(TAG, emergency);
-                    }
-
-                }
-
                 args.put("masuk", masuk);
                 args.put("pulang", selesai);
                 args.put("istirahat", istirahat);
                 args.put("selesai", selesai_istirahat);
+                args.put("inspection", cbInspection.isChecked() ? "Y" : "N");
+                args.put("home", cbHome.isChecked() ? "Y" : "N");
+                args.put("emergency", cbEmergency.isChecked() ? "Y" : "N");
+                args.put("bookbengkel", cbBook.isChecked() ? "Y" : "N");
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturpenugasanmekanik"), args));
             }
@@ -281,6 +320,19 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
             }
         });
     }
+
+    CompoundButton.OnCheckedChangeListener listener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if (isChecked) {
+                listChecked.add(buttonView.getText().toString());
+                Log.d(TAG, "IsChecked : " + listChecked);
+            } else {
+                listChecked.remove(buttonView.getText().toString());
+                Log.d(TAG, "deleted : " + listChecked);
+            }
+        }
+    };
 
     private void deleteData(final Nson nson) {
         newProses(new Messagebox.DoubleRunnable() {
@@ -309,9 +361,68 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
         });
     }
 
-    private void getMekanik() {
+    private void setSpLokasi() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson data;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "view");
+                data = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturtenda"), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (data.get("status").asString().equalsIgnoreCase("OK")) {
+                    if (data.get("data").asArray().size() == 0) {
+                        isRefresh = true;
+                        if (!isLokasi) {
+                            Messagebox.showDialog(getActivity(), "Konfirmasi", "Lokasi Tenda Belum Tercatatkan, Catatkan Lokasi Tenda ?", "Ya", "Tidak", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    startActivityForResult(new Intent(getActivity(), AturTenda_Activity.class), REQUEST_LOKASI);
+                                }
+                            }, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                            return;
+                        }
+                    }
+
+                    lokasiArray.add("--PILIH--");
+                    lokasiArray.add("BENGKEL");
+                    for (int i = 0; i < data.get("data").size(); i++) {
+                        lokasiArray.add(data.get("data").get(i).get("NAMA_LOKASI").asString());
+                    }
+                    ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, lokasiArray.asArray());
+                    spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spLokasi.setAdapter(spinnerAdapter);
+                    if (!lokasi.isEmpty()) {
+                        for (int in = 0; in < spLokasi.getCount(); in++) {
+                            if (spLokasi.getItemAtPosition(in).toString().contains(lokasi)) {
+                                spLokasi.setSelection(in);
+                            }
+                        }
+                    }
+                } else {
+                    showInfoDialog("Lokasi Gagal Di Muat, Muat Ulang ?", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            setSpLokasi();
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private void setSpMekanik() {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson data;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -321,85 +432,49 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
             @Override
             public void runUI() {
                 if (data.get("status").asString().equalsIgnoreCase("OK")) {
+                    if (data.get("data").asArray().size() == 0) {
+                        isRefresh = true;
+                        showInfo("Mekanik Belum Tercatatkan, Silahkan Daftarkan Mekanik Di Menu USER");
+                        Messagebox.showDialog(getActivity(), "Mekanik Belum Di Catatkan", "Catatkan Mekanik ?", "Ya", "Tidak", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                startActivityForResult(new Intent(getActivity(), AturUser_Activity.class), REQUEST_MEKANIK);
+                            }
+                        }, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        return;
+                    }
+                    mekanikArray.add("--PILIH--");
                     for (int i = 0; i < data.get("data").size(); i++) {
+                        idMekanikArray.add(Nson.newObject().set("ID", data.get("data").get(i).get("ID").asString()).set("NAMA", data.get("data").get(i).get("NAMA").asString()));
                         mekanikArray.add(data.get("data").get(i).get("NAMA").asString());
                     }
+
+                    Log.d(TAG, "List : " + idMekanikArray);
+
                     ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, mekanikArray.asArray());
                     spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spMekanik.setAdapter(spinnerAdapter);
-                    notifyDataSetChanged(spMekanik);
+                    if (!namaMekanik.isEmpty()) {
+                        for (int in = 0; in < spMekanik.getCount(); in++) {
+                            if (spMekanik.getItemAtPosition(in).toString().contains(namaMekanik)) {
+                                spMekanik.setSelection(in);
+                            }
+                        }
+                    }
                 } else {
                     showInfoDialog("Nama Mekanik Gagal Di Muat, Muat Ulang ?", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            getMekanik();
+                            setSpMekanik();
                         }
                     });
                 }
 
-            }
-        });
-    }
-
-    private void updateData() {
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson data;
-
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-
-                int selectedId = rg_status.getCheckedRadioButtonId();
-                String nama = spMekanik.getSelectedItem().toString();
-                String antrian = spTipe_antrian.getSelectedItem().toString().toUpperCase();
-                String lokasi = spLokasi.getSelectedItem().toString().toUpperCase();
-                String masuk = tvMulai_Kerja.getText().toString().trim();
-                String selesai = tvSelesai_Kerja.getText().toString().trim();
-                String istirahat = tvMulai_istirahat.getText().toString();
-                String selesai_istirahat = tvSelesai_istirahat.getText().toString();
-                String home = cbHome.getText().toString();
-                String emergency = cbEmergency.getText().toString();
-
-                args.put("action", "update");
-                switch (selectedId) {
-                    case R.id.rbOn:
-                        String statusKerja = find(R.id.rbOn, RadioButton.class).getText().toString();
-                        args.put("status", statusKerja);
-                        Log.d(TAG, statusKerja);
-                        break;
-                    case R.id.rbOff:
-                        String statusTidakKerja = find(R.id.rbOff, RadioButton.class).getText().toString();
-                        args.put("status", statusTidakKerja);
-                        Log.d(TAG, statusTidakKerja);
-                        break;
-                }
-                args.put("namamekanik", nama);
-                args.put("antrian", antrian);
-                args.put("lokasi", lokasi);
-                if (cbHome.isChecked()) {
-                    args.put("external", home);
-                    Log.d(TAG, home);
-                } else if (cbEmergency.isChecked()) {
-                    args.put("external", emergency);
-                    Log.d(TAG, emergency);
-                }
-                args.put("masuk", masuk);
-                args.put("pulang", selesai);
-                args.put("istirahat", istirahat);
-                args.put("selesai", selesai_istirahat);
-                data = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturpenugasanmekanik"), args));
-            }
-
-            @Override
-            public void runUI() {
-                if (data.get("status").asString().equalsIgnoreCase("OK")) {
-                    Log.d(TAG, "success update data" + data.get("status").asString());
-                    setResult(RESULT_OK);
-                    Intent i = new Intent(AturPenugasan_Activity.this, PenugasanActivity.class);
-                    startActivityForResult(i, RESULT_OK);
-                } else {
-                    showError("Mohon Di Coba Kembali");
-                }
             }
         });
     }
@@ -424,8 +499,14 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        finish();
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == REQUEST_MEKANIK) {
+            setSpMekanik();
+            showSuccess("Berhasil Mencatatkan Mekanik");
+        } else if (resultCode == RESULT_OK && requestCode == REQUEST_LOKASI) {
+            setSpLokasi();
+            showSuccess("Berhasil Menambahkan Lokasi Tenda");
+        }
     }
 }

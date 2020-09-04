@@ -1,4 +1,4 @@
-package com.rkrzmail.oto.modules.sparepart.lokasi_part.stock_opname;
+package com.rkrzmail.oto.modules.sparepart.stock_opname;
 
 import android.content.Intent;
 import android.support.annotation.Nullable;

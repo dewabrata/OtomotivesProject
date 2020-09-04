@@ -4,7 +4,7 @@
     xmlns:card_view="http://schemas.android.com/tools"
     android:id="@+id/cardView"
     android:layout_width="match_parent"
-    android:layout_height="110dp"
+    android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:layout_marginLeft="7dp"
     android:layout_marginTop="4dp"
@@ -12,118 +12,112 @@
     android:layout_marginBottom="4dp"
     android:layout_weight="5"
     android:padding="10dp"
-    app:cardElevation="3dp"
-    app:cardCornerRadius="10dp">
+    app:cardCornerRadius="10dp"
+    app:cardElevation="3dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="10dp">
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:id="@+id/img_optionMenu"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="end"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            app:srcCompat="@drawable/ic_more_vert"
+            android:tint="@color/transparent"
+            android:visibility="gone"
+            android:background="?attr/selectableItemBackgroundBorderless" />
 
 
-        <LinearLayout
+        <TableLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:orientation="horizontal">
+            android:gravity="center"
+            android:padding="10dp"
+            android:stretchColumns="*">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/tv_noFolder"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="No Folder"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tv_lokasiPart"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Lokasi"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tv_namaPart"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Nama Part"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tv_nomor_part"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="No Part"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-
-            </LinearLayout>
-
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
+            <TableRow>
 
                 <TextView
-                    android:id="@+id/tv_optionMenu"
+                    android:id="@+id/tv_namaPart"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:text="Nama Part"
+                    android:layout_gravity="start"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
+
+            </TableRow>
+
+            <TableRow android:layout_marginTop="5dp">
+
+                <TextView
+                    android:id="@+id/tv_nomor_part"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="start"
+                    android:text="No Part"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+                <TextView
+                    android:id="@+id/tv_merk"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Merk"
                     android:layout_gravity="end"
-                    android:text="&#8942;"
-                    android:textAppearance="?android:textAppearanceLarge"
-                    android:textStyle="bold" />
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
-                <LinearLayout
+            </TableRow>
+
+            <TableRow android:layout_marginTop="5dp">
+
+                <TextView
+                    android:id="@+id/tv_stock"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="25dp"
-                    android:layout_weight="1"
+                    android:text="Stock"
+                    android:layout_gravity="start"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
-                    android:orientation="vertical">
+                <TextView
+                    android:id="@+id/tv_pending"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pending"
+                    android:layout_gravity="end"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
-                    <TextView
-                        android:id="@+id/tv_penempatan"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Penempatan"
-                        android:textStyle="bold" />
+            </TableRow>
 
-                    <TextView
-                        android:id="@+id/tv_stock"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="25dp"
-                        android:layout_weight="1"
-                        android:text="Stock"
-                        android:textStyle="bold" />
+            <TableRow android:layout_marginTop="5dp">
 
-                </LinearLayout>
-            </FrameLayout>
+                <TextView
+                    android:id="@+id/tv_lokasiPart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:text="Lokasi"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/tv_noFolder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:text="No Folder"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
-    </LinearLayout>
-
+            </TableRow>
+        </TableLayout>
+    </FrameLayout>
 </android.support.v7.widget.CardView>

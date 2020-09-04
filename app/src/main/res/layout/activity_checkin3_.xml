@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:descendantFocusability="beforeDescendants"
-    android:focusableInTouchMode="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -21,59 +21,77 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal"
-                android:background="@drawable/border_solid"
-                android:padding="10dp">
+                android:layout_marginTop="@dimen/paddingMedium"
+                android:layout_marginBottom="@dimen/paddingMedium"
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:text="LAYANAN"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <Spinner
-                    android:id="@+id/sp_layanan_checkin3"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAlignment="center"/>
+                    android:layout_weight="3"
+                    android:text="LAYANAN"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
+
+                    <Spinner
+                        android:id="@+id/sp_layanan_checkin3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textAlignment="center" />
+
+                </RelativeLayout>
 
             </LinearLayout>
-
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_gravity="end"
                 android:orientation="horizontal">
 
                 <Button
+                    android:id="@+id/btn_partExternal_checkin3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_rounded_accent"
+                    android:text="EXTERNAL"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/btn_sparePart_checkin3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_rounded_accent"
+                    android:text="PART"
+                    android:textColor="@android:color/white" />
+
+                <Button
                     android:id="@+id/btn_jasaLain_checkin3"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/btn_rounded_accent"
                     android:text="JASA LAIN"
                     android:textColor="@android:color/white" />
 
-                <Button
-                    android:id="@+id/btn_sparePart_checkin3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/btn_rounded_accent"
-                    android:text="SPARE PART"
-                    android:textColor="@android:color/white" />
-
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <Button
                     android:id="@+id/btn_jasaLainBerkala_checkin3"
@@ -95,14 +113,49 @@
 
             </LinearLayout>
 
-            <Button
-                android:id="@+id/btn_partExternal_checkin3"
+            <android.support.v7.widget.CardView
+                android:id="@+id/cardView_namaLayanan"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/btn_rounded_accent"
-                android:text="PART EXTERNAL"
-                android:textColor="@android:color/white" />
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginStart="-10dp"
+                android:layout_marginEnd="-10dp"
+                android:padding="20dp"
+                app:cardCornerRadius="5dp"
+                app:cardElevation="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/tv_namaLayanan_checkin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="NAMA LAYANAN"
+                        android:textColor="@color/grey_900"
+                        android:textStyle="bold"
+                        android:layout_weight="3"/>
+
+                    <TextView
+                        android:id="@+id/tv_biayaLayanan_checkin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="BIAYA LAYANAN"
+                        android:textColor="@color/grey_900"
+                        android:textStyle="bold"
+                        android:layout_weight="1"/>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerView_checkin3"
@@ -115,7 +168,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="LAYANAN ESTIMASI BIAYA" />
+                android:text="LAYANAN ESTIMASI BIAYA"
+                android:textSize="12sp" />
 
             <android.support.design.widget.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -127,8 +181,8 @@
                     android:id="@+id/et_totalBiaya_checkin3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="TOTAL"
                     android:enabled="false"
+                    android:hint="TOTAL BIAYA"
                     android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
@@ -136,17 +190,18 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal"
-                android:background="@drawable/border_solid"
-                android:padding="10dp">
+                android:layout_marginTop="@dimen/paddingMedium"
+                android:layout_marginBottom="@dimen/paddingMedium"
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="150dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="2"
                     android:text="DP / SISA"
-                    android:layout_gravity="center"
-                    android:textSize="14sp"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
 
                 <android.support.design.widget.TextInputLayout
@@ -160,8 +215,8 @@
                         android:id="@+id/et_dp_checkin3"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Rp. "
                         android:enabled="false"
+                        android:hint="Rp. "
                         android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -176,8 +231,8 @@
                         android:id="@+id/et_sisa_checkin3"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Rp. "
                         android:enabled="false"
+                        android:hint="Rp. "
                         android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -189,39 +244,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="TUNGGU KONFIRMASI BIAYA" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal"
-                android:background="@drawable/border_solid"
-                android:padding="10dp"
-                android:layout_gravity="center"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:text="NAMA MEKANIK"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <Spinner
-                    android:id="@+id/sp_namaMekanik_checkin3"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAlignment="center"/>
-
-            </LinearLayout>
+                android:text="TUNGGU KONFIRMASI BIAYA"
+                android:textSize="12sp" />
 
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:stretchColumns="*"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="10dp"
+                android:stretchColumns="*">
 
                 <TableRow>
 
@@ -229,9 +259,9 @@
                         android:id="@+id/btn_batal_checkin3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="start"
                         android:background="@drawable/btn_rounded_accent"
                         android:text="BATAL"
-                        android:layout_gravity="start"
                         android:textColor="@android:color/white" />
 
                     <Button
@@ -257,9 +287,8 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <include layout="@layout/toolbar"/>
+        <include layout="@layout/toolbar" />
 
     </android.support.design.widget.AppBarLayout>
-
 
 </android.support.design.widget.CoordinatorLayout>

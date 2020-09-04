@@ -15,20 +15,20 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.naa.data.Nson;
-import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
-import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.utils.Tools;
 
-import java.util.Map;
+import java.text.DecimalFormat;
 
 public class JumlahHargaPart_Activity extends AppActivity implements View.OnClickListener {
 
     private static final String TAG = "HargaPart____";
-    private EditText etHpp, etHargaJual, etDiscPart, etJasa, etDiscJasa, etDp, etWaktuPesan, etJumlah;
+    private EditText etHpp, etHargaJual, etDiscPart, etBiayaJasa, etDiscJasa, etDp, etWaktuPesan, etJumlah;
     private Toolbar toolbar;
+    private DecimalFormat formatter;
+    private Nson sendData = Nson.newObject();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,94 +44,126 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
     }
 
     private void initComponent() {
-        Tools.setViewAndChildrenEnabled(find(R.id.ly_waktu, LinearLayout.class), false);
-
         initToolbar();
-        Nson n = Nson.readJson(getIntentStringExtra("data"));
-        Log.d(TAG, "initComponent: " + n);
-//        find(R.id.et_kerjaMulai, EditText.class).setText(n.get());
-//        find(R.id.et_kerjaSelesai, EditText.class).setText();
-        int stock = n.get("STOCK").asInteger();
-        if(stock == 0){
+        etHpp = findViewById(R.id.et_hpp_jumlah_harga_part);
+        etHargaJual = findViewById(R.id.et_hargaJual_jumlah_harga_part);
+        etDiscJasa = findViewById(R.id.et_discJasa_jumlah_harga_part);
+        etDiscPart = findViewById(R.id.et_discPart_jumlah_harga_part);
+        etDp = findViewById(R.id.et_dp_jumlah_harga_part);
+        etWaktuPesan = findViewById(R.id.et_waktu_jumlah_harga_part);
+        etJumlah = findViewById(R.id.et_jumlah_jumlah_harga_part);
+        etBiayaJasa = findViewById(R.id.et_jasa_jumlah_harga_part);
+
+        Nson nson = Nson.readJson(getIntentStringExtra("data"));
+        formatter = new DecimalFormat("###,###,###");
+        Log.d(TAG, "data : " + nson);
+
+        if (nson.get("STOCK").asInteger() == 0) {
             Messagebox.showDialog(getActivity(),
                     "Konfirmasi", "Buka Form Part Kosong ? ", "Ya", "Tidak", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            find(R.id.ly_hpp_jumlah_harga_part, TextInputLayout.class).setVisibility(View.VISIBLE);
+                            //find(R.id.ly_hpp_jumlah_harga_part, TextInputLayout.class).setVisibility(View.VISIBLE);
                             find(R.id.ly_disc_jumlah_harga_part, TextInputLayout.class).setVisibility(View.VISIBLE);
                             find(R.id.ly_discJasa_jumlah_harga_part, TextInputLayout.class).setVisibility(View.VISIBLE);
                             find(R.id.ly_jumlahHarga_partKosong, LinearLayout.class).setVisibility(View.VISIBLE);
                         }
-                    },  new DialogInterface.OnClickListener() {
+                    }, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }
                     });
-        }else{
-            find(R.id.ly_jumlahHarga_part, LinearLayout.class).setVisibility(View.VISIBLE);
         }
-        etHpp = findViewById(R.id.et_hpp_jumlah_harga_part);
-        etHargaJual = findViewById(R.id.et_hargaJual_jumlah_harga_part);
-        etDiscJasa = findViewById(R.id.et_discJasa_jumlah_harga_part);
-        etDiscPart = findViewById(R.id.et_discPart_jumlah_harga_part);
-        etHargaJual = findViewById(R.id.et_hargaJual_jumlah_harga_part);
-        etDp = findViewById(R.id.et_dp_jumlah_harga_part);
-        etWaktuPesan = findViewById(R.id.et_waktu_jumlah_harga_part);
-        etJumlah = findViewById(R.id.et_jumlah_jumlah_harga_part);
-        etJasa = findViewById(R.id.et_jasa_jumlah_harga_part);
+
+        if (nson.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE") || nson.get("HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE")) {
+            find(R.id.ly_hpp_jumlah_harga_part, TextInputLayout.class).setVisibility(View.VISIBLE);
+            etHpp.setText(nson.get("HPP").asString());
+            etHargaJual.setEnabled(true);
+        } else {
+            try {
+                etHargaJual.setText("Rp. " + formatter.format(Double.parseDouble(nson.get("HARGA_JUAL").asString())));
+            } catch (Exception e) {
+                Log.d(TAG, "HargaJual: " + e.getMessage());
+            }
+        }
+
+        if (nson.containsKey("DISCOUNT_PART") && !nson.get("DISCOUNT_PART").asString().equalsIgnoreCase("")) {
+            etDiscPart.setVisibility(View.VISIBLE);
+            etDiscPart.setText(nson.get("DISCOUNT_PART").asString());
+        }
+
+        if (nson.containsKey("DISC_JASA") && !nson.get("DISC_JASA").asString().equalsIgnoreCase("")) {
+            etDiscJasa.setVisibility(View.VISIBLE);
+            etDiscJasa.setText(nson.get("DISC_JASA").asString());
+        }
 
         find(R.id.img_clear, ImageButton.class).setOnClickListener(this);
         find(R.id.img_clear2, ImageButton.class).setOnClickListener(this);
 
         watcher(find(R.id.img_clear, ImageButton.class), etHargaJual);
-        watcher(find(R.id.img_clear2, ImageButton.class), etJasa);
-        watcherWaktu(find(R.id.img_clear3, ImageButton.class), find(R.id.et_kerjaMulai_jumlah_harga_part, EditText.class));
-        watcherWaktu(find(R.id.img_clear4, ImageButton.class), find(R.id.et_kerjaSelesai_jumlah_harga_part, EditText.class));
+        watcher(find(R.id.img_clear2, ImageButton.class), etBiayaJasa);
 
-        etHargaJual.setText(n.get("HARGA_JUAL").asString());
         find(R.id.ly_jumlahHarga_part, LinearLayout.class);
         find(R.id.ly_jumlahHarga_partKosong, LinearLayout.class);
         find(R.id.btn_simpan_jumlah_harga_part, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(etJumlah.getText().toString().isEmpty()){
+                    etJumlah.setError("Masukkan Jumlah");
+                    etJumlah.requestFocus();
+                    return;
+                }
+                if(find(R.id.et_waktuSet, EditText.class).getText().toString().isEmpty()){
+                    find(R.id.et_waktuSet, EditText.class).requestFocus();
+                    find(R.id.et_waktuSet, EditText.class).setError("Masukkan Waktu Kerja");
+                    return;
+                }
+
                 nextForm();
+            }
+        });
+
+        find(R.id.img_waktuKerja, ImageButton.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getTimesDialog(find(R.id.et_waktuSet, EditText.class));
             }
         });
     }
 
     private void nextForm() {
         Nson nson = Nson.readJson(getIntentStringExtra("data"));
-        String harga =  etHargaJual.getText().toString().replaceAll("[^0-9]+", "");
-        String jasa = etJasa.getText().toString().replaceAll("[^0-9]+", "");
-        nson.set("JASA", jasa);
-        if(!harga.isEmpty() && !jasa.isEmpty()){
+        Log.d(TAG, "Data Harga Part: " + nson);
+        String harga = etHargaJual.getText().toString().replaceAll("[^0-9]+", "");
+        String jasa = etBiayaJasa.getText().toString().replaceAll("[^0-9]+", "");
+        //nson.set("BIAYA_JASA", jasa);
+        sendData.set("NAMA_PART", nson.get("NAMA_PART").asString());
+        sendData.set("NO_PART", nson.get("NO_PART").asString());
+        sendData.set("MERK", nson.get("MERK").asString());
+        sendData.set("BIAYA_JASA", jasa);
+
+        if (!harga.isEmpty() && !jasa.isEmpty()) {
             int totall = Integer.parseInt(harga) * Integer.parseInt(etJumlah.getText().toString());
-            nson.set("HARGA_PART", "Rp" + totall);
-            nson.set("NET", "Rp" + (Integer.parseInt(jasa) + totall));
+            //nson.set("HARGA_PART", "Rp" + totall);
+            //nson.set("HARGA_NET", totall);
+            sendData.set("HARGA_NET", totall);
         }
 
         Intent i = new Intent();
-        i.putExtra("data", nson.toJson());
+        //i.putExtra("data", nson.toJson());
+        i.putExtra("data", sendData.toJson());
         setResult(RESULT_OK, i);
         finish();
-            //nson.set("")
-//            etHpp.setEnabled(true);
-//            etJasa.setEnabled(true);
-//            etWaktuPesan.setEnabled(true);
-//            etDp.setEnabled(true);
-//            etHargaJual.setEnabled(true);
-//            etDiscJasa.setEnabled(true);
-//            etDiscPart.setEnabled(true);
     }
 
-    void watcher (final ImageButton imageButton, final EditText editText){
+    public void watcher(final ImageButton imageButton, final EditText editText) {
         TextWatcher textWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                if(s.toString().length() == 0){
+                if (s.toString().length() == 0) {
                     imageButton.setVisibility(View.GONE);
-                }else{
+                } else {
                     imageButton.setVisibility(View.VISIBLE);
                 }
             }
@@ -162,43 +194,14 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
         editText.addTextChangedListener(textWatcher);
     }
 
-    void watcherWaktu (final ImageButton imageButton, final EditText editText){
-        TextWatcher textWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                if (s.toString().length() == 0) {
-                    imageButton.setVisibility(View.GONE);
-                } else {
-                    imageButton.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(editText == find(R.id.et_kerjaSelesai_jumlah_harga_part, EditText.class)){
-                    if(s.length() > 1){
-
-                    }
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        };
-
-        editText.addTextChangedListener(textWatcher);
-    }
-
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.img_clear:
                 etHargaJual.setText("");
                 break;
             case R.id.img_clear2:
-                etJasa.setText("");
+                etBiayaJasa.setText("");
                 break;
         }
     }

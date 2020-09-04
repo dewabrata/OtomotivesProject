@@ -69,4 +69,9 @@
         </item>
     </style>
 
+    <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:textColor">#FF4081</item>
+        <item name="android:textColorPrimary">#FF4081</item>
+    </style>
+
     </resources>

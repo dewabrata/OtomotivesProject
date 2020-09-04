@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.jasa;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
@@ -65,7 +66,7 @@ public class JasaLain_Activity extends AppActivity {
         rvJasa.setHasFixedSize(true);
         rvJasa.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_jasa_lain) {
             @Override
-            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, final int position) {
+            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
                 viewHolder.find(R.id.cb_jasaLain_jasa, CheckBox.class).setTag("check");
                 viewHolder.find(R.id.cb_jasaLain_jasa, CheckBox.class).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override

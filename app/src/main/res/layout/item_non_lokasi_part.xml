@@ -4,7 +4,7 @@
     xmlns:card_view="http://schemas.android.com/tools"
     android:id="@+id/cardView"
     android:layout_width="match_parent"
-    android:layout_height="70dp"
+    android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:layout_marginLeft="7dp"
     android:layout_marginTop="4dp"
@@ -28,7 +28,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nama Part"
-                android:textStyle="bold" />
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:layout_gravity="start"/>
 
         </TableRow>
 
@@ -39,7 +41,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="No. Part"
-                android:textStyle="bold"
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:layout_gravity="start"/>
 
             <TextView
@@ -47,9 +50,31 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Merk"
-                android:textStyle="bold"
-                android:layout_gravity="end"/>
+                android:layout_gravity="end"
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
+        </TableRow>
+
+        <TableRow android:layout_marginTop="5dp">
+
+            <TextView
+                android:id="@+id/tv_stock_nonLokasiPart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stock"
+                android:layout_gravity="start"
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
+
+            <TextView
+                android:id="@+id/tv_pending_nonLokasiPart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pending"
+                android:layout_gravity="end"
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
         </TableRow>
 

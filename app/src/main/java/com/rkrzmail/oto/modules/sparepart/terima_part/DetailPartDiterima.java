@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -31,7 +32,6 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.gmod.BarcodeActivity;
 import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
@@ -41,18 +41,19 @@ import com.rkrzmail.utils.Tools;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Map;
-import java.util.function.Predicate;
 
 public class DetailPartDiterima extends AppActivity implements View.OnFocusChangeListener {
 
-    private static final String TAG = "DetailPartDiterimaAAA";
+    private static final String TAG = "DetailPart__";
     private static final int REQUEST_CARI_PART = 12;
     final int REQUEST_BARCODE = 13;
     private static final String TAMBAH_PART = "TAMBAH";
     private Spinner spinnerLokasiSimpan;
     private EditText txtNoPart, txtNamaPart, txtJumlah, txtHargaBeliUnit, etDiscRp, etDiscPercent, etHargaBersih, etPenempatan;
     private RecyclerView rvTerimaPart;
-    private String scanResult;
+    private Nson partAvailableList = Nson.newArray();
+    private String scanResult, penempatan;
+    private int jumlahAllPart = 0, count = 0, partId;
     private boolean isDelete = false;
 
     @Override
@@ -81,6 +82,7 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
         etDiscRp = findViewById(R.id.et_discRp_terimaPart);
         etDiscPercent = findViewById(R.id.et_discPercent_terimaPart);
         etHargaBersih = findViewById(R.id.et_hargaBersih_detailTerimaPart);
+        etPenempatan = findViewById(R.id.et_penempatan_detailTerimaPart);
 
         Tools.setViewAndChildrenEnabled(find(R.id.ly_lokasi, LinearLayout.class), false);
         componentValidation();
@@ -95,6 +97,10 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
         find(R.id.btn_simpan_terimaPart, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (nListArray == null) {
+                    showWarning("Part Tidak Boleh Kosong");
+                    return;
+                }
                 insertdata();
             }
         });
@@ -103,14 +109,23 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (txtJumlah.getText().toString().isEmpty() || txtHargaBeliUnit.getText().toString().isEmpty()) {
+                    showWarning("INFORMASI TIDAK LENGKAP");
+                    txtJumlah.requestFocus();
+                    txtHargaBeliUnit.requestFocus();
+                    return;
+                }
+                int jumlah = Integer.parseInt(txtJumlah.getText().toString());
+                if (jumlah > 0) {
+                    jumlahAllPart += jumlah;
+                }
+                Log.d(TAG, "total_part : " + jumlahAllPart);
                 addData();
             }
         });
     }
 
     private void componentValidation() {
-        //        spinnerLokasiSimpan.setOnItemSelectedListener(this);
-//        spinnerPenempatan.setOnItemSelectedListener(this);
         etHargaBersih.addTextChangedListener(new RupiahFormat(etHargaBersih));
         txtHargaBeliUnit.addTextChangedListener(new TextWatcher() {
             @Override
@@ -243,20 +258,24 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
                 Nson nson = Nson.readJson(getIntentStringExtra("detail"));
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
+                args.put("action", "add");
                 args.put("nodo", nson.get("nodo").asString());
                 args.put("tipe", nson.get("tipe").asString());
                 args.put("nama", nson.get("nama").asString());
-                args.put("tglpesan", Tools.setFormatDayAndMonthToDb(nson.get("tglpesan").asString()));
-                args.put("tglterima", Tools.setFormatDayAndMonthToDb(nson.get("tglpesan").asString()));
+                args.put("tglpesan", nson.get("tglpesan").asString());
+                args.put("tglterima", nson.get("tglterima").asString());
                 args.put("pembayaran", nson.get("pembayaran").asString());
                 args.put("jatuhtempo", nson.get("jatuhtempo").asString());
-                args.put("ongkir", nson.get("ongkir").asString());
+                args.put("ongkir", nson.get("ongkir").asString().replaceAll("[^0-9]+", ""));
                 //recyleview(array) to json
                 args.put("parts", nListArray.toJson());
+                //args.put("user", getSetting("NAMA_USER"));
                 args.put("rekening", nson.get("rekening").asString());
+                args.put("penempatan", etPenempatan.getText().toString());
+                args.put("jumlahall", String.valueOf(jumlahAllPart));
 
-                Log.d(TAG, "total_part : " + nListArray.toJson());
-                Log.d(TAG, "keterangan : " + nson);
+                Log.d(TAG, "PART :  " + nListArray);
+                Log.d(TAG, "send data : " + args);
                 data = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturterimapart"), args));
             }
 
@@ -269,6 +288,7 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
                 } else {
                     showError("Gagal Menambahkan Aktifitas");
                 }
+                Log.d(TAG, "send data : " + data.get("message"));
             }
         });
     }
@@ -280,21 +300,25 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
         dataAdd.set("JUMLAH", txtJumlah.getText().toString());
         dataAdd.set("HARGA_BELI", txtHargaBeliUnit.getText().toString());
         dataAdd.set("NET", etHargaBersih.getText().toString());
+        dataAdd.set("PART_ID", partId);
+
         if (etDiscPercent.isEnabled()) {
             dataAdd.set("DISCOUNT", etDiscPercent.getText().toString());
         } else if (etDiscRp.isEnabled()) {
             dataAdd.set("DISCOUNT", etDiscRp.getText().toString());
         }
-        dataAdd.set("LOKASI_SIMPAN", spinnerLokasiSimpan.getSelectedItem().toString());
+        if (spinnerLokasiSimpan.getSelectedItem().toString().equalsIgnoreCase("")) {
+            dataAdd.set("LOKASI_SIMPAN", "*");
+        } else {
+            dataAdd.set("LOKASI_SIMPAN", spinnerLokasiSimpan.getSelectedItem().toString());
+        }
+
         initRecylerView();
         nListArray.add(dataAdd);
         rvTerimaPart.getAdapter().notifyDataSetChanged();
-        if (nListArray == null) {
-            showInfo("Part Tidak Boleh Kosong");
-            return;
-        }
         Tools.clearForm(find(R.id.ly_detailPart, LinearLayout.class));
         showInfo("Part Di tambahkan");
+        count++;
     }
 
     private void initRecylerView() {
@@ -310,7 +334,8 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
                         viewHolder.find(R.id.tv_net_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("NET").asString());
                         viewHolder.find(R.id.tv_harga_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("HARGA_BELI").asString());
                         viewHolder.find(R.id.tv_disc_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("DISCOUNT").asString());
-                        viewHolder.find(R.id.tv_lokasi_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("LOKASI_SIMPAN").asString());
+                        viewHolder.find(R.id.tv_merk_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("MERK").asString());
+
                     }
                 }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                     @Override
@@ -322,12 +347,14 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
                                 isDelete = true;
                             }
                         });
-                        if(isDelete){
-                            rvTerimaPart.getAdapter().notifyDataSetChanged();
-                        }
+
                     }
                 })
         );
+
+        if (isDelete) {
+            rvTerimaPart.getAdapter().notifyDataSetChanged();
+        }
     }
 
     public void barcode() {
@@ -369,7 +396,7 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_search) {
             Intent i = new Intent(this, CariPart_Activity.class);
-            i.putExtra("flag", "ALL");
+            i.putExtra("bengkel", "");
             startActivityForResult(i, REQUEST_CARI_PART);
         }
         return true;
@@ -395,21 +422,62 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
         }
     }
 
+    private void viewPartAvailable() {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("flag", "TERALOKASI");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlokasipart"), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    for (int i = 0; i < result.size(); i++) {
+                        partAvailableList.add(Nson.newObject()
+                                .set("PART_ID", result.get("data").get(i).get("PART_ID"))
+                                .set("NO_PART", result.get("data").get(i).get("NO_PART"))
+                                .set("LOKASI", result.get("data").get(i).get("LOKASI"))
+                                .set("PENEMPATAN", result.get("data").get(i).get("PENEMPATAN")));
+                    }
+                    Log.d(TAG, "Lokasi Part : " + partAvailableList);
+                }
+            }
+        });
+    }
+
+    private void setSpinnerLokasiSimpan() {
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.lokasi_simpan));
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerLokasiSimpan.setAdapter(spinnerAdapter);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CARI_PART && resultCode == RESULT_OK) {
             Nson n = Nson.readJson(getIntentStringExtra(data, "part"));
+            partId = n.get("PART_ID").asInteger();
             txtNoPart.setText(n.get("NO_PART").asString());
-            txtNamaPart.setText(n.get("NAMA").asString());
-            // addData(Nson.readJson(data.getStringExtra("row")), 1);
+            txtNamaPart.setText(n.get("NAMA_PART").asString());
+            viewPartAvailable();
+            setSpinnerLokasiSimpan();
+            if (partAvailableList.asArray().contains(partId)) {
+                showInfo("TERSEDIA CUY nih : " + partId);
+                spinnerLokasiSimpan.setSelection(Tools.getIndexSpinner(spinnerLokasiSimpan, partAvailableList.get("LOKASI").asString()));
+                etPenempatan.setText(partAvailableList.get("PENEMPATAN").asString());
+            }
+
         }
 
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null) {
             showSuccess(result.getContents());
         } else {
-            showError("Scan Failed");
+            //showError("Scan Failed");
         }
     }
 }

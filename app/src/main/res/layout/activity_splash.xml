@@ -7,11 +7,19 @@
     android:background="@color/purple_900"
     tools:context=".MainActivity">
 
-
     <FrameLayout
         android:id="@+id/id"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ImageView
+            android:id="@+id/img_splash"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/speed"
+            android:background="@android:color/white"
+            android:layout_gravity="center" />
+
     </FrameLayout>
+
 </android.support.design.widget.CoordinatorLayout>

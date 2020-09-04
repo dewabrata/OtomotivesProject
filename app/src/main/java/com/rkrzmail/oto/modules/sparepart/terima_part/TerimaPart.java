@@ -28,6 +28,7 @@ import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
 
+import java.text.DecimalFormat;
 import java.util.Map;
 
 public class TerimaPart extends AppActivity {
@@ -36,7 +37,7 @@ public class TerimaPart extends AppActivity {
     private static final int REQUEST_DETAIL = 667;
     private RecyclerView recyclerView_terimaPart;
     public static final int REQUEST_TERIMA_PART = 666;
-
+    private DecimalFormat formatter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +56,7 @@ public class TerimaPart extends AppActivity {
     }
 
     private void initComponent(){
+        formatter = new DecimalFormat("###,###,###");
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,10 +77,10 @@ public class TerimaPart extends AppActivity {
                 viewHolder.find(R.id.txtTanggal, TextView.class).setText(tgl);
                 viewHolder.find(R.id.txtSupplier, TextView.class).setText(nListArray.get(position).get("SUPPLIER").asString());;
                 viewHolder.find(R.id.txtPembayaran, TextView.class).setText(nListArray.get(position).get("PEMBAYARAN").asString());;
-                viewHolder.find(R.id.txtTotal, TextView.class).setText(nListArray.get(position).get("NET").asString());;
+                viewHolder.find(R.id.txtTotal, TextView.class).setText("Rp. " + formatter.format(Double.parseDouble(nListArray.get(position).get("NET").asString())));;
                 viewHolder.find(R.id.txtNoDo, TextView.class).setText(nListArray.get(position).get("NO_DO").asString());;
                 viewHolder.find(R.id.txtJatuhTempo, TextView.class).setText(tglInv);
-                viewHolder.find(R.id.txtUser, TextView.class).setText("USER :" + nListArray.get(position).get("USER").asString());;
+                viewHolder.find(R.id.txtUser, TextView.class).setText(nListArray.get(position).get("NAMA_USER").asString());;
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override

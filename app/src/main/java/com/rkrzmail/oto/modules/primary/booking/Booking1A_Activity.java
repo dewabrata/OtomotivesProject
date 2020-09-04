@@ -229,9 +229,10 @@ public class Booking1A_Activity extends AppActivity {
                     convertView = inflater.inflate(R.layout.find_jenisken, parent, false);
                 }
 
-                findView(convertView, R.id.txtMerk, TextView.class).setText((getItem(position).get("VARIAN").asString()));
+                findView(convertView, R.id.txtJenis, TextView.class).setText((getItem(position).get("JENIS").asString()));
+                findView(convertView, R.id.txtVarian, TextView.class).setText((getItem(position).get("VARIAN").asString()));
+                findView(convertView, R.id.txtMerk, TextView.class).setText((getItem(position).get("MERK").asString()));
                 findView(convertView, R.id.txtModel, TextView.class).setText((getItem(position).get("MODEL").asString()));
-                findView(convertView, R.id.txtJenisVarian, TextView.class).setText((getItem(position).get("JENIS").asString()));
 
                 return convertView;
             }
@@ -244,8 +245,10 @@ public class Booking1A_Activity extends AppActivity {
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
 
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append(n.get("JENIS").asString()).append(" ");
+
                 stringBuilder.append(n.get("MODEL").asString()).append(" ");
+                stringBuilder.append(n.get("MERK").asString()).append(" ");
+                stringBuilder.append(n.get("JENIS").asString()).append(" ");
                 stringBuilder.append(n.get("VARIAN").asString()).append(" ");
 
                 etJenisKendaraan.setText(stringBuilder.toString());

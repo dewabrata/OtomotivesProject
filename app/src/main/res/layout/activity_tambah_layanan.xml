@@ -34,7 +34,7 @@
                         android:id="@+id/et_masterPart_layanan"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="KELOMPOK PART"
+                        android:hint="MASTER PART"
                         android:textSize="14sp"
                         android:enabled="false"/>
 
@@ -47,7 +47,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp">
 
-                    <com.rkrzmail.srv.NikitaAutoComplete
+                    <EditText
                         android:id="@+id/et_discPart_layanan"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -103,25 +103,36 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/paddingMedium"
+                android:layout_marginBottom="@dimen/paddingMedium"
+                android:gravity="center"
                 android:orientation="horizontal"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/border_solid"
-                android:padding="10dp"
-                android:gravity="center">
+                android:paddingStart="@dimen/paddingMedium"
+                android:paddingEnd="@dimen/paddingMedium"   >
 
                 <TextView
                     android:id="@+id/txttittle9"
-                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:text="AKTIVITAS"
-                    android:textSize="14sp" />
-
-                <Spinner
-                    android:id="@+id/sp_aktivitas_layanan"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAlignment="center" />
+                    android:layout_weight="3"
+                    android:textColor="@color/grey_900"
+                    android:textStyle="bold"
+                    android:textSize="12sp"/>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
+
+                    <Spinner
+                        android:id="@+id/sp_aktivitas_layanan"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textAlignment="center" />
+
+                </RelativeLayout>
 
             </LinearLayout>
 
@@ -136,9 +147,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="WAKTU"
-                    android:enabled="false"
+                    android:inputType="time"
+                    android:maxLength="2"
                     android:textSize="14sp" />
-
 
             </android.support.design.widget.TextInputLayout>
 

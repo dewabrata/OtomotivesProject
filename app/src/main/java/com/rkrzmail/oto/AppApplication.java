@@ -32,6 +32,7 @@ import java.util.TimeZone;
 
 public class AppApplication extends Application {
     private static AppApplication appSystem;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -41,49 +42,61 @@ public class AppApplication extends Application {
 
     }
 
-    public static AppApplication getInstance(){
+    public static AppApplication getInstance() {
         return appSystem;
     }
 
-    public static String getBaseUrl(String name){
-        return "http://otomotives.com/api/"+name;
+    public static String getBaseUrl(String name) {
+        return "http://otomotives.com/api/" + name;
     }
-    public static String getBaseUrlV2(String name){
-        return "http://otomotives.com/api/v2/apitest/"+name;
+
+    public static String getBaseUrlV2(String name) {
+        return "http://otomotives.com/api/v2/apitest/" + name;
     }
-    public static String getBaseUrlV3(String name){
-        return "http://otomotives.com/api/v3/"+name;
+
+    public static String getBaseUrlV3(String name) {
+        return "http://otomotives.com/api/v3/" + name;
     }
+
     /*Mas Brahma, ni link nya :
     Pengajuan,
     http://202.56.171.19:8185/loyaltyui/home/pengajuan
     MyAccount,
     http://202.56.171.19:8185/loyaltyui/menu/account*/
-    public static String getUrl(String name){
-        return getBaseUrl(name)+"?key="+UtilityAndroid.getSetting(getInstance().getApplicationContext(), "KEY", "");
+    public static String getUrl(String name) {
+        return getBaseUrl(name) + "?key=" + UtilityAndroid.getSetting(getInstance().getApplicationContext(), "KEY", "");
     }
-
 
 
     private static String slocation = "0,0";
-    public static String getLastCurrentLocation(){
+
+    public static String getLastCurrentLocation() {
         return UtilityAndroid.getSetting(getInstance().getApplicationContext(), "LOCATION", "0,0");
     }
-    public static void setLastCurrentLocation(Location location){
-        if (location!=null){
+
+    public static void setLastCurrentLocation(Location location) {
+        if (location != null) {
             slocation = location.getLatitude() + "," + location.getLongitude();
             UtilityAndroid.setSetting(getInstance().getApplicationContext(), "LOCATION", slocation);
         }
     }
+
     public HashMap<String, String> getArgsData() {
         HashMap<String, String> hashtable = new HashMap();
 
-        hashtable.put("user", UtilityAndroid.getSetting(getApplicationContext(), "user", ""));
+        //hashtable.put("user", UtilityAndroid.getSetting(getApplicationContext(), "user", ""));
         hashtable.put("session", UtilityAndroid.getSetting(getApplicationContext(), "session", ""));
-        hashtable.put("CID",    UtilityAndroid.getSetting(getApplicationContext(), "CID", ""));
-        hashtable.put("FCM",    UtilityAndroid.getSetting(getApplicationContext(), "FCMID", ""));
-        hashtable.put("NOW",    Utility.Now());
+        hashtable.put("user", UtilityAndroid.getSetting(getApplicationContext(), "NAMA_USER", ""));
+        hashtable.put("CID", UtilityAndroid.getSetting(getApplicationContext(), "CID", ""));
+        hashtable.put("FCM", UtilityAndroid.getSetting(getApplicationContext(), "FCMID", ""));
+        hashtable.put("NOW", Utility.Now());
         hashtable.put("Location", AppApplication.getLastCurrentLocation());
+        if (hashtable.containsValue("--PILIH--")) {
+            hashtable.values().remove("--PILIH--");
+        }
+        if (!hashtable.containsKey("action")) {
+            hashtable.put("action", "view");
+        }
 
         int vi = TimeZone.getDefault().getRawOffset() / 1000;
         hashtable.put("xzona", String.valueOf(vi / 60 / 60));//gmt
@@ -101,12 +114,12 @@ public class AppApplication extends Application {
             hashtable.put("imei", "");
             hashtable.put("imsi", "");
             hashtable.put("simsn", "");
-            hashtable.put("line","");
-        }else{
-            hashtable.put("imei", String.valueOf(mTelephonyMgr.getDeviceId()) );
+            hashtable.put("line", "");
+        } else {
+            hashtable.put("imei", String.valueOf(mTelephonyMgr.getDeviceId()));
             hashtable.put("imsi", String.valueOf(mTelephonyMgr.getSubscriberId()));
-            hashtable.put("simsn", String.valueOf(mTelephonyMgr.getSimSerialNumber()) );
-            hashtable.put("line", String.valueOf(mTelephonyMgr.getLine1Number()) );
+            hashtable.put("simsn", String.valueOf(mTelephonyMgr.getSimSerialNumber()));
+            hashtable.put("line", String.valueOf(mTelephonyMgr.getLine1Number()));
         }
 
 

@@ -107,10 +107,7 @@ public class Pendaftaran1 extends AppActivity {
         find(R.id.tblHistory).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String nopol = find(R.id.txtNopol, EditText.class).getText().toString().replace(" ","").toUpperCase();
-                Intent intent = new Intent(getActivity(), HistoryActivity.class);
-                intent.putExtra("NOPOL", nopol);
-                startActivity(intent);
+
             }
         });
 
@@ -142,7 +139,7 @@ public class Pendaftaran1 extends AppActivity {
 
                 findView(convertView, R.id.txtMerk, TextView.class).setText( (getItem(position).get("MERK").asString()) );
                 findView(convertView, R.id.txtModel, TextView.class).setText( (getItem(position).get("MODEL").asString()) );
-                findView(convertView, R.id.txtJenisVarian, TextView.class).setText( (getItem(position).get("JENIS").asString()) + " " + (getItem(position).get("VARIAN").asString())  );
+                //findView(convertView, R.id.txtJenisVarian, TextView.class).setText( (getItem(position).get("JENIS").asString()) + " " + (getItem(position).get("VARIAN").asString())  );
 
                 return convertView;
             }
@@ -168,7 +165,7 @@ public class Pendaftaran1 extends AppActivity {
                 find(R.id.txtJenisKen, NikitaAutoComplete.class).setText(  stringBuilder.toString()  );
                 find(R.id.txtJenisKen, NikitaAutoComplete.class).setTag(String.valueOf(adapterView.getItemAtPosition(position)));
 
-                find (R.id.txtJenisVarian, TextView.class).setText(n.get("JENIS") + n.get("VARIAN").asString());
+                //find (R.id.txtJenisVarian, TextView.class).setText(n.get("JENIS") + n.get("VARIAN").asString());
                 find (R.id.txtModel, TextView.class).setText(n.get("MODEL").asString());
                 find (R.id.txtMerk, TextView.class).setText(n.get("MERK").asString());
 

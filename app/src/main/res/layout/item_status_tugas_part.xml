@@ -33,8 +33,8 @@
                     android:id="@+id/tv_noFolder_statusTp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                     android:text="No. Folder"
                     android:visibility="gone"/>
 
@@ -46,17 +46,17 @@
                     android:id="@+id/tv_merk_statusTp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
-                    android:text="Merk" />
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:text="Merk"
+                    android:layout_gravity="start"/>
 
                 <TextView
                     android:id="@+id/tv_stock_statusTp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
-                    android:layout_marginStart="10dp"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                     android:text="Stock"
                     android:visibility="gone"/>
 
@@ -69,15 +69,17 @@
                     android:id="@+id/tv_namaPart_statusTp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="start"
                     android:text="Nama Part" />
 
                 <TextView
                     android:id="@+id/tv_jumlahMinta_statusTp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                     android:layout_gravity="end"
                     android:text="Jumlah Di minta" />
 
@@ -89,15 +91,17 @@
                     android:id="@+id/tv_noPart_statusTp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="start"
                     android:text="No. Part" />
 
                 <TextView
                     android:id="@+id/tv_jumlahSedia_jumlahSisa_statusTp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                     android:layout_gravity="end"
                     android:text="(Jumlah Sedia) / (Jumlah Sisa)" />
 

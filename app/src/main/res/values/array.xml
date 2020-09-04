@@ -70,7 +70,7 @@
         <item>@drawable/photo_female_7</item>
         <item>@drawable/photo_female_8</item>
     </integer-array>
-    
+
     <string-array name="jenis_layanan">
         <item>PAKET LAYANAN</item>
         <item>FASILITAS</item>
@@ -79,10 +79,12 @@
     </string-array>
 
     <string-array name="atur_layanan">
+        <item>--PILIH--</item>
         <item>PAKET LAYANAN</item>
-        <item>AFTER SALES SERVICE</item>
+        <item>AFTER SALES SERVICES</item>
         <item>RECALL</item>
         <item>OTOMOTIVES</item>
+        <item>PERAWATAN LAINYA</item>
     </string-array>
 
     <string-array name="jenis_kelamin">
@@ -105,27 +107,30 @@
     </string-array>
 
     <string-array name="akses_app_karyawan">
-        <item>CHECK IN</item>
+        <item>--PILIH--</item>
+        <item>ANTARJEMPUT	</item>
         <item>BOOKING</item>
-        <item>TUGAS PART</item>
-        <item>TERIMA PART</item>
-        <item>LOKASI PART</item>
-        <item>BIAYA MEKANIK</item>
-        <item>PROFILE</item>
-        <item>PENUGASAN MEKANIK</item>
-        <item>LAYANAN</item>
-        <item>TENDA</item>
-        <item>DISKON PART</item>
-        <item>DISKON LAYANAN</item>
-        <item>DISKON JASA LAIN</item>
-        <item>FREKWENSI DISKON</item>
-        <item>KOMISI LAYANAN</item>
-        <item>KOMISI JASA LAIN</item>
-        <item>KOMISI PART</item>
-        <item>USER</item>
-        <item>REFERRAL</item>
-        <item>PENJUALAN PART</item>
+        <item>CHECKIN</item>
+        <item>CHECKOUT</item>
+        <item>COLLECTION</item>
+        <item>DASHBOARD</item>
+        <item>DISCOUNT</item>
+        <item>INSPEKSI</item>
+        <item>JUALPARTS</item>
+        <item>JURNAL</item>
+        <item>KOMISI</item>
+        <item>MEKANIK</item>
+        <item>MENUNGGU</item>
+        <item>MESSAGE</item>
+        <item>MYBUSINESS</item>
+        <item>OUTSOURCE</item>
+        <item>PART</item>
+        <item>PARTKELUAR</item>
         <item>PEMBAYARAN</item>
+        <item>PENGATURAN</item>
+        <item>STOCKOPNAME</item>
+        <item>TERIMAPARTS</item>
+        <item>TUGASPARTS</item>
     </string-array>
 
     <string-array name="status_layanan">
@@ -210,8 +215,8 @@
     </string-array>
 
     <string-array name="garansi_bengkel">
-        <item>YA</item>
         <item>TIDAK</item>
+        <item>YA</item>
     </string-array>
 
     <string-array name="layanan_booking1a">
@@ -347,7 +352,6 @@
     </string-array>
 
 
-
     <string-array name="social_names">
         <item>Android</item>
         <item>Apple</item>
@@ -372,7 +376,6 @@
         <item>Vimeo</item>
         <item>Youtube</item>
     </string-array>
-
 
 
     <integer-array name="shop_category_bg">
@@ -410,7 +413,6 @@
         <item>475k Items</item>
         <item>362k Items</item>
     </string-array>
-
 
 
     <string-array name="shop_product_title">
@@ -479,23 +481,23 @@
     </string-array>
 
     <string-array name="album_name">
-    <item>The Mother</item>
-    <item>Not Advance</item>
-    <item>Coming Back</item>
-    <item>Suspicions</item>
-    <item>Desert Of Lost</item>
+        <item>The Mother</item>
+        <item>Not Advance</item>
+        <item>Coming Back</item>
+        <item>Suspicions</item>
+        <item>Desert Of Lost</item>
 
-    <item>Glances</item>
-    <item>Some Doubts</item>
-    <item>Morning</item>
-    <item>Love More Deeply</item>
-    <item>Quite</item>
+        <item>Glances</item>
+        <item>Some Doubts</item>
+        <item>Morning</item>
+        <item>Love More Deeply</item>
+        <item>Quite</item>
 
-    <item>Backseat</item>
-    <item>Peace</item>
-    <item>Ambitions </item>
-    <item>Knocking At</item>
-    <item>Synchronisation</item>
-</string-array>
+        <item>Backseat</item>
+        <item>Peace</item>
+        <item>Ambitions </item>
+        <item>Knocking At</item>
+        <item>Synchronisation</item>
+    </string-array>
 
 </resources>
