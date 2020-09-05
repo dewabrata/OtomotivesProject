@@ -48,7 +48,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|right"
                     android:layout_marginRight="20dp"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    android:layout_marginTop="4dp"
+                     />
 
             </FrameLayout>
 
@@ -104,6 +106,7 @@
                     android:layout_gravity="center_vertical|right"
                     android:layout_marginRight="20dp"
                     android:visibility="gone"
+                    android:layout_marginTop="3dp"
                     tools:ignore="RtlHardcoded" />
 
             </FrameLayout>

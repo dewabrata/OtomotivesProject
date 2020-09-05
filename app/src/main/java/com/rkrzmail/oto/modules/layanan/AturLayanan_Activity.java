@@ -192,7 +192,7 @@ public class AturLayanan_Activity extends AppActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String item = parent.getItemAtPosition(position).toString();
-                if (item.equalsIgnoreCase("NON_ACTIVE")) {
+                if (item.equalsIgnoreCase("TIDAK AKTIF")) {
                     //Tools.setViewAndChildrenEnabled(find(R.id.ly_layanan, LinearLayout.class), false);
                 } else {
                     //Tools.setViewAndChildrenEnabled(find(R.id.ly_layanan, LinearLayout.class), true);

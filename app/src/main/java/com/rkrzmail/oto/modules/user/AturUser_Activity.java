@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.user;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -21,6 +22,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,18 +53,17 @@ public class AturUser_Activity extends AppActivity {
     private static final String TAG = "AturUser_____";
     private String ket = " Tidak Valid";
     private static final int REQUEST_PHOTO = 80;
-    private MultiSelectionSpinner spAkses, spPosisi;
-    private Spinner spStatus;
-    private Nson layanan = Nson.newArray();
-    List<String>
+    private MultiSelectionSpinner spAkses;
+    private Spinner spStatus, spPosisi;
+    private Nson layanan = Nson.newArray(), posisiList = Nson.newArray();
+    private List<String>
             dataPonsel = new ArrayList<>(),
-            listPosisi = new ArrayList<>(),
             listAkses = new ArrayList<>(),
             listStatus = new ArrayList<String>(Arrays.asList("--PILIH--", "AKTIF", "NON-AKTIF")),
-            listPenggajian = new ArrayList<String>(Arrays.asList("--PILIH--", "HARIAN", "MINGGUAN", "BULANAN"));
+            listPenggajian = new ArrayList<String>(Arrays.asList("--PILIH--", "HARIAN", "MINGGUAN", "BULANAN")),
+            listFungsiMekanik = new ArrayList<>(Arrays.asList("TIDAK", "YA"));
     private String[] aksesArr;
-    private String noPonsel, posisi = "", status = "", penggajian = "";
-    ;
+    private String noPonsel, posisi = "", status = "", penggajian = "", fungsiMekanik = "";
     private int day, month, year;
     private boolean isClickDrawable = false, isAtur, isPosisi, isAksesApp;
 
@@ -88,15 +89,11 @@ public class AturUser_Activity extends AppActivity {
 
         loadData();
         getNoPonsel();
-        setSpAkses();
-        setSpPosisi();
         initTextWatcher();
-        setSpinnerOffline(listStatus, spStatus, status);
-        setSpinnerOffline(listPenggajian, find(R.id.spinnerPenggajian, Spinner.class), penggajian);
         initTextButton();
     }
 
-    private void initTextButton(){
+    private void initTextButton() {
         find(R.id.txtTglMasuk, TextView.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,7 +116,7 @@ public class AturUser_Activity extends AppActivity {
         });
     }
 
-    private void initTextWatcher(){
+    private void initTextWatcher() {
         find(R.id.txtGaji, TextView.class).addTextChangedListener(new RupiahFormat(find(R.id.txtGaji, EditText.class)));
         minEntryEditText(find(R.id.txtNamaKaryawan, EditText.class), 8, find(R.id.tl_nama_user, TextInputLayout.class), "Nama Min. 5 Karakter");
         minEntryEditText(find(R.id.txtAlamat, EditText.class), 20, find(R.id.tl_alamat_user, TextInputLayout.class), "Entry Alamat Min. 20 Karakter");
@@ -177,27 +174,13 @@ public class AturUser_Activity extends AppActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (!s.toString().contains("@")) {
+                if (!s.toString().contains("@") || !s.toString().contains(".com")) {
                     find(R.id.tl_email_user, TextInputLayout.class).setError("Email Tidak Valid");
                 } else {
                     find(R.id.tl_email_user, TextInputLayout.class).setErrorEnabled(false);
                 }
             }
         });
-    }
-
-    private void setSpinnerOffline(List<String>listItem, Spinner spinner, String selection){
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, listItem);
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(spinnerAdapter);
-        if (!selection.isEmpty()) {
-            for (int in = 0; in < spinner.getCount(); in++) {
-                if (spinner.getItemAtPosition(in).toString().contains(selection)) {
-                    spinner.setSelection(in);
-                    break;
-                }
-            }
-        }
     }
 
     private void setSpAkses() {
@@ -213,58 +196,6 @@ public class AturUser_Activity extends AppActivity {
             @Override
             public void selectedStrings(List<String> strings) {
 
-            }
-        });
-    }
-
-    private void setSpPosisi() {
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
-
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("nama", "POSISI");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewmst"), args));
-            }
-
-            @Override
-            public void runUI() {
-                ArrayList<String> str = new ArrayList<>();
-                for (int i = 0; i < result.get("data").size(); i++) {
-                    str.add(result.get("data").get(i).get("NAMA").asString());
-                }
-                str.removeAll(Arrays.asList("", null));
-                ArrayList<String> newStr = Tools.removeDuplicates(str);
-                setSetting("POSISI", newStr.toString());
-                try {
-                    spPosisi.setItems(newStr);
-                    Log.d(TAG, "runUI: " + getSetting("POSISI"));
-                    if (listPosisi.size() > 0) {
-                        for (String data : listPosisi) {
-                            posisi += data;
-                        }
-                        for (int i = 0; i < spPosisi.getCount(); i++) {
-                            if (spPosisi.getItemAtPosition(i).toString().contains(posisi)) {
-                                spPosisi.setSelection(i, true);
-                            }
-                        }
-                    }
-                    spPosisi.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
-                        @Override
-                        public void selectedIndices(List<Integer> indices) {
-
-                        }
-
-                        @Override
-                        public void selectedStrings(List<String> strings) {
-
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    showInfo("Perlu di Muat Ulang");
-                }
             }
         });
     }
@@ -311,6 +242,7 @@ public class AturUser_Activity extends AppActivity {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private void loadData() {
         final Nson data = Nson.readJson(getIntentStringExtra("data"));
         if (getIntent().hasExtra("data")) {
@@ -325,40 +257,32 @@ public class AturUser_Activity extends AppActivity {
             find(R.id.spinnerKelamin, Spinner.class).setSelection(Tools.getIndexSpinner
                     (find(R.id.spinnerKelamin, Spinner.class), data.get("KELAMIN").asString()));
             find(R.id.txtNoPonsel, EditText.class).setText(data.get("NO_PONSEL").asString());
+            find(R.id.tl_nohp_user, TextInputLayout.class).setHelperTextEnabled(false);
             find(R.id.txtEmail, EditText.class).setText(data.get("EMAIL").asString());
             find(R.id.txtAlamat, EditText.class).setText(data.get("ALAMAT").asString());
             find(R.id.txtTglMasuk, TextView.class).setText(data.get("TANGGAL_MASUK").asString());
 
-            listPosisi.add(data.get("POSISI").asString());
             listAkses.add(data.get("AKSES_APP").asString());
             status = data.get("STATUS").asString();
             penggajian = data.get("PENGGAJIAN").asString();
+            posisi = data.get("POSISI").asString();
+            fungsiMekanik = data.get("FUNGSI_MEKANIK").asString();
 
             find(R.id.txtGaji, TextView.class).setText(data.get("GAJI").asString());
             find(R.id.tblSimpan, Button.class).setText("Update");
             find(R.id.tblSimpan).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    if (validateFields(find(R.id.ly_user, LinearLayout.class))) {
+                        return;
+                    }
                     if (find(R.id.txtNoPonsel, TextView.class).getText().toString().isEmpty()) {
                         find(R.id.txtNoPonsel, TextView.class).setError("No. Ponsel" + ket);
                         return;
                     }
-                    if (find(R.id.txtEmail, EditText.class).getText().toString().isEmpty()) {
-                        find(R.id.txtEmail, EditText.class).setError("Email" + ket);
-                        return;
-                    }
-                    if (find(R.id.txtAlamat, EditText.class).getText().toString().isEmpty()) {
-                        find(R.id.txtAlamat, EditText.class).setError("Alamat" + ket);
-                        return;
-                    }
+
                     if (find(R.id.txtTglMasuk, TextView.class).getText().toString().isEmpty()) {
                         find(R.id.txtTglMasuk, TextView.class).setError("Tanggal Masuk" + ket);
-                        return;
-                    }
-                    if (spPosisi.getSelectedItemsAsString().isEmpty()) {
-                        showWarning("Silahkan Pilih Posisi");
-                        spPosisi.requestFocus();
-                        spPosisi.performClick();
                         return;
                     }
                     if (find(R.id.spinnerStatus, Spinner.class).getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
@@ -373,10 +297,7 @@ public class AturUser_Activity extends AppActivity {
                         find(R.id.spinnerPenggajian, Spinner.class).performClick();
                         return;
                     }
-                    if (find(R.id.txtGaji, EditText.class).getText().toString().isEmpty()) {
-                        find(R.id.txtGaji, EditText.class).setError("Gaji" + ket);
-                        return;
-                    }
+
                     if (spAkses.getSelectedItemsAsString().isEmpty()) {
                         showWarning("Silahkan Pilih Posisi");
                         spAkses.performClick();
@@ -390,16 +311,10 @@ public class AturUser_Activity extends AppActivity {
             find(R.id.tblSimpan).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (find(R.id.txtNamaKaryawan, EditText.class).getText().toString().isEmpty()) {
-                        find(R.id.txtNamaKaryawan, EditText.class).requestFocus();
-                        find(R.id.txtNamaKaryawan, EditText.class).setError("Nama" + ket);
+                    if (validateFields(find(R.id.ly_user, LinearLayout.class))) {
                         return;
                     }
-                    if (find(R.id.txtNik, EditText.class).getText().toString().isEmpty()) {
-                        find(R.id.txtNik, EditText.class).requestFocus();
-                        find(R.id.txtNik, EditText.class).setError("NIK" + ket);
-                        return;
-                    }
+
                     if (find(R.id.txtTglLahir, TextView.class).getText().toString().isEmpty()) {
                         find(R.id.txtTglLahir, TextView.class).requestFocus();
                         find(R.id.txtTglLahir, TextView.class).setError("Tanggal Lahir" + ket);
@@ -410,24 +325,10 @@ public class AturUser_Activity extends AppActivity {
                         find(R.id.txtNoPonsel, TextView.class).setError("No. Ponsel" + ket);
                         return;
                     }
-                    if (find(R.id.txtEmail, EditText.class).getText().toString().isEmpty()) {
-                        find(R.id.txtEmail, EditText.class).requestFocus();
-                        find(R.id.txtEmail, EditText.class).setError("Email" + ket);
-                        return;
-                    }
-                    if (find(R.id.txtAlamat, EditText.class).getText().toString().isEmpty()) {
-                        find(R.id.txtAlamat, EditText.class).requestFocus();
-                        find(R.id.txtAlamat, EditText.class).setError("Alamat" + ket);
-                        return;
-                    }
+
                     if (find(R.id.txtTglMasuk, TextView.class).getText().toString().isEmpty()) {
                         find(R.id.txtTglMasuk, TextView.class).requestFocus();
                         find(R.id.txtTglMasuk, TextView.class).setError("Tanggal Masuk" + ket);
-                        return;
-                    }
-                    if (spPosisi.getSelectedItemsAsString().isEmpty()) {
-                        showWarning("Silahkan Pilih Posisi");
-                        spPosisi.performClick();
                         return;
                     }
                     if (spAkses.getSelectedItemsAsString().isEmpty()) {
@@ -458,14 +359,19 @@ public class AturUser_Activity extends AppActivity {
                 }
             });
         }
+
+        setSpAkses();
+        setSpinnerFromApi(spPosisi, "nama", "POSISI", "viewmst", "NAMA", posisi);
+        setSpinnerOffline(listStatus, spStatus, status);
+        setSpinnerOffline(listFungsiMekanik, find(R.id.sp_fungsiMekanik, Spinner.class), fungsiMekanik);
+        setSpinnerOffline(listPenggajian, find(R.id.spinnerPenggajian, Spinner.class), penggajian);
     }
 
     private void addData() {
         final String aksesApp = spAkses.getSelectedItemsAsString();
-        if(aksesApp.contains("--PILIH--")){
+        if (aksesApp.contains("--PILIH--")) {
             aksesApp.replace("--PILIH--", "");
         }
-        final String posisi = spPosisi.getSelectedItemsAsString();
         final String parseTglLahir = Tools.setFormatDayAndMonthToDb(find(R.id.txtTglLahir, TextView.class).getText().toString());
         final String parseTglMasuk = Tools.setFormatDayAndMonthToDb(find(R.id.txtTglMasuk, TextView.class).getText().toString());
         newProses(new Messagebox.DoubleRunnable() {
@@ -474,8 +380,7 @@ public class AturUser_Activity extends AppActivity {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                /*add :  CID, action(add), nama, nik, tanggallahir, kelamin, nopol, email, alamat, tanggalmasuk,
-                posisi, status, penggajian, gaji, akses*/
+
                 args.put("action", "add");
                 args.put("nama", find(R.id.txtNamaKaryawan, EditText.class).getText().toString());
                 args.put("nik", find(R.id.txtNik, EditText.class).getText().toString());
@@ -485,12 +390,13 @@ public class AturUser_Activity extends AppActivity {
                 args.put("email", find(R.id.txtEmail, EditText.class).getText().toString());
                 args.put("alamat", find(R.id.txtAlamat, EditText.class).getText().toString());
                 args.put("tanggalmasuk", parseTglMasuk);
-                args.put("posisi", posisi);
+                args.put("posisi", spPosisi.getSelectedItem().toString());
                 args.put("status", find(R.id.spinnerStatus, Spinner.class).getSelectedItem().toString());
                 args.put("penggajian", find(R.id.spinnerPenggajian, Spinner.class).getSelectedItem().toString());
                 args.put("gaji", find(R.id.txtGaji, EditText.class).getText().toString());
+                args.put("mekanik", find(R.id.sp_fungsiMekanik, Spinner.class).getSelectedItem().toString());
                 args.put("akses", aksesApp);
-                if(args.containsValue("--PILIH--")){
+                if (args.containsValue("--PILIH--")) {
                     args.values().remove("--PILIH--");
                 }
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturkaryawan"), args));
@@ -517,7 +423,6 @@ public class AturUser_Activity extends AppActivity {
 
     private void updateData(final Nson id) {
         final String aksesApp = spAkses.getSelectedItemsAsString();
-        final String posisi = spPosisi.getSelectedItemsAsString();
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -532,7 +437,7 @@ public class AturUser_Activity extends AppActivity {
                 args.put("email", find(R.id.txtEmail, EditText.class).getText().toString());
                 args.put("alamat", find(R.id.txtAlamat, EditText.class).getText().toString());
                 args.put("tangalmasuk", find(R.id.txtTglMasuk, TextView.class).getText().toString());
-                args.put("posisi", posisi);
+                args.put("posisi", spPosisi.getSelectedItem().toString());
                 args.put("status", find(R.id.spinnerStatus, Spinner.class).getSelectedItem().toString());
                 args.put("penggajian", find(R.id.spinnerPenggajian, Spinner.class).getSelectedItem().toString());
                 args.put("gaji", find(R.id.txtGaji, EditText.class).getText().toString());

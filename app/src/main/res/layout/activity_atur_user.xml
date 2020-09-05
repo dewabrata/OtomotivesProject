@@ -238,6 +238,40 @@
 
                     </RelativeLayout>
 
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/paddingMedium"
+                    android:layout_marginBottom="@dimen/paddingMedium"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/paddingMedium"
+                    android:paddingEnd="@dimen/paddingMedium">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:text="FUNGSI MEKANIK"
+                        android:textColor="@color/grey_900"
+                        android:textStyle="bold" />
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="34dp"
+                        android:layout_weight="6"
+                        android:background="@drawable/background_edittext">
+
+                        <Spinner
+                            android:id="@+id/sp_fungsiMekanik"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAlignment="center"
+                            android:entries="@array/ya_tidak"/>
+
+                    </RelativeLayout>
 
                 </LinearLayout>
 
@@ -266,7 +300,7 @@
                         android:layout_weight="6"
                         android:background="@drawable/background_edittext">
 
-                        <com.rkrzmail.srv.MultiSelectionSpinner
+                        <Spinner
                             android:id="@+id/spinnerPosisi"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -304,7 +338,7 @@
                         <Spinner
                             android:id="@+id/spinnerStatus"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:entries="@array/status"
                             android:textAlignment="center" />
 

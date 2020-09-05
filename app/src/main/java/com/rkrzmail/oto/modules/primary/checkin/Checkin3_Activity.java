@@ -231,7 +231,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 args.put("spec", "Bengkel");
-                args.put("status", "AKTIF");
+                args.put("status", "TIDAK AKTIF");
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlayanan"), args));
             }
 
@@ -289,7 +289,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 break;
             case R.id.btn_partExternal_checkin3:
                 i = new Intent(getActivity(), CariPart_Activity.class);
-                i.putExtra("MASTER_PART", "MASTER_PART");
+                i.putExtra("global", "");
                 startActivityForResult(i, Booking3_Activity.REQUEST_PART_EXTERNAL);
                 break;
             case R.id.btn_lanjut_checkin3:
@@ -372,7 +372,8 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             for (int j = 0; j < nListArray.size(); j++) {
                 if(nListArray.get(j).containsKey("HARGA_NET") && Tools.isNumeric(nListArray.get(j).get("HARGA_NET").asString().replaceAll("[^0-9]+", ""))){
                     totalHarga += Integer.parseInt(nListArray.get(j).get("HARGA_NET").asString().replaceAll("[^0-9]+", ""));
-                }else if(nListArray.get(j).containsKey("BIAYA_JASA") && Tools.isNumeric(nListArray.get(j).get("BIAYA_JASA").asString().replaceAll("[^0-9]+", ""))){
+                }
+                if(nListArray.get(j).containsKey("BIAYA_JASA") && Tools.isNumeric(nListArray.get(j).get("BIAYA_JASA").asString().replaceAll("[^0-9]+", ""))){
                     totalHarga += Integer.parseInt(nListArray.get(j).get("BIAYA_JASA").asString().replaceAll("[^0-9]+", ""));
                 }
             }

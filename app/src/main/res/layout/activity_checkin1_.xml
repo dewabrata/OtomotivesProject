@@ -297,14 +297,16 @@
 
             <include layout="@layout/toolbar" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/imgBarcode_checkin1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_gravity="right|center_vertical"
                 android:padding="5dp"
-                app:srcCompat="@drawable/scan"
-                tools:ignore="RtlHardcoded" />
+                app:srcCompat="@drawable/barcode"
+                android:layout_marginEnd="5dp"
+                android:backgroundTint="@color/transparent"
+                tools:ignore="RtlHardcoded,UnusedAttribute" />
 
         </FrameLayout>
 

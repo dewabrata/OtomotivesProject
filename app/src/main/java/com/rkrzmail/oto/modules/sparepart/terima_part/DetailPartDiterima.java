@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -87,7 +88,7 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
         Tools.setViewAndChildrenEnabled(find(R.id.ly_lokasi, LinearLayout.class), false);
         componentValidation();
 
-        find(R.id.img_scan_terimaPart, ImageView.class).setOnClickListener(new View.OnClickListener() {
+        find(R.id.img_scan_terimaPart, ImageButton.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 scanBarcode(new FrameLayout(DetailPartDiterima.this), getActivity());

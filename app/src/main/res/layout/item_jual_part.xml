@@ -86,6 +86,7 @@
                 android:layout_height="wrap_content"
                 android:text="Discount"
                 android:textSize="12sp"
+                android:layout_gravity="start"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
             <TextView
@@ -107,6 +108,7 @@
                 android:layout_height="wrap_content"
                 android:text="Status"
                 android:textSize="12sp"
+                android:layout_gravity="start"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
             <TextView

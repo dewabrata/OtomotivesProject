@@ -13,103 +13,90 @@
     app:cardCornerRadius="10dp"
     app:cardElevation="2dp">
 
-    <LinearLayout
+    <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:stretchColumns="*">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+        <TableRow>
 
-            <TableLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tv_noPart_jualPart"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:stretchColumns="*">
+                android:text="No. Part"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textColor="@color/grey_80"
+                android:layout_gravity="start"
+                android:textSize="12sp" />
 
-                <TableRow>
+        </TableRow>
 
-                    <TextView
-                        android:id="@+id/tv_noPart_jualPart"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="No. Part"
-                        android:textColor="@color/grey_80"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                        android:textSize="12sp" />
+        <TableRow android:layout_marginTop="5dp">
 
-                </TableRow>
+            <TextView
+                android:id="@+id/tv_namaPart_jualPart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:text="Nama Part"
+                android:layout_gravity="start"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                android:textColor="@color/grey_80"
+                android:textSize="12sp" />
 
-                <TableRow android:layout_marginTop="5dp">
+        </TableRow>
 
-                    <TextView
-                        android:id="@+id/tv_namaPart_jualPart"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:maxLines="2"
-                        android:text="Nama Part"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                        android:textColor="@color/grey_80"
-                        android:textSize="12sp" />
+        <TableRow android:layout_marginTop="@dimen/spacing_medium">
 
-                </TableRow>
+            <TextView
+                android:id="@+id/tv_harga_jualPart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Harga"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                android:textColor="@color/grey_80"
+                android:layout_gravity="start"
 
-                <TableRow android:layout_marginTop="@dimen/spacing_medium">
+                android:textSize="12sp" />
 
-                    <TextView
-                        android:id="@+id/tv_harga_jualPart"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Harga"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                        android:textColor="@color/grey_80"
-                        android:textSize="12sp"/>
+            <TextView
+                android:id="@+id/tv_jumlah_jualPart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="Jumlah"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                android:textColor="@color/grey_80"
+                android:textSize="12sp" />
 
-                    <TextView
-                        android:id="@+id/tv_jumlah_jualPart"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Jumlah"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                        android:textColor="@color/grey_80"
-                        android:layout_gravity="end"
-                        android:textSize="12sp"/>
+        </TableRow>
 
-                </TableRow>
+        <TableRow android:layout_marginTop="@dimen/spacing_medium">
 
-                <TableRow android:layout_marginTop="@dimen/spacing_medium">
+            <TextView
+                android:id="@+id/tv_disc_jualPart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Discount"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                android:textColor="@color/grey_80"
+                android:layout_gravity="start"
+                android:textSize="12sp" />
 
-                    <TextView
-                        android:id="@+id/tv_disc_jualPart"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Discount"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                        android:textColor="@color/grey_80"
-                       android:textSize="12sp" />
+            <TextView
+                android:id="@+id/tv_total_jualPart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="Total"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                android:textColor="@color/grey_80"
+                android:textSize="12sp" />
 
-                    <TextView
-                        android:id="@+id/tv_total_jualPart"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Total"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                        android:textColor="@color/grey_80"
-                        android:layout_gravity="end"
-                        android:textSize="12sp"/>
+        </TableRow>
 
-                </TableRow>
-
-            </TableLayout>
-
-        </LinearLayout>
-
-    </LinearLayout>
+    </TableLayout>
 
 </android.support.v7.widget.CardView>

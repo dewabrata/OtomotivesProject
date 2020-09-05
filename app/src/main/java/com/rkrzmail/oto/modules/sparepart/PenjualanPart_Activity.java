@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.sparepart;
 
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -32,6 +33,7 @@ public class PenjualanPart_Activity extends AppActivity {
     private RecyclerView rvJualPart;
     public static final int REQUEST_PENJUALAN = 110;
     public static final int RESULT_DETAIL = 5;
+    private boolean isNamaUsaha = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,13 +62,14 @@ public class PenjualanPart_Activity extends AppActivity {
         rvJualPart = findViewById(R.id.recyclerView);
         rvJualPart.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvJualPart.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_jual_part) {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
                 String tgl = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("TANGGAL").asString());
 
                 viewHolder.find(R.id.tv_tgl_jualPart, TextView.class).setText(tgl);
-                viewHolder.find(R.id.tv_nama_namaUsaha_jualPart, TextView.class).setText(nListArray.get(position).get("NAMA_PELANGGAN").asString() + " / "+nListArray.get(position).get("NAMA_USAHA").asString());
+                viewHolder.find(R.id.tv_nama_namaUsaha_jualPart, TextView.class).setText(nListArray.get(position).get("NAMA_PELANGGAN").asString() + (isNamaUsaha ? " / " : "") + nListArray.get(position).get("NAMA_USAHA").asString());
                 viewHolder.find(R.id.tv_noPhone_jualPart, TextView.class).setText(nListArray.get(position).get("NO_PONSEL").asString());
                 viewHolder.find(R.id.tv_disc_jualPart, TextView.class).setText(nListArray.get(position).get("DISCOUNT").asString());
                 viewHolder.find(R.id.tv_status_jualPart, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
@@ -95,6 +98,13 @@ public class PenjualanPart_Activity extends AppActivity {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
+                    if(nListArray.size() > 0){
+                        for (int i = 0; i < nListArray.size(); i++) {
+                            if(!nListArray.get(i).get("NAMA_USAHA").equals("") || !nListArray.get(i).get("NAMA_PELANGGAN").equals("") ){
+                                isNamaUsaha = true;
+                            }
+                        }
+                    }
                     rvJualPart.getAdapter().notifyDataSetChanged();
                 } else {
                     showError("Gagal Memuat Aktifitas");

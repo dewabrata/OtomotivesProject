@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -44,7 +45,6 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
     private NikitaAutoComplete etJenisKendaraan, etNopol, etNoPonsel,  etNamaPelanggan;
     private EditText etKeluhan, etKm;
     private Spinner spPekerjaan;
-    private ImageView imgBarcode;
     private String noHp = "";
 
     @Override
@@ -70,9 +70,8 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
         etKeluhan = findViewById(R.id.et_keluhan_checkin1);
         etKm = findViewById(R.id.et_km_checkin1);
         spPekerjaan = findViewById(R.id.sp_pekerjaan_checkin1);
-        imgBarcode = findViewById(R.id.imgBarcode_checkin1);
 
-        imgBarcode.setOnClickListener(new View.OnClickListener() {
+        find(R.id.imgBarcode_checkin1, ImageButton.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 IntentIntegrator intentIntegrator = new IntentIntegrator(getActivity());
@@ -214,7 +213,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     return;
                 }
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append(n.get("MODEL").asString()).append(" ");
+                //stringBuilder.append(n.get("MODEL").asString()).append(" ");
                 stringBuilder.append(n.get("MERK").asString()).append(" ");
                 stringBuilder.append(n.get("JENIS").asString()).append(" ");
                 stringBuilder.append(n.get("VARIAN").asString()).append(" ");
@@ -264,6 +263,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
                 etNoPonsel.setText("XXXXXXXX"  + n.get("NO_PONSEL").asString());
+                find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
                 etNamaPelanggan.setText(n.get("NAMA_PELANGGAN").asString());
             }
         });

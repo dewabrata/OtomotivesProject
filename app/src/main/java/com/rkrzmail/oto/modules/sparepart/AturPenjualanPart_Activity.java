@@ -98,8 +98,7 @@ public class AturPenjualanPart_Activity extends AppActivity {
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
 
                 StringBuilder stringBuilder = new StringBuilder();
-
-                stringBuilder.append(n.get("MODEL").asString()).append(" ");
+                //stringBuilder.append(n.get("MODEL").asString()).append(" ");
                 stringBuilder.append(n.get("MERK").asString()).append(" ");
                 stringBuilder.append(n.get("JENIS").asString()).append(" ");
                 stringBuilder.append(n.get("VARIAN").asString()).append(" ");
@@ -146,12 +145,10 @@ public class AturPenjualanPart_Activity extends AppActivity {
             @Override
             public Nson onFindNson(Context context, String bookTitle) {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-
-                String phone = bookTitle.replaceAll("[^0-9]+", "");
                 args.put("action", "namnop");
-                args.put("nama", phone);
-                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("nomorponsel"), args));
+                args.put("nama", bookTitle);
 
+                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("nomorponsel"), args));
                 return result.get("data");
             }
 
@@ -165,7 +162,7 @@ public class AturPenjualanPart_Activity extends AppActivity {
                 String nomor = "";
                 noHp = getItem(position).get("NO_PONSEL").asString();
                 if(noHp.length() > 4){
-                    nomor = "XXXXXXXX" + noHp.substring(noHp.length() - 4);
+                    nomor += noHp.substring(noHp.length() - 4);
                 }else{
                     nomor = noHp;
                 }

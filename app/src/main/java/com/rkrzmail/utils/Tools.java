@@ -1,5 +1,6 @@
 package com.rkrzmail.utils;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -343,6 +344,7 @@ public class Tools {
         return 0;
     }
 
+    @SuppressLint("SimpleDateFormat")
     public static String setFormatDayAndMonthToDb(String date){
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         Date tgl = new Date();

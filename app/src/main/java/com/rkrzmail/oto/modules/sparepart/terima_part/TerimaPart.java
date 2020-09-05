@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.sparepart.terima_part;
 
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -69,6 +70,7 @@ public class TerimaPart extends AppActivity {
         recyclerView_terimaPart.setLayoutManager(new LinearLayoutManager(this));
         recyclerView_terimaPart.setHasFixedSize(true);
         recyclerView_terimaPart.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_terima_part){
+            @SuppressLint("SetTextI18n")
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 String tgl = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("TANGGAL_PENERIMAAN").asString());
@@ -77,10 +79,14 @@ public class TerimaPart extends AppActivity {
                 viewHolder.find(R.id.txtTanggal, TextView.class).setText(tgl);
                 viewHolder.find(R.id.txtSupplier, TextView.class).setText(nListArray.get(position).get("SUPPLIER").asString());;
                 viewHolder.find(R.id.txtPembayaran, TextView.class).setText(nListArray.get(position).get("PEMBAYARAN").asString());;
-                viewHolder.find(R.id.txtTotal, TextView.class).setText("Rp. " + formatter.format(Double.parseDouble(nListArray.get(position).get("NET").asString())));;
                 viewHolder.find(R.id.txtNoDo, TextView.class).setText(nListArray.get(position).get("NO_DO").asString());;
                 viewHolder.find(R.id.txtJatuhTempo, TextView.class).setText(tglInv);
-                viewHolder.find(R.id.txtUser, TextView.class).setText(nListArray.get(position).get("NAMA_USER").asString());;
+                try{
+                    viewHolder.find(R.id.txtTotal, TextView.class).setText("Rp. " + formatRp(nListArray.get(position).get("NET").asString()));
+                    viewHolder.find(R.id.tv_ongkir, TextView.class).setText("Rp. " + formatRp(nListArray.get(position).get("ONGKOS_KIRIM").asString()));
+                }catch(Exception e){
+                    Log.d(TAG, "exception: " + e.getMessage() + "cause : " + e.getCause());
+                }
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override

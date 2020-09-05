@@ -153,7 +153,8 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
         });
 
         setSpTipe_antrian();
-        setSpMekanik();
+        //setSpMekanik();
+        setSpinnerFromApi(spMekanik, "", "", "mekanik", "NAMA", namaMekanik);
         setSpLokasi();
 
         tvMulai_Kerja.setOnClickListener(this);

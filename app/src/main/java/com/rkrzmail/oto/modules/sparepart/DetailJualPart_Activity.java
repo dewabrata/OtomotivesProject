@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.sparepart;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -33,7 +34,7 @@ public class DetailJualPart_Activity extends AppActivity {
     private int finalStock, stock, minStock;
     private String namaPart;
     private Nson parts = Nson.newObject();
-    private DecimalFormat formatter;
+    private boolean isJual;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +76,7 @@ public class DetailJualPart_Activity extends AppActivity {
         etJumlah.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                if(s.toString().length() == 0){
+                if (s.toString().length() == 0) {
                     find(R.id.tl_jumlah, TextInputLayout.class).setHelperTextEnabled(false);
                 }
             }
@@ -92,13 +93,8 @@ public class DetailJualPart_Activity extends AppActivity {
                         find(R.id.tl_jumlah, TextInputLayout.class).setError("Jumlah Melebihi Stock tersedia");
                     } else if (jumlah > minStock) {
                         find(R.id.tl_jumlah, TextInputLayout.class).setHelperTextEnabled(true);
-                        showInfoDialog("Jumlah Melebihi Stock Minimun, Jual Part ?", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                    }else{
+                        find(R.id.tl_jumlah, TextInputLayout.class).setError("Jumlah Melebihi Stock Minimum");
+                    } else {
                         find(R.id.tl_jumlah, TextInputLayout.class).setHelperTextEnabled(false);
                     }
                 }
@@ -121,40 +117,68 @@ public class DetailJualPart_Activity extends AppActivity {
                     showInfo("Jumlah Part Tidak Boleh Kosong");
                     return;
                 }
-                if(find(R.id.tl_jumlah, TextInputLayout.class).isHelperTextEnabled()){
-                    showWarning("Jumlah Penjualan Part Melebihi Stock Minimum", Toast.LENGTH_LONG);
-                    return;
-                }
-                if(nson.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE")){
-                    if(etHargaJual.getText().toString().isEmpty()){
+
+                if (nson.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE")) {
+                    if (etHargaJual.getText().toString().isEmpty()) {
                         showWarning("Harga Jual Harus Di isi");
                         return;
                     }
+                }
+                Log.d("Jual__", "onClick: " + stock);
+                try {
+                    if (Integer.parseInt(etJumlah.getText().toString()) > stock) {
+                        etJumlah.setError("Jumlah Tidak Valid");
+                        etJumlah.requestFocus();
+                        return;
+                    }
+                    if (Integer.parseInt(etJumlah.getText().toString()) > minStock) {
+                        Messagebox.showDialog(getActivity(), "Konfirmasi", "Jumlah Melebihi Stock Mininum, Jual Part ?", "OK", "TIDAK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                showSuccess("Part di Tambahkan ke Daftar Jual");
+                                find(R.id.tl_jumlah, TextInputLayout.class).setErrorEnabled(false);
+                                minStock = Integer.parseInt(etJumlah.getText().toString());
+                            }
+                        }, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                etJumlah.requestFocus();
+                            }
+                        });
+                        return;
+                    }
+
+                } catch (Exception e) {
+                    Log.d("Jual__", "Stcok : " + e.getMessage() + "cause : " + e.getCause());
                 }
                 saveData();
             }
         });
     }
 
+    @SuppressLint("SetTextI18n")
     private void loadData() {
-        formatter = new DecimalFormat("###,###,###");
-        Nson n = Nson.readJson(getIntentStringExtra("part"));
-        Log.d("detail__", "data : " + n);
-        if (n.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE")) {
-            etHargaJual.setEnabled(true);
-            etHpp.setVisibility(View.GONE);
-            showInfo("Pola Harga Jual Flexible, Silahkan Masukkan Harga Jual", Toast.LENGTH_LONG);
-        } else if (n.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("NOMINAL")) {
-            etHargaJual.setEnabled(false);
-            etHargaJual.setText("Rp. " + formatter.format(Double.parseDouble(n.get("HARGA_JUAL").asString())));
-        } else if (n.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("BELI + MARGIN")) {
-            etHargaJual.setEnabled(false);
-        } else if (n.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("HARGA BELI RATA RATA")) {
-            etHargaJual.setEnabled(false);
+        try {
+            Nson n = Nson.readJson(getIntentStringExtra("part"));
+            Log.d("detail__", "data : " + n);
+            if (n.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE")) {
+                etHargaJual.setEnabled(true);
+                etHpp.setVisibility(View.GONE);
+                showInfo("Pola Harga Jual Flexible, Silahkan Masukkan Harga Jual", Toast.LENGTH_LONG);
+            } else if (n.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("NOMINAL")) {
+                etHargaJual.setEnabled(false);
+                etHargaJual.setText("Rp. " + formatRp(n.get("HARGA_JUAL").asString()));
+            } else if (n.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("BELI + MARGIN")) {
+                etHargaJual.setEnabled(false);
+            } else if (n.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("HARGA BELI RATA RATA")) {
+                etHargaJual.setEnabled(false);
+            }
+            etHpp.setText("Rp. " + formatRp(n.get("HPP").asString()));
+            etDisc.setText(n.get("DISCOUNT").asString());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        etHpp.setText("Rp. " + formatter.format(Double.parseDouble(n.get("HPP").asString())));
-        etDisc.setText(n.get("DISCOUNT").asString());
     }
 
     private void saveData() {
@@ -189,9 +213,10 @@ public class DetailJualPart_Activity extends AppActivity {
         finish();
     }
 
-    private void getJualPart(){
+    private void getJualPart() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();

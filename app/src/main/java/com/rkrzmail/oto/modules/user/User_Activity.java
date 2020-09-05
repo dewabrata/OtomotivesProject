@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.user;
 
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -64,6 +65,7 @@ public class User_Activity extends AppActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_user) {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
 
@@ -72,7 +74,7 @@ public class User_Activity extends AppActivity {
                 viewHolder.find(R.id.txtNamaKaryawan, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
                 viewHolder.find(R.id.txtNoPonsel, TextView.class).setText("+" + nListArray.get(position).get("NO_PONSEL").asString());
                 viewHolder.find(R.id.txtPosisi, TextView.class).setText(nListArray.get(position).get("POSISI").asString());
-                viewHolder.find(R.id.txtTglMasuk, TextView.class).setText(nListArray.get(position).get("TANGGAL_MASUK").asString());
+                viewHolder.find(R.id.tv_fungsiMekanik, TextView.class).setText(nListArray.get(position).get("FUNGSI_MEKANIK").asString());
                 viewHolder.find(R.id.txtStatus, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
             }
 

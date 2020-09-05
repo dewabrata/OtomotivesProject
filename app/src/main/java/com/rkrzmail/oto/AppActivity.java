@@ -62,6 +62,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 
@@ -654,7 +655,7 @@ public class AppActivity extends AppCompatActivity {
             @Override
             public void runUI() {
                 ArrayList<String> str = new ArrayList<>();
-                str.add("Belum Di Pilih");
+                str.add("--PILIH--");
                 for (int i = 0; i < result.get("data").size(); i++) {
                     str.add(result.get("data").get(i).get(jsonObject).asString());
                 }
@@ -667,7 +668,7 @@ public class AppActivity extends AppCompatActivity {
         });
     }
 
-    public void setSpinnerFromApi(final Spinner spinner, final String params, final String arguments, final String api, final String... jsonObject) {
+    public void setSpinnerFromApi(final Spinner spinner, final String params, final String arguments, final String api, final String jsonObject, final String selection) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
@@ -682,18 +683,35 @@ public class AppActivity extends AppCompatActivity {
                 ArrayList<String> str = new ArrayList<>();
                 str.add("--PILIH--");
                 for (int i = 0; i < result.get("data").size(); i++) {
-                    str.add(result.get("data").get(i).get(jsonObject[0]).asString() + " - " + result.get("data").get(i).get(jsonObject[1]).asString());
+                    str.add(result.get("data").get(i).get(jsonObject).asString());
                 }
                 ArrayList<String> newStr = Tools.removeDuplicates(str);
                 ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, newStr);
                 spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                if(spinnerAdapter.getCount() < 1){
-                    showWarning("Data Belum di Set");
-                }
                 spinner.setAdapter(spinnerAdapter);
-                notifyDataSetChanged(spinner);
+                if(!selection.isEmpty()){
+                    for (int i = 0; i < newStr.size(); i++) {
+                        if(spinner.getItemAtPosition(i).toString().contains(selection)){
+                            spinner.setSelection(i);
+                        }
+                    }
+                }
             }
         });
+    }
+
+    public void setSpinnerOffline(List<String> listItem, Spinner spinner, String selection) {
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, listItem);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerAdapter);
+        if (!selection.isEmpty()) {
+            for (int in = 0; in < spinner.getCount(); in++) {
+                if (spinner.getItemAtPosition(in).toString().contains(selection)) {
+                    spinner.setSelection(in);
+                    break;
+                }
+            }
+        }
     }
 
     private EditText getAllEditText(ViewGroup v) {
@@ -753,6 +771,7 @@ public class AppActivity extends AppCompatActivity {
         TimePicker_Dialog timePickerDialog = new TimePicker_Dialog();
         timePickerDialog.show(getSupportFragmentManager(), "TimePicker");
         timePickerDialog.getTimes(new TimePicker_Dialog.OnClickDialog() {
+            @SuppressLint("DefaultLocale")
             @Override
             public void getTime(int day, int hours, int minutes) {
                 ddHHmm.setText(String.format("%02d", day) + ":" + String.format("%02d", hours) + ":" + String.format("%02d", minutes));

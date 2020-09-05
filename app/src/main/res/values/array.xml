@@ -134,8 +134,8 @@
     </string-array>
 
     <string-array name="status_layanan">
-        <item>ACTIVE</item>
-        <item>NON ACTIVE</item>
+        <item>AKTIF</item>
+        <item>TIDAK AKTIF</item>
     </string-array>
 
     <string-array name="status_kontrol">
