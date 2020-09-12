@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.sparepart;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -56,6 +57,7 @@ public class DaftarJualPart_Activity extends AppActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    @SuppressLint("SetTextI18n")
     private void initComponent() {
         initToolbar();
         formatter = new DecimalFormat("###,###,###");
@@ -72,21 +74,22 @@ public class DaftarJualPart_Activity extends AppActivity {
             harga = harga + Integer.parseInt(hargaJual);
         }
         String finalTotal = String.valueOf(harga);
-        tvTotal.setText("Total : Rp. " + formatter.format(Double.valueOf(finalTotal)));
+        tvTotal.setText("Total : Rp. " + formatRp(finalTotal));
 
         rvTotalJualPart.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvTotalJualPart.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_total_jual_part) {
+                    @SuppressLint("SetTextI18n")
                     @Override
                     public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                         super.onBindViewHolder(viewHolder, position);
 
                         viewHolder.find(R.id.tv_noPart_jualPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
                         viewHolder.find(R.id.tv_namaPart_jualPart, TextView.class).setText(nListArray.get(position).get("NAMA_PART").asString());
-                        viewHolder.find(R.id.tv_harga_jualPart, TextView.class).setText(nListArray.get(position).get("HARGA_PART").asString());
+                        viewHolder.find(R.id.tv_harga_jualPart, TextView.class).setText(nListArray.get(position).get("HARGA_JUAL").asString());
                         viewHolder.find(R.id.tv_disc_jualPart, TextView.class).setText(nListArray.get(position).get("DISC").asString());
                         viewHolder.find(R.id.tv_jumlah_jualPart, TextView.class).setText(nListArray.get(position).get("JUMLAH").asString());
                         String str = nListArray.get(position).get("TOTAL").asString();
-                        viewHolder.find(R.id.tv_total_jualPart, TextView.class).setText("Rp. " + formatter.format(Double.valueOf(str)));
+                        viewHolder.find(R.id.tv_total_jualPart, TextView.class).setText("Rp. " + formatRp(str));
                     }
 
                     @Override

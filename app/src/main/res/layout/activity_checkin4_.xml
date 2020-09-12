@@ -276,6 +276,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ly_waktuAmbil"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -448,7 +449,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="KETERANGAN TAMBAHAN "
-                    android:inputType="textCapSentences"
+                    android:inputType="textCapSentences|textMultiLine"
                     android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>

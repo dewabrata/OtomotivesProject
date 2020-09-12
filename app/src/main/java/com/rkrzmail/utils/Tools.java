@@ -309,32 +309,6 @@ public class Tools {
         }
     }
 
-    public static void getTimePickerDialog(Context context, final EditText editText) {
-
-        Calendar calendar = Calendar.getInstance();
-        int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
-        int currentMinute = calendar.get(Calendar.MINUTE);
-
-        TimePickerDialog timePickerDialog = new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker timePicker, int hourOfDay, int minutes) {
-                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-                String time = hourOfDay + ":" + minutes;
-                Date date = null;
-                try {
-                    date = sdf.parse(time);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                String formattedTime = sdf.format(date);
-                editText.setText(formattedTime);
-            }
-        }, currentHour, currentMinute, true);
-
-        timePickerDialog.setTitle("Pilih Jam");
-        timePickerDialog.show();
-    }
-
     public static int getIndexSpinner(Spinner spinner, String value){
         for (int i = 0; i < spinner.getCount(); i++){
             if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(value)){
@@ -358,6 +332,7 @@ public class Tools {
         return fotmatDate;
     }
 
+    @SuppressLint("SimpleDateFormat")
     public static String setFormatDayAndMonthFromDb(String date){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date tgl = new Date();
@@ -367,6 +342,36 @@ public class Tools {
             e.printStackTrace();
         }
         sdf = new SimpleDateFormat("dd MMM");
+        String fotmatDate = sdf.format(tgl);
+        return fotmatDate;
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    public static String setDateTimeToDb(String date){
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        Date tgl = new Date();
+        try {
+            tgl = sdf.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        //yyyy-MM-dd HH:mm:ss
+        sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String fotmatDate = sdf.format(tgl);
+        return fotmatDate;
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    public static String parseTime(String time){
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        Date tgl = new Date();
+        try {
+            tgl = sdf.parse(time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        //yyyy-MM-dd HH:mm:ss
+        sdf = new SimpleDateFormat("d HH:mm");
         String fotmatDate = sdf.format(tgl);
         return fotmatDate;
     }
@@ -439,7 +444,6 @@ public class Tools {
         return newList;
     }
 
-
     public static void hideKeyboard(Activity context) {
         View view = context.getCurrentFocus();
         if (view != null) {
@@ -465,5 +469,93 @@ public class Tools {
 
     public static boolean isNumeric(String str){
         return str.matches("-?\\d+(.\\d+)?");
+    }
+
+    public static class TimePart {
+
+        int days = 0;
+        int hours = 0;
+        int minutes = 0;
+
+        public static TimePart parse(String in) {
+            if (in != null) {
+                String[] arr = in.split(":");
+                TimePart tp = new TimePart();
+                tp.days = ((arr.length >= 1) ? Integer.parseInt(arr[0]) : 0);
+                tp.hours = ((arr.length >= 2) ? Integer.parseInt(arr[1]) : 0);
+                tp.minutes = ((arr.length >= 3) ? Integer.parseInt(arr[2]) : 0);
+                return tp;
+            }
+            return null;
+        }
+
+        public TimePart add(TimePart a) {
+            int of = 0;
+            this.minutes += a.minutes + of;
+            of = 0;
+            while (this.minutes >= 60) {
+                of++;
+                this.minutes -= 60;
+            }
+            this.hours += a.hours + of;
+            of = 0;
+            while (this.hours >= 24) {
+                of++;
+                this.hours -= 24;
+            }
+            this.days += a.days + of;
+            return this;
+        }
+
+        @SuppressLint("DefaultLocale")
+        @Override
+        public String toString() {
+            return String.format("%02d:%02d:%02d", days, hours, minutes);
+        }
+    }
+
+    public static String getmonth(int month) {
+
+        switch (month) {
+            case 1:
+                return "January";
+
+            case 2:
+                return "February";
+
+            case 3:
+                return "March";
+
+            case 4:
+                return "April";
+
+            case 5:
+                return "May";
+
+            case 6:
+                return "June";
+
+            case 7:
+                return "July";
+
+            case 8:
+                return "August";
+
+            case 9:
+                return "September";
+
+            case 10:
+                return "October";
+
+            case 11:
+                return "November";
+
+            case 12:
+                return "December";
+
+
+        }
+        return "January";
+
     }
 }

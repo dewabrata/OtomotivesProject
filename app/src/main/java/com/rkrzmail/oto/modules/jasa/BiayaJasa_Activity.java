@@ -16,15 +16,14 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.utils.Tools;
 
-import java.lang.reflect.Array;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 
 public class BiayaJasa_Activity extends AppActivity {
 
-    private EditText etMasterPart, etAktivitas, etWaktuKerja, etWaktuDefault;
+    private EditText etKelompokPart, etAktivitas, etWaktuKerja, etWaktuDefault;
     private DecimalFormat formatter;
     private NikitaAutoComplete etBiaya;
+    private int jasaId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +44,7 @@ public class BiayaJasa_Activity extends AppActivity {
         formatter = new DecimalFormat("##,##");
 
         etBiaya = findViewById(R.id.et_biaya_biayaJasa);
-        etMasterPart = findViewById(R.id.et_masterPart_biayaJasa);
+        etKelompokPart = findViewById(R.id.et_kelompokPart_biayaJasa);
         etAktivitas = findViewById(R.id.et_aktivitas_biayaJasa);
         etWaktuKerja = findViewById(R.id.et_waktuSet);
         etWaktuDefault = findViewById(R.id.et_waktuDefault);
@@ -68,31 +67,20 @@ public class BiayaJasa_Activity extends AppActivity {
         final Nson n = Nson.readJson(getIntentStringExtra("data"));
         Log.d("BIAYAJASALAIN", "JASA : " + n);
         if (getIntent().hasExtra("jasa_lain")) {
-            int totalJam = 0;
-            final StringBuilder namaStr = new StringBuilder();
-            final StringBuilder idStr = new StringBuilder();
-
-            for (int j = 0; j < n.size(); j++) {
-                if(namaStr.length() > 0) namaStr.append(", ");
-                if(idStr.length() > 0) idStr.append(", ");
-
-                namaStr.append(n.get(j).get("NAMA").asString());
-                idStr.append(n.get(j).get("JASA_ID").asString());
-
-                totalJam = totalJam + Integer.parseInt(n.get(j).get("WAKTU").asString().replace(":", ""));
-            }
-            etMasterPart.setText(namaStr.toString());
-            etWaktuDefault.setText(totalJam + " Menit");
+            etKelompokPart.setText(n.get("KELOMPOK_PART").toString());
+            etAktivitas.setText(n.get("AKTIVITAS").asString());
+            etAktivitas.setEnabled(false);
+            jasaId = n.get("NO").asInteger();
+            //etWaktuDefault.setText(totalJam + " Menit");
             find(R.id.btn_simpan_biayaJasa).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Nson nson = Nson.newObject();
-                    nson.set("NAMA_KELOMPOK_PART", namaStr.toString());
-                    nson.set("JASA_ID", idStr.toString());
-                    nson.set("HARGA_NET", etBiaya.getText().toString().replaceAll("[^0-9]+", ""));
+                    nson.set("NAMA_KELOMPOK_PART", etKelompokPart.getText().toString());
+                    nson.set("JASA_ID", jasaId);
+                    nson.set("HARGA_JASA", etBiaya.getText().toString().replaceAll("[^0-9]+", ""));
                     nson.set("AKTIVITAS", etAktivitas.getText().toString());
-                    nson.set("LAMA_KERJA", etWaktuKerja.getText().toString());
-
+                    nson.set("WAKTU", etWaktuKerja.getText().toString());
                     Intent intent = new Intent();
                     intent.putExtra("data", nson.toJson());
                     Log.d("BIAYAJASALAIN", "JASA : " + nson);
@@ -101,7 +89,7 @@ public class BiayaJasa_Activity extends AppActivity {
                 }
             });
         } else if (getIntent().hasExtra("jasa_berkala")) {
-            etMasterPart.setText(n.get("NAMA").asString());
+            etKelompokPart.setText(n.get("NAMA").asString());
             etWaktuDefault.setText(n.get("WAKTU").asString());
             find(R.id.btn_simpan_biayaJasa).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -110,9 +98,10 @@ public class BiayaJasa_Activity extends AppActivity {
 
                     nson2.set("NAMA_KELOMPOK_PART", n.get("NAMA").asString());
                     nson2.set("JASA_ID", n.get("JASA_ID").asString());
-                    nson2.set("HARGA_NET", etBiaya.getText().toString());
+                    nson2.set("HARGA_JASA", etBiaya.getText().toString());
                     nson2.set("AKTIVITAS", etAktivitas.getText().toString());
-                    nson2.set("LAMA_KERJA", etWaktuKerja.getText().toString());
+                    nson2.set("WAKTU", etWaktuKerja.getText().toString());
+                    nson2.set("DISCOUNT_JASA", "");
 
                     Intent intent = new Intent();
                     intent.putExtra("data", nson2.toJson());

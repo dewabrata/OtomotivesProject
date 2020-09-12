@@ -6,13 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:layout_marginTop="4dp"
     android:layout_marginLeft="7dp"
+    android:layout_marginTop="4dp"
     android:layout_marginRight="7dp"
     android:layout_marginBottom="4dp"
     android:padding="5dp"
-    app:cardElevation="2dp"
-    app:cardCornerRadius="10dp">
+    app:cardCornerRadius="10dp"
+    app:cardElevation="2dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -32,57 +32,65 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_marginEnd="10dp"
                 android:gravity="center"
-                android:layout_marginEnd="10dp"/>
+                android:visibility="gone" />
 
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp">
+                android:layout_marginRight="5dp"
+                android:stretchColumns="*">
 
                 <TableRow>
 
                     <TextView
-                        android:id="@+id/tv_masterPart_jasaLain"
+                        android:id="@+id/tv_kelompokPart_jasaLain"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        android:layout_weight="1"
-                        android:text="Master Part" />
+                        android:text="Kelompok Part"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp"/>
 
                 </TableRow>
 
-                <TableRow android:layout_marginTop="5dp">
+                <TableRow android:layout_marginTop="7dp">
 
                     <TextView
-                        android:id="@+id/tv_lepasPasang_jasaLain"
+                        android:id="@+id/tv_aktivitas_jasaLain"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        android:layout_weight="1"
-                        android:text="Lepas - Pasang / Aktivitas" />
+                        android:text="Aktivitas"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
 
                 </TableRow>
 
 
-                <TableRow android:layout_marginTop="5dp">
+                <TableRow android:layout_marginTop="7dp">
 
                     <TextView
                         android:id="@+id/tv_mekanik_jasaLain"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        android:layout_weight="1"
-                        android:text="Tipe Mekanik" />
+                        android:layout_gravity="start"
+                        android:text="Tipe Mekanik"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp"/>
 
                     <TextView
                         android:id="@+id/tv_waktu_jasaLain"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
+                        android:layout_gravity="end"
                         android:text="Waktu, HH:MM"
-                        android:textStyle="bold" />
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
 
                 </TableRow>
 

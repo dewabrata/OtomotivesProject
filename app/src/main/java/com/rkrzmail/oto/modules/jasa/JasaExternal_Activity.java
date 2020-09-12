@@ -47,10 +47,15 @@ public class JasaExternal_Activity extends AppActivity {
             @Override
             public void onClick(View v) {
 
+                sendData.set("PART_ID", nson.get("PART_ID").asString());
+                sendData.set("JUMLAH", "");
                 sendData.set("NAMA_PART", nson.get("NAMA_MASTER").asString());
                 sendData.set("NO_PART", nson.get("NOMOR_PART_NOMOR").asString());
                 sendData.set("MERK", nson.get("MERK").asString());
-                sendData.set("BIAYA_JASA",  find(R.id.et_biayaJasa, EditText.class).getText().toString().replaceAll("[^0-9]+", ""));
+                sendData.set("DISCOUNT_JASA", "");
+                sendData.set("DISCOUNT_PART", "");
+                sendData.set("HARGA_JASA",  find(R.id.et_biayaJasa, EditText.class).getText().toString().replaceAll("[^0-9]+", ""));
+                sendData.set("HARGA_PART", "");
                 sendData.set("WAKTU", find(R.id.et_waktuSet, EditText.class).getText().toString());
 
                 Intent i = new Intent();

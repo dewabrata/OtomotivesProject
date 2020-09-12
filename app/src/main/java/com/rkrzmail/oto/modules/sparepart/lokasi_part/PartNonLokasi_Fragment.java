@@ -66,7 +66,7 @@ public class PartNonLokasi_Fragment extends Fragment {
                     @Override
                     public void onItemClick(Nson parent, View view, int position) {
                         Intent i = new Intent(getActivity(), AturLokasiPart_Activity.class);
-                        i.putExtra("non_alokasi", nListArray.get(position).toJson());
+                        i.putExtra("NON_ALOKASI", nListArray.get(position).toJson());
                         startActivityForResult(i, LokasiPart_Activity.REQUEST_ATUR);
                     }
                 })

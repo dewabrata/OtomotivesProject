@@ -1,6 +1,7 @@
 package com.rkrzmail.oto.modules.profile;
 
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 import com.naa.data.UtilityAndroid;
 import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
+import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.utils.SpinnerNoDefault;
 import com.rkrzmail.utils.Tools;
@@ -37,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import static com.naa.utils.InternetX.setSetting;
 
@@ -104,10 +107,11 @@ public class TabSchedule_Fragment extends Fragment implements View.OnClickListen
         listener();
 
         btnSimpan.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("NewApi")
             @Override
             public void onClick(View view) {
                 timeValidation("");
-                Log.d("jamjadwal", ((ProfileBengkel_Activity) getActivity()).getSetting("jambuka" + "OPERASIONAL"));
+                Log.d("jamjadwal", ((ProfileBengkel_Activity) Objects.requireNonNull(getActivity())).getSetting("jambuka" + "OPERASIONAL"));
                 Log.d("jamjadwal", ((ProfileBengkel_Activity) getActivity()).getSetting("jamtutup" + "OPERASIONAL"));
 
             }
@@ -177,8 +181,8 @@ public class TabSchedule_Fragment extends Fragment implements View.OnClickListen
                     ((ProfileBengkel_Activity) getActivity()).setSetting("jambuka" + items, buka);
                     ((ProfileBengkel_Activity) getActivity()).setSetting("jamtutup" + items, tutup);
                     try {
-                        Date jamBuka = new SimpleDateFormat("HH:mm").parse(buka);
-                        Date jamTutup = new SimpleDateFormat("HH:mm").parse(tutup);
+                        @SuppressLint("SimpleDateFormat") Date jamBuka = new SimpleDateFormat("HH:mm").parse(buka);
+                        @SuppressLint("SimpleDateFormat") Date jamTutup = new SimpleDateFormat("HH:mm").parse(tutup);
                         if (!jamTutup.after(jamBuka)) {
                             ((ProfileBengkel_Activity) getActivity()).showInfo("Jam Buka Tidak Sesuai / Jam Tutup Tidak Sesuai");
                             etBuka.get(i).requestFocus();
@@ -196,34 +200,34 @@ public class TabSchedule_Fragment extends Fragment implements View.OnClickListen
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_jamBukaSJ_schedule:
-                Tools.getTimePickerDialog(getContext(), etBukaSJ);
+                AppActivity.getTimePickerDialogTextView(getContext(), etBukaSJ);
                 break;
             case R.id.tv_jamTutupSJ_schedule:
-                Tools.getTimePickerDialog(getContext(), etTutupSJ);
+                AppActivity.getTimePickerDialogTextView(getContext(), etTutupSJ);
                 break;
             case R.id.tv_jamBukaJ_schedule:
-                Tools.getTimePickerDialog(getContext(), etBukaJ);
+                AppActivity.getTimePickerDialogTextView(getContext(), etBukaJ);
                 break;
             case R.id.tv_jamTutupJ_schedule:
-                Tools.getTimePickerDialog(getContext(), etTutupJ);
+                AppActivity.getTimePickerDialogTextView(getContext(), etTutupJ);
                 break;
             case R.id.tv_jamBukaSab_schedule:
-                Tools.getTimePickerDialog(getContext(), etBukaSab);
+                AppActivity.getTimePickerDialogTextView(getContext(), etBukaSab);
                 break;
             case R.id.tv_jamTutupSab_schedule:
-                Tools.getTimePickerDialog(getContext(), etTutupSab);
+                AppActivity.getTimePickerDialogTextView(getContext(), etTutupSab);
                 break;
             case R.id.tv_jamBukaM_schedule:
-                Tools.getTimePickerDialog(getContext(), etBukaM);
+                AppActivity.getTimePickerDialogTextView(getContext(), etBukaM);
                 break;
             case R.id.tv_jamTutupM_schedule:
-                Tools.getTimePickerDialog(getContext(), etTutupM);
+                AppActivity.getTimePickerDialogTextView(getContext(), etTutupM);
                 break;
             case R.id.tv_jamBukaL_schedule:
-                Tools.getTimePickerDialog(getContext(), etBukaL);
+                AppActivity.getTimePickerDialogTextView(getContext(), etBukaL);
                 break;
             case R.id.tv_jamTutupL_schedule:
-                Tools.getTimePickerDialog(getContext(), etTutupL);
+                AppActivity.getTimePickerDialogTextView(getContext(), etTutupL);
                 break;
         }
     }

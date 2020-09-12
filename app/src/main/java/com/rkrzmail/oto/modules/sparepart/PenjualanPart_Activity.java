@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +31,7 @@ import java.util.Map;
 
 public class PenjualanPart_Activity extends AppActivity {
 
+    private static final String TAG = "Penjualan__";
     private RecyclerView rvJualPart;
     public static final int REQUEST_PENJUALAN = 110;
     public static final int RESULT_DETAIL = 5;
@@ -77,7 +79,11 @@ public class PenjualanPart_Activity extends AppActivity {
                 viewHolder.find(R.id.tv_userUpdate_jualPart, TextView.class).setText(nListArray.get(position).get("USER_UPDATE").asString());
                 //HARGA KOTOR ?
                 viewHolder.find(R.id.tv_harga_jualPart, TextView.class).setText(nListArray.get(position).get("HARGA_BERSIH").asString());
-                viewHolder.find(R.id.tv_total_jualPart, TextView.class).setText(nListArray.get(position).get("TOTAL").asString());
+                try {
+                    viewHolder.find(R.id.tv_total_jualPart, TextView.class).setText("Rp. " + formatRp(nListArray.get(position).get("TOTAL").asString()));
+                }catch (Exception e){
+                    Log.d(TAG, "Number Exception : " + e.getMessage());
+                }
             }
         });
         catchData("");
@@ -100,7 +106,8 @@ public class PenjualanPart_Activity extends AppActivity {
                     nListArray.asArray().addAll(result.get("data").asArray());
                     if(nListArray.size() > 0){
                         for (int i = 0; i < nListArray.size(); i++) {
-                            if(!nListArray.get(i).get("NAMA_USAHA").equals("") || !nListArray.get(i).get("NAMA_PELANGGAN").equals("") ){
+                            if(!nListArray.get(i).get("NAMA_USAHA").equals("")){
+                                //|| !nListArray.get(i).get("NAMA_PELANGGAN").equals("")
                                 isNamaUsaha = true;
                             }
                         }

@@ -29,7 +29,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/kategori_part"
-                android:textStyle="bold" />
+                android:textColor="@color/grey_900"
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
         </TableRow>
 
@@ -40,7 +42,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:text="Aktivitas"
-            android:textStyle="bold" />
+            android:textColor="@color/grey_900"
+            android:textSize="12sp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
 
         <TableRow android:layout_marginTop="@dimen/spacing_medium">
@@ -51,7 +55,9 @@
                 android:layout_height="wrap_content"
                 android:text="@string/discount"
                 android:layout_gravity="start"
-                android:textStyle="bold" />
+                android:textColor="@color/grey_900"
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
             <TextView
                 android:id="@+id/tv_tgl_discJasa"
@@ -59,7 +65,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:text="@string/tanggal"
-                android:textStyle="bold" />
+                android:textColor="@color/grey_900"
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
 
         </TableRow>

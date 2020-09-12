@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.penugasan;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -36,7 +37,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -74,6 +74,7 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    @SuppressLint("SetTextI18n")
     private void initComponent() {
         spMekanik = findViewById(R.id.sp_namaMekanik);
         tvMulai_Kerja = findViewById(R.id.tv_mulaiKerja);
@@ -96,14 +97,26 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
         final Nson data = Nson.readJson(getIntentStringExtra("data"));
         namaMekanik = data.get("NAMA_MEKANIK").asString();
         lokasi = data.get("LOKASI").asString();
-        Log.d(TAG, "listAntrian : " + data);
-        listAntrian.add(data.get("TIPE_ANTRIAN").asString());
+        if(data.get("TIPE_ANTRIAN").asString().contains(",")){
+            String[] antrian = data.get("TIPE_ANTRIAN").asString().split(", ");
+            if(antrian.length > 0){
+                listAntrian.addAll(Arrays.asList(antrian));
+            }
+        }
+
 
         if (getIntent().hasExtra("data")) {
             isAntrian = true;
             isLokasi = true;
-            Tools.setViewAndChildrenEnabled(find(R.id.layout_penugasan, LinearLayout.class), false);
-            find(R.id.btn_simpan, Button.class).setVisibility(View.GONE);
+            spMekanik.setEnabled(false);
+
+            find(R.id.btn_simpan, Button.class).setText("UPDATE");
+            find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    updateData(data);
+                }
+            });
             find(R.id.btn_hapus, Button.class).setVisibility(View.VISIBLE);
             find(R.id.btn_hapus, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -114,6 +127,79 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
         } else {
             isAntrian = false;
             isLokasi = false;
+            find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    String masuk = tvMulai_Kerja.getText().toString().trim();
+                    String selesai = tvSelesai_Kerja.getText().toString().trim();
+                    String istirahat = tvMulai_istirahat.getText().toString();
+                    String selesai_istirahat = tvSelesai_istirahat.getText().toString();
+
+                    if (spMekanik.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
+                        spMekanik.performClick();
+                        showWarning(ERROR + "Nama Mekanik");
+                        return;
+                    }
+                    if (spTipe_antrian.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
+                        spTipe_antrian.performClick();
+                        showWarning(ERROR + "Tipe Antrian");
+                        return;
+                    }
+                    if (spLokasi.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
+                        spLokasi.performClick();
+                        showWarning(ERROR + "Lokasi");
+                        return;
+                    }
+//                if(listChecked.size() == 0){
+//                    showWarning("");
+//                }
+                    if (tvMulai_Kerja.getText().toString().equalsIgnoreCase("MULAI")) {
+                        showWarning(ERROR + "Waktu Mulai Kerja");
+                        tvMulai_Kerja.performClick();
+                        return;
+                    }
+                    if (tvSelesai_Kerja.getText().toString().equalsIgnoreCase("SELESAI")) {
+                        showWarning(ERROR + "Waktu Selesai Kerja");
+                        tvSelesai_Kerja.performClick();
+                        return;
+                    }
+                    if (tvMulai_istirahat.getText().toString().equalsIgnoreCase("MULAI")) {
+                        showWarning(ERROR + "Waktu Mulai Istirahat");
+                        tvMulai_istirahat.performClick();
+                        return;
+                    }
+                    if (tvSelesai_istirahat.getText().toString().equalsIgnoreCase("SELESAI")) {
+                        showWarning(ERROR + "Waktu Selesai Istirahat");
+                        tvSelesai_istirahat.performClick();
+                        return;
+                    }
+                    try {
+                        Date jamMasuk = new SimpleDateFormat("HH:mm").parse(masuk);
+                        Date jamPulang = new SimpleDateFormat("HH:mm").parse(selesai);
+
+                        if (!jamMasuk.before(jamPulang)) {
+                            showInfo("Jam Selesai Kerja Tidak Sesuai / Jam Masuk Kerja Tidak Sesuai");
+                            return;
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        Date jamMulaiIstirahat = new SimpleDateFormat("HH:mm").parse(istirahat);
+                        Date jamSelesaiIstirahat = new SimpleDateFormat("HH:mm").parse(selesai_istirahat);
+
+                        if (!jamMulaiIstirahat.before(jamSelesaiIstirahat)) {
+                            showInfo("Jam Selesai Istirahat Tidak Sesuai / Jam Masuk Istirahat Tidak Sesuai");
+                            return;
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    insertData();
+                }
+
+            });
         }
 
         if (data.get("INSPECTION").asString().equalsIgnoreCase("Y")) {
@@ -153,89 +239,29 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
         });
 
         setSpTipe_antrian();
-        //setSpMekanik();
+        setSpMekanik();
         setSpinnerFromApi(spMekanik, "", "", "mekanik", "NAMA", namaMekanik);
         setSpLokasi();
+        spLokasi.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(!parent.getSelectedItem().toString().equalsIgnoreCase("BENGKEL")){
+                    Tools.setViewAndChildrenEnabled(find(R.id.ly_tambahan, LinearLayout.class), false);
+                }else{
+                    Tools.setViewAndChildrenEnabled(find(R.id.ly_tambahan, LinearLayout.class), true);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         tvMulai_Kerja.setOnClickListener(this);
         tvSelesai_Kerja.setOnClickListener(this);
         tvMulai_istirahat.setOnClickListener(this);
         tvSelesai_istirahat.setOnClickListener(this);
-
-        find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                String masuk = tvMulai_Kerja.getText().toString().trim();
-                String selesai = tvSelesai_Kerja.getText().toString().trim();
-                String istirahat = tvMulai_istirahat.getText().toString();
-                String selesai_istirahat = tvSelesai_istirahat.getText().toString();
-
-                if (spMekanik.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
-                    spMekanik.performClick();
-                    showWarning(ERROR + "Nama Mekanik");
-                    return;
-                }
-                if (spTipe_antrian.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
-                    spTipe_antrian.performClick();
-                    showWarning(ERROR + "Tipe Antrian");
-                    return;
-                }
-                if (spLokasi.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
-                    spLokasi.performClick();
-                    showWarning(ERROR + "Lokasi");
-                    return;
-                }
-//                if(listChecked.size() == 0){
-//                    showWarning("");
-//                }
-                if (tvMulai_Kerja.getText().toString().equalsIgnoreCase("MULAI")) {
-                    showWarning(ERROR + "Waktu Mulai Kerja");
-                    tvMulai_Kerja.performClick();
-                    return;
-                }
-                if (tvSelesai_Kerja.getText().toString().equalsIgnoreCase("SELESAI")) {
-                    showWarning(ERROR + "Waktu Selesai Kerja");
-                    tvSelesai_Kerja.performClick();
-                    return;
-                }
-                if (tvMulai_istirahat.getText().toString().equalsIgnoreCase("MULAI")) {
-                    showWarning(ERROR + "Waktu Mulai Istirahat");
-                    tvMulai_istirahat.performClick();
-                    return;
-                }
-                if (tvSelesai_istirahat.getText().toString().equalsIgnoreCase("SELESAI")) {
-                    showWarning(ERROR + "Waktu Selesai Istirahat");
-                    tvSelesai_istirahat.performClick();
-                    return;
-                }
-                try {
-                    Date jamMasuk = new SimpleDateFormat("HH:mm").parse(masuk);
-                    Date jamPulang = new SimpleDateFormat("HH:mm").parse(selesai);
-
-                    if (!jamMasuk.before(jamPulang)) {
-                        showInfo("Jam Selesai Kerja Tidak Sesuai / Jam Masuk Kerja Tidak Sesuai");
-                        return;
-                    }
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    Date jamMulaiIstirahat = new SimpleDateFormat("HH:mm").parse(istirahat);
-                    Date jamSelesaiIstirahat = new SimpleDateFormat("HH:mm").parse(selesai_istirahat);
-
-                    if (!jamMulaiIstirahat.before(jamSelesaiIstirahat)) {
-                        showInfo("Jam Selesai Istirahat Tidak Sesuai / Jam Masuk Istirahat Tidak Sesuai");
-                        return;
-                    }
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                insertData();
-            }
-
-        });
-
     }
 
     private void setSpTipe_antrian() {
@@ -266,11 +292,14 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
         final int selectedId = rg_status.getCheckedRadioButtonId();
         final String nama = spMekanik.getSelectedItem().toString();
         final String lokasi = spLokasi.getSelectedItem().toString().toUpperCase();
+        if(lokasi.contains("PILIH")){
+            lokasi.replace("--PILIH--", "");
+        }
         final String masuk = tvMulai_Kerja.getText().toString().trim();
         final String selesai = tvSelesai_Kerja.getText().toString().trim();
         final String istirahat = tvMulai_istirahat.getText().toString();
         final String selesai_istirahat = tvSelesai_istirahat.getText().toString();
-
+        final String[] status = {""};
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -280,20 +309,16 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
 
                 args.put("action", "add");
                 args.put("userid", userId);
-
                 switch (selectedId) {
                     case R.id.rbOn:
-                        String statusKerja = find(R.id.rbOn, RadioButton.class).getText().toString();
-                        args.put("status", statusKerja);
-                        Log.d(TAG, statusKerja);
+                        status[0] = find(R.id.rbOn, RadioButton.class).getText().toString();
+                        args.put("status", status[0]);
                         break;
                     case R.id.rbOff:
-                        String statusTidakKerja = find(R.id.rbOff, RadioButton.class).getText().toString();
-                        args.put("status", statusTidakKerja);
-                        Log.d(TAG, statusTidakKerja);
+                        status[0] = find(R.id.rbOff, RadioButton.class).getText().toString();
+                        args.put("status", status[0]);
                         break;
                 }
-
                 args.put("namamekanik", nama);
                 args.put("antrian", antrian);
                 args.put("lokasi", lokasi);
@@ -311,12 +336,64 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
 
             @Override
             public void runUI() {
-
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    startActivity(new Intent(AturPenugasan_Activity.this, PenugasanActivity.class));
+                    showSuccess("Berhasil Menambahkan Tugas Mekanik");
+                    setResult(RESULT_OK);
                     finish();
                 } else {
-                    showInfo("Menambahkan data gagal!");
+                    showError("Menambahkan data gagal!");
+                }
+            }
+        });
+    }
+
+    private void updateData(final Nson nson){
+        final int selectedId = rg_status.getCheckedRadioButtonId();
+        final String antrian = spTipe_antrian.getSelectedItem().toString().toUpperCase();
+        final String lokasi = spLokasi.getSelectedItem().toString().toUpperCase();
+        final String masuk = tvMulai_Kerja.getText().toString().trim();
+        final String selesai = tvSelesai_Kerja.getText().toString().trim();
+        final String istirahat = tvMulai_istirahat.getText().toString();
+        final String selesai_istirahat = tvSelesai_istirahat.getText().toString();
+        final String[] status = {""};
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson data;
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "update");
+                args.put("id", nson.get("id").asString());
+                args.put("antrian", antrian);
+                args.put("lokasi", lokasi);
+                args.put("masuk", masuk);
+                args.put("pulang", selesai);
+                switch (selectedId) {
+                    case R.id.rbOn:
+                        status[0] = find(R.id.rbOn, RadioButton.class).getText().toString();
+                        args.put("status", status[0]);
+                        break;
+                    case R.id.rbOff:
+                        status[0] = find(R.id.rbOff, RadioButton.class).getText().toString();
+                        args.put("status", status[0]);
+                        break;
+                }
+                args.put("istirahat", istirahat);
+                args.put("selesai", selesai_istirahat);
+                args.put("inspection", cbInspection.isChecked() ? "Y" : "N");
+                args.put("home", cbHome.isChecked() ? "Y" : "N");
+                args.put("emergency", cbEmergency.isChecked() ? "Y" : "N");
+                args.put("bookbengkel", cbBook.isChecked() ? "Y" : "N");
+                data = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturpenugasanmekanik"), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (data.get("status").asString().equalsIgnoreCase("OK")) {
+                    showSuccess("Berhasil Update Tugas Mekanik");
+                    setResult(RESULT_OK);
+                    finish();
+                } else {
+                    showError("Mohon Di Coba Kembali");
                 }
             }
         });
@@ -353,11 +430,9 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
                     Log.d(TAG, "success delete data" + data.get("ID").asString());
                     startActivity(new Intent(AturPenugasan_Activity.this, PenugasanActivity.class));
                     finish();
-
                 } else {
                     showError("Mohon Di Coba Kembali");
                 }
-
             }
         });
     }
@@ -387,9 +462,9 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
+                                    showInfo("Lokasi Tersedia Hanya Bengkel");
                                 }
                             });
-                            return;
                         }
                     }
 

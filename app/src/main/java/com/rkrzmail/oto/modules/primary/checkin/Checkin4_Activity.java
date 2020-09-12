@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.primary.checkin;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,8 +14,10 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -28,6 +31,7 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.gmod.Capture;
 import com.rkrzmail.oto.modules.LoginActivity;
+import com.rkrzmail.oto.modules.primary.KontrolLayanan_Activity;
 import com.rkrzmail.oto.modules.user.AturUser_Activity;
 import com.rkrzmail.utils.Tools;
 
@@ -41,6 +45,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
     private Bitmap ttd;
     private SeekBar seekBar;
     private Nson mekanikArray = Nson.newArray();
+    private boolean isSign = false, isBatal = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +62,12 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    @SuppressLint("SetTextI18n")
     private void initComponent() {
         initToolbar();
         setSpMekanik();
+        Tools.setViewAndChildrenEnabled(find(R.id.ly_waktuAmbil, LinearLayout.class), false);
+
         find(R.id.btn_ttd_checkin4).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,12 +99,23 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             }
         });
 
+        if(getIntent().hasExtra("batal")){
+            find(R.id.et_ket_checkin4, EditText.class).setError("Isi Keterangan Batal");
+            find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                  setResult(RESULT_OK);
+                  finish();
+                }
+            });
+            return;
+        }
         Nson getData = Nson.readJson(getIntentStringExtra("data"));
         Log.d(TAG, "initComponent: " + getData);
 
         find(R.id.et_antrian_checkin4, EditText.class);
         try {
-            find(R.id.et_totalBiaya_checkin4, EditText.class).setText(formatRp(getData.get("TOTAL_BIAYA").asString()));
+            find(R.id.et_totalBiaya_checkin4, EditText.class).setText("Rp. " + formatRp(getData.get("total").asString()));
         } catch (Exception e) {
             Log.d(TAG, "initComponent: " + e.getMessage());
         }
@@ -106,7 +125,18 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         find(R.id.cb_aggrement_checkin4, CheckBox.class);
         //find(R.id.cb_buangPart_checkin4, CheckBox.class).setChecked(true);
         find(R.id.cb_konfirmTambah_checkin4, CheckBox.class);
-        find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class);
+        find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(buttonView.isChecked()){
+                    find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).setEnabled(false);
+                    Tools.setViewAndChildrenEnabled(find(R.id.ly_waktuAmbil, LinearLayout.class), true);
+                }else{
+                    find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).setEnabled(true);
+                    Tools.setViewAndChildrenEnabled(find(R.id.ly_waktuAmbil, LinearLayout.class), false);
+                }
+            }
+        });
 
         initBtn();
     }
@@ -131,14 +161,99 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         find(R.id.btn_hapus, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                isBatal = true;
+                if (find(R.id.et_ket_checkin4, EditText.class).getText().toString().isEmpty()) {
+                    find(R.id.et_ket_checkin4, EditText.class).setError("Keterangan Perlu Di isi");
+                } else {
+                    saveData("BATAL CHECKIN 4");
+                }
             }
         });
 
         find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!find(R.id.cb_aggrement_checkin4, CheckBox.class).isChecked()) {
+                    showWarning("Silahkan Setujui Syarat Dan Ketentuan Bengkel");
+                } else if (!isSign) {
+                    showWarning("Tanda Tangan Wajib di Input");
+                } else {
+                    saveData("CHECKIN ANTRIAN");
+                }
 
+            }
+        });
+    }
+
+    private void saveData(final String status) {
+        final Nson nson = Nson.readJson(getIntentStringExtra("data"));
+        final String namaMekanik = find(R.id.sp_namaMekanik_checkin4, Spinner.class).getSelectedItem().toString();
+        final String antrian = find(R.id.et_antrian_checkin4, EditText.class).getText().toString();
+        final String levelBbm = find(R.id.tv_ketBbbm_checkin4, TextView.class).getText().toString();
+        final String tidakMenunggu = find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).isChecked() ? "Y" : "N";
+        final String konfirmTambahan = find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).isChecked() ? "Y" : "N";
+        final String buangPart = find(R.id.cb_buangPart_checkin4, CheckBox.class).isChecked() ? "Y" : "N";
+        final String estiSelesai = Tools.setDateTimeToDb(Tools.setFormatDayAndMonthToDb(find(R.id.tv_startEstimasi_checkin4, TextView.class).getText().toString()) + " " + find(R.id.tv_finish_checkin4, TextView.class).getText().toString());
+        final String waktuAmbil = find(R.id.tv_waktu_checkin4, TextView.class).getText().toString();
+        final String sk = find(R.id.cb_aggrement_checkin4, CheckBox.class).isChecked() ? "Y" : "N";
+
+        //final String ttd = find(R.id.img_tandaTangan_checkin4 , ImageView.class).getText().toString();
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+
+                args.put("action", "add");
+                args.put("check", "2");
+                args.put("nopol", nson.get("nopol").asString());
+                args.put("jeniskendaraan", nson.get("jenisKendaraan").asString());
+                args.put("nopon", nson.get("nopon").asString());
+                args.put("nama", nson.get("namaPelanggan").asString());
+                args.put("pemilik", nson.get("pemilik").asString());
+                args.put("keluhan", nson.get("keluhan").asString());
+                args.put("km", nson.get("km").asString());
+                args.put("date", currentDateTime());
+                args.put("pekerjaan", nson.get("pekerjaan").asString());
+                args.put("warna", nson.get("warna").asString());
+                args.put("tahun", nson.get("tahun").asString());
+                args.put("tanggalbeli", nson.get("tanggalBeli").asString());
+                args.put("norangka", nson.get("norangka").asString());
+                args.put("nomesin", nson.get("nomesin").asString());
+                args.put("layanan", nson.get("layanan").asString());
+                args.put("layananestimasi", nson.get("layananEstimasi").asString());
+                args.put("total", nson.get("total").asString());
+                args.put("dp", nson.get("dp").asString());
+                args.put("sisa", nson.get("sisa").asString());
+                args.put("tunggu", nson.get("tungguKonfirmasi").asString());
+                args.put("status", nson.get("status").asString());
+                args.put("partbook", nson.get("partbook").asString());
+
+                args.put("mekanik", namaMekanik);
+                args.put("antrian", antrian);
+                args.put("level", levelBbm);
+                args.put("tidakmenunggu", tidakMenunggu);
+                args.put("konfirmtambahan", konfirmTambahan);
+                args.put("buangpart", buangPart);
+                args.put("estiselesai", estiSelesai);
+                args.put("waktuambil", waktuAmbil);
+                args.put("sk", sk);
+                args.put("status", status);
+                //args.put("ttd", ttd);
+
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("checkin"), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    showSuccess("Pelanggan Di masukkan Ke Daftar Kontrol Layanan");
+                    setResult(RESULT_OK);
+                    finish();
+                } else {
+                    showWarning("Gagal");
+                }
             }
         });
     }
@@ -208,6 +323,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_SIGN) {
+            isSign = true;
             Log.d(TAG, "onActivityResult: " + getIntentStringExtra(data, "imagePath"));
             ttd = (Bitmap) data.getExtras().get("imagePath");
             find(R.id.img_tandaTangan_checkin4, ImageView.class).setImageBitmap(ttd);

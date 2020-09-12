@@ -35,7 +35,7 @@
                         android:id="@+id/et_jenisKendaraan_jualPart"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textCapSentences"
+                        android:inputType="textCapCharacters"
                         android:padding="15dp"
                         android:textSize="14sp" />
 
@@ -47,33 +47,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|right"
-                    android:layout_marginRight="20dp"
-                    android:visibility="gone"
                     android:layout_marginTop="4dp"
-                     />
+                    android:layout_marginRight="20dp"
+                    android:visibility="gone" />
 
             </FrameLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/tl_nohp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
-                android:hint="NO. PONSEL">
-
-                <com.rkrzmail.srv.NikitaAutoComplete
-                    android:id="@+id/et_noPhone_jualPart"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="phone"
-                    android:maxLength="17"
-                    android:padding="15dp"
-                    android:textSize="14sp" />
-
-            </android.support.design.widget.TextInputLayout>
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -92,24 +70,62 @@
                         android:id="@+id/et_namaPelanggan_jualPart"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:inputType="textCapCharacters"
                         android:padding="15dp"
-                        android:inputType="textPersonName|textCapSentences"
                         android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
-                <ProgressBar
-                    android:id="@+id/pb_namaPelanggan"
-                    style="?android:attr/progressBarStyleSmall"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical|right"
-                    android:layout_marginRight="20dp"
-                    android:visibility="gone"
-                    android:layout_marginTop="3dp"
-                    tools:ignore="RtlHardcoded" />
+                    android:layout_gravity="end"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="20dp"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/img_clear"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:background="@android:color/transparent"
+                        android:tint="@color/grey_80"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/ic_close" />
+
+                    <ProgressBar
+                        android:id="@+id/pb_namaPelanggan"
+                        style="?android:attr/progressBarStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|right"
+                        android:visibility="gone"
+                        tools:ignore="RtlHardcoded" />
+
+                </LinearLayout>
 
             </FrameLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/tl_nohp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
+                android:hint="NO. PONSEL">
+
+                <com.rkrzmail.srv.NikitaAutoComplete
+                    android:id="@+id/et_noPhone_jualPart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="phone"
+                    android:maxLength="19"
+                    android:padding="15dp"
+                    android:textSize="14sp" />
+
+            </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -124,7 +140,7 @@
                     android:id="@+id/et_namaUsaha_jualPart"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPersonName|textCapSentences"
+                    android:inputType="textCapCharacters"
                     android:padding="15dp"
                     android:textSize="14sp" />
 

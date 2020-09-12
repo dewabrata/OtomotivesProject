@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,10 +43,12 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
     private static final int REQUEST_BARCODE = 11;
     private static final int REQUEST_HISTORY = 12;
     private static final int REQUEST_NEW_CS = 13;
-    private NikitaAutoComplete etJenisKendaraan, etNopol, etNoPonsel,  etNamaPelanggan;
+    private NikitaAutoComplete etJenisKendaraan, etNopol, etNoPonsel, etNamaPelanggan;
     private EditText etKeluhan, etKm;
     private Spinner spPekerjaan;
-    private String noHp = "";
+    private String noHp = "", tahunProduksi = "", varianKendaraan = "", batasanKm = "", batasanBulan = "", pekerjaan = "";
+    private Nson nopolList = Nson.newArray();
+    private boolean keyDel = false, isNoHp = false, isNamaValid = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +66,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
 
     private void initComponent() {
         initToolbar();
+        getHistoryNopol();
         etNopol = findViewById(R.id.et_nopol_checkin1);
         etJenisKendaraan = findViewById(R.id.et_jenisKendaraan_checkin1);
         etNoPonsel = findViewById(R.id.et_noPonsel_checkin1);
@@ -80,62 +84,81 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
 
         setSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN");
         initAutoComplete();
+
         find(R.id.btn_lanjut_checkin1).setOnClickListener(this);
         find(R.id.btn_history_checkin1).setOnClickListener(this);
-
     }
 
-    private void setSelanjutnya() {
-        final String nopol = etNopol.getText().toString().replace(" ", "").toUpperCase();
-        final String nophone = etNoPonsel.getText().toString();
-        final String namaPelanggan = etNamaPelanggan.getText().toString().toUpperCase();
-        final String jenisKendaraan = etJenisKendaraan.getText().toString().toUpperCase();
-        final String km = etKm.getText().toString();
-        final String keluhan = etKeluhan.getText().toString();
-        final String pekerjaan = spPekerjaan.getSelectedItem().toString().toUpperCase();
-
+    private void getHistoryNopol() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("nopol", nopol);
+                args.put("nopol", etNopol.getText().toString().replace(" ", "").toUpperCase());
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewnopol"), args));
             }
 
             @Override
             public void runUI() {
-                Nson nson = Nson.newObject();
-                nson.set("NOPOL", nopol);
-                nson.set("JENIS_KENDARAAN", jenisKendaraan);
-                nson.set("NO_PONSEL", nophone);
-                nson.set("NAMA_PELANGGAN", namaPelanggan);
-                nson.set("PEMILIK", find(R.id.cb_pemilik_checkin1, CheckBox.class).isChecked() ? "YA" : "TIDAK");
-                nson.set("KELUHAN", keluhan);
-                nson.set("KM", km);
-                nson.set("PEKERJAAN", pekerjaan);
-
-                ArrayList<String> data = new ArrayList<>();
-                for (int i = 0; i < result.get("data").size(); i++) {
-                    data.add(result.get("data").get(i).get("NOPOL").asString());
-                }
-
-                Intent intent;
-                if (data.contains(nopol)) {
-                    intent = new Intent(getActivity(), Checkin3_Activity.class);
-                    intent.putExtra("data", nson.toJson());
-                    startActivityForResult(intent, KontrolLayanan_Activity.REQUEST_CHECKIN);
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    result = result.get("data");
+                    for (int i = 0; i < result.size(); i++) {
+                        nopolList.add(result.get(i).get("NOPOL").asString());
+                    }
                 } else {
-                    intent = new Intent(getActivity(), Checkin2_Activity.class);
-                    intent.putExtra("data", nson.toJson());
-                    startActivityForResult(intent, REQUEST_NEW_CS);
+                    showInfo("Gagal memuat Data History");
                 }
             }
         });
     }
 
     private void initAutoComplete() {
+        etNopol.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void afterTextChanged(Editable s) {
+//                etNopol.removeTextChangedListener(this);
+//                int counting = (s == null) ? 0 : s.toString().length();
+//                assert s != null;
+//                String text = s.toString();
+//                if(!keyDel){
+//                    if (counting == 1 || counting == 6) {
+//                       text = text + " ";
+//                    }
+//                }
+//                etNopol.setText(text);
+//                etNopol.setSelection(etNopol.getText().length());
+//
+//                etNopol.addTextChangedListener(this);
+            }
+        });
+
+        etNopol.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_DEL) {
+                    event.getAction();
+                    keyDel = true;
+                } else {
+                    keyDel = false;
+                }
+                return false;
+            }
+        });
+
         etNopol.setThreshold(3);
         etNopol.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
             @Override
@@ -166,10 +189,14 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 etNopol.setText(formatNopol(n.get("NOPOL").asString()));
                 etNoPonsel.setText(n.get("NO_PONSEL").asString());
                 etNamaPelanggan.setText(n.get("NAMA_PELANGGAN").asString());
-                etJenisKendaraan.setText(n.get("MODEL").asString());
-
+                etJenisKendaraan.setText(n.get("JENIS_KENDARAAN").asString());
+                pekerjaan = n.get("PEKERJAAN").asString();
+                setSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN", pekerjaan);
+                if(n.get("PEMILIK").asString().equalsIgnoreCase("Y")){
+                    find(R.id.cb_pemilik_checkin1, CheckBox.class).setChecked(true);
+                }
                 find(R.id.btn_history_checkin1).setEnabled(true);
-
+                find(R.id.img_clear, ImageButton.class).setVisibility(View.GONE);
             }
         });
 
@@ -206,7 +233,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
                 String jenisKendaraan = getSetting("JENIS_KENDARAAN");
-                if(!jenisKendaraan.equalsIgnoreCase(n.get("TYPE").asString())){
+                if (!jenisKendaraan.equalsIgnoreCase(n.get("TYPE").asString())) {
                     showWarning("Bengkel Hanya Melayani Kendaraan " + jenisKendaraan, Toast.LENGTH_LONG);
                     etJenisKendaraan.setText("");
                     etJenisKendaraan.requestFocus();
@@ -218,6 +245,11 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 stringBuilder.append(n.get("JENIS").asString()).append(" ");
                 stringBuilder.append(n.get("VARIAN").asString()).append(" ");
 
+                tahunProduksi = n.get("TAHUN2").asString();
+                varianKendaraan = n.get("VARIAN").asString();
+                batasanKm = n.get("BATASAN_NON_PAKET_KM").asString();
+                batasanBulan = n.get("BATASAN_NON_PAKET_BULAN").asString();
+
                 etJenisKendaraan.setText(stringBuilder.toString());
                 etJenisKendaraan.setTag(String.valueOf(adapterView.getItemAtPosition(position)));
             }
@@ -228,9 +260,8 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             @Override
             public Nson onFindNson(Context context, String bookTitle) {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                String phone = bookTitle.replaceAll("[^0-9]+", "");
                 args.put("action", "namnop");
-                args.put("nama", phone);
+                args.put("nama", bookTitle);
                 Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("nomorponsel"), args));
 
                 return result.get("data");
@@ -246,25 +277,41 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 String nama = getItem(position).get("NAMA_PELANGGAN").asString();
                 String nomor = "";
                 noHp = getItem(position).get("NO_PONSEL").asString();
-                if(noHp.length() > 4){
+                if (noHp.length() > 4) {
                     nomor += noHp.substring(noHp.length() - 4);
-                }else{
-                    nomor = noHp;
                 }
                 findView(convertView, R.id.txtPhone, TextView.class).setText(nama + " " + nomor);
                 return convertView;
             }
         });
 
-        etNamaPelanggan.setLoadingIndicator((android.widget.ProgressBar) findViewById(R.id.pb_namaPelanggan_checkin));
+        etNamaPelanggan.setLoadingIndicator((android.widget.ProgressBar) findViewById(R.id.pb_namaPelanggan));
         etNamaPelanggan.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @SuppressLint("SetTextI18n")
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
-                etNoPonsel.setText("XXXXXXXX"  + n.get("NO_PONSEL").asString());
+                isNoHp = true;
+                String nomor = "";
+                noHp = n.get("NO_PONSEL").asString();
+                if (noHp.length() > 4) {
+                    nomor += noHp.substring(noHp.length() - 4);
+                }
+                etNoPonsel.setText("XXXXXXXX" + nomor);
                 find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
                 etNamaPelanggan.setText(n.get("NAMA_PELANGGAN").asString());
+                etNamaPelanggan.setEnabled(false);
+                find(R.id.img_clear, ImageButton.class).setVisibility(View.GONE);
+                isNamaValid = true;
+            }
+        });
+
+        watcherNamaPelanggan(find(R.id.img_clear, ImageButton.class), etNamaPelanggan);
+        find(R.id.img_clear, ImageButton.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                etNamaPelanggan.setText("");
+                etNoPonsel.setText("");
             }
         });
 
@@ -298,6 +345,67 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
         });
     }
 
+    private void setSelanjutnya() {
+        final String nopol = etNopol.getText().toString().replace(" ", "").toUpperCase();
+        final String namaPelanggan = etNamaPelanggan.getText().toString().toUpperCase();
+        final String jenisKendaraan = etJenisKendaraan.getText().toString().toUpperCase();
+        final String km = etKm.getText().toString();
+        final String keluhan = etKeluhan.getText().toString();
+        final String pekerjaan = spPekerjaan.getSelectedItem().toString().toUpperCase();
+        final String pemilik = find(R.id.cb_pemilik_checkin1, CheckBox.class).isChecked() ? "Y" : "N";
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "add");
+                args.put("regris", "1");
+                args.put("nopol", nopol);
+                args.put("jeniskendaraan", jenisKendaraan);
+                args.put("nopon", isNoHp ? noHp : etNoPonsel.getText().toString().replaceAll("[^0-9]+", ""));
+                args.put("nama", namaPelanggan);
+                args.put("pemilik", pemilik);
+                args.put("keluhan", keluhan);
+                args.put("km", km);
+                args.put("date", currentDateTime());
+                args.put("pekerjaan", pekerjaan);
+
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("checkin"), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    Nson nson = Nson.newObject();
+                    nson.set("nopol", nopol);
+                    nson.set("jeniskendaraan", jenisKendaraan);
+                    nson.set("nopon",isNoHp ? noHp : etNoPonsel.getText().toString().replaceAll("[^0-9]+", ""));
+                    nson.set("nama", namaPelanggan);
+                    nson.set("pemilik", pemilik);
+                    nson.set("keluhan", keluhan);
+                    nson.set("km", km);
+                    nson.set("pekerjaan", pekerjaan);
+                    nson.set("varianKendaraan", varianKendaraan);
+                    nson.set("tahunProduksi", tahunProduksi);
+
+                    Intent intent;
+                    if (nopolList.asArray().contains(nopol)) {
+                        intent = new Intent(getActivity(), Checkin3_Activity.class);
+                        intent.putExtra("data", nson.toJson());
+                        startActivityForResult(intent, KontrolLayanan_Activity.REQUEST_CHECKIN);
+                    } else {
+                        intent = new Intent(getActivity(), Checkin2_Activity.class);
+                        intent.putExtra("data", nson.toJson());
+                        startActivityForResult(intent, REQUEST_NEW_CS);
+                    }
+                } else {
+                    showWarning("Gagal");
+                }
+            }
+        });
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -324,21 +432,22 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 } else if (etJenisKendaraan.getText().toString().isEmpty()) {
                     etJenisKendaraan.setError("Harus Di Isi");
                     etJenisKendaraan.requestFocus();
-                } else if (etNoPonsel.getText().toString().isEmpty() && etNoPonsel.getText().toString().length() < 6) {
+                } else if (etNoPonsel.getText().toString().isEmpty() || etNoPonsel.getText().toString().length() < 6) {
                     etNoPonsel.setError("Harus Di Isi");
                     etNoPonsel.requestFocus();
-                } else if (etNamaPelanggan.getText().toString().isEmpty() && etNamaPelanggan.getText().toString().length() < 5) {
+                } else if (etNamaPelanggan.getText().toString().isEmpty() || !isNamaValid && etNamaPelanggan.getText().toString().length() < 5) {
                     etNamaPelanggan.setError("Harus Di Isi");
                     etNamaPelanggan.requestFocus();
                 } else if (spPekerjaan.getSelectedItem().toString().equalsIgnoreCase("Belum Di Pilih")) {
                     showWarning("Silahkan Pilih Pekerjaan");
                     spPekerjaan.performClick();
-                }
-//                else if (etKm.getText().toString().isEmpty()) {
-//                    etKm.setError("Harus Di Isi");
-//                    etKm.requestFocus();
-//                }
-                else {
+                } else if (etKm.getText().toString().isEmpty()) {
+                    etKm.setError("Harus Di Isi");
+                    etKm.requestFocus();
+                }else if(spPekerjaan.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")){
+                    spPekerjaan.performClick();
+                    showWarning("Pekerjaan Harus Di Pilih");
+                }else {
                     setSelanjutnya();
                 }
                 break;
@@ -348,45 +457,5 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
         }
     }
 
-    private void backupFunc(){
-        etNoPonsel.setLoadingIndicator((android.widget.ProgressBar) findViewById(R.id.pb_etNoPonsel_checkin));
-        etNoPonsel.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
-                etNoPonsel.setText(formatNopol(n.get("NO_PONSEL").asString()));
-                etNamaPelanggan.setText(n.get("NAMA_PELANGGAN").asString());
-            }
-        });
 
-        etNoPonsel.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                if (s.toString().length() == 0) {
-                    find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
-                }
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().length() < 6) {
-                    find(R.id.tl_nohp, TextInputLayout.class).setError("No. Hp Min. 6 Karakter");
-                } else {
-                    find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.toString().length() == 0) {
-                    find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
-                } else if (!s.toString().contains("+62 ")) {
-                    etNoPonsel.setText("+62 ");
-                    Selection.setSelection(etNoPonsel.getText(), etNoPonsel.getText().length());
-                }
-
-            }
-        });
-    }
 }

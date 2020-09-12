@@ -64,7 +64,6 @@ public class AturUser_Activity extends AppActivity {
             listFungsiMekanik = new ArrayList<>(Arrays.asList("TIDAK", "YA"));
     private String[] aksesArr;
     private String noPonsel, posisi = "", status = "", penggajian = "", fungsiMekanik = "";
-    private int day, month, year;
     private boolean isClickDrawable = false, isAtur, isPosisi, isAksesApp;
 
     @Override
@@ -198,38 +197,6 @@ public class AturUser_Activity extends AppActivity {
 
             }
         });
-    }
-
-    private void getDateSpinnerDialog(final TextView dateTime, String tittle) {
-        Calendar cal = Calendar.getInstance();
-        day = cal.get(Calendar.DAY_OF_MONTH);
-        year = cal.get(Calendar.YEAR);
-        month = cal.get(Calendar.MONTH);
-
-        DatePickerDialog.OnDateSetListener mDateListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                String newDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
-                Date date = null;
-                try {
-                    date = sdf.parse(newDate);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                String formattedTime = sdf.format(date);
-                dateTime.setText(formattedTime);
-            }
-        };
-        DatePickerDialog dialog = new DatePickerDialog(
-                getActivity(),
-                android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                mDateListener,
-                year, month, day
-        );
-        dialog.setTitle(tittle);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.show();
     }
 
     private void getImageFromAlbum() {

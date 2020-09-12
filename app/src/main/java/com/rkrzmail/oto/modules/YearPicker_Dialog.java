@@ -19,6 +19,7 @@ import java.util.Calendar;
 public class YearPicker_Dialog extends DialogFragment {
 
     private TimePicker_Dialog.OnClickDialog onClickDialog;
+    private NumberPicker npYears;
 
     @NonNull
     @Override
@@ -28,7 +29,7 @@ public class YearPicker_Dialog extends DialogFragment {
 
         Calendar cal = Calendar.getInstance();
         View dialog = inflater.inflate(R.layout.dialog_year_picker, null);
-        final NumberPicker npYears = dialog.findViewById(R.id.np_years);
+        npYears = dialog.findViewById(R.id.np_years);
 
         int year = cal.get(Calendar.YEAR);
         npYears.setMinValue(1990);

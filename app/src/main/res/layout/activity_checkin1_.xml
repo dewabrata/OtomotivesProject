@@ -145,14 +145,33 @@
 
                 </android.support.design.widget.TextInputLayout>
 
-                <ProgressBar
-                    android:id="@+id/pb_namaPelanggan_checkin"
-                    style="?android:attr/progressBarStyleSmall"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical|right"
-                    android:layout_marginRight="20dp"
-                    android:visibility="gone" />
+                    android:orientation="horizontal"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="20dp">
+
+                    <ImageButton
+                        android:id="@+id/img_clear"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:background="@android:color/transparent"
+                        android:tint="@color/grey_80"
+                        app:srcCompat="@drawable/ic_close"
+                        android:visibility="gone"/>
+
+                    <ProgressBar
+                        android:id="@+id/pb_namaPelanggan"
+                        style="?android:attr/progressBarStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|right"
+                        tools:ignore="RtlHardcoded"
+                        android:visibility="gone"/>
+
+                </LinearLayout>
 
             </FrameLayout>
 
@@ -181,7 +200,7 @@
                             android:layout_height="wrap_content"
                             android:hint="NO PONSEL"
                             android:inputType="phone"
-                            android:maxLength="14"
+                            android:maxLength="19"
                             android:textSize="14sp"
                             android:padding="15dp"/>
 

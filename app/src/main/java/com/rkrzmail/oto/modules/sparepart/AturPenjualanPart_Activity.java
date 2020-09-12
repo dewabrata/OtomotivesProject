@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.sparepart;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -33,6 +35,7 @@ public class AturPenjualanPart_Activity extends AppActivity {
     private static final int REQEST_DAFTAR_JUAL = 12;
     public static final String ERROR = "Silahkan Isi ";
     private String noHp = "";
+    private boolean isNoHp = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,14 +53,10 @@ public class AturPenjualanPart_Activity extends AppActivity {
 
     private void initComponent() {
         initToolbar();
-
         find(R.id.btn_lanjut_jualPart).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (find(R.id.et_jenisKendaraan_jualPart, NikitaAutoComplete.class).getText().toString().isEmpty()) {
-                    find(R.id.et_jenisKendaraan_jualPart, NikitaAutoComplete.class).setError(ERROR);
-                    find(R.id.et_jenisKendaraan_jualPart, NikitaAutoComplete.class).requestFocus();
-                }else if (find(R.id.et_namaPelanggan_jualPart, EditText.class).getText().toString().isEmpty()) {
+               if (find(R.id.et_namaPelanggan_jualPart, EditText.class).getText().toString().isEmpty()) {
                     find(R.id.et_namaPelanggan_jualPart, EditText.class).setError(ERROR);
                     find(R.id.et_namaPelanggan_jualPart, EditText.class).requestFocus();
                 }else{
@@ -118,6 +117,11 @@ public class AturPenjualanPart_Activity extends AppActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
                 int counting = (s == null) ? 0 : s.toString().length();
                 if (counting == 0) {
                     find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
@@ -131,12 +135,6 @@ public class AturPenjualanPart_Activity extends AppActivity {
                 } else {
                     find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
                 }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-
             }
         });
 
@@ -152,6 +150,7 @@ public class AturPenjualanPart_Activity extends AppActivity {
                 return result.get("data");
             }
 
+            @SuppressLint("SetTextI18n")
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 if (convertView == null) {
@@ -176,11 +175,23 @@ public class AturPenjualanPart_Activity extends AppActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
+                isNoHp = true;
                 find(R.id.et_noPhone_jualPart, NikitaAutoComplete.class).setText(n.get("NO_PONSEL").asString());
                 find(R.id.et_namaPelanggan_jualPart, NikitaAutoComplete.class).setText(n.get("NAMA_PELANGGAN").asString());
+                find(R.id.tl_nohp, TextInputLayout.class).setHelperTextEnabled(false);
+            }
+        });
+
+        watcherNamaPelanggan(find(R.id.img_clear, ImageButton.class), find(R.id.et_namaPelanggan_jualPart, NikitaAutoComplete.class));
+        find(R.id.img_clear, ImageButton.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                find(R.id.et_namaPelanggan_jualPart, NikitaAutoComplete.class).setText("");
+                find(R.id.et_noPhone_jualPart, NikitaAutoComplete.class).setText("");
             }
         });
     }
+
 
     private void setIntent(){
         Intent intent = new Intent(getActivity(), CariPart_Activity.class);
@@ -196,7 +207,7 @@ public class AturPenjualanPart_Activity extends AppActivity {
             nson.set("JENIS_KENDARAAN", find(R.id.et_jenisKendaraan_jualPart, NikitaAutoComplete.class).getText().toString());
             nson.set("NAMA_PELANGGAN", find(R.id.et_namaPelanggan_jualPart, EditText.class).getText().toString());
             nson.set("NAMA_USAHA", find(R.id.et_namaUsaha_jualPart, EditText.class).getText().toString());
-            nson.set("NO_PONSEL", find(R.id.et_noPhone_jualPart, NikitaAutoComplete.class).getText().toString().replaceAll("[^0-9]+", ""));
+            nson.set("NO_PONSEL", isNoHp ? noHp : find(R.id.et_noPhone_jualPart, NikitaAutoComplete.class).getText().toString().replaceAll("[^0-9]+", ""));
 
             Intent i = new Intent(getActivity(), DetailJualPart_Activity.class);
             i.putExtra("part", nson.toJson());

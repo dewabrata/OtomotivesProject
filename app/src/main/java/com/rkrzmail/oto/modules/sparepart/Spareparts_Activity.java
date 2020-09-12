@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -72,6 +73,7 @@ public class Spareparts_Activity extends AppActivity {
         });
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        reload("");
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_spareparts) {
@@ -82,9 +84,9 @@ public class Spareparts_Activity extends AppActivity {
                 viewHolder.find(R.id.txtNamaPart, TextView.class).setText(nListArray.get(position).get("NAMA_PART").asString());
                 viewHolder.find(R.id.txtNoPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
                 viewHolder.find(R.id.tv_stock_spareparts, TextView.class).setText(stock);
-                if(Tools.isNumeric(nListArray.get(position).get("HARGA_JUAL").asString())){
+                if (Tools.isNumeric(nListArray.get(position).get("HARGA_JUAL").asString())) {
                     viewHolder.find(R.id.txtHargaJual, TextView.class).setText("Rp. " + formatter.format(Double.parseDouble(nListArray.get(position).get("HARGA_JUAL").asString())));
-                }else{
+                } else {
                     viewHolder.find(R.id.txtHargaJual, TextView.class).setText(nListArray.get(position).get("HARGA_JUAL").asString());
                 }
                 viewHolder.find(R.id.tv_pending_spareparts, TextView.class).setText(nListArray.get(position).get("PENDING").asString());
@@ -100,14 +102,13 @@ public class Spareparts_Activity extends AppActivity {
                 startActivityForResult(intent, REQUEST_ATUR);
             }
         }));
-
-        reload("");
     }
 
 
     private void reload(final String nama) {
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -149,60 +150,22 @@ public class Spareparts_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        android.support.v7.widget.SearchView.SearchAutoComplete searchAutoComplete =
-                (android.support.v7.widget.SearchView.SearchAutoComplete)
-                        mSearchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-
-        searchAutoComplete.setDropDownBackgroundResource(R.drawable.bg_radius_white);
-        searchAutoComplete.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
-            Nson result;
-
-            @Override
-            public Nson onFindNson(Context context, String bookTitle) {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "view");
-                args.put("spec", "Bengkel");
-                args.put("search", bookTitle);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewsparepart"), args));
-
-                return result.get("data");
-            }
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                if (convertView == null) {
-                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    convertView = inflater.inflate(R.layout.item_suggestion, parent, false);
-                }
-
-                findView(convertView, R.id.title, TextView.class).setText( getItem(position).get("NAMA_PART").asString());
-                return convertView;
-            }
-        });
-
-        searchAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(i)));
-                find(android.support.v7.appcompat.R.id.search_src_text, android.support.v7.widget.SearchView.SearchAutoComplete.class).setText(n.get("NAMA_PART").asString());
-                find(android.support.v7.appcompat.R.id.search_src_text, android.support.v7.widget.SearchView.SearchAutoComplete.class).setTag(String.valueOf(adapterView.getItemAtPosition(i)));
-            }
-        });
+        adapterSearchView(mSearchView, "spec", "viewsparepart", "NAMA_PART");
 
         final SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
-                if(newText.length() > 3){
-                    reload(newText);
-                }
+
                 return false;
             }
+
             public boolean onQueryTextSubmit(String query) {
-                if(mSearchView.getQuery().length() > 0){
-                    reload(query);
-                }
-                return false;
+
+                reload(query);
+
+                return true;
             }
         };
+
         mSearchView.setOnQueryTextListener(queryTextListener);
         return true;
     }

@@ -22,6 +22,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.gmod.BarcodeActivity;
+import com.rkrzmail.oto.modules.layanan.AturLayanan_Activity;
 import com.rkrzmail.oto.modules.sparepart.stock_opname.StockOpname_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
@@ -30,6 +31,7 @@ import java.util.Map;
 
 public class PartTeralokasikan_Fragment extends Fragment {
 
+    private static final int REQUEST_ATUR_LOKASI = 14;
     public static RecyclerView rvLokasi_part;
     private Nson nListArray = Nson.newArray();
     private static final int REQUEST_STOCK_OPNAME = 1212;
@@ -97,7 +99,14 @@ public class PartTeralokasikan_Fragment extends Fragment {
                     }
                 });
             }
-        });
+        }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Nson parent, View view, int position) {
+                Intent i = new Intent(getActivity(), AturLokasiPart_Activity.class);
+                i.putExtra("TERALOKASIKAN", nListArray.get(position).toJson());
+                startActivityForResult(i, REQUEST_ATUR_LOKASI);
+            }
+        }));
     }
 
     public void getTeralokasikan(final String cari){
@@ -127,6 +136,8 @@ public class PartTeralokasikan_Fragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == getActivity().RESULT_OK && requestCode == LokasiPart_Activity.REQUEST_ATUR){
+            getTeralokasikan("");
+        }else if(resultCode == getActivity().RESULT_OK && requestCode == REQUEST_ATUR_LOKASI){
             getTeralokasikan("");
         }
     }

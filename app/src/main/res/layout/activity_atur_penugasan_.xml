@@ -53,7 +53,8 @@
                         android:layout_width="0dp"
                         android:layout_weight="3"
                         android:textColor="@color/grey_900"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textSize="12sp"/>
 
                     <RelativeLayout
                         android:layout_width="0dp"
@@ -89,6 +90,7 @@
                         android:layout_gravity="center"
                         android:layout_weight="3"
                         android:text="STATUS"
+                        android:textSize="12sp"
                         android:textColor="@color/grey_900"
                         android:textStyle="bold" />
 
@@ -138,6 +140,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
+                        android:textSize="12sp"
                         android:text="TIPE ANTRIAN"
                         android:textColor="@color/grey_900"
                         android:textStyle="bold" />
@@ -175,6 +178,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:text="LOKASI"
+                        android:textSize="12sp"
                         android:textColor="@color/grey_900"
                         android:textStyle="bold" />
 
@@ -196,6 +200,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ly_tambahan"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/paddingMedium"
@@ -211,6 +216,7 @@
                         android:layout_gravity="center"
                         android:layout_weight="3"
                         android:text="TAMBAHAN"
+                        android:textSize="12sp"
                         android:textColor="@color/grey_900"
                         android:textStyle="bold" />
 
@@ -221,7 +227,7 @@
                         android:background="@drawable/background_edittext"
                         android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="@dimen/paddingMedium">
+                        android:padding="@dimen/paddingSmall">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -290,6 +296,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:text="JAM KERJA"
+                        android:textSize="12sp"
                         android:textColor="@color/grey_900"
                         android:textStyle="bold" />
 
@@ -358,6 +365,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="3"
+                        android:textSize="12sp"
                         android:text="JAM ISTIRAHAT"
                         android:textColor="@color/grey_900"
                         android:textStyle="bold" />

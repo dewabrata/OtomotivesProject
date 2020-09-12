@@ -97,15 +97,13 @@ public class LokasiPart_Activity extends AppActivity {
             public boolean onQueryTextSubmit(String query) {
 
                 List<Fragment> fragments = getSupportFragmentManager().getFragments();
-                if (fragments != null) {
-                    for (Fragment fragment : fragments) {
-                        if (fragment instanceof PartTeralokasikan_Fragment) {
-                            ((PartTeralokasikan_Fragment) fragment).initComponent(query);
-                            break;
-                        }else if(fragment instanceof PartNonLokasi_Fragment){
-                            ((PartNonLokasi_Fragment) fragment).initComponent(query);
-                            break;
-                        }
+                for (Fragment fragment : fragments) {
+                    if (fragment instanceof PartTeralokasikan_Fragment) {
+                        ((PartTeralokasikan_Fragment) fragment).initComponent(query);
+                        break;
+                    }else if(fragment instanceof PartNonLokasi_Fragment){
+                        ((PartNonLokasi_Fragment) fragment).initComponent(query);
+                        break;
                     }
                 }
 

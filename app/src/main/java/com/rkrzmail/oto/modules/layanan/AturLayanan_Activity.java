@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.layanan;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -80,6 +81,7 @@ public class AturLayanan_Activity extends AppActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    @SuppressLint("SetTextI18n")
     private void initComponent() {
         initToolbar();
         formatter = new DecimalFormat("###,###,###");
@@ -95,14 +97,26 @@ public class AturLayanan_Activity extends AppActivity {
             find(R.id.btn_simpan_atur_layanan, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (spJenisLayanan.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")){
+                    if (spJenisLayanan.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
                         showWarning("Silahkan Pilih Jenis Layanan");
                         spJenisLayanan.performClick();
+                        return;
                     }
                     if (spNamaLayanan.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
                         showWarning("Silahkan Pilih Nama Layanan");
                         spNamaLayanan.performClick();
                         return;
+                    }else if(spNamaLayanan.getSelectedItem().toString().equalsIgnoreCase("AFTER SALES SERVICES") || spNamaLayanan.getSelectedItem().toString().equalsIgnoreCase("RECALL")){
+                        if(spNamaPrincipal.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")){
+                            spNamaPrincipal.performClick();
+                            showWarning("Nama Principal Harus Di Pilih");
+                            return;
+                        }
+                    }else if(spNamaLayanan.getSelectedItem().toString().equalsIgnoreCase("PAKET LAYANAN")){
+                        if(find(R.id.et_biayaPaket_layanan, EditText.class).getText().toString().isEmpty()){
+                            find(R.id.et_biayaPaket_layanan, EditText.class).setError("Biaya Paket Harus Di Isi");
+                            return;
+                        }
                     }
                     saveData();
                 }
@@ -119,8 +133,10 @@ public class AturLayanan_Activity extends AppActivity {
             namaPrincipal = editNson.get("PRINCIPAL").asString();
             namaLayanan = editNson.get("NAMA_LAYANAN").asString();
             find(R.id.et_discBooking_layanan, EditText.class).setText(editNson.get("DISCOUNT_BOOKING").asString());
-            if (!editNson.get("BIAYA_PAKET").asString().isEmpty()) {
-                find(R.id.et_biayaPaket_layanan, EditText.class).setText("Rp. " + formatter.format(Double.parseDouble(editNson.get("BIAYA_PAKET").asString())));
+            try {
+                find(R.id.et_biayaPaket_layanan, EditText.class).setText("Rp. " + formatRp(editNson.get("BIAYA_PAKET").asString()));
+            } catch (Exception e) {
+                Log.d(TAG, "NumberException: " + e.getMessage());
             }
             spJenisLayanan.setSelection(Tools.getIndexSpinner(spJenisLayanan, editNson.get("JENIS_LAYANAN").asString()));
             spStatus.setSelection(Tools.getIndexSpinner(spJenisLayanan, editNson.get("STATUS").asString()));
@@ -235,9 +251,9 @@ public class AturLayanan_Activity extends AppActivity {
                     spNamaPrincipal.setEnabled(true);
                     jenisLayanan = item;
                     find(R.id.btn_simpan_atur_layanan, Button.class).setEnabled(true);
-                }else if(item.equalsIgnoreCase("PERAWATAN LAINYA")){
+                } else if (item.equalsIgnoreCase("PERAWATAN LAINYA")) {
                     Tools.setViewAndChildrenEnabled(find(R.id.parent_ly_layanan, LinearLayout.class), false);
-                }else {
+                } else {
                     Tools.setViewAndChildrenEnabled(find(R.id.parent_ly_layanan, LinearLayout.class), true);
                 }
                 //find(R.id.btn_discPart_layanan, Button.class).setEnabled(true);
@@ -377,9 +393,9 @@ public class AturLayanan_Activity extends AppActivity {
                 args.put("nama", namaLayanan);
                 args.put("keterangan", keterangan);
                 args.put("discbook", find(R.id.et_discBooking_layanan, EditText.class).getText().toString());
-                if(!jenisLayanan.equalsIgnoreCase("PAKET LAYANAN")){
+                if (!jenisLayanan.equalsIgnoreCase("PAKET LAYANAN")) {
                     args.put("biaya", jenisLayanan);
-                }else{
+                } else {
                     args.put("biaya", find(R.id.et_biayaPaket_layanan, EditText.class).getText().toString().replaceAll("[^0-9]+", ""));
                 }
                 args.put("garansi", find(R.id.sp_garansi_atur_layanan, Spinner.class).getSelectedItem().toString());
@@ -388,6 +404,7 @@ public class AturLayanan_Activity extends AppActivity {
                 args.put("merk", merk);
                 args.put("model", model);
                 args.put("varian", varian);
+                args.put("tanggal", currentDateTime());
                 if (discPartList.size() > 0) {
                     args.put("ganti", discPartList.toJson());
                 } else {

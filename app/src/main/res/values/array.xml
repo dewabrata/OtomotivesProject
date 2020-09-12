@@ -209,8 +209,8 @@
 
 
     <string-array name="lokasi_penempatan_part">
-        <item>GUDANG</item>
         <item>RUANG PART</item>
+        <item>GUDANG</item>
         <item>DISPLAY</item>
     </string-array>
 
@@ -227,6 +227,7 @@
     </string-array>
 
     <string-array name="penempatan_lokasi_part">
+        <item>--PILIH--</item>
         <item>PALET</item>
         <item>RAK</item>
     </string-array>

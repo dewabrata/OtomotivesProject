@@ -227,8 +227,8 @@
 
     <string-array name="lokasi_simpan">
         <item>--PILIH--</item>
-        <item>GUDANG</item>
         <item>RUANG PART</item>
+        <item>GUDANG</item>
         <item>DISPLAY</item>
     </string-array>
 

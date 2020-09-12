@@ -59,25 +59,13 @@ public class AturDiscountJasaLain_Activity extends AppActivity implements View.O
         spAktifitas = findViewById(R.id.sp_aktifitas_discJasa);
         spKelompokPart = findViewById(R.id.sp_kelompokPart_discJasa);
 
-        //setSpinnerFromApi(spKelompokPart, "nama", "PART", "viewmst", "KELOMPOK", "KELOMPOK_LAIN");
-        /*setMultiSelectionSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
-            @Override
-            public void selectedIndices(List<Integer> indices) {
-
-            }
-
-            @Override
-            public void selectedStrings(List<String> strings) {
-
-            }
-        }, "PEKERJAAN", "");*/
-
         etDiscPart.addTextChangedListener(new PercentFormat(etDiscPart));
         tvTgl.setOnClickListener(this);
         try {
-            setSpPekerjaan();
-            setSpKelompokPart();
             loadData();
+            setSpPekerjaan();
+            setSpinnerFromApi(spAktifitas, "cari", "", "viewjasalain", "AKTIVITAS", aktivitas);
+            setSpinnerFromApi(spKelompokPart, "search", " ", "viewjasalain", "NAMA", kelompokPart);
         } catch (Exception e) {
             Log.d("Exception___", "initComponent: " + e.getMessage());
         }
@@ -97,8 +85,7 @@ public class AturDiscountJasaLain_Activity extends AppActivity implements View.O
                 args.put("tanggal", parseTgl);
                 args.put("pekerjaan", spPekerjaan.getSelectedItemsAsString());
                 args.put("kategori", spKelompokPart.getSelectedItem().toString());
-                //spAktifitas.getSelectedItem().toString()
-                //args.put("aktivitas", "OKAY");
+                args.put("aktivitas", spAktifitas.getSelectedItem().toString());
                 args.put("pesan", find(R.id.cb_mssg_discJasa, CheckBox.class).isChecked() ? "YA" : "TIDAK");
                 args.put("diskon", etDiscPart.getText().toString());
 
@@ -125,6 +112,7 @@ public class AturDiscountJasaLain_Activity extends AppActivity implements View.O
         if (intent.hasExtra("data")) {
             kelompokPart = data.get("KATEGORI_JASA_LAIN").asString();
             aktivitas = data.get("AKTIVITAS").asString();
+
             dummy.add(data.get("PEKERJAAN").asString());
 
             etDiscPart.setText(data.get("DISC_JASA").asString());
@@ -208,39 +196,6 @@ public class AturDiscountJasaLain_Activity extends AppActivity implements View.O
                     finish();
                 } else {
                     showError("Gagal Menyimpan Aktivitas!");
-                }
-            }
-        });
-    }
-
-    private void setSpKelompokPart() {
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
-
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("nama", "PART");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewmst"), args));
-            }
-
-            @Override
-            public void runUI() {
-                partList.add("Belum Di Pilih");
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    for (int i = 0; i < result.get("data").size(); i++) {
-                        partList.add(result.get("data").get(i).get("KELOMPOK").asString() + " - " + result.get("data").get(i).get("KELOMPOK_LAIN").asString());
-                    }
-                    ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, partList);
-                    spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spKelompokPart.setAdapter(spinnerAdapter);
-                    if (!kelompokPart.isEmpty()) {
-                        for (int in = 0; in < spKelompokPart.getCount(); in++) {
-                            if (spKelompokPart.getItemAtPosition(in).toString().contains(kelompokPart)) {
-                                spKelompokPart.setSelection(in);
-                            }
-                        }
-                    }
                 }
             }
         });

@@ -117,6 +117,7 @@ public class Layanan_Avtivity extends AppActivity {
                 args.put("action", "view");
                 args.put("spec", "Bengkel");
                 args.put("search", nama);
+                args.put("status", "TIDAK AKTIF");
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlayanan"), args));
             }
 
@@ -167,7 +168,7 @@ public class Layanan_Avtivity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        adapterSearchView(mSearchView, "search", "viewlayanan", "NAMA_LAYANAN");
+        adapterSearchView(mSearchView, "spec", "viewlayanan", "NAMA_LAYANAN");
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
 

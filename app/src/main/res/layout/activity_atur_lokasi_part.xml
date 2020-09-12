@@ -36,7 +36,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:orientation="vertical"
-            android:padding="4dp">
+            android:padding="10dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -112,6 +112,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/ly_lokasiPart"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/paddingMedium"
@@ -140,7 +141,6 @@
                             android:id="@+id/sp_lokasiPart"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:entries="@array/lokasi_penempatan_part"
                             android:textAlignment="center" />
 
                     </RelativeLayout>
@@ -176,11 +176,9 @@
                             android:id="@+id/sp_penempatan_part"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:entries="@array/penempatan_lokasi_part"
                             android:textAlignment="center" />
 
                     </RelativeLayout>
-
 
                 </LinearLayout>
 
@@ -235,7 +233,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
-                        android:text="TINKAT RAK"
+                        android:text="TINGKAT RAK"
                         android:textColor="@color/grey_900"
                         android:textStyle="bold" />
 

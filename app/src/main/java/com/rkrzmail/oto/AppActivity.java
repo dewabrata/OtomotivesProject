@@ -11,7 +11,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -29,8 +31,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -141,7 +145,7 @@ public class AppActivity extends AppCompatActivity {
         return "";
     }
 
-    public void getSelectionSpinner(Spinner spinner, String value){
+    public void getSelectionSpinner(Spinner spinner, String value) {
         for (int in = 0; in < spinner.getCount(); in++) {
             if (spinner.getItemAtPosition(in).toString().contains(value)) {
                 spinner.setSelection(in);
@@ -154,7 +158,7 @@ public class AppActivity extends AppCompatActivity {
         return getIntentStringExtra(getIntent(), key);
     }
 
-    public String editTextToString(EditText editText){
+    public String editTextToString(EditText editText) {
         return editText.getText().toString();
     }
 
@@ -172,14 +176,14 @@ public class AppActivity extends AppCompatActivity {
         Messagebox.showDialog(getActivity(), "", message, "OK", "", onClickListener, null);
     }
 
-    public String currentDateTime(){
+    public String currentDateTime() {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         return simpleDateFormat.format(calendar.getTime());
     }
 
-    public String currentDateTime(String pattern){
+    public String currentDateTime(String pattern) {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
@@ -528,11 +532,7 @@ public class AppActivity extends AppCompatActivity {
                 args.put("search", bookTitle);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(api), args));
 
-                for (int i = 0; i < result.get("data").size(); i++) {
-                    return result.get("data");
-                }
-
-                return result.get("search");
+                return result.get("data");
             }
 
             @Override
@@ -613,15 +613,17 @@ public class AppActivity extends AppCompatActivity {
         });
     }
 
-    public void setMultiSelectionSpinnerFromApi(final MultiSelectionSpinner spinner, final String params, final String arguments, final String api,  final MultiSelectionSpinner.OnMultipleItemsSelectedListener listener, final String... jsonObject) {
+    public void setMultiSelectionSpinnerFromApi(final MultiSelectionSpinner spinner, final String params, final String arguments, final String api, final MultiSelectionSpinner.OnMultipleItemsSelectedListener listener, final String... jsonObject) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put(params, arguments);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(api), args));
             }
+
             @Override
             public void runUI() {
                 ArrayList<String> str = new ArrayList<>();
@@ -645,6 +647,7 @@ public class AppActivity extends AppCompatActivity {
     public void setSpinnerFromApi(final Spinner spinner, final String params, final String arguments, final String api, final String jsonObject) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -671,6 +674,7 @@ public class AppActivity extends AppCompatActivity {
     public void setSpinnerFromApi(final Spinner spinner, final String params, final String arguments, final String api, final String jsonObject, final String selection) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -689,9 +693,9 @@ public class AppActivity extends AppCompatActivity {
                 ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, newStr);
                 spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinner.setAdapter(spinnerAdapter);
-                if(!selection.isEmpty()){
+                if (!selection.isEmpty()) {
                     for (int i = 0; i < newStr.size(); i++) {
-                        if(spinner.getItemAtPosition(i).toString().contains(selection)){
+                        if (spinner.getItemAtPosition(i).toString().contains(selection)) {
                             spinner.setSelection(i);
                         }
                     }
@@ -767,7 +771,7 @@ public class AppActivity extends AppCompatActivity {
         notifyDataSetChanged(spinner);
     }
 
-    public void getTimesDialog(final EditText ddHHmm){
+    public void getTimesDialog(final EditText ddHHmm) {
         TimePicker_Dialog timePickerDialog = new TimePicker_Dialog();
         timePickerDialog.show(getSupportFragmentManager(), "TimePicker");
         timePickerDialog.getTimes(new TimePicker_Dialog.OnClickDialog() {
@@ -784,7 +788,7 @@ public class AppActivity extends AppCompatActivity {
         });
     }
 
-    public void getYearsDialog(final TextView etYear){
+    public void getYearsDialog(final TextView etYear) {
         YearPicker_Dialog dialog = new YearPicker_Dialog();
         dialog.show(getSupportFragmentManager(), "YearPicker");
         dialog.getYears(new TimePicker_Dialog.OnClickDialog() {
@@ -800,8 +804,65 @@ public class AppActivity extends AppCompatActivity {
         });
     }
 
-    public String formatRp(String currency){
+    public String formatRp(String currency) {
         DecimalFormat formatter = new DecimalFormat("###,###,###");
         return formatter.format(Double.parseDouble(currency));
+    }
+
+    public void watcherNamaPelanggan(final ImageButton imageButton, final EditText editText) {
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.toString().length() == 0) {
+                    imageButton.setVisibility(View.GONE);
+                } else {
+                    imageButton.setVisibility(View.VISIBLE);
+                }
+            }
+        };
+        editText.addTextChangedListener(textWatcher);
+    }
+
+    public void getDateSpinnerDialog(final TextView dateTime, String tittle) {
+        Calendar cal = Calendar.getInstance();
+        int day, month, year;
+        day = cal.get(Calendar.DAY_OF_MONTH);
+        year = cal.get(Calendar.YEAR);
+        month = cal.get(Calendar.MONTH);
+
+        android.app.DatePickerDialog.OnDateSetListener mDateListener = new android.app.DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                String newDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                Date date = null;
+                try {
+                    date = sdf.parse(newDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                String formattedTime = sdf.format(date);
+                dateTime.setText(formattedTime);
+            }
+        };
+        android.app.DatePickerDialog dialog = new android.app.DatePickerDialog(
+                getActivity(),
+                android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                mDateListener,
+                year, month, day
+        );
+        dialog.setTitle(tittle);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
     }
 }

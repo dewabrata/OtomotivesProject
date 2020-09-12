@@ -1,15 +1,23 @@
 package com.rkrzmail.oto.modules.jasa;
 
 import android.annotation.SuppressLint;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -25,6 +33,7 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.srv.NsonAutoCompleteAdapter;
 import com.rkrzmail.utils.Tools;
 
 import java.util.ArrayList;
@@ -34,16 +43,17 @@ public class JasaLain_Activity extends AppActivity {
 
     private RecyclerView rvJasa;
     private static final int REQUEST_BIAYA = 11;
-    private EditText etAktivitasLain;
+    //private EditText etAktivitasLain;
     private Nson nson = Nson.newArray();
     private int counting = 0;
     ArrayList<Boolean> flagChecked = new ArrayList<>();
-    boolean flag = false;
+    boolean isCari = false;
+    private SearchView mSearchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_basic_2);
+        setContentView(R.layout.activity_list_basic);
         initComponent();
 
     }
@@ -58,16 +68,13 @@ public class JasaLain_Activity extends AppActivity {
     private void initComponent() {
         initToolbar();
         rvJasa = findViewById(R.id.recyclerView);
-        etAktivitasLain = findViewById(R.id.editText_list_basic2);
-        etAktivitasLain.setVisibility(View.VISIBLE);
-
-        catchData();
+        catchData("");
         rvJasa.setLayoutManager(new LinearLayoutManager(this));
         rvJasa.setHasFixedSize(true);
         rvJasa.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_jasa_lain) {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
-                viewHolder.find(R.id.cb_jasaLain_jasa, CheckBox.class).setTag("check");
+                /*viewHolder.find(R.id.cb_jasaLain_jasa, CheckBox.class).setTag("check");
                 viewHolder.find(R.id.cb_jasaLain_jasa, CheckBox.class).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -79,43 +86,37 @@ public class JasaLain_Activity extends AppActivity {
                             nson.asArray().remove(nson.get(nListArray.get(position)));
                         }
                     }
-                });
-                viewHolder.find(R.id.tv_masterPart_jasaLain, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
-                viewHolder.find(R.id.tv_lepasPasang_jasaLain, TextView.class).setText(nListArray.get(position).get("LEPAS_PASANG").asString());
+                });*/
+                viewHolder.find(R.id.tv_kelompokPart_jasaLain, TextView.class).setText(nListArray.get(position).get("KELOMPOK_PART").asString());
+                viewHolder.find(R.id.tv_aktivitas_jasaLain, TextView.class).setText(nListArray.get(position).get("AKTIVITAS").asString());
                 viewHolder.find(R.id.tv_waktu_jasaLain, TextView.class).setText(nListArray.get(position).get("WAKTU").asString());
-                viewHolder.find(R.id.tv_mekanik_jasaLain, TextView.class).setText(nListArray.get(position).get("TIPE_MEKANIK").asString());
+                viewHolder.find(R.id.tv_mekanik_jasaLain, TextView.class).setText(nListArray.get(position).get("MEKANIK").asString());
             }
-
+        }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
-            public Nson getItem() {
-                if (nListArray.size() == 0) {
-                    etAktivitasLain.setVisibility(View.GONE);
-                    find(R.id.btn_simpan, Button.class).setVisibility(View.GONE);
-                }
-                return nListArray;
-            }
-        });
-
-        find(R.id.btn_simpan, Button.class).setText("Lanjut");
-        find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            public void onItemClick(Nson parent, View view, int position) {
                 Intent i = new Intent(getActivity(), BiayaJasa_Activity.class);
-                i.putExtra("data", nson.toJson());
+                i.putExtra("data", parent.get(position).toJson());
                 i.putExtra("jasa_lain", "");
-                Log.d("JASA_LAIN_CLASS", "JASA : " + nson);
+                Log.d("JASA_LAIN_CLASS", "JASA : " + parent);
                 startActivityForResult(i, REQUEST_BIAYA);
             }
-        });
+        }));
     }
 
-    private void catchData() {
+    private void catchData(final String cari) {
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result;
 
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "view");
+                args.put("search", cari);
+                if(isCari){
+                    args.remove("search");
+                    args.put("cari", cari);
+                }
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewjasalain"), args));
             }
 
@@ -130,6 +131,42 @@ public class JasaLain_Activity extends AppActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_part, menu);
+
+        // Get the SearchView and set the searchable configuration
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        mSearchView = new SearchView(getSupportActionBar().getThemedContext());
+        mSearchView.setQueryHint("Cari Jasa Lain"); /// YOUR HINT MESSAGE
+        mSearchView.setMaxWidth(Integer.MAX_VALUE);
+
+        final MenuItem searchMenu = menu.findItem(R.id.action_search);
+        searchMenu.setActionView(mSearchView);
+        searchMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+
+        //SearchView searchView = (SearchView)  menu.findItem(R.id.action_search).setActionView(mSearchView);
+        // Assumes current activity is the searchable activity
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
+
+        adapterSearchView(mSearchView, "", "viewjasalain", "NAMA");
+        final SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+            public boolean onQueryTextChange(String newText) {
+
+                return false;
+            }
+
+            public boolean onQueryTextSubmit(String query) {
+                isCari = true;
+                catchData(query);
+                return true;
+            }
+        };
+        mSearchView.setOnQueryTextListener(queryTextListener);
+        return true;
     }
 
     @Override

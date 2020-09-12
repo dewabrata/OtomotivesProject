@@ -2,6 +2,7 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
     android:layout_height="match_parent">
@@ -20,72 +21,108 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/paddingMedium"
+                android:layout_marginBottom="@dimen/paddingMedium"
+                android:gravity="center"
                 android:orientation="horizontal"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/border_solid"
-                android:padding="10dp"
-                android:gravity="center">
+                android:paddingStart="@dimen/paddingMedium"
+                android:paddingEnd="@dimen/paddingMedium">
 
                 <TextView
-                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:text="KELOMPOK PART" />
-
-                <Spinner
-                    android:id="@+id/sp_kelompokPart_discJasa"
+                    android:text="KELOMPOK PART"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAlignment="center" />
+                    android:layout_weight="3"
+                    android:textColor="@color/grey_900"
+                    android:textStyle="bold"
+                    android:textSize="12sp"/>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
+
+                    <Spinner
+                        android:id="@+id/sp_kelompokPart_discJasa"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textAlignment="center" />
+
+                </RelativeLayout>
+
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/paddingMedium"
+                android:layout_marginBottom="@dimen/paddingMedium"
+                android:gravity="center"
                 android:orientation="horizontal"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/border_solid"
-                android:padding="10dp"
-                android:gravity="center">
+                android:paddingStart="@dimen/paddingMedium"
+                android:paddingEnd="@dimen/paddingMedium">
 
                 <TextView
-                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:text="AKTIVITAS" />
-
-                <Spinner
-                    android:id="@+id/sp_aktifitas_discJasa"
+                    android:text="AKTIVITAS"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAlignment="center" />
+                    android:layout_weight="3"
+                    android:textColor="@color/grey_900"
+                    android:textStyle="bold"
+                    android:textSize="12sp"/>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
+
+                    <Spinner
+                        android:id="@+id/sp_aktifitas_discJasa"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textAlignment="center" />
+
+                </RelativeLayout>
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/paddingMedium"
+                android:layout_marginBottom="@dimen/paddingMedium"
+                android:gravity="center"
                 android:orientation="horizontal"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/border_solid"
-                android:padding="10dp"
-                android:gravity="center">
+                android:paddingStart="@dimen/paddingMedium"
+                android:paddingEnd="@dimen/paddingMedium">
 
                 <TextView
-                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:text="PEKERJAAN" />
+                    android:text="PEKERJAAN"
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:textColor="@color/grey_900"
+                    android:textStyle="bold"
+                    android:textSize="12sp"/>
 
-                <com.rkrzmail.srv.MultiSelectionSpinner
-                    android:id="@+id/sp_pekerjaan_discJasa"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAlignment="center" />
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
+
+                    <com.rkrzmail.srv.MultiSelectionSpinner
+                        android:id="@+id/sp_pekerjaan_discJasa"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textAlignment="center" />
+
+                </RelativeLayout>
 
             </LinearLayout>
-
 
             <android.support.design.widget.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -108,27 +145,42 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/border_solid"
-                android:padding="10dp"
+                android:layout_marginTop="@dimen/paddingMedium"
+                android:layout_marginBottom="@dimen/paddingMedium"
                 android:gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/paddingMedium"
+                android:paddingEnd="@dimen/paddingMedium">
 
                 <TextView
-                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:text="TANGGAL EFEKTIVE" />
+                    android:text="TANGGAL EFEKTIVE"
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:textColor="@color/grey_900"
+                    android:textStyle="bold"
+                    android:textSize="12sp"/>
 
-                <TextView
-                    android:id="@+id/tv_tglEffect_discJasa"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/icon_tanggal"
-                    android:gravity="center"
-                    android:layout_marginStart="10dp"
-                    android:layout_weight="1"
-                    android:textStyle="bold" />
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:paddingStart="10dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    tools:ignore="RtlSymmetry"
+                    android:background="@drawable/background_edittext">
 
+                    <TextView
+                        android:id="@+id/tv_tglEffect_discJasa"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:drawableStart="@drawable/icon_tanggal"
+                        android:gravity="center"
+                        android:textAlignment="center"
+                        android:textColor="@color/grey_900"/>
+
+                </RelativeLayout>
 
             </LinearLayout>
             <CheckBox
