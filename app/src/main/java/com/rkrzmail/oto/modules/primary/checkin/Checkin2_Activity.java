@@ -44,6 +44,7 @@ public class Checkin2_Activity extends AppActivity {
     private NikitaAutoComplete etWarna;
     private static final int REQUEST_BOOKING = 12;
     private static final int REQUEST_CHECKIN = 13;
+    private Nson readCheckin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,12 +62,14 @@ public class Checkin2_Activity extends AppActivity {
 
     private void initComponent() {
         initToolbar();
+        readCheckin = Nson.readJson(getIntentStringExtra("data"));
+
         etWarna = findViewById(R.id.et_warna_checkin2);
         tvTgl = findViewById(R.id.tv_tanggal_checkin2);
         etNorangka = findViewById(R.id.et_noRangka_checkin2);
         etNomesin = findViewById(R.id.et_noMesin_checkin2);
 
-        componentValidation();
+        componentValidation(readCheckin);
         tvTgl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -89,15 +92,13 @@ public class Checkin2_Activity extends AppActivity {
                     etNomesin.setError("No. Mesin Harus Di isi");
                     etNomesin.requestFocus();
                 }else{
-                    setSelanjutnya();
+                    setSelanjutnya(readCheckin);
                 }
             }
         });
     }
 
-    private void componentValidation() {
-        Nson nson = Nson.readJson(getIntentStringExtra("data"));
-        Log.d("Checkin2", "TAHUN: " + nson.get("tahunProduksi"));
+    private void componentValidation(Nson readCheckin) {
         Tools.setViewAndChildrenEnabled(find(R.id.ly_tahun_checkin2, LinearLayout.class), false);
         find(R.id.tv_tahun_checkin2, TextView.class).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,8 +167,7 @@ public class Checkin2_Activity extends AppActivity {
         });
     }
 
-    private void setSelanjutnya() {
-        final Nson nson = Nson.readJson(getIntentStringExtra("data"));
+    private void setSelanjutnya(final Nson readCheckin) {
         final String warna = etWarna.getText().toString();
         final String tahun = find(R.id.tv_tahun_checkin2, TextView.class).getText().toString();
         final String tanggalBeli = tvTgl.getText().toString();
@@ -181,15 +181,7 @@ public class Checkin2_Activity extends AppActivity {
 
                 args.put("action", "add");
                 args.put("regris", "2");
-                args.put("nopol", nson.get("nopol").asString());
-                args.put("jeniskendaraan", nson.get("jenisKendaraan").asString());
-                args.put("nopon", nson.get("nopon").asString());
-                args.put("nama", nson.get("namaPelanggan").asString());
-                args.put("pemilik", nson.get("pemilik").asString());
-                args.put("keluhan", nson.get("keluhan").asString());
-                args.put("km", nson.get("km").asString());
-                args.put("date", currentDateTime());
-                args.put("pekerjaan", nson.get("pekerjaan").asString());
+                args.put("id", readCheckin.get("id").asString());
                 args.put("warna", warna);
                 args.put("tahun", tahun);
                 args.put("tanggalbeli", tanggalBeli);
@@ -202,14 +194,8 @@ public class Checkin2_Activity extends AppActivity {
             @Override
             public void runUI() {
                 if(result.get("status").asString().equalsIgnoreCase("OK")){
-                    nson.set("warna", etWarna.getText().toString());
-                    nson.set("tahun", find(R.id.tv_tahun_checkin2, TextView.class).getText().toString());
-                    nson.set("norangka", etNorangka.getText().toString());
-                    nson.set("nomesin", etNomesin.getText().toString());
-                    nson.set("tanggalbeli", tvTgl.getText().toString());
-
                     Intent intent = new Intent();
-                    intent.putExtra("data", nson.toJson());
+                    intent.putExtra("data", readCheckin.toJson());
                     setResult(RESULT_OK, intent);
                     finish();
                 }else{

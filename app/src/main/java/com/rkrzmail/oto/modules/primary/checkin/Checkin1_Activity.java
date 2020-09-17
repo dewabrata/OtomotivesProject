@@ -187,7 +187,9 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
                 etNopol.setText(formatNopol(n.get("NOPOL").asString()));
-                etNoPonsel.setText(n.get("NO_PONSEL").asString());
+                if(!n.get("NO_PONSEL").asString().contains("XXXXXX")){
+                    etNoPonsel.setText(n.get("NO_PONSEL").asString());
+                }
                 etNamaPelanggan.setText(n.get("NAMA_PELANGGAN").asString());
                 etJenisKendaraan.setText(n.get("JENIS_KENDARAAN").asString());
                 pekerjaan = n.get("PEKERJAAN").asString();
@@ -368,7 +370,6 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 args.put("pemilik", pemilik);
                 args.put("keluhan", keluhan);
                 args.put("km", km);
-                args.put("date", currentDateTime());
                 args.put("pekerjaan", pekerjaan);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("checkin"), args));
@@ -377,15 +378,9 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    result = result.get("data").get(0);
                     Nson nson = Nson.newObject();
-                    nson.set("nopol", nopol);
-                    nson.set("jeniskendaraan", jenisKendaraan);
-                    nson.set("nopon",isNoHp ? noHp : etNoPonsel.getText().toString().replaceAll("[^0-9]+", ""));
-                    nson.set("nama", namaPelanggan);
-                    nson.set("pemilik", pemilik);
-                    nson.set("keluhan", keluhan);
-                    nson.set("km", km);
-                    nson.set("pekerjaan", pekerjaan);
+                    nson.set("id", result.get("ID").asString());
                     nson.set("varianKendaraan", varianKendaraan);
                     nson.set("tahunProduksi", tahunProduksi);
 

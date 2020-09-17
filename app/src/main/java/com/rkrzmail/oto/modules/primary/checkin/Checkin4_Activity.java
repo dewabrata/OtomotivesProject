@@ -36,6 +36,7 @@ import com.rkrzmail.oto.modules.user.AturUser_Activity;
 import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class Checkin4_Activity extends AppActivity implements View.OnClickListener {
 
@@ -55,15 +56,31 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         ttd = null;
     }
 
+    @SuppressLint("NewApi")
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Check-In");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Check-In");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @SuppressLint("SetTextI18n")
     private void initComponent() {
+        if(getIntent().hasExtra("BATAL")){
+            Tools.setViewAndChildrenEnabled(find(R.id.ly_checkin4, LinearLayout.class), false);
+            find(R.id.et_ket_checkin4, EditText.class).requestFocus();
+            showInfo("Silahkan Isi Keterangan Batal");
+            find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent();
+                    i.putExtra("alasanBatal",  find(R.id.et_ket_checkin4, EditText.class).getText().toString());
+                    setResult(RESULT_OK, i);
+                    finish();
+                }
+            });
+            return;
+        }
         initToolbar();
         setSpMekanik();
         Tools.setViewAndChildrenEnabled(find(R.id.ly_waktuAmbil, LinearLayout.class), false);
@@ -99,17 +116,6 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             }
         });
 
-        if(getIntent().hasExtra("batal")){
-            find(R.id.et_ket_checkin4, EditText.class).setError("Isi Keterangan Batal");
-            find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                  setResult(RESULT_OK);
-                  finish();
-                }
-            });
-            return;
-        }
         Nson getData = Nson.readJson(getIntentStringExtra("data"));
         Log.d(TAG, "initComponent: " + getData);
 
@@ -124,7 +130,17 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         find(R.id.tv_waktu_checkin4, TextView.class).setOnClickListener(this);
         find(R.id.cb_aggrement_checkin4, CheckBox.class);
         //find(R.id.cb_buangPart_checkin4, CheckBox.class).setChecked(true);
-        find(R.id.cb_konfirmTambah_checkin4, CheckBox.class);
+        find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(buttonView.isChecked()){
+                    find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setEnabled(false);
+                }else{
+                    find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setEnabled(true);
+                }
+            }
+        });
+
         find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -178,7 +194,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 } else if (!isSign) {
                     showWarning("Tanda Tangan Wajib di Input");
                 } else {
-                    saveData("CHECKIN ANTRIAN");
+                    saveData("CHECKIN 4 ANTRIAN");
                 }
 
             }
@@ -207,29 +223,8 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
 
                 args.put("action", "add");
                 args.put("check", "2");
-                args.put("nopol", nson.get("nopol").asString());
-                args.put("jeniskendaraan", nson.get("jenisKendaraan").asString());
-                args.put("nopon", nson.get("nopon").asString());
-                args.put("nama", nson.get("namaPelanggan").asString());
-                args.put("pemilik", nson.get("pemilik").asString());
-                args.put("keluhan", nson.get("keluhan").asString());
-                args.put("km", nson.get("km").asString());
-                args.put("date", currentDateTime());
-                args.put("pekerjaan", nson.get("pekerjaan").asString());
-                args.put("warna", nson.get("warna").asString());
-                args.put("tahun", nson.get("tahun").asString());
-                args.put("tanggalbeli", nson.get("tanggalBeli").asString());
-                args.put("norangka", nson.get("norangka").asString());
-                args.put("nomesin", nson.get("nomesin").asString());
-                args.put("layanan", nson.get("layanan").asString());
-                args.put("layananestimasi", nson.get("layananEstimasi").asString());
-                args.put("total", nson.get("total").asString());
-                args.put("dp", nson.get("dp").asString());
-                args.put("sisa", nson.get("sisa").asString());
-                args.put("tunggu", nson.get("tungguKonfirmasi").asString());
-                args.put("status", nson.get("status").asString());
-                args.put("partbook", nson.get("partbook").asString());
-
+                args.put("id", nson.get("id").asString());
+                args.put("status", status);
                 args.put("mekanik", namaMekanik);
                 args.put("antrian", antrian);
                 args.put("level", levelBbm);
@@ -239,7 +234,6 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 args.put("estiselesai", estiSelesai);
                 args.put("waktuambil", waktuAmbil);
                 args.put("sk", sk);
-                args.put("status", status);
                 //args.put("ttd", ttd);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("checkin"), args));
@@ -248,7 +242,11 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    showSuccess("Pelanggan Di masukkan Ke Daftar Kontrol Layanan");
+                    if(status.equalsIgnoreCase("BATAL CHECKIN 4")){
+                        showSuccess("Layanan di Batalkan, Data Di masukkan Ke Daftar Kontrol Layanan");
+                    }else{
+                        showSuccess("Data Pelanggan Berhasil Di masukkan Ke Daftar Kontrol Layanan");
+                    }
                     setResult(RESULT_OK);
                     finish();
                 } else {
@@ -305,7 +303,6 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                         }
                     });
                 }
-
             }
         });
     }

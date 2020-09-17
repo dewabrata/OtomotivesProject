@@ -61,7 +61,7 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
         etJumlah = findViewById(R.id.et_jumlah_jumlah_harga_part);
         etBiayaJasa = findViewById(R.id.et_jasa_jumlah_harga_part);
 
-        initData( "data", getIntent());
+        initData("data", getIntent());
 
         find(R.id.img_clear, ImageButton.class).setOnClickListener(this);
         find(R.id.img_clear2, ImageButton.class).setOnClickListener(this);
@@ -74,15 +74,17 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
         find(R.id.btn_simpan_jumlah_harga_part, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(find(R.id.et_waktuSet, EditText.class).getText().toString().isEmpty()){
+                if (find(R.id.et_waktuSet, EditText.class).getText().toString().isEmpty()) {
                     find(R.id.et_waktuSet, EditText.class).requestFocus();
                     find(R.id.et_waktuSet, EditText.class).setError("Masukkan Waktu Kerja");
-                }else if(find(R.id.ly_hpp_jumlah_harga_part, TextInputLayout.class).getVisibility() == View.VISIBLE){
-                    if(etHargaJual.isEnabled()){
-                        if(!etHargaJual.getText().toString().isEmpty() && !etHpp.getText().toString().isEmpty()){
+                    return;
+                }
+                if (find(R.id.ly_hpp_jumlah_harga_part, TextInputLayout.class).getVisibility() == View.VISIBLE) {
+                    if (etHargaJual.isEnabled()) {
+                        if (!etHargaJual.getText().toString().isEmpty() && !etHpp.getText().toString().isEmpty()) {
                             int hppPart = Integer.parseInt(etHpp.getText().toString().replaceAll("[^0-9]+", ""));
                             int hargaJualPart = Integer.parseInt(etHargaJual.getText().toString().replaceAll("[^0-9]+", ""));
-                            if(hargaJualPart < hppPart){
+                            if (hargaJualPart < hppPart) {
                                 Messagebox.showDialog(getActivity(), "Konfirmasi", "Harga Jual Kurang Dari Hpp Part", "Lanjut", "Batal", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -96,16 +98,19 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
                                     }
                                 });
                             }
-                        }else{
+                        } else {
                             etHargaJual.setError("Harga Jual Harus Di isi");
                         }
                     }
-                }else if(etBiayaJasa.getText().toString().isEmpty()){
+                    return;
+                }
+                if (etBiayaJasa.getText().toString().isEmpty()) {
                     etBiayaJasa.setError("Biaya Jasa Tidak Boleh Kosong");
                     etBiayaJasa.requestFocus();
-                }else{
-                    nextForm();
+                    return;
                 }
+                nextForm();
+
             }
         });
 
@@ -118,7 +123,7 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
     }
 
     @SuppressLint("SetTextI18n")
-    private void initData(String getIntent, Intent intent){
+    private void initData(String getIntent, Intent intent) {
         Nson nson = Nson.readJson(getIntentStringExtra(intent, getIntent));
         Log.d(TAG, "data : " + nson);
 
@@ -144,9 +149,9 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
 
         if (nson.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE") || nson.get("HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE")) {
             find(R.id.ly_hpp_jumlah_harga_part, TextInputLayout.class).setVisibility(View.VISIBLE);
-            try{
+            try {
                 etHpp.setText("Rp. " + formatRp(nson.get("HPP").asString()));
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             etHargaJual.setEnabled(true);
@@ -176,9 +181,9 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
         String harga = etHargaJual.getText().toString().replaceAll("[^0-9]+", "");
         String jasa = etBiayaJasa.getText().toString().replaceAll("[^0-9]+", "");
         int jumlah = 0;
-        if(etJumlah.getText().toString().isEmpty()){
-           jumlah++;
-        }else {
+        if (etJumlah.getText().toString().isEmpty()) {
+            jumlah++;
+        } else {
             jumlah = Integer.parseInt(etJumlah.getText().toString());
         }
 
@@ -258,7 +263,7 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK && requestCode == REQUEST_CARI_PART){
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CARI_PART) {
             initData("part", data);
         }
     }

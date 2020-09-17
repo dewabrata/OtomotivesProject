@@ -177,6 +177,8 @@ public class LoginActivity extends AppActivity {
                     setSetting("NAMA_USER", nson.get("NAMA_USER").asString());
                     setSetting("TIPE_USER", nson.get("TIPE_USER").asString());
                     setSetting("ACCESS_MENU", nson.get("AKSES_APP").asString());
+                    setSetting("JENIS_KENDARAAN_BENGKEL", nson.get("JENIS_KENDARAAN_BENGKEL").asString());
+                    setSetting("MERK_KENDARAAN_BENGKEL", nson.get("MERK_KENDARAAN").asString());
                     setSetting("session", nson.get("token").asString());
                     setSetting("user", find(R.id.user, EditText.class).getText().toString());
 

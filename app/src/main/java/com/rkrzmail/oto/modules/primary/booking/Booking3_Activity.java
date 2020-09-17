@@ -38,6 +38,7 @@ public class Booking3_Activity extends AppActivity implements View.OnClickListen
     public static final int REQUEST_PART_BERKALA = 18;
     public static final int REQUEST_PART_EXTERNAL = 19;
     public static final int REQUEST_JASA_EXTERNAL = 21;
+    public static final int REQUEST_BATAL = 22;
     private DecimalFormat formatter;
     private Nson partList = Nson.newArray(),
             jasaList = Nson.newArray();
