@@ -1,16 +1,19 @@
 package com.rkrzmail.oto.modules.primary.checkin;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -51,19 +54,27 @@ import static com.rkrzmail.oto.modules.primary.booking.Booking3_Activity.REQUEST
 public class Checkin3_Activity extends AppActivity implements View.OnClickListener {
 
     private static final int REQUEST_LAYANAN = 11;
-    private RecyclerView rvPart, rvJasaLain;
+    private RecyclerView rvPart, rvJasaLain, rvPartWajib;
     public static final String TAG = "Checkin3___";
     private Spinner spLayanan;
     private LinearLayout viewGroup;
+    private AlertDialog alertDialog;
     private Nson
             layananArray = Nson.newArray(),
-            biayaArray = Nson.newArray(),
+            dataLayananList = Nson.newArray(),
             partList = Nson.newArray(),
-            jasaList = Nson.newArray(), dataAccept, lokasiLayananList = Nson.newArray();
+            jasaList = Nson.newArray(),
+            dataAccept,
+            lokasiLayananList = Nson.newArray(),
+            partWajibList = Nson.newArray(),
+            jasaGaransiList = Nson.newArray(),
+            masterPartList = Nson.newArray();
     private String biayaLayanan, namaLayanan;
-    private int countClick = 0, totalHarga = 0, totalPartJasa = 0;
+    private String[] namaPartWajibArray = new String[]{}, namaMasterPartWajibArray = new String[]{};
+    private int countClickPartWajib = 0, totalHarga = 0, totalPartJasa = 0;
     private List<Tools.TimePart> timePartsList = new ArrayList<>();
     private Tools.TimePart dummyTime = Tools.TimePart.parse("00:00:00");
+    private boolean flagPartWajib = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +88,13 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Check-In");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void initToolbarPartWajib(View dialogView) {
+        Toolbar toolbar = dialogView.findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Part Wajib Layanan");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
     private void initComponent() {
@@ -106,26 +124,41 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_btnPart_checkin3, LinearLayout.class), true);
                     find(R.id.btn_lanjut_checkin3, Button.class).setEnabled(true);
                 }
-                for (int i = 0; i < biayaArray.size(); i++) {
-                    if (biayaArray.get(i).get("NAMA_LAYANAN").asString().equalsIgnoreCase(item)) {
+
+                for (int i = 0; i < dataLayananList.size(); i++) {
+                    if (dataLayananList.get(i).get("NAMA_LAYANAN").asString().equalsIgnoreCase(item)) {
+                        if (dataLayananList.get(i).get("LAYANAN_PART").size() > 0) {
+                            for (int j = 0; j < dataLayananList.get(i).get("LAYANAN_PART").size(); j++) {
+                                partWajibList.asArray().addAll(dataLayananList.get(i).get("LAYANAN_PART").asArray());
+                            }
+                        }
+                        if (jasaGaransiList.get(i).get("LAYANAN_GARANSI").size() > 0) {
+                            for (int j = 0; j < dataLayananList.get(i).get("LAYANAN_GARANSI").size(); j++) {
+                                jasaGaransiList.asArray().addAll(dataLayananList.get(i).get("LAYANAN_GARANSI").asArray());
+                            }
+                        }
                         find(R.id.cardView_namaLayanan, CardView.class).setVisibility(View.VISIBLE);
                         try {
-                            if (Tools.isNumeric(biayaArray.get(i).get("BIAYA_PAKET").asString())) {
-                                totalHarga += biayaArray.get(i).get("BIAYA_PAKET").asInteger();
-                                find(R.id.tv_biayaLayanan_checkin, TextView.class).setText("Rp." + formatRp(biayaArray.get(i).get("BIAYA_PAKET").asString()));
+                            if (Tools.isNumeric(dataLayananList.get(i).get("BIAYA_PAKET").asString())) {
+                                totalHarga += dataLayananList.get(i).get("BIAYA_PAKET").asInteger();
+                                find(R.id.tv_biayaLayanan_checkin, TextView.class).setText("Rp." + formatRp(dataLayananList.get(i).get("BIAYA_PAKET").asString()));
                             } else {
                                 find(R.id.tv_biayaLayanan_checkin, TextView.class).setText("");
                             }
                         } catch (Exception e) {
                             Log.d(TAG, "BiayaLayanan: " + e.getMessage());
                         }
-                        find(R.id.tv_namaLayanan_checkin, TextView.class).setText(biayaArray.get(i).get("NAMA_LAYANAN").asString());
-                        lokasiLayananList.add(Nson.newObject().set("EMG", biayaArray.get(i).get("LOKASI_LAYANAN_EMG"))
-                                .set("HOME", biayaArray.get(i).get("LOKASI_LAYANAN_HOME"))
-                                .set("TENDA", biayaArray.get(i).get("LOKASI_LAYANAN_TENDA"))
-                                .set("TENDA", biayaArray.get(i).get("LOKASI_LAYANAN_BENGKEL")));
+                        find(R.id.tv_namaLayanan_checkin, TextView.class).setText(dataLayananList.get(i).get("NAMA_LAYANAN").asString());
+                        lokasiLayananList.add(Nson.newObject().set("EMG", dataLayananList.get(i).get("LOKASI_LAYANAN_EMG"))
+                                .set("HOME", dataLayananList.get(i).get("LOKASI_LAYANAN_HOME"))
+                                .set("TENDA", dataLayananList.get(i).get("LOKASI_LAYANAN_TENDA"))
+                                .set("TENDA", dataLayananList.get(i).get("LOKASI_LAYANAN_BENGKEL")));
                         break;
                     }
+                }
+                Log.d(TAG, "PART_WAJIB : " + partWajibList);
+                if (partWajibList.size() > 0) {
+                    initPartWajibLayanan();
                 }
             }
 
@@ -188,7 +221,49 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         .setText("Rp. " + formatRp(jasaList.get(position).get("HARGA_JASA").asString()));
             }
         });
+    }
 
+    private void initRecylerviewPartWajib(View dialogView) {
+        rvPartWajib = dialogView.findViewById(R.id.recyclerView);
+        rvPartWajib.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvPartWajib.setHasFixedSize(true);
+        Log.d(TAG, "initRecylerviewPartWajib: " + namaPartWajibArray);
+
+        rvPartWajib.setAdapter(new NikitaRecyclerAdapter(partWajibList, R.layout.item_part_wajib_layanan) {
+                    @Override
+                    public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+                        super.onBindViewHolder(viewHolder, position);
+                        if (partWajibList.get(position).get("MASTER_PART").asArray().size() > 0) {
+                            viewHolder.find(R.id.tv_stockPart, TextView.class).setVisibility(View.GONE);
+                            viewHolder.find(R.id.tv_nama_master_part, TextView.class).setText(partWajibList.get(position).get("NAMA_MASTER_PART").asString());
+                            partWajibList = partWajibList.get(0).get("MASTER_PART");
+                            viewHolder.find(R.id.tv_namaPart, TextView.class).setText(partWajibList.get("NAMA_PART").asString());
+                            viewHolder.find(R.id.tv_noPart, TextView.class).setText(partWajibList.get("NOMOR_PART_NOMOR").asString());
+                            viewHolder.find(R.id.tv_merkPart, TextView.class).setText(partWajibList.get("MERK").asString());
+                        } else {
+                            viewHolder.find(R.id.cardView_master_part, CardView.class).setVisibility(View.GONE);
+                            viewHolder.find(R.id.tv_namaPart, TextView.class).setText(partWajibList.get(position).get("NAMA_PART").asString());
+                            viewHolder.find(R.id.tv_noPart, TextView.class).setText(partWajibList.get(position).get("NOMOR_PART_NOMOR").asString());
+                            viewHolder.find(R.id.tv_stockPart, TextView.class).setText(partWajibList.get(position).get("STOCK").asString());
+                            viewHolder.find(R.id.tv_merkPart, TextView.class).setText(partWajibList.get(position).get("MERK").asString());
+                        }
+                    }
+
+                    @Override
+                    public int getItemCount() {
+                        countClickPartWajib = partWajibList.size();
+                        return countClickPartWajib;
+                    }
+                }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Nson parent, View view, int position) {
+                        Intent i = new Intent(getActivity(), JumlahHargaPart_Activity.class);
+                        i.putExtra("data", parent.get(position).toJson());
+                        i.putExtra("partWajib", "");
+                        startActivityForResult(i, Booking3_Activity.REQUEST_HARGA_PART);
+                    }
+                })
+        );
     }
 
     private void setSelanjutnya(final String status, final String alasanBatal) {
@@ -241,7 +316,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         setResult(RESULT_OK);
                         finish();
                     } else if (status.equalsIgnoreCase("BATAL CHECKIN 3")) {
-                        if(!alasanBatal.equals("")){
+                        if (!alasanBatal.equals("")) {
                             showSuccess("Layanan Di Batalkan Pelanggan, Data Di Masukkan Ke Kontrol Layanan");
                             setResult(RESULT_OK);
                             finish();
@@ -266,7 +341,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             }
         });
     }
-    
+
     private void componentValidation() {
         find(R.id.cb_estimasi_checkin3, CheckBox.class).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -313,8 +388,8 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     result = result.get("data");
-                    biayaArray.asArray().addAll(result.asArray());
-                    Log.d(TAG, "List Layanan Data : " + biayaArray);
+                    dataLayananList.asArray().addAll(result.asArray());
+                    Log.d(TAG, "List Layanan Data : " + dataLayananList);
                     if (result.asArray().size() == 0) {
                         showInfo("Layanan Belum Tercatatkan");
                         showInfoDialog("Tambah Layanan ? ", new DialogInterface.OnClickListener() {
@@ -339,6 +414,26 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 }
             }
         });
+    }
+
+    private void initPartWajibLayanan() {
+        if (partWajibList.size() > 0) {
+            flagPartWajib = true;
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            LayoutInflater inflater = getLayoutInflater();
+            View dialogView = inflater.inflate(R.layout.activity_list_basic, null);
+            builder.setView(dialogView);
+            builder.setCancelable(true);
+
+            initToolbarPartWajib(dialogView);
+            initRecylerviewPartWajib(dialogView);
+
+            builder.setCancelable(false);
+            builder.create();
+            alertDialog = builder.show();
+        } else {
+            showError("PART WAJIB NULL");
+        }
     }
 
     @Override
@@ -439,6 +534,24 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         rvPart.getAdapter().notifyDataSetChanged();
                         break;
                     case Booking3_Activity.REQUEST_HARGA_PART:
+                        if (flagPartWajib) {
+                            for (int j = 0; j < partWajibList.size(); j++) {
+                                if (!partWajibList.get(j).get("NAMA_PART").equals("N") && partWajibList.get(j).get("NAMA_PART").asString().contains(namaPartWajibArray[j])) {
+                                    partWajibList.asArray().remove(j);
+                                    rvPartWajib.getAdapter().notifyDataSetChanged();
+                                    break;
+                                }
+                                if (!partWajibList.get(j).get("MASTER_PART").equals("N") && partWajibList.get(j).get("MASTER_PART").asString().contains(namaMasterPartWajibArray[j])) {
+                                    partWajibList.asArray().remove(j);
+                                    rvPartWajib.getAdapter().notifyDataSetChanged();
+                                    break;
+                                }
+                            }
+                            countClickPartWajib--;
+                            if (countClickPartWajib == 0) {
+                                alertDialog.dismiss();
+                            }
+                        }
                         dataAccept = Nson.readJson(getIntentStringExtra(data, "data"));
                         Tools.TimePart waktu4 = Tools.TimePart.parse(dataAccept.get("WAKTU").asString());
                         timePartsList.add(waktu4);
@@ -461,7 +574,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                     find(R.id.et_totalBiaya_checkin3, EditText.class).setText("Rp." + formatRp(total));
                 }
                 Log.d(TAG, "Timepartlist : " + timePartsList);
-                for(Tools.TimePart waktu : timePartsList){
+                for (Tools.TimePart waktu : timePartsList) {
                     dummyTime = dummyTime.add(waktu);
                 }
             }

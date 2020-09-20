@@ -54,6 +54,7 @@ import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
 import com.rkrzmail.oto.modules.registrasi_bengkel.Referal_Activity;
 import com.rkrzmail.oto.modules.sparepart.PenjualanPart_Activity;
 import com.rkrzmail.oto.modules.sparepart.Spareparts_Activity;
+import com.rkrzmail.oto.modules.sparepart.part_keluar.PartKeluar_Activity;
 import com.rkrzmail.oto.modules.sparepart.stock_opname.HistoryStockOpname_Activity;
 import com.rkrzmail.oto.modules.sparepart.tugas_part.TugasPart_Activity;
 import com.rkrzmail.oto.modules.user.User_Activity;
@@ -251,7 +252,7 @@ public class MenuActivity extends AppActivity {
         }else if(item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_ASET)){
 
         }
-        //Pengaturan
+            //Pengaturan
         else if(item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER)){
             Intent intent = new Intent(MenuActivity.this, User_Activity.class);
             startActivity(intent);
@@ -277,6 +278,9 @@ public class MenuActivity extends AppActivity {
             startActivity(intent);
         }else if(item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_TENDA)){
             Intent intent = new Intent(MenuActivity.this, Tenda_Activity.class);
+            startActivity(intent);
+        }else if(item.getTitle().toString().equalsIgnoreCase(PART_KELUAR)){
+            Intent intent = new Intent(MenuActivity.this, PartKeluar_Activity.class);
             startActivity(intent);
         }
         //Discount
@@ -524,6 +528,7 @@ public class MenuActivity extends AppActivity {
             subMenu.add(PENGATURAN_USER_REKENING_BANK);
             subMenu.add(PENGATURAN_USER_LOKASI_PARTS);
             subMenu.add(PENGATURAN_USER_TENDA);
+            subMenu.add(PART_KELUAR);
         }
         if (getAccess(DISCOUNT)) {
             subMenu = menu.addSubMenu(DISCOUNT);
