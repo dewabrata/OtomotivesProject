@@ -195,6 +195,7 @@ public class CariPart_Activity extends AppActivity {
         });
     }
 
+
     SearchView mSearchView;
 
     @Override
