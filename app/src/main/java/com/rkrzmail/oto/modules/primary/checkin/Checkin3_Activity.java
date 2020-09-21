@@ -68,9 +68,8 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             lokasiLayananList = Nson.newArray(),
             partWajibList = Nson.newArray(),
             jasaGaransiList = Nson.newArray(),
-            masterPartList = Nson.newArray();
+            daftarPartDummy = Nson.newArray();
     private String biayaLayanan, namaLayanan;
-    private String[] namaPartWajibArray = new String[]{}, namaMasterPartWajibArray = new String[]{};
     private int countClickPartWajib = 0, totalHarga = 0, totalPartJasa = 0;
     private List<Tools.TimePart> timePartsList = new ArrayList<>();
     private Tools.TimePart dummyTime = Tools.TimePart.parse("00:00:00");
@@ -227,8 +226,6 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
         rvPartWajib = dialogView.findViewById(R.id.recyclerView);
         rvPartWajib.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvPartWajib.setHasFixedSize(true);
-        Log.d(TAG, "initRecylerviewPartWajib: " + namaPartWajibArray);
-
         rvPartWajib.setAdapter(new NikitaRecyclerAdapter(partWajibList, R.layout.item_part_wajib_layanan) {
                     @Override
                     public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
@@ -237,6 +234,8 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                             viewHolder.find(R.id.tv_stockPart, TextView.class).setVisibility(View.GONE);
                             viewHolder.find(R.id.tv_nama_master_part, TextView.class).setText(partWajibList.get(position).get("NAMA_MASTER_PART").asString());
                             partWajibList = partWajibList.get(0).get("MASTER_PART");
+                            daftarPartDummy.asArray().addAll(partWajibList.asArray());
+                            Log.d(TAG, "DUMMY_PART: " + daftarPartDummy);
                             viewHolder.find(R.id.tv_namaPart, TextView.class).setText(partWajibList.get("NAMA_PART").asString());
                             viewHolder.find(R.id.tv_noPart, TextView.class).setText(partWajibList.get("NOMOR_PART_NOMOR").asString());
                             viewHolder.find(R.id.tv_merkPart, TextView.class).setText(partWajibList.get("MERK").asString());
@@ -536,12 +535,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                     case Booking3_Activity.REQUEST_HARGA_PART:
                         if (flagPartWajib) {
                             for (int j = 0; j < partWajibList.size(); j++) {
-                                if (!partWajibList.get(j).get("NAMA_PART").equals("N") && partWajibList.get(j).get("NAMA_PART").asString().contains(namaPartWajibArray[j])) {
-                                    partWajibList.asArray().remove(j);
-                                    rvPartWajib.getAdapter().notifyDataSetChanged();
-                                    break;
-                                }
-                                if (!partWajibList.get(j).get("MASTER_PART").equals("N") && partWajibList.get(j).get("MASTER_PART").asString().contains(namaMasterPartWajibArray[j])) {
+                                if (partWajibList.get(j).get("NAMA_PART").asString().contains(daftarPartDummy.get(j).get("NAMA_PART").asString())) {
                                     partWajibList.asArray().remove(j);
                                     rvPartWajib.getAdapter().notifyDataSetChanged();
                                     break;

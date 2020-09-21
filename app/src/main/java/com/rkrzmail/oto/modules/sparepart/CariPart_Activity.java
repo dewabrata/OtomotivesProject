@@ -49,6 +49,7 @@ public class CariPart_Activity extends AppActivity {
     private Toolbar toolbar;
     int countForCariPart = 0;
     private String cari;
+    private Nson partLokasiPart = Nson.newArray();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +82,8 @@ public class CariPart_Activity extends AppActivity {
             getSupportActionBar().setTitle("Cari Part Bengkel");
             flagBengkel = true;
             flag = false;
+        }else if(getIntent().hasExtra("cari_part_lokasi")){
+            getSupportActionBar().setTitle("Cari Part Bengkel");
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -187,6 +190,29 @@ public class CariPart_Activity extends AppActivity {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
+                    rvCariPart.getAdapter().notifyDataSetChanged();
+                } else {
+                    showError("Gagal Mencari Part");
+                }
+            }
+        });
+    }
+
+    private void cariPartWithLokasi(){
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("caripart"), args));
+
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    partLokasiPart.asArray().clear();
+                    partLokasiPart.asArray().addAll(result.get("data").asArray());
                     rvCariPart.getAdapter().notifyDataSetChanged();
                 } else {
                     showError("Gagal Mencari Part");

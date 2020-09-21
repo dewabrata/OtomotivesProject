@@ -219,6 +219,8 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                 args.put("persetujuan", find(R.id.cb_setuju_regist, CheckBox.class).isChecked() ? "YA" : "TIDAK");
                 args.put("alamat", etAlamat.getText().toString());
                 args.put("daerah", etKotaKab.getText().toString());
+                args.put("merk_kendaraan", spMerkKendaraan.getSelectedItemsAsString());
+                args.put("tanggal_regist", currentDateTime());
                 //args.put("lokasi", tvLokasi.getText().toString());
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("regristrasi"), args));
             }

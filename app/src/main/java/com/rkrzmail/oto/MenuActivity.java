@@ -127,6 +127,7 @@ public class MenuActivity extends AppActivity {
     private final String PENGATURAN = "PENGATURAN";
     private final String DISCOUNT = "DISCOUNT";
     private final String KOMISI = "KOMISI";
+    private final String SARAN = "SARAN";
     private final String PENGATURAN_USER = "USER";
     private final String PENGATURAN_PENUGASAN = "PENUGASAN MEKANIK";
     private final String PENGATURAN_USER_LAYANAN= "LAYANAN";
@@ -529,6 +530,7 @@ public class MenuActivity extends AppActivity {
             subMenu.add(PENGATURAN_USER_LOKASI_PARTS);
             subMenu.add(PENGATURAN_USER_TENDA);
             subMenu.add(PART_KELUAR);
+            subMenu.add(SARAN);
         }
         if (getAccess(DISCOUNT)) {
             subMenu = menu.addSubMenu(DISCOUNT);

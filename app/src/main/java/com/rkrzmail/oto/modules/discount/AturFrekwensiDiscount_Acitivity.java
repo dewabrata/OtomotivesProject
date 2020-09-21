@@ -30,10 +30,10 @@ import java.util.Map;
 public class AturFrekwensiDiscount_Acitivity extends AppActivity implements View.OnClickListener {
 
     private TextView tvTgl;
-    private EditText etFrekwensi, etDisc;
-    private Spinner spLayanan;
+    private EditText etDisc;
+    private Spinner spLayanan, spFrekwensi;
     private List<String> layananList = new ArrayList<>();
-    private String layanan = "";
+    private String layanan = "", frekwensi = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,17 +54,25 @@ public class AturFrekwensiDiscount_Acitivity extends AppActivity implements View
 
         tvTgl = findViewById(R.id.tv_tglEffect_freDisc);
         etDisc = findViewById(R.id.et_disc_freDisc);
-        etFrekwensi = findViewById(R.id.et_frekwensi_freDisc);
+        spFrekwensi = findViewById(R.id.sp_frekwensi);
         spLayanan = findViewById(R.id.sp_paketLayanan_freDisc);
 
         etDisc.addTextChangedListener(new PercentFormat(etDisc));
         tvTgl.setOnClickListener(this);
         try{
-            setSpLayanan();
             loadData();
         }catch (Exception e){
             Log.d("Exception__", "initComponent: " + e.getMessage());
         }
+    }
+
+    private void initSpinner(){
+        List<String> frekwensiList = new ArrayList<>();
+        for (int i = 1; i <= 100; i++) {
+            frekwensiList.add(String.valueOf(i));
+        }
+        setSpinnerOffline(frekwensiList, spFrekwensi, frekwensi);
+        setSpLayanan();
     }
 
     private void setSpLayanan() {
@@ -106,7 +114,7 @@ public class AturFrekwensiDiscount_Acitivity extends AppActivity implements View
             layanan = nson.get("PAKET_LAYANAN").asString();
             tvTgl.setText(nson.get("TANGGAL").asString());
             etDisc.setText(nson.get("DISCOUNT").asString());
-            etFrekwensi.setText(nson.get("TANGGAL").asString());
+            frekwensi = nson.get("FREKWENSI").asString();
 
             find(R.id.btn_hapus, Button.class).setVisibility(View.VISIBLE);
             find(R.id.btn_hapus, Button.class).setOnClickListener(new View.OnClickListener() {
@@ -173,6 +181,8 @@ public class AturFrekwensiDiscount_Acitivity extends AppActivity implements View
                 }
             });
         }
+
+        initSpinner();
     }
 
     private void saveData() {
@@ -186,7 +196,7 @@ public class AturFrekwensiDiscount_Acitivity extends AppActivity implements View
                 args.put("action", "add");
                 args.put("tanggal", parseTgl);
                 args.put("paket", spLayanan.getSelectedItem().toString());
-                args.put("frekuensi", etFrekwensi.getText().toString());
+                //args.put("frekuensi", etFrekwensi.getText().toString());
                 args.put("diskon", etDisc.getText().toString());
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturfrekuensidiskon"), args));
@@ -217,7 +227,7 @@ public class AturFrekwensiDiscount_Acitivity extends AppActivity implements View
                 args.put("id", nson.get("ID").asString());
                 args.put("tanggal", parseTgl);
                 args.put("paket", spLayanan.getSelectedItem().toString());
-                args.put("frekuensi", etFrekwensi.getText().toString());
+                //args.put("frekuensi", etFrekwensi.getText().toString());
                 args.put("diskon", etDisc.getText().toString());
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturfrekuensidiskon"), args));

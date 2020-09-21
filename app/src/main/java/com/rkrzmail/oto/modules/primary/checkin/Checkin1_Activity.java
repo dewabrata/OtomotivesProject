@@ -381,6 +381,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     result = result.get("data").get(0);
                     Nson nson = Nson.newObject();
                     nson.set("id", result.get("ID").asString());
+                    nson.set("jeniskendaraan", jenisKendaraan);
                     nson.set("varianKendaraan", varianKendaraan);
                     nson.set("tahunProduksi", tahunProduksi);
 
