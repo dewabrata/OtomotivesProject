@@ -168,6 +168,7 @@
         <activity android:name=".gmod.Part_DiterimaActivity" />
         <activity android:name=".gmod.Stock_OpnameActivity" />
         <activity android:name=".gmod.Penampung_Item_DetailActivity" />
+        <activity android:name=".gmod.MyCode" />
         <activity android:name=".modules.penugasan.AturPenugasan_Activity" />
         <activity android:name=".modules.sparepart.lokasi_part.LokasiPart_Activity" />
         <activity android:name=".MainActivity">

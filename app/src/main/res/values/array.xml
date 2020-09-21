@@ -214,6 +214,12 @@
         <item>DISPLAY</item>
     </string-array>
 
+    <string-array name="lokasi_penyesuaian">
+        <item>LOKASI</item>
+        <item>LOKASI 1</item>
+        <item>LOKASI 2</item>
+    </string-array>
+
     <string-array name="garansi_bengkel">
         <item>TIDAK</item>
         <item>YA</item>

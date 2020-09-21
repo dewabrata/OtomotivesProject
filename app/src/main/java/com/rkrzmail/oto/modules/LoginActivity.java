@@ -142,7 +142,7 @@ public class LoginActivity extends AppActivity {
         } else if (phone.startsWith("0")) {
             phone = "62" + phone.substring(1);
         }
-
+        phone = Utility.replace(phone," ","");
         return phone.trim();
     }
 
@@ -153,7 +153,7 @@ public class LoginActivity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "Login");
-                args.put("user", find(R.id.user, EditText.class).getText().toString().replaceAll("[^0-9]+", ""));
+                args.put("user", formatPhone(  find(R.id.user, EditText.class).getText().toString().replaceAll("[^0-9]+", "")));
                 args.put("password", find(R.id.password, EditText.class).getText().toString());
 
                 sResult = (InternetX.postHttpConnection(AppApplication.getBaseUrlV3("login"), args));
