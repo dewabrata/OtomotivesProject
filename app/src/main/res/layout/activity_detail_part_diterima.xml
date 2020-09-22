@@ -96,7 +96,9 @@
                     android:layout_gravity="center"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="20dp"
-                    android:src="@drawable/barcode" />
+                    android:backgroundTint="@color/transparent"
+                    android:src="@drawable/barcode"
+                    tools:ignore="UnusedAttribute" />
 
             </LinearLayout>
 
@@ -129,6 +131,7 @@
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
                     android:layout_gravity="center"
+                    android:textColor="@color/grey_900"
                     android:text="DISCOUNT BELI"/>
 
                 <android.support.design.widget.TextInputLayout
@@ -194,26 +197,36 @@
                     android:id="@+id/ly_lokasi_simpan"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="@dimen/paddingMedium"
+                    android:gravity="center"
                     android:orientation="horizontal"
-                    android:background="@drawable/border_solid"
-                    android:padding="10dp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="10dp">
+                    android:paddingStart="@dimen/paddingMedium"
+                    android:paddingEnd="@dimen/paddingMedium">
 
                     <TextView
-                        android:layout_width="150dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="LOKASI SIMPAN"
                         android:textStyle="bold"
+                        android:textColor="@color/grey_900"
+                        android:layout_weight="3"
                         android:textSize="14sp"/>
 
-                    <Spinner
-                        android:id="@+id/sp_lokasiSimpan_terimaPart"
+                    <RelativeLayout
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textAlignment="center"
-                        android:entries="@array/lokasi_simpan" />
+                        android:layout_height="34dp"
+                        android:layout_weight="6"
+                        android:background="@drawable/background_edittext">
+
+                        <Spinner
+                            android:id="@+id/sp_lokasiSimpan_terimaPart"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAlignment="center"/>
+
+                    </RelativeLayout>
+
 
                 </LinearLayout>
 

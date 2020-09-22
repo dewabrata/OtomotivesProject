@@ -82,18 +82,27 @@ public class CariPart_Activity extends AppActivity {
             getSupportActionBar().setTitle("Cari Part Bengkel");
             flagBengkel = true;
             flag = false;
-        }else if(getIntent().hasExtra("cari_part_lokasi")){
+        } else if (getIntent().hasExtra("cari_part_lokasi")) {
             getSupportActionBar().setTitle("Cari Part Bengkel");
+            flag = true;
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initComponent() {
         initToolbar();
-        if (countForCariPart == 0) {
-            cariPart("");
+        if(getIntent().hasExtra("cari_part_lokasi")){
+            initRecylerViewCarPartLokasi();
+            cariPartWithLokasi();
+        }else{
+            if (countForCariPart == 0) {
+                cariPart("");
+            }
+            initRecylerviewCariPart();
         }
+    }
 
+    private void initRecylerviewCariPart() {
         rvCariPart = (RecyclerView) findViewById(R.id.recyclerView);
         rvCariPart.setLayoutManager(new LinearLayoutManager(this));
         rvCariPart.setHasFixedSize(true);
@@ -147,11 +156,40 @@ public class CariPart_Activity extends AppActivity {
         );
     }
 
-    private void cariPart(final String cari) {
+    private void initRecylerViewCarPartLokasi() {
+        rvCariPart = (RecyclerView) findViewById(R.id.recyclerView);
+        rvCariPart.setLayoutManager(new LinearLayoutManager(this));
+        rvCariPart.setHasFixedSize(true);
+        rvCariPart.setAdapter(new NikitaRecyclerAdapter(partLokasiPart, R.layout.item_daftar_cari_part) {
+                    @Override
+                    public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+                        super.onBindViewHolder(viewHolder, position);
+                        viewHolder.find(R.id.tv_cari_merkPart, TextView.class).setText(partLokasiPart.get(position).get("MERK").asString());
+                        viewHolder.find(R.id.tv_cari_namaPart, TextView.class).setText(partLokasiPart.get(position).get("NAMA_PART").asString());
+                        viewHolder.find(R.id.tv_cari_noPart, TextView.class).setText(partLokasiPart.get(position).get("NO_PART").asString());
+                        viewHolder.find(R.id.tv_cari_stockPart, TextView.class).setText(partLokasiPart.get(position).get("STOCK_RUANG_PART").asString());
+                        if(!partLokasiPart.get(position).get("LOKASI").asString().equals("*")){
+                            viewHolder.find(R.id.tv_cari_pending, TextView.class).setText(partLokasiPart.get(position).get("LOKASI").asString());
+                        }else{
+                            viewHolder.find(R.id.tv_cari_pending, TextView.class).setText("");
+                        }
+                    }
 
+                }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Nson parent, View view, int position) {
+                        Intent intent = new Intent();
+                        intent.putExtra("part", partLokasiPart.get(position).toJson());
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+                })
+        );
+    }
+
+    private void cariPart(final String cari) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -198,14 +236,17 @@ public class CariPart_Activity extends AppActivity {
         });
     }
 
-    private void cariPartWithLokasi(){
+    private void cariPartWithLokasi() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("caripart"), args));
-
+                args.put("action", "view");
+                args.put("search", cari);
+                args.put("spec", "Bengkel");
+                args.put("lokasi", "Ruang Part");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewsparepart"), args));
             }
 
             @Override
@@ -253,6 +294,7 @@ public class CariPart_Activity extends AppActivity {
             public boolean onQueryTextSubmit(String query) {
                 cari = query;
                 if (flag) {
+                    cariPartWithLokasi();
                     if (flagGlobal) {
                         countForCariPart = 2;
                         cariPart(query);

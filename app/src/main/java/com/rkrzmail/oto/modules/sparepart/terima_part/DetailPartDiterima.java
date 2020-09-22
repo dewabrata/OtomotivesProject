@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.sparepart.terima_part;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -40,6 +41,8 @@ import com.rkrzmail.srv.RupiahFormat;
 import com.rkrzmail.utils.Tools;
 
 import java.text.NumberFormat;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -53,9 +56,10 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
     private EditText txtNoPart, txtNamaPart, txtJumlah, txtHargaBeliUnit, etDiscRp, etDiscPercent, etHargaBersih, etPenempatan;
     private RecyclerView rvTerimaPart;
     private Nson partAvailableList = Nson.newArray();
-    private String scanResult, penempatan;
+    private String scanResult, penempatan, lokasiPart = "", merkPart = "";
     private int jumlahAllPart = 0, count = 0, partId;
     private boolean isDelete = false;
+    private String kodeFolder = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -302,6 +306,8 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
         dataAdd.set("HARGA_BELI", txtHargaBeliUnit.getText().toString());
         dataAdd.set("NET", etHargaBersih.getText().toString());
         dataAdd.set("PART_ID", partId);
+        dataAdd.set("KODE", kodeFolder);
+        dataAdd.set("MERK", merkPart);
 
         if (etDiscPercent.isEnabled()) {
             dataAdd.set("DISCOUNT", etDiscPercent.getText().toString());
@@ -327,16 +333,22 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
         rvTerimaPart.setHasFixedSize(true);
         rvTerimaPart.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_detail_terima_part) {
                     @Override
-                    public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+                    public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
                         super.onBindViewHolder(viewHolder, position);
                         viewHolder.find(R.id.tv_noPart_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
                         viewHolder.find(R.id.tv_namaPart_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("NAMA_PART").asString());
                         viewHolder.find(R.id.tv_jumlah_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("JUMLAH").asString());
-                        viewHolder.find(R.id.tv_net_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("NET").asString());
-                        viewHolder.find(R.id.tv_harga_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("HARGA_BELI").asString());
-                        viewHolder.find(R.id.tv_disc_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("DISCOUNT").asString());
+                        viewHolder.find(R.id.tv_lokasi_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("LOKASI_SIMPAN").asString());
+                        viewHolder.find(R.id.tv_folder_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("KODE").asString());
                         viewHolder.find(R.id.tv_merk_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("MERK").asString());
 
+                        viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                nListArray.asArray().remove(position);
+                                notifyItemRemoved(position);
+                            }
+                        });
                     }
                 }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                     @Override
@@ -397,7 +409,7 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_search) {
             Intent i = new Intent(this, CariPart_Activity.class);
-            i.putExtra("bengkel", "");
+            i.putExtra("cari_part_lokasi", "");
             startActivityForResult(i, REQUEST_CARI_PART);
         }
         return true;
@@ -423,37 +435,20 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
         }
     }
 
-    private void viewPartAvailable() {
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
-
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("flag", "TERALOKASI");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlokasipart"), args));
-            }
-
-            @Override
-            public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    for (int i = 0; i < result.size(); i++) {
-                        partAvailableList.add(Nson.newObject()
-                                .set("PART_ID", result.get("data").get(i).get("PART_ID"))
-                                .set("NO_PART", result.get("data").get(i).get("NO_PART"))
-                                .set("LOKASI", result.get("data").get(i).get("LOKASI"))
-                                .set("PENEMPATAN", result.get("data").get(i).get("PENEMPATAN")));
-                    }
-                    Log.d(TAG, "Lokasi Part : " + partAvailableList);
-                }
-            }
-        });
-    }
-
-    private void setSpinnerLokasiSimpan() {
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.lokasi_simpan));
+    private void setSpinnerLokasiSimpan(String lokasi) {
+        List<String> lokasiList = Arrays.asList(getResources().getStringArray(R.array.lokasi_simpan_terima_part));
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, lokasiList);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerLokasiSimpan.setAdapter(spinnerAdapter);
+        if(!lokasi.equals("")){
+            for (int i = 0; i < spinnerLokasiSimpan.getCount(); i++) {
+                if(spinnerLokasiSimpan.getItemAtPosition(i).equals(lokasi)){
+                    spinnerLokasiSimpan.setSelection(i);
+                    spinnerLokasiSimpan.setEnabled(true);
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -462,16 +457,14 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
         if (requestCode == REQUEST_CARI_PART && resultCode == RESULT_OK) {
             Nson n = Nson.readJson(getIntentStringExtra(data, "part"));
             partId = n.get("PART_ID").asInteger();
+            lokasiPart = n.get("LOKASI").asString();
+            penempatan = n.get("PENEMPATAN").asString();
+            kodeFolder = n.get("KODE").asString();
+            merkPart = n.get("MERK").asString();
             txtNoPart.setText(n.get("NO_PART").asString());
             txtNamaPart.setText(n.get("NAMA_PART").asString());
-            viewPartAvailable();
-            setSpinnerLokasiSimpan();
-            if (partAvailableList.asArray().contains(partId)) {
-                showInfo("TERSEDIA CUY nih : " + partId);
-                spinnerLokasiSimpan.setSelection(Tools.getIndexSpinner(spinnerLokasiSimpan, partAvailableList.get("LOKASI").asString()));
-                etPenempatan.setText(partAvailableList.get("PENEMPATAN").asString());
-            }
-
+            setSpinnerLokasiSimpan(lokasiPart);
+            etPenempatan.setText(penempatan);
         }
 
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);

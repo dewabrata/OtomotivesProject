@@ -56,7 +56,7 @@ public class AturPenjualanPart_Activity extends AppActivity {
         find(R.id.btn_lanjut_jualPart).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               if (find(R.id.et_namaPelanggan_jualPart, EditText.class).getText().toString().isEmpty()) {
+               if (find(R.id.et_namaPelanggan_jualPart, EditText.class).getText().toString().isEmpty() || find(R.id.et_namaPelanggan_jualPart, EditText.class).getText().toString().length() < 5) {
                     find(R.id.et_namaPelanggan_jualPart, EditText.class).setError(ERROR);
                     find(R.id.et_namaPelanggan_jualPart, EditText.class).requestFocus();
                 }else{
@@ -143,10 +143,9 @@ public class AturPenjualanPart_Activity extends AppActivity {
             @Override
             public Nson onFindNson(Context context, String bookTitle) {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "namnop");
+                args.put("action", "Pelanggan");
                 args.put("nama", bookTitle);
-
-                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("nomorponsel"), args));
+                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("datapelanggan"), args));
                 return result.get("data");
             }
 

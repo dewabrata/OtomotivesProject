@@ -51,7 +51,7 @@ public class DetailTerimaPart_Activity extends AppActivity {
 
         rvTerimaPart.setLayoutManager(new LinearLayoutManager(this));
         rvTerimaPart.setHasFixedSize(true);
-        rvTerimaPart.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_detail_terima_part) {
+        rvTerimaPart.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_part_di_terima) {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);

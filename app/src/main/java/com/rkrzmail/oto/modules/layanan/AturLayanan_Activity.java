@@ -62,7 +62,13 @@ public class AturLayanan_Activity extends AppActivity {
             namaLayanan = "",
             idPrincipal = "",
             namaPrincipal = "",
-            jenisKendaraan = "", kendaraan = "", merk = "", model = "", varian = "", keterangan = "", item = "";
+            jenisKendaraan = "",
+            kendaraan = "",
+            merk = "",
+            model = "",
+            varian = "",
+            keterangan = "",
+            item = "", garansi = "";
     private int maxDisc = 0, size = 0;
     private boolean isDiscList, isPaket = false, isAfterService = false, isRecall = false, isOtomotives = false; //true for discPart, false for discJasa
 
@@ -228,7 +234,6 @@ public class AturLayanan_Activity extends AppActivity {
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_garansi, LinearLayout.class), false);
                 }
                 String item = parent.getItemAtPosition(position).toString();
-
                 if (item.equalsIgnoreCase("PAKET LAYANAN")) {
                     Tools.setViewAndChildrenEnabled(find(R.id.parent_ly_layanan, LinearLayout.class), true);
                     spNamaPrincipal.setEnabled(false);
@@ -280,6 +285,10 @@ public class AturLayanan_Activity extends AppActivity {
                             model = dataLayananList.get(i).get("MODEL").asString();
                             varian = dataLayananList.get(i).get("VARIAN").asString();
                             keterangan = dataLayananList.get(i).get("KETERANGAN_LAYANAN").asString();
+                            if(dataLayananList.get(i).get("GARANSI").asString().equals("BERSAMA")){
+                                find(R.id.sp_garansi_atur_layanan, Spinner.class).setSelection(Tools.getIndexSpinner( find(R.id.sp_garansi_atur_layanan, Spinner.class), "YA"));
+                                find(R.id.et_feeGB_layanan, EditText.class).setText(dataLayananList.get(i).get("FEE_NON_PAKET").asString());
+                            }
                             break;
                         }
                     }
@@ -535,13 +544,6 @@ public class AturLayanan_Activity extends AppActivity {
                             }
                         }
                     }
-                } else {
-                    showInfoDialog("Gagal Load Nama Principal, Muat Ulang ?", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
-                    });
                 }
             }
         });

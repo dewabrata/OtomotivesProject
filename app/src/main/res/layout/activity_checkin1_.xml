@@ -18,25 +18,50 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView_keluhan"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp">
 
-                <EditText
-                    android:id="@+id/et_keluhan_checkin1"
-                    android:layout_width="match_parent"
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
                     android:layout_height="wrap_content"
-                    android:gravity="top|left"
-                    android:hint="KELUHAN"
-                    android:inputType="textMultiLine|textCapSentences"
-                    android:maxLength="200"
-                    android:textSize="14sp" />
+                    android:layout_marginEnd="5dp">
 
-            </android.support.design.widget.TextInputLayout>
+                    <EditText
+                        android:id="@+id/et_keluhan_checkin1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="top|left"
+                        android:hint="KELUHAN"
+                        android:inputType="textMultiLine|textCapSentences"
+                        android:maxLines="1"
+                        android:textSize="14sp" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/fab_tambah_keluhan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@android:drawable/ic_input_add"
+                    app:backgroundTint="@color/purple_900" />
+
+            </LinearLayout>
 
             <FrameLayout
                 android:layout_width="match_parent"

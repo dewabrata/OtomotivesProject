@@ -26,7 +26,8 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:label">
-        <activity android:name=".modules.Otp_Activity"></activity>
+        <activity android:name=".modules.sparepart.part_keluar.DetailPartKeluar_Activity"></activity>
+        <activity android:name=".modules.Otp_Activity" />
         <activity android:name=".modules.primary.DetailKontrolBooking_Activity" />
         <activity android:name=".modules.layanan.TambahLayanan" />
         <activity android:name=".modules.komisi.AturKomisiPart_Activity" />
@@ -82,7 +83,7 @@
         <activity android:name=".modules.primary.checkin.Checkin1_Activity" />
         <activity android:name=".modules.sparepart.tugas_part.TugasPart_Activity" />
         <activity android:name=".modules.profile.ProfileBengkel_Activity" />
-        <activity android:name=".modules.sparepart.part_keluar.PengisianPartKeluar_Activity" />
+        <activity android:name=".modules.sparepart.part_keluar.Jumlah_PartKeluar_Activity" />
         <activity android:name=".modules.sparepart.part_keluar.PartKeluar_Activity" />
         <activity android:name=".modules.sparepart.DaftarJualPart_Activity" />
         <activity android:name=".modules.sparepart.DetailJualPart_Activity" />

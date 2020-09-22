@@ -17,7 +17,7 @@ import com.rkrzmail.oto.R;
 
 import java.util.Map;
 
-public class PengisianPartKeluar_Activity extends AppActivity {
+public class Jumlah_PartKeluar_Activity extends AppActivity {
 
 
     @Override

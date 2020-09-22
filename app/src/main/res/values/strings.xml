@@ -232,6 +232,13 @@
         <item>DISPLAY</item>
     </string-array>
 
+    <string-array name="lokasi_simpan_terima_part">
+        <item>*</item>
+        <item>RUANG PART</item>
+        <item>GUDANG</item>
+        <item>DISPLAY</item>
+    </string-array>
+
     <string-array name="penempatan">
         <item>PALET001</item>
 

@@ -53,7 +53,9 @@ public class PartKeluar_Activity extends AppActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(getActivity(), CariPart_Activity.class), 10);
+                Intent i = new Intent(getActivity(), CariPart_Activity.class);
+                i.putExtra("bengkel", "");
+                startActivityForResult(i, 10);
             }
         });
 
@@ -112,7 +114,7 @@ public class PartKeluar_Activity extends AppActivity {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case 10:
-                    Intent i = new Intent(getActivity(), PengisianPartKeluar_Activity.class);
+                    Intent i = new Intent(getActivity(), Jumlah_PartKeluar_Activity.class);
                     i.putExtra("part", getIntentStringExtra(data, "part"));
                     startActivityForResult(i, 11);
                     break;

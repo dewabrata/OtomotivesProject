@@ -245,6 +245,8 @@ public class AturDiscountLayanan_Activity extends AppActivity implements View.On
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
+                args.put("spec", "Bengkel");
+                args.put("status", "AKTIF");
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlayanan"), args));
             }
 

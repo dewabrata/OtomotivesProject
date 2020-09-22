@@ -1,5 +1,6 @@
 package com.rkrzmail.srv;
 
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -15,12 +16,12 @@ public class NikitaRecyclerAdapter extends RecyclerView.Adapter<NikitaViewHolder
     Nson nson;
     int rlayout;
 
-    public NikitaRecyclerAdapter(Nson nson, int rlayout){
+    public NikitaRecyclerAdapter(Nson nson, int rlayout) {
         this.nson = nson;
         this.rlayout = rlayout;
     }
 
-    public Nson getItem(){
+    public Nson getItem() {
         return nson;
     }
 
@@ -32,12 +33,16 @@ public class NikitaRecyclerAdapter extends RecyclerView.Adapter<NikitaViewHolder
     @Override
     public NikitaViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int position) {
         NikitaViewHolder nikitaViewHolder = NikitaViewHolder.getInstance(viewGroup, rlayout);
-        if (onitemClickListener!=null){
+        if (onitemClickListener != null) {
             nikitaViewHolder.itemView.setTag(String.valueOf(position));
             nikitaViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    if (onitemClickListener!=null){
-                        onitemClickListener.onItemClick(nson, v , Utility.getInt(String.valueOf(v.getTag())));
+                    if (onitemClickListener != null) {
+                        onitemClickListener.onItemClick(nson, v, Utility.getInt(String.valueOf(v.getTag())));
+                    }
+                    if (markSelectedListener != null) {
+                        v.setBackgroundColor(Color.RED);
+                        markSelectedListener.markItemSelected(nson, v, Utility.getInt(String.valueOf(v.getTag())));
                     }
                 }
             });
@@ -57,13 +62,24 @@ public class NikitaRecyclerAdapter extends RecyclerView.Adapter<NikitaViewHolder
 
     private OnItemClickListener onitemClickListener;
 
-    public NikitaRecyclerAdapter setOnitemClickListener(OnItemClickListener onitemClickListener){
-        this.onitemClickListener=onitemClickListener;
+    public NikitaRecyclerAdapter setOnitemClickListener(OnItemClickListener onitemClickListener) {
+        this.onitemClickListener = onitemClickListener;
+        return this;
+    }
+
+    private MarkSelectedListener markSelectedListener;
+
+    public NikitaRecyclerAdapter setMarkSelectedListener(MarkSelectedListener markSelectedListener) {
+        this.markSelectedListener = markSelectedListener;
         return this;
     }
 
     public interface OnItemClickListener {
         void onItemClick(Nson parent, View view, int position);
+    }
+
+    public interface MarkSelectedListener {
+        void markItemSelected(Nson parent, View view, int position);
     }
 
 }

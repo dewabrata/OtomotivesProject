@@ -61,7 +61,24 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
         etJumlah = findViewById(R.id.et_jumlah_jumlah_harga_part);
         etBiayaJasa = findViewById(R.id.et_jasa_jumlah_harga_part);
 
-        initData("data", getIntent());
+        if(getIntent().hasExtra("data")){
+            initData("data", getIntent());
+        }else{
+            Nson nson = Nson.readJson(getIntentStringExtra("partWajib"));
+            etJumlah.setEnabled(false);
+            etBiayaJasa.setEnabled(false);
+            etJumlah.setText(nson.get("JUMLAH").asString());
+            find(R.id.img_waktuKerja, ImageButton.class).setEnabled(false);
+            find(R.id.et_waktuDefault, EditText.class).setText(
+                    loadWaktuKerja(nson.get("WAKTU_KERJA_HARI").asString(), nson.get("WAKTU_KERJA_JAM").asString(), nson.get("WAKTU_KERJA_MENIT").asString()));
+            find(R.id.btn_simpan_jumlah_harga_part, Button.class).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    nextForm();
+                }
+            });
+        }
+
 
         find(R.id.img_clear, ImageButton.class).setOnClickListener(this);
         find(R.id.img_clear2, ImageButton.class).setOnClickListener(this);
@@ -73,110 +90,126 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
         find(R.id.ly_jumlahHarga_partKosong, LinearLayout.class);
     }
 
+    private String loadWaktuKerja(String hari, String jam, String menit){
+        StringBuilder result = new StringBuilder();
+        if(!hari.equals("0") || hari.equals("")){
+            result.append(hari).append(":");
+        }else {
+            result.append("00").append(":");
+        }
+        if(!jam.equals("0") || jam.equals("")) {
+            result.append(jam).append(":");
+        }else{
+            result.append("00").append(":");
+        }
+        if(!menit.equals("0") || menit.equals("")){
+            result.append(menit).append(":");
+        }else{
+            result.append("00").append(":");
+        }
+
+        return result.toString();
+    }
+
     @SuppressLint("SetTextI18n")
     private void initData(String getIntent, Intent intent) {
         Nson nson = Nson.readJson(getIntentStringExtra(intent, getIntent));
         Log.d(TAG, "data : " + nson);
-
-        if (intent.hasExtra("data") || intent.hasExtra("part")) {
-            if (nson.get("STOCK").asInteger() == 0) {
-                Messagebox.showDialog(getActivity(),
-                        "Konfirmasi", "Buka Form Part Kosong ? ", "Ya", "Tidak", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                //find(R.id.ly_hpp_jumlah_harga_part, TextInputLayout.class).setVisibility(View.VISIBLE);
-                                find(R.id.ly_disc_jumlah_harga_part, TextInputLayout.class).setVisibility(View.VISIBLE);
-                                find(R.id.ly_discJasa_jumlah_harga_part, TextInputLayout.class).setVisibility(View.VISIBLE);
-                                find(R.id.ly_jumlahHarga_partKosong, LinearLayout.class).setVisibility(View.VISIBLE);
-                            }
-                        }, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent i = new Intent(getActivity(), CariPart_Activity.class);
-                                i.putExtra("bengkel", "");
-                                startActivityForResult(i, REQUEST_CARI_PART);
-                            }
-                        });
-            }
-
-            if (nson.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE") || nson.get("HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE")) {
-                find(R.id.ly_hpp_jumlah_harga_part, TextInputLayout.class).setVisibility(View.VISIBLE);
-                try {
-                    etHpp.setText("Rp. " + formatRp(nson.get("HPP").asString()));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                etHargaJual.setEnabled(true);
-                isFlexible = true;
-            } else {
-                try {
-                    etHargaJual.setText("Rp. " + formatRp(nson.get("HARGA_JUAL").asString()));
-                } catch (Exception e) {
-                    Log.d(TAG, "HargaJual: " + e.getMessage());
-                }
-            }
-
-            if (nson.containsKey("DISCOUNT_PART") && !nson.get("DISCOUNT_PART").asString().equalsIgnoreCase("")) {
-                etDiscPart.setVisibility(View.VISIBLE);
-                etDiscPart.setText(nson.get("DISCOUNT_PART").asString());
-            }
-
-            if (nson.containsKey("DISC_JASA") && !nson.get("DISC_JASA").asString().equalsIgnoreCase("")) {
-                etDiscJasa.setVisibility(View.VISIBLE);
-                etDiscJasa.setText(nson.get("DISC_JASA").asString());
-            }
-
-            find(R.id.btn_simpan_jumlah_harga_part, Button.class).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (find(R.id.et_waktuSet, EditText.class).getText().toString().isEmpty()) {
-                        find(R.id.et_waktuSet, EditText.class).requestFocus();
-                        find(R.id.et_waktuSet, EditText.class).setError("Masukkan Waktu Kerja");
-                        return;
-                    }
-                    if (find(R.id.ly_hpp_jumlah_harga_part, TextInputLayout.class).getVisibility() == View.VISIBLE) {
-                        if (etHargaJual.isEnabled()) {
-                            if (!etHargaJual.getText().toString().isEmpty() && !etHpp.getText().toString().isEmpty()) {
-                                int hppPart = Integer.parseInt(etHpp.getText().toString().replaceAll("[^0-9]+", ""));
-                                int hargaJualPart = Integer.parseInt(etHargaJual.getText().toString().replaceAll("[^0-9]+", ""));
-                                if (hargaJualPart < hppPart) {
-                                    Messagebox.showDialog(getActivity(), "Konfirmasi", "Harga Jual Kurang Dari Hpp Part", "Lanjut", "Batal", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            nextForm();
-                                        }
-                                    }, new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            etHargaJual.setText("");
-                                            etHargaJual.requestFocus();
-                                        }
-                                    });
-                                }
-                            } else {
-                                etHargaJual.setError("Harga Jual Harus Di isi");
-                            }
+        if (nson.get("STOCK").asInteger() == 0) {
+            Messagebox.showDialog(getActivity(),
+                    "Konfirmasi", "Buka Form Part Kosong ? ", "Ya", "Tidak", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //find(R.id.ly_hpp_jumlah_harga_part, TextInputLayout.class).setVisibility(View.VISIBLE);
+                            find(R.id.ly_disc_jumlah_harga_part, TextInputLayout.class).setVisibility(View.VISIBLE);
+                            find(R.id.ly_discJasa_jumlah_harga_part, TextInputLayout.class).setVisibility(View.VISIBLE);
+                            find(R.id.ly_jumlahHarga_partKosong, LinearLayout.class).setVisibility(View.VISIBLE);
                         }
-                        return;
-                    }
-                    if (etBiayaJasa.getText().toString().isEmpty()) {
-                        etBiayaJasa.setError("Biaya Jasa Tidak Boleh Kosong");
-                        etBiayaJasa.requestFocus();
-                        return;
-                    }
-                    nextForm();
-
-                }
-            });
-            find(R.id.img_waktuKerja, ImageButton.class).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    getTimesDialog(find(R.id.et_waktuSet, EditText.class));
-                }
-            });
-        }else{
-
+                    }, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent i = new Intent(getActivity(), CariPart_Activity.class);
+                            i.putExtra("bengkel", "");
+                            startActivityForResult(i, REQUEST_CARI_PART);
+                        }
+                    });
         }
+
+        if (nson.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE") || nson.get("HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE")) {
+            find(R.id.ly_hpp_jumlah_harga_part, TextInputLayout.class).setVisibility(View.VISIBLE);
+            try {
+                etHpp.setText("Rp. " + formatRp(nson.get("HPP").asString()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            etHargaJual.setEnabled(true);
+            isFlexible = true;
+        } else {
+            try {
+                etHargaJual.setText("Rp. " + formatRp(nson.get("HARGA_JUAL").asString()));
+            } catch (Exception e) {
+                Log.d(TAG, "HargaJual: " + e.getMessage());
+            }
+        }
+
+        if (nson.containsKey("DISCOUNT_PART") && !nson.get("DISCOUNT_PART").asString().equalsIgnoreCase("")) {
+            etDiscPart.setVisibility(View.VISIBLE);
+            etDiscPart.setText(nson.get("DISCOUNT_PART").asString());
+        }
+
+        if (nson.containsKey("DISC_JASA") && !nson.get("DISC_JASA").asString().equalsIgnoreCase("")) {
+            etDiscJasa.setVisibility(View.VISIBLE);
+            etDiscJasa.setText(nson.get("DISC_JASA").asString());
+        }
+
+        find(R.id.btn_simpan_jumlah_harga_part, Button.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (find(R.id.et_waktuSet, EditText.class).getText().toString().isEmpty()) {
+                    find(R.id.et_waktuSet, EditText.class).requestFocus();
+                    find(R.id.et_waktuSet, EditText.class).setError("Masukkan Waktu Kerja");
+                    return;
+                }
+                if (find(R.id.ly_hpp_jumlah_harga_part, TextInputLayout.class).getVisibility() == View.VISIBLE) {
+                    if (etHargaJual.isEnabled()) {
+                        if (!etHargaJual.getText().toString().isEmpty() && !etHpp.getText().toString().isEmpty()) {
+                            int hppPart = Integer.parseInt(etHpp.getText().toString().replaceAll("[^0-9]+", ""));
+                            int hargaJualPart = Integer.parseInt(etHargaJual.getText().toString().replaceAll("[^0-9]+", ""));
+                            if (hargaJualPart < hppPart) {
+                                Messagebox.showDialog(getActivity(), "Konfirmasi", "Harga Jual Kurang Dari Hpp Part", "Lanjut", "Batal", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        nextForm();
+                                    }
+                                }, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        etHargaJual.setText("");
+                                        etHargaJual.requestFocus();
+                                    }
+                                });
+                            }
+                        } else {
+                            etHargaJual.setError("Harga Jual Harus Di isi");
+                        }
+                    }
+                    return;
+                }
+                if (etBiayaJasa.getText().toString().isEmpty()) {
+                    etBiayaJasa.setError("Biaya Jasa Tidak Boleh Kosong");
+                    etBiayaJasa.requestFocus();
+                    return;
+                }
+                nextForm();
+
+            }
+        });
+        find(R.id.img_waktuKerja, ImageButton.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getTimesDialog(find(R.id.et_waktuSet, EditText.class));
+            }
+        });
     }
 
     private void nextForm() {

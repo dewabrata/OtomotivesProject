@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
@@ -22,30 +23,42 @@
                 android:id="@+id/ly_lokasi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@drawable/border_solid"
-                android:padding="10dp"
-                android:gravity="center">
+                android:layout_marginTop="@dimen/paddingMedium"
+                android:layout_marginBottom="@dimen/paddingMedium"
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="150dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
                     android:layout_height="wrap_content"
                     android:text="LOKASI LAYANAN"
-                    android:textSize="14sp" />
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
 
-                <CheckBox
-                    android:id="@+id/cb_bengkel_discLayanan"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="BENGKEL"/>
 
-                <CheckBox
-                    android:id="@+id/cb_tenda_discLayanan"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="TENDA"/>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
+
+                    <CheckBox
+                        android:id="@+id/cb_bengkel_discLayanan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="BENGKEL"/>
+
+                    <CheckBox
+                        android:id="@+id/cb_tenda_discLayanan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="TENDA"/>
+
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -53,48 +66,66 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@drawable/border_solid"
-                android:padding="10dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="@dimen/paddingMedium"
                 android:gravity="center"
-                android:layout_marginTop="10dp">
+                android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="150dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
                     android:layout_height="wrap_content"
                     android:text="PAKET LAYANAN"
-                    android:textSize="14sp" />
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:textStyle="bold"  />
 
-                <Spinner
-                    android:id="@+id/sp_paketLayanan_discLayanan"
+                <RelativeLayout
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAlignment="center" />
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
+
+                    <Spinner
+                        android:id="@+id/sp_paketLayanan_discLayanan"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textAlignment="center" />
+
+                </RelativeLayout>
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/border_solid"
-                android:padding="10dp"
-                android:gravity="center">
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="@dimen/paddingMedium"
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="150dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
                     android:layout_height="wrap_content"
                     android:text="PEKERJAAN"
-                    android:textSize="14sp" />
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
 
-                <com.rkrzmail.srv.MultiSelectionSpinner
-                    android:id="@+id/sp_pekerjaan_discLayanan"
+                <RelativeLayout
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAlignment="center" />
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
+
+                    <com.rkrzmail.srv.MultiSelectionSpinner
+                        android:id="@+id/sp_pekerjaan_discLayanan"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textAlignment="center" />
+
+                </RelativeLayout>
 
             </LinearLayout>
 
@@ -119,26 +150,39 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/border_solid"
-                android:padding="10dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="@dimen/paddingMedium"
                 android:gravity="center"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="150dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
                     android:layout_height="wrap_content"
-                    android:text="TANGGAL EFEKTIVE" />
+                    android:text="TANGGAL EFEKTIVE"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:textStyle="bold"/>
 
-                <TextView
-                    android:id="@+id/tv_tglEffect_discLayanan"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/icon_tanggal"
-                    android:gravity="center"
-                    android:layout_weight="1"
-                    android:layout_marginStart="20dp"
-                    android:textStyle="bold" />
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
+
+                    <TextView
+                        android:id="@+id/tv_tglEffect_discLayanan"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:drawableLeft="@drawable/icon_tanggal"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:textStyle="bold"
+                        tools:ignore="RtlHardcoded" />
+
+                </RelativeLayout>
+
+
 
             </LinearLayout>
 
