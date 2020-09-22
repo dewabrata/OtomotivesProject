@@ -255,7 +255,7 @@ public class AturDiscountLayanan_Activity extends AppActivity implements View.On
                 layananList.add("Belum Di Pilih");
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     for (int i = 0; i < result.get("data").size(); i++) {
-                        layananList.add(result.get("data").get(i).get("NAMA_LAYANAN").asString());
+                        layananList.add(result.get("data").get(i).get("NAMA_LAYANAN").asString() + " - " +  result.get("data").get(i).get("KETERANGAN_LAYANAN").asString());
                     }
                     ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, layananList);
                     spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

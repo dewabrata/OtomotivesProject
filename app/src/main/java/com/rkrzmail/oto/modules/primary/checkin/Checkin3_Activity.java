@@ -381,7 +381,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                     }*/
                     layananArray.add("--PILIH--");
                     for (int i = 0; i < result.size(); i++) {
-                        layananArray.add(result.get(i).get("NAMA_LAYANAN").asString());
+                        layananArray.add(result.get(i).get("NAMA_LAYANAN").asString()  + " - " +  result.get("data").get(i).get("KETERANGAN_LAYANAN").asString());
                     }
 
                     Log.d(TAG, "List Nama Layanan : " + layananArray);

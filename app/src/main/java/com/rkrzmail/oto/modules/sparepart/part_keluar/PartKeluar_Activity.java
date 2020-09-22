@@ -114,7 +114,7 @@ public class PartKeluar_Activity extends AppActivity {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case 10:
-                    Intent i = new Intent(getActivity(), Jumlah_PartKeluar_Activity.class);
+                    Intent i = new Intent(getActivity(), AturPartKeluar_Activity.class);
                     i.putExtra("part", getIntentStringExtra(data, "part"));
                     startActivityForResult(i, 11);
                     break;

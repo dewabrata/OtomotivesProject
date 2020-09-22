@@ -285,9 +285,15 @@ public class AturLayanan_Activity extends AppActivity {
                             model = dataLayananList.get(i).get("MODEL").asString();
                             varian = dataLayananList.get(i).get("VARIAN").asString();
                             keterangan = dataLayananList.get(i).get("KETERANGAN_LAYANAN").asString();
+                            if(!dataLayananList.get(i).get("PRINCIPAL").asString().equals("N")){
+                                namaPrincipal = dataLayananList.get(i).get("PRINCIPAL").asString();
+                            }else{
+                                namaPrincipal = "--PILIH--";
+                            }
+                            setSpNamaPrincipal();
                             if(dataLayananList.get(i).get("GARANSI").asString().equals("BERSAMA")){
                                 find(R.id.sp_garansi_atur_layanan, Spinner.class).setSelection(Tools.getIndexSpinner( find(R.id.sp_garansi_atur_layanan, Spinner.class), "YA"));
-                                find(R.id.et_feeGB_layanan, EditText.class).setText(dataLayananList.get(i).get("FEE_NON_PAKET").asString());
+                                find(R.id.et_feeGB_layanan, EditText.class).setText("Rp. " + formatRp(dataLayananList.get(i).get("FEE_NON_PAKET").asString()));
                             }
                             break;
                         }
@@ -408,7 +414,7 @@ public class AturLayanan_Activity extends AppActivity {
                     args.put("biaya", find(R.id.et_biayaPaket_layanan, EditText.class).getText().toString().replaceAll("[^0-9]+", ""));
                 }
                 args.put("garansi", find(R.id.sp_garansi_atur_layanan, Spinner.class).getSelectedItem().toString());
-                args.put("fgb", find(R.id.et_feeGB_layanan, EditText.class).getText().toString());
+                args.put("fgb", find(R.id.et_feeGB_layanan, EditText.class).getText().toString().replaceAll("[^0-9]+", ""));
                 args.put("kendaraan", kendaraan);
                 args.put("merk", merk);
                 args.put("model", model);
