@@ -34,6 +34,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.BarcodeActivity;
 import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
@@ -82,6 +83,7 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
         txtNamaPart = findViewById(R.id.et_namaPart_terimaPart);
         txtJumlah = findViewById(R.id.et_jumlah_terimaPart);
         txtHargaBeliUnit = findViewById(R.id.et_hargaBeli_detailTerimaPart);
+        txtHargaBeliUnit = findViewById(R.id.et_hargaBeli_detailTerimaPart);
         spinnerLokasiSimpan = findViewById(R.id.sp_lokasiSimpan_terimaPart);
         rvTerimaPart = findViewById(R.id.recyclerView_terimaPart);
         etDiscRp = findViewById(R.id.et_discRp_terimaPart);
@@ -95,7 +97,8 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
         find(R.id.img_scan_terimaPart, ImageButton.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                scanBarcode(new FrameLayout(DetailPartDiterima.this), getActivity());
+                Intent i = new Intent(getActivity(), BarcodeActivity.class);
+                startActivityForResult(i, REQUEST_BARCODE);
             }
         });
 
@@ -370,27 +373,23 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
         }
     }
 
-    public void barcode() {
+    public void getDataBarcode(final String nopart) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("barcode", "");
-                args.put("flag", "NOPART");
+                args.put("flag", "BARCODE");
+                args.put("nopart", nopart);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("caripart"), args));
             }
 
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    if (result.get("data").size() >= 1) {
-                        //addData(result.get("data"), 1);
-                    } else {
-                        //tidak ditemukan
-                        showError("tidak ditemukan");
-                    }
+                    result = result.get("data").get(0);
+                    txtNoPart.setText(result.get("NOMOR_PART_NOMOR").asString());
+                    txtNamaPart.setText(result.get("NAMA_PART").asString());
                 } else {
                     //error
                     showError(result.get("message").asString());
@@ -440,11 +439,15 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, lokasiList);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerLokasiSimpan.setAdapter(spinnerAdapter);
-        if(!lokasi.equals("")){
+        if (!lokasi.equals("")) {
             for (int i = 0; i < spinnerLokasiSimpan.getCount(); i++) {
-                if(spinnerLokasiSimpan.getItemAtPosition(i).equals(lokasi)){
+                if (spinnerLokasiSimpan.getItemAtPosition(i).equals(lokasi)) {
+                    if(spinnerLokasiSimpan.getSelectedItem().equals("*")){
+                        spinnerLokasiSimpan.setEnabled(false);
+                    }else{
+                        spinnerLokasiSimpan.setEnabled(true);
+                    }
                     spinnerLokasiSimpan.setSelection(i);
-                    spinnerLokasiSimpan.setEnabled(true);
                     break;
                 }
             }
@@ -465,13 +468,9 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
             txtNamaPart.setText(n.get("NAMA_PART").asString());
             setSpinnerLokasiSimpan(lokasiPart);
             etPenempatan.setText(penempatan);
-        }
-
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (result != null) {
-            showSuccess(result.getContents());
-        } else {
-            //showError("Scan Failed");
+        } else if (requestCode == REQUEST_BARCODE && resultCode == RESULT_OK) {
+            getDataBarcode(data != null ? data.getStringExtra("TEXT") : "");
+            showSuccess(data != null ? data.getStringExtra("TEXT") : "");
         }
     }
 }

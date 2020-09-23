@@ -515,7 +515,6 @@ public class Tools {
     }
 
     public static String getmonth(int month) {
-
         switch (month) {
             case 1:
                 return "January";
@@ -552,8 +551,6 @@ public class Tools {
 
             case 12:
                 return "December";
-
-
         }
         return "January";
 

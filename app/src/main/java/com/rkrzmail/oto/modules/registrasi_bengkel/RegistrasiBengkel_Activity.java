@@ -221,6 +221,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                 args.put("daerah", etKotaKab.getText().toString());
                 args.put("merk_kendaraan", spMerkKendaraan.getSelectedItemsAsString());
                 args.put("tanggal_regist", currentDateTime());
+                args.put("tanggal_aktif", currentDateTime());
                 //args.put("lokasi", tvLokasi.getText().toString());
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("regristrasi"), args));
             }

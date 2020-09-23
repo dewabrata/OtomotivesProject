@@ -29,6 +29,7 @@ import com.rkrzmail.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -163,9 +164,10 @@ public class AturLokasiPart_Activity extends AppActivity {
         });
     }
 
-    private void viewLokasiPart(final Nson data){
+    private void viewLokasiPart(final Nson data) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -178,7 +180,10 @@ public class AturLokasiPart_Activity extends AppActivity {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    lokasiArray.asArray().addAll(result.get("data").asArray());
+                    result = result.get("data");
+                    for (int i = 0; i < result.size(); i++) {
+                        lokasiArray.add(result.get(i).get("LOKASI"));
+                    }
                 }
             }
         });
@@ -238,14 +243,14 @@ public class AturLokasiPart_Activity extends AppActivity {
         });
     }
 
-    private void setSpLokasiPart(){
+    private void setSpLokasiPart() {
         final List<String> lokasiList = Arrays.asList(getResources().getStringArray(R.array.lokasi_simpan));
-        ArrayAdapter lokasiAdapter = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, lokasiList){
+        ArrayAdapter lokasiAdapter = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, lokasiList) {
             @Override
             public boolean isEnabled(int position) {
                 if (isLokasi) {
                     for (int i = 0; i < lokasiArray.size(); i++) {
-                        if(lokasiArray.get(i).get("LOKASI").asString().equals(lokasiList.get(position))){
+                        if (lokasiArray.get(i).asString().equals(lokasiList.get(position))) {
                             return false;
                         }
                     }
@@ -258,13 +263,13 @@ public class AturLokasiPart_Activity extends AppActivity {
                 View mView = super.getDropDownView(position, convertView, parent);
                 TextView mTextView = (TextView) mView;
                 ((TextView) mView).setGravity(Gravity.CENTER);
-                if(isLokasi){
+                if (isLokasi) {
                     for (int i = 0; i < lokasiArray.size(); i++) {
-                        if(lokasiArray.get(i).get("LOKASI").asString().equals(lokasiList.get(position))){
-                            mTextView.setTextColor(Color.RED);
+                        if (lokasiArray.get(i).asString().equals(lokasiList.get(position))) {
+                            mTextView.setVisibility(View.GONE);
+                        } else {
+                            mTextView.setVisibility(View.VISIBLE);
                             break;
-                        }else{
-                            mTextView.setTextColor(Color.BLACK);
                         }
                     }
                 }
@@ -287,7 +292,7 @@ public class AturLokasiPart_Activity extends AppActivity {
         if (!lokasiPart.isEmpty()) {
             for (int i = 0; i < lokasiList.size(); i++) {
                 if (sp_lokasi_part.getItemAtPosition(i).toString().equals(lokasiPart)) {
-                    sp_lokasi_part.setSelection(i);
+                    sp_lokasi_part.setSelection(i + 1);
                 }
             }
         }

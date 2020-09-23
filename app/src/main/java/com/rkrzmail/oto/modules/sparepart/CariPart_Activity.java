@@ -230,7 +230,7 @@ public class CariPart_Activity extends AppActivity {
                     nListArray.asArray().addAll(result.get("data").asArray());
                     rvCariPart.getAdapter().notifyDataSetChanged();
                 } else {
-                    showError("Gagal Mencari Part");
+                    showError(result.get("status").asString());
                 }
             }
         });

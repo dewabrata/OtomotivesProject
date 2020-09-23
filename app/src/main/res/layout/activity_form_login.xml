@@ -94,6 +94,7 @@
                             android:layout_height="wrap_content"
                             android:hint="Nomor Hanphone"
                             android:inputType="phone"
+                            android:maxLength="20"
                             android:maxLines="1"
                             android:singleLine="true" />
 

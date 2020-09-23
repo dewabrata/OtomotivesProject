@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -36,26 +37,35 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:background="@drawable/border_solid"
-                android:orientation="horizontal"
-                android:padding="10dp">
+                android:layout_marginTop="@dimen/paddingSemiLarge"
+                android:layout_marginBottom="@dimen/paddingMedium">
 
                 <TextView
                     android:id="@+id/textView46"
-                    android:layout_width="150dp"
+                    android:layout_weight="4"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="TIPE SUPPLIER"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
 
                 <Spinner
                     android:id="@+id/spinnerSupplier"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:entries="@array/tipe_supplier"
+                    android:focusable="true"
                     android:gravity="center"
-                    android:textAlignment="center"
-                    android:focusable="true"/>
+                    android:textAlignment="center" />
+
+                </RelativeLayout>
 
             </LinearLayout>
 
@@ -63,27 +73,36 @@
                 android:id="@+id/ly_namaSup_terimaPart"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/border_solid"
-                android:orientation="horizontal"
-                android:padding="10dp">
+                android:layout_marginTop="@dimen/paddingSemiLarge"
+                android:layout_marginBottom="@dimen/paddingMedium"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:text="NAMA SUPPLIER"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/txtNamaSupplier"
+                    android:layout_weight="4"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:drawableLeft="@drawable/ic_contact_phone"
-                    android:gravity="center"
+                    android:text="NAMA SUPPLIER"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
+
+                    <TextView
+                        android:id="@+id/txtNamaSupplier"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:drawableLeft="@drawable/ic_contact_phone"
+                        android:gravity="center"
+                        android:textStyle="bold"
+                        android:paddingStart="10dp"
+                        tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+                </RelativeLayout>
 
             </LinearLayout>
 
@@ -106,42 +125,36 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/paddingMedium"
+                android:layout_marginBottom="@dimen/paddingMedium"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/paddingMedium"
+                android:paddingEnd="@dimen/paddingMedium"
+                android:background="@drawable/background_edittext"
+                android:padding="10dp">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/tglPesan"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/border_solid"
-                    android:orientation="horizontal"
-                    android:padding="10dp">
-
-                    <TextView
-                        android:id="@+id/tglPesan"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:drawableLeft="@drawable/icon_tanggal"
-                        android:gravity="center"
-                        android:text="TANGGAL PESAN"
-                        android:textStyle="bold" />
+                    android:layout_weight="1"
+                    android:drawableLeft="@drawable/icon_tanggal"
+                    android:gravity="center"
+                    android:text="TANGGAL PESAN"
+                    android:textStyle="bold" />
 
 
-                    <TextView
-                        android:id="@+id/tglTerima"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:drawableLeft="@drawable/icon_tanggal"
-                        android:gravity="center"
-                        android:text="TANGGAL TERIMA"
-                        android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/tglTerima"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:drawableLeft="@drawable/icon_tanggal"
+                    android:gravity="center"
+                    android:text="TANGGAL TERIMA"
+                    android:textStyle="bold" />
 
-
-                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -156,27 +169,36 @@
                 android:id="@+id/layout_pembayaran"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/border_solid"
-                android:orientation="horizontal"
-                android:padding="10dp">
+                android:layout_marginTop="@dimen/paddingSemiLarge"
+                android:layout_marginBottom="@dimen/paddingMedium"
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/textView41"
-                    android:layout_width="150dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="4"
                     android:layout_height="wrap_content"
                     android:text="PEMABAYARAN"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
 
-                <Spinner
-                    android:id="@+id/spinnerPembayaran"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:entries="@array/pembayaran"
-                    android:textAlignment="center"
-                    android:focusable="true"/>
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
+
+                    <Spinner
+                        android:id="@+id/spinnerPembayaran"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:entries="@array/pembayaran"
+                        android:focusable="true"
+                        android:textAlignment="center" />
+
+                </RelativeLayout>
 
             </LinearLayout>
 
@@ -188,9 +210,9 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/border_solid"
                 android:gravity="center"
-                android:visibility="gone"
                 android:orientation="horizontal"
-                android:padding="10dp">
+                android:padding="10dp"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="150dp"
@@ -204,8 +226,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textAlignment="center"
-                    android:focusable="true"/>
+                    android:focusable="true"
+                    android:textAlignment="center" />
 
             </LinearLayout>
 
@@ -213,10 +235,10 @@
                 android:id="@+id/layout_jatuh_tempo"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/border_solid"
                 android:orientation="horizontal"
                 android:padding="10dp"
-                android:layout_marginTop="10dp"
                 android:visibility="gone">
 
                 <TextView

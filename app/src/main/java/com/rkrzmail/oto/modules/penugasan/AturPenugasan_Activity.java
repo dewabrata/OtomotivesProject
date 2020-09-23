@@ -554,10 +554,10 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
                             ((TextView) mView).setGravity(Gravity.CENTER);
                             for (int i = 0; i < penugasanList.size(); i++) {
                                 if (penugasanList.get(i).get("NAMA_MEKANIK").asString().equals(mekanikArray.asArray().get(position))) {
-                                    mTextView.setTextColor(Color.RED);
+                                    mTextView.setVisibility(View.GONE);
                                     break;
                                 } else {
-                                    mTextView.setTextColor(Color.BLACK);
+                                    mTextView.setVisibility(View.VISIBLE);
                                 }
                             }
                             return mView;

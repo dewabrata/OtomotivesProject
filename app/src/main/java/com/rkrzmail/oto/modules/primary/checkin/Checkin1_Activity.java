@@ -36,6 +36,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.BarcodeActivity;
 import com.rkrzmail.oto.modules.primary.HistoryBookingCheckin_Activity;
 import com.rkrzmail.oto.modules.primary.KontrolLayanan_Activity;
 import com.rkrzmail.oto.modules.user.AturUser_Activity;
@@ -100,7 +101,8 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
         find(R.id.imgBarcode_checkin1, ImageButton.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                IntentIntegrator intentIntegrator = new IntentIntegrator(getActivity());
+               Intent i = new Intent(getActivity(), BarcodeActivity.class);
+               startActivityForResult(i, REQUEST_BARCODE);
             }
         });
 
@@ -111,19 +113,21 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
         initAutoCompleteKendaraan();
         initOnTextChange();
 
-
         find(R.id.btn_lanjut_checkin1).setOnClickListener(this);
         find(R.id.btn_history_checkin1).setOnClickListener(this);
-        find(R.id.fab_tambah_keluhan, FloatingActionButton.class).setOnClickListener(new View.OnClickListener() {
+        find(R.id.fab_tambah_keluhan, ImageButton.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                rvKeluhan.setVisibility(View.VISIBLE);
-                isRemoved = true;
-                keluhanList.add(Nson.newObject().set("KELUHAN", etKeluhan.getText().toString()));
-                initRecylerViewKeluhan();
-                rvKeluhan.getAdapter().notifyDataSetChanged();
-                etKeluhan.setText("");
-
+                if(etKeluhan.getText().toString().isEmpty() || etKeluhan.getText().toString().length() < 5){
+                    etKeluhan.setError("Keluhan Min 5 Karakter");
+                }else{
+                    rvKeluhan.setVisibility(View.VISIBLE);
+                    isRemoved = true;
+                    keluhanList.add(Nson.newObject().set("KELUHAN", etKeluhan.getText().toString()));
+                    initRecylerViewKeluhan();
+                    rvKeluhan.getAdapter().notifyDataSetChanged();
+                    etKeluhan.setText("");
+                }
             }
         });
         find(R.id.img_clear, ImageButton.class).setOnClickListener(new View.OnClickListener() {
@@ -493,6 +497,31 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
         });
     }
 
+    private void getDataBarcode(final String antrian){
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+
+                args.put("action", "barcode");
+                args.put("antrian", antrian);
+
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("checkin"), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+
+                } else {
+                    showWarning(result.get("status").asString());
+                }
+            }
+        });
+    }
+
     private void initRecylerViewKeluhan() {
         rvKeluhan.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvKeluhan.setHasFixedSize(true);
@@ -507,7 +536,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                         isRemoved = false;
                         keluhanList.asArray().remove(position);
                         notifyItemRemoved(position);
-                        rvKeluhan.setVisibility(View.GONE);
+                        rvKeluhan.getAdapter().notifyDataSetChanged();
                     }
                 });
             }
@@ -520,7 +549,9 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
         if (resultCode == RESULT_OK && requestCode == KontrolLayanan_Activity.REQUEST_CHECKIN) {
             finish();
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_BARCODE) {
-
+            String antrian = data.getStringExtra("TEXT");
+            getDataBarcode(antrian);
+            String result = data.getStringExtra("FORMAT");
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_HISTORY) {
 
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_NEW_CS) {

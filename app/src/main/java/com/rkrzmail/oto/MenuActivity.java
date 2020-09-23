@@ -31,6 +31,7 @@ import com.rkrzmail.oto.fragment.PageAdapter;
 import com.rkrzmail.oto.fragment.SlideFragment;
 import com.rkrzmail.oto.fragment.pageindicator.CirclePageIndicator;
 import com.rkrzmail.oto.gmod.MessageWA;
+import com.rkrzmail.oto.modules.BarcodeActivity;
 import com.rkrzmail.oto.modules.antar_jemput.AntarJemput_Activity;
 import com.rkrzmail.oto.modules.biayamekanik.BiayaMekanik2Activity;
 import com.rkrzmail.oto.modules.LoginActivity;
@@ -199,6 +200,8 @@ public class MenuActivity extends AppActivity {
                     Intent intent =  new Intent(MenuActivity.this, MenungguPart_Activity.class);
                     startActivity(intent);
                 }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_MY_CODE)){
+                    Intent intent =  new Intent(MenuActivity.this, BarcodeActivity.class);
+                    startActivity(intent);
                 }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_PART)){
                     Intent intent = new Intent(MenuActivity.this, CariPart_Activity.class);
                     intent.putExtra("bengkel", "");
