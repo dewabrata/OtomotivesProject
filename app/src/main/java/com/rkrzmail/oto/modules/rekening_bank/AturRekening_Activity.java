@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -45,7 +46,7 @@ public class AturRekening_Activity extends AppActivity {
     private String namaBank = "";
     private List<String> dataBank = new ArrayList<>();
     private List<Boolean> isCheckedList = new ArrayList<>();
-    private Nson n;
+    private Nson n, rekeningList = Nson.newArray();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -246,6 +247,32 @@ public class AturRekening_Activity extends AppActivity {
         });
     }
 
+    private void viewEdcAndOffUs(final String codeBank){
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "view");
+                args.put("edc", "DUMMY");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("setrekeningbank"), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                   result = result.get("data");
+                    for (int i = 0; i < result.size(); i++) {
+                        if(result.get(i).get("BANK_CODE").asString().equals(codeBank)){
+                            find(R.id.cb_edc_rekening, CheckBox.class).setEnabled(false);
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
     private void setSpBank() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
@@ -283,6 +310,21 @@ public class AturRekening_Activity extends AppActivity {
                         }
                     });
                 }
+
+            }
+        });
+
+        spBank.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String item = parent.getSelectedItem().toString();
+                item = item.substring(0, 3);
+                showInfo(item);
+                viewEdcAndOffUs(item);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });

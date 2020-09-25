@@ -67,13 +67,13 @@ public class KontrolLayanan_Activity extends AppActivity {
                     public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
                         super.onBindViewHolder(viewHolder, position);
 
-                        viewHolder.find(R.id.tv_jenis_kontrolLayanan, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_nopol_kontrolLayanan, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_status_kontrolLayanan, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_lokasiP_kontrolLayanan, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_lokasiP_kontrolLayanan, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_namaP_kontrolLayanan, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_noAntrian_kontrolLayanan, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_tgl_jam_checkin, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_no_antrian, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_jenis_kendaraan, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_nama_pelanggan, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_layanan, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_estimasi_selesai, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_status, TextView.class).setText(nListArray.get(position).get("").asString());
 
                         viewHolder.find(R.id.img_more_booking, TextView.class).setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -118,7 +118,7 @@ public class KontrolLayanan_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 args.put("search", cari);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(""), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("checkin"), args));
             }
 
             @Override

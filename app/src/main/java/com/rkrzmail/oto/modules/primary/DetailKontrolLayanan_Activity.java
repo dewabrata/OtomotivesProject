@@ -40,7 +40,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_kontrolLayanan);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Kontrol Layanan");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -48,27 +48,27 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
 
     private void initComponent() {
         initToolbar();
-        etNoAntrian = findViewById(R.id.et_noAntrian_kontrolLayanan);
-        etStatus = findViewById(R.id.et_status_kontrolLayanan);
-        etNopol = findViewById(R.id.et_nopol_kontrolLayanan);
-        etNoKunci = findViewById(R.id.et_noKunci_kontrolLayanan);
-        etNamaLayanan = findViewById(R.id.et_namaLayanan_kontrolLayanan);
-        etNamaPelanggan = findViewById(R.id.et_namaP_kontrolLayanan);
-        etTotal = findViewById(R.id.et_totalBiaya_kontrolLayanan);
-        etDp = findViewById(R.id.et_dp_kontrolLayanan);
-        etSisa = findViewById(R.id.et_sisa_kontrolLayanan);
-        etSebelum = findViewById(R.id.et_Esebelum_kontrolLayanan);
-        etWaktu = findViewById(R.id.et_Ewaktu_kontrolLayanan);
-        etSelesai = findViewById(R.id.et_Eselesai_kontrolLayanan);
-        etAlasanBatal = findViewById(R.id.et_aBatal_kontrolLayanan);
-        etPengambilan = findViewById(R.id.et_pengambilan_kontrolLayanan);
-        spAktifitas = findViewById(R.id.sp_aktifitas_kontrolLayanan);
-        spNamaMekanik = findViewById(R.id.sp_namaMekanik_kontrolLayanan);
+        etNoAntrian = findViewById(R.id.et_noAntrian);
+        etStatus = findViewById(R.id.et_status);
+        etNopol = findViewById(R.id.et_nopol);
+        etNoKunci = findViewById(R.id.et_noKunci);
+        etNamaLayanan = findViewById(R.id.et_namaLayanan);
+        etNamaPelanggan = findViewById(R.id.et_namaP);
+        etTotal = findViewById(R.id.et_totalBiaya);
+        etDp = findViewById(R.id.et_dp);
+        etSisa = findViewById(R.id.et_sisa);
+        etSebelum = findViewById(R.id.et_Esebelum);
+        etWaktu = findViewById(R.id.et_Ewaktu);
+        etSelesai = findViewById(R.id.et_Eselesai);
+        etAlasanBatal = findViewById(R.id.et_ket_batal);
+        etPengambilan = findViewById(R.id.et_pengambilan);
+        spAktifitas = findViewById(R.id.sp_aktifitas);
+        spNamaMekanik = findViewById(R.id.sp_namaMekanik);
         rvItem = findViewById(R.id.recyclerView_detailKontrolLayanan);
 
         loadData();
 
-        find(R.id.btn_simpan_kontrolLayanan, Button.class).setOnClickListener(new View.OnClickListener() {
+        find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 updateData();

@@ -41,57 +41,89 @@
             <TableRow>
 
                 <TextView
-                    android:id="@+id/tv_noAntrian_kontrolLayanan"
+                    android:id="@+id/tv_tgl_jam_checkin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tanggal / Jam Checkin"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="start"/>
+
+                <TextView
+                    android:id="@+id/tv_no_antrian"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="No. Antrian"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tv_status_kontrolLayanan"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Status"
-                    android:textStyle="bold" />
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="start"/>
 
             </TableRow>
 
             <TableRow android:layout_marginTop="@dimen/spacing_medium">
 
                 <TextView
-                    android:id="@+id/tv_jenis_kontrolLayanan"
+                    android:id="@+id/tv_jenis_kendaraan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Jenis"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tv_nopol_kontrolLayanan"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="No. Polisi"
-                    android:textStyle="bold" />
+                    android:text="Jenis Kendaraan"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="start" />
 
             </TableRow>
 
             <TableRow android:layout_marginTop="@dimen/spacing_medium">
 
                 <TextView
-                    android:id="@+id/tv_namaP_kontrolLayanan"
+                    android:id="@+id/tv_nama_pelanggan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Nama Pelanggan"
-                    android:textStyle="bold" />
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="start" />
 
             </TableRow>
 
             <TableRow android:layout_marginTop="@dimen/spacing_medium">
 
                 <TextView
-                    android:id="@+id/tv_lokasiP_kontrolLayanan"
+                    android:id="@+id/tv_layanan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Lokasi Pelanggan"
+                    android:text="Layanan"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="start" />
+
+                <TextView
+                    android:id="@+id/tv_estimasi_selesai"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Estimasi Selesai"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="start" />
+
+            </TableRow>
+
+            <TableRow android:layout_marginTop="@dimen/paddingMedium">
+
+                <TextView
+                    android:id="@+id/tv_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Status"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="start" />
+
+                <TextView
+                    android:id="@+id/tv_estimasi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
                     android:textStyle="bold" />
 
             </TableRow>

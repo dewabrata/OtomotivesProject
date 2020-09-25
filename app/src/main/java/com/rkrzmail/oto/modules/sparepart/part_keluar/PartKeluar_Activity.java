@@ -31,6 +31,7 @@ import java.util.Map;
 public class PartKeluar_Activity extends AppActivity {
 
     private RecyclerView rvPartKeluar;
+    public static final int REQUEST_PART_KELUAR = 13;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,9 +54,8 @@ public class PartKeluar_Activity extends AppActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(), CariPart_Activity.class);
-                i.putExtra("bengkel", "");
-                startActivityForResult(i, 10);
+                Intent i = new Intent(getActivity(), AturPartKeluar_Activity.class);
+                startActivityForResult(i, REQUEST_PART_KELUAR);
             }
         });
 

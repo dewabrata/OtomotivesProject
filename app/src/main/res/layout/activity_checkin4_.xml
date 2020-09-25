@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="10dp">
+            android:padding="@dimen/paddingSemiLarge">
 
             <LinearLayout
                 android:id="@+id/ly_checkin4"
@@ -148,7 +148,6 @@
                             android:textColor="@color/grey_900"
                             android:layout_marginBottom="3dp"
                             android:drawableEnd="@drawable/icon_jam" />
-
 
                     </RelativeLayout>
 

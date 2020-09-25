@@ -18,22 +18,7 @@
             android:layout_height="wrap_content"
             android:theme="@style/AppTheme.AppBarOverlay">
 
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/colorPrimary"
-                    app:popupTheme="@style/AppTheme.PopupOverlay">
-
-                </android.support.v7.widget.Toolbar>
-
-            </FrameLayout>
-
+             <include layout="@layout/toolbar"/>
 
         </android.support.design.widget.AppBarLayout>
 
@@ -45,32 +30,32 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="5dp">
-
+                android:padding="10dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/paddingSemiLarge">
 
                     <Button
                         android:id="@+id/tblJasaLain"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
-                        android:layout_marginTop="20dp"
                         android:layout_weight="1"
                         android:background="@drawable/btn_rounded_accent"
                         android:enabled="false"
                         android:text="JASA LAIN"
-                        android:textColor="@android:color/white" />
+                        android:textColor="@android:color/white"
+                        android:layout_marginEnd="10dp"/>
 
                     <Button
                         android:id="@+id/tblSparepart"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
-                        android:layout_marginTop="20dp"
+
                         android:layout_weight="1"
                         android:background="@drawable/btn_rounded_accent"
                         android:enabled="true"
@@ -82,43 +67,204 @@
                     android:id="@+id/rViewTambahPart"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="3dp" >
+                    android:layout_marginTop="@dimen/paddingSemiLarge"
+                    android:layout_marginBottom="@dimen/paddingMedium" >
 
                 </android.support.v7.widget.RecyclerView>
 
-                <FrameLayout
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="20dp">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/paddingSemiLarge">
 
-                    <Button
-                        android:id="@+id/tblBatal"
+                    <EditText
+                        android:id="@+id/et_total_biaya"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="TOTAL BIAYA"
+                        android:enabled="false"
+                        android:textSize="14sp" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/paddingMedium">
+
+                    <EditText
+                        android:id="@+id/et_total_tambah"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="TOTAL TAMBAH"
+                      android:enabled="false"
+                        android:textSize="14sp" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/paddingMedium">
+
+                    <EditText
+                        android:id="@+id/et_grand_total"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="GRAND TOTAL"
+                        android:enabled="false"
+                        android:textSize="14sp" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/paddingMedium">
+
+                    <EditText
+                        android:id="@+id/et_estimasi_waktu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="ESTIMASI WAKTU"
+                        android:textSize="14sp" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:src="@drawable/shape_line_solid" />
+
+                <LinearLayout
+                    android:id="@+id/ly_tidak_menunggu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <CheckBox
+                        android:id="@+id/cb_aggrement_checkin4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left"
-                        android:layout_marginRight="3dp"
-                        android:background="@drawable/btn_rounded_accent"
-                        android:text="Batal"
-                        android:textColor="@android:color/white" />
+                        android:text="SETUJU DENGAN SYARAT DAN KETENTUAN BENGKEL" />
 
-                    <Button
-                        android:id="@+id/tblSimpan"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="5dp"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/img_tandaTangan"
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp" />
+
+                        <Button
+                            android:id="@+id/btn_ttd"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/btn_rounded_accent"
+                            android:text="TANDA TANGAN DENGAN JARI"
+                            android:textColor="@android:color/white" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ly_menunggu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="right"
-                        android:layout_marginRight="3dp"
-                        android:background="@drawable/btn_rounded_accent"
-                        android:text="Tambah"
-                        android:textColor="@android:color/white" />
-                </FrameLayout>
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginRight="10dp"
+                        android:gravity="center"
+                        android:orientation="horizontal">
 
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            android:text="MAX KONFIRMASI"
+                            android:textColor="@color/grey_900"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="34dp"
+                            android:layout_weight="6"
+                            android:background="@drawable/background_edittext">
+
+                            <TextView
+                                android:id="@+id/tv_startEstimasi_checkin4"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentStart="true"
+                                android:layout_alignParentTop="true"
+                                android:layout_alignParentBottom="true"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginTop="3dp"
+                                android:gravity="center"
+                                android:textAlignment="center"
+                                android:drawablePadding="10dp"
+                                android:layout_marginBottom="3dp"
+                                android:textColor="@color/grey_900"
+                                android:drawableStart="@drawable/icon_tanggal" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentStart="true"
+                                android:layout_alignParentTop="true"
+                                android:drawablePadding="5dp"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentBottom="true"
+                                android:layout_marginStart="10dp"
+                                android:textColor="@color/grey_900"
+                                android:layout_marginEnd="10dp"
+                                android:text="-" />
+
+                            <TextView
+                                android:id="@+id/tv_finish_checkin4"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:layout_alignParentEnd="true"
+                                android:drawablePadding="10dp"
+                                android:layout_alignParentBottom="true"
+                                android:layout_marginTop="3dp"
+                                android:gravity="center"
+                                android:layout_marginEnd="5dp"
+                                android:textAlignment="center"
+                                android:textColor="@color/grey_900"
+                                android:layout_marginBottom="3dp"
+                                android:drawableEnd="@drawable/icon_jam" />
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <include layout="@layout/layout_btn_simpan_hapus"/>
 
             </LinearLayout>
+
         </ScrollView>
 
     </LinearLayout>
-
 
 </android.support.design.widget.CoordinatorLayout>
