@@ -42,6 +42,7 @@ import com.rkrzmail.srv.RupiahFormat;
 import com.rkrzmail.utils.Tools;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -311,16 +312,12 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
         dataAdd.set("PART_ID", partId);
         dataAdd.set("KODE", kodeFolder);
         dataAdd.set("MERK", merkPart);
+        dataAdd.set("LOKASI_SIMPAN", spinnerLokasiSimpan.getSelectedItem().toString());
 
         if (etDiscPercent.isEnabled()) {
             dataAdd.set("DISCOUNT", etDiscPercent.getText().toString());
         } else if (etDiscRp.isEnabled()) {
             dataAdd.set("DISCOUNT", etDiscRp.getText().toString());
-        }
-        if (spinnerLokasiSimpan.getSelectedItem().toString().equalsIgnoreCase("")) {
-            dataAdd.set("LOKASI_SIMPAN", "*");
-        } else {
-            dataAdd.set("LOKASI_SIMPAN", spinnerLokasiSimpan.getSelectedItem().toString());
         }
 
         initRecylerView();
@@ -376,6 +373,7 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
     public void getDataBarcode(final String nopart) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -408,7 +406,7 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_search) {
             Intent i = new Intent(this, CariPart_Activity.class);
-            i.putExtra("cari_part_lokasi", "");
+            i.putExtra("cari_part_lokasi", "ALL");
             startActivityForResult(i, REQUEST_CARI_PART);
         }
         return true;
@@ -435,18 +433,23 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
     }
 
     private void setSpinnerLokasiSimpan(String lokasi) {
-        List<String> lokasiList = Arrays.asList(getResources().getStringArray(R.array.lokasi_simpan_terima_part));
+        List<String> lokasiList = new ArrayList<>();
+        lokasiList.add("*");
+        lokasiList.add("RUANG PART");
+        lokasiList.add("GUDANG");
+        lokasiList.add("DISPLAY");
+        if (lokasi.equals("*") || lokasi.equals("")) {
+            spinnerLokasiSimpan.setEnabled(false);
+        } else {
+            spinnerLokasiSimpan.setEnabled(true);
+            lokasiList.remove("*");
+        }
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, lokasiList);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerLokasiSimpan.setAdapter(spinnerAdapter);
-        if (!lokasi.equals("")) {
+        if(!lokasi.equals("")){
             for (int i = 0; i < spinnerLokasiSimpan.getCount(); i++) {
                 if (spinnerLokasiSimpan.getItemAtPosition(i).equals(lokasi)) {
-                    if(spinnerLokasiSimpan.getSelectedItem().equals("*")){
-                        spinnerLokasiSimpan.setEnabled(false);
-                    }else{
-                        spinnerLokasiSimpan.setEnabled(true);
-                    }
                     spinnerLokasiSimpan.setSelection(i);
                     break;
                 }

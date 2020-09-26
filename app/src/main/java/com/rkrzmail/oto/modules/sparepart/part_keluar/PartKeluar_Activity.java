@@ -23,15 +23,20 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
+import com.rkrzmail.oto.modules.sparepart.terima_part.DetailTerimaPart_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
+
+import static com.rkrzmail.utils.ConstString.ATUR;
+import static com.rkrzmail.utils.ConstString.DETAIL;
+import static com.rkrzmail.utils.ConstString.REQUEST_PART_KELUAR;
 
 public class PartKeluar_Activity extends AppActivity {
 
     private RecyclerView rvPartKeluar;
-    public static final int REQUEST_PART_KELUAR = 13;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,22 +68,23 @@ public class PartKeluar_Activity extends AppActivity {
         rvPartKeluar.setLayoutManager(new LinearLayoutManager(this));
         rvPartKeluar.setHasFixedSize(true);
 
-        rvPartKeluar.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_daftar_cari_part) {
-            @Override
-            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                super.onBindViewHolder(viewHolder, position);
-
-                if (nListArray.get("MERK_PART").asString() == null) {
-                    find(R.id.tv_cari_merkPart, TextView.class).setVisibility(View.GONE);
-                }
-                //stock = jumlah sisa
-                viewHolder.find(R.id.tv_cari_merkPart, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_cari_namaPart, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
-                viewHolder.find(R.id.tv_cari_noPart, TextView.class).setText(nListArray.get(position).get("NO_PART_ID").asString());
-                viewHolder.find(R.id.tv_cari_stockPart, TextView.class).setText(nListArray.get(position).get("STOCK").asString());
-
-            }
-        });
+        rvPartKeluar.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_part_keluar) {
+                    @Override
+                    public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+                        super.onBindViewHolder(viewHolder, position);
+                        viewHolder.find(R.id.tv_nama_mekanik, TextView.class).setText(nListArray.get(position).get("USER").asString());
+                        viewHolder.find(R.id.tv_tgl_minta, TextView.class).setText(Tools.setFormatDateTimeFromDb(nListArray.get(position).get("TANGGAL_MINTA").asString()));
+                        viewHolder.find(R.id.tv_tgl_kembali, TextView.class).setText(Tools.setFormatDateTimeFromDb(nListArray.get(position).get("TANGGAL_KEMBALI").asString()));
+                    }
+                }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Nson parent, View view, int position) {
+                        Intent i = new Intent(getActivity(), DetailPartKeluar_Activity.class);
+                        i.putExtra(DETAIL, parent.get(position).get("PART_KELUAR").toJson());
+                        startActivityForResult(i, REQUEST_PART_KELUAR);
+                    }
+                })
+        );
 
         catchData("");
     }
@@ -111,17 +117,8 @@ public class PartKeluar_Activity extends AppActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case 10:
-                    Intent i = new Intent(getActivity(), AturPartKeluar_Activity.class);
-                    i.putExtra("part", getIntentStringExtra(data, "part"));
-                    startActivityForResult(i, 11);
-                    break;
-                case 11:
-                    catchData("");
-                    break;
-            }
+        if (resultCode == RESULT_OK && requestCode == REQUEST_PART_KELUAR) {
+            catchData("");
         }
     }
 

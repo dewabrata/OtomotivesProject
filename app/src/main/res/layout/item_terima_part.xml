@@ -48,7 +48,9 @@
 
         </TableRow>
 
-        <TableRow android:layout_marginTop="@dimen/spacing_medium">
+        <TableRow
+            android:id="@+id/tr_supplier"
+            android:layout_marginTop="@dimen/spacing_medium">
 
             <TextView
                 android:id="@+id/txtSupplier"
@@ -63,7 +65,9 @@
 
         </TableRow>
 
-        <TableRow android:layout_marginTop="@dimen/spacing_medium">
+        <TableRow
+            android:id="@+id/tr_pembayaran"
+            android:layout_marginTop="@dimen/spacing_medium">
 
             <TextView
                 android:id="@+id/txtPembayaran"

@@ -27,9 +27,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_weight="1"
                 android:text="Nama Part"
-                android:textStyle="bold" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Menu" />
 
         </TableRow>
 
@@ -41,7 +40,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:text="No. Part"
-                android:textStyle="bold" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp"
+                />
 
             <TextView
                 android:id="@+id/tv_merk_historyStock"
@@ -49,7 +50,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:text="Merk"
-                android:textStyle="bold" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp" />
 
         </TableRow>
 
@@ -61,7 +63,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:text="Stock"
-                android:textStyle="bold" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/tv_pending_historyStock"
@@ -69,7 +72,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:text="Pending"
-                android:textStyle="bold" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp" />
 
         </TableRow>
 
@@ -81,7 +85,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:text="Opname"
-                android:textStyle="bold"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp"/>
 
         </TableRow>
 
@@ -93,7 +98,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:text="Lokasi"
-                android:textStyle="bold" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/tv_noFolder_historyStock"
@@ -101,7 +107,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:text="No. Folder"
-                android:textStyle="bold" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp" />
 
         </TableRow>
     </TableLayout>

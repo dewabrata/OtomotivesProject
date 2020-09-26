@@ -18,6 +18,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -68,7 +69,15 @@ public class Checkin2_Activity extends AppActivity {
         tvTgl = findViewById(R.id.tv_tanggal_checkin2);
         etNorangka = findViewById(R.id.et_noRangka_checkin2);
         etNomesin = findViewById(R.id.et_noMesin_checkin2);
-
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        for (int i = 2010; i <= 2017; i++) {
+            if(i == readCheckin.get("tahunProduksi").asInteger() && year > readCheckin.get("tahunproduksi").asInteger()){
+                tvTgl.setEnabled(false);
+                tvTgl.setText(readCheckin.get("tahunProduksi").asString());
+                break;
+            }
+            showInfo(readCheckin.get("tahunProduksi ").asString(), Toast.LENGTH_LONG);
+        }
         componentValidation(readCheckin);
         tvTgl.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,6 +85,7 @@ public class Checkin2_Activity extends AppActivity {
                getDateSpinnerDialog(tvTgl, "Tanggal Beli Kendaraan");
             }
         });
+
         find(R.id.btn_lanjut_checkin2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

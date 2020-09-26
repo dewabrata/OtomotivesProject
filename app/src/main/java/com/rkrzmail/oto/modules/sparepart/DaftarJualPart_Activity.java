@@ -33,12 +33,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.rkrzmail.utils.ConstString.REQUEST_CARI_PART;
+import static com.rkrzmail.utils.ConstString.REQUEST_DETAIL;
+
 public class DaftarJualPart_Activity extends AppActivity {
 
-    private static final int REQUEST_DETAIL = 13;
     private TextView tvTotal;
     private RecyclerView rvTotalJualPart;
-    private static final int REQUEST_CARI_PART = 14;
     private int count = 0;
     private ArrayList<Integer> harga = new ArrayList<>();
     private DecimalFormat formatter;
@@ -80,7 +81,7 @@ public class DaftarJualPart_Activity extends AppActivity {
         rvTotalJualPart.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_total_jual_part) {
                     @SuppressLint("SetTextI18n")
                     @Override
-                    public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+                    public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
                         super.onBindViewHolder(viewHolder, position);
 
                         viewHolder.find(R.id.tv_noPart_jualPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
@@ -90,6 +91,14 @@ public class DaftarJualPart_Activity extends AppActivity {
                         viewHolder.find(R.id.tv_jumlah_jualPart, TextView.class).setText(nListArray.get(position).get("JUMLAH").asString());
                         String str = nListArray.get(position).get("TOTAL").asString();
                         viewHolder.find(R.id.tv_total_jualPart, TextView.class).setText("Rp. " + formatRp(str));
+
+                        viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                nListArray.asArray().remove(position);
+                                notifyItemRemoved(position);
+                            }
+                        });
                     }
 
                     @Override
@@ -106,8 +115,6 @@ public class DaftarJualPart_Activity extends AppActivity {
                 }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(Nson parent, View view, int position) {
-                        nListArray.asArray().remove(nListArray.get(position));
-                        rvTotalJualPart.getAdapter().notifyDataSetChanged();
 //                        Intent i = new Intent(getActivity(), DetailJualPart_Activity.class);
 //                        i.putExtra("part", nListArray.get(position).toJson());
 //                        startActivityForResult(i, REQUEST_DETAIL);
@@ -126,7 +133,7 @@ public class DaftarJualPart_Activity extends AppActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getActivity(), CariPart_Activity.class);
-                i.putExtra("bengkel", "");
+                i.putExtra("cari_part_lokasi", "RUANG PART");
                 startActivityForResult(i, REQUEST_CARI_PART);
             }
         });
@@ -169,6 +176,7 @@ public class DaftarJualPart_Activity extends AppActivity {
     }
 
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

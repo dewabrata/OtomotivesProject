@@ -97,6 +97,12 @@ public class PartNonLokasi_Fragment extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        getNonTeralokasikan("");
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == getActivity().RESULT_OK && requestCode == LokasiPart_Activity.REQUEST_ATUR){

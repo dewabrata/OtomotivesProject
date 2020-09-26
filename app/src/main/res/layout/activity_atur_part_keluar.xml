@@ -61,7 +61,7 @@
                         android:background="@drawable/background_edittext">
 
                         <Spinner
-                            android:id="@+id/sp_namaMekanik"
+                            android:id="@+id/sp_nama_mekanik"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:textAlignment="center"
@@ -91,7 +91,7 @@
                         android:textStyle="bold" />
 
                     <RadioGroup
-                        android:id="@+id/rg_status"
+                        android:id="@+id/rg_lokasi"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="6"

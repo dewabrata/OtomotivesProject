@@ -10,9 +10,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -27,6 +29,7 @@ import com.rkrzmail.oto.modules.sparepart.lokasi_part.Penyesuain_Activity;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 
 public class StockOpname_Activity extends AppActivity {
@@ -57,14 +60,13 @@ public class StockOpname_Activity extends AppActivity {
 
         noFolder = findViewById(R.id.et_noFolder_stockOpname);
         noPart = findViewById(R.id.et_noPart_stockOpname);
-        jumlahData = findViewById(R.id.et_jumlahdata_stockOpname);
+
         jumlahAkhir = findViewById(R.id.et_jumlahakhir_stockOpname);
         namaPart = findViewById(R.id.et_namaPart_stockOpname);
-        imgBarcode = findViewById(R.id.imgBarcode_stockOpname);
 
         loadData();
 
-        find(R.id.btn_simpan_stockOpname, Button.class).setOnClickListener(new View.OnClickListener() {
+        find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -91,8 +93,6 @@ public class StockOpname_Activity extends AppActivity {
             namaPart.setText(data.get("NAMA").asString());
             jumlahData.setText(data.get("STOCK").asString());
         }
-
-
     }
 
     private void saveUpdate(){
@@ -150,7 +150,31 @@ public class StockOpname_Activity extends AppActivity {
                 }
             });
         }
+    }
 
+    private void setSpLokasi(String lokasi){
+        List<String> lokasiList = new ArrayList<>();
+        lokasiList.add("*");
+        lokasiList.add("RUANG PART");
+        lokasiList.add("GUDANG");
+        lokasiList.add("DISPLAY");
+        if (lokasi.equals("*") || lokasi.equals("")) {
+            find(R.id.sp_lokasi_stockOpname, Spinner.class).setEnabled(false);
+        } else {
+            find(R.id.sp_lokasi_stockOpname, Spinner.class).setEnabled(true);
+            lokasiList.remove("*");
+        }
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, lokasiList);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        find(R.id.sp_lokasi_stockOpname, Spinner.class).setAdapter(spinnerAdapter);
+        if(!lokasi.equals("")){
+            for (int i = 0; i < find(R.id.sp_lokasi_stockOpname, Spinner.class).getCount(); i++) {
+                if (find(R.id.sp_lokasi_stockOpname, Spinner.class).getItemAtPosition(i).equals(lokasi)) {
+                    find(R.id.sp_lokasi_stockOpname, Spinner.class).setSelection(i);
+                    break;
+                }
+            }
+        }
     }
 
     private void setSelanjutnya(final int stockBeda) {

@@ -172,7 +172,7 @@ public class AturLokasiPart_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("flag", "TERALOKASI");
-                args.put("lokasi", "DUMMY");
+                args.put("lokasi", "RUANG PART");
                 args.put("partid", data.get("PART_ID").asString());
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlokasipart"), args));
             }
@@ -292,7 +292,11 @@ public class AturLokasiPart_Activity extends AppActivity {
         if (!lokasiPart.isEmpty()) {
             for (int i = 0; i < lokasiList.size(); i++) {
                 if (sp_lokasi_part.getItemAtPosition(i).toString().equals(lokasiPart)) {
-                    sp_lokasi_part.setSelection(i + 1);
+                    if(isLokasi){
+                        sp_lokasi_part.setSelection(i + 1);
+                    }else{
+                        sp_lokasi_part.setSelection(i);
+                    }
                 }
             }
         }

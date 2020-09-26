@@ -309,9 +309,9 @@ public class Tools {
         }
     }
 
-    public static int getIndexSpinner(Spinner spinner, String value){
-        for (int i = 0; i < spinner.getCount(); i++){
-            if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(value)){
+    public static int getIndexSpinner(Spinner spinner, String value) {
+        for (int i = 0; i < spinner.getCount(); i++) {
+            if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(value)) {
                 return i;
             }
         }
@@ -319,7 +319,7 @@ public class Tools {
     }
 
     @SuppressLint("SimpleDateFormat")
-    public static String setFormatDayAndMonthToDb(String date){
+    public static String setFormatDayAndMonthToDb(String date) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         Date tgl = new Date();
         try {
@@ -333,21 +333,41 @@ public class Tools {
     }
 
     @SuppressLint("SimpleDateFormat")
-    public static String setFormatDayAndMonthFromDb(String date){
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date tgl = new Date();
-        try {
-             tgl = sdf.parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
+    public static String setFormatDayAndMonthFromDb(String date) {
+        if (!date.equals("")) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date tgl = new Date();
+            try {
+                tgl = sdf.parse(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            sdf = new SimpleDateFormat("dd MMM");
+            return sdf.format(tgl);
         }
-        sdf = new SimpleDateFormat("dd MMM");
-        String fotmatDate = sdf.format(tgl);
-        return fotmatDate;
+
+        return "";
     }
 
     @SuppressLint("SimpleDateFormat")
-    public static String setDateTimeToDb(String date){
+    public static String setFormatDateTimeFromDb(String date) {
+        if (!date.equals("")) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+            Date tgl = new Date();
+            try {
+                tgl = sdf.parse(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            sdf = new SimpleDateFormat("dd MMM");
+            return sdf.format(tgl);
+        }
+
+        return "";
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    public static String setDateTimeToDb(String date) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         Date tgl = new Date();
         try {
@@ -362,7 +382,7 @@ public class Tools {
     }
 
     @SuppressLint("SimpleDateFormat")
-    public static String parseTime(String time){
+    public static String parseTime(String time) {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         Date tgl = new Date();
         try {
@@ -387,10 +407,10 @@ public class Tools {
         for (int i = 0, count = group.getChildCount(); i < count; ++i) {
             View view = group.getChildAt(i);
             if (view instanceof EditText) {
-                ((EditText)view).setText("");
+                ((EditText) view).setText("");
             }
-            if(view instanceof ViewGroup && (((ViewGroup)view).getChildCount() > 0))
-                clearForm((ViewGroup)view);
+            if (view instanceof ViewGroup && (((ViewGroup) view).getChildCount() > 0))
+                clearForm((ViewGroup) view);
         }
     }
 
@@ -456,7 +476,7 @@ public class Tools {
         int width = image.getWidth();
         int height = image.getHeight();
 
-        float bitmapRatio = (float)width / (float) height;
+        float bitmapRatio = (float) width / (float) height;
         if (bitmapRatio > 1) {
             width = maxSize;
             height = (int) (width / bitmapRatio);
@@ -467,7 +487,7 @@ public class Tools {
         return Bitmap.createScaledBitmap(image, width, height, true);
     }
 
-    public static boolean isNumeric(String str){
+    public static boolean isNumeric(String str) {
         return str.matches("-?\\d+(.\\d+)?");
     }
 

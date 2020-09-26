@@ -25,8 +25,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
+        tools:ignore="AllowBackup,UnusedAttribute"
         tools:replace="android:label">
-        <activity android:name=".modules.sparepart.part_keluar.DetailPartKeluar_Activity"></activity>
+        <activity android:name=".modules.sparepart.part_keluar.AturPartKeluar_Activity" />
+        <activity android:name=".modules.sparepart.part_keluar.DetailPartKeluar_Activity" />
         <activity android:name=".modules.Otp_Activity" />
         <activity android:name=".modules.primary.DetailKontrolBooking_Activity" />
         <activity android:name=".modules.layanan.TambahLayanan" />
@@ -83,7 +85,7 @@
         <activity android:name=".modules.primary.checkin.Checkin1_Activity" />
         <activity android:name=".modules.sparepart.tugas_part.TugasPart_Activity" />
         <activity android:name=".modules.profile.ProfileBengkel_Activity" />
-        <activity android:name=".modules.sparepart.part_keluar.Jumlah_PartKeluar_Activity" />
+        <activity android:name=".modules.sparepart.part_keluar.JumlahPartKeluar_Activity" />
         <activity android:name=".modules.sparepart.part_keluar.PartKeluar_Activity" />
         <activity android:name=".modules.sparepart.DaftarJualPart_Activity" />
         <activity android:name=".modules.sparepart.DetailJualPart_Activity" />
@@ -316,7 +318,9 @@
         <receiver android:name="com.rkrzmail.srv.OtoReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action
+                    android:name="android.net.conn.CONNECTIVITY_CHANGE"
+                    tools:ignore="BatteryLife" />
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
                 <action android:name="com.nikita.generator.service" />
                 <action android:name="com.rkrzmail.toms.service" />
@@ -324,12 +328,16 @@
             </intent-filter>
         </receiver>
 
-        <service android:name="com.rkrzmail.fcm.FCMMessagingService">
+        <service
+            android:name="com.rkrzmail.fcm.FCMMessagingService"
+            tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name="com.rkrzmail.fcm.FCMInstanceIDService">
+        <service
+            android:name="com.rkrzmail.fcm.FCMInstanceIDService"
+            tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>

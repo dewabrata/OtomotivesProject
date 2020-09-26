@@ -6,10 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 
 import com.naa.data.Nson;
@@ -25,10 +25,21 @@ import com.rkrzmail.oto.modules.user.AturUser_Activity;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.rkrzmail.utils.ConstString.ATUR;
+import static com.rkrzmail.utils.ConstString.DETAIL;
+import static com.rkrzmail.utils.ConstString.LANJUT;
+import static com.rkrzmail.utils.ConstString.REQUEST_CARI_PART;
+import static com.rkrzmail.utils.ConstString.REQUEST_DAFTAR_PART_KELUAR;
+import static com.rkrzmail.utils.ConstString.REQUEST_LOKASI;
+import static com.rkrzmail.utils.ConstString.REQUEST_MEKANIK;
+import static com.rkrzmail.utils.ConstString.REQUEST_PART_KELUAR;
+
 public class AturPartKeluar_Activity extends AppActivity {
 
-    public static final int REQUEST_MEKANIK = 10, REQUEST_LOKASI = 11, REQUEST_PART = 12;
-    private Nson mekanikArray = Nson.newArray(), lokasiArray = Nson.newArray();
+    private Nson
+            mekanikArray = Nson.newArray(),
+            lokasiArray = Nson.newArray(), partKeluarJson = Nson.newObject();
+    private boolean isSelected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +60,30 @@ public class AturPartKeluar_Activity extends AppActivity {
         initToolbar();
         setSpMekanik();
         setSpLokasi();
+        find(R.id.rg_lokasi, RadioGroup.class).setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if(group.getCheckedRadioButtonId() == checkedId)
+                   isSelected = true;
+            }
+        });
+        find(R.id.btn_simpan, Button.class).setText(LANJUT);
         find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(), CariPart_Activity.class);
-                i.putExtra("bengkel", "");
-                startActivityForResult(i, REQUEST_PART);
+                if (find(R.id.sp_nama_mekanik, Spinner.class).getSelectedItem().toString().equals("--PILIH--")) {
+                    showWarning("Nama Mekanik Belum Di Pilih");
+                    find(R.id.sp_nama_mekanik, Spinner.class).performClick();
+                } else if (!isSelected) {
+                    showWarning("Penggunaan Belum Di Pilih");
+                } else if (find(R.id.sp_lokasi_tenda, Spinner.class).getSelectedItem().toString().equals("--PILIH--")) {
+                    showWarning("Tenda Belum Di Pilih");
+                    find(R.id.sp_lokasi_tenda, Spinner.class).performClick();
+                } else {
+                    Intent i = new Intent(getActivity(), CariPart_Activity.class);
+                    i.putExtra("cari_part_lokasi", "RUANG PART");
+                    startActivityForResult(i, REQUEST_CARI_PART);
+                }
             }
         });
     }
@@ -94,7 +123,7 @@ public class AturPartKeluar_Activity extends AppActivity {
                     }
                     ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, mekanikArray.asArray());
                     spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    find(R.id.sp_namaMekanik_checkin4, Spinner.class).setAdapter(spinnerAdapter);
+                    find(R.id.sp_nama_mekanik, Spinner.class).setAdapter(spinnerAdapter);
                 } else {
                     showInfoDialog("Nama Mekanik Gagal Di Muat, Muat Ulang ?", new DialogInterface.OnClickListener() {
                         @Override
@@ -141,7 +170,7 @@ public class AturPartKeluar_Activity extends AppActivity {
                     }
                     ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, lokasiArray.asArray());
                     spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    find(R.id.sp_namaMekanik_checkin4, Spinner.class).setAdapter(spinnerAdapter);
+                    find(R.id.sp_lokasi_tenda, Spinner.class).setAdapter(spinnerAdapter);
 
                 } else {
                     showInfoDialog("Lokasi Gagal Di Muat, Muat Ulang ?", new DialogInterface.OnClickListener() {
@@ -158,18 +187,41 @@ public class AturPartKeluar_Activity extends AppActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK){
-            switch (requestCode){
+        if (resultCode == RESULT_OK) {
+            Intent i;
+            switch (requestCode) {
                 case REQUEST_LOKASI:
                     setSpLokasi();
                     break;
                 case REQUEST_MEKANIK:
                     setSpMekanik();
                     break;
-                case REQUEST_PART:
-                    Intent i = new Intent(getActivity(), Jumlah_PartKeluar_Activity.class);
-                    i.putExtra("bengkel", Nson.readJson(getIntentStringExtra(data, "part")).toJson());
-                    startActivityForResult(i, REQUEST_PART);
+                case REQUEST_CARI_PART:
+                    Nson nson = Nson.readJson(getIntentStringExtra(data, "part"));
+                    partKeluarJson.set("NAMA_PART", nson.get("NAMA_PART"));
+                    partKeluarJson.set("NO_PART", nson.get("NO_PART"));
+                    partKeluarJson.set("MERK", nson.get("MERK"));
+                    partKeluarJson.set("STOCK_RUANG_PART", nson.get("STOCK_RUANG_PART"));
+                    partKeluarJson.set("KODE", nson.get("KODE"));
+                    partKeluarJson.set("NAMA_MEKANIK", find(R.id.sp_nama_mekanik, Spinner.class).getSelectedItem().toString());
+                    partKeluarJson.set("LOKASI", find(R.id.sp_lokasi_tenda, Spinner.class).getSelectedItem().toString());
+                    partKeluarJson.set("PART_ID", nson.get("PART_ID"));
+                    partKeluarJson.set("PENDING", nson.get("PENDING"));
+                    i = new Intent(getActivity(), JumlahPartKeluar_Activity.class);
+                    i.putExtra("part", partKeluarJson.toJson());
+                    i.putExtra(ATUR, "");
+                    startActivityForResult(i, REQUEST_DAFTAR_PART_KELUAR);
+                    break;
+                case REQUEST_DAFTAR_PART_KELUAR:
+                    Nson nson2 = Nson.readJson(getIntentStringExtra(data, "part"));
+                    i = new Intent(getActivity(), DetailPartKeluar_Activity.class);
+                    i.putExtra(ATUR, "");
+                    i.putExtra("part", nson2.toJson());
+                    startActivityForResult(i, REQUEST_PART_KELUAR);
+                    break;
+                case REQUEST_PART_KELUAR:
+                    setResult(RESULT_OK);
+                    finish();
                     break;
 
             }

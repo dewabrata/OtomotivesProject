@@ -25,6 +25,8 @@ import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 
+import static com.rkrzmail.utils.ConstString.DATA;
+
 public class HistoryStockOpname_Activity extends AppActivity {
 
     private RecyclerView recyclerView;
@@ -41,7 +43,6 @@ public class HistoryStockOpname_Activity extends AppActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("History Stock Opname");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
     }
 
     private void initComponent() {
@@ -60,17 +61,14 @@ public class HistoryStockOpname_Activity extends AppActivity {
         recyclerView.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_history_stock_opname) {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-
-                 String tglMasuk = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("").asString());
-
-                viewHolder.find(R.id.tv_lokasi_historyStock, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_noFolder_historyStock, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_namaPart_historyStock, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_noPart_historyStock, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_stock_historyStock, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_merk_historyStock, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_pending_historyStock, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_opname_historyStock, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_lokasi_historyStock, TextView.class).setText(nListArray.get(position).get("LOKASI").asString());
+                viewHolder.find(R.id.tv_noFolder_historyStock, TextView.class).setText(nListArray.get(position).get("NO_FOLDER").asString());
+                viewHolder.find(R.id.tv_namaPart_historyStock, TextView.class).setText(nListArray.get(position).get("NAMA_PART").asString());
+                viewHolder.find(R.id.tv_noPart_historyStock, TextView.class).setText(nListArray.get(position).get("NOMOR_PART_NOMOR").asString());
+                viewHolder.find(R.id.tv_stock_historyStock, TextView.class).setText(nListArray.get(position).get("STOCK_RUANG_PART").asString());
+                viewHolder.find(R.id.tv_merk_historyStock, TextView.class).setText(nListArray.get(position).get("MERK").asString());
+                viewHolder.find(R.id.tv_pending_historyStock, TextView.class).setText(nListArray.get(position).get("PENDING").asString());
+                viewHolder.find(R.id.tv_opname_historyStock, TextView.class).setText(nListArray.get(position).get("OPNAME").asString());
 
             }
 
@@ -78,7 +76,7 @@ public class HistoryStockOpname_Activity extends AppActivity {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
                 Intent intent = new Intent(getActivity(), AturUser_Activity.class);
-                intent.putExtra("data", nListArray.get(position).toJson());
+                intent.putExtra(DATA, nListArray.get(position).toJson());
                 startActivityForResult(intent, 10);
             }
         }));

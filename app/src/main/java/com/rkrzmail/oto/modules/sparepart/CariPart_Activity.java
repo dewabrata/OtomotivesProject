@@ -45,7 +45,7 @@ public class CariPart_Activity extends AppActivity {
             flagKelompokPart = false,
             flag, flagGlobal = false,
             flagBengkel = false,
-            flagMasterPart = false;
+            flagMasterPart = false, isLokasi = false;
     private Toolbar toolbar;
     int countForCariPart = 0;
     private String cari;
@@ -83,6 +83,7 @@ public class CariPart_Activity extends AppActivity {
             flagBengkel = true;
             flag = false;
         } else if (getIntent().hasExtra("cari_part_lokasi")) {
+            isLokasi = true;
             getSupportActionBar().setTitle("Cari Part Bengkel");
             flag = true;
         }
@@ -245,7 +246,7 @@ public class CariPart_Activity extends AppActivity {
                 args.put("action", "view");
                 args.put("search", cari);
                 args.put("spec", "Bengkel");
-                args.put("lokasi", "Ruang Part");
+                args.put("lokasi", getIntentStringExtra("cari_part_lokasi"));
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewsparepart"), args));
             }
 
@@ -283,7 +284,11 @@ public class CariPart_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        adapterSearchView(mSearchView, flagBengkel ? "spec" : "", flagBengkel ? "viewsparepart" : "caripartsugestion", "NAMA_PART");
+        if(isLokasi){
+            adapterSearchView(mSearchView, "spec","viewsparepart" , "NAMA_PART");
+        }else{
+            adapterSearchView(mSearchView, flagBengkel ? "spec" : "", flagBengkel ? "viewsparepart" : "caripartsugestion", "NAMA_PART");
+        }
 
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {

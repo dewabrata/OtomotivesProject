@@ -843,7 +843,7 @@ public class AppActivity extends AppCompatActivity {
         android.app.DatePickerDialog.OnDateSetListener mDateListener = new android.app.DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                 String newDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                 Date date = null;
                 try {

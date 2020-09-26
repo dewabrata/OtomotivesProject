@@ -141,7 +141,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
 
     private void initLokasiPenugasan() {
         if (getSetting("LOKASI_PENUGASAN") == null || getSetting("LOKASI_PENUGASAN").equals("")) {
-            Messagebox.showDialog(getActivity(), "Penugasan", "Tentukan Lokasi Penugasan", "TENDA", "BENGKEL", new DialogInterface.OnClickListener() {
+            Messagebox.showDialog(getActivity(), "Penugasan", "Lokasi Saat Ini", "TENDA", "BENGKEL", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     setSetting("LOKASI_PENUGASAN", "TENDA");
@@ -360,6 +360,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 etNopol.setText(n.get("NOPOL").asString());
                 etNoPonsel.setText("XXXXXXXX" + nomor);
                 etNamaPelanggan.setText(n.get("NAMA_PELANGGAN").asString());
+                etJenisKendaraan.setEnabled(false);
                 etJenisKendaraan.setText(n.get("JENIS_KENDARAAN").asString());
                 pekerjaan = n.get("PEKERJAAN").asString();
                 setSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN", pekerjaan);
@@ -423,7 +424,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 merkKendaraan = n.get("MERK").asString();
                 varianKendaraan = n.get("VARIAN").asString();
                 modelKendaraan = n.get("MODEL").asString();
-                tahunProduksi = n.get("TAHUN2").asString();
+                tahunProduksi = n.get("TAHUN1").asString();
                 jenisKendaraan = n.get("TYPE").asString();
 
                 etJenisKendaraan.setText(stringBuilder.toString());

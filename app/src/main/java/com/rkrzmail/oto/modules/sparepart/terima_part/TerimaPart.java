@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -75,6 +76,11 @@ public class TerimaPart extends AppActivity {
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 String tgl = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("TANGGAL_PENERIMAAN").asString());
                 String tglInv = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("JATUH_TEMPO_INV").asString());
+
+                if(nListArray.get(position).get("SUPPLIER").asString().equals(""))
+                    viewHolder.find(R.id.tr_supplier, TableRow.class).setVisibility(View.GONE);
+                else
+                    viewHolder.find(R.id.tr_supplier, TableRow.class).setVisibility(View.VISIBLE);
 
                 viewHolder.find(R.id.txtTanggal, TextView.class).setText(tgl);
                 viewHolder.find(R.id.txtSupplier, TextView.class).setText(nListArray.get(position).get("SUPPLIER").asString());;
