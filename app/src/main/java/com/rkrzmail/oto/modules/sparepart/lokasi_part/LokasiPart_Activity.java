@@ -81,7 +81,7 @@ public class LokasiPart_Activity extends AppActivity {
         searchMenu.setActionView(mSearchView);
         searchMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
 
-        adapterSearchView(mSearchView, "search", "viewlokasipart", "NAMA_PART");
+        adapterSearchView(mSearchView, "search", "viewlokasipart", "NAMA_PART", "");
 
         //SearchView searchView = (SearchView)  menu.findItem(R.id.action_search).setActionView(mSearchView);
         // Assumes current activity is the searchable activity

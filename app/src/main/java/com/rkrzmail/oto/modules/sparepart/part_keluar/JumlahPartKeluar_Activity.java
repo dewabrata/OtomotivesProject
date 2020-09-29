@@ -24,9 +24,9 @@ import com.rkrzmail.oto.modules.BarcodeActivity;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.rkrzmail.utils.ConstString.ATUR;
-import static com.rkrzmail.utils.ConstString.DETAIL;
-import static com.rkrzmail.utils.ConstString.REQUEST_BARCODE;
+import static com.rkrzmail.utils.ConstUtils.ATUR;
+import static com.rkrzmail.utils.ConstUtils.DETAIL;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
 
 public class JumlahPartKeluar_Activity extends AppActivity {
 

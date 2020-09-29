@@ -33,6 +33,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import static com.rkrzmail.utils.ConstUtils.CARI_PART_TERALOKASIKAN;
+
 public class AturLokasiPart_Activity extends AppActivity {
 
     private static final String TAG = "Lokasi___";
@@ -76,7 +78,7 @@ public class AturLokasiPart_Activity extends AppActivity {
         sp_noFolder_part = findViewById(R.id.sp_noFolder_part);
 
         final Nson nonLokasi = Nson.readJson(getIntentStringExtra("NON_ALOKASI"));
-        final Nson teralokasi = Nson.readJson(getIntentStringExtra("TERALOKASIKAN"));
+        final Nson teralokasi = Nson.readJson(getIntentStringExtra(CARI_PART_TERALOKASIKAN));
         if (getIntent().hasExtra("NON_ALOKASI")) {
             isLokasi = false;
             lokasiPart = "RUANG PART";
@@ -130,7 +132,8 @@ public class AturLokasiPart_Activity extends AppActivity {
 
                 args.put("action", "update");
                 if (isLokasi) {
-                    args.put("lokasi", sp_lokasi_part.getSelectedItem().toString());
+                    args.put("lokasi", "TAMBAH_LOKASI");
+                    args.put("lokasi_part", sp_lokasi_part.getSelectedItem().toString());
                 }
                 args.put("tempat", tempatPart);
                 if (tempatPart.equalsIgnoreCase("PALET")) {
@@ -190,7 +193,7 @@ public class AturLokasiPart_Activity extends AppActivity {
     }
 
     private String kodePenempatan(String tempat, String no, String tingkat, String folder) {
-        String kode = "";
+        String kode;
         if (tempat.equals("RAK")) {
             kode = "R" + "." + no + "." + tingkat + "." + folder;
         } else {

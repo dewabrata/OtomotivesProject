@@ -29,14 +29,14 @@ import com.rkrzmail.utils.Tools;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.rkrzmail.utils.ConstString.ATUR;
-import static com.rkrzmail.utils.ConstString.DETAIL;
-import static com.rkrzmail.utils.ConstString.REQUEST_BARCODE;
-import static com.rkrzmail.utils.ConstString.REQUEST_CARI_PART;
-import static com.rkrzmail.utils.ConstString.REQUEST_JUMLAH_PART_KELUAR;
-import static com.rkrzmail.utils.ConstString.REQUEST_PART_KEMBALI;
-import static com.rkrzmail.utils.ConstString.RP;
-import static com.rkrzmail.utils.ConstString.TAG_PART_KELUAR;
+import static com.rkrzmail.utils.ConstUtils.ATUR;
+import static com.rkrzmail.utils.ConstUtils.DETAIL;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_JUMLAH_PART_KELUAR;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_PART_KEMBALI;
+import static com.rkrzmail.utils.ConstUtils.RP;
+import static com.rkrzmail.utils.ConstUtils.TAG_PART_KELUAR;
 
 public class DetailPartKeluar_Activity extends AppActivity {
 

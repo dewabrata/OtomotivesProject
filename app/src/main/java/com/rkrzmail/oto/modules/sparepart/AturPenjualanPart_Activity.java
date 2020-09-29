@@ -29,10 +29,13 @@ import com.rkrzmail.srv.NsonAutoCompleteAdapter;
 
 import java.util.Map;
 
+import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
+import static com.rkrzmail.utils.ConstUtils.REQEST_DAFTAR_JUAL;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
+import static com.rkrzmail.utils.ConstUtils.RUANG_PART;
+
 public class AturPenjualanPart_Activity extends AppActivity {
 
-    private static final int REQUEST_CARI_PART = 11;
-    private static final int REQEST_DAFTAR_JUAL = 12;
     public static final String ERROR = "Silahkan Isi ";
     private String noHp = "";
     private boolean isNoHp = false;
@@ -194,7 +197,7 @@ public class AturPenjualanPart_Activity extends AppActivity {
 
     private void setIntent(){
         Intent intent = new Intent(getActivity(), CariPart_Activity.class);
-        intent.putExtra("bengkel", "");
+        intent.putExtra(CARI_PART_LOKASI, RUANG_PART);
         startActivityForResult(intent, REQUEST_CARI_PART);
     }
 

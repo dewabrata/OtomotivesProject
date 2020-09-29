@@ -28,15 +28,17 @@ import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
 import java.util.Map;
+import java.util.Objects;
+
+import static com.rkrzmail.utils.ConstUtils.CARI_PART_TERALOKASIKAN;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_ATUR_LOKASI;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_OPNAME;
 
 public class PartTeralokasikan_Fragment extends Fragment {
 
-    private static final int REQUEST_ATUR_LOKASI = 14;
-    public static RecyclerView rvLokasi_part;
+    private  RecyclerView rvLokasi_part;
     private Nson nListArray = Nson.newArray();
-    private static final int REQUEST_STOCK_OPNAME = 1212;
-    private static final int REQUEST_BARCODE = 13;
-    private View v;
 
     public PartTeralokasikan_Fragment() {
 
@@ -45,7 +47,7 @@ public class PartTeralokasikan_Fragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.fragment_part_teralokasikan_, container, false);
+        View v = inflater.inflate(R.layout.fragment_part_teralokasikan_, container, false);
         rvLokasi_part = (RecyclerView) v.findViewById(R.id.recyclerView_teralokasikan);
         initComponent("");
         return v;
@@ -59,51 +61,19 @@ public class PartTeralokasikan_Fragment extends Fragment {
             @Override
             public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
                 super.onBindViewHolder(viewHolder, position);
-
-                String nama = nListArray.get(position).get("NAMA_MASTER").asString() + " / " + nListArray.get(position).get("NAMA_LAIN_MASTER").asString();
-
-                viewHolder.find(R.id.tv_noFolder, TextView.class).setText(nListArray.get(position).get("NO_FOLDER").asString());
+                viewHolder.find(R.id.tv_noFolder, TextView.class).setText(nListArray.get(position).get("KODE").asString());
                 viewHolder.find(R.id.tv_lokasiPart, TextView.class).setText(nListArray.get(position).get("LOKASI").asString());
-                viewHolder.find(R.id.tv_namaPart, TextView.class).setText(nama);
+                viewHolder.find(R.id.tv_namaPart, TextView.class).setText( nListArray.get(position).get("NAMA_PART").asString());
                 viewHolder.find(R.id.tv_nomor_part, TextView.class).setText(nListArray.get(position).get("NOMOR_PART_NOMOR").asString());
                 viewHolder.find(R.id.tv_merk, TextView.class).setText(nListArray.get(position).get("MERK").asString());
                 viewHolder.find(R.id.tv_stock, TextView.class).setText(nListArray.get(position).get("STOCK").asString());
-
-                viewHolder.find(R.id.img_optionMenu, ImageButton.class).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        PopupMenu popup = new PopupMenu(getActivity(), viewHolder.find(R.id.img_optionMenu, ImageButton.class));
-                        popup.inflate(R.menu.menu_lokasi_part);
-                        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                            @Override
-                            public boolean onMenuItemClick(MenuItem menuItem) {
-                                switch (menuItem.getItemId()) {
-                                    case R.id.action_stockOpname:
-//                                        Stock opname : membuka form stock opname
-                                        Intent i = new Intent(getActivity(), StockOpname_Activity.class);
-                                        i.putExtra("NO_PART_ID", nListArray.get(position).toJson());
-                                        startActivityForResult(i, REQUEST_STOCK_OPNAME);
-                                        break;
-                                    case R.id.action_qrCode:
-                                        Intent intent = new Intent(getActivity(), BarcodeActivity.class);
-                                        startActivityForResult(intent, REQUEST_BARCODE);
-                                        break;
-                                    case R.id.action_hapusDaftar:
-//                                        Hapus daftar : menghapus part dari lokasi penempatan
-                                        break;
-                                }
-                                return true;
-                            }
-                        });
-                        popup.show();
-                    }
-                });
+                viewHolder.find(R.id.tv_pending, TextView.class).setText(nListArray.get(position).get("PENDING").asString());
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
                 Intent i = new Intent(getActivity(), AturLokasiPart_Activity.class);
-                i.putExtra("TERALOKASIKAN", nListArray.get(position).toJson());
+                i.putExtra(CARI_PART_TERALOKASIKAN, nListArray.get(position).toJson());
                 startActivityForResult(i, REQUEST_ATUR_LOKASI);
             }
         }));
@@ -119,14 +89,15 @@ public class PartTeralokasikan_Fragment extends Fragment {
                 args.put("flag", "TERALOKASI");
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlokasipart"), args));
             }
+            @SuppressLint("NewApi")
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
-                    rvLokasi_part.getAdapter().notifyDataSetChanged();
+                    Objects.requireNonNull(rvLokasi_part.getAdapter()).notifyDataSetChanged();
                 }else{
-                    ((LokasiPart_Activity) getActivity()).showError("Mohon Di Coba Kembali");
+                    ((LokasiPart_Activity) Objects.requireNonNull(getActivity())).showError(result.get("message").asString());
                 }
             }
         });

@@ -141,7 +141,7 @@ public class PenjualanPart_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        adapterSearchView(mSearchView, "search", "aturjualpart", "NAMA_USAHA");
+        adapterSearchView(mSearchView, "search", "aturjualpart", "NAMA_USAHA", "");
         android.support.v7.widget.SearchView.OnQueryTextListener queryTextListener = new android.support.v7.widget.SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
 

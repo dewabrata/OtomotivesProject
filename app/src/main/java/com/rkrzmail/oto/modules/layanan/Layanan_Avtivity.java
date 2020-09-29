@@ -167,7 +167,7 @@ public class Layanan_Avtivity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        adapterSearchView(mSearchView, "spec", "viewlayanan", "NAMA_LAYANAN");
+        adapterSearchView(mSearchView, "spec", "viewlayanan", "NAMA_LAYANAN", "");
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
 

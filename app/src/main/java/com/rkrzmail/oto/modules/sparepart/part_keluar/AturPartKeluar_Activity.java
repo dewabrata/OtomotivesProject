@@ -25,14 +25,13 @@ import com.rkrzmail.oto.modules.user.AturUser_Activity;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.rkrzmail.utils.ConstString.ATUR;
-import static com.rkrzmail.utils.ConstString.DETAIL;
-import static com.rkrzmail.utils.ConstString.LANJUT;
-import static com.rkrzmail.utils.ConstString.REQUEST_CARI_PART;
-import static com.rkrzmail.utils.ConstString.REQUEST_DAFTAR_PART_KELUAR;
-import static com.rkrzmail.utils.ConstString.REQUEST_LOKASI;
-import static com.rkrzmail.utils.ConstString.REQUEST_MEKANIK;
-import static com.rkrzmail.utils.ConstString.REQUEST_PART_KELUAR;
+import static com.rkrzmail.utils.ConstUtils.ATUR;
+import static com.rkrzmail.utils.ConstUtils.LANJUT;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_DAFTAR_PART_KELUAR;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_LOKASI;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_MEKANIK;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_PART_KELUAR;
 
 public class AturPartKeluar_Activity extends AppActivity {
 

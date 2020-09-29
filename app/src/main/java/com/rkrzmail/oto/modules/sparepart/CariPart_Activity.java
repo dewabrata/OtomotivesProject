@@ -5,17 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -24,28 +20,29 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.gmod.Pendaftaran1;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
-import com.rkrzmail.srv.NsonAutoCompleteAdapter;
-import com.rkrzmail.utils.Tools;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
+
+import static com.rkrzmail.utils.ConstUtils.CARI_PART;
+import static com.rkrzmail.utils.ConstUtils.CARI_PART_BENGKEL;
+import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
+import static com.rkrzmail.utils.ConstUtils.CARI_PART_OTOMOTIVES;
+import static com.rkrzmail.utils.ConstUtils.CARI_PART_TERALOKASIKAN;
 
 public class CariPart_Activity extends AppActivity {
 
     private static final String SEARCH_HISTORY_KEY = "_SEARCH_HISTORY_KEY";
     private static final int MAX_HISTORY_ITEMS = 10;
-    private Pendaftaran1.AutoSuggestAdapter autoSuggestAdapter;
     private RecyclerView rvCariPart;
     private boolean flagCariPart = false,
             flagKelompokPart = false,
             flag, flagGlobal = false,
             flagBengkel = false,
-            flagMasterPart = false, isLokasi = false;
+            flagMasterPart = false,
+            isLokasi = false,
+            isTeralokasikan = false;
     private Toolbar toolbar;
     int countForCariPart = 0;
     private String cari;
@@ -74,16 +71,20 @@ public class CariPart_Activity extends AppActivity {
             getSupportActionBar().setTitle("Cari Master Part");
             flagMasterPart = true;
             flag = true;
-        } else if (getIntent().hasExtra("global")) {
+        } else if (getIntent().hasExtra(CARI_PART_OTOMOTIVES)) {
             getSupportActionBar().setTitle("Cari Part Otomotives");
             flagGlobal = true;
             flag = true;
-        } else if (getIntent().hasExtra("bengkel")) {
+        } else if (getIntent().hasExtra(CARI_PART_BENGKEL)) {
             getSupportActionBar().setTitle("Cari Part Bengkel");
             flagBengkel = true;
             flag = false;
-        } else if (getIntent().hasExtra("cari_part_lokasi")) {
+        } else if (getIntent().hasExtra(CARI_PART_LOKASI)) {
             isLokasi = true;
+            getSupportActionBar().setTitle("Cari Part Bengkel");
+            flag = true;
+        }else if(getIntent().hasExtra(CARI_PART_TERALOKASIKAN)){
+            isTeralokasikan = true;
             getSupportActionBar().setTitle("Cari Part Bengkel");
             flag = true;
         }
@@ -92,9 +93,15 @@ public class CariPart_Activity extends AppActivity {
 
     private void initComponent() {
         initToolbar();
-        if(getIntent().hasExtra("cari_part_lokasi")){
+        rvCariPart = (RecyclerView) findViewById(R.id.recyclerView);
+        rvCariPart.setLayoutManager(new LinearLayoutManager(this));
+        rvCariPart.setHasFixedSize(true);
+        if(isLokasi){
             initRecylerViewCarPartLokasi();
-            cariPartWithLokasi();
+            cariPartWithLokasi("");
+        }else if(isTeralokasikan){
+            initRecylerViewCarPartTeralokasikan();
+            cariPartTeralokasikan("");
         }else{
             if (countForCariPart == 0) {
                 cariPart("");
@@ -104,9 +111,6 @@ public class CariPart_Activity extends AppActivity {
     }
 
     private void initRecylerviewCariPart() {
-        rvCariPart = (RecyclerView) findViewById(R.id.recyclerView);
-        rvCariPart.setLayoutManager(new LinearLayoutManager(this));
-        rvCariPart.setHasFixedSize(true);
         rvCariPart.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_daftar_cari_part) {
                     @Override
                     public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
@@ -158,9 +162,6 @@ public class CariPart_Activity extends AppActivity {
     }
 
     private void initRecylerViewCarPartLokasi() {
-        rvCariPart = (RecyclerView) findViewById(R.id.recyclerView);
-        rvCariPart.setLayoutManager(new LinearLayoutManager(this));
-        rvCariPart.setHasFixedSize(true);
         rvCariPart.setAdapter(new NikitaRecyclerAdapter(partLokasiPart, R.layout.item_daftar_cari_part) {
                     @Override
                     public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
@@ -188,6 +189,32 @@ public class CariPart_Activity extends AppActivity {
         );
     }
 
+    private void initRecylerViewCarPartTeralokasikan() {
+        rvCariPart.setAdapter(new NikitaRecyclerAdapter(partLokasiPart, R.layout.item_lokasi_part) {
+                    @Override
+                    public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+                        super.onBindViewHolder(viewHolder, position);
+                        viewHolder.find(R.id.tv_noFolder, TextView.class).setText(partLokasiPart.get(position).get("KODE").asString());
+                        viewHolder.find(R.id.tv_lokasiPart, TextView.class).setText(partLokasiPart.get(position).get("LOKASI").asString());
+                        viewHolder.find(R.id.tv_namaPart, TextView.class).setText( partLokasiPart.get(position).get("NAMA_PART").asString());
+                        viewHolder.find(R.id.tv_nomor_part, TextView.class).setText(partLokasiPart.get(position).get("NOMOR_PART_NOMOR").asString());
+                        viewHolder.find(R.id.tv_merk, TextView.class).setText(partLokasiPart.get(position).get("MERK").asString());
+                        viewHolder.find(R.id.tv_stock, TextView.class).setText(partLokasiPart.get(position).get("STOCK").asString());
+                        viewHolder.find(R.id.tv_pending, TextView.class).setText(partLokasiPart.get(position).get("PENDING").asString());
+
+                    }
+                }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Nson parent, View view, int position) {
+                        Intent intent = new Intent();
+                        intent.putExtra("part", partLokasiPart.get(position).toJson());
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+                })
+        );
+    }
+
     private void cariPart(final String cari) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
@@ -203,21 +230,25 @@ public class CariPart_Activity extends AppActivity {
                     args.put("search", cari);
                     result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("caripart"), args));
                 } else if (flagGlobal || countForCariPart == 2) {
+                    countForCariPart = 2;
                     flag = true;
                     args.put("action", "view");
                     args.put("search", cari);
                     result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewsparepart"), args));
                 } else if (flagBengkel || countForCariPart == 5) {
+                    countForCariPart = 5;
                     flag = false;
                     args.put("action", "view");
                     args.put("search", cari);
                     args.put("spec", "Bengkel");
                     result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewsparepart"), args));
                 } else if (flagKelompokPart || countForCariPart == 4) {
+                    countForCariPart = 4;
                     flag = false;
                     args.put("nama", getIntentStringExtra("KELOMPOK_PART"));
                     result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewmst"), args));
                 } else if (flagMasterPart || countForCariPart == 3) {
+                    countForCariPart = 3;
                     flag = true;
                     args.put("flag", getIntentStringExtra("MASTER_PART"));
                     result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("caripart"), args));
@@ -237,16 +268,16 @@ public class CariPart_Activity extends AppActivity {
         });
     }
 
-    private void cariPartWithLokasi() {
+    private void cariPartWithLokasi(final String cari) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
-                args.put("search", cari);
                 args.put("spec", "Bengkel");
-                args.put("lokasi", getIntentStringExtra("cari_part_lokasi"));
+                args.put("search", cari);
+                args.put("lokasi", getIntentStringExtra(CARI_PART_LOKASI));
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewsparepart"), args));
             }
 
@@ -258,6 +289,31 @@ public class CariPart_Activity extends AppActivity {
                     rvCariPart.getAdapter().notifyDataSetChanged();
                 } else {
                     showError("Gagal Mencari Part");
+                }
+            }
+        });
+    }
+
+    private void cariPartTeralokasikan(final String cari) {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "view");
+                args.put("search", cari);
+                args.put("flag", "TERALOKASI");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlokasipart"), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    partLokasiPart.asArray().clear();
+                    partLokasiPart.asArray().addAll(result.get("data").asArray());
+                    rvCariPart.getAdapter().notifyDataSetChanged();
+                } else {
+                    showError(result.get("message").asString());
                 }
             }
         });
@@ -285,21 +341,30 @@ public class CariPart_Activity extends AppActivity {
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
         if(isLokasi){
-            adapterSearchView(mSearchView, "spec","viewsparepart" , "NAMA_PART");
-        }else{
-            adapterSearchView(mSearchView, flagBengkel ? "spec" : "", flagBengkel ? "viewsparepart" : "caripartsugestion", "NAMA_PART");
+            adapterSearchView(mSearchView, "spec","viewsparepart" , "NAMA_PART", "");
+        }else if(flagGlobal && countForCariPart == 2){
+            adapterSearchView(mSearchView,"",  "caripartsugestion", "NAMA_PART", CARI_PART);
+        }else if(flagBengkel && countForCariPart == 5){
+            adapterSearchView(mSearchView,"spec",  "viewsparepart", "NAMA_PART", "");
+        }else if(isTeralokasikan){
+            adapterSearchView(mSearchView,"",  "caripartsugestion", "NAMA_PART", CARI_PART_TERALOKASIKAN);
         }
 
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
                 //cariPart(newText);
-                return false;
+                return true;
             }
 
             public boolean onQueryTextSubmit(String query) {
                 cari = query;
                 if (flag) {
-                    cariPartWithLokasi();
+                    if(isLokasi){
+                        cariPartWithLokasi(query);
+                    }
+                   if(isTeralokasikan){
+                       cariPartTeralokasikan(query);
+                   }
                     if (flagGlobal) {
                         countForCariPart = 2;
                         cariPart(query);

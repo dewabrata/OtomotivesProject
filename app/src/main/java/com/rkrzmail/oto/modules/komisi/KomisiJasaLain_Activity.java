@@ -137,7 +137,7 @@ public class KomisiJasaLain_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        adapterSearchView(mSearchView, "search", "komisijasalain", "KOMISI");
+        adapterSearchView(mSearchView, "search", "komisijasalain", "KOMISI", "");
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
 

@@ -518,8 +518,8 @@ public class AppActivity extends AppCompatActivity {
     }
 
 
-    public void adapterSearchView(android.support.v7.widget.SearchView searchView, final String arguments, final String api, final String jsonObject) {
-        android.support.v7.widget.SearchView.SearchAutoComplete searchAutoComplete = (android.support.v7.widget.SearchView.SearchAutoComplete) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+    public void adapterSearchView(final android.support.v7.widget.SearchView searchView, final String arguments, final String api, final String jsonObject, final String flag) {
+        final android.support.v7.widget.SearchView.SearchAutoComplete searchAutoComplete = (android.support.v7.widget.SearchView.SearchAutoComplete) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         searchAutoComplete.setDropDownBackgroundResource(R.drawable.bg_radius_white);
         searchAutoComplete.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
             Nson result;
@@ -529,6 +529,9 @@ public class AppActivity extends AppCompatActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 args.put(arguments, "Bengkel");
+                if(!flag.equals("")){
+                    args.put("flag", flag);
+                }
                 args.put("search", bookTitle);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(api), args));
 
@@ -541,7 +544,7 @@ public class AppActivity extends AppCompatActivity {
                     LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     convertView = inflater.inflate(R.layout.item_suggestion, parent, false);
                 }
-                String search = null;
+                String search;
                 if (getItem(position).get("NAMA_LAIN").asString().equalsIgnoreCase("")) {
                     search = getItem(position).get(jsonObject).asString();
                 } else {
@@ -557,8 +560,10 @@ public class AppActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(i)));
-                find(android.support.v7.appcompat.R.id.search_src_text, android.support.v7.widget.SearchView.SearchAutoComplete.class).setText(n.get(jsonObject).asString());
+                String object = n.get(jsonObject).asString();
+                find(android.support.v7.appcompat.R.id.search_src_text, android.support.v7.widget.SearchView.SearchAutoComplete.class).setText(object);
                 find(android.support.v7.appcompat.R.id.search_src_text, android.support.v7.widget.SearchView.SearchAutoComplete.class).setTag(String.valueOf(adapterView.getItemAtPosition(i)));
+                searchView.setQuery(object, true);
             }
         });
     }
@@ -775,7 +780,7 @@ public class AppActivity extends AppCompatActivity {
         TimePicker_Dialog timePickerDialog = new TimePicker_Dialog();
         timePickerDialog.show(getSupportFragmentManager(), "TimePicker");
         timePickerDialog.getTimes(new TimePicker_Dialog.OnClickDialog() {
-            @SuppressLint("DefaultLocale")
+            @SuppressLint({"DefaultLocale", "SetTextI18n"})
             @Override
             public void getTime(int day, int hours, int minutes) {
                 ddHHmm.setText(String.format("%02d", day) + ":" + String.format("%02d", hours) + ":" + String.format("%02d", minutes));

@@ -18,18 +18,25 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.user.AturUser_Activity;
+import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
-import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 
-import static com.rkrzmail.utils.ConstString.DATA;
+import static com.rkrzmail.utils.ConstUtils.ALL;
+import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
+import static com.rkrzmail.utils.ConstUtils.CARI_PART_TERALOKASIKAN;
+import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.PART;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_OPNAME;
+import static com.rkrzmail.utils.ConstUtils.RUANG_PART;
 
 public class HistoryStockOpname_Activity extends AppActivity {
 
     private RecyclerView recyclerView;
+    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +54,12 @@ public class HistoryStockOpname_Activity extends AppActivity {
 
     private void initComponent() {
         initToolbar();
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah);
-        fab.setOnClickListener(new View.OnClickListener() {
+        find(R.id.fab_tambah).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(new Intent(getActivity(), StockOpname_Activity.class), 10);
+                intent = new Intent(getActivity(), CariPart_Activity.class);
+                intent.putExtra(CARI_PART_TERALOKASIKAN, "");
+                startActivityForResult(intent, REQUEST_CARI_PART);
             }
         });
 
@@ -64,20 +72,18 @@ public class HistoryStockOpname_Activity extends AppActivity {
                 viewHolder.find(R.id.tv_lokasi_historyStock, TextView.class).setText(nListArray.get(position).get("LOKASI").asString());
                 viewHolder.find(R.id.tv_noFolder_historyStock, TextView.class).setText(nListArray.get(position).get("NO_FOLDER").asString());
                 viewHolder.find(R.id.tv_namaPart_historyStock, TextView.class).setText(nListArray.get(position).get("NAMA_PART").asString());
-                viewHolder.find(R.id.tv_noPart_historyStock, TextView.class).setText(nListArray.get(position).get("NOMOR_PART_NOMOR").asString());
-                viewHolder.find(R.id.tv_stock_historyStock, TextView.class).setText(nListArray.get(position).get("STOCK_RUANG_PART").asString());
+                viewHolder.find(R.id.tv_noPart_historyStock, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
+                viewHolder.find(R.id.tv_stock_historyStock, TextView.class).setText(nListArray.get(position).get("STOCK_LOKASI_PART").asString());
                 viewHolder.find(R.id.tv_merk_historyStock, TextView.class).setText(nListArray.get(position).get("MERK").asString());
-                viewHolder.find(R.id.tv_pending_historyStock, TextView.class).setText(nListArray.get(position).get("PENDING").asString());
+                viewHolder.find(R.id.tv_pending_historyStock, TextView.class).setText(nListArray.get(position).get("PENDING_STOCK").asString());
                 viewHolder.find(R.id.tv_opname_historyStock, TextView.class).setText(nListArray.get(position).get("OPNAME").asString());
-
             }
-
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
-                Intent intent = new Intent(getActivity(), AturUser_Activity.class);
-                intent.putExtra(DATA, nListArray.get(position).toJson());
-                startActivityForResult(intent, 10);
+                /*intent = new Intent(getActivity(), CariPart_Activity.class);
+                intent.putExtra(CARI_PART_LOKASI, nListArray.get(position).toJson());
+                startActivityForResult(intent, REQUEST_OPNAME);*/
             }
         }));
         reload("");
@@ -91,8 +97,7 @@ public class HistoryStockOpname_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
-                args.put("search", cari);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(""), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("stockopname"), args));
             }
 
             @Override
@@ -111,10 +116,12 @@ public class HistoryStockOpname_Activity extends AppActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == 10) {
-                reload("");
-            }
+        if (resultCode == RESULT_OK && requestCode == REQUEST_OPNAME) {
+            reload("");
+        } else if (resultCode == RESULT_OK && requestCode == REQUEST_CARI_PART) {
+            intent = new Intent(getActivity(), StockOpname_Activity.class);
+            intent.putExtra(DATA, Nson.readJson(getIntentStringExtra(data, PART)).toJson());
+            startActivityForResult(intent, REQUEST_OPNAME);
         }
     }
 }

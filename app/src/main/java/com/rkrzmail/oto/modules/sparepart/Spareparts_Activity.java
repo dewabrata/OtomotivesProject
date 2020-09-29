@@ -35,6 +35,8 @@ import com.rkrzmail.utils.Tools;
 import java.text.DecimalFormat;
 import java.util.Map;
 
+import static com.rkrzmail.utils.ConstUtils.CARI_PART_OTOMOTIVES;
+
 public class Spareparts_Activity extends AppActivity {
 
     private static final int REQUEST_ATUR = 21;
@@ -67,7 +69,7 @@ public class Spareparts_Activity extends AppActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), CariPart_Activity.class);
                 //intent.putExtra("flag", "ALL");
-                intent.putExtra("global", "");
+                intent.putExtra(CARI_PART_OTOMOTIVES, "");
                 startActivityForResult(intent, REQUEST_CARI);
             }
         });
@@ -150,7 +152,7 @@ public class Spareparts_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        adapterSearchView(mSearchView, "spec", "viewsparepart", "NAMA_PART");
+        adapterSearchView(mSearchView, "spec", "viewsparepart", "NAMA_PART", "");
 
         final SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {

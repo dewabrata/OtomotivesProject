@@ -70,7 +70,11 @@ public class AturLayanan_Activity extends AppActivity {
             keterangan = "",
             item = "", garansi = "";
     private int maxDisc = 0, size = 0;
-    private boolean isDiscList, isPaket = false, isAfterService = false, isRecall = false, isOtomotives = false; //true for discPart, false for discJasa
+    private boolean isDiscList,
+            isPaket = false,
+            isAfterService = false,
+            isRecall = false,
+            isOtomotives = false; //true for discPart, false for discJasa
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +94,6 @@ public class AturLayanan_Activity extends AppActivity {
     @SuppressLint("SetTextI18n")
     private void initComponent() {
         initToolbar();
-        formatter = new DecimalFormat("###,###,###");
         editNson = Nson.readJson(getIntentStringExtra("edit"));
         jenisKendaraan = getSetting("JENIS_KENDARAAN");
         spJenisLayanan = findViewById(R.id.sp_jenis_layanan);
@@ -99,6 +102,14 @@ public class AturLayanan_Activity extends AppActivity {
         spNamaPrincipal = findViewById(R.id.sp_nama_principal);
         rvLayanan = findViewById(R.id.recyclerView_layanan);
 
+        initData();
+        initListener();
+        setSpNamaPrincipal();
+        initButton();
+        initRecylerview();
+    }
+
+    private void initData(){
         if (getIntent().hasExtra("add")) {
             find(R.id.btn_simpan_atur_layanan, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -155,11 +166,6 @@ public class AturLayanan_Activity extends AppActivity {
                 }
             });
         }
-
-        initListener();
-        setSpNamaPrincipal();
-        initButton();
-        initRecylerview();
     }
 
     private void updateData(final Nson id) {
@@ -351,19 +357,6 @@ public class AturLayanan_Activity extends AppActivity {
                 startActivityForResult(i, REQUEST_JASA_LAIN);
             }
         });
-    }
-
-    private boolean validateFields() {
-        for (int i = 0; i < find(R.id.parent_ly_layanan, LinearLayout.class).getChildCount(); i++) {
-            Object object = find(R.id.parent_ly_layanan, LinearLayout.class).getChildAt(i);
-            if (object instanceof Spinner) {
-                Spinner spinner = (Spinner) object;
-                if (spinner.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
-                    showWarning("Silahkan Lengkapi Semua Fields");
-                }
-            }
-        }
-        return true;
     }
 
     private void initRecylerview() {

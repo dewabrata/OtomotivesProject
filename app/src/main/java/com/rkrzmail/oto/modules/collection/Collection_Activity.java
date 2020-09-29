@@ -104,7 +104,7 @@ public class Collection_Activity extends AppActivity {
 
         //SearchView searchView = (SearchView)  menu.findItem(R.id.action_search).setActionView(mSearchView);
         // Assumes current activity is the searchable activity
-        adapterSearchView(mSearchView, "search", "aturkaryawan", "NAMA");
+        adapterSearchView(mSearchView, "search", "aturkaryawan", "NAMA", "");
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
 

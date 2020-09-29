@@ -277,6 +277,7 @@
     </string-array>
 
     <string-array name="sebab_penyesuaian">
+        <item>--PILIH--</item>
         <item>HILANG</item>
         <item>RUSAK</item>
         <item>DI PINDAHKAN KE LOKASI LAIN</item>

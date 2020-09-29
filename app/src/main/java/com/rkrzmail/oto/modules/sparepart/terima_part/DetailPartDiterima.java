@@ -19,15 +19,11 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
@@ -43,16 +39,18 @@ import com.rkrzmail.utils.Tools;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static com.rkrzmail.utils.ConstUtils.ALL;
+import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
+
 public class DetailPartDiterima extends AppActivity implements View.OnFocusChangeListener {
 
     private static final String TAG = "DetailPart__";
-    private static final int REQUEST_CARI_PART = 12;
-    final int REQUEST_BARCODE = 13;
     private static final String TAMBAH_PART = "TAMBAH";
     private Spinner spinnerLokasiSimpan;
     private EditText txtNoPart, txtNamaPart, txtJumlah, txtHargaBeliUnit, etDiscRp, etDiscPercent, etHargaBersih, etPenempatan;
@@ -377,17 +375,27 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("flag", "BARCODE");
+                args.put("action", "BARCODE");
                 args.put("nopart", nopart);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("caripart"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewsparepart"), args));
             }
 
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     result = result.get("data").get(0);
-                    txtNoPart.setText(result.get("NOMOR_PART_NOMOR").asString());
+                    if(result.size() == 0){
+                        showError("Part Tidak Tersedia Di Bengkel");
+                        return;
+                    }
+                    txtNoPart.setText(result.get("NO_PART").asString());
                     txtNamaPart.setText(result.get("NAMA_PART").asString());
+                    etPenempatan.setText(penempatan);
+                    lokasiPart = result.get("LOKASI").asString();
+                    penempatan = result.get("PENEMPATAN").asString();
+                    kodeFolder = result.get("KODE").asString();
+                    merkPart = result.get("MERK").asString();
+                    setSpinnerLokasiSimpan(lokasiPart);
                 } else {
                     //error
                     showError(result.get("message").asString());
@@ -406,7 +414,7 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_search) {
             Intent i = new Intent(this, CariPart_Activity.class);
-            i.putExtra("cari_part_lokasi", "ALL");
+            i.putExtra(CARI_PART_LOKASI, ALL);
             startActivityForResult(i, REQUEST_CARI_PART);
         }
         return true;
@@ -472,8 +480,8 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
             setSpinnerLokasiSimpan(lokasiPart);
             etPenempatan.setText(penempatan);
         } else if (requestCode == REQUEST_BARCODE && resultCode == RESULT_OK) {
-            getDataBarcode(data != null ? data.getStringExtra("TEXT") : "");
-            showSuccess(data != null ? data.getStringExtra("TEXT") : "");
+            getDataBarcode(data != null ? data.getStringExtra("TEXT").replace("\n", "").trim() : "");
+            showSuccess(data != null ? data.getStringExtra("TEXT").replace("\n", "").trim() : "");
         }
     }
 }

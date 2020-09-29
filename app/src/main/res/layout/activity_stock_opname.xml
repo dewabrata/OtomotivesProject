@@ -89,7 +89,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-
                 android:layout_marginBottom="@dimen/paddingMedium"
                 android:gravity="center"
                 android:orientation="horizontal">
@@ -117,14 +116,13 @@
 
                 </RelativeLayout>
 
-
             </LinearLayout>
 
             <android.support.design.widget.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/paddingMedium"
                 android:textAlignment="center">
 
                 <EditText
@@ -186,7 +184,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/paddingMedium">
 
             <android.support.design.widget.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -196,7 +195,7 @@
                 android:textAlignment="center">
 
                 <EditText
-                    android:id="@+id/et_jumlahakhir_stockOpname"
+                    android:id="@+id/et_jumlah_opname"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:hint="JUMLAH PART"
@@ -217,7 +216,6 @@
                 android:layout_marginEnd="5dp"
                 android:backgroundTint="@color/transparent"
                 tools:ignore="ContentDescription,RtlHardcoded,UnusedAttribute" />
-
 
         </LinearLayout>
 

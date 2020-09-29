@@ -22,17 +22,14 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
-import com.rkrzmail.oto.modules.sparepart.terima_part.DetailTerimaPart_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 
-import static com.rkrzmail.utils.ConstString.ATUR;
-import static com.rkrzmail.utils.ConstString.DETAIL;
-import static com.rkrzmail.utils.ConstString.REQUEST_PART_KELUAR;
+import static com.rkrzmail.utils.ConstUtils.DETAIL;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_PART_KELUAR;
 
 public class PartKeluar_Activity extends AppActivity {
 
@@ -143,7 +140,7 @@ public class PartKeluar_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        adapterSearchView(mSearchView, "search", "aturpartkeluar", "NAMA");
+        adapterSearchView(mSearchView, "search", "aturpartkeluar", "NAMA", "");
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
 

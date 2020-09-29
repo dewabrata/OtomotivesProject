@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.sparepart.stock_opname;
 
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -13,7 +14,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.naa.data.Nson;
@@ -23,23 +23,22 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.gmod.BarcodeActivity;
-import com.rkrzmail.oto.modules.sparepart.lokasi_part.LokasiPart_Activity;
-import com.rkrzmail.oto.modules.sparepart.lokasi_part.Penyesuain_Activity;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
+import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.PENYESUAIAN;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_PENYESUAIAN;
+
 public class StockOpname_Activity extends AppActivity {
 
-    private static final int REQUEST_BARCODE_STOCK_OPNAME = 12;
-    private static final int REQUEST_PENYESUAIAN = 567;
-    private EditText noFolder, noPart, jumlahData, jumlahAkhir, namaPart;
-    private ImageView imgBarcode;
-    private ArrayList<String> indexOf_Opname = new ArrayList<String>();
-
+    private EditText noFolder, noPart, etJumlahOpname, namaPart, etPending, etMerk, etStock;
+    private String partId = "";
+    private int stockBeda = 0;
+    private int counterBarcode = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,118 +55,116 @@ public class StockOpname_Activity extends AppActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void initComponent(){
-
+    private void initComponent() {
         noFolder = findViewById(R.id.et_noFolder_stockOpname);
         noPart = findViewById(R.id.et_noPart_stockOpname);
-
-        jumlahAkhir = findViewById(R.id.et_jumlahakhir_stockOpname);
+        etJumlahOpname = findViewById(R.id.et_jumlah_opname);
         namaPart = findViewById(R.id.et_namaPart_stockOpname);
+        etPending = findViewById(R.id.et_pending);
+        etMerk = findViewById(R.id.et_merkPart_stockOpname);
+        etStock = findViewById(R.id.et_stock);
 
         loadData();
 
         find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                int stockPending, totalStock = 0;
+                int stockAwal = Integer.parseInt(etStock.getText().toString());
+                int stockAkhir = Integer.parseInt(etJumlahOpname.getText().toString());
 
-                saveUpdate();
+                if (!etPending.getText().toString().isEmpty()) {
+                    stockPending = Integer.parseInt(etPending.getText().toString());
+                    totalStock = stockAwal + stockPending;
+                } else {
+                    stockPending = 0;
+                }
+
+                //stockAwal < stockAkhir ||
+                if (stockAkhir < stockAwal ) {
+                    stockBeda = stockAwal - stockAkhir;
+                    showInfo("Diperlukan Penyesuaian");
+                    Intent i = new Intent(getActivity(), Penyesuain_Activity.class);
+                    i.putExtra(PENYESUAIAN, "");
+                    startActivityForResult(i, REQUEST_PENYESUAIAN);
+                }else if(totalStock > stockAkhir){
+
+                }else {
+                    saveData(null);
+                }
             }
         });
 
-        imgBarcode.setOnClickListener(new View.OnClickListener() {
+        find(R.id.img_scan_barcode).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 Intent i = new Intent(getActivity(), BarcodeActivity.class);
-                startActivityForResult(i, REQUEST_BARCODE_STOCK_OPNAME);
+                startActivityForResult(i, REQUEST_BARCODE);
             }
         });
     }
 
     private void loadData() {
-        final Nson data = Nson.readJson(getIntentStringExtra("NO_PART_ID"));
-        Intent i = getIntent();
-        if (i.hasExtra("NO_PART_ID")) {
-            noFolder.setText(data.get("NO_FOLDER").asString());
-            noPart.setText(data.get("NO_PART_ID").asString());
-            namaPart.setText(data.get("NAMA").asString());
-            jumlahData.setText(data.get("STOCK").asString());
-        }
+        final Nson data = Nson.readJson(getIntentStringExtra(DATA));
+        noFolder.setText(data.get("KODE").asString());
+        noPart.setText(data.get("NOMOR_PART_NOMOR").asString());
+        namaPart.setText(data.get("NAMA_PART").asString());
+        etMerk.setText(data.get("MERK").asString());
+        etStock.setText(data.get("STOCK").asString());
+        etPending.setText(data.get("PENDING").asString());
+        setSpLokasi(data.get("LOKASI").asString());
+        partId = data.get("PART_ID").asString();
     }
 
-    private void saveUpdate(){
-        final Nson data = Nson.readJson(getIntentStringExtra("NO_PART_ID"));
+    private void saveData(final Nson penyesuaianNson) {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
 
-        final String lokasi = data.get("LOKASI").asString();
-        final String tempat = data.get("PENEMPATAN").asString();
-        final String palet = data.get("PALET").asString();
-        final String rak = data.get("RAK").asString();
-        final String folder = data.get("NO_FOLDER").asString();
-        final String user = data.get("USER").asString();
-        final String nopart = data.get("NO_PART_ID").asString();
-        final String stock = data.get("STOCK").asString();
-        final int stockAwal = Integer.parseInt(jumlahData.getText().toString());
-        final int stockAkhir = Integer.parseInt(jumlahAkhir.getText().toString());
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "add");
 
-        if (stockAwal < stockAkhir || stockAwal > stockAkhir) {
-            int stockbeda = stockAkhir - stockAwal;
-            showInfo("Diperlukan Penyesuaian");
-            setSelanjutnya(stockbeda);
-        } else {
-            newProses(new Messagebox.DoubleRunnable() {
-                Nson result;
-
-                @Override
-                public void run() {
-                    Map<String, String> args = AppApplication.getInstance().getArgsData();
-
-                    Calendar calendar = Calendar.getInstance();
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy MMM dd");
-                    String tanggal = simpleDateFormat.format(calendar.getTime());
-
-                    //  CID, action(add), lokasi, tempat, palet, rak, folder, tanggal, user, nopart, stock
-
-                    args.put("action", "add");
-                    args.put("lokasi", lokasi);
-                    args.put("tempat", tempat);
-                    args.put("palet", palet);
-                    args.put("rak", rak);
-                    args.put("folder", folder);
-                    args.put("tanggal", tanggal);
-                    args.put("user", user);
-                    args.put("nopart", nopart);
-                    args.put("stock", stock);
-                    result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturlokasipart"), args));
+                if (penyesuaianNson != null) {
+                    args.put("sebab", penyesuaianNson.get("SEBAB").asString());
+                    args.put("folder_lain", penyesuaianNson.get("FOLDER_LAIN").asString());
+                    args.put("alasan", penyesuaianNson.get("KET").asString());
+                    args.put("user_saksi", penyesuaianNson.get("USER_SAKSI").asString());
+                    args.put("stock_beda", String.valueOf(stockBeda));
+                    args.put("penyesuaian", "DUMMY");
                 }
 
-                @Override
-                public void runUI() {
-                    if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                        startActivity(new Intent(getActivity(), LokasiPart_Activity.class));
-                    } else {
-                        showInfo("Gagal Opname Part");
-                    }
+                args.put("part_id", partId);
+                args.put("nama_part", namaPart.getText().toString());
+                args.put("no_part", noPart.getText().toString());
+                args.put("merk", etMerk.getText().toString());
+                args.put("lokasi", find(R.id.sp_lokasi_stockOpname, Spinner.class).getSelectedItem().toString());
+                args.put("opname", etJumlahOpname.getText().toString());
+                args.put("no_folder", noFolder.getText().toString());
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("stockopname"), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    setResult(RESULT_OK);
+                    finish();
+                } else {
+                    showInfo(result.get("message").asString());
                 }
-            });
-        }
+            }
+        });
     }
 
-    private void setSpLokasi(String lokasi){
+    private void setSpLokasi(String lokasi) {
         List<String> lokasiList = new ArrayList<>();
-        lokasiList.add("*");
         lokasiList.add("RUANG PART");
         lokasiList.add("GUDANG");
         lokasiList.add("DISPLAY");
-        if (lokasi.equals("*") || lokasi.equals("")) {
-            find(R.id.sp_lokasi_stockOpname, Spinner.class).setEnabled(false);
-        } else {
-            find(R.id.sp_lokasi_stockOpname, Spinner.class).setEnabled(true);
-            lokasiList.remove("*");
-        }
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, lokasiList);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         find(R.id.sp_lokasi_stockOpname, Spinner.class).setAdapter(spinnerAdapter);
-        if(!lokasi.equals("")){
+        if (!lokasi.equals("")) {
             for (int i = 0; i < find(R.id.sp_lokasi_stockOpname, Spinner.class).getCount(); i++) {
                 if (find(R.id.sp_lokasi_stockOpname, Spinner.class).getItemAtPosition(i).equals(lokasi)) {
                     find(R.id.sp_lokasi_stockOpname, Spinner.class).setSelection(i);
@@ -177,49 +174,41 @@ public class StockOpname_Activity extends AppActivity {
         }
     }
 
-    private void setSelanjutnya(final int stockBeda) {
+    public void getDataBarcode(final String nopart) {
         newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
             @Override
             public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "view");
+                args.put("spec", "Bengkel");
+                args.put("lokasi", "ALL");
+                args.put("search", nopart);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewsparepart"), args));
             }
 
+            @SuppressLint("SetTextI18n")
             @Override
             public void runUI() {
-                final Nson data = Nson.readJson(getIntentStringExtra("NO_PART_ID"));
-                Nson nson = Nson.newObject();
-
-                // CID, action(update), lokasi, tempat, palet, rak, folder, tanggal, user, nopart, stock,
-                // folderlain, stockbeda, sebab, alasan
-                nson.set("folder", data.get("NO_FOLDER"));
-                nson.set("nopart", data.get("NO_PART_ID"));
-                nson.set("stock", data.get("STOCK"));
-                nson.set("lokasi", data.get("LOKASI"));
-                nson.set("user", data.get("USER"));
-                nson.set("tempat", data.get("PENEMPATAN"));
-                nson.set("palet", data.get("PALET"));
-                nson.set("rak", data.get("RAK"));
-                nson.set("stockbeda", stockBeda);
-
-                Intent i = new Intent(getActivity(), Penyesuain_Activity.class);
-                i.putExtra("penyesuaian", nson.toJson());
-                startActivityForResult(i, REQUEST_PENYESUAIAN);
-
-            }
-        });
-    }
-
-    private void getBarcode(){
-        newProses(new Messagebox.DoubleRunnable() {
-            @Override
-            public void run() {
-
-            }
-
-            @Override
-            public void runUI() {
-
-                setResult(RESULT_OK);
-                finish();
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    result = result.get("data").get(0);
+                    if (result.size() == 0) {
+                        showError("Part Tidak Tersedia Di Bengkel");
+                        return;
+                    }
+                    counterBarcode++;
+                    noPart.setText(result.get("NO_PART").asString());
+                    namaPart.setText(result.get("NAMA_PART").asString());
+                    etMerk.setText(result.get("MERK").asString());
+                    noFolder.setText(result.get("KODE").asString());
+                    etStock.setText(result.get("STOCK_RUANG_PART").asString());
+                    etPending.setText(result.get("PENDING").asString());
+                    etJumlahOpname.setText("" + counterBarcode);
+                    setSpLokasi(result.get("LOKASI").asString());
+                } else {
+                    showError(result.get("message").asString());
+                }
             }
         });
     }
@@ -268,15 +257,11 @@ public class StockOpname_Activity extends AppActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUEST_BARCODE_STOCK_OPNAME && resultCode == RESULT_OK){
+        if (requestCode == REQUEST_BARCODE && resultCode == RESULT_OK) {
             String barcode = getIntentStringExtra(data, "TEXT");
-            getBarcode();
+            getDataBarcode(barcode);
+        } else if (resultCode == RESULT_OK && requestCode == REQUEST_PENYESUAIAN) {
+            saveData(Nson.readJson(getIntentStringExtra(data, DATA)));
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        finish();
     }
 }
