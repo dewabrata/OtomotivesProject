@@ -45,25 +45,27 @@ public class MyCode extends AppActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mycode);
 
+        view = findViewById(R.id.view_mycode);
+
         ((TextView)findViewById(R.id.txtName)).setText(getSetting( "NAMA_USER"));
-        ((TextView)findViewById(R.id.txtEmail)).setText(  getSetting("session" )  );
+        ((TextView)findViewById(R.id.txtEmail)).setText(getSetting("session" ));
         findViewById(R.id.icon).setVisibility(View.GONE);
-        rkrzmaiImageA(((ImageView) view.findViewById(R.id.icon)), getSetting("XLOGO"), new ImageLoadingListener() {
+        rkrzmaiImageA((find(R.id.icon, ImageView.class)), getSetting("XLOGO"), new ImageLoadingListener() {
             public void onLoadingStarted(String var1, View var2) { }
             public void onLoadingFailed(String var1, View var2, String var3) {  }
             public void onLoadingComplete(String var1, View var2, Bitmap var3) {
-                view.findViewById(R.id.icon).setVisibility(View.VISIBLE);
+                find(R.id.icon, ImageView.class).setVisibility(View.VISIBLE);
             }
             public void onLoadingCancelled(String var1, View var2) {}
         });
-        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
+        find(R.id.swiperefresh, SwipeRefreshLayout.class).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             public void onRefresh() {
                 ob = 0;ix=0;
                 swipeRefreshLayout.setRefreshing(false);
              }
         });
-        swipeRefreshLayout.setRefreshing(true);
+        find(R.id.swiperefresh, SwipeRefreshLayout.class).setRefreshing(true);
 
 
         newProses(new Messagebox.DoubleRunnable() {
@@ -95,7 +97,7 @@ public class MyCode extends AppActivity {
             @Override
             public void runUI() {
                 if (bitBitmap!=null){
-                    ((ImageView) view.findViewById(R.id.imgBarcode)).setImageBitmap(bitBitmap);
+                    (find(R.id.imgBarcode, ImageView.class)).setImageBitmap(bitBitmap);
                 }else{
                     Toast.makeText(getActivity().getApplicationContext(), string, Toast.LENGTH_SHORT).show();
                 }

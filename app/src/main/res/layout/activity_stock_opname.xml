@@ -86,6 +86,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <LinearLayout
+                android:id="@+id/ly_lokasi_part"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
@@ -112,7 +113,8 @@
                     <Spinner
                         android:id="@+id/sp_lokasi_stockOpname"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:textAlignment="center"/>
 
                 </RelativeLayout>
 

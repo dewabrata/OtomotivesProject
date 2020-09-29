@@ -60,7 +60,7 @@ public class PartNonLokasi_Fragment extends Fragment {
                 viewHolder.find(R.id.tv_noPart_nonLokasiPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
                 viewHolder.find(R.id.tv_merk_nonLokasiPart, TextView.class).setText(nListArray.get(position).get("MERK").asString());
                 viewHolder.find(R.id.tv_stock_nonLokasiPart, TextView.class).setText(nListArray.get(position).get("STOCK").asString());
-                viewHolder.find(R.id.tv_stock_nonLokasiPart, TextView.class).setText(nListArray.get(position).get("PENDING").asString());
+                viewHolder.find(R.id.tv_pending_nonLokasiPart, TextView.class).setText(nListArray.get(position).get("PENDING").asString());
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                     @Override

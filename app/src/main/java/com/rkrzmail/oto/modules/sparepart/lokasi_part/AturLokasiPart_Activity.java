@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.sparepart.lokasi_part;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -261,11 +262,14 @@ public class AturLokasiPart_Activity extends AppActivity {
                 return true;
             }
 
+            @SuppressLint("WrongConstant")
             @Override
             public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
                 View mView = super.getDropDownView(position, convertView, parent);
                 TextView mTextView = (TextView) mView;
                 ((TextView) mView).setGravity(Gravity.CENTER);
+                ((TextView) mView).setTextAlignment(Gravity.CENTER);
+
                 if (isLokasi) {
                     for (int i = 0; i < lokasiArray.size(); i++) {
                         if (lokasiArray.get(i).asString().equals(lokasiList.get(position))) {

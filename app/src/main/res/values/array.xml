@@ -276,14 +276,6 @@
         <item>PINDAH BUKU BANK</item>
     </string-array>
 
-    <string-array name="sebab_penyesuaian">
-        <item>--PILIH--</item>
-        <item>HILANG</item>
-        <item>RUSAK</item>
-        <item>DI PINDAHKAN KE LOKASI LAIN</item>
-        <item>LAINNYA</item>
-    </string-array>
-
     <string-array name="strings_short">
         <item>Proin Eleifend Libero</item>
         <item>Placerat nec elit</item>
