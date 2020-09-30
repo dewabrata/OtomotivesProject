@@ -456,7 +456,7 @@ public class AturLayanan_Activity extends AppActivity {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     result = result.get("data");
                     for (int i = 0; i < result.size(); i++) {
-                        if (result.get(i).get("JENIS").asString().equalsIgnoreCase("PAKET")
+                        if (result.get(i).get("JENIS").asString().equals("PAKET LAYANAN")
                                 && result.get(i).get("KENDARAAN").asString().contains(jenisKendaraan)) {
                             layananPaketList.add(result.get(i));
                         } else if (result.get(i).get("JENIS").asString().equalsIgnoreCase("AFTER SALES SERVICES")
