@@ -33,6 +33,9 @@ import com.rkrzmail.utils.Tools;
 import java.text.DecimalFormat;
 import java.util.Map;
 
+import static com.rkrzmail.utils.APIUrls.VIEW_TERIMA_PART;
+import static com.rkrzmail.utils.ConstUtils.PART;
+
 public class TerimaPart extends AppActivity {
 
     private static final String TAG = "TerimaPart";
@@ -98,7 +101,7 @@ public class TerimaPart extends AppActivity {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
                 Intent i = new Intent(getActivity(), DetailTerimaPart_Activity.class);
-                i.putExtra("part", nListArray.get(position).toJson());
+                i.putExtra(PART, nListArray.get(position).toJson());
                 startActivityForResult(i, REQUEST_DETAIL);
             }
         }));
@@ -113,7 +116,7 @@ public class TerimaPart extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("search", data);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewterimapart"),args)) ;
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_TERIMA_PART),args)) ;
             }
 
             @Override

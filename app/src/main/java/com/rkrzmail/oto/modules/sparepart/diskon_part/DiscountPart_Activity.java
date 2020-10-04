@@ -29,6 +29,9 @@ import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 
+import static com.rkrzmail.utils.APIUrls.ATUR_DISKON_PART;
+import static com.rkrzmail.utils.ConstUtils.DATA;
+
 public class DiscountPart_Activity extends AppActivity {
 
     private RecyclerView rvDiscPart;
@@ -78,7 +81,7 @@ public class DiscountPart_Activity extends AppActivity {
                     @Override
                     public void onItemClick(Nson parent, View view, int position) {
                         Intent i = new Intent(getActivity(), AturDiscountPart_Activity.class);
-                        i.putExtra("data", nListArray.get(position).toJson());
+                        i.putExtra(DATA, nListArray.get(position).toJson());
                         startActivityForResult(i, 10);
                     }
                 })
@@ -95,7 +98,7 @@ public class DiscountPart_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 args.put("search", cari);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturdiskonpart"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_DISKON_PART), args));
             }
 
             @Override
@@ -132,7 +135,7 @@ public class DiscountPart_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        adapterSearchView(mSearchView, "search", "aturdiskonpart", "NAMA_PART", "");
+        adapterSearchView(mSearchView, "search", ATUR_DISKON_PART, "NAMA_PART", "");
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
 

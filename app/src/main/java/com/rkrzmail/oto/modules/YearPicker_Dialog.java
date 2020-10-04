@@ -4,10 +4,12 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.LongDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.NumberPicker;
@@ -32,6 +34,7 @@ public class YearPicker_Dialog extends DialogFragment {
         npYears = dialog.findViewById(R.id.np_years);
 
         int year = cal.get(Calendar.YEAR);
+
         npYears.setMinValue(1990);
         npYears.setMaxValue(2021);
         npYears.setValue(year);
@@ -41,7 +44,6 @@ public class YearPicker_Dialog extends DialogFragment {
             public void onClick(DialogInterface dialog, int which) {
                 if (onClickDialog != null) {
                     onClickDialog.getYear(npYears.getValue());
-                    dismiss();
                 }
             }
         }).setNegativeButton(Html.fromHtml("<font color='#FF4081'>Cancel</font>"), new DialogInterface.OnClickListener() {
@@ -50,12 +52,10 @@ public class YearPicker_Dialog extends DialogFragment {
                 dialog.dismiss();
             }
         });
-
         return alertBuilder.create();
     }
 
-    public YearPicker_Dialog getYears(TimePicker_Dialog.OnClickDialog onClickDialog) {
+    public void getYears(TimePicker_Dialog.OnClickDialog onClickDialog) {
         this.onClickDialog = onClickDialog;
-        return this;
     }
 }

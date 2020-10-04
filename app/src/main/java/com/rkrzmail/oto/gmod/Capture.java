@@ -1,6 +1,7 @@
 package com.rkrzmail.oto.gmod;
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -27,10 +28,12 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 
+import com.naa.data.UtilityAndroid;
 import com.rkrzmail.oto.R;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class Capture extends Activity {
@@ -250,22 +253,21 @@ public class Capture extends Activity {
                 File photo = new File(Environment.getExternalStorageDirectory(), "imgTom");
                 String fname = photo.getAbsolutePath();
                 if (getIntent() != null) {
-                    if (getIntent().getStringExtra(MediaStore.EXTRA_OUTPUT) instanceof String) {
+                    if (getIntent().getStringExtra(MediaStore.EXTRA_OUTPUT) != null) {
                         fname = getIntent().getStringExtra(MediaStore.EXTRA_OUTPUT);
                     }
                 }
-                //FileOutputStream mFileOutStream = new FileOutputStream("/sdcard/"+fname);
+                // @SuppressLint("SdCardPath") FileOutputStream mFileOutStream = new FileOutputStream("/sdcard/"+fname);
                 FileOutputStream mFileOutStream = new FileOutputStream(new File(fname));
 
 
                 canvas.drawPath(path, paint);
                 //v.draw(canvas);
                 mBitmap.compress(Bitmap.CompressFormat.PNG, 100, mFileOutStream);
+                createDirectoryAndSaveFile(mBitmap);
+                //createDirectoryAndSaveFile(mBitmap, currentDateTime() + "/" + getSetting("NAMA_USER"));
                 mFileOutStream.flush();
                 mFileOutStream.close();
-                String url = Images.Media.insertImage(getContentResolver(), mBitmap, "title", null);
-                Log.i("finish", "url: " + url);
-
 //                //In case you want to delete the file
 //                boolean deleted = mypath.delete();
 //                Log.v("log_tag","deleted: " + mypath.toString() + deleted);
@@ -274,6 +276,44 @@ public class Capture extends Activity {
 
             } catch (Exception e) {
                 Log.i("finish", e.toString());
+            }
+        }
+
+        public String currentDateTime() {
+            Calendar calendar = Calendar.getInstance();
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM");
+
+            return simpleDateFormat.format(calendar.getTime());
+        }
+
+        public String getSetting(String key) {
+            return UtilityAndroid.getSetting(getApplicationContext(), key, "");
+        }
+
+        @SuppressLint("SdCardPath")
+        private void createDirectoryAndSaveFile(Bitmap imageToSave) {
+            File direct = new File(Environment.getExternalStorageDirectory() + "/Otomotives");
+            if (!direct.exists()) {
+                File wallpaperDirectory = new File("/sdcard/Otomotives/");
+                wallpaperDirectory.mkdirs();
+                Log.i("finish", "SAVETTD: " + wallpaperDirectory.getAbsolutePath());
+            }
+
+            File file = new File("/sdcard/Otomotives/", "TandaTangan" + ".png");
+            mypath = file.getAbsoluteFile();
+            Log.i("finish", "AVAIL: " +mypath.getAbsolutePath());
+            if (file.exists()) {
+                file.delete();
+                Log.i("finish", "DELETE: " + file.getAbsolutePath());
+            }
+            try {
+                FileOutputStream out = new FileOutputStream(file);
+                imageToSave.compress(Bitmap.CompressFormat.PNG, 100, out);
+
+                out.flush();
+                out.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 

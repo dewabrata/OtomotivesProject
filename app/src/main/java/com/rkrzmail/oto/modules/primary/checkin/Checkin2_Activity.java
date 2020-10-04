@@ -2,19 +2,16 @@ package com.rkrzmail.oto.modules.primary.checkin;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -26,26 +23,29 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.primary.KontrolLayanan_Activity;
+import com.rkrzmail.oto.modules.TimePicker_Dialog;
+import com.rkrzmail.oto.modules.YearPicker_Dialog;
 import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NsonAutoCompleteAdapter;
 import com.rkrzmail.utils.Tools;
-import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
+
+import static com.rkrzmail.utils.ConstUtils.DATA;
 
 public class Checkin2_Activity extends AppActivity {
 
     private EditText etNorangka, etNomesin;
     private TextView tvTgl;
     private NikitaAutoComplete etWarna;
-    private static final int REQUEST_BOOKING = 12;
-    private static final int REQUEST_CHECKIN = 13;
     private Nson readCheckin;
+    private long tahunBeli = 0;
+    private long tahunSekarang = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,66 +54,70 @@ public class Checkin2_Activity extends AppActivity {
         initComponent();
     }
 
+    @SuppressLint("NewApi")
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_checkin2);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Check-In");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Check-In");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initComponent() {
         initToolbar();
-        readCheckin = Nson.readJson(getIntentStringExtra("data"));
+        readCheckin = Nson.readJson(getIntentStringExtra(DATA));
 
         etWarna = findViewById(R.id.et_warna_checkin2);
         tvTgl = findViewById(R.id.tv_tanggal_checkin2);
         etNorangka = findViewById(R.id.et_noRangka_checkin2);
         etNomesin = findViewById(R.id.et_noMesin_checkin2);
-        int year = Calendar.getInstance().get(Calendar.YEAR);
-        for (int i = 2010; i <= 2017; i++) {
-            if(i == readCheckin.get("tahunProduksi").asInteger() && year > readCheckin.get("tahunproduksi").asInteger()){
-                tvTgl.setEnabled(false);
-                tvTgl.setText(readCheckin.get("tahunProduksi").asString());
-                break;
-            }
-            showInfo(readCheckin.get("tahunProduksi ").asString(), Toast.LENGTH_LONG);
-        }
-        componentValidation(readCheckin);
+
+        initListener();
+    }
+
+    private void initListener(){
+        Tools.setViewAndChildrenEnabled(find(R.id.ly_tgl_beli_checkin2, LinearLayout.class), false);
         tvTgl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               getDateSpinnerDialog(tvTgl, "Tanggal Beli Kendaraan");
+                getDateSpinnerDialog(tvTgl, "Tanggal Beli Kendaraan");
             }
         });
 
-        find(R.id.btn_lanjut_checkin2).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (find(R.id.tv_tahun_checkin2, TextView.class).getText().toString().isEmpty()) {
-                    showInfo("Tahun Produksi Tidak Valid");
-                    find(R.id.tv_tahun_checkin2, TextView.class).performClick();
-                }else if(tvTgl.isEnabled() && tvTgl.getText().toString().isEmpty()){
-                    showWarning("Tanggal Berisi Harus Di Isi");
-                    tvTgl.performClick();
-                }else if(etNorangka.getText().toString().isEmpty()){
-                    etNorangka.setError("No. Rangka Harus Di isi");
-                    etNorangka.requestFocus();
-                }else if(etNomesin.getText().toString().isEmpty()){
-                    etNomesin.setError("No. Mesin Harus Di isi");
-                    etNomesin.requestFocus();
-                }else{
-                    setSelanjutnya(readCheckin);
-                }
-            }
-        });
-    }
-
-    private void componentValidation(Nson readCheckin) {
-        Tools.setViewAndChildrenEnabled(find(R.id.ly_tahun_checkin2, LinearLayout.class), false);
         find(R.id.tv_tahun_checkin2, TextView.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getYearsDialog(find(R.id.tv_tahun_checkin2, TextView.class));
+                tahunBeliDialog();
+            }
+        });
+
+        find(R.id.tv_tahun_checkin2, TextView.class).addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int year = Calendar.getInstance().get(Calendar.YEAR);
+                try {
+                    @SuppressLint("SimpleDateFormat") Date inputYear = new SimpleDateFormat("yyyy").parse(find(R.id.tv_tahun_checkin2, TextView.class).getText().toString());
+                    @SuppressLint("SimpleDateFormat") Date validationYear = new SimpleDateFormat("yyyy").parse(String.valueOf(year - 4));
+                    tahunBeli = inputYear.getTime();
+                    tahunSekarang = validationYear.getTime();
+                    showInfo("" + "TAHUN INPUT " + tahunBeli + " TAHUN SEKARANG " + tahunSekarang);
+                    if (tahunBeli < tahunSekarang) {
+                        Tools.setViewAndChildrenEnabled(find(R.id.ly_tgl_beli_checkin2, LinearLayout.class), false);
+                    } else {
+                        Tools.setViewAndChildrenEnabled(find(R.id.ly_tgl_beli_checkin2, LinearLayout.class), true);
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -139,6 +143,7 @@ public class Checkin2_Activity extends AppActivity {
                 return convertView;
             }
         });
+
         etWarna.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -146,33 +151,40 @@ public class Checkin2_Activity extends AppActivity {
             }
         });
 
-        etWarna.addTextChangedListener(new TextWatcher() {
+        find(R.id.btn_lanjut_checkin2).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (!s.toString().isEmpty() && !find(R.id.tv_tahun_checkin2, TextView.class).getText().toString().isEmpty()) {
-                    int year = Calendar.getInstance().get(Calendar.YEAR);
-                    try {
-                        @SuppressLint("SimpleDateFormat") Date inputYear = new SimpleDateFormat("yyyy").parse(find(R.id.tv_tahun_checkin2, TextView.class).getText().toString());
-                        @SuppressLint("SimpleDateFormat") Date validationYear = new SimpleDateFormat("yyyy").parse(String.valueOf(year - 5));
-                        if (validationYear.after(inputYear)) {
-                            Tools.setViewAndChildrenEnabled(find(R.id.ly_tahun_checkin2, LinearLayout.class), true);
-                        } else {
-                            Tools.setViewAndChildrenEnabled(find(R.id.ly_tahun_checkin2, LinearLayout.class), false);
-                        }
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
+            public void onClick(View view) {
+                if (find(R.id.tv_tahun_checkin2, TextView.class).getText().toString().isEmpty()) {
+                    showInfo("Tahun Produksi Tidak Valid");
+                    find(R.id.tv_tahun_checkin2, TextView.class).performClick();
+                } else if (tvTgl.isEnabled() && tvTgl.getText().toString().isEmpty()) {
+                    showWarning("Tanggal Berisi Harus Di Isi");
+                    tvTgl.performClick();
+                } else if (etNorangka.getText().toString().isEmpty()) {
+                    etNorangka.setError("No. Rangka Harus Di isi");
+                    etNorangka.requestFocus();
+                } else if (etNomesin.getText().toString().isEmpty()) {
+                    etNomesin.setError("No. Mesin Harus Di isi");
+                    etNomesin.requestFocus();
+                } else {
+                    setSelanjutnya(readCheckin);
                 }
+            }
+        });
+    }
+
+    public void tahunBeliDialog() {
+        YearPicker_Dialog dialog = new YearPicker_Dialog();
+        dialog.show(getSupportFragmentManager(), "YearPicker");
+        dialog.getYears(new TimePicker_Dialog.OnClickDialog() {
+            @Override
+            public void getTime(int day, int hours, int minutes) {
+
+            }
+
+            @Override
+            public void getYear(int year) {
+                find(R.id.tv_tahun_checkin2, TextView.class).setText(String.valueOf(year));
             }
         });
     }
@@ -185,6 +197,7 @@ public class Checkin2_Activity extends AppActivity {
         final String noMesin = etNomesin.getText().toString();
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -203,16 +216,15 @@ public class Checkin2_Activity extends AppActivity {
 
             @Override
             public void runUI() {
-                if(result.get("status").asString().equalsIgnoreCase("OK")){
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     Intent intent = new Intent();
-                    intent.putExtra("data", readCheckin.toJson());
+                    intent.putExtra(DATA, readCheckin.toJson());
                     setResult(RESULT_OK, intent);
                     finish();
-                }else{
+                } else {
                     showWarning("Gagal");
                 }
             }
         });
-
     }
 }

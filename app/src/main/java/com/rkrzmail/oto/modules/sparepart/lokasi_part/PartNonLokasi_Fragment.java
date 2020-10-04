@@ -24,6 +24,8 @@ import com.rkrzmail.srv.NikitaViewHolder;
 
 import java.util.Map;
 
+import static com.rkrzmail.utils.APIUrls.VIEW_LOKASI_PART;
+
 public class PartNonLokasi_Fragment extends Fragment {
 
     private Nson nListArray = Nson.newArray();
@@ -81,7 +83,7 @@ public class PartNonLokasi_Fragment extends Fragment {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("search", cari);
                 args.put("flag", "NON_TERALOKASI");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlokasipart"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_LOKASI_PART), args));
             }
             @Override
             public void runUI() {

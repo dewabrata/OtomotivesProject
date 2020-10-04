@@ -178,14 +178,14 @@ public class AppActivity extends AppCompatActivity {
 
     public String currentDateTime() {
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         return simpleDateFormat.format(calendar.getTime());
     }
 
     public String currentDateTime(String pattern) {
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
         return simpleDateFormat.format(calendar.getTime());
     }
@@ -500,7 +500,7 @@ public class AppActivity extends AppCompatActivity {
         TimePickerDialog timePickerDialog = new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int hourOfDay, int minutes) {
-                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
                 String time = hourOfDay + ":" + minutes;
                 Date date = null;
                 try {

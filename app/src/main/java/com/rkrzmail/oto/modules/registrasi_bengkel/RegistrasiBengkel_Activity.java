@@ -1,12 +1,10 @@
 package com.rkrzmail.oto.modules.registrasi_bengkel;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
-import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Selection;
@@ -16,9 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -29,13 +25,15 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.srv.NikitaAutoComplete;
-import com.rkrzmail.utils.Tools;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import static com.rkrzmail.utils.APIUrls.SET_REGISTRASI;
+import static com.rkrzmail.utils.APIUrls.VIEW_JENIS_KENDARAAN;
+import static com.rkrzmail.utils.APIUrls.VIEW_MASTER;
+import static com.rkrzmail.utils.APIUrls.VIEW_NOMOR_PONSEL;
 
 public class RegistrasiBengkel_Activity extends AppActivity implements View.OnClickListener {
 
@@ -223,7 +221,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                 args.put("tanggal_regist", currentDateTime());
                 args.put("tanggal_aktif", currentDateTime());
                 //args.put("lokasi", tvLokasi.getText().toString());
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("regristrasi"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_REGISTRASI), args));
             }
 
             @Override
@@ -254,7 +252,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "ALL");
                 args.put("CID", "KOSONG");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("nomorponsel"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_NOMOR_PONSEL), args));
             }
 
             @Override
@@ -337,7 +335,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("CID", "kosong");
                 args.put("flag", "Merk");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("jeniskendaraan"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_JENIS_KENDARAAN), args));
             }
 
             @Override
@@ -389,7 +387,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("nama", "BENGKEL");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewmst"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MASTER), args));
             }
 
             @Override

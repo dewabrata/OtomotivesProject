@@ -22,6 +22,8 @@ import com.rkrzmail.srv.NikitaViewHolder;
 
 import java.util.Map;
 
+import static com.rkrzmail.utils.APIUrls.SET_REKENING_BANK;
+
 public class RekeningBank_Activity extends AppActivity {
 
     private RecyclerView rvRekening;
@@ -83,7 +85,7 @@ public class RekeningBank_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("setrekeningbank"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_REKENING_BANK), args));
             }
 
             @Override

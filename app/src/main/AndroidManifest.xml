@@ -137,7 +137,7 @@
         <activity android:name=".modules.jurnal.AturJurnal_Activity" />
         <activity android:name=".modules.jurnal.DaftarJurnal_Activity" />
         <activity android:name=".modules.sparepart.stock_opname.Penyesuain_Activity" />
-        <activity android:name=".modules.sparepart.stock_opname.StockOpname_Activity" />
+        <activity android:name=".modules.sparepart.stock_opname.AturStockOpname_Activity" />
         <activity android:name=".modules.sparepart.terima_part.TerimaPart" />
         <activity android:name=".modules.sparepart.lokasi_part.AturLokasiPart_Activity" />
         <activity android:name=".modules.sparepart.terima_part.AturTerimaPart" />

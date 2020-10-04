@@ -1,13 +1,19 @@
 package com.rkrzmail.oto.modules.primary.checkin;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -23,30 +29,48 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
-import com.naa.data.UtilityAndroid;
 import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.gmod.Capture;
-import com.rkrzmail.oto.modules.LoginActivity;
-import com.rkrzmail.oto.modules.primary.KontrolLayanan_Activity;
 import com.rkrzmail.oto.modules.user.AturUser_Activity;
 import com.rkrzmail.utils.Tools;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
-public class Checkin4_Activity extends AppActivity implements View.OnClickListener {
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static com.rkrzmail.utils.APIUrls.SET_ANTRIAN;
+import static com.rkrzmail.utils.APIUrls.SET_CHECKIN;
+import static com.rkrzmail.utils.APIUrls.VIEW_MEKANIK;
+import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.PERMISSION_REQUEST_CODE;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_CODE_SIGN;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_MEKANIK;
 
-    public static final int REQUEST_CODE_SIGN = 10;
+public class Checkin4_Activity extends AppActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+
     private static final String TAG = "Checking4____";
-    private static final int REQUEST_MEKANIK = 11;
     private Bitmap ttd;
     private SeekBar seekBar;
     private Nson mekanikArray = Nson.newArray();
     private boolean isSign = false, isBatal = false;
+    private long oneDay = 86400000;
+    private String waktuLayananHplusExtra = "", jenisLayanan = "", waktuLayananStandartExpress = "";
+    private String tglEstimasi = "", waktuEstimasi = "";
+    private boolean isExpressAndStandard = false, isExtraAndHplus = false;
+    private Nson getData;
+    private int idAntrian = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +90,8 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
 
     @SuppressLint("SetTextI18n")
     private void initComponent() {
-        if(getIntent().hasExtra("BATAL")){
+        initToolbar();
+        if (getIntent().hasExtra("BATAL")) {
             Tools.setViewAndChildrenEnabled(find(R.id.ly_checkin4, LinearLayout.class), false);
             find(R.id.et_ket_checkin4, EditText.class).requestFocus();
             showInfo("Silahkan Isi Keterangan Batal");
@@ -74,24 +99,73 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 @Override
                 public void onClick(View v) {
                     Intent i = new Intent();
-                    i.putExtra("alasanBatal",  find(R.id.et_ket_checkin4, EditText.class).getText().toString());
+                    i.putExtra("alasanBatal", find(R.id.et_ket_checkin4, EditText.class).getText().toString());
                     setResult(RESULT_OK, i);
                     finish();
                 }
             });
             return;
         }
-        initToolbar();
-        setSpMekanik();
-        Tools.setViewAndChildrenEnabled(find(R.id.ly_waktuAmbil, LinearLayout.class), false);
 
-        find(R.id.btn_ttd_checkin4).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), Capture.class);
-                startActivityForResult(intent, REQUEST_CODE_SIGN);
-            }
-        });
+        initData();
+        initListener();
+        setSpMekanik();
+
+        find(R.id.et_dp_checkin4, EditText.class);
+        find(R.id.et_sisa_checkin4, EditText.class);
+        find(R.id.cb_aggrement_checkin4, CheckBox.class);
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void initData() {
+        getData = Nson.readJson(getIntentStringExtra(DATA));
+        Tools.setViewAndChildrenEnabled(find(R.id.ly_waktuAmbil, LinearLayout.class), false);
+        waktuLayananStandartExpress = getData.get("WAKTU_LAYANAN").asString();
+        idAntrian = getData.get("ID_ANTRIAN").asInteger();
+        jenisLayanan = getData.get("JENIS_LAYANAN").asString();
+        find(R.id.et_no_antrian_checkin4, EditText.class).setText(getData.get("NO_ANTRIAN").asString());
+        find(R.id.et_lamaWaktu_checkin, EditText.class).setText(waktuLayananStandartExpress);
+        find(R.id.tv_jenis_antrian, TextView.class).setText(getData.get("JENIS_ANTRIAN").asString());
+
+        if (getData.get("JENIS_ANTRIAN").asString().equals("EXTRA")) {
+            isExtraAndHplus = true;
+            Tools.setViewAndChildrenEnabled(find(R.id.ly_estimasi_selesai, LinearLayout.class), true);
+        } else if (getData.get("JENIS_ANTRIAN").asString().equals("H+")) {
+            isExtraAndHplus = true;
+            Tools.setViewAndChildrenEnabled(find(R.id.ly_estimasi_selesai, LinearLayout.class), true);
+            find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setEnabled(false);
+        } else {
+            isExpressAndStandard = true;
+            Tools.TimePart waktuMulai = Tools.TimePart.parse("00:" + currentDateTime("hh:mm"));
+            find(R.id.et_mulaiWaktu_checkin, TextView.class).setText(waktuMulai.toString());
+            Tools.TimePart waktuLayanan = Tools.TimePart.parse(waktuLayananStandartExpress);
+            Tools.TimePart totalWaktuSelesai = waktuMulai.add(waktuLayanan);
+            find(R.id.et_selesaiWaktu_checkin, TextView.class).setText(totalWaktuSelesai.toString());
+            Tools.setViewAndChildrenEnabled(find(R.id.ly_estimasi_selesai, LinearLayout.class), false);
+            find(R.id.tv_tgl_estimasi_checkin4, TextView.class).setText(currentDateTime());
+            find(R.id.tv_jam_estimasi_checkin4, TextView.class).setText(find(R.id.et_selesaiWaktu_checkin, TextView.class).getText().toString().substring(3, 8));
+        }
+
+        try {
+            find(R.id.et_totalBiaya_checkin4, EditText.class).setText(getData.get("TOTAL").asString());
+        } catch (Exception e) {
+            showError(e.getMessage());
+        }
+
+        Log.d(TAG, "initComponent: " + getData);
+    }
+
+    private void initListener() {
+        find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).setOnCheckedChangeListener(this);
+        find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setOnCheckedChangeListener(this);
+        find(R.id.tv_waktu_checkin4, TextView.class).setOnClickListener(this);
+        find(R.id.tv_tgl_estimasi_checkin4, TextView.class).setOnClickListener(this);
+        find(R.id.tv_jam_estimasi_checkin4, TextView.class).setOnClickListener(this);
+        find(R.id.btn_hapus, Button.class).setVisibility(View.VISIBLE);
+        find(R.id.btn_hapus, Button.class).setText("BATAL");
+        find(R.id.btn_hapus, Button.class).setOnClickListener(this);
+        find(R.id.btn_simpan, Button.class).setOnClickListener(this);
+
         seekBar = findViewById(R.id.seekBar_bbm);
         seekBar.setMax(100);
         seekBar.setProgress(0);
@@ -116,103 +190,240 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             }
         });
 
-        Nson getData = Nson.readJson(getIntentStringExtra("data"));
-        Log.d(TAG, "initComponent: " + getData);
-
-        find(R.id.et_antrian_checkin4, EditText.class);
-        try {
-            find(R.id.et_totalBiaya_checkin4, EditText.class).setText("Rp. " + formatRp(getData.get("total").asString()));
-        } catch (Exception e) {
-            Log.d(TAG, "initComponent: " + e.getMessage());
-        }
-        find(R.id.et_dp_checkin4, EditText.class);
-        find(R.id.et_sisa_checkin4, EditText.class);
-        find(R.id.tv_waktu_checkin4, TextView.class).setOnClickListener(this);
-        find(R.id.cb_aggrement_checkin4, CheckBox.class);
-        //find(R.id.cb_buangPart_checkin4, CheckBox.class).setChecked(true);
-        find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(buttonView.isChecked()){
-                    find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setEnabled(false);
-                }else{
-                    find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setEnabled(true);
-                }
-            }
-        });
-
-        find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(buttonView.isChecked()){
-                    find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).setEnabled(false);
-                    Tools.setViewAndChildrenEnabled(find(R.id.ly_waktuAmbil, LinearLayout.class), true);
-                }else{
-                    find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).setEnabled(true);
-                    Tools.setViewAndChildrenEnabled(find(R.id.ly_waktuAmbil, LinearLayout.class), false);
-                }
-            }
-        });
-
-        initBtn();
+        find(R.id.btn_ttd_checkin4).setOnClickListener(this);
     }
 
-    private void initBtn() {
-        find(R.id.tv_startEstimasi_checkin4, TextView.class).setOnClickListener(new View.OnClickListener() {
+
+
+    private String parseEstimasiSelesai(String tglEstimasi, String jenisLayanan) throws ParseException {
+        String result = "";
+        long timeMilisEstimasi;
+        long currentDateTimeMilis;
+        Calendar totalEstimasi = Calendar.getInstance();
+        Calendar currentDateTime = Calendar.getInstance();
+        if (!tglEstimasi.equals("")) {
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy");
+            Date dateTimeEstimasi = sdfDate.parse(tglEstimasi);
+            Date dateTimeNow = sdfDate.parse(currentDateTime("dd/MM/yyyy"));
+            totalEstimasi.setTime(dateTimeEstimasi);
+            currentDateTime.setTime(dateTimeNow);
+            timeMilisEstimasi = totalEstimasi.getTimeInMillis();
+            currentDateTimeMilis = currentDateTime.getTimeInMillis();
+            if (timeMilisEstimasi > currentDateTimeMilis) {
+                result = "H+";
+                updateAntrian(result);
+                isExtraAndHplus = true;
+                Tools.setViewAndChildrenEnabled(find(R.id.ly_estimasi_selesai, LinearLayout.class), true);
+                find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setEnabled(false);
+                find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setChecked(true);
+            } else {
+                isExtraAndHplus = false;
+                result = jenisLayanan;
+            }
+            showInfo(result);
+        }
+        return result;
+    }
+
+    public void getDatePickerCheckin() {
+        final Calendar cldr = Calendar.getInstance();
+        final int day = cldr.get(Calendar.DAY_OF_MONTH);
+        final int month = cldr.get(Calendar.MONTH);
+        final int year = cldr.get(Calendar.YEAR);
+        DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
             @Override
-            public void onClick(View v) {
-                getDatePickerDialogTextView(getActivity(), find(R.id.tv_startEstimasi_checkin4, TextView.class));
+            public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                String newDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                Date date = null;
+                try {
+                    date = sdf.parse(newDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                String formattedTime = sdf.format(date);
+                waktuLayananHplusExtra += formattedTime;
+                find(R.id.tv_tgl_estimasi_checkin4, TextView.class).setText(formattedTime);
+            }
+        }, year, month, day);
+
+        datePickerDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                tglEstimasi = find(R.id.tv_tgl_estimasi_checkin4, TextView.class).getText().toString();
+                if(isExtraAndHplus){
+                    find(R.id.et_selesaiWaktu_checkin, TextView.class).setText(waktuLayananHplusExtra);
+                }
+                try {
+                    find(R.id.tv_jenis_antrian, TextView.class).setText(parseEstimasiSelesai(tglEstimasi, getData.get("JENIS_ANTRIAN").asString()));
+                    Log.d(TAG, "WAKTU: " + parseEstimasiSelesai(tglEstimasi, getData.get("JENIS_ANTRIAN").asString()));
+                } catch (ParseException e) {
+                    showError(e.getMessage());
+                }
+                Log.d(TAG, "TGL: " + tglEstimasi);
+            }
+        });
+        datePickerDialog.setMinDate(cldr);
+        datePickerDialog.show(getFragmentManager(), "Datepickerdialog");
+    }
+
+    public void getTimePickerDialogEstimasiSelesai() {
+        Calendar calendar = Calendar.getInstance();
+        int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
+        int currentMinute = calendar.get(Calendar.MINUTE);
+        @SuppressLint("SimpleDateFormat") final SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+        TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+                String time = hourOfDay + ":" + minute;
+                Date date = null;
+                try {
+                    date = sdf.parse(time);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                String formattedTime = sdf.format(date);
+                waktuLayananHplusExtra +=  " " + formattedTime;
+                waktuEstimasi = formattedTime;
+                find(R.id.et_selesaiWaktu_checkin, TextView.class).setText(waktuLayananHplusExtra);
+                find(R.id.tv_jam_estimasi_checkin4, TextView.class).setText(formattedTime);
+            }
+        }, currentHour, currentMinute, true);
+
+        timePickerDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                Log.d(TAG, "WAKTU: " + waktuLayananHplusExtra);
             }
         });
 
-        find(R.id.tv_finish_checkin4, TextView.class).setOnClickListener(new View.OnClickListener() {
+        timePickerDialog.setTitle("Pilih Jam");
+        timePickerDialog.show(getFragmentManager(), "Timepickerdialog");
+    }
+
+    public void getTimePickerDialogWaktuAmbil() {
+        final String[] waktuAmbil = {""};
+        Calendar calendar = Calendar.getInstance();
+        int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
+        int currentMinute = calendar.get(Calendar.MINUTE);
+        @SuppressLint("SimpleDateFormat") final SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+        TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
             @Override
-            public void onClick(View v) {
-                getTimePickerDialogTextView(getActivity(), find(R.id.tv_finish_checkin4, TextView.class));
+            public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+                String time = hourOfDay + ":" + minute;
+                Date date = null;
+                try {
+                    date = sdf.parse(time);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                String formattedTime = sdf.format(date);
+                waktuAmbil[0] = formattedTime;
+                find(R.id.tv_waktu_checkin4, TextView.class).setText(formattedTime);
+            }
+        }, currentHour, currentMinute, true);
+
+        timePickerDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                try {
+                    if(validateWaktuAmbil(waktuEstimasi, waktuAmbil[0])){
+                        showWarning("Waktu Ambil Harus Melebihi Estimasi Selesai");
+                        find(R.id.tv_waktu_checkin4, TextView.class).setText("");
+                        find(R.id.tv_waktu_checkin4, TextView.class).performClick();
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Log.d(TAG, "WAKTU AMBIL: " + waktuLayananHplusExtra);
             }
         });
 
-        find(R.id.btn_hapus, Button.class).setVisibility(View.VISIBLE);
-        find(R.id.btn_hapus, Button.class).setText("BATAL");
-        find(R.id.btn_hapus, Button.class).setOnClickListener(new View.OnClickListener() {
+        timePickerDialog.setTitle("Tentukan Waktu Ambil");
+        timePickerDialog.show(getFragmentManager(), "Timepickerdialog");
+    }
+
+    private void updateAntrian(final String jenisAntrian){
+        String antrian = "";
+        if (jenisAntrian.equals("H+")) {
+            antrian = "H";
+        }
+
+        final String finalAntrian = antrian;
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
             @Override
-            public void onClick(View v) {
-                isBatal = true;
-                if (find(R.id.et_ket_checkin4, EditText.class).getText().toString().isEmpty()) {
-                    find(R.id.et_ket_checkin4, EditText.class).setError("Keterangan Perlu Di isi");
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "update");
+                args.put("status", "HPLUS");
+                args.put("statusantri",  find(R.id.tv_jenis_antrian, TextView.class).getText().toString());
+                args.put("id", String.valueOf(idAntrian));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_ANTRIAN), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    showSuccess("Antrian Terupdate");
+                    result = result.get("data").get(0);
+                    String updateAntrian = generateNoAntrian(jenisAntrian, result.asString());
+                    find(R.id.et_no_antrian_checkin4, EditText.class).setText(updateAntrian);
+
                 } else {
-                    saveData("BATAL CHECKIN 4");
+                    showWarning(result.get("message").asString());
                 }
             }
         });
+    }
 
-        find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!find(R.id.cb_aggrement_checkin4, CheckBox.class).isChecked()) {
-                    showWarning("Silahkan Setujui Syarat Dan Ketentuan Bengkel");
-                } else if (!isSign) {
-                    showWarning("Tanda Tangan Wajib di Input");
-                } else {
-                    saveData("CHECKIN 4 ANTRIAN");
-                }
+    private boolean validateWaktuAmbil(String jamEstimasi, String jamAmbil) throws ParseException {
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+        Date waktuAmbil = sdf.parse(jamAmbil);
+        Date waktuEstimasi = sdf.parse(jamEstimasi);
 
+        return !waktuAmbil.after(waktuEstimasi);
+    }
+
+    private String generateNoAntrian(String statusAntrian, String noAntrian) {
+        String result = "";
+        String currentDateTime = Tools.setFormatDayAndMonthFromDb(currentDateTime("yyyy-MM-dd"), "dd/MM");
+        if (!noAntrian.equals("")) {
+            if (statusAntrian.equals("STANDART")) {
+                result = "S" + "." + currentDateTime + "." + noAntrian;
+            } else if (statusAntrian.equals("EXTRA")) {
+                result = "E" + "." + currentDateTime + "." + noAntrian;
+            } else if (statusAntrian.equals("EXPRESS")) {
+                result = "EX" + "." + currentDateTime + "." + noAntrian;
+            } else {
+                result = "H" + "." + currentDateTime + "." + noAntrian;
             }
-        });
+        }
+        return result;
     }
 
     private void saveData(final String status) {
-        final Nson nson = Nson.readJson(getIntentStringExtra("data"));
+        final Nson nson = Nson.readJson(getIntentStringExtra(DATA));
         final String namaMekanik = find(R.id.sp_namaMekanik_checkin4, Spinner.class).getSelectedItem().toString();
-        final String antrian = find(R.id.et_antrian_checkin4, EditText.class).getText().toString();
+        final String antrian = find(R.id.et_no_antrian_checkin4, EditText.class).getText().toString();
         final String levelBbm = find(R.id.tv_ketBbbm_checkin4, TextView.class).getText().toString();
         final String tidakMenunggu = find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).isChecked() ? "Y" : "N";
         final String konfirmTambahan = find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).isChecked() ? "Y" : "N";
         final String buangPart = find(R.id.cb_buangPart_checkin4, CheckBox.class).isChecked() ? "Y" : "N";
-        final String estiSelesai = Tools.setDateTimeToDb(Tools.setFormatDayAndMonthToDb(find(R.id.tv_startEstimasi_checkin4, TextView.class).getText().toString()) + " " + find(R.id.tv_finish_checkin4, TextView.class).getText().toString());
         final String waktuAmbil = find(R.id.tv_waktu_checkin4, TextView.class).getText().toString();
         final String sk = find(R.id.cb_aggrement_checkin4, CheckBox.class).isChecked() ? "Y" : "N";
-
+        final String hari = find(R.id.et_lamaWaktu_checkin, EditText.class).getText().toString().substring(0, 2);
+        final String jam = find(R.id.et_lamaWaktu_checkin, EditText.class).getText().toString().substring(3, 5);
+        final String menit = find(R.id.et_lamaWaktu_checkin, EditText.class).getText().toString().substring(5, 7);
+        Log.d(TAG, "hari : " + hari);
+        Log.d(TAG, "jam : " + jam);
+        Log.d(TAG, "menit : " + menit);
+        final String estimasiSebelum = find(R.id.et_mulaiWaktu_checkin, TextView.class).getText().toString();
+        final String estimasiSesudah = find(R.id.et_selesaiWaktu_checkin, TextView.class).getText().toString();
+        final String estimasiSelesai = find(R.id.et_selesaiWaktu_checkin, TextView.class).getText().toString();
         //final String ttd = find(R.id.img_tandaTangan_checkin4 , ImageView.class).getText().toString();
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
@@ -227,30 +438,34 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 args.put("status", status);
                 args.put("mekanik", namaMekanik);
                 args.put("antrian", antrian);
-                args.put("level", levelBbm);
+                args.put("levelBbm", levelBbm);
                 args.put("tidakmenunggu", tidakMenunggu);
                 args.put("konfirmtambahan", konfirmTambahan);
                 args.put("buangpart", buangPart);
-                args.put("estiselesai", estiSelesai);
                 args.put("waktuambil", waktuAmbil);
                 args.put("sk", sk);
+                args.put("waktuLayananHari", hari);
+                args.put("waktuLayananJam", jam);
+                args.put("waktuLayananHMenit", menit);
+                args.put("estimasiSebelum", estimasiSebelum);
+                args.put("estimasiSesudah", estimasiSesudah);
+                args.put("estimasiSelesai", estimasiSesudah);
                 //args.put("ttd", ttd);
-
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("checkin"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
             }
 
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    if(status.equalsIgnoreCase("BATAL CHECKIN 4")){
+                    if (status.equalsIgnoreCase("BATAL CHECKIN 4")) {
                         showSuccess("Layanan di Batalkan, Data Di masukkan Ke Daftar Kontrol Layanan");
-                    }else{
+                    } else {
                         showSuccess("Data Pelanggan Berhasil Di masukkan Ke Daftar Kontrol Layanan");
                     }
                     setResult(RESULT_OK);
                     finish();
                 } else {
-                    showWarning("Gagal");
+                    showWarning(result.get("message").asString());
                 }
             }
         });
@@ -263,7 +478,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                data = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("mekanik"), args));
+                data = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MEKANIK), args));
             }
 
             @Override
@@ -310,24 +525,149 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.tv_tgl_estimasi_checkin4:
+                getDatePickerCheckin();
+                break;
             case R.id.tv_waktu_checkin4:
-                getTimePickerDialogTextView(getActivity(), find(R.id.tv_waktu_checkin4, TextView.class));
+                getTimePickerDialogWaktuAmbil();
+                break;
+            case R.id.tv_jam_estimasi_checkin4:
+                getTimePickerDialogEstimasiSelesai();
+                break;
+            case R.id.btn_hapus:
+                isBatal = true;
+                if (find(R.id.et_ket_checkin4, EditText.class).getText().toString().isEmpty()) {
+                    find(R.id.et_ket_checkin4, EditText.class).setError("Keterangan Perlu Di isi");
+                } else {
+                    saveData("BATAL CHECKIN 4");
+                }
+                break;
+            case R.id.btn_simpan:
+                if (!find(R.id.cb_aggrement_checkin4, CheckBox.class).isChecked()) {
+                    showWarning("Silahkan Setujui Syarat Dan Ketentuan Bengkel");
+                }else if(find(R.id.sp_namaMekanik_checkin4, Spinner.class).getSelectedItem().toString().equals("--PILIH--")){
+                    showWarning("Nama Mekanik Belum Di pilih");
+                    find(R.id.sp_namaMekanik_checkin4, Spinner.class).performClick();
+                }
+                else if (!isSign) {
+                    showWarning("Tanda Tangan Wajib di Input");
+                } else {
+                    saveData("CHECKIN 4 ANTRIAN");
+                }
+                break;
+            case R.id.btn_ttd_checkin4:
+                if(!checkPermission()){
+                    Intent intent = new Intent(getActivity(), Capture.class);
+                    startActivityForResult(intent, REQUEST_CODE_SIGN);
+                }else{
+                    if (checkPermission()) {
+                        requestPermissionAndContinue();
+                    } else {
+                        Intent intent = new Intent(getActivity(), Capture.class);
+                        startActivityForResult(intent, REQUEST_CODE_SIGN);
+                    }
+                }
                 break;
         }
     }
 
     @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()) {
+            case R.id.cb_konfirmTambah_checkin4:
+                if (buttonView.isChecked()) {
+                    find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setEnabled(false);
+                } else {
+                    find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setEnabled(true);
+                }
+                break;
+            case R.id.cb_tidakMenunggu_checkin4:
+                if (buttonView.isChecked()) {
+                    find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).setEnabled(false);
+                    find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).setChecked(false);
+                    Tools.setViewAndChildrenEnabled(find(R.id.ly_waktuAmbil, LinearLayout.class), true);
+                    find(R.id.ly_waktuAmbil, LinearLayout.class).setBackgroundColor(getResources().getColor(R.color.grey_100));
+                } else {
+                    find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).setEnabled(true);
+                    Tools.setViewAndChildrenEnabled(find(R.id.ly_waktuAmbil, LinearLayout.class), false);
+                }
+                break;
+        }
+    }
+
+    private boolean checkPermission() {
+        return ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermissionAndContinue() {
+        if (ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, WRITE_EXTERNAL_STORAGE)
+                    && ActivityCompat.shouldShowRequestPermissionRationale(this, READ_EXTERNAL_STORAGE)) {
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+                alertBuilder.setCancelable(true);
+                alertBuilder.setTitle("");
+                alertBuilder.setMessage("");
+                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions(Checkin4_Activity.this, new String[]{WRITE_EXTERNAL_STORAGE
+                                , READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+                    }
+                });
+                AlertDialog alert = alertBuilder.create();
+                alert.show();
+                Log.e("", "permission denied, show dialog");
+            } else {
+                ActivityCompat.requestPermissions(Checkin4_Activity.this, new String[]{WRITE_EXTERNAL_STORAGE,
+                        READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (permissions.length > 0 && grantResults.length > 0) {
+                boolean flag = true;
+                for (int i = 0; i < grantResults.length; i++) {
+                    if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                        flag = false;
+                    }
+                }
+                if (flag) {
+                    find(R.id.btn_ttd_checkin4).performClick();
+                } else {
+                    finish();
+                }
+            } else {
+                finish();
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+
+    @SuppressLint("NewApi")
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_SIGN) {
             isSign = true;
-            Log.d(TAG, "onActivityResult: " + getIntentStringExtra(data, "imagePath"));
-            ttd = (Bitmap) data.getExtras().get("imagePath");
-            find(R.id.img_tandaTangan_checkin4, ImageView.class).setImageBitmap(ttd);
+            @SuppressLint("SdCardPath") File imgFile = null;
+            if (data != null) {
+                imgFile = (File) Objects.requireNonNull(data.getExtras()).get("imagePath");
+            }
+            if (imgFile != null && imgFile.exists()) {
+                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                find(R.id.img_tandaTangan_checkin4, ImageView.class).setImageBitmap(myBitmap);
+            }
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_MEKANIK) {
             setSpMekanik();
             showSuccess("Berhasil Mencatatkan Mekanik");
-
         }
     }
 }

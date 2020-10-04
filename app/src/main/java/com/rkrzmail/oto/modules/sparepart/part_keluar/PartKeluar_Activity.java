@@ -28,6 +28,7 @@ import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 
+import static com.rkrzmail.utils.APIUrls.ATUR_PART_KELUAR;
 import static com.rkrzmail.utils.ConstUtils.DETAIL;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_PART_KELUAR;
 
@@ -95,7 +96,7 @@ public class PartKeluar_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 args.put("search", cari);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturpartkeluar"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_PART_KELUAR), args));
             }
 
             @Override

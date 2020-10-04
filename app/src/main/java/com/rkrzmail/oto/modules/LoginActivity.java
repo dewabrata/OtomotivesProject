@@ -8,14 +8,12 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.Selection;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
 import com.naa.data.Utility;
-import com.naa.data.UtilityAndroid;
 import com.naa.utils.InternetX;
 import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
@@ -26,6 +24,9 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.registrasi_bengkel.RegistrasiBengkel_Activity;
 
 import java.util.Map;
+
+import static com.rkrzmail.utils.APIUrls.SET_LOGIN;
+import static com.rkrzmail.utils.APIUrls.VIEW_DATA_BENGKEL;
 
 public class LoginActivity extends AppActivity {
 
@@ -156,7 +157,7 @@ public class LoginActivity extends AppActivity {
                 args.put("user", formatPhone(  find(R.id.user, EditText.class).getText().toString().replaceAll("[^0-9]+", "")));
                 args.put("password", find(R.id.password, EditText.class).getText().toString());
 
-                sResult = (InternetX.postHttpConnection(AppApplication.getBaseUrlV3("login"), args));
+                sResult = (InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_LOGIN), args));
             }
 
             @Override
@@ -174,6 +175,7 @@ public class LoginActivity extends AppActivity {
                     setSetting("JENIS_KENDARAAN", nson.get("JENIS_KENDARAAN").asString().trim());
                     setSetting("result", nson.toJson());
                     setSetting("CID", nson.get("CID").asString());
+                    viewDataBengkel();
                     setSetting("NAMA_USER", nson.get("NAMA_USER").asString());
                     setSetting("TIPE_USER", nson.get("TIPE_USER").asString());
                     setSetting("ACCESS_MENU", nson.get("AKSES_APP").asString());
@@ -182,7 +184,6 @@ public class LoginActivity extends AppActivity {
                     setSetting("KATEGORI_BENGKEL", nson.get("KATEGORI_BENGKEL").asString());
                     setSetting("session", nson.get("token").asString());
                     setSetting("user", find(R.id.user, EditText.class).getText().toString());
-
                     Intent intent = new Intent(getActivity(), MenuActivity.class);
                     startActivity(intent);
                     finish();
@@ -192,6 +193,29 @@ public class LoginActivity extends AppActivity {
             }
         });
     }
+
+    private void viewDataBengkel(){
+        newTask(new Messagebox.DoubleRunnable() {
+            Nson result;
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "Data Bengkel");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_DATA_BENGKEL), args));
+                if(result.get("status").asString().equalsIgnoreCase("OK")) {
+                    result = result.get("data").get(0);
+                    setSetting("MAX_ANTRIAN_EXPRESS_MENIT", result.get("MAX_ANTRIAN_EXPRESS_MENIT").asString());
+                    setSetting("MAX_ANTRIAN_STANDART_MENIT", result.get("MAX_ANTRIAN_STANDART_MENIT").asString());
+                    setSetting("DP_PERSEN", result.get("DP_PERSEN").asString());
+                }
+            }
+            @Override
+            public void runUI() {
+
+            }
+        });
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

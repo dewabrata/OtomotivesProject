@@ -27,18 +27,17 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_HARGA_PART;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_JASA_BERKALA;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_JASA_LAIN;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_PART_BERKALA;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_PART_EXTERNAL;
+
 public class Booking3_Activity extends AppActivity implements View.OnClickListener {
 
     public static final String TAG = "Booking3_Activity_Log";
-    public static final int REQUEST_HARGA_PART = 20;
     private RecyclerView rvBooking3;
-    public static final int REQUEST_PART = 15;
-    public static final int REQUEST_JASA_LAIN = 16;
-    public static final int REQUEST_JASA_BERKALA = 17;
-    public static final int REQUEST_PART_BERKALA = 18;
-    public static final int REQUEST_PART_EXTERNAL = 19;
-    public static final int REQUEST_JASA_EXTERNAL = 21;
-    public static final int REQUEST_BATAL = 22;
     private DecimalFormat formatter;
     private Nson partList = Nson.newArray(),
             jasaList = Nson.newArray();
@@ -175,7 +174,7 @@ public class Booking3_Activity extends AppActivity implements View.OnClickListen
                 isListRecylerview = true;
                 i = new Intent(getActivity(), CariPart_Activity.class);
                 i.putExtra("flag", "ALL");
-                startActivityForResult(i, REQUEST_PART);
+                startActivityForResult(i, REQUEST_CARI_PART);
                 break;
             case R.id.btn_jasaLainBerkala_booking3:
                 isListRecylerview = false;
@@ -227,7 +226,7 @@ public class Booking3_Activity extends AppActivity implements View.OnClickListen
                     jasaList.add(Nson.readJson(getIntentStringExtra(data, "data")));
                     Log.d(TAG, "REQUEST_JASA_BERKALA : " + nListArray);
                     break;
-                case REQUEST_PART:
+                case REQUEST_CARI_PART:
                     i = new Intent(getActivity(), JumlahHargaPart_Activity.class);
                     i.putExtra("data", Nson.readJson(getIntentStringExtra(data, "nopart")).toJson());
                     startActivityForResult(i, REQUEST_HARGA_PART);

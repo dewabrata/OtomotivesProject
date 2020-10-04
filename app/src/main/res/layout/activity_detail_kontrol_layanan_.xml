@@ -194,7 +194,6 @@
                     android:id="@+id/et_ket_batal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
                     android:inputType="textMultiLine"
                     android:textSize="14sp" />
 

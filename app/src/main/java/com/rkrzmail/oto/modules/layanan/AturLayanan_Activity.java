@@ -11,7 +11,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -19,6 +21,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -37,6 +40,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.rkrzmail.utils.ConstUtils.ADD;
+import static com.rkrzmail.utils.ConstUtils.EDIT;
+
 public class AturLayanan_Activity extends AppActivity {
 
     private static final int REQUEST_DESKRIPSI = 12;
@@ -48,7 +54,8 @@ public class AturLayanan_Activity extends AppActivity {
     private ArrayAdapter<String> adapter;
     private RecyclerView rvLayanan;
     private DecimalFormat formatter;
-    private Nson layananPaketList = Nson.newArray(),
+    private Nson
+            layananPaketList = Nson.newArray(),
             layananOtolist = Nson.newArray(),
             layananRecallList = Nson.newArray(),
             layananAfterList = Nson.newArray(),
@@ -56,6 +63,7 @@ public class AturLayanan_Activity extends AppActivity {
             principalList = Nson.newArray(),
             discPartList = Nson.newArray(),
             discJasaList = Nson.newArray(),
+            layananBengkelAvail = Nson.newArray(),
             editNson;
     private String jenisLayanan = "",
             layananId = "",
@@ -74,7 +82,7 @@ public class AturLayanan_Activity extends AppActivity {
             isPaket = false,
             isAfterService = false,
             isRecall = false,
-            isOtomotives = false; //true for discPart, false for discJasa
+            isOtomotives = false, isAdd = false; //true for discPart, false for discJasa
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,13 +112,20 @@ public class AturLayanan_Activity extends AppActivity {
 
         initData();
         initListener();
-        setSpNamaPrincipal();
+        setSpNamaPrincipal("");
         initButton();
         initRecylerview();
     }
 
+    @SuppressLint("SetTextI18n")
     private void initData(){
-        if (getIntent().hasExtra("add")) {
+        if (getIntent().hasExtra(ADD)) {
+            isAdd = true;
+            Nson data = Nson.readJson(getIntentStringExtra(ADD));
+            for (int i = 0; i < data.size(); i++) {
+                layananBengkelAvail.add(data.get(i).get("NAMA_LAYANAN").asString());
+            }
+            showInfo(layananBengkelAvail.toJson(), Toast.LENGTH_LONG);
             find(R.id.btn_simpan_atur_layanan, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -138,7 +153,7 @@ public class AturLayanan_Activity extends AppActivity {
                     saveData();
                 }
             });
-        } else if (getIntent().hasExtra("edit")) {
+        } else if (getIntent().hasExtra(EDIT)) {
             Tools.setViewAndChildrenEnabled(find(R.id.parent_ly_layanan, LinearLayout.class), false);
             spStatus.setEnabled(true);
 
@@ -153,7 +168,7 @@ public class AturLayanan_Activity extends AppActivity {
             try {
                 find(R.id.et_biayaPaket_layanan, EditText.class).setText("Rp. " + formatRp(editNson.get("BIAYA_PAKET").asString()));
             } catch (Exception e) {
-                Log.d(TAG, "NumberException: " + e.getMessage());
+                showError("NumberException: " + e.getMessage());
             }
             spJenisLayanan.setSelection(Tools.getIndexSpinner(spJenisLayanan, editNson.get("JENIS_LAYANAN").asString()));
             spStatus.setSelection(Tools.getIndexSpinner(spJenisLayanan, editNson.get("STATUS").asString()));
@@ -296,7 +311,7 @@ public class AturLayanan_Activity extends AppActivity {
                             }else{
                                 namaPrincipal = "--PILIH--";
                             }
-                            setSpNamaPrincipal();
+                            setSpNamaPrincipal(namaPrincipal);
                             if(dataLayananList.get(i).get("GARANSI").asString().equals("BERSAMA")){
                                 find(R.id.sp_garansi_atur_layanan, Spinner.class).setSelection(Tools.getIndexSpinner( find(R.id.sp_garansi_atur_layanan, Spinner.class), "YA"));
                                 find(R.id.et_feeGB_layanan, EditText.class).setText("Rp. " + formatRp(dataLayananList.get(i).get("FEE_NON_PAKET").asString()));
@@ -459,7 +474,7 @@ public class AturLayanan_Activity extends AppActivity {
                         if (result.get(i).get("JENIS").asString().equals("PAKET LAYANAN")
                                 && result.get(i).get("KENDARAAN").asString().contains(jenisKendaraan)) {
                             layananPaketList.add(result.get(i));
-                        } else if (result.get(i).get("JENIS").asString().equalsIgnoreCase("AFTER SALES SERVICES")
+                        } else if (result.get(i).get("JENIS").asString().equalsIgnoreCase("AFTER SALES SERVIS")
                                 && result.get(i).get("KENDARAAN").asString().contains(jenisKendaraan)) {
                             layananAfterList.add(result.get(i));
                         } else if (result.get(i).get("JENIS").asString().equalsIgnoreCase("RECALL")
@@ -473,13 +488,13 @@ public class AturLayanan_Activity extends AppActivity {
                     Log.d(TAG, "Layanan : " + layananPaketList);
 
                     if (jenisLayanan.equalsIgnoreCase("PAKET LAYANAN")) {
-                        setSpinner(spNamaLayanan, layananPaketList, "NAMA_LAYANAN", namaLayanan);
+                        setSpinner(spNamaLayanan, layananPaketList, namaLayanan);
                     } else if (jenisLayanan.equalsIgnoreCase("RECALL")) {
-                        setSpinner(spNamaLayanan, layananRecallList, "NAMA_LAYANAN", namaLayanan);
+                        setSpinner(spNamaLayanan, layananRecallList, namaLayanan);
                     } else if (jenisLayanan.equalsIgnoreCase("AFTER SALES SERVICES")) {
-                        setSpinner(spNamaLayanan, layananAfterList, "NAMA_LAYANAN", namaLayanan);
+                        setSpinner(spNamaLayanan, layananAfterList, namaLayanan);
                     } else {
-                        setSpinner(spNamaLayanan, layananOtolist, "NAMA_LAYANAN", namaLayanan);
+                        setSpinner(spNamaLayanan, layananOtolist, namaLayanan);
                     }
 
                 } else {
@@ -494,15 +509,45 @@ public class AturLayanan_Activity extends AppActivity {
         });
     }
 
-    private void setSpinner(Spinner spinner, Nson listItem, String object, String selection) {
+    private void setSpinner(Spinner spinner, Nson listItem, String selection) {
         List<String> dataList = new ArrayList<>();
         dataList.add("--PILIH--");
         for (int i = 0; i < listItem.size(); i++) {
-            dataList.add(listItem.get(i).get(object).asString());
+            dataList.add(listItem.get(i).get("NAMA_LAYANAN").asString());
         }
         dataLayananList.asArray().addAll(listItem.asArray());
-        List<String> data = Tools.removeDuplicates(dataList);
-        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, data);
+        final List<String> data = Tools.removeDuplicates(dataList);
+        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, data){
+            @Override
+            public boolean isEnabled(int position) {
+                if(isAdd){
+                    for (int i = 0; i < layananBengkelAvail.size(); i++) {
+                        if(layananBengkelAvail.get(i).asString().equals(data.get(position))){
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+
+            @SuppressLint("WrongConstant")
+            @Override
+            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View mView = super.getDropDownView(position, convertView, parent);
+                TextView mTextView = (TextView) mView;
+                ((TextView) mView).setGravity(Gravity.CENTER);
+                ((TextView) mView).setTextAlignment(Gravity.CENTER);
+                if (isAdd) {
+                    for (int i = 0; i < layananBengkelAvail.size(); i++) {
+                        if(layananBengkelAvail.get(i).asString().equals(data.get(position))){
+                            mTextView.setVisibility(View.GONE);
+                        }
+                    }
+                }
+                return mView;
+            }
+        };
+
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         if (!selection.isEmpty()) {
@@ -514,7 +559,7 @@ public class AturLayanan_Activity extends AppActivity {
         }
     }
 
-    private void setSpNamaPrincipal() {
+    private void setSpNamaPrincipal(final String principal) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -536,10 +581,11 @@ public class AturLayanan_Activity extends AppActivity {
                     ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, principalList.asArray());
                     spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spNamaPrincipal.setAdapter(spinnerAdapter);
-                    if (!namaPrincipal.isEmpty()) {
+                    if (!principal.isEmpty()) {
                         for (int in = 0; in < spNamaPrincipal.getCount(); in++) {
-                            if (spNamaPrincipal.getItemAtPosition(in).toString().contains(namaPrincipal)) {
+                            if (spNamaPrincipal.getItemAtPosition(in).toString().contains(principal)) {
                                 spNamaPrincipal.setSelection(in);
+                                break;
                             }
                         }
                     }

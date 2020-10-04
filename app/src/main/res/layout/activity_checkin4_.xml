@@ -27,9 +27,6 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -81,11 +78,10 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ly_estimasi_selesai"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
                     android:layout_marginTop="15dp"
-                    android:layout_marginRight="10dp"
                     android:gravity="center"
                     android:orientation="horizontal">
 
@@ -105,7 +101,7 @@
                         android:background="@drawable/background_edittext">
 
                         <TextView
-                            android:id="@+id/tv_startEstimasi_checkin4"
+                            android:id="@+id/tv_tgl_estimasi_checkin4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
@@ -134,7 +130,7 @@
                             android:text="-" />
 
                         <TextView
-                            android:id="@+id/tv_finish_checkin4"
+                            android:id="@+id/tv_jam_estimasi_checkin4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentTop="true"
@@ -156,9 +152,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
                     android:layout_marginTop="15dp"
-                    android:layout_marginRight="10dp"
                     android:orientation="horizontal">
 
                     <CheckBox
@@ -185,21 +179,19 @@
                     android:id="@+id/cb_konfirmTambah_checkin4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"
-                    android:layout_marginRight="10dp"
-                    android:text="KONFIRMASI PENAMBAHAN" />
+                    android:text="KONFIRMASI PENAMBAHAN"
+                    android:checked="true"
+                    android:enabled="false"/>
 
                 <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp">
+                    android:layout_marginTop="10dp">
 
                     <EditText
-                        android:id="@+id/et_antrian_checkin4"
+                        android:id="@+id/et_no_antrian_checkin4"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:enabled="false"
@@ -215,9 +207,7 @@
                     android:layout_marginBottom="@dimen/paddingMedium"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginRight="10dp">
+                    android:layout_marginTop="15dp">
 
                     <TextView
                         android:layout_height="wrap_content"
@@ -282,12 +272,42 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:gravity="end"
+                    android:layout_gravity="end"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_jenis_antrian"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="JENIS ANTRIAN"
+                        android:textColor="@color/red_800"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:layout_gravity="end"/>
+
+                    <TextView
+                        android:id="@+id/tv_waktu_layanan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/red_800"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:layout_gravity="end"
+                        android:visibility="gone"/>
+
+                </LinearLayout>
+
+
+                <LinearLayout
                     android:id="@+id/ly_waktuAmbil"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
                     android:layout_marginTop="15dp"
-                    android:layout_marginEnd="10dp"
                     android:layout_marginBottom="@dimen/paddingMedium"
                     android:gravity="center"
                     android:orientation="horizontal">
@@ -319,7 +339,8 @@
                             android:layout_height="match_parent"
                             android:drawableStart="@drawable/icon_jam"
                             android:gravity="center"
-                            android:textStyle="bold" />
+                            android:textColor="@color/grey_900"
+                            />
 
                     </RelativeLayout>
 
@@ -328,9 +349,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
                     android:layout_marginTop="15dp"
-                    android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:orientation="horizontal">
 
@@ -364,9 +383,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp">
+                    android:layout_marginTop="10dp">
 
                     <EditText
                         android:id="@+id/et_totalBiaya_checkin4"
@@ -382,9 +399,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -448,16 +463,14 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginTop="10dp">
 
                 <EditText
                     android:id="@+id/et_ket_checkin4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="KETERANGAN TAMBAHAN "
-                    android:inputType="textCapSentences|textMultiLine"
+                    android:inputType="textMultiLine|textCapCharacters"
                     android:maxLines="5"
                     android:textSize="14sp" />
 
@@ -467,9 +480,7 @@
                 android:id="@+id/cb_aggrement_checkin4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
                 android:text="SETUJU DENGAN SYARAT DAN KETENTUAN BENGKEL" />
 
             <LinearLayout

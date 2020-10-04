@@ -32,12 +32,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.rkrzmail.utils.APIUrls.SET_STOCK_OPNAME;
+import static com.rkrzmail.utils.APIUrls.VIEW_LOKASI_PART;
+import static com.rkrzmail.utils.APIUrls.VIEW_SPAREPART;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.PENYESUAIAN;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_PENYESUAIAN;
 
-public class StockOpname_Activity extends AppActivity {
+public class AturStockOpname_Activity extends AppActivity {
 
     private EditText noFolder, noPart, etJumlahOpname, namaPart, etPending, etMerk, etStock;
     private String partId = "";
@@ -158,7 +161,7 @@ public class StockOpname_Activity extends AppActivity {
                 args.put("lokasi", find(R.id.sp_lokasi_stockOpname, Spinner.class).getSelectedItem().toString());
                 args.put("opname", etJumlahOpname.getText().toString());
                 args.put("no_folder", noFolder.getText().toString());
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("stockopname"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_STOCK_OPNAME), args));
             }
 
             @Override
@@ -190,7 +193,7 @@ public class StockOpname_Activity extends AppActivity {
                 args.put("spec", "Bengkel");
                 args.put("lokasi", "ALL");
                 args.put("search", nopart);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewsparepart"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SPAREPART), args));
             }
 
             @SuppressLint("SetTextI18n")
@@ -228,7 +231,7 @@ public class StockOpname_Activity extends AppActivity {
                 args.put("flag", "TERALOKASI");
                 args.put("lokasi", "RUANG PART");
                 args.put("partid", data.get("PART_ID").asString());
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlokasipart"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_LOKASI_PART), args));
             }
 
             @Override

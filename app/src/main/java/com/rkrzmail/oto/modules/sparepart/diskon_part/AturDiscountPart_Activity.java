@@ -36,6 +36,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static com.rkrzmail.utils.APIUrls.ATUR_DISKON_PART;
+import static com.rkrzmail.utils.ConstUtils.DATA;
+
 public class AturDiscountPart_Activity extends AppActivity implements View.OnClickListener {
 
     private static final int REQUEST_CARI_PART = 10;
@@ -101,7 +104,7 @@ public class AturDiscountPart_Activity extends AppActivity implements View.OnCli
 
     private void loadData() {
         Intent i = getIntent();
-        final Nson nson = Nson.readJson(getIntentStringExtra("data"));
+        final Nson nson = Nson.readJson(getIntentStringExtra(DATA));
         if (nson.get("LOKASI").asString().equalsIgnoreCase("TENDA") && nson.get("LOKASI").asString().equalsIgnoreCase("BENGKEL")) {
             flagTenda = true;
             flagBengkel = true;
@@ -254,7 +257,7 @@ public class AturDiscountPart_Activity extends AppActivity implements View.OnCli
                 args.put("pesan", find(R.id.cb_mssg_discPart, CheckBox.class).isChecked() ? "YA" : "TIDAK");
                 args.put("lokasi", lokasi);
 
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturdiskonpart"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_DISKON_PART), args));
             }
 
             @Override
@@ -289,7 +292,7 @@ public class AturDiscountPart_Activity extends AppActivity implements View.OnCli
                     args.put("lokasi", lok);
                 }
 
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturdiskonpart"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_DISKON_PART), args));
             }
 
             @Override
@@ -314,7 +317,7 @@ public class AturDiscountPart_Activity extends AppActivity implements View.OnCli
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "delete");
                 args.put("id", id.get("ID").asString());
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturdiskonpart"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_DISKON_PART), args));
             }
 
             @Override

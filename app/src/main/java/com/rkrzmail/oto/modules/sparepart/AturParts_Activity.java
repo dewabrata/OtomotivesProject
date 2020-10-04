@@ -33,6 +33,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static com.rkrzmail.utils.APIUrls.ATUR_SPAREPART;
+import static com.rkrzmail.utils.APIUrls.VIEW_SPAREPART;
+
 public class AturParts_Activity extends AppActivity {
 
     public static final String TAG = "AturPartNew__";
@@ -197,7 +200,7 @@ public class AturParts_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 args.put("spec", "Bengkel");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewsparepart"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SPAREPART), args));
             }
 
             @Override
@@ -229,7 +232,7 @@ public class AturParts_Activity extends AppActivity {
                 args.put("nopart", noPart);
                 args.put("namapart", namaPart);
 
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("atursparepart"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_SPAREPART), args));
 
             }
 
@@ -278,7 +281,7 @@ public class AturParts_Activity extends AppActivity {
                 }
                 args.put("polahargajual", polaHarga);
 
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("atursparepart"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_SPAREPART), args));
             }
 
             @Override
@@ -344,7 +347,7 @@ public class AturParts_Activity extends AppActivity {
                 args.put("stock", stock);
                 args.put("hpp", hpp);
 
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("atursparepart"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_SPAREPART), args));
             }
 
             @Override

@@ -1,24 +1,18 @@
 package com.rkrzmail.oto.modules.rekening_bank;
 
-import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -26,16 +20,15 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.TimePicker_Dialog;
-import com.rkrzmail.oto.modules.discount.SpotDiscount_Activity;
-import com.rkrzmail.srv.MultiSelectionSpinner;
-import com.rkrzmail.utils.Tools;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+
+import static com.rkrzmail.utils.APIUrls.SET_REKENING_BANK;
+import static com.rkrzmail.utils.APIUrls.VIEW_MASTER;
 
 public class AturRekening_Activity extends AppActivity {
 
@@ -109,7 +102,7 @@ public class AturRekening_Activity extends AppActivity {
                 args.put("status", "");
                 args.put("tanggal", dateTime);
 
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("setrekeningbank"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_REKENING_BANK), args));
             }
 
             @Override
@@ -206,7 +199,7 @@ public class AturRekening_Activity extends AppActivity {
                 //args.put("status", );
                 args.put("tanggal", dateTime);
 
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("setrekeningbank"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_REKENING_BANK), args));
             }
 
             @Override
@@ -231,7 +224,7 @@ public class AturRekening_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "delete");
                 args.put("id", nson.get("ID").asString());
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("setrekeningbank"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_REKENING_BANK), args));
             }
 
             @Override
@@ -255,7 +248,7 @@ public class AturRekening_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 args.put("edc", "DUMMY");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("setrekeningbank"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_REKENING_BANK), args));
             }
 
             @Override
@@ -281,7 +274,7 @@ public class AturRekening_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("nama", "BANK");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewmst"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MASTER), args));
             }
 
             @Override

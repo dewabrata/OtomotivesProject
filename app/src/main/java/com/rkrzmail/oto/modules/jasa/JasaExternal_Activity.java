@@ -14,8 +14,11 @@ import android.widget.ImageButton;
 import com.naa.data.Nson;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.primary.checkin.Checkin3_Activity;
 import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
 import com.rkrzmail.utils.Tools;
+
+import static com.rkrzmail.utils.ConstUtils.DATA;
 
 public class JasaExternal_Activity extends AppActivity {
 
@@ -39,30 +42,39 @@ public class JasaExternal_Activity extends AppActivity {
     private void initComponent() {
         initToolbar();
         watcher(find(R.id.img_clear2, ImageButton.class), find(R.id.et_biayaJasa, EditText.class));
-        final Nson nson = Nson.readJson(getIntentStringExtra("data"));
+        final Nson nson = Nson.readJson(getIntentStringExtra(DATA));
         Log.d(TAG, "Jasa External : " + nson);
 
-        find(R.id.et_waktuDefault, EditText.class).setText(nson.get("WAKTU_KERJA_JAM").asString());
+        String waktuDefault = Checkin3_Activity.totalWaktu("00", nson.get("WAKTU_KERJA_JAM").asString(), nson.get("WAKTU_KERJA_MENIT").asString());
+        find(R.id.et_waktuDefault, EditText.class).setText(waktuDefault);
         find(R.id.btn_lanjut, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                sendData.set("PART_ID", nson.get("PART_ID").asString());
-                sendData.set("JUMLAH", "");
-                sendData.set("NAMA_PART", nson.get("NAMA_MASTER").asString());
-                sendData.set("NO_PART", nson.get("NOMOR_PART_NOMOR").asString());
-                sendData.set("MERK", nson.get("MERK").asString());
-                sendData.set("DISCOUNT_JASA", "");
-                sendData.set("DISCOUNT_PART", "");
-                sendData.set("HARGA_JASA",  find(R.id.et_biayaJasa, EditText.class).getText().toString().replaceAll("[^0-9]+", ""));
-                sendData.set("HARGA_PART", "");
-                sendData.set("WAKTU", find(R.id.et_waktuSet, EditText.class).getText().toString());
+                if(find(R.id.et_waktuSet, EditText.class).getText().toString().isEmpty()){
+                    find(R.id.img_waktuKerja, ImageButton.class).performClick();
+                    showWarning("Waktu Harus Di Isi");
+                }else if(find(R.id.et_biayaJasa, EditText.class).getText().toString().isEmpty()){
+                    find(R.id.et_biayaJasa, EditText.class).setError("Biaya Jasa Harus Di isi");
+                    find(R.id.et_biayaJasa, EditText.class).requestFocus();
+                }else{
+                    sendData.set("PART_ID", nson.get("PART_ID").asString());
+                    sendData.set("JUMLAH", "");
+                    sendData.set("NAMA_PART", nson.get("NAMA_MASTER").asString());
+                    sendData.set("NO_PART", nson.get("NOMOR_PART_NOMOR").asString());
+                    sendData.set("MERK", nson.get("MERK").asString());
+                    sendData.set("DISCOUNT_JASA", "");
+                    sendData.set("DISCOUNT_PART", "");
+                    sendData.set("HARGA_JASA",  find(R.id.et_biayaJasa, EditText.class).getText().toString().replaceAll("[^0-9]+", ""));
+                    sendData.set("HARGA_PART", "PART EXTERNAL");
+                    sendData.set("WAKTU", find(R.id.et_waktuSet, EditText.class).getText().toString());
 
-                Intent i = new Intent();
-                i.putExtra("data", sendData.toJson());
-                i.putExtra("external", true);
-                setResult(RESULT_OK, i);
-                finish();
+                    Intent i = new Intent();
+                    i.putExtra(DATA, sendData.toJson());
+                    i.putExtra("external", true);
+                    setResult(RESULT_OK, i);
+                    finish();
+                }
             }
         });
 

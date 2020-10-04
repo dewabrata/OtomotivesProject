@@ -34,6 +34,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import static com.rkrzmail.utils.APIUrls.ATUR_LOKASI_PART;
+import static com.rkrzmail.utils.APIUrls.VIEW_LOKASI_PART;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_TERALOKASIKAN;
 
 public class AturLokasiPart_Activity extends AppActivity {
@@ -152,7 +154,7 @@ public class AturLokasiPart_Activity extends AppActivity {
                 args.put("tanggal", currentDateTime());
                 args.put("kode", kodePenempatan(tempatPart, rakOrPalet, finalTinggirak, nofolder));
 
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturlokasipart"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_LOKASI_PART), args));
             }
 
             @Override
@@ -178,7 +180,7 @@ public class AturLokasiPart_Activity extends AppActivity {
                 args.put("flag", "TERALOKASI");
                 args.put("lokasi", "RUANG PART");
                 args.put("partid", data.get("PART_ID").asString());
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlokasipart"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_LOKASI_PART), args));
             }
 
             @Override
@@ -283,6 +285,8 @@ public class AturLokasiPart_Activity extends AppActivity {
                 return mView;
             }
         };
+
+        lokasiAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sp_lokasi_part.setAdapter(lokasiAdapter);
         sp_lokasi_part.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

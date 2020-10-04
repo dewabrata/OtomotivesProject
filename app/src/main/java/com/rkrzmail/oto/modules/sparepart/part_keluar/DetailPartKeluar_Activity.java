@@ -29,6 +29,7 @@ import com.rkrzmail.utils.Tools;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.rkrzmail.utils.APIUrls.ATUR_PART_KELUAR;
 import static com.rkrzmail.utils.ConstUtils.ATUR;
 import static com.rkrzmail.utils.ConstUtils.DETAIL;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
@@ -123,7 +124,7 @@ public class DetailPartKeluar_Activity extends AppActivity {
                         viewHolder.find(R.id.tv_cari_namaPart, TextView.class).setText(nListArray.get(position).get("NAMA_PART").asString());
                         viewHolder.find(R.id.tv_cari_noPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
                         viewHolder.find(R.id.tv_cari_stockPart, TextView.class).setText(isDetail ? nListArray.get(position).get("SISA").asString() : nListArray.get(position).get("JUMLAH").asString());
-                        viewHolder.find(R.id.tv_cari_pending, TextView.class).setText(isDetail ? (Tools.isNumeric(nListArray.get(position).get("HPP").asString()) ? RP + formatRp(nListArray.get(position).get("HPP").asString()) : "") : nListArray.get(position).get("PENDING").asString());
+                        viewHolder.find(R.id.tv_cari_pending, TextView.class).setText(nListArray.get(position).get("PENDING").asString());
                         viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(isDetail ? View.GONE : View.VISIBLE);
                         viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -165,7 +166,8 @@ public class DetailPartKeluar_Activity extends AppActivity {
                 args.put("jumlah", String.valueOf(totalAllPart));
                 args.put("penerima", find(R.id.et_nama_mekanik, EditText.class).getText().toString());
                 args.put("parts", nListArray.toJson());
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturpartkeluar"), args));
+                args.put("mekanik",  find(R.id.et_nama_mekanik, EditText.class).getText().toString());
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_PART_KELUAR), args));
             }
 
             @Override

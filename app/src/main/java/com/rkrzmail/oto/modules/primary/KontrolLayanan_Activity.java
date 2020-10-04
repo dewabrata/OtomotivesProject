@@ -30,10 +30,12 @@ import com.rkrzmail.srv.NikitaViewHolder;
 
 import java.util.Map;
 
+import static com.rkrzmail.utils.APIUrls.VIEW_KONTROL_LAYANAN;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_CHECKIN;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
+
 public class KontrolLayanan_Activity extends AppActivity {
 
-    public static final int REQUEST_CHECKIN = 88;
-    private static final int REQUEST_DETAIL = 89;
     private RecyclerView rvKontrolLayanan;
 
     @Override
@@ -118,7 +120,7 @@ public class KontrolLayanan_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 args.put("search", cari);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("checkin"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_KONTROL_LAYANAN), args));
             }
 
             @Override

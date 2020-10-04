@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.layanan;
 
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -37,12 +38,13 @@ import com.rkrzmail.utils.Tools;
 import java.text.DecimalFormat;
 import java.util.Map;
 
+import static com.rkrzmail.utils.ConstUtils.ADD;
+import static com.rkrzmail.utils.ConstUtils.EDIT;
+
 public class Layanan_Avtivity extends AppActivity {
 
     private static final String TAG = "Layanan_Activity";
     private RecyclerView rvLayanan;
-    private DecimalFormat formatter;
-    String lokasiLayanan = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,13 +63,16 @@ public class Layanan_Avtivity extends AppActivity {
     }
 
     private void initComponent() {
-        formatter = new DecimalFormat("###,###,###");
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getActivity(), AturLayanan_Activity.class);
-                i.putExtra("add", "");
+                if(nListArray.size() > 0){
+                    i.putExtra(ADD, nListArray.toJson());
+                }else{
+                    i.putExtra(ADD, "");
+                }
                 startActivityForResult(i, 10);
             }
         });
@@ -77,20 +82,30 @@ public class Layanan_Avtivity extends AppActivity {
         rvLayanan.setHasFixedSize(true);
 
         rvLayanan.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_layanan) {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
-                 lokasiLayanan = nListArray.get(position).get("LOKASI_LAYANAN_EMG").asString()
-                        + ", " + nListArray.get(position).get("LOKASI_LAYANAN_HOME").asString()
-                        + ", " + nListArray.get(position).get("LOKASI_LAYANAN_TENDA").asString()
-                        + ", " + nListArray.get(position).get("LOKASI_LAYANAN_BENGKEL").asString();
+                String lokasiLayanan = "";
+                 if(!nListArray.get(position).get("LOKASI_LAYANAN_EMG").asString().equals("")){
+                     lokasiLayanan += nListArray.get(position).get("LOKASI_LAYANAN_EMG").asString() + " ,";
+                 }
+                 if(!nListArray.get(position).get("LOKASI_LAYANAN_HOME").asString().equals("")){
+                     lokasiLayanan += nListArray.get(position).get("LOKASI_LAYANAN_HOME").asString() + ", ";
+                 }
+                 if(!nListArray.get(position).get("LOKASI_LAYANAN_TENDA").asString().equals("")){
+                     lokasiLayanan += nListArray.get(position).get("LOKASI_LAYANAN_TENDA").asString() + ", ";
+                 }
+                 if(!nListArray.get(position).get("LOKASI_LAYANAN_BENGKEL").asString().equals("")){
+                     lokasiLayanan += nListArray.get(position).get("LOKASI_LAYANAN_BENGKEL").asString();
+                 }
 
                 viewHolder.find(R.id.tv_jenis_layanan, TextView.class).setText(nListArray.get(position).get("JENIS_LAYANAN").asString());
                 viewHolder.find(R.id.tv_nama_layanan, TextView.class).setText(nListArray.get(position).get("NAMA_LAYANAN").asString());
                 viewHolder.find(R.id.tv_lokasi_layanan, TextView.class).setText(lokasiLayanan);
                 viewHolder.find(R.id.tv_status_layanan, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
-                if(Tools.isNumeric(nListArray.get(position).get("HARGA_JUAL").asString())){
-                    viewHolder.find(R.id.tv_biaya_layanan, TextView.class).setText("Rp. " + formatter.format(Double.parseDouble(nListArray.get(position).get("BIAYA_PAKET").asString())));
+                if(Tools.isNumeric(nListArray.get(position).get("BIAYA_PAKET").asString())){
+                    viewHolder.find(R.id.tv_biaya_layanan, TextView.class).setText("Rp. " + formatRp(nListArray.get(position).get("BIAYA_PAKET").asString()));
                 }else{
                     viewHolder.find(R.id.tv_biaya_layanan, TextView.class).setText(nListArray.get(position).get("BIAYA_PAKET").asString());
                 }
@@ -99,7 +114,7 @@ public class Layanan_Avtivity extends AppActivity {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
                 Intent i = new Intent(getActivity(), AturLayanan_Activity.class);
-                i.putExtra("edit", nListArray.get(position).toJson());
+                i.putExtra(EDIT, nListArray.get(position).toJson());
                 startActivityForResult(i, 10);
             }
         }));

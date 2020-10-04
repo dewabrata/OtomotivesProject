@@ -48,7 +48,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="top|left"
                         android:hint="KELUHAN"
-                        android:inputType="textCapSentences"
+                        android:inputType="textCapCharacters"
                         android:maxLines="1"
                         android:singleLine="true"
                         android:textSize="14sp" />
@@ -86,7 +86,8 @@
                         android:inputType="textCapCharacters"
                         android:maxLength="10"
                         android:textSize="14sp"
-                        android:padding="15dp"/>
+                        android:padding="15dp"
+                        android:singleLine="true"/>
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -132,6 +133,7 @@
                         android:layout_height="wrap_content"
                         android:hint="JENIS KENDARAAN"
                         android:inputType="textCapCharacters"
+                        android:singleLine="true"
                         android:maxLength="35"
                         android:textSize="14sp"
                         android:padding="15dp"/>
@@ -166,7 +168,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="NAMA PELANGGAN"
-                        android:inputType="textCapCharacters"
+                        android:inputType="textCapCharacters|textPersonName"
                         android:maxLength="30"
                         android:textSize="14sp"
                         android:padding="15dp"/>
@@ -226,7 +228,7 @@
                             android:id="@+id/et_noPonsel_checkin1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="NO PONSEL"
+                            android:hint="NO. PONSEL"
                             android:inputType="phone"
                             android:maxLength="19"
                             android:textSize="14sp"

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,12 +23,10 @@ import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.zxing.integration.android.IntentIntegrator;
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
@@ -38,21 +35,26 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.BarcodeActivity;
 import com.rkrzmail.oto.modules.primary.HistoryBookingCheckin_Activity;
-import com.rkrzmail.oto.modules.primary.KontrolLayanan_Activity;
-import com.rkrzmail.oto.modules.user.AturUser_Activity;
 import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.srv.NsonAutoCompleteAdapter;
+import com.rkrzmail.utils.Tools;
 
-import java.util.ArrayList;
 import java.util.Map;
+
+import static com.rkrzmail.utils.APIUrls.SET_CHECKIN;
+import static com.rkrzmail.utils.APIUrls.VIEW_JENIS_KENDARAAN;
+import static com.rkrzmail.utils.APIUrls.VIEW_NOMOR_POLISI;
+import static com.rkrzmail.utils.APIUrls.VIEW_PELANGGAN;
+import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_CHECKIN;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_HISTORY;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_NEW_CS;
 
 public class Checkin1_Activity extends AppActivity implements View.OnClickListener {
 
-    private static final int REQUEST_BARCODE = 11;
-    private static final int REQUEST_HISTORY = 12;
-    private static final int REQUEST_NEW_CS = 13;
     private static final String TAG = "CHECKIN1___";
     private NikitaAutoComplete etJenisKendaraan, etNopol, etNoPonsel, etNamaPelanggan;
     private EditText etKeluhan, etKm;
@@ -67,7 +69,8 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             jenisKendaraan = "",
             modelKendaraan = "",
             rangka = "",
-            mesin = "", lokasi = "";
+            mesin = "",
+            lokasi = "", kendaraanId = "";
     private Nson nopolList = Nson.newArray(), keluhanList = Nson.newArray();
     private boolean keyDel = false, isNoHp = false, isNamaValid = false, isRemoved;
     private RecyclerView rvKeluhan;
@@ -77,6 +80,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkin1_);
         initComponent();
+        showSuccess(getSetting("WAKTU_MEKANIK_JAM"));
     }
 
     private void initToolbar() {
@@ -165,7 +169,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("nopol", etNopol.getText().toString().replace(" ", "").toUpperCase());
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewnopol"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_NOMOR_POLISI), args));
             }
 
             @Override
@@ -266,7 +270,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "Pelanggan");
                 args.put("nama", bookTitle);
-                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("datapelanggan"), args));
+                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PELANGGAN), args));
                 return result.get("data");
             }
 
@@ -312,6 +316,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
                 find(R.id.img_clear, ImageButton.class).setVisibility(View.GONE);
                 Log.d(TAG, "onItemClick: " + noHp);
+                Tools.hideKeyboard(getActivity());
             }
         });
     }
@@ -324,7 +329,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 String nopol = bookTitle.replace(" ", "").toUpperCase();
                 args.put("nopol", nopol);
-                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewnopol"), args));
+                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_NOMOR_POLISI), args));
                 return result.get("data");
             }
 
@@ -352,16 +357,21 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 modelKendaraan = n.get("MODEL").asString();
                 noHp = n.get("NO_PONSEL").asString();
 
+                showInfo(merkKendaraan + varianKendaraan);
+
                 String nomor = "";
                 if (noHp.length() > 4) {
                     nomor += noHp.substring(noHp.length() - 4);
                 }
 
                 etNopol.setText(n.get("NOPOL").asString());
+                kendaraanId = n.get("KENDARAAN_ID").asString();
+                showInfo(kendaraanId);
                 etNoPonsel.setText("XXXXXXXX" + nomor);
                 etNamaPelanggan.setText(n.get("NAMA_PELANGGAN").asString());
                 etJenisKendaraan.setEnabled(false);
                 etJenisKendaraan.setText(n.get("JENIS_KENDARAAN").asString());
+                etKm.setText(n.get("KM").asString());
                 pekerjaan = n.get("PEKERJAAN").asString();
                 setSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN", pekerjaan);
                 if (n.get("PEMILIK").asString().equalsIgnoreCase("Y")) {
@@ -382,7 +392,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             public Nson onFindNson(Context context, String bookTitle) {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("search", bookTitle);
-                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("jeniskendaraan"), args));
+                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_JENIS_KENDARAAN), args));
                 return result.get("data");
             }
 
@@ -394,10 +404,10 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     convertView = inflater.inflate(R.layout.find_jenisken, parent, false);
                 }
 
-                findView(convertView, R.id.txtJenis, TextView.class).setText((getItem(position).get("JENIS").asString()));
+                //findView(convertView, R.id.txtJenis, TextView.class).setText((getItem(position).get("JENIS").asString()));
                 findView(convertView, R.id.txtVarian, TextView.class).setText((getItem(position).get("VARIAN").asString()));
                 findView(convertView, R.id.txtMerk, TextView.class).setText((getItem(position).get("MERK").asString()));
-                findView(convertView, R.id.txtModel, TextView.class).setText((getItem(position).get("MODEL").asString()));
+                //findView(convertView, R.id.txtModel, TextView.class).setText((getItem(position).get("MODEL").asString()));
 
                 return convertView;
             }
@@ -418,14 +428,16 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 StringBuilder stringBuilder = new StringBuilder();
                 //stringBuilder.append(n.get("MODEL").asString()).append(" ");
                 stringBuilder.append(n.get("MERK").asString()).append(" ");
-                stringBuilder.append(n.get("JENIS").asString()).append(" ");
+                //stringBuilder.append(n.get("JENIS").asString()).append(" ");
                 stringBuilder.append(n.get("VARIAN").asString()).append(" ");
 
+                kendaraanId = n.get("ID").asString();
                 merkKendaraan = n.get("MERK").asString();
                 varianKendaraan = n.get("VARIAN").asString();
                 modelKendaraan = n.get("MODEL").asString();
                 tahunProduksi = n.get("TAHUN1").asString();
-                jenisKendaraan = n.get("TYPE").asString();
+
+                showInfo(kendaraanId + " " + merkKendaraan + " " + varianKendaraan);
 
                 etJenisKendaraan.setText(stringBuilder.toString());
                 etJenisKendaraan.setTag(String.valueOf(adapterView.getItemAtPosition(position)));
@@ -460,10 +472,12 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 args.put("model", modelKendaraan);
                 args.put("merk", merkKendaraan);
                 args.put("varian", varianKendaraan);
+                args.put("kendaraan_id", kendaraanId);
+                args.put("lokasiLayanan", getSetting("LOKASI_PENUGASAN"));
                 args.put("rangka", "");
                 args.put("mesin", "");
 
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("checkin"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
             }
 
             @Override
@@ -473,8 +487,8 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     Nson nson = Nson.newObject();
 
                     nson.set("id", result.get("ID").asString());
-                    nson.set("jeniskendaraan", jenisKendaraan);
-                    nson.set("model", modelKendaraan);
+                    //nson.set("jeniskendaraan", jenisKendaraan);
+                    //nson.set("model", modelKendaraan);
                     nson.set("merk", merkKendaraan);
                     nson.set("varian", varianKendaraan);
                     nson.set("tahunProduksi", tahunProduksi);
@@ -484,11 +498,11 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     Intent intent;
                     if (nopolList.asArray().contains(nopol)) {
                         intent = new Intent(getActivity(), Checkin3_Activity.class);
-                        intent.putExtra("data", nson.toJson());
-                        startActivityForResult(intent, KontrolLayanan_Activity.REQUEST_CHECKIN);
+                        intent.putExtra(DATA, nson.toJson());
+                        startActivityForResult(intent, REQUEST_CHECKIN);
                     } else {
                         intent = new Intent(getActivity(), Checkin2_Activity.class);
-                        intent.putExtra("data", nson.toJson());
+                        intent.putExtra(DATA, nson.toJson());
                         startActivityForResult(intent, REQUEST_NEW_CS);
                     }
                 } else {
@@ -509,7 +523,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 args.put("action", "barcode");
                 args.put("antrian", antrian);
 
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("checkin"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
             }
 
             @Override
@@ -547,7 +561,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == KontrolLayanan_Activity.REQUEST_CHECKIN) {
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CHECKIN) {
             finish();
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_BARCODE) {
             String antrian = data.getStringExtra("TEXT");
@@ -557,8 +571,8 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
 
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_NEW_CS) {
             Intent i = new Intent(getActivity(), Checkin3_Activity.class);
-            i.putExtra("data", Nson.readJson(getIntentStringExtra(data, "data")).toJson());
-            startActivityForResult(i, KontrolLayanan_Activity.REQUEST_CHECKIN);
+            i.putExtra(DATA, Nson.readJson(getIntentStringExtra(data, DATA)).toJson());
+            startActivityForResult(i, REQUEST_CHECKIN);
         }
     }
 

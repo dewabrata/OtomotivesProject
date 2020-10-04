@@ -28,8 +28,11 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Map;
 
+import static com.rkrzmail.utils.APIUrls.ATUR_JUAL_PART;
+import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
+import static com.rkrzmail.utils.ConstUtils.RUANG_PART;
 
 public class DaftarJualPart_Activity extends AppActivity {
 
@@ -128,7 +131,7 @@ public class DaftarJualPart_Activity extends AppActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getActivity(), CariPart_Activity.class);
-                i.putExtra("cari_part_lokasi", "RUANG PART");
+                i.putExtra(CARI_PART_LOKASI, RUANG_PART);
                 startActivityForResult(i, REQUEST_CARI_PART);
             }
         });
@@ -154,7 +157,7 @@ public class DaftarJualPart_Activity extends AppActivity {
                 Log.d("data__", "NLIST_ARRAY : " + nListArray);
                 Log.d("data__", "DATA : " + fromAtur);
 
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturjualpart"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_JUAL_PART), args));
             }
 
             @Override

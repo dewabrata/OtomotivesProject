@@ -43,6 +43,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static com.rkrzmail.utils.APIUrls.ATUR_TERIMA_PART;
+import static com.rkrzmail.utils.APIUrls.VIEW_SPAREPART;
 import static com.rkrzmail.utils.ConstUtils.ALL;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
@@ -283,7 +285,7 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
 
                 Log.d(TAG, "PART :  " + nListArray);
                 Log.d(TAG, "send data : " + args);
-                data = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturterimapart"), args));
+                data = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_TERIMA_PART), args));
             }
 
             @Override
@@ -330,42 +332,25 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
         rvTerimaPart.setLayoutManager(new LinearLayoutManager(this));
         rvTerimaPart.setHasFixedSize(true);
         rvTerimaPart.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_detail_terima_part) {
+            @Override
+            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
+                super.onBindViewHolder(viewHolder, position);
+                viewHolder.find(R.id.tv_noPart_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
+                viewHolder.find(R.id.tv_namaPart_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("NAMA_PART").asString());
+                viewHolder.find(R.id.tv_jumlah_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("JUMLAH").asString());
+                viewHolder.find(R.id.tv_lokasi_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("LOKASI_SIMPAN").asString());
+                viewHolder.find(R.id.tv_folder_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("KODE").asString());
+                viewHolder.find(R.id.tv_merk_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("MERK").asString());
+
+                viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
-                        super.onBindViewHolder(viewHolder, position);
-                        viewHolder.find(R.id.tv_noPart_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
-                        viewHolder.find(R.id.tv_namaPart_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("NAMA_PART").asString());
-                        viewHolder.find(R.id.tv_jumlah_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("JUMLAH").asString());
-                        viewHolder.find(R.id.tv_lokasi_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("LOKASI_SIMPAN").asString());
-                        viewHolder.find(R.id.tv_folder_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("KODE").asString());
-                        viewHolder.find(R.id.tv_merk_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("MERK").asString());
-
-                        viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                nListArray.asArray().remove(position);
-                                notifyItemRemoved(position);
-                            }
-                        });
+                    public void onClick(View v) {
+                        nListArray.asArray().remove(position);
+                        notifyItemRemoved(position);
                     }
-                }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(final Nson parent, View view, final int position) {
-                        showInfoDialog("Hapus Part", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                nListArray.remove(parent.get(position));
-                                isDelete = true;
-                            }
-                        });
-
-                    }
-                })
-        );
-
-        if (isDelete) {
-            rvTerimaPart.getAdapter().notifyDataSetChanged();
-        }
+                });
+            }
+        });
     }
 
     public void getDataBarcode(final String nopart) {
@@ -377,14 +362,14 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "BARCODE");
                 args.put("nopart", nopart);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewsparepart"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SPAREPART), args));
             }
 
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     result = result.get("data").get(0);
-                    if(result.size() == 0){
+                    if (result.size() == 0) {
                         showError("Part Tidak Tersedia Di Bengkel");
                         return;
                     }
@@ -455,7 +440,7 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, lokasiList);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerLokasiSimpan.setAdapter(spinnerAdapter);
-        if(!lokasi.equals("")){
+        if (!lokasi.equals("")) {
             for (int i = 0; i < spinnerLokasiSimpan.getCount(); i++) {
                 if (spinnerLokasiSimpan.getItemAtPosition(i).equals(lokasi)) {
                     spinnerLokasiSimpan.setSelection(i);

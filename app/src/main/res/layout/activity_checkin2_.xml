@@ -110,7 +110,7 @@
                     android:orientation="vertical">
 
                     <LinearLayout
-                        android:id="@+id/ly_tahun_checkin2"
+                        android:id="@+id/ly_tgl_beli_checkin2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/paddingMedium"

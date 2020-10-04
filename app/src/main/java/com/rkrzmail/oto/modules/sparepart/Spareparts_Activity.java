@@ -35,6 +35,7 @@ import com.rkrzmail.utils.Tools;
 import java.text.DecimalFormat;
 import java.util.Map;
 
+import static com.rkrzmail.utils.APIUrls.VIEW_SPAREPART;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_OTOMOTIVES;
 
 public class Spareparts_Activity extends AppActivity {
@@ -117,7 +118,7 @@ public class Spareparts_Activity extends AppActivity {
                 args.put("action", "view");
                 args.put("spec", "Bengkel");
                 args.put("search", nama);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewsparepart"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SPAREPART), args));
             }
 
             @Override

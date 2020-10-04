@@ -25,11 +25,17 @@ import com.rkrzmail.srv.NikitaViewHolder;
 
 import java.util.Map;
 
+import static com.rkrzmail.utils.APIUrls.VIEW_CARI_PART;
+import static com.rkrzmail.utils.APIUrls.VIEW_CARI_PART_SUGGESTION;
+import static com.rkrzmail.utils.APIUrls.VIEW_LOKASI_PART;
+import static com.rkrzmail.utils.APIUrls.VIEW_MASTER;
+import static com.rkrzmail.utils.APIUrls.VIEW_SPAREPART;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_BENGKEL;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_OTOMOTIVES;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_TERALOKASIKAN;
+import static com.rkrzmail.utils.ConstUtils.PART;
 
 public class CariPart_Activity extends AppActivity {
 
@@ -153,7 +159,7 @@ public class CariPart_Activity extends AppActivity {
                     @Override
                     public void onItemClick(Nson parent, View view, int position) {
                         Intent intent = new Intent();
-                        intent.putExtra("part", nListArray.get(position).toJson());
+                        intent.putExtra(PART, nListArray.get(position).toJson());
                         setResult(RESULT_OK, intent);
                         finish();
                     }
@@ -181,7 +187,7 @@ public class CariPart_Activity extends AppActivity {
                     @Override
                     public void onItemClick(Nson parent, View view, int position) {
                         Intent intent = new Intent();
-                        intent.putExtra("part", partLokasiPart.get(position).toJson());
+                        intent.putExtra(PART, partLokasiPart.get(position).toJson());
                         setResult(RESULT_OK, intent);
                         finish();
                     }
@@ -207,7 +213,7 @@ public class CariPart_Activity extends AppActivity {
                     @Override
                     public void onItemClick(Nson parent, View view, int position) {
                         Intent intent = new Intent();
-                        intent.putExtra("part", partLokasiPart.get(position).toJson());
+                        intent.putExtra(PART, partLokasiPart.get(position).toJson());
                         setResult(RESULT_OK, intent);
                         finish();
                     }
@@ -228,30 +234,30 @@ public class CariPart_Activity extends AppActivity {
                         args.remove("flag");
                     }
                     args.put("search", cari);
-                    result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("caripart"), args));
+                    result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_CARI_PART), args));
                 } else if (flagGlobal || countForCariPart == 2) {
                     countForCariPart = 2;
                     flag = true;
                     args.put("action", "view");
                     args.put("search", cari);
-                    result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewsparepart"), args));
+                    result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SPAREPART), args));
                 } else if (flagBengkel || countForCariPart == 5) {
                     countForCariPart = 5;
                     flag = false;
                     args.put("action", "view");
                     args.put("search", cari);
                     args.put("spec", "Bengkel");
-                    result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewsparepart"), args));
+                    result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SPAREPART), args));
                 } else if (flagKelompokPart || countForCariPart == 4) {
                     countForCariPart = 4;
                     flag = false;
                     args.put("nama", getIntentStringExtra("KELOMPOK_PART"));
-                    result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewmst"), args));
+                    result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MASTER), args));
                 } else if (flagMasterPart || countForCariPart == 3) {
                     countForCariPart = 3;
                     flag = true;
                     args.put("flag", getIntentStringExtra("MASTER_PART"));
-                    result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("caripart"), args));
+                    result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_CARI_PART), args));
                 }
             }
 
@@ -278,7 +284,7 @@ public class CariPart_Activity extends AppActivity {
                 args.put("spec", "Bengkel");
                 args.put("search", cari);
                 args.put("lokasi", getIntentStringExtra(CARI_PART_LOKASI));
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewsparepart"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SPAREPART), args));
             }
 
             @Override
@@ -303,7 +309,7 @@ public class CariPart_Activity extends AppActivity {
                 args.put("action", "view");
                 args.put("search", cari);
                 args.put("flag", "TERALOKASI");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlokasipart"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_LOKASI_PART), args));
             }
 
             @Override
@@ -341,13 +347,13 @@ public class CariPart_Activity extends AppActivity {
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
         if(isLokasi){
-            adapterSearchView(mSearchView, "spec","viewsparepart" , "NAMA_PART", "");
+            adapterSearchView(mSearchView, "spec", VIEW_SPAREPART, "NAMA_PART", "");
         }else if(flagGlobal && countForCariPart == 2){
-            adapterSearchView(mSearchView,"",  "caripartsugestion", "NAMA_PART", CARI_PART);
+            adapterSearchView(mSearchView,"", VIEW_CARI_PART_SUGGESTION, "NAMA_PART", CARI_PART);
         }else if(flagBengkel && countForCariPart == 5){
-            adapterSearchView(mSearchView,"spec",  "viewsparepart", "NAMA_PART", "");
+            adapterSearchView(mSearchView,"spec", VIEW_SPAREPART, "NAMA_PART", "");
         }else if(isTeralokasikan){
-            adapterSearchView(mSearchView,"",  "caripartsugestion", "NAMA_PART", CARI_PART_TERALOKASIKAN);
+            adapterSearchView(mSearchView,"", VIEW_CARI_PART_SUGGESTION, "NAMA_PART", CARI_PART_TERALOKASIKAN);
         }
 
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {

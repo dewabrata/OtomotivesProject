@@ -209,7 +209,7 @@
                             android:background="@drawable/background_edittext">
 
                             <TextView
-                                android:id="@+id/tv_startEstimasi_checkin4"
+                                android:id="@+id/tv_tgl_estimasi_checkin4"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentStart="true"
@@ -238,7 +238,7 @@
                                 android:text="-" />
 
                             <TextView
-                                android:id="@+id/tv_finish_checkin4"
+                                android:id="@+id/tv_jam_estimasi_checkin4"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentTop="true"

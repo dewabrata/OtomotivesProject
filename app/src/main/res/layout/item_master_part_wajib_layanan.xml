@@ -22,9 +22,10 @@
             app:cardElevation="1dp">
             
             <TextView
+                android:visibility="gone"
                 android:id="@+id/tv_nama_master_part"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:text="NAMA MASTER PART"
                 android:padding="10dp"
                 android:textSize="16sp"
@@ -49,7 +50,7 @@
 
             <TableLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:padding="10dp"
@@ -68,7 +69,7 @@
 
                     <TextView
                         android:id="@+id/tv_namaPart"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
                         android:text="Nama Part"
@@ -80,7 +81,7 @@
 
                     <TextView
                         android:id="@+id/tv_noPart"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="No Part"
                         android:textSize="12sp"
@@ -89,7 +90,7 @@
 
                     <TextView
                         android:id="@+id/tv_merkPart"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Merk Part"
                         android:textSize="12sp"
@@ -106,7 +107,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="12sp"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                        android:text="Stock"
+                        android:text=""
                         android:layout_gravity="start"/>
 
                 </TableRow>

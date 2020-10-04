@@ -74,6 +74,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import static com.rkrzmail.utils.ConstUtils.PART;
+
 public class MenuActivity extends AppActivity {
 
     Nson nPopulate = Nson.newArray();
@@ -160,7 +162,6 @@ public class MenuActivity extends AppActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(getSetting("NAMA_BENGKEL"));
-        sendDataBengkel();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -473,27 +474,6 @@ public class MenuActivity extends AppActivity {
         return false;
     }
 
-    private void sendDataBengkel(){
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "Data_Bengkel");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("databengkel"), args));
-            }
-            @Override
-            public void runUI() {
-                if(result.get("status").asString().equalsIgnoreCase("OK")) {
-                    dataBengkel.set("BENGKEL", result.get("data"));
-                }
-            }
-        });
-    }
-
-
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -566,12 +546,12 @@ public class MenuActivity extends AppActivity {
         if(resultCode == RESULT_OK){
             if(requestCode == MN_SPAREPART){
                 Intent i = new Intent(getActivity(), AturParts_Activity.class);
-                i.putExtra("part", getIntentStringExtra(data, "part"));
+                i.putExtra(PART, getIntentStringExtra(data, PART));
                 startActivityForResult(i, 112);
             }
             if(requestCode == 90){
                 Intent i = new Intent(getActivity(), DetailCariPart_Activity.class);
-                i.putExtra("part", Nson.readJson(getIntentStringExtra(data, "part")).toJson());
+                i.putExtra(PART, Nson.readJson(getIntentStringExtra(data, PART)).toJson());
                 startActivityForResult(i, 109);
             }
         }

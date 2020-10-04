@@ -55,6 +55,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class Tools {
 
@@ -349,6 +350,24 @@ public class Tools {
         return "";
     }
 
+
+    @SuppressLint("SimpleDateFormat")
+    public static String setFormatDayAndMonthFromDb(String date, String pattern) {
+        if (!date.equals("")) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date tgl = new Date();
+            try {
+                tgl = sdf.parse(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            sdf = new SimpleDateFormat(pattern);
+            return sdf.format(tgl);
+        }
+
+        return "";
+    }
+
     @SuppressLint("SimpleDateFormat")
     public static String setFormatDateTimeFromDb(String date) {
         if (!date.equals("")) {
@@ -430,7 +449,8 @@ public class Tools {
             } catch (Exception e) {
                 return -1;   // or some value to mark this field is wrong. or make a function validates field first ...
             }
-        } else return 0;
+        } else
+            return 0;
     }
 
     public static double convertToDoublePercentage(String value) {
@@ -464,12 +484,14 @@ public class Tools {
         return newList;
     }
 
+    @SuppressLint("NewApi")
     public static void hideKeyboard(Activity context) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         View view = context.getCurrentFocus();
-        if (view != null) {
-            InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        if (view == null) {
+            view = new View(context);
         }
+        imm.hideSoftInputFromWindow(Objects.requireNonNull(view).getWindowToken(), 0);
     }
 
     public static Bitmap getResizedBitmap(Bitmap image, int maxSize) {
@@ -503,7 +525,7 @@ public class Tools {
                 TimePart tp = new TimePart();
                 tp.days = ((arr.length >= 1) ? Integer.parseInt(arr[0]) : 0);
                 tp.hours = ((arr.length >= 2) ? Integer.parseInt(arr[1]) : 0);
-                tp.minutes = ((arr.length >= 3) ? Integer.parseInt(arr[2]) : 0);
+                tp.minutes = ((arr.length >= 2) ? Integer.parseInt(arr[2]) : 0);
                 return tp;
             }
             return null;

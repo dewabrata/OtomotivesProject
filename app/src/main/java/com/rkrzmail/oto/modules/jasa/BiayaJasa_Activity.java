@@ -7,6 +7,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -18,10 +19,11 @@ import com.rkrzmail.utils.Tools;
 
 import java.text.DecimalFormat;
 
+import static com.rkrzmail.utils.ConstUtils.DATA;
+
 public class BiayaJasa_Activity extends AppActivity {
 
     private EditText etKelompokPart, etAktivitas, etWaktuKerja, etWaktuDefault;
-    private DecimalFormat formatter;
     private NikitaAutoComplete etBiaya;
     private int jasaId = 0;
 
@@ -41,7 +43,6 @@ public class BiayaJasa_Activity extends AppActivity {
 
     private void initComponent() {
         initToolbar();
-        formatter = new DecimalFormat("##,##");
 
         etBiaya = findViewById(R.id.et_biaya_biayaJasa);
         etKelompokPart = findViewById(R.id.et_kelompokPart_biayaJasa);
@@ -64,7 +65,7 @@ public class BiayaJasa_Activity extends AppActivity {
             }
         });
 
-        final Nson n = Nson.readJson(getIntentStringExtra("data"));
+        final Nson n = Nson.readJson(getIntentStringExtra(DATA));
         Log.d("BIAYAJASALAIN", "JASA : " + n);
         if (getIntent().hasExtra("jasa_lain")) {
             etKelompokPart.setText(n.get("KELOMPOK_PART").toString());
@@ -81,8 +82,10 @@ public class BiayaJasa_Activity extends AppActivity {
                     nson.set("HARGA_JASA", etBiaya.getText().toString().replaceAll("[^0-9]+", ""));
                     nson.set("AKTIVITAS", etAktivitas.getText().toString());
                     nson.set("WAKTU", etWaktuKerja.getText().toString());
+                    nson.set("OUTSOURCE", find(R.id.cb_outsource, CheckBox.class).isChecked() ? "Y" : "N");
+
                     Intent intent = new Intent();
-                    intent.putExtra("data", nson.toJson());
+                    intent.putExtra(DATA, nson.toJson());
                     Log.d("BIAYAJASALAIN", "JASA : " + nson);
                     setResult(RESULT_OK, intent);
                     finish();
@@ -104,7 +107,7 @@ public class BiayaJasa_Activity extends AppActivity {
                     nson2.set("DISCOUNT_JASA", "");
 
                     Intent intent = new Intent();
-                    intent.putExtra("data", nson2.toJson());
+                    intent.putExtra(DATA, nson2.toJson());
                     Log.d("BIAYAJASALAIN", "JASA : " + n);
                     setResult(RESULT_OK, intent);
                     finish();

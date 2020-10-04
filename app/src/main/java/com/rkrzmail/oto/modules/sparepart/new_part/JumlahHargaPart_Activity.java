@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.utils.Messagebox;
@@ -25,6 +26,11 @@ import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
 import com.rkrzmail.utils.Tools;
 
 import java.text.DecimalFormat;
+
+import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.PART;
+import static com.rkrzmail.utils.ConstUtils.PART_WAJIB;
+import static com.rkrzmail.utils.ConstUtils.RP;
 
 public class JumlahHargaPart_Activity extends AppActivity implements View.OnClickListener {
 
@@ -61,20 +67,44 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
         etJumlah = findViewById(R.id.et_jumlah_jumlah_harga_part);
         etBiayaJasa = findViewById(R.id.et_jasa_jumlah_harga_part);
 
-        if(getIntent().hasExtra("data")){
-            initData("data", getIntent());
-        }else{
-            Nson nson = Nson.readJson(getIntentStringExtra("partWajib"));
+        if (getIntent().hasExtra(DATA)) {
+            initData(DATA, getIntent());
+        } else {
+            final Nson nson = Nson.readJson(getIntentStringExtra(PART_WAJIB));
+            if (getIntent().hasExtra("jumlah")) {
+                etJumlah.setText("" + getIntent().getIntExtra("jumlah", 0));
+            } else {
+                etJumlah.setText(nson.get("JUMLAH").asString());
+            }
+            if (nson.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE") || nson.get("HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE")) {
+                find(R.id.ly_hpp_jumlah_harga_part, TextInputLayout.class).setVisibility(View.VISIBLE);
+                try {
+                    etHpp.setText("Rp. " + formatRp(nson.get("HPP").asString()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                etHargaJual.setEnabled(true);
+                isFlexible = true;
+            } else {
+                if (Tools.isNumeric(nson.get("HARGA_JUAL").asString())) {
+                    etHargaJual.setText(RP + formatRp(nson.get("HARGA_JUAL").asString()));
+                } else {
+                    etHargaJual.setEnabled(true);
+                }
+            }
+
+            Log.d(TAG, "initComponent: " + nson);
             etJumlah.setEnabled(false);
             etBiayaJasa.setEnabled(false);
-            etJumlah.setText(nson.get("JUMLAH").asString());
+            etBiayaJasa.setText(getIntent().getStringExtra("biayaLayanan"));
+
             find(R.id.img_waktuKerja, ImageButton.class).setEnabled(false);
-            find(R.id.et_waktuDefault, EditText.class).setText(
-                    loadWaktuKerja(nson.get("WAKTU_KERJA_HARI").asString(), nson.get("WAKTU_KERJA_JAM").asString(), nson.get("WAKTU_KERJA_MENIT").asString()));
+            find(R.id.et_waktuDefault, EditText.class).setText(getIntent().getStringExtra("waktu"));
+            //find(R.id.et_waktuDefault, EditText.class).setText(loadWaktuKerja("0", nson.get("WAKTU_KERJA_JAM").asString(), nson.get("WAKTU_KERJA_MENIT").asString()));
             find(R.id.btn_simpan_jumlah_harga_part, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    nextForm();
+                    nextForm(PART_WAJIB);
                 }
             });
         }
@@ -90,32 +120,27 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
         find(R.id.ly_jumlahHarga_partKosong, LinearLayout.class);
     }
 
-    private String loadWaktuKerja(String hari, String jam, String menit){
-        StringBuilder result = new StringBuilder();
-        if(!hari.equals("0") || hari.equals("")){
-            result.append(hari).append(":");
-        }else {
-            result.append("00").append(":");
-        }
-        if(!jam.equals("0") || jam.equals("")) {
-            result.append(jam).append(":");
-        }else{
-            result.append("00").append(":");
-        }
-        if(!menit.equals("0") || menit.equals("")){
-            result.append(menit).append(":");
-        }else{
-            result.append("00").append(":");
+    @SuppressLint("DefaultLocale")
+    private String loadWaktuKerja(String hari, String jam, String menit) {
+        String[] waktu = new String[3];
+        if (!jam.equals("0") && !menit.equals("0")) {
+           waktu[0] = hari;
+           waktu[1] = jam;
+           waktu[2] = menit;
+        } else {
+            waktu[0] = "0";
+            waktu[1] = "0";
+            waktu[2] = "0";
         }
 
-        return result.toString();
+        return String.format("%02d:%02d:%02d", Integer.parseInt(waktu[0]), Integer.parseInt( waktu[1]), Integer.parseInt(waktu[2]));
     }
 
     @SuppressLint("SetTextI18n")
-    private void initData(String getIntent, Intent intent) {
-        Nson nson = Nson.readJson(getIntentStringExtra(intent, getIntent));
+    private void initData(final String intentExtra, Intent intent) {
+        final Nson nson = Nson.readJson(getIntentStringExtra(intent, intentExtra));
         Log.d(TAG, "data : " + nson);
-        if (nson.get("STOCK").asInteger() == 0) {
+        if (nson.get("STOCK_RUANG_PART").asInteger() == 0) {
             Messagebox.showDialog(getActivity(),
                     "Konfirmasi", "Buka Form Part Kosong ? ", "Ya", "Tidak", new DialogInterface.OnClickListener() {
                         @Override
@@ -124,6 +149,8 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
                             find(R.id.ly_disc_jumlah_harga_part, TextInputLayout.class).setVisibility(View.VISIBLE);
                             find(R.id.ly_discJasa_jumlah_harga_part, TextInputLayout.class).setVisibility(View.VISIBLE);
                             find(R.id.ly_jumlahHarga_partKosong, LinearLayout.class).setVisibility(View.VISIBLE);
+                            etDp.setText("" + Tools.convertToDoublePercentage(getSetting("DP_PERSEN")) + "%");
+                            etWaktuPesan.setText(nson.get("WAKTU_PESAN_HARI").asString());
                         }
                     }, new DialogInterface.OnClickListener() {
                         @Override
@@ -170,6 +197,12 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
                     find(R.id.et_waktuSet, EditText.class).setError("Masukkan Waktu Kerja");
                     return;
                 }
+                if (etBiayaJasa.getText().toString().isEmpty()) {
+                    etBiayaJasa.setError("Biaya Jasa Tidak Boleh Kosong");
+                    etBiayaJasa.requestFocus();
+                    return;
+                }
+
                 if (find(R.id.ly_hpp_jumlah_harga_part, TextInputLayout.class).getVisibility() == View.VISIBLE) {
                     if (etHargaJual.isEnabled()) {
                         if (!etHargaJual.getText().toString().isEmpty() && !etHpp.getText().toString().isEmpty()) {
@@ -179,7 +212,7 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
                                 Messagebox.showDialog(getActivity(), "Konfirmasi", "Harga Jual Kurang Dari Hpp Part", "Lanjut", "Batal", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        nextForm();
+                                        nextForm(intentExtra);
                                     }
                                 }, new DialogInterface.OnClickListener() {
                                     @Override
@@ -188,22 +221,19 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
                                         etHargaJual.requestFocus();
                                     }
                                 });
+                            } else {
+                                nextForm(intentExtra);
                             }
                         } else {
-                            etHargaJual.setError("Harga Jual Harus Di isi");
+                            etHargaJual.setError("Harga Jual Flexible, Harus Di isi");
                         }
                     }
-                    return;
+                }else{
+                    nextForm(intentExtra);
                 }
-                if (etBiayaJasa.getText().toString().isEmpty()) {
-                    etBiayaJasa.setError("Biaya Jasa Tidak Boleh Kosong");
-                    etBiayaJasa.requestFocus();
-                    return;
-                }
-                nextForm();
-
             }
         });
+
         find(R.id.img_waktuKerja, ImageButton.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -212,8 +242,8 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
         });
     }
 
-    private void nextForm() {
-        Nson nson = Nson.readJson(getIntentStringExtra("data"));
+    private void nextForm(final String intentExtra) {
+        Nson nson = Nson.readJson(getIntentStringExtra(intentExtra));
         Log.d(TAG, "Data Harga Part: " + nson);
         String harga = etHargaJual.getText().toString().replaceAll("[^0-9]+", "");
         String jasa = etBiayaJasa.getText().toString().replaceAll("[^0-9]+", "");
@@ -242,8 +272,12 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
             sendData.set("HARGA_PART", totall);
         }
 
+        if (intentExtra.equals(PART_WAJIB)) {
+            sendData.set("HARGA_PART", etHargaJual.getText().toString().replaceAll("[^0-9]+", ""));
+        }
+
         Intent i = new Intent();
-        i.putExtra("data", sendData.toJson());
+        i.putExtra(DATA, sendData.toJson());
         setResult(RESULT_OK, i);
         finish();
     }
@@ -301,7 +335,7 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_CARI_PART) {
-            initData("part", data);
+            initData(PART, data);
         }
     }
 }

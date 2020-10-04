@@ -39,6 +39,9 @@ import com.rkrzmail.utils.Tools;
 import java.util.ArrayList;
 import java.util.Map;
 
+import static com.rkrzmail.utils.APIUrls.VIEW_JASA_LAIN;
+import static com.rkrzmail.utils.ConstUtils.DATA;
+
 public class JasaLain_Activity extends AppActivity {
 
     private RecyclerView rvJasa;
@@ -96,7 +99,7 @@ public class JasaLain_Activity extends AppActivity {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
                 Intent i = new Intent(getActivity(), BiayaJasa_Activity.class);
-                i.putExtra("data", parent.get(position).toJson());
+                i.putExtra(DATA, parent.get(position).toJson());
                 i.putExtra("jasa_lain", "");
                 Log.d("JASA_LAIN_CLASS", "JASA : " + parent);
                 startActivityForResult(i, REQUEST_BIAYA);
@@ -117,7 +120,7 @@ public class JasaLain_Activity extends AppActivity {
                     args.remove("search");
                     args.put("cari", cari);
                 }
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewjasalain"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_JASA_LAIN), args));
             }
 
             @Override
@@ -152,7 +155,7 @@ public class JasaLain_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        adapterSearchView(mSearchView, "", "viewjasalain", "NAMA", "");
+        adapterSearchView(mSearchView, "", VIEW_JASA_LAIN, "NAMA", "");
         final SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
 
@@ -174,8 +177,8 @@ public class JasaLain_Activity extends AppActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_BIAYA) {
             Intent i = new Intent();
-            i.putExtra("data", Nson.readJson(getIntentStringExtra(data, "data")).toJson());
-            Log.d("JASA_LAIN_CLASS", "SENDD : " + Nson.readJson(getIntentStringExtra(data, "data")));
+            i.putExtra(DATA, Nson.readJson(getIntentStringExtra(data, DATA)).toJson());
+            Log.d("JASA_LAIN_CLASS", "SENDD : " + Nson.readJson(getIntentStringExtra(data, DATA)));
             setResult(RESULT_OK, i);
             finish();
         }

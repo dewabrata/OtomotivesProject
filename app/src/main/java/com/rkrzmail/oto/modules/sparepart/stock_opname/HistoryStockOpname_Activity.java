@@ -3,7 +3,6 @@ package com.rkrzmail.oto.modules.sparepart.stock_opname;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,14 +23,12 @@ import com.rkrzmail.srv.NikitaViewHolder;
 
 import java.util.Map;
 
-import static com.rkrzmail.utils.ConstUtils.ALL;
-import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
+import static com.rkrzmail.utils.APIUrls.SET_STOCK_OPNAME;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_TERALOKASIKAN;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.PART;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_OPNAME;
-import static com.rkrzmail.utils.ConstUtils.RUANG_PART;
 
 public class HistoryStockOpname_Activity extends AppActivity {
 
@@ -97,7 +94,7 @@ public class HistoryStockOpname_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("stockopname"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_STOCK_OPNAME), args));
             }
 
             @Override
@@ -119,7 +116,7 @@ public class HistoryStockOpname_Activity extends AppActivity {
         if (resultCode == RESULT_OK && requestCode == REQUEST_OPNAME) {
             reload("");
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_CARI_PART) {
-            intent = new Intent(getActivity(), StockOpname_Activity.class);
+            intent = new Intent(getActivity(), AturStockOpname_Activity.class);
             intent.putExtra(DATA, Nson.readJson(getIntentStringExtra(data, PART)).toJson());
             startActivityForResult(intent, REQUEST_OPNAME);
         }

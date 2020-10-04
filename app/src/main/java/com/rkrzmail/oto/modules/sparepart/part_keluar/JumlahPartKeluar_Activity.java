@@ -24,7 +24,9 @@ import com.rkrzmail.oto.modules.BarcodeActivity;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.rkrzmail.utils.APIUrls.VIEW_CARI_PART;
 import static com.rkrzmail.utils.ConstUtils.ATUR;
+import static com.rkrzmail.utils.ConstUtils.CARI_PART;
 import static com.rkrzmail.utils.ConstUtils.DETAIL;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
 
@@ -59,14 +61,14 @@ public class JumlahPartKeluar_Activity extends AppActivity {
     private void initComponent() {
         initToolbar();
         if(isDetail){
-            find(R.id.et_stock_partKeluar, EditText.class).setHint("SISA");
-            find(R.id.et_jumlah_partKeluar, EditText.class).setHint("JUMLAH");
+            find(R.id.tl_jumlah_part, TextInputLayout.class).setHint("JUMLAH");
+            find(R.id.tl_stock_part_keluar, TextInputLayout.class).setHint("SISA");
             find(R.id.et_no_folder, EditText.class).setVisibility(View.GONE);
             nson = Nson.readJson(getIntentStringExtra(DETAIL));
             find(R.id.et_stock_partKeluar, EditText.class).setText(nson.get("SISA").asString());
         }else{
-            find(R.id.et_stock_partKeluar, EditText.class).setHint("STOCK");
-            find(R.id.et_jumlah_partKeluar, EditText.class).setHint("JUMLAH MINTA");
+            find(R.id.tl_jumlah_part, TextInputLayout.class).setHint("JUMLAH MINTA");
+            find(R.id.tl_stock_part_keluar, TextInputLayout.class).setHint("STOCK");
             nson = Nson.readJson(getIntentStringExtra("part"));
             find(R.id.et_stock_partKeluar, EditText.class).setText(nson.get("STOCK_RUANG_PART").asString());
         }
@@ -159,7 +161,7 @@ public class JumlahPartKeluar_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("flag", "BARCODE");
                 args.put("nopart", nopart);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("caripart"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_CARI_PART), args));
             }
 
             @Override

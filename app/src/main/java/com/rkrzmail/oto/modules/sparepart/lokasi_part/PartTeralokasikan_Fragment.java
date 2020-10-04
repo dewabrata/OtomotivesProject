@@ -9,11 +9,8 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -21,19 +18,15 @@ import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.gmod.BarcodeActivity;
-import com.rkrzmail.oto.modules.layanan.AturLayanan_Activity;
-import com.rkrzmail.oto.modules.sparepart.stock_opname.StockOpname_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
 import java.util.Map;
 import java.util.Objects;
 
+import static com.rkrzmail.utils.APIUrls.VIEW_LOKASI_PART;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_TERALOKASIKAN;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_ATUR_LOKASI;
-import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
-import static com.rkrzmail.utils.ConstUtils.REQUEST_OPNAME;
 
 public class PartTeralokasikan_Fragment extends Fragment {
 
@@ -87,7 +80,7 @@ public class PartTeralokasikan_Fragment extends Fragment {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("search", cari);
                 args.put("flag", "TERALOKASI");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlokasipart"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_LOKASI_PART), args));
             }
             @SuppressLint("NewApi")
             @Override
