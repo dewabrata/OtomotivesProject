@@ -72,7 +72,7 @@ import java.util.Map;
 
 public class AppActivity extends AppCompatActivity {
 
-    public String getSetting(String key) {
+    public String  getSetting(String key) {
         return UtilityAndroid.getSetting(getActivity(), key, "");
     }
 
@@ -810,8 +810,11 @@ public class AppActivity extends AppCompatActivity {
     }
 
     public String formatRp(String currency) {
-        DecimalFormat formatter = new DecimalFormat("###,###,###");
-        return formatter.format(Double.parseDouble(currency));
+        if(!currency.equals("")){
+            DecimalFormat formatter = new DecimalFormat("###,###,###");
+            return formatter.format(Double.parseDouble(currency));
+        }
+       return "";
     }
 
     public void watcherNamaPelanggan(final ImageButton imageButton, final EditText editText) {

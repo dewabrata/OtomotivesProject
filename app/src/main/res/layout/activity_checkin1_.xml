@@ -310,8 +310,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="KM"
-                    android:inputType="numberDecimal"
-                    android:maxLength="6"
+                    android:inputType="number"
+                    android:maxLength="10"
                     android:textSize="14sp"
                     android:padding="15dp"/>
 

@@ -386,6 +386,23 @@ public class Tools {
     }
 
     @SuppressLint("SimpleDateFormat")
+    public static String setFormatDateTimeFromDb(String date, String pattern) {
+        if (!date.equals("")) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+            Date tgl = new Date();
+            try {
+                tgl = sdf.parse(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            sdf = new SimpleDateFormat(pattern);
+            return sdf.format(tgl);
+        }
+
+        return "";
+    }
+
+    @SuppressLint("SimpleDateFormat")
     public static String setDateTimeToDb(String date) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         Date tgl = new Date();

@@ -109,11 +109,12 @@ public class Checkin2_Activity extends AppActivity {
                     @SuppressLint("SimpleDateFormat") Date validationYear = new SimpleDateFormat("yyyy").parse(String.valueOf(year - 4));
                     tahunBeli = inputYear.getTime();
                     tahunSekarang = validationYear.getTime();
-                    showInfo("" + "TAHUN INPUT " + tahunBeli + " TAHUN SEKARANG " + tahunSekarang);
                     if (tahunBeli < tahunSekarang) {
                         Tools.setViewAndChildrenEnabled(find(R.id.ly_tgl_beli_checkin2, LinearLayout.class), false);
+                        find(R.id.tv_disable).setVisibility(View.VISIBLE);
                     } else {
                         Tools.setViewAndChildrenEnabled(find(R.id.ly_tgl_beli_checkin2, LinearLayout.class), true);
+                        find(R.id.tv_disable).setVisibility(View.GONE);
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();

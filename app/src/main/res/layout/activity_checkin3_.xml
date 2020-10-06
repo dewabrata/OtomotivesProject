@@ -287,6 +287,19 @@
 
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/tv_dp_bengkel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dp_bengkel"
+                android:textColor="@color/red_500"
+                android:textStyle="bold"
+                android:layout_gravity="end"
+                android:textSize="10sp"
+                android:visibility="gone"
+                tools:ignore="SmallSp" />
+
+
             <CheckBox
                 android:id="@+id/cb_konfirmBiaya_checkin3"
                 android:layout_width="wrap_content"

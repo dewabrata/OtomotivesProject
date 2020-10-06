@@ -25,10 +25,10 @@
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:tint="@color/grey_40"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginTop="@dimen/spacing_medium"
             android:layout_gravity="end"
-            app:srcCompat="@drawable/ic_more_vert" />
+            app:srcCompat="@drawable/ic_more_vert"
+            android:contentDescription="TODO" />
 
 
         <TableLayout
@@ -41,13 +41,15 @@
             <TableRow>
 
                 <TextView
-                    android:id="@+id/tv_tgl_jam_checkin"
+                    android:id="@+id/tv_waktu_checkin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tanggal / Jam Checkin"
+                    android:text="Waktu Checkin"
                     android:textSize="12sp"
+                    android:paddingEnd="30dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:layout_gravity="start"/>
+                    android:layout_gravity="start"
+                    card_view:ignore="RtlSymmetry" />
 
                 <TextView
                     android:id="@+id/tv_no_antrian"
@@ -56,7 +58,9 @@
                     android:text="No. Antrian"
                     android:textSize="12sp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:layout_gravity="start"/>
+                    android:paddingEnd="30dp"
+                    android:layout_gravity="end"
+                    card_view:ignore="RtlSymmetry" />
 
             </TableRow>
 
@@ -68,8 +72,21 @@
                     android:layout_height="wrap_content"
                     android:text="Jenis Kendaraan"
                     android:textSize="12sp"
+                    android:paddingEnd="30dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:layout_gravity="start" />
+                    android:layout_gravity="start"
+                    card_view:ignore="RtlSymmetry" />
+
+                <TextView
+                    android:id="@+id/tv_nopol"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No. Polisi"
+                    android:textSize="12sp"
+                    android:paddingEnd="30dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="end"
+                    card_view:ignore="RtlSymmetry" />
 
             </TableRow>
 
@@ -80,9 +97,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Nama Pelanggan"
+                    android:paddingEnd="30dp"
                     android:textSize="12sp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:layout_gravity="start" />
+                    android:layout_gravity="start"
+                    card_view:ignore="RtlSymmetry" />
 
             </TableRow>
 
@@ -94,8 +113,10 @@
                     android:layout_height="wrap_content"
                     android:text="Layanan"
                     android:textSize="12sp"
+                    android:paddingEnd="30dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:layout_gravity="start" />
+                    android:layout_gravity="start"
+                    card_view:ignore="RtlSymmetry" />
 
                 <TextView
                     android:id="@+id/tv_estimasi_selesai"
@@ -103,8 +124,9 @@
                     android:layout_height="wrap_content"
                     android:text="Estimasi Selesai"
                     android:textSize="12sp"
+                    android:paddingEnd="30dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:layout_gravity="start" />
+                    android:layout_gravity="end" />
 
             </TableRow>
 
@@ -116,15 +138,20 @@
                     android:layout_height="wrap_content"
                     android:text="Status"
                     android:textSize="12sp"
+                    android:paddingEnd="30dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:layout_gravity="start" />
+                    android:layout_gravity="start"
+                    card_view:ignore="RtlSymmetry" />
 
                 <TextView
                     android:id="@+id/tv_estimasi"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=""
-                    android:textStyle="bold" />
+                    android:text="DD/MM-HH:MM"
+                    android:textSize="12sp"
+                    android:paddingEnd="30dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="end"/>
 
             </TableRow>
 

@@ -2,13 +2,10 @@ package com.rkrzmail.oto.modules.primary.checkin;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
@@ -49,7 +46,6 @@ import com.rkrzmail.utils.Tools;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +58,9 @@ import static com.rkrzmail.utils.ConstUtils.BATAL;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_OTOMOTIVES;
 import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.MASTER_PART;
 import static com.rkrzmail.utils.ConstUtils.PART;
+import static com.rkrzmail.utils.ConstUtils.PARTS;
 import static com.rkrzmail.utils.ConstUtils.PART_WAJIB;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_BATAL;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
@@ -71,33 +69,36 @@ import static com.rkrzmail.utils.ConstUtils.REQUEST_HARGA_PART;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_JASA_BERKALA;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_JASA_EXTERNAL;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_JASA_LAIN;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_LAYANAN;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_PART_BERKALA;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_PART_EXTERNAL;
+import static com.rkrzmail.utils.ConstUtils.RP;
 import static com.rkrzmail.utils.ConstUtils.RUANG_PART;
 
 public class Checkin3_Activity extends AppActivity implements View.OnClickListener {
 
-    private static final int REQUEST_LAYANAN = 11;
     private RecyclerView rvPart;
     private RecyclerView rvJasaLain;
     public static final String TAG = "Checkin3___";
     private Spinner spLayanan;
     private AlertDialog alertDialog;
-    private Nson
-            layananArray = Nson.newArray(),
-            dataLayananList = Nson.newArray(),
-            partList = Nson.newArray(),
-            jasaList = Nson.newArray(),
-            dataAccept,
-            lokasiLayananList = Nson.newArray(),
-            partWajibList = Nson.newArray(),
-            jasaGaransiList = Nson.newArray(),
-            daftarPartDummy = Nson.newArray(),
-            partBengkelList = Nson.newArray(),
-            varianList = Nson.newArray(), merkList = Nson.newArray(), masterPartList = Nson.newArray();
+    RecyclerView rvPartWajib;
+    View dialogView;
+
+    private Nson layananArray = Nson.newArray();
+    private Nson dataLayananList = Nson.newArray();
+    private Nson partList = Nson.newArray();
+    private Nson jasaList = Nson.newArray();
+    private Nson lokasiLayananList = Nson.newArray();
+    private Nson partWajibList = Nson.newArray();
+    private Nson jasaGaransiList = Nson.newArray();
+    private Nson daftarPartDummy = Nson.newArray();
+    private Nson varianList = Nson.newArray();
+    private Nson masterPartList = Nson.newArray();
+    private Nson partIdList = Nson.newArray();
 
     private String biayaLayanan, namaLayanan, waktuLayanan = "", jenisLayanan = "", waktuMekanik = "", waktuInspeksi = "";
-    private String jenisAntrian = "", isPartKosong = "", isOutsource = "", noAntrian = "";
+    private String jenisAntrian = "", isOutsource = "", noAntrian = "", discFasilitas = "";
     private int totalHarga = 0,
             totalPartJasa = 0,
             batasanKm = 0,
@@ -107,7 +108,8 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
     private Tools.TimePart dummyTime = Tools.TimePart.parse("00:00:00");
     private boolean flagPartWajib = false,
             flagMasterPart = false,
-            isPartWajib = false, isSelanjutnya = false;
+            isPartWajib = false, isSelanjutnya = false, isDelete = false;
+    private boolean isPartKosong = false;
     private int idAntrian = 0;
 
     @Override
@@ -224,12 +226,12 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
 
     @SuppressLint("NewApi")
     private void initRecylerviewPartWajib(View dialogView) {
-        RecyclerView rvPartWajib = dialogView.findViewById(R.id.recyclerView);
+        rvPartWajib = dialogView.findViewById(R.id.recyclerView);
         rvPartWajib.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvPartWajib.setHasFixedSize(true);
         rvPartWajib.setAdapter(new NikitaRecyclerAdapter(flagMasterPart ? masterPartList : partWajibList, R.layout.item_master_part_wajib_layanan) {
                     @Override
-                    public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+                    public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
                         super.onBindViewHolder(viewHolder, position);
                         if (flagMasterPart) {
                             //viewHolder.find(R.id.tv_nama_master_part, TextView.class).setText(masterPartList.get("NAMA_MASTER").asString());
@@ -238,7 +240,8 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                             viewHolder.find(R.id.tv_noPart, TextView.class).setText(masterPartList.get(position).get("NO_PART").asString());
                             viewHolder.find(R.id.tv_stockPart, TextView.class).setText(masterPartList.get(position).get("STOCK").asString());
                         } else {
-                            viewHolder.find(R.id.cardView_master_part, CardView.class).setVisibility(View.GONE);
+                            //viewHolder.find(R.id.cardView_master_part, CardView.class).setVisibility(View.GONE);
+                            viewHolder.find(R.id.tv_nama_master_part, TextView.class).setText(partWajibList.get("NAMA_MASTER").asString());
                             viewHolder.find(R.id.tv_namaPart, TextView.class).setText(partWajibList.get(position).get("NAMA_PART").asString());
                             viewHolder.find(R.id.tv_noPart, TextView.class).setText(partWajibList.get(position).get("NO_PART").asString());
                             viewHolder.find(R.id.tv_stockPart, TextView.class).setText(partWajibList.get(position).get("STOCK").asString());
@@ -253,10 +256,10 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         Intent i = new Intent(getActivity(), JumlahHargaPart_Activity.class);
                         if (flagMasterPart) {
                             i.putExtra(PART_WAJIB, masterPartList.get(position).toJson());
-                            i.putExtra("biayaLayanan", find(R.id.tv_biayaLayanan_checkin, TextView.class).getText().toString());
                             i.putExtra("jumlah", jumlahPartWajib);
-                            i.putExtra("waktu", find(R.id.tv_waktu_layanan, TextView.class).getText().toString().replace("Total Waktu Layanan : ", ""));
+                            i.putExtra(MASTER_PART, discFasilitas);
                         } else {
+                            i.putExtra(PARTS, discFasilitas);
                             i.putExtra(PART_WAJIB, partWajibList.get(position).toJson());
                         }
                         startActivityForResult(i, REQUEST_HARGA_PART);
@@ -301,6 +304,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 args.put("jasabook", jasaList.toJson());
                 args.put("totalpartjasa", String.valueOf(totalPartJasa));
                 args.put("antrian", find(R.id.tv_jenis_antrian, TextView.class).getText().toString());
+
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
             }
 
@@ -335,7 +339,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         nson.set("LOKASI_LAYANAN", lokasiLayananList.toJson());
                         nson.set("PART_KOSONG", isPartKosong);
                         nson.set("OUTSOURCE", isOutsource);
-                        nson.set("JENIS_ANTRIAN", validasiAntrian());
+                        nson.set("JENIS_ANTRIAN", validasiAntrian(isPartKosong));
                         nson.set("NO_ANTRIAN", noAntrian);
                         nson.set("ID_ANTRIAN", idAntrian);
                         if (layanan.equals("PERAWATAN LAINNYA")) {
@@ -394,12 +398,12 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
 
     private void setSpNamaLayanan() {
         final Nson data = Nson.readJson(getIntentStringExtra(DATA));
-        for (int i = 0; i < varianList.size(); i++) {
+        /*for (int i = 0; i < varianList.size(); i++) {
             if (varianList.get(i).get("VARIAN").asString().equals(data.get("varian").asString())) {
                 showInfo("VARIAN TERSEDIA : " + varianList.get(i).get("VARIAN").asString(), Toast.LENGTH_LONG);
             }
         }
-        showInfo(data.toJson());
+        showInfo(data.toJson());*/
         Log.d(TAG, "setSpNamaLayanan: " + data);
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
@@ -479,7 +483,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
 
                         Tools.TimePart mekanikWaktu = Tools.TimePart.parse(waktuMekanik).add(Tools.TimePart.parse(waktuInspeksi));
                         find(R.id.tv_waktu_layanan, TextView.class).setText("Total Waktu Layanan : " + mekanikWaktu.toString());
-                        find(R.id.tv_jenis_antrian, TextView.class).setText(validasiAntrian());
+                        find(R.id.tv_jenis_antrian, TextView.class).setText(validasiAntrian(isPartKosong));
 
                         if (dataLayananList.get(i).get("LAYANAN_PART").size() > 0) {
                             partWajibList.asArray().addAll(dataLayananList.get(i).get("LAYANAN_PART").asArray());
@@ -512,16 +516,24 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
 
                 if (partWajibList.size() > 0) {
                     for (int i = 0; i < partWajibList.size(); i++) {
-                        //masterPartList.add(partWajibList.get(i).get("NAMA_MASTER"));
-                        jumlahPartWajib += partWajibList.get(i).get("JUMLAH").asInteger();
                         masterPartList.asArray().addAll(partWajibList.get(i).get("PARTS").asArray());
+                        partIdList.add(partWajibList.get(i).get("PART_ID"));
+                        discFasilitas = partWajibList.get(i).get("DISC_FASILITAS").asString();
+                        jumlahPartWajib += partWajibList.get(i).get("JUMLAH").asInteger();
                         partWajibList.get(i).remove("PARTS");
-                        if (!partWajibList.get(i).containsKey("PARTS")) {
-                            flagMasterPart = true;
-                        }
                     }
-                    Log.d(TAG, "PART_WAJIB : " + partWajibList);
-                    Log.d(TAG, "MASTER_PART : " + masterPartList);
+
+                    if (masterPartList.size() > 0) {
+                        for (int i = 0; i < masterPartList.size(); i++) {
+                            partIdList.add(masterPartList.get(i).get("PART_ID"));
+                        }
+                        flagMasterPart = true;
+                    }
+
+                    Log.d(TAG, "PART_ID : " + partIdList.size());
+                    Log.d(TAG, "PART_WAJIB : " + partWajibList.size());
+                    Log.d(TAG, "MASTER_PART : " + masterPartList.size());
+
                     initPartWajibLayanan();
                 }
             }
@@ -615,13 +627,12 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
     }
 
     private void initPartWajibLayanan() {
-        if (partWajibList.size() > 0) {
+        if (partWajibList.size() > 0 || masterPartList.size() > 0) {
             flagPartWajib = true;
             isPartWajib = true;
-            showInfo(String.valueOf(jumlahPartWajib));
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             LayoutInflater inflater = getLayoutInflater();
-            View dialogView = inflater.inflate(R.layout.activity_list_basic, null);
+            dialogView = inflater.inflate(R.layout.activity_list_basic, null);
             builder.setView(dialogView);
             builder.setCancelable(true);
 
@@ -635,7 +646,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
         }
     }
 
-    private String validasiAntrian() {
+    private String validasiAntrian(boolean isHplus) {
         String jenisAntrian = "";
         Tools.TimePart maxAntrianExpress = Tools.TimePart.parse(getSetting("MAX_ANTRIAN_EXPRESS_MENIT"));
         Tools.TimePart maxAntrianStandard = Tools.TimePart.parse(getSetting("MAX_ANTRIAN_STANDART_MENIT"));
@@ -646,15 +657,16 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             @SuppressLint("SimpleDateFormat") Date totalAntrian = new SimpleDateFormat("HH:mm:ss").parse(totalLamaLayanan.toString());
             //after is >
             //before is <
-            if (totalAntrian.before(maxExpress)) {
-                jenisAntrian = "EXPRESS";
-                showInfo(jenisAntrian);
-            } else if (totalAntrian.before(maxStandard)) {
-                jenisAntrian = "STANDART";
-                showInfo(jenisAntrian);
-            } else {
-                jenisAntrian = "EXTRA";
-                showInfo(jenisAntrian);
+            if(isHplus){
+                jenisAntrian = "H+";
+            }else{
+                if (totalAntrian.before(maxExpress)) {
+                    jenisAntrian = "EXPRESS";
+                } else if (totalAntrian.before(maxStandard)) {
+                    jenisAntrian = "STANDART";
+                } else {
+                    jenisAntrian = "EXTRA";
+                }
             }
         } catch (ParseException e) {
             e.printStackTrace();
@@ -712,6 +724,12 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        isDelete = true;
+    }
+
+    @Override
     public void onClick(View view) {
         Intent i;
         switch (view.getId()) {
@@ -744,7 +762,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 } else if (find(R.id.cb_estimasi_checkin3, CheckBox.class).isChecked()) {
                     setSelanjutnya("TUNGGU KONFIRMASI", "");
                 } else {
-                    antrian(validasiAntrian());
+                    antrian(validasiAntrian(isPartKosong));
                     setSelanjutnya("CHECKIN 3", "");
                 }
                 break;
@@ -765,7 +783,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             if (resultCode == RESULT_OK) {
                 switch (requestCode) {
                     case REQUEST_JASA_LAIN:
-                        dataAccept = Nson.readJson(getIntentStringExtra(data, DATA));
+                        Nson dataAccept = Nson.readJson(getIntentStringExtra(data, DATA));
                         isOutsource = dataAccept.get("OUTSOURCE").asString();
                         Tools.TimePart waktu = Tools.TimePart.parse(dataAccept.get("WAKTU").asString());
                         timePartsList.add(waktu);
@@ -814,12 +832,53 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         break;
                     case REQUEST_HARGA_PART:
                         dataAccept = Nson.readJson(getIntentStringExtra(data, DATA));
+                        totalHarga += Integer.parseInt(dataAccept.get("HARGA_PART").asString().replaceAll("[^0-9]+", ""));
                         if (flagPartWajib) {
                             jumlahPartWajib--;
                             if (jumlahPartWajib == 0) {
                                 alertDialog.dismiss();
+                            } else {
+                                if (partIdList.size() > 0) {
+                                    if (flagMasterPart) {
+                                        for (int j = 0; j < masterPartList.size(); j++) {
+                                            for (int k = 0; k < partIdList.size(); k++) {
+                                                if (partIdList.get(k).asString().contains(masterPartList.get(j).get("PART_ID").asString())) {
+                                                    Log.d(TAG, "REMOVE: " + masterPartList.get(j));
+                                                    masterPartList.get(j).remove(j);
+                                                    isDelete = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        for (int j = 0; j < partWajibList.size(); j++) {
+                                            for (int k = 0; k < partIdList.size(); k++) {
+                                                if (masterPartList.get(j).get("PART_ID").asString().contains(partIdList.get(k).asString())) {
+                                                    partWajibList.get(j).asArray().remove(j);
+                                                    isDelete  = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         } else {
+                            if(dataAccept.get("PART_KOSONG") != null && dataAccept.get("PART_KOSONG").asString().equals("true")){
+                                Log.d(TAG, "DP : " + getSetting("DP_PERSEN"));
+                                isPartKosong = true;
+                                try{
+                                    int total = totalHarga - calculateDp(Double.parseDouble(getSetting("DP_PERSEN")), totalHarga);
+                                    Log.d(TAG, "total : " + total);
+                                    find(R.id.tv_dp_bengkel, TextView.class).setVisibility(View.VISIBLE);
+                                    find(R.id.tv_dp_bengkel, TextView.class).setText("DP Bengkel : " + getSetting("DP_PERSEN") + " %");
+                                    find(R.id.et_sisa_checkin3, EditText.class).setText(RP + formatRp(String.valueOf(total)));
+                                    find(R.id.et_dp_checkin3, EditText.class).setText(RP + formatRp(String.valueOf(calculateDp(Double.parseDouble(getSetting("DP_PERSEN")), totalHarga))));
+                                    dataAccept.remove("PART_KOSONG");
+                                }catch (Exception e){
+                                    showError("PART KOSONG " + e.getMessage());
+                                }
+                            }
                             Tools.TimePart waktu4 = Tools.TimePart.parse(dataAccept.get("WAKTU").asString());
                             timePartsList.add(waktu4);
                             totalWaktuLayanan(timePartsList);
@@ -827,9 +886,6 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                                 totalHarga += Integer.parseInt(dataAccept.get("HARGA_JASA").asString().replaceAll("[^0-9]+", ""));
                             }
                         }
-                        totalHarga += Integer.parseInt(dataAccept.get("HARGA_PART").asString().replaceAll("[^0-9]+", ""));
-                        isPartKosong = dataAccept.get("PART_KOSONG").asString();
-                        Log.d(TAG, "harga : " + totalHarga);
                         partList.add(dataAccept);
                         Objects.requireNonNull(rvPart.getAdapter()).notifyDataSetChanged();
                         break;
@@ -838,7 +894,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         finish();
                         break;
                     case REQUEST_BATAL:
-                        setSelanjutnya("BATAL CHECKIN 3", Nson.readJson(getIntentStringExtra("alasanBatal")).asString());
+                        setSelanjutnya("BATAL CHECKIN", Nson.readJson(getIntentStringExtra("alasanBatal")).asString());
                         break;
                     case REQUEST_LAYANAN:
                         setSpNamaLayanan();
@@ -847,7 +903,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
 
                 if (totalHarga > 0) {
                     String total = String.valueOf(totalHarga);
-                    find(R.id.et_totalBiaya_checkin3, EditText.class).setText("Rp." + formatRp(total));
+                    find(R.id.et_totalBiaya_checkin3, EditText.class).setText(RP + formatRp(total));
                 }
                 Log.d(TAG, "Timepartlist : " + timePartsList);
             }
@@ -865,6 +921,14 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             find(R.id.tv_waktu_layanan, TextView.class).setText("Total Waktu Layanan : " + dummyTime.toString());
             Log.d(TAG, "TOTAL WAKTU : " + dummyTime);
         }
-        find(R.id.tv_jenis_antrian, TextView.class).setText(validasiAntrian());
+        find(R.id.tv_jenis_antrian, TextView.class).setText(validasiAntrian(isPartKosong));
+    }
+
+
+    private int calculateDp(double dp, int harga) {
+        if (dp > 0 && harga > 0) {
+            return (int) (dp * harga) / 100;
+        }
+        return 0;
     }
 }

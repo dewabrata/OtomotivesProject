@@ -39,7 +39,7 @@ public class PercentFormat implements TextWatcher {
         String percentNumber = format.format(Tools.convertToDoublePercentage(editText.getText().toString())/1000);
 
         editText.setText(percentNumber);
-        editText.setSelection(percentNumber.length() -1 );
+        editText.setSelection(percentNumber.length() -1);
         editText.addTextChangedListener(this);
     }
 }

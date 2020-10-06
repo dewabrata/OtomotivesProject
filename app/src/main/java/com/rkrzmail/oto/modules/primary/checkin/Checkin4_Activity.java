@@ -111,8 +111,6 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         initListener();
         setSpMekanik();
 
-        find(R.id.et_dp_checkin4, EditText.class);
-        find(R.id.et_sisa_checkin4, EditText.class);
         find(R.id.cb_aggrement_checkin4, CheckBox.class);
     }
 
@@ -130,10 +128,12 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         if (getData.get("JENIS_ANTRIAN").asString().equals("EXTRA")) {
             isExtraAndHplus = true;
             Tools.setViewAndChildrenEnabled(find(R.id.ly_estimasi_selesai, LinearLayout.class), true);
+            find(R.id.tv_disable_estimasi).setVisibility(View.GONE);
         } else if (getData.get("JENIS_ANTRIAN").asString().equals("H+")) {
             isExtraAndHplus = true;
             Tools.setViewAndChildrenEnabled(find(R.id.ly_estimasi_selesai, LinearLayout.class), true);
             find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setEnabled(false);
+            find(R.id.tv_disable_estimasi).setVisibility(View.GONE);
         } else {
             isExpressAndStandard = true;
             Tools.TimePart waktuMulai = Tools.TimePart.parse("00:" + currentDateTime("hh:mm"));
@@ -142,6 +142,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             Tools.TimePart totalWaktuSelesai = waktuMulai.add(waktuLayanan);
             find(R.id.et_selesaiWaktu_checkin, TextView.class).setText(totalWaktuSelesai.toString());
             Tools.setViewAndChildrenEnabled(find(R.id.ly_estimasi_selesai, LinearLayout.class), false);
+            find(R.id.tv_disable_estimasi).setVisibility(View.VISIBLE);
             find(R.id.tv_tgl_estimasi_checkin4, TextView.class).setText(currentDateTime());
             find(R.id.tv_jam_estimasi_checkin4, TextView.class).setText(find(R.id.et_selesaiWaktu_checkin, TextView.class).getText().toString().substring(3, 8));
         }
@@ -169,13 +170,10 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         seekBar = findViewById(R.id.seekBar_bbm);
         seekBar.setMax(100);
         seekBar.setProgress(0);
-        seekBar.incrementProgressBy(20);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-
+            @SuppressLint("SetTextI18n")
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                progress = progress / 20;
-                progress = progress * 20;
                 find(R.id.tv_ketBbbm_checkin4, TextView.class).setText(progress + "%");
             }
 
@@ -213,7 +211,18 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 result = "H+";
                 updateAntrian(result);
                 isExtraAndHplus = true;
+
+                try{
+                    String totalBiaya = find(R.id.et_totalBiaya_checkin4, EditText.class).getText().toString().replaceAll("[^0-9]+", "");
+                    find(R.id.et_dp_checkin4, EditText.class).setText(String.valueOf(calculateDp(Integer.parseInt(totalBiaya))));
+                    find(R.id.et_sisa_checkin4, EditText.class).setText("");
+                    showInfo(String.valueOf(calculateDp(Integer.parseInt(totalBiaya))));
+                }catch (Exception e){
+                    showError(e.getMessage());
+                }
+
                 Tools.setViewAndChildrenEnabled(find(R.id.ly_estimasi_selesai, LinearLayout.class), true);
+                find(R.id.tv_disable_estimasi).setVisibility(View.GONE);
                 find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setEnabled(false);
                 find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setChecked(true);
             } else {
@@ -223,6 +232,13 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             showInfo(result);
         }
         return result;
+    }
+
+    private int calculateDp(int totalBiaya){
+        if(totalBiaya > 0 && getSetting("DP_PERSEN") != null){
+           return (int) ( (double) Integer.parseInt(getSetting("DP_PERSEN")) * totalBiaya ) / 100;
+        }
+        return 0;
     }
 
     public void getDatePickerCheckin() {
@@ -415,8 +431,8 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         final String buangPart = find(R.id.cb_buangPart_checkin4, CheckBox.class).isChecked() ? "Y" : "N";
         final String waktuAmbil = find(R.id.tv_waktu_checkin4, TextView.class).getText().toString();
         final String sk = find(R.id.cb_aggrement_checkin4, CheckBox.class).isChecked() ? "Y" : "N";
-        final String hari = find(R.id.et_lamaWaktu_checkin, EditText.class).getText().toString().substring(0, 2);
-        final String jam = find(R.id.et_lamaWaktu_checkin, EditText.class).getText().toString().substring(3, 5);
+        final String hari = find(R.id.et_lamaWaktu_checkin, EditText.class).getText().toString().substring(0, 3);
+        final String jam = find(R.id.et_lamaWaktu_checkin, EditText.class).getText().toString().substring(3, 6);
         final String menit = find(R.id.et_lamaWaktu_checkin, EditText.class).getText().toString().substring(5, 7);
         Log.d(TAG, "hari : " + hari);
         Log.d(TAG, "jam : " + jam);
@@ -539,20 +555,21 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 if (find(R.id.et_ket_checkin4, EditText.class).getText().toString().isEmpty()) {
                     find(R.id.et_ket_checkin4, EditText.class).setError("Keterangan Perlu Di isi");
                 } else {
-                    saveData("BATAL CHECKIN 4");
+                    saveData("BATAL CHECKIN");
                 }
                 break;
             case R.id.btn_simpan:
                 if (!find(R.id.cb_aggrement_checkin4, CheckBox.class).isChecked()) {
                     showWarning("Silahkan Setujui Syarat Dan Ketentuan Bengkel");
-                }else if(find(R.id.sp_namaMekanik_checkin4, Spinner.class).getSelectedItem().toString().equals("--PILIH--")){
+                }
+                /*else if(find(R.id.sp_namaMekanik_checkin4, Spinner.class).getSelectedItem().toString().equals("--PILIH--")){
                     showWarning("Nama Mekanik Belum Di pilih");
                     find(R.id.sp_namaMekanik_checkin4, Spinner.class).performClick();
-                }
+                }*/
                 else if (!isSign) {
                     showWarning("Tanda Tangan Wajib di Input");
                 } else {
-                    saveData("CHECKIN 4 ANTRIAN");
+                    saveData("CHECKIN ANTRIAN");
                 }
                 break;
             case R.id.btn_ttd_checkin4:
@@ -586,10 +603,11 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                     find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).setEnabled(false);
                     find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).setChecked(false);
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_waktuAmbil, LinearLayout.class), true);
-                    find(R.id.ly_waktuAmbil, LinearLayout.class).setBackgroundColor(getResources().getColor(R.color.grey_100));
+                    find(R.id.tv_disable_waktu_antar).setVisibility(View.GONE);
                 } else {
                     find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).setEnabled(true);
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_waktuAmbil, LinearLayout.class), false);
+                    find(R.id.tv_disable_waktu_antar).setVisibility(View.VISIBLE);
                 }
                 break;
         }

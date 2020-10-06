@@ -1,13 +1,18 @@
 package com.rkrzmail.utils;
 
+import com.naa.data.UtilityAndroid;
+import com.rkrzmail.oto.AppActivity;
+
 public class ConstUtils {
 
     //CONST STRING
+    public static final String MASTER_PART = "MASTER_PART";
+    public static final String PARTS = "PARTS";
     public static final String BATAL = "BATAL";
     public static final String ADD = "ADD";
     public static final String EDIT = "EDIT";
     public static final String CARI_PART = "CARI_PART";
-    public static String LANJUT = "LANJUT";
+    public static final String LANJUT = "LANJUT";
     public static final String TAG_PART_KELUAR = "PART_KELUAR___";
     public static final String ATUR = "ATUR";
     public static final String ALL = "ALL";
@@ -51,4 +56,5 @@ public class ConstUtils {
     public static final int REQUEST_BIAYA = 36;
     public static final int REQUEST_CODE_SIGN = 37;
     public static final int PERMISSION_REQUEST_CODE = 38;
+    public static final int REQUEST_LAYANAN = 39;
 }

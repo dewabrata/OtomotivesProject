@@ -40,10 +40,6 @@ public class NikitaRecyclerAdapter extends RecyclerView.Adapter<NikitaViewHolder
                     if (onitemClickListener != null) {
                         onitemClickListener.onItemClick(nson, v, Utility.getInt(String.valueOf(v.getTag())));
                     }
-                    if (markSelectedListener != null) {
-                        v.setBackgroundColor(Color.RED);
-                        markSelectedListener.markItemSelected(nson, v, Utility.getInt(String.valueOf(v.getTag())));
-                    }
                 }
             });
         }
@@ -54,6 +50,7 @@ public class NikitaRecyclerAdapter extends RecyclerView.Adapter<NikitaViewHolder
     public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
 
     }
+
 
     @Override
     public int getItemCount() {
@@ -67,19 +64,7 @@ public class NikitaRecyclerAdapter extends RecyclerView.Adapter<NikitaViewHolder
         return this;
     }
 
-    private MarkSelectedListener markSelectedListener;
-
-    public NikitaRecyclerAdapter setMarkSelectedListener(MarkSelectedListener markSelectedListener) {
-        this.markSelectedListener = markSelectedListener;
-        return this;
-    }
-
     public interface OnItemClickListener {
         void onItemClick(Nson parent, View view, int position);
     }
-
-    public interface MarkSelectedListener {
-        void markItemSelected(Nson parent, View view, int position);
-    }
-
 }

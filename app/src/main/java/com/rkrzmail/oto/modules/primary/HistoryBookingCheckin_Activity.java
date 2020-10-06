@@ -25,6 +25,8 @@ import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 
+import static com.rkrzmail.utils.APIUrls.SET_CHECKIN;
+
 public class HistoryBookingCheckin_Activity extends AppActivity {
 
     private RecyclerView rvHistory;
@@ -41,7 +43,7 @@ public class HistoryBookingCheckin_Activity extends AppActivity {
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        if(getIntent().hasExtra("checkin")){
+        if(getIntent().hasExtra(SET_CHECKIN)){
             isCheckin = true;
             flag = true;
             getSupportActionBar().setTitle("History Checkin");

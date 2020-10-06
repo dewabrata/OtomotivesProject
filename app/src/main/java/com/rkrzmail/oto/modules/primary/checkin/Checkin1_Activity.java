@@ -80,7 +80,6 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkin1_);
         initComponent();
-        showSuccess(getSetting("WAKTU_MEKANIK_JAM"));
     }
 
     private void initToolbar() {
@@ -92,7 +91,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
 
     private void initComponent() {
         initToolbar();
-        initLokasiPenugasan();
+        //initLokasiPenugasan();
         etNopol = findViewById(R.id.et_nopol_checkin1);
         etJenisKendaraan = findViewById(R.id.et_jenisKendaraan_checkin1);
         etNoPonsel = findViewById(R.id.et_noPonsel_checkin1);
@@ -105,8 +104,8 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
         find(R.id.imgBarcode_checkin1, ImageButton.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               Intent i = new Intent(getActivity(), BarcodeActivity.class);
-               startActivityForResult(i, REQUEST_BARCODE);
+                Intent i = new Intent(getActivity(), BarcodeActivity.class);
+                startActivityForResult(i, REQUEST_BARCODE);
             }
         });
 
@@ -122,9 +121,9 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
         find(R.id.fab_tambah_keluhan, ImageButton.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(etKeluhan.getText().toString().isEmpty() || etKeluhan.getText().toString().length() < 5){
+                if (etKeluhan.getText().toString().isEmpty() || etKeluhan.getText().toString().length() < 5) {
                     etKeluhan.setError("Keluhan Min 5 Karakter");
-                }else{
+                } else {
                     rvKeluhan.setVisibility(View.VISIBLE);
                     isRemoved = true;
                     keluhanList.add(Nson.newObject().set("KELUHAN", etKeluhan.getText().toString()));
@@ -188,13 +187,29 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
 
     private void initOnTextChange() {
         watcherNamaPelanggan(find(R.id.img_clear, ImageButton.class), etNamaPelanggan);
+        etNopol.setOnKeyListener(new View.OnKeyListener() {
+
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+                if (keyCode == KeyEvent.KEYCODE_DEL){
+                    keyDel = true;
+                }else{
+                    keyDel = false;
+                }
+                return false;
+            }
+        });
         etNopol.addTextChangedListener(new TextWatcher() {
+            int lastLength;
+
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                lastLength = s.length();
             }
 
 
+            @SuppressLint("SetTextI18n")
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
@@ -203,34 +218,18 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             @SuppressLint("SetTextI18n")
             @Override
             public void afterTextChanged(Editable s) {
-//                etNopol.removeTextChangedListener(this);
-//                int counting = (s == null) ? 0 : s.toString().length();
-//                assert s != null;
-//                String text = s.toString();
 //                if(!keyDel){
+//                    String nopol = s.toString();
+//                    int counting = s.toString().length();
 //                    if (counting == 1 || counting == 6) {
-//                       text = text + " ";
+//                        nopol = nopol + " ";
 //                    }
+//                    etNopol.setText(nopol);
+//                    etNopol.setSelection(etNopol.getText().length());
 //                }
-//                etNopol.setText(text);
-//                etNopol.setSelection(etNopol.getText().length());
-//
-//                etNopol.addTextChangedListener(this);
             }
         });
 
-        etNopol.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_DEL) {
-                    event.getAction();
-                    keyDel = true;
-                } else {
-                    keyDel = false;
-                }
-                return false;
-            }
-        });
 
         etNoPonsel.addTextChangedListener(new TextWatcher() {
             @Override
@@ -238,9 +237,9 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 if (s.toString().length() == 0) {
                     find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
                 }
-
             }
 
+            @SuppressLint("SetTextI18n")
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 int counting = (s == null) ? 0 : s.toString().length();
@@ -327,7 +326,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             @Override
             public Nson onFindNson(Context context, String bookTitle) {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                String nopol = bookTitle.replace(" ", "").toUpperCase();
+                String nopol = bookTitle.replaceAll(" ", "").toUpperCase();
                 args.put("nopol", nopol);
                 Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_NOMOR_POLISI), args));
                 return result.get("data");
@@ -364,14 +363,14 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     nomor += noHp.substring(noHp.length() - 4);
                 }
 
-                etNopol.setText(n.get("NOPOL").asString());
+                etNopol.setText(formatNopol(n.get("NOPOL").asString()));
                 kendaraanId = n.get("KENDARAAN_ID").asString();
                 showInfo(kendaraanId);
                 etNoPonsel.setText("XXXXXXXX" + nomor);
                 etNamaPelanggan.setText(n.get("NAMA_PELANGGAN").asString());
                 etJenisKendaraan.setEnabled(false);
                 etJenisKendaraan.setText(n.get("JENIS_KENDARAAN").asString());
-                etKm.setText(n.get("KM").asString());
+                //etKm.setText(n.get("KM").asString());
                 pekerjaan = n.get("PEKERJAAN").asString();
                 setSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN", pekerjaan);
                 if (n.get("PEMILIK").asString().equalsIgnoreCase("Y")) {
@@ -425,11 +424,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     etJenisKendaraan.requestFocus();
                     return;
                 }
-                StringBuilder stringBuilder = new StringBuilder();
                 //stringBuilder.append(n.get("MODEL").asString()).append(" ");
-                stringBuilder.append(n.get("MERK").asString()).append(" ");
-                //stringBuilder.append(n.get("JENIS").asString()).append(" ");
-                stringBuilder.append(n.get("VARIAN").asString()).append(" ");
 
                 kendaraanId = n.get("ID").asString();
                 merkKendaraan = n.get("MERK").asString();
@@ -439,7 +434,10 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
 
                 showInfo(kendaraanId + " " + merkKendaraan + " " + varianKendaraan);
 
-                etJenisKendaraan.setText(stringBuilder.toString());
+                String stringBuilder = n.get("MERK").asString() + " " +
+                        //stringBuilder.append(n.get("JENIS").asString()).append(" ");
+                        n.get("VARIAN").asString() + " ";
+                etJenisKendaraan.setText(stringBuilder);
                 etJenisKendaraan.setTag(String.valueOf(adapterView.getItemAtPosition(position)));
             }
         });
@@ -506,13 +504,13 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                         startActivityForResult(intent, REQUEST_NEW_CS);
                     }
                 } else {
-                    showWarning(result.get("status").asString());
+                    showWarning(result.get("message").asString());
                 }
             }
         });
     }
 
-    private void getDataBarcode(final String antrian){
+    private void getDataBarcode(final String antrian) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -589,7 +587,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 } else if (etNoPonsel.getText().toString().isEmpty() || etNoPonsel.getText().toString().length() < 6) {
                     etNoPonsel.setError("Harus Di Isi");
                     etNoPonsel.requestFocus();
-                } else if (etNamaPelanggan.getText().toString().isEmpty() ||  etNamaPelanggan.getText().toString().length() < 5) {
+                } else if (etNamaPelanggan.getText().toString().isEmpty() || etNamaPelanggan.getText().toString().length() < 5) {
                     etNamaPelanggan.setError("Harus Di Isi");
                     etNamaPelanggan.requestFocus();
                 } else if (spPekerjaan.getSelectedItem().toString().equalsIgnoreCase("Belum Di Pilih")) {

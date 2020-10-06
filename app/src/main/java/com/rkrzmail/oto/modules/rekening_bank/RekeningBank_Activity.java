@@ -31,7 +31,7 @@ public class RekeningBank_Activity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_basic_3);
+        setContentView(R.layout.activity_list_basic_with_fab);
         initToolbar();
         initComponent();
     }

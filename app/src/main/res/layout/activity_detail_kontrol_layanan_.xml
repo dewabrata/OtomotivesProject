@@ -307,7 +307,7 @@
                     android:layout_weight="1">
 
                     <EditText
-                        android:id="@+id/et_Esebelum"
+                        android:id="@+id/et_estimasi_sebelum"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:enabled="false"
@@ -326,7 +326,7 @@
                     android:layout_weight="1">
 
                     <EditText
-                        android:id="@+id/et_Ewaktu"
+                        android:id="@+id/et_estimasi_lama"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:enabled="false"
@@ -345,7 +345,7 @@
                     android:layout_weight="1">
 
                     <EditText
-                        android:id="@+id/et_Eselesai"
+                        android:id="@+id/et_estimasi_selesai"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:enabled="false"
@@ -358,7 +358,7 @@
             </LinearLayout>
 
             <CheckBox
-                android:id="@+id/cb_tungguConfirm"
+                android:id="@+id/cb_tungguConfirm_biaya"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"

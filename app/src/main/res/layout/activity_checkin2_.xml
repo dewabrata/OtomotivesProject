@@ -23,8 +23,6 @@
                 android:layout_marginTop="@dimen/paddingMedium"
                 android:layout_marginBottom="@dimen/paddingMedium"
                 android:orientation="horizontal"
-                android:paddingStart="@dimen/paddingMedium"
-                android:paddingEnd="@dimen/paddingMedium"
                 android:gravity="center"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp">
@@ -116,8 +114,6 @@
                         android:layout_marginTop="@dimen/paddingMedium"
                         android:layout_marginBottom="@dimen/paddingMedium"
                         android:orientation="horizontal"
-                        android:paddingStart="@dimen/paddingMedium"
-                        android:paddingEnd="@dimen/paddingMedium"
                         android:gravity="center">
 
                         <TextView
@@ -136,7 +132,6 @@
                             android:layout_weight="6"
                             android:paddingStart="10dp"
                             android:paddingTop="2dp"
-                            android:paddingBottom="2dp"
                             tools:ignore="RtlSymmetry"
                             android:background="@drawable/background_edittext">
 
@@ -152,6 +147,18 @@
                         </RelativeLayout>
 
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_disable"
+                        android:visibility="gone"
+                        android:layout_height="wrap_content"
+                        android:text="DISABLE"
+                        android:layout_width="wrap_content"
+                        android:textColor="@color/red_800"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="-5dp"/>
 
                     <android.support.design.widget.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -172,7 +179,8 @@
                     <android.support.design.widget.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp">
 
                         <EditText
                             android:id="@+id/et_noMesin_checkin2"

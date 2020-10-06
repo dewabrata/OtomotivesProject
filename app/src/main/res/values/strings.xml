@@ -331,6 +331,7 @@
     <string name="keterangan_uppercase">KETERANGAN</string>
     <string name="aktivitas_uppercase">AKTIVITAS</string>
     <string name="hh_jj_mm">HH:JJ:MM</string>
+    <string name="dp_bengkel">DP BENGKEL</string>
 
 
 </resources>

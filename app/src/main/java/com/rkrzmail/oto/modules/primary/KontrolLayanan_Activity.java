@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -27,10 +27,13 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.primary.checkin.Checkin1_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 
+import static com.rkrzmail.utils.APIUrls.SET_CHECKIN;
 import static com.rkrzmail.utils.APIUrls.VIEW_KONTROL_LAYANAN;
+import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CHECKIN;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 
@@ -41,12 +44,12 @@ public class KontrolLayanan_Activity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_kontrol_layanan_);
+        setContentView(R.layout.activity_list_basic_with_fab);
         initComponent();
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_kontrolLayanan);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Kontrol Layanan");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -54,43 +57,44 @@ public class KontrolLayanan_Activity extends AppActivity {
 
     private void initComponent() {
         initToolbar();
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah_kontrolLayanan);
-        fab.setOnClickListener(new View.OnClickListener() {
+        find(R.id.fab_tambah).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivityForResult(new Intent(getActivity(), Checkin1_Activity.class), REQUEST_CHECKIN);
             }
         });
-
-        rvKontrolLayanan = findViewById(R.id.recyclerView_kontrolLayanan);
+        rvKontrolLayanan = findViewById(R.id.recyclerView);
+        catchData("");
         rvKontrolLayanan.setLayoutManager(new LinearLayoutManager(this));
         rvKontrolLayanan.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_kontrol_layanan) {
                     @Override
                     public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
                         super.onBindViewHolder(viewHolder, position);
+                        String estimasi = Tools.setFormatDateTimeFromDb(nListArray.get(position).get("ESTIMASI_SELESAI").asString(), "dd/MM-hh:mm");
+                        String waktu =  Tools.setFormatDateTimeFromDb(nListArray.get(position).get("CREATED_DATE").asString(), "dd/MM hh:mm");
 
-                        viewHolder.find(R.id.tv_tgl_jam_checkin, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_no_antrian, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_jenis_kendaraan, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_nama_pelanggan, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_layanan, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_estimasi_selesai, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_status, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_waktu_checkin, TextView.class).setText(waktu);
+                        viewHolder.find(R.id.tv_no_antrian, TextView.class).setText(nListArray.get(position).get("NO_ANTRIAN").asString());
+                        viewHolder.find(R.id.tv_nopol, TextView.class).setText(formatNopol(nListArray.get(position).get("NOPOL").asString()));
+                        viewHolder.find(R.id.tv_jenis_kendaraan, TextView.class).setText(nListArray.get(position).get("JENIS_KENDARAAN").asString());
+                        viewHolder.find(R.id.tv_nama_pelanggan, TextView.class).setText(nListArray.get(position).get("NAMA_PELANGGAN").asString());
+                        viewHolder.find(R.id.tv_layanan, TextView.class).setText(nListArray.get(position).get("LAYANAN").asString());
+                        viewHolder.find(R.id.tv_estimasi_selesai, TextView.class).setText("");
+                        viewHolder.find(R.id.tv_estimasi, TextView.class).setText(estimasi);
+                        viewHolder.find(R.id.tv_status, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
 
-                        viewHolder.find(R.id.img_more_booking, TextView.class).setOnClickListener(new View.OnClickListener() {
+                        viewHolder.find(R.id.img_more_booking, ImageButton.class).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                PopupMenu popup = new PopupMenu(getActivity(), viewHolder.find(R.id.img_more_booking, TextView.class));
+                                PopupMenu popup = new PopupMenu(getActivity(), viewHolder.find(R.id.img_more_booking, ImageButton.class));
                                 popup.inflate(R.menu.menu_history);
                                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                                     @Override
                                     public boolean onMenuItemClick(MenuItem menuItem) {
-                                        switch (menuItem.getItemId()) {
-                                            case R.id.action_history:
-                                                Intent i = new Intent(getActivity(), HistoryBookingCheckin_Activity.class);
-                                                i.putExtra("checkin", nListArray.get(position).toJson());
-                                                startActivity(i);
-                                                break;
+                                        if (menuItem.getItemId() == R.id.action_history) {
+                                            Intent i = new Intent(getActivity(), HistoryBookingCheckin_Activity.class);
+                                            i.putExtra(SET_CHECKIN, nListArray.get(position).toJson());
+                                            startActivity(i);
                                         }
                                         return true;
                                     }
@@ -103,12 +107,11 @@ public class KontrolLayanan_Activity extends AppActivity {
                     @Override
                     public void onItemClick(Nson parent, View view, int position) {
                         Intent i = new Intent(getActivity(), DetailKontrolLayanan_Activity.class);
-                        i.putExtra("data", nListArray.get(position).toJson());
+                        i.putExtra(DATA, nListArray.get(position).toJson());
                         startActivityForResult(i, REQUEST_DETAIL);
                     }
                 })
         );
-        catchData("");
     }
 
     private void catchData(final String cari) {
@@ -130,7 +133,7 @@ public class KontrolLayanan_Activity extends AppActivity {
                     nListArray.asArray().addAll(result.get("data").asArray());
                     rvKontrolLayanan.getAdapter().notifyDataSetChanged();
                 } else {
-                    //showError("Mohon Di Coba Kembali");
+                    showError(result.get("message").asString());
                 }
             }
         });
