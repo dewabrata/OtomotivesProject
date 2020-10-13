@@ -11,20 +11,30 @@
     android:layout_marginRight="7dp"
     android:layout_marginBottom="4dp"
     android:padding="10dp"
-    app:cardElevation="2dp"
-    app:cardCornerRadius="10dp">
+    app:cardCornerRadius="10dp"
+    app:cardElevation="2dp">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:layout_height="match_parent">
+
+        <ImageButton
+            android:id="@+id/img_delete"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="end"
+            android:paddingTop="5dp"
+            android:paddingEnd="5dp"
+            android:background="@android:color/transparent"
+            android:tint="@color/grey_80"
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_close"
+            card_view:ignore="ContentDescription,RtlSymmetry" />
 
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="10dp"
             android:stretchColumns="*">
 
             <TableRow>
@@ -33,10 +43,10 @@
                     android:id="@+id/tv_kelompokPart_booking3_checkin3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="KELOMPOK PART"
                     android:layout_gravity="start"
+                    android:text="KELOMPOK PART"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textSize="12sp"/>
+                    android:textSize="12sp" />
 
             </TableRow>
 
@@ -49,7 +59,7 @@
                     android:layout_gravity="start"
                     android:text="AKTIFITAS"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textSize="12sp"/>
+                    android:textSize="12sp" />
 
             </TableRow>
 
@@ -59,15 +69,15 @@
                     android:id="@+id/tv_jasaLainNet_booking3_checkin3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="JASA NET"
                     android:layout_gravity="start"
+                    android:text="JASA NET"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textSize="12sp"/>
+                    android:textSize="12sp" />
 
             </TableRow>
 
         </TableLayout>
 
-    </LinearLayout>
+    </FrameLayout>
 
 </android.support.v7.widget.CardView>

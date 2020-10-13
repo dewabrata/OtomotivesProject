@@ -378,7 +378,7 @@ public class Tools {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            sdf = new SimpleDateFormat("dd MMM");
+            sdf = new SimpleDateFormat("dd MM");
             return sdf.format(tgl);
         }
 
@@ -386,16 +386,16 @@ public class Tools {
     }
 
     @SuppressLint("SimpleDateFormat")
-    public static String setFormatDateTimeFromDb(String date, String pattern) {
+    public static String setFormatDateTimeFromDb(String date, String fromPattern, String setPattern, boolean isDefaultPattern) {
         if (!date.equals("")) {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+            SimpleDateFormat sdf = new SimpleDateFormat(isDefaultPattern ? "yyyy-MM-dd hh:mm:ss" : fromPattern);
             Date tgl = new Date();
             try {
                 tgl = sdf.parse(date);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            sdf = new SimpleDateFormat(pattern);
+            sdf = new SimpleDateFormat(setPattern);
             return sdf.format(tgl);
         }
 
@@ -404,17 +404,19 @@ public class Tools {
 
     @SuppressLint("SimpleDateFormat")
     public static String setDateTimeToDb(String date) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        Date tgl = new Date();
-        try {
-            tgl = sdf.parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if(!date.isEmpty()){
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            Date tgl = new Date();
+            try {
+                tgl = sdf.parse(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            //yyyy-MM-dd HH:mm:ss
+            sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            return sdf.format(tgl);
         }
-        //yyyy-MM-dd HH:mm:ss
-        sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String fotmatDate = sdf.format(tgl);
-        return fotmatDate;
+        return "";
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -571,6 +573,8 @@ public class Tools {
         public String toString() {
             return String.format("%02d:%02d:%02d", days, hours, minutes);
         }
+
+
     }
 
     public static String getmonth(int month) {

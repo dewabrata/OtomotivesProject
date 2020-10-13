@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.sparepart.lokasi_part;
 
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -26,13 +27,11 @@ import com.rkrzmail.srv.FragmentsAdapter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class LokasiPart_Activity extends AppActivity {
 
     private static final String TAG = "LokasiPart_Activity";
-    private ViewPager vpLokasiPart;
-    private TabLayout tabLayout;
-    private ArrayList<Fragment> fragments;
     public static final int REQUEST_ATUR = 90;
 
     @Override
@@ -42,23 +41,25 @@ public class LokasiPart_Activity extends AppActivity {
         initComponent();
     }
 
+    @SuppressLint("NewApi")
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Ruang Part");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Ruang Part");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initComponent() {
         initToolbar();
-        vpLokasiPart = findViewById(R.id.vp_lokasiPart);
-        tabLayout = findViewById(R.id.tablayout_lokasiPart);
-        fragments = new ArrayList<>();
+
+        ViewPager vpLokasiPart = findViewById(R.id.vp_lokasiPart);
+        TabLayout tabLayout = findViewById(R.id.tablayout_lokasiPart);
+
+        ArrayList<Fragment> fragments = new ArrayList<>();
         fragments.add(new PartTeralokasikan_Fragment());
         fragments.add(new PartNonLokasi_Fragment());
 
         FragmentsAdapter pagerAdapter = new FragmentsAdapter(getSupportFragmentManager(), getActivity(), fragments);
-
         vpLokasiPart.setAdapter(pagerAdapter);
         vpLokasiPart.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setupWithViewPager(vpLokasiPart);

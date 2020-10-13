@@ -232,13 +232,6 @@
         <item>DISPLAY</item>
     </string-array>
 
-    <string-array name="penempatan">
-        <item>PALET001</item>
-
-
-    </string-array>
-
-
     <string-array name="pembayaran_bengkel">
         <item>CASH</item>
         <item>TRANSFER</item>
@@ -314,7 +307,7 @@
     <string name="no_ponsel">No. Ponsel</string>
     <string name="mekanik">Mekanik</string>
     <string name="harga">Harga</string>
-    <string name="status">Status</string>
+    <string name="status">STATUS</string>
     <string name="nama_part">Nama Part</string>
     <string name="no_part">No. Part</string>
     <string name="jumlah_jumlah">Jumlah / Jumlah</string>
@@ -332,6 +325,11 @@
     <string name="aktivitas_uppercase">AKTIVITAS</string>
     <string name="hh_jj_mm">HH:JJ:MM</string>
     <string name="dp_bengkel">DP BENGKEL</string>
+    <string name="no_antrian">NO. ANTRIAN</string>
+    <string name="keterangan_batal">KETERANGAN BATAL</string>
+    <string name="keterangan_message">KETERANGAN / MESSAGE</string>
+    <string name="nama_mekanik">Nama Mekanik</string>
+    <string name="tanggal_checkin">Tanggal Checkin</string>
 
 
 </resources>

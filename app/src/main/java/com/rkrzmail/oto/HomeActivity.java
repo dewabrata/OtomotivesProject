@@ -32,7 +32,6 @@ import com.rkrzmail.oto.gmod.DaftarPenjualanPartActivity;
 import com.rkrzmail.oto.gmod.DaftarTugasPartActivity;
 import com.rkrzmail.oto.gmod.LayananActivity;
 import com.rkrzmail.oto.gmod.MessageWA;
-import com.rkrzmail.oto.gmod.Part_DiterimaActivity;
 import com.rkrzmail.oto.gmod.Penerimaan_PartAcitivity;
 import com.rkrzmail.oto.modules.LoginActivity;
 import com.rkrzmail.oto.modules.biayamekanik.BiayaMekanik2Activity;
@@ -145,10 +144,6 @@ public class HomeActivity extends MenuActivity{
 
                 } else if (nPopulate.get(position).get("id").asInteger() == MN_MESSAGE_PenerimaanPart) {
                     Intent intent = new Intent(HomeActivity.this, Penerimaan_PartAcitivity.class);
-                    startActivity(intent);
-
-                } else if (nPopulate.get(position).get("id").asInteger() == MN_MESSAGE_PartDiterima) {
-                    Intent intent = new Intent(HomeActivity.this, Part_DiterimaActivity.class);
                     startActivity(intent);
 
                 }

@@ -25,14 +25,12 @@ import android.widget.TextView;
 
 import com.naa.data.Nson;
 import com.naa.data.UtilityAndroid;
-import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.fragment.PageAdapter;
 import com.rkrzmail.oto.fragment.SlideFragment;
 import com.rkrzmail.oto.fragment.pageindicator.CirclePageIndicator;
 import com.rkrzmail.oto.gmod.MessageWA;
 import com.rkrzmail.oto.gmod.MyCode;
-import com.rkrzmail.oto.modules.BarcodeActivity;
 import com.rkrzmail.oto.modules.antar_jemput.AntarJemput_Activity;
 import com.rkrzmail.oto.modules.biayamekanik.BiayaMekanik2Activity;
 import com.rkrzmail.oto.modules.LoginActivity;
@@ -44,7 +42,7 @@ import com.rkrzmail.oto.modules.pembayaran.DaftarPembayaran_Activity;
 import com.rkrzmail.oto.modules.primary.KontrolLayanan_Activity;
 import com.rkrzmail.oto.modules.primary.KontrolBooking_Activity;
 import com.rkrzmail.oto.modules.jasa.discount_jasa_lain.DiscountJasaLain_Activity;
-import com.rkrzmail.oto.modules.layanan.discount_layanan.DiscountLayanan_Activity;
+import com.rkrzmail.oto.modules.discount.DiscountLayanan_Activity;
 import com.rkrzmail.oto.modules.primary.checkout.CheckOut_Activity;
 import com.rkrzmail.oto.modules.sparepart.AturParts_Activity;
 import com.rkrzmail.oto.modules.sparepart.DetailCariPart_Activity;
@@ -58,7 +56,7 @@ import com.rkrzmail.oto.modules.sparepart.PenjualanPart_Activity;
 import com.rkrzmail.oto.modules.sparepart.Spareparts_Activity;
 import com.rkrzmail.oto.modules.sparepart.part_keluar.PartKeluar_Activity;
 import com.rkrzmail.oto.modules.sparepart.stock_opname.HistoryStockOpname_Activity;
-import com.rkrzmail.oto.modules.sparepart.tugas_part.TugasPart_Activity;
+import com.rkrzmail.oto.modules.sparepart.tugas_part.TugasPart_MainTab_Activity;
 import com.rkrzmail.oto.modules.user.User_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiJasaLain_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiLayanan_Activity;
@@ -71,7 +69,6 @@ import com.rkrzmail.oto.modules.sparepart.terima_part.TerimaPart;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 
 import static com.rkrzmail.utils.ConstUtils.PART;
@@ -221,7 +218,7 @@ public class MenuActivity extends AppActivity {
                     Intent intent =  new Intent(MenuActivity.this, TerimaPart.class);
                     startActivity(intent);
                 }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_TUGAS_PARTS)){
-                    Intent intent =  new Intent(MenuActivity.this, TugasPart_Activity.class);
+                    Intent intent =  new Intent(MenuActivity.this, TugasPart_MainTab_Activity.class);
                     startActivity(intent);
                 }
             }

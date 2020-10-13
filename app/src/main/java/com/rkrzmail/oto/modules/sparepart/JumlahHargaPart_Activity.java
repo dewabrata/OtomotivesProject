@@ -1,4 +1,4 @@
-package com.rkrzmail.oto.modules.sparepart.new_part;
+package com.rkrzmail.oto.modules.sparepart;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
@@ -24,12 +24,15 @@ import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
 import com.rkrzmail.utils.Tools;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.MASTER_PART;
 import static com.rkrzmail.utils.ConstUtils.PART;
-import static com.rkrzmail.utils.ConstUtils.PARTS;
+import static com.rkrzmail.utils.ConstUtils.PARTS_UPPERCASE;
 import static com.rkrzmail.utils.ConstUtils.PART_WAJIB;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
 import static com.rkrzmail.utils.ConstUtils.RP;
@@ -39,10 +42,12 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
 
     private static final String TAG = "HargaPart____";
     private EditText etHpp, etHargaJual, etDiscPart, etBiayaJasa, etDiscJasa, etDp, etWaktuPesan, etJumlah;
-    private Toolbar toolbar;
-    private DecimalFormat formatter;
+
     private Nson sendData = Nson.newObject();
-    private boolean isFlexible = false, isPartKosong = false;
+
+    private boolean isFlexible = false, isPartKosong = false, isPartWajib = false;
+    private String hari = "", jam = "", menit = "";
+    private String inspeksiJam = "", inspeksiMenit = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +56,11 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
         initComponent();
     }
 
+    @SuppressLint("NewApi")
     private void initToolbar() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Jumlah & Harga Part");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Jumlah & Harga Part");
     }
 
     private void initComponent() {
@@ -67,6 +73,7 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
         etWaktuPesan = findViewById(R.id.et_waktu_jumlah_harga_part);
         etJumlah = findViewById(R.id.et_jumlah_jumlah_harga_part);
         etBiayaJasa = findViewById(R.id.et_jasa_jumlah_harga_part);
+
         initListener();
         initData();
     }
@@ -76,7 +83,10 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
         if (getIntent().hasExtra(DATA)) {
             initData(DATA, getIntent());
         } else {
+            isPartWajib = true;
             final Nson nson = Nson.readJson(getIntentStringExtra(PART_WAJIB));
+            find(R.id.btn_img_waktu_inspeksi).setEnabled(false);
+            find(R.id.et_waktu_set_inspeksi, EditText.class).setText(getIntent().getStringExtra("WAKTU_INSPEKSI"));
             initPartKosongValidation(nson, nson.get("STOCK").asInteger(), true);
 
             boolean isMasterPartOrParts;
@@ -85,50 +95,59 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
 
             if (getIntent().hasExtra(MASTER_PART)) {
                 isMasterPartOrParts = true;
-                if(!getIntent().getStringExtra(MASTER_PART).isEmpty()){
+                if (!getIntent().getStringExtra(MASTER_PART).isEmpty()) {
                     isDiskon = true;
                 }
-                etJumlah.setText("" + getIntent().getIntExtra("jumlah", 0));
+                etJumlah.setText("" + nson.get("JUMLAH").asString());
             } else {
                 isMasterPartOrParts = false;
-                if(!getIntent().getStringExtra(PARTS).isEmpty()){
+                if (!getIntent().getStringExtra(PARTS_UPPERCASE).isEmpty()) {
                     isDiskon = true;
                 }
                 etJumlah.setText(nson.get("JUMLAH").asString());
             }
 
-            if (nson.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE") || nson.get("HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE")) {
-                find(R.id.ly_hpp_jumlah_harga_part, TextInputLayout.class).setVisibility(View.VISIBLE);
-                try {
-                    etHpp.setText(RP + formatRp(nson.get("HPP").asString()));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                etHargaJual.setEnabled(true);
-                isFlexible = true;
-            } else {
-                if (Tools.isNumeric(nson.get("HARGA_JUAL").asString())) {
-                    if(isDiskon){
-                        finalTotal = Integer.parseInt(nson.get("HARGA_JUAL").asString())
-                                - calculateDiscFasilitas(
-                                Integer.parseInt(isMasterPartOrParts ?
-                                        getIntent().getStringExtra(MASTER_PART) : getIntent().getStringExtra(PARTS)),
-                                Integer.parseInt(nson.get("HARGA_JUAL").asString()));
-                    }else{
-                        finalTotal = Integer.parseInt(nson.get("HARGA_JUAL").asString());
+            if(getIntent().getIntExtra("HARGA_LAYANAN", 0) > 0){
+                finalTotal = getIntent().getIntExtra("HARGA_LAYANAN", 0) - calculateDiscFasilitas(
+                        Integer.parseInt(isMasterPartOrParts ?
+                                getIntent().getStringExtra(MASTER_PART) : getIntent().getStringExtra(PARTS_UPPERCASE)),
+                        getIntent().getIntExtra("HARGA_LAYANAN", 0));
+                etHargaJual.setText(RP + finalTotal);
+            }else{
+                if (nson.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE") || nson.get("HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE")) {
+                    find(R.id.ly_hpp_jumlah_harga_part, TextInputLayout.class).setVisibility(View.VISIBLE);
+                    try {
+                        etHpp.setText(RP + formatRp(nson.get("HPP").asString()));
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    etHargaJual.setText(RP + finalTotal);
-                } else {
                     etHargaJual.setEnabled(true);
+                    isFlexible = true;
+                } else {
+                    if (Tools.isNumeric(nson.get("HARGA_JUAL").asString())) {
+                        if (isDiskon) {
+                            finalTotal = Integer.parseInt(nson.get("HARGA_JUAL").asString())
+                                    - calculateDiscFasilitas(
+                                    Integer.parseInt(isMasterPartOrParts ?
+                                            getIntent().getStringExtra(MASTER_PART) : getIntent().getStringExtra(PARTS_UPPERCASE)),
+                                    Integer.parseInt(nson.get("HARGA_JUAL").asString()));
+                        } else {
+                            finalTotal = Integer.parseInt(nson.get("HARGA_JUAL").asString());
+                        }
+                        etHargaJual.setText(RP + finalTotal);
+                    } else {
+                        etHargaJual.setEnabled(true);
+                    }
                 }
             }
+
             Log.d(TAG, "initComponent: " + nson);
             etJumlah.setEnabled(false);
             etBiayaJasa.setEnabled(false);
             etBiayaJasa.setText("0");
             find(R.id.et_waktuDefault, EditText.class).setText("0");
             find(R.id.et_waktuSet, EditText.class).setText("0");
-            find(R.id.img_waktuKerja, ImageButton.class).setEnabled(false);
+            find(R.id.btn_img_waktu_kerja, ImageButton.class).setEnabled(false);
             //find(R.id.et_waktuDefault, EditText.class).setText(loadWaktuKerja("0", nson.get("WAKTU_KERJA_JAM").asString(), nson.get("WAKTU_KERJA_MENIT").asString()));
             find(R.id.btn_simpan_jumlah_harga_part, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -149,8 +168,10 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
     private void initListener() {
         watcher(find(R.id.img_clear, ImageButton.class), etHargaJual);
         watcher(find(R.id.img_clear2, ImageButton.class), etBiayaJasa);
-        find(R.id.img_clear, ImageButton.class).setOnClickListener(this);
-        find(R.id.img_clear2, ImageButton.class).setOnClickListener(this);
+        find(R.id.img_clear).setOnClickListener(this);
+        find(R.id.img_clear2).setOnClickListener(this);
+        find(R.id.btn_img_waktu_inspeksi).setOnClickListener(this);
+        find(R.id.btn_img_waktu_kerja).setOnClickListener(this);
     }
 
     @SuppressLint("DefaultLocale")
@@ -244,6 +265,7 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
                     find(R.id.et_waktuSet, EditText.class).setError("Masukkan Waktu Kerja");
                     return;
                 }
+
                 if (etBiayaJasa.getText().toString().isEmpty()) {
                     etBiayaJasa.setError("Biaya Jasa Tidak Boleh Kosong");
                     etBiayaJasa.requestFocus();
@@ -281,27 +303,24 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
             }
         });
 
-        find(R.id.img_waktuKerja, ImageButton.class).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getTimesDialog(find(R.id.et_waktuSet, EditText.class));
-            }
-        });
     }
 
     private void nextForm(final String intentExtra) {
         Nson nson = Nson.readJson(getIntentStringExtra(intentExtra));
-        Log.d(TAG, "Data Harga Part: " + nson);
-        String harga = etHargaJual.getText().toString().replaceAll("[^0-9]+", "");
-        String jasa = etBiayaJasa.getText().toString().replaceAll("[^0-9]+", "");
+        int harga = Integer.parseInt(formatOnlyNumber(etHargaJual.getText().toString()));
+        int jasa = Integer.parseInt(formatOnlyNumber(etBiayaJasa.getText().toString()));
         int jumlah = 0;
         if (etJumlah.getText().toString().isEmpty()) {
             jumlah++;
         } else {
             jumlah = Integer.parseInt(etJumlah.getText().toString());
         }
+        if(jasa > 0){
+            sendData.set("NET", harga + jasa);
+        }else{
+            sendData.set("NET", harga);
+        }
 
-        //nson.set("BIAYA_JASA", jasa);
         sendData.set("NAMA_PART", nson.get("NAMA_PART").asString());
         sendData.set("NO_PART", nson.get("NO_PART").asString());
         sendData.set("PART_ID", nson.get("PART_ID").asString());
@@ -311,17 +330,44 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
         sendData.set("MERK", nson.get("MERK").asString());
         sendData.set("HARGA_JASA", jasa);
         sendData.set("WAKTU", find(R.id.et_waktuSet, EditText.class).getText().toString());
-        if(isPartKosong){
+
+        if(!find(R.id.et_waktuSet, EditText.class).getText().toString().isEmpty()){
+            //handling for index out of bounds
+            try{
+                hari = find(R.id.et_waktuSet, EditText.class).getText().toString().substring(0, 2);
+                jam = find(R.id.et_waktuSet, EditText.class).getText().toString().substring(3, 5);
+                menit = find(R.id.et_waktuSet, EditText.class).getText().toString().substring(6, 8);
+                sendData.set("WAKTU_KERJA_HARI", hari);
+                sendData.set("WAKTU_KERJA_JAM", jam);
+                sendData.set("WAKTU_KERJA_NENIT", menit);
+            }catch (Exception e){
+                Log.d(TAG, "Exception Kerja: " + e.getMessage());
+            }
+        }
+
+        if(!find(R.id.et_waktu_set_inspeksi, EditText.class).getText().toString().isEmpty()){
+            //handling for index out of bounds
+            try{
+                inspeksiJam = find(R.id.et_waktu_set_inspeksi, EditText.class).getText().toString().substring(3, 5);
+                inspeksiMenit = find(R.id.et_waktu_set_inspeksi, EditText.class).getText().toString().substring(6, 8);
+                sendData.set("WAKTU_INSPEKSI_JAM", inspeksiJam);
+                sendData.set("WAKTU_INSPEKSI_MENIT", inspeksiMenit);
+            }catch (Exception e){
+                Log.d(TAG, "Exception Inspeksi: " + e.getMessage());
+            }
+        }
+        //partKosong
+        if (isPartKosong) {
             sendData.set("PART_KOSONG", "true");
         }
-
-        if (!harga.isEmpty() && !jasa.isEmpty()) {
-            int totall = Integer.parseInt(harga) * jumlah;
-            sendData.set("HARGA_PART", totall);
-        }
-
-        if (intentExtra.equals(PART_WAJIB)) {
-            sendData.set("HARGA_PART", etHargaJual.getText().toString().replaceAll("[^0-9]+", ""));
+        //partWajib
+        if(isPartWajib){
+            sendData.set("HARGA_PART", harga);
+        }else{
+            if (harga > 0) {
+                int totall = harga * jumlah;
+                sendData.set("HARGA_PART", totall);
+            }
         }
 
         Intent i = new Intent();
@@ -353,7 +399,7 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
                 if (str.isEmpty()) return;
                 editText.removeTextChangedListener(this);
                 try {
-                    String cleanString = str.replaceAll("[^0-9]", "");
+                    String cleanString = formatOnlyNumber(str);
                     String formatted = Tools.formatRupiah(cleanString);
                     editText.setText(formatted);
                     editText.setSelection(formatted.length());
@@ -375,6 +421,12 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
                 break;
             case R.id.img_clear2:
                 etBiayaJasa.setText("");
+                break;
+            case R.id.btn_img_waktu_inspeksi:
+                getTimesDialog(find(R.id.et_waktu_set_inspeksi, EditText.class));
+                break;
+            case R.id.btn_img_waktu_kerja:
+                getTimesDialog(find(R.id.et_waktuSet, EditText.class));
                 break;
         }
     }

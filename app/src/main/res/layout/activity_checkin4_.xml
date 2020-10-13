@@ -211,29 +211,33 @@
 
                 </android.support.design.widget.TextInputLayout>
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="WAKTU LAYANAN"
+                    android:textColor="@color/grey_900"
+                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/background_edittext"
+                    android:padding="10dp"/>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/paddingMedium"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:layout_marginTop="15dp">
-
-                    <TextView
-                        android:layout_height="wrap_content"
-                        android:text="WAKTU LAYANAN"
-                        android:layout_width="0dp"
-                        android:layout_weight="3"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"
-                        android:textSize="12sp" />
+                    android:layout_marginTop="5dp"
+                    tools:ignore="DisableBaselineAlignment">
 
                     <android.support.design.widget.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="20dp">
+                        android:layout_weight="1">
 
                         <EditText
                             android:id="@+id/et_mulaiWaktu_checkin"
@@ -241,7 +245,8 @@
                             android:layout_height="wrap_content"
                             android:enabled="false"
                             android:textSize="14sp"
-                            android:text="MULAI" />
+                            android:text="MULAI"
+                            tools:ignore="TextFields" />
 
                     </android.support.design.widget.TextInputLayout>
 
@@ -503,6 +508,7 @@
                 android:text="SETUJU DENGAN SYARAT DAN KETENTUAN BENGKEL" />
 
             <LinearLayout
+                android:id="@+id/ly_ttd"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="5dp"

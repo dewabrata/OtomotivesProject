@@ -27,9 +27,6 @@
             android:id="@+id/ly_detailPart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
             android:orientation="vertical"
             android:padding="10sp"
             tools:context=".modules.sparepart.terima_part.DetailPartDiterima">
@@ -43,6 +40,22 @@
 
                 <EditText
                     android:id="@+id/et_namaSup_terimaPart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:textSize="14sp" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="NO. PONSEL SUPPLIER"
+                android:layout_marginTop="5dp">
+
+                <EditText
+                    android:id="@+id/et_noSup_terimaPart"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"

@@ -814,7 +814,14 @@ public class AppActivity extends AppCompatActivity {
             DecimalFormat formatter = new DecimalFormat("###,###,###");
             return formatter.format(Double.parseDouble(currency));
         }
-       return "";
+       return "0";
+    }
+
+    public String formatOnlyNumber(String text){
+        if(text == null)
+            return "0";
+        else
+            return text.replaceAll("[^0-9]+", "");
     }
 
     public void watcherNamaPelanggan(final ImageButton imageButton, final EditText editText) {

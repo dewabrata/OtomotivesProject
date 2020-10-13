@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:descendantFocusability="beforeDescendants"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <include layout="@layout/toolbar" />
+
+    </android.support.design.widget.AppBarLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -21,15 +33,15 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:hint="NO. ANTRIAN">
+                android:hint="@string/no_antrian">
 
                 <EditText
                     android:id="@+id/et_noAntrian"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -37,15 +49,16 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:hint="STATUS">
+                android:layout_marginTop="@dimen/paddingXSmall"
+                android:hint="@string/status">
 
                 <EditText
                     android:id="@+id/et_status"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -53,26 +66,24 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:hint="NO. POLISI">
+                android:layout_marginTop="@dimen/paddingXSmall"
+                android:hint="@string/no_polisi_uppercase">
 
                 <EditText
                     android:id="@+id/et_nopol"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
 
             </android.support.design.widget.TextInputLayout>
-
 
             <android.support.design.widget.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:layout_marginTop="5dp"
-
                 android:hint="NO. KUNCI"
                 android:visibility="gone">
 
@@ -89,15 +100,16 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/paddingXSmall"
                 android:hint="NAMA PELANGGAN">
 
                 <EditText
-                    android:id="@+id/et_namaP"
+                    android:id="@+id/et_nama_pelanggan"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -105,7 +117,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/paddingXSmall"
                 android:hint="NAMA LAYANAN">
 
                 <EditText
@@ -113,15 +125,70 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
 
             </android.support.design.widget.TextInputLayout>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/cardView_namaLayanan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="5dp"
+                app:cardElevation="2dp"
+                app:cardPreventCornerOverlap="true"
+                app:cardUseCompatPadding="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/paddingSemiLarge">
+
+                    <TextView
+                        android:id="@+id/tv_nama_layanan"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:padding="5dp"
+                        android:text="NAMA LAYANAN"
+                        android:textColor="@color/grey_900"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_biaya_layanan"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_weight="1"
+                        android:padding="5dp"
+                        android:text="BIAYA LAYANAN"
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/grey_900"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView_detail_part"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"
+                android:scrollingCache="true"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView_detail_jasa"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"
+                android:scrollingCache="true" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/paddingSemiLarge"
-                android:layout_marginBottom="@dimen/paddingMedium"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -151,10 +218,10 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ly_nama_mekanik"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/paddingMedium"
-                android:layout_marginBottom="@dimen/paddingMedium"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -187,31 +254,25 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:hint="KETERANGAN BATAL">
+                android:layout_marginTop="@dimen/paddingXSmall"
+                android:hint="@string/keterangan_message">
 
                 <EditText
                     android:id="@+id/et_ket_batal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:enabled="false"
                     android:inputType="textMultiLine"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    tools:ignore="Autofill,LabelFor" />
 
             </android.support.design.widget.TextInputLayout>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerView_detailKontrolLayanan"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/paddingSemiLarge"
-                android:layout_marginBottom="@dimen/paddingSemiLarge" />
 
             <android.support.design.widget.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="@dimen/paddingXSmall">
 
                 <EditText
                     android:id="@+id/et_totalBiaya"
@@ -227,9 +288,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
-                android:layout_marginTop="10dp"
-
+                android:layout_marginTop="@dimen/paddingXSmall"
                 android:orientation="horizontal">
 
                 <TextView
@@ -285,18 +344,22 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
                 android:text="ESTIMASI WAKTU"
-                android:textColor="@color/grey_80"
-                android:textStyle="bold" />
+                android:textColor="@color/grey_900"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/background_edittext"
+                android:padding="10dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-
-                android:orientation="horizontal">
+                android:layout_marginTop="@dimen/paddingXSmall"
+                android:orientation="horizontal"
+                tools:ignore="DisableBaselineAlignment">
 
                 <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -361,15 +424,15 @@
                 android:id="@+id/cb_tungguConfirm_biaya"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/paddingXSmall"
                 android:enabled="false"
                 android:text="TUNGGU KONFIRMASI BIAYA" />
 
             <CheckBox
-                android:id="@+id/cb_tidakMenunggu"
+                android:id="@+id/cb_tidak_menunggu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/paddingXSmall"
                 android:enabled="false"
                 android:text="TIDAK MENUNGGU" />
 
@@ -394,32 +457,31 @@
                 android:id="@+id/cb_buangPart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="BUANG PART BEKAS"
+                android:layout_marginTop="@dimen/paddingXSmall"
                 android:enabled="false"
-                android:layout_marginTop="@dimen/paddingSemiLarge"/>
+                android:text="BUANG PART BEKAS" />
 
             <CheckBox
                 android:id="@+id/cb_konfirm_tambah"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="KONFIRMASI PENAMBAHAN"
+                android:layout_marginTop="@dimen/paddingXSmall"
                 android:enabled="false"
-                android:layout_marginTop="@dimen/paddingSemiLarge"/>
+                android:text="KONFIRMASI PENAMBAHAN" />
 
             <CheckBox
                 android:id="@+id/cb_antar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ANTAR"
+                android:layout_marginTop="@dimen/paddingXSmall"
                 android:enabled="false"
-                android:layout_marginTop="@dimen/paddingSemiLarge"/>
+                android:text="ANTAR" />
 
             <Button
                 android:id="@+id/btn_simpan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_margin="@dimen/paddingSemiLarge"
                 android:background="@drawable/btn_rounded_accent"
                 android:text="Lanjut"
                 android:textColor="@android:color/white" />
@@ -427,21 +489,5 @@
         </LinearLayout>
 
     </ScrollView>
-
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-    </android.support.design.widget.AppBarLayout>
-
 
 </android.support.design.widget.CoordinatorLayout>

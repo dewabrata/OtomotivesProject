@@ -17,8 +17,9 @@ public class APIUrls {
     public static final String VIEW_JASA_LAIN = "viewjasalain";
     public static final String VIEW_JASA_LAIN_BERKALA = "viewjasalainberkala";
     public static final String VIEW_DATA_BENGKEL = "databengkel";
-    public static final String VIEW_MEKANIK = "mekanik";
+    public static final String VIEW_MEKANIK = "viewmekanik";
     public static final String VIEW_KONTROL_LAYANAN = "viewkontrollayanan";
+    public static final String VIEW_ANTRIAN = "viewantrian";
     //INSERT, UPDATE, DELETE
     public static final String SET_LOGIN = "login";
     public static final String SET_CHECKIN = "checkin" ;
@@ -32,4 +33,5 @@ public class APIUrls {
     public static final String ATUR_PART_KELUAR = "aturpartkeluar";
     public static final String ATUR_LOKASI_PART = "aturlokasipart";
     public static final String ATUR_DISKON_PART = "aturdiskonpart";
+    public static final String ATUR_KONTROL_LAYANAN = "aturkontrollayanan";
 }

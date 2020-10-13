@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.sparepart.terima_part;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -340,14 +341,26 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
         nson.set("ongkir", ongkir);
         nson.set("pembayaran", pembayaran);
         nson.set("jatuhtempo", jatuhtempo);
-        nson.set("nama", nama);
+        nson.set("namaSupplier", nama.replaceAll("[^a-zA-Z]", ""));
+        nson.set("noSupplier", nama.replaceAll("[^0-9]", ""));
         nson.set("tipe", tipe);
         nson.set("rek", rek);
+
         //nson.set("rekening", find(R.id.sp_rekAsal_terimaPart, Spinner.class).getSelectedItem().toString());
         showInfo("Catatkan Detail Part");
         return nson;
     }
 
+    private String getAllNumberFromString(String nama){
+        if(nama == null) return "";
+        StringBuilder noSupplier = new StringBuilder();
+        for(char number : nama.toCharArray()){
+            if(Character.isDigit(number)){
+                noSupplier.append(number);
+            }
+        }
+        return noSupplier.toString().replaceAll("[^0-9]+", "");
+    }
 
     @Override
     public void onClick(View view) {

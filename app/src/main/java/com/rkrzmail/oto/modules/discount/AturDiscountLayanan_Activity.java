@@ -1,4 +1,4 @@
-package com.rkrzmail.oto.modules.layanan.discount_layanan;
+package com.rkrzmail.oto.modules.discount;
 
 import android.content.Intent;
 import android.os.Bundle;

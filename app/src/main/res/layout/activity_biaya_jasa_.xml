@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true">
 
@@ -21,9 +22,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginTop="5dp">
 
                 <EditText
                     android:id="@+id/et_kelompokPart_biayaJasa"
@@ -39,9 +38,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginTop="5dp">
 
                 <EditText
                     android:id="@+id/et_aktivitas_biayaJasa"
@@ -57,9 +54,7 @@
                 android:id="@+id/ly_waktu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -73,7 +68,7 @@
                     android:layout_gravity="center"/>
 
                 <ImageButton
-                    android:id="@+id/img_waktuKerja"
+                    android:id="@+id/btn_img_waktu_kerja"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="?attr/selectableItemBackgroundBorderless"
@@ -95,6 +90,7 @@
                         android:layout_height="wrap_content"
                         android:enabled="false"
                         android:hint="HH:JJ:MM"
+                        android:text="00:00:00"
                         android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -111,6 +107,72 @@
                         android:layout_height="wrap_content"
                         android:enabled="false"
                         android:hint="@string/hh_jj_mm"
+                        android:text="00:00:00"
+
+                        android:textSize="14sp" />
+
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ly_waktu_inspeksi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:textColor="@color/grey_900"
+                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:text="WAKTU INSPEKSI"
+                    android:layout_gravity="center"/>
+
+                <ImageButton
+                    android:id="@+id/btn_img_waktu_inspeksi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:tint="@color/grey_900"
+                    android:layout_gravity="center"
+                    android:layout_weight="2"
+                    app:srcCompat="@drawable/icon_stopwatch" />
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_weight="2">
+
+                    <EditText
+                        android:id="@+id/et_waktu_set_inspeksi"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:hint="@string/hh_jj_mm"
+                        android:text="00:00:00"
+                        android:textSize="14sp" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2">
+
+                    <EditText
+                        android:id="@+id/et_waktu_default_inspeksi"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:hint="@string/hh_jj_mm"
+                        android:text="00:00:00"
                         android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -125,9 +187,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="10dp">
+                    android:layout_marginTop="5dp">
 
                     <com.rkrzmail.srv.NikitaAutoComplete
                         android:id="@+id/et_biaya_biayaJasa"
@@ -157,12 +217,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
             android:stretchColumns="*">
 
-            <TableRow>
+            <TableRow tools:ignore="UselessParent">
 
                 <CheckBox
                     android:id="@+id/cb_outsource"

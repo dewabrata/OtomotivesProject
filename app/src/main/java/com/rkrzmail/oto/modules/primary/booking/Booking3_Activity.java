@@ -18,7 +18,7 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.jasa.JasaLainBerkala_Activity;
 import com.rkrzmail.oto.modules.jasa.JasaLain_Activity;
 import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
-import com.rkrzmail.oto.modules.sparepart.new_part.JumlahHargaPart_Activity;
+import com.rkrzmail.oto.modules.sparepart.JumlahHargaPart_Activity;
 import com.rkrzmail.oto.modules.sparepart.new_part.PartBerkala_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;

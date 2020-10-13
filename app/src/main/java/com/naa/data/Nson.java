@@ -29,11 +29,9 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- *
  * @author rkrzmail
  */
 public class Nson implements Serializable {
-
 
 
     public OnVariableListener getVariableListener() {
@@ -45,6 +43,7 @@ public class Nson implements Serializable {
     public Nson(Object object) {
         this.internalObject = object;
     }
+
     private OnVariableListener variable;
 
     private Nson(String nson, OnVariableListener variable) {
@@ -321,6 +320,11 @@ public class Nson implements Serializable {
     /*
     new Methode 14/4/2018
      */
+
+    public Nson add(Serializable value) {
+        return addInternal(value);
+    }
+
     public Nson add(Nson value) {
         return addInternal(value.internalObject);
     }
@@ -357,6 +361,10 @@ public class Nson implements Serializable {
      */
     public Nson set(String key, Nson value) {
         return setInternal(key, value.getInternalObject());
+    }
+
+    public Nson set(String key, Serializable value) {
+        return setInternal(key, value);
     }
 
     public Nson set(String key, String value) {

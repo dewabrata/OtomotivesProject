@@ -42,6 +42,7 @@ import com.rkrzmail.srv.NsonAutoCompleteAdapter;
 import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
+import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.SET_CHECKIN;
 import static com.rkrzmail.utils.APIUrls.VIEW_JENIS_KENDARAAN;
@@ -70,7 +71,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             modelKendaraan = "",
             rangka = "",
             mesin = "",
-            lokasi = "", kendaraanId = "";
+            lokasi = "", kendaraanId = "", jenis = "";
     private Nson nopolList = Nson.newArray(), keluhanList = Nson.newArray();
     private boolean keyDel = false, isNoHp = false, isNamaValid = false, isRemoved;
     private RecyclerView rvKeluhan;
@@ -200,6 +201,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 return false;
             }
         });
+
         etNopol.addTextChangedListener(new TextWatcher() {
             int lastLength;
 
@@ -230,6 +232,14 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             }
         });
 
+        etNoPonsel.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus && !etNoPonsel.getText().toString().contains("+62 ")){
+                    etNoPonsel.setText("+62 ");
+                }
+            }
+        });
 
         etNoPonsel.addTextChangedListener(new TextWatcher() {
             @Override
@@ -243,7 +253,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 int counting = (s == null) ? 0 : s.toString().length();
-                if (counting < 4) {
+                if (counting < 4 && !etNoPonsel.getText().toString().contains("+62 ")) {
                     etNoPonsel.setText("+62 ");
                     Selection.setSelection(etNoPonsel.getText(), etNoPonsel.getText().length());
                 } else if (counting < 12) {
@@ -280,11 +290,11 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     convertView = inflater.inflate(R.layout.find_nophone, parent, false);
                 }
+
                 String nama = getItem(position).get("NAMA_PELANGGAN").asString();
-                String nomor = "";
-                noHp = getItem(position).get("NO_PONSEL").asString();
-                if (noHp.length() > 4) {
-                    nomor += noHp.substring(noHp.length() - 4);
+                String nomor = getItem(position).get("NO_PONSEL").asString();
+                if (nomor.length() > 4) {
+                    nomor = nomor.substring(nomor.length() - 4);
                 }
 
                 findView(convertView, R.id.txtPhone, TextView.class).setText(nama + " " + nomor);
@@ -298,22 +308,30 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
-                isNoHp = true;
-                String nomor = "";
+
                 noHp = n.get("NO_PONSEL").asString();
-                if (noHp.length() > 4) {
-                    nomor += noHp.substring(noHp.length() - 4);
-                }
-                etNoPonsel.setText("XXXXXXXX" + nomor);
-                find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
-                etNamaPelanggan.setText(n.get("NAMA_PELANGGAN").asString());
                 pekerjaan = n.get("PEKERJAAN").asString();
+                isNoHp = true;
+
+                String nomor = n.get("NO_PONSEL").asString();
+                if (nomor.length() > 4) {
+                    nomor = nomor.substring(nomor.length() - 4);
+                }
+
+
+
+                etNoPonsel.setText("XXXXXXXX" + nomor);
+                etNamaPelanggan.setText(n.get("NAMA_PELANGGAN").asString());
+
+                find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
+                find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
+                find(R.id.img_clear, ImageButton.class).setVisibility(View.GONE);
+
                 setSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN", pekerjaan);
                 if (n.get("PEMILIK").asString().equalsIgnoreCase("Y")) {
                     find(R.id.cb_pemilik_checkin1, CheckBox.class).setChecked(true);
                 }
-                find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
-                find(R.id.img_clear, ImageButton.class).setVisibility(View.GONE);
+
                 Log.d(TAG, "onItemClick: " + noHp);
                 Tools.hideKeyboard(getActivity());
             }
@@ -350,33 +368,32 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
 
+                isNoHp = true;
                 merkKendaraan = n.get("MERK").asString();
                 jenisKendaraan = n.get("TYPE").asString();
                 varianKendaraan = n.get("VARIAN").asString();
                 modelKendaraan = n.get("MODEL").asString();
+                kendaraanId = n.get("KENDARAAN_ID").asString();
                 noHp = n.get("NO_PONSEL").asString();
+                pekerjaan = n.get("PEKERJAAN").asString();
 
-                showInfo(merkKendaraan + varianKendaraan);
-
-                String nomor = "";
-                if (noHp.length() > 4) {
-                    nomor += noHp.substring(noHp.length() - 4);
+                String nomor = n.get("NO_PONSEL").asString();
+                if (nomor.length() > 4) {
+                    nomor = nomor.substring(nomor.length() - 4);
                 }
 
                 etNopol.setText(formatNopol(n.get("NOPOL").asString()));
-                kendaraanId = n.get("KENDARAAN_ID").asString();
-                showInfo(kendaraanId);
                 etNoPonsel.setText("XXXXXXXX" + nomor);
                 etNamaPelanggan.setText(n.get("NAMA_PELANGGAN").asString());
-                etJenisKendaraan.setEnabled(false);
                 etJenisKendaraan.setText(n.get("JENIS_KENDARAAN").asString());
                 //etKm.setText(n.get("KM").asString());
-                pekerjaan = n.get("PEKERJAAN").asString();
+
                 setSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN", pekerjaan);
                 if (n.get("PEMILIK").asString().equalsIgnoreCase("Y")) {
                     find(R.id.cb_pemilik_checkin1, CheckBox.class).setChecked(true);
                 }
 
+                etJenisKendaraan.setEnabled(false);
                 find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
                 find(R.id.btn_history_checkin1).setEnabled(true);
                 find(R.id.img_clear, ImageButton.class).setVisibility(View.GONE);
@@ -431,8 +448,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 varianKendaraan = n.get("VARIAN").asString();
                 modelKendaraan = n.get("MODEL").asString();
                 tahunProduksi = n.get("TAHUN1").asString();
-
-                showInfo(kendaraanId + " " + merkKendaraan + " " + varianKendaraan);
+                jenis = n.get("JENIS").asString();
 
                 String stringBuilder = n.get("MERK").asString() + " " +
                         //stringBuilder.append(n.get("JENIS").asString()).append(" ");
@@ -456,6 +472,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
+
                 args.put("action", "add");
                 args.put("regris", "1");
                 args.put("nopol", nopol);
@@ -485,13 +502,13 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     Nson nson = Nson.newObject();
 
                     nson.set("id", result.get("ID").asString());
-                    //nson.set("jeniskendaraan", jenisKendaraan);
-                    //nson.set("model", modelKendaraan);
+                    nson.set("jeniskendaraan", jenisKendaraan);
+                    nson.set("model", modelKendaraan);
                     nson.set("merk", merkKendaraan);
                     nson.set("varian", varianKendaraan);
                     nson.set("tahunProduksi", tahunProduksi);
                     nson.set("km", etKm.getText().toString());
-                    nson.set("kendaraan", getSetting("JENIS_KENDARAAN"));
+                    nson.set("jenis", jenis.isEmpty() ? jenis : jenisKendaraan);
 
                     Intent intent;
                     if (nopolList.asArray().contains(nopol)) {
@@ -537,19 +554,20 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
 
     private void initRecylerViewKeluhan() {
         rvKeluhan.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rvKeluhan.setHasFixedSize(true);
+        rvKeluhan.setHasFixedSize(false);
         rvKeluhan.setAdapter(new NikitaRecyclerAdapter(keluhanList, R.layout.item_keluhan) {
             @Override
             public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
                 super.onBindViewHolder(viewHolder, position);
                 viewHolder.find(R.id.tv_keluhan, TextView.class).setText(keluhanList.get(position).get("KELUHAN").asString());
                 viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
+                    @SuppressLint("NewApi")
                     @Override
                     public void onClick(View v) {
                         isRemoved = false;
                         keluhanList.asArray().remove(position);
                         notifyItemRemoved(position);
-                        rvKeluhan.getAdapter().notifyDataSetChanged();
+                        Objects.requireNonNull(rvKeluhan.getAdapter()).notifyDataSetChanged();
                     }
                 });
             }
@@ -560,6 +578,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_CHECKIN) {
+            setResult(RESULT_OK);
             finish();
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_BARCODE) {
             String antrian = data.getStringExtra("TEXT");

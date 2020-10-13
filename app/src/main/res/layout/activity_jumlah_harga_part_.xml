@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:descendantFocusability="beforeDescendants"
@@ -28,9 +29,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"
-                    android:layout_marginRight="10dp"
                     android:hint="HPP"
                     android:visibility="gone">
 
@@ -40,7 +39,8 @@
                         android:layout_height="wrap_content"
                         android:enabled="false"
                         android:inputType="text"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:ignore="Autofill,LabelFor" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -53,9 +53,7 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
                         android:layout_marginTop="5dp"
-                        android:layout_marginRight="10dp"
                         android:hint="HARGA JUAL">
 
                         <EditText
@@ -73,12 +71,13 @@
                         android:layout_width="35dp"
                         android:layout_height="35dp"
                         android:layout_gravity="end"
-                        android:layout_marginEnd="15dp"
                         android:layout_marginTop="15dp"
+                        android:layout_marginEnd="15dp"
                         android:background="@android:color/transparent"
                         android:tint="@color/grey_80"
+                        android:visibility="gone"
                         app:srcCompat="@drawable/ic_close"
-                        android:visibility="gone"/>
+                        tools:ignore="ContentDescription" />
 
                 </FrameLayout>
 
@@ -99,7 +98,8 @@
                         android:layout_height="wrap_content"
                         android:enabled="false"
                         android:inputType="text"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:ignore="LabelFor" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -107,9 +107,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"
-                    android:layout_marginRight="10dp"
                     android:hint="JUMLAH">
 
                     <EditText
@@ -118,7 +116,9 @@
                         android:layout_height="wrap_content"
                         android:inputType="number"
                         android:maxLength="4"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:singleLine="true"
+                        tools:ignore="LabelFor" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -126,29 +126,25 @@
                     android:id="@+id/ly_waktu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"
-                    android:layout_marginRight="10dp"
                     android:orientation="horizontal">
 
                     <TextView
+                        android:layout_width="100dp"
                         android:layout_height="wrap_content"
-                        android:layout_width="0dp"
-                        android:layout_weight="3"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"
-                        android:textSize="12sp"
+                        android:layout_gravity="center"
                         android:text="WAKTU KERJA"
-                        android:layout_gravity="center"/>
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
 
                     <ImageButton
-                        android:id="@+id/img_waktuKerja"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/btn_img_waktu_kerja"
+                        android:layout_width="70dp"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:tint="@color/grey_900"
-                        android:layout_gravity="center"
-                        android:layout_weight="2"
                         app:srcCompat="@drawable/icon_stopwatch" />
 
                     <android.support.design.widget.TextInputLayout
@@ -186,6 +182,65 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/ly_waktu_inspeksi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_height="wrap_content"
+                        android:layout_width="100dp"
+                        android:textColor="@color/grey_900"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:text="WAKTU INSPEKSI"
+                        android:layout_gravity="center"/>
+
+                    <ImageButton
+                        android:id="@+id/btn_img_waktu_inspeksi"
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:tint="@color/grey_900"
+                        android:layout_gravity="center"
+                        app:srcCompat="@drawable/icon_stopwatch" />
+
+                    <android.support.design.widget.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:layout_weight="1">
+
+                        <EditText
+                            android:id="@+id/et_waktu_set_inspeksi"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:enabled="false"
+                            android:hint="HH:JJ:MM"
+                            android:textSize="14sp" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <EditText
+                            android:id="@+id/et_waktu_default_inspeksi"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:enabled="false"
+                            android:hint="@string/hh_jj_mm"
+                            android:textSize="14sp" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                </LinearLayout>
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -194,17 +249,18 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
                         android:layout_marginTop="5dp"
-                        android:layout_marginRight="10dp"
                         android:hint="BIAYA JASA">
 
                         <EditText
                             android:id="@+id/et_jasa_jumlah_harga_part"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:importantForAutofill="no"
                             android:inputType="numberDecimal"
-                            android:textSize="14sp" />
+                            android:textSize="14sp"
+                            tools:ignore="LabelFor"
+                            android:singleLine="true"/>
 
                     </android.support.design.widget.TextInputLayout>
 
@@ -212,13 +268,14 @@
                         android:id="@+id/img_clear2"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
-                       android:layout_gravity="end"
-                        android:layout_marginEnd="15dp"
+                        android:layout_gravity="end"
                         android:layout_marginTop="15dp"
+                        android:layout_marginEnd="@dimen/paddingXSmall"
                         android:background="@android:color/transparent"
                         android:tint="@color/grey_80"
+                        android:visibility="gone"
                         app:srcCompat="@drawable/ic_close"
-                        android:visibility="gone"/>
+                        tools:ignore="ContentDescription" />
 
                 </FrameLayout>
 
@@ -227,9 +284,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"
-                    android:layout_marginRight="10dp"
                     android:hint="DISCOUNT"
                     android:visibility="gone">
 
@@ -239,7 +294,8 @@
                         android:layout_height="wrap_content"
                         android:enabled="false"
                         android:inputType="text"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:ignore="Autofill,LabelFor" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -251,16 +307,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone"
-               >
+                android:visibility="gone">
 
                 <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"
-                    android:layout_marginRight="10dp"
                     android:hint="DP">
 
                     <EditText
@@ -269,7 +322,8 @@
                         android:layout_height="wrap_content"
                         android:enabled="false"
                         android:inputType="text"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:ignore="Autofill,LabelFor" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -277,9 +331,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"
-                    android:layout_marginRight="10dp"
                     android:hint="WAKTU PESAN">
 
                     <EditText
@@ -288,7 +340,8 @@
                         android:layout_height="wrap_content"
                         android:enabled="false"
                         android:inputType="text"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:ignore="Autofill,LabelFor" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -299,7 +352,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_margin="10dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/btn_rounded_accent"
                 android:text="@string/simpan_uppercase"
                 android:textColor="@android:color/white" />

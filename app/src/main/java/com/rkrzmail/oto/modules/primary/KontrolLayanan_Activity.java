@@ -36,6 +36,7 @@ import static com.rkrzmail.utils.APIUrls.VIEW_KONTROL_LAYANAN;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CHECKIN;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_NEW_CS;
 
 public class KontrolLayanan_Activity extends AppActivity {
 
@@ -70,8 +71,8 @@ public class KontrolLayanan_Activity extends AppActivity {
                     @Override
                     public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
                         super.onBindViewHolder(viewHolder, position);
-                        String estimasi = Tools.setFormatDateTimeFromDb(nListArray.get(position).get("ESTIMASI_SELESAI").asString(), "dd/MM-hh:mm");
-                        String waktu =  Tools.setFormatDateTimeFromDb(nListArray.get(position).get("CREATED_DATE").asString(), "dd/MM hh:mm");
+                        String estimasi = Tools.setFormatDateTimeFromDb(nListArray.get(position).get("ESTIMASI_SELESAI").asString(), "yyyy-MM-dd hh:mm", "dd/MM-hh:mm", false);
+                        String waktu =  Tools.setFormatDateTimeFromDb(nListArray.get(position).get("CREATED_DATE").asString(), "", "dd/MM hh:mm", true);
 
                         viewHolder.find(R.id.tv_waktu_checkin, TextView.class).setText(waktu);
                         viewHolder.find(R.id.tv_no_antrian, TextView.class).setText(nListArray.get(position).get("NO_ANTRIAN").asString());
@@ -139,6 +140,8 @@ public class KontrolLayanan_Activity extends AppActivity {
         });
     }
 
+    
+
     SearchView mSearchView;
 
     @Override
@@ -186,6 +189,8 @@ public class KontrolLayanan_Activity extends AppActivity {
         if(resultCode == RESULT_OK && requestCode == REQUEST_CHECKIN)
             catchData("");
         else if(resultCode == RESULT_OK && requestCode == REQUEST_DETAIL)
+            catchData("");
+        else if(resultCode == RESULT_OK && requestCode == REQUEST_NEW_CS)
             catchData("");
     }
 }

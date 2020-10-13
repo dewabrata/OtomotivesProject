@@ -31,7 +31,7 @@ public class NikitaRecyclerAdapter extends RecyclerView.Adapter<NikitaViewHolder
     }
 
     @Override
-    public NikitaViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int position) {
+    public NikitaViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, final int position) {
         NikitaViewHolder nikitaViewHolder = NikitaViewHolder.getInstance(viewGroup, rlayout);
         if (onitemClickListener != null) {
             nikitaViewHolder.itemView.setTag(String.valueOf(position));

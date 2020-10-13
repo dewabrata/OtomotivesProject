@@ -23,11 +23,13 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_gravity="end"
+            android:paddingTop="5dp"
+            android:paddingEnd="5dp"
             android:background="@android:color/transparent"
             android:tint="@color/grey_80"
             app:srcCompat="@drawable/ic_close"
-            card_view:ignore="ContentDescription"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            card_view:ignore="ContentDescription,RtlSymmetry" />
 
         <TableLayout
             android:layout_width="match_parent"

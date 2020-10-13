@@ -270,7 +270,8 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
                 args.put("action", "add");
                 args.put("nodo", nson.get("nodo").asString());
                 args.put("tipe", nson.get("tipe").asString());
-                args.put("nama", nson.get("nama").asString());
+                args.put("namaSupplier", nson.get("namaSupplier").asString());
+                args.put("noSupplier", nson.get("noSupplier").asString());
                 args.put("tglpesan", nson.get("tglpesan").asString());
                 args.put("tglterima", nson.get("tglterima").asString());
                 args.put("pembayaran", nson.get("pembayaran").asString());

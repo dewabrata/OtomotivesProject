@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.jasa;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -17,15 +18,20 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.utils.Tools;
 
-import java.text.DecimalFormat;
+import java.util.Objects;
 
 import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.ID;
+import static com.rkrzmail.utils.ConstUtils.JASA_LAIN;
 
-public class BiayaJasa_Activity extends AppActivity {
+public class BiayaJasa_Activity extends AppActivity implements View.OnClickListener {
 
     private EditText etKelompokPart, etAktivitas, etWaktuKerja, etWaktuDefault;
     private NikitaAutoComplete etBiaya;
+
     private int jasaId = 0;
+    private String hari = "", jam = "", menit = "";
+    private String inspeksiJam = "", inspeksiMenit = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,61 +40,68 @@ public class BiayaJasa_Activity extends AppActivity {
         initComponent();
     }
 
+    @SuppressLint("NewApi")
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Biaya Jasa");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Biaya Jasa");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initComponent() {
         initToolbar();
-
         etBiaya = findViewById(R.id.et_biaya_biayaJasa);
         etKelompokPart = findViewById(R.id.et_kelompokPart_biayaJasa);
         etAktivitas = findViewById(R.id.et_aktivitas_biayaJasa);
         etWaktuKerja = findViewById(R.id.et_waktuSet);
         etWaktuDefault = findViewById(R.id.et_waktuDefault);
 
-        etBiaya.addTextChangedListener(textWatcher);
-        find(R.id.img_clear, ImageButton.class).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                etBiaya.setText("");
-            }
-        });
+        initListener();
+        initData();
+    }
 
-        find(R.id.img_waktuKerja, ImageButton.class).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getTimesDialog(find(R.id.et_waktuSet, EditText.class));
-            }
-        });
-
+    private void initData(){
         final Nson n = Nson.readJson(getIntentStringExtra(DATA));
         Log.d("BIAYAJASALAIN", "JASA : " + n);
-        if (getIntent().hasExtra("jasa_lain")) {
+        if (getIntent().hasExtra(JASA_LAIN)) {
             etKelompokPart.setText(n.get("KELOMPOK_PART").toString());
             etAktivitas.setText(n.get("AKTIVITAS").asString());
             etAktivitas.setEnabled(false);
-            jasaId = n.get("NO").asInteger();
+            jasaId = n.get(ID).asInteger();
             //etWaktuDefault.setText(totalJam + " Menit");
             find(R.id.btn_simpan_biayaJasa).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Nson nson = Nson.newObject();
-                    nson.set("NAMA_KELOMPOK_PART", etKelompokPart.getText().toString());
-                    nson.set("JASA_ID", jasaId);
-                    nson.set("HARGA_JASA", etBiaya.getText().toString().replaceAll("[^0-9]+", ""));
-                    nson.set("AKTIVITAS", etAktivitas.getText().toString());
-                    nson.set("WAKTU", etWaktuKerja.getText().toString());
-                    nson.set("OUTSOURCE", find(R.id.cb_outsource, CheckBox.class).isChecked() ? "Y" : "N");
+                    if(etBiaya.getText().toString().isEmpty()){
+                        etBiaya.setError("Biaya Jasa Harus di Isi");
+                        etBiaya.requestFocus();
+                    }else{
+                        Nson nson = Nson.newObject();
+                        nson.set("NAMA_KELOMPOK_PART", etKelompokPart.getText().toString());
+                        nson.set("JASA_ID", jasaId);
+                        nson.set("HARGA_JASA", formatOnlyNumber(etBiaya.getText().toString()));
+                        nson.set("AKTIVITAS", etAktivitas.getText().toString());
+                        nson.set("WAKTU", etWaktuKerja.getText().toString());
+                        nson.set("OUTSOURCE", find(R.id.cb_outsource, CheckBox.class).isChecked() ? "Y" : "N");
+                        nson.set("NET", formatOnlyNumber(etBiaya.getText().toString()));
 
-                    Intent intent = new Intent();
-                    intent.putExtra(DATA, nson.toJson());
-                    Log.d("BIAYAJASALAIN", "JASA : " + nson);
-                    setResult(RESULT_OK, intent);
-                    finish();
+                        hari = find(R.id.et_waktuSet, EditText.class).getText().toString().substring(0, 2);
+                        jam = find(R.id.et_waktuSet, EditText.class).getText().toString().substring(3, 5);
+                        menit = find(R.id.et_waktuSet, EditText.class).getText().toString().substring(6, 8);
+                        inspeksiJam = find(R.id.et_waktu_set_inspeksi, EditText.class).getText().toString().substring(3, 5);
+                        inspeksiMenit = find(R.id.et_waktu_set_inspeksi, EditText.class).getText().toString().substring(6, 8);
+
+                        nson.set("WAKTU_KERJA_HARI", hari);
+                        nson.set("WAKTU_KERJA_JAM", jam);
+                        nson.set("WAKTU_KERJA_MENIT", menit);
+                        nson.set("WAKTU_INSPEKSI_JAM", inspeksiJam);
+                        nson.set("WAKTU_INSPEKSI_MENIT", inspeksiMenit);
+
+                        Intent intent = new Intent();
+                        intent.putExtra(DATA, nson.toJson());
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
                 }
             });
         } else if (getIntent().hasExtra("jasa_berkala")) {
@@ -108,12 +121,18 @@ public class BiayaJasa_Activity extends AppActivity {
 
                     Intent intent = new Intent();
                     intent.putExtra(DATA, nson2.toJson());
-                    Log.d("BIAYAJASALAIN", "JASA : " + n);
                     setResult(RESULT_OK, intent);
                     finish();
                 }
             });
         }
+    }
+
+    private void initListener(){
+        etBiaya.addTextChangedListener(textWatcher);
+        find(R.id.img_clear, ImageButton.class).setOnClickListener(this);
+        find(R.id.btn_img_waktu_kerja).setOnClickListener(this);
+        find(R.id.btn_img_waktu_inspeksi).setOnClickListener(this);
     }
 
     TextWatcher textWatcher = new TextWatcher() {
@@ -148,4 +167,19 @@ public class BiayaJasa_Activity extends AppActivity {
             etBiaya.addTextChangedListener(this);
         }
     };
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.img_clear:
+                etBiaya.setText("");
+                break;
+            case R.id.btn_img_waktu_kerja:
+                getTimesDialog(find(R.id.et_waktuSet, EditText.class));
+                break;
+            case R.id.btn_img_waktu_inspeksi:
+                getTimesDialog(find(R.id.et_waktu_set_inspeksi, EditText.class));
+                break;
+        }
+    }
 }

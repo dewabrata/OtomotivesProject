@@ -15,7 +15,6 @@ import com.naa.data.Nson;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.primary.checkin.Checkin3_Activity;
-import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
 import com.rkrzmail.utils.Tools;
 
 import static com.rkrzmail.utils.ConstUtils.DATA;
@@ -52,7 +51,7 @@ public class JasaExternal_Activity extends AppActivity {
             public void onClick(View v) {
 
                 if(find(R.id.et_waktuSet, EditText.class).getText().toString().isEmpty()){
-                    find(R.id.img_waktuKerja, ImageButton.class).performClick();
+                    find(R.id.btn_img_waktu_kerja, ImageButton.class).performClick();
                     showWarning("Waktu Harus Di Isi");
                 }else if(find(R.id.et_biayaJasa, EditText.class).getText().toString().isEmpty()){
                     find(R.id.et_biayaJasa, EditText.class).setError("Biaya Jasa Harus Di isi");
@@ -78,7 +77,7 @@ public class JasaExternal_Activity extends AppActivity {
             }
         });
 
-        find(R.id.img_waktuKerja, ImageButton.class).setOnClickListener(new View.OnClickListener() {
+        find(R.id.btn_img_waktu_kerja, ImageButton.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getTimesDialog(find(R.id.et_waktuSet, EditText.class));

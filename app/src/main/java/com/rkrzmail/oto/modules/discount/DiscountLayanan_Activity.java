@@ -1,4 +1,4 @@
-package com.rkrzmail.oto.modules.layanan.discount_layanan;
+package com.rkrzmail.oto.modules.discount;
 
 import android.app.SearchManager;
 import android.content.Context;
@@ -23,6 +23,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.discount.AturDiscountLayanan_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;

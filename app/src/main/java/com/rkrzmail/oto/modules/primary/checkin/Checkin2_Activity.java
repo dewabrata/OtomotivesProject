@@ -109,7 +109,7 @@ public class Checkin2_Activity extends AppActivity {
                     @SuppressLint("SimpleDateFormat") Date validationYear = new SimpleDateFormat("yyyy").parse(String.valueOf(year - 4));
                     tahunBeli = inputYear.getTime();
                     tahunSekarang = validationYear.getTime();
-                    if (tahunBeli < tahunSekarang) {
+                    if (tahunBeli <= tahunSekarang) {
                         Tools.setViewAndChildrenEnabled(find(R.id.ly_tgl_beli_checkin2, LinearLayout.class), false);
                         find(R.id.tv_disable).setVisibility(View.VISIBLE);
                     } else {

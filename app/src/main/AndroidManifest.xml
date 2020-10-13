@@ -27,6 +27,7 @@
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,UnusedAttribute"
         tools:replace="android:label">
+        <activity android:name=".modules.primary.TambahPartJasaDanBatal_Activity" />
         <activity android:name=".modules.sparepart.part_keluar.AturPartKeluar_Activity" />
         <activity android:name=".modules.sparepart.part_keluar.DetailPartKeluar_Activity" />
         <activity android:name=".modules.Otp_Activity" />
@@ -77,13 +78,13 @@
         <activity android:name=".modules.jasa.BiayaJasa_Activity" />
         <activity android:name=".modules.jasa.JasaLainBerkala_Activity" />
         <activity android:name=".modules.jasa.JasaLain_Activity" />
-        <activity android:name=".modules.sparepart.new_part.JumlahHargaPart_Activity" />
+        <activity android:name=".modules.sparepart.JumlahHargaPart_Activity" />
         <activity android:name=".modules.sparepart.new_part.Part_Activity" />
         <activity android:name=".modules.sparepart.new_part.PartBerkala_Activity" />
         <activity android:name=".modules.primary.checkin.Checkin3_Activity" />
         <activity android:name=".modules.primary.checkin.Checkin2_Activity" />
         <activity android:name=".modules.primary.checkin.Checkin1_Activity" />
-        <activity android:name=".modules.sparepart.tugas_part.TugasPart_Activity" />
+        <activity android:name=".modules.sparepart.tugas_part.TugasPart_MainTab_Activity" />
         <activity android:name=".modules.profile.ProfileBengkel_Activity" />
         <activity android:name=".modules.sparepart.part_keluar.JumlahPartKeluar_Activity" />
         <activity android:name=".modules.sparepart.part_keluar.PartKeluar_Activity" />
@@ -105,8 +106,8 @@
         <activity android:name=".modules.komisi.KomisiLayanan_Activity" />
         <activity android:name=".modules.jasa.discount_jasa_lain.AturDiscountJasaLain_Activity" />
         <activity android:name=".modules.jasa.discount_jasa_lain.DiscountJasaLain_Activity" />
-        <activity android:name=".modules.layanan.discount_layanan.AturDiscountLayanan_Activity" />
-        <activity android:name=".modules.layanan.discount_layanan.DiscountLayanan_Activity" />
+        <activity android:name=".modules.discount.AturDiscountLayanan_Activity" />
+        <activity android:name=".modules.discount.DiscountLayanan_Activity" />
         <activity android:name=".modules.layanan.DeskripsiLayanan_Activiy" />
         <activity android:name=".modules.rekening_bank.AturRekening_Activity" />
         <activity android:name=".modules.rekening_bank.RekeningBank_Activity" />
@@ -168,7 +169,6 @@
         <activity android:name=".gmod.Lokasi_PersediaanActivity" />
         <activity android:name=".gmod.PenjualanPartActivity" />
         <activity android:name=".gmod.Penerimaan_PartAcitivity" />
-        <activity android:name=".gmod.Part_DiterimaActivity" />
         <activity android:name=".gmod.Stock_OpnameActivity" />
         <activity android:name=".gmod.Penampung_Item_DetailActivity" />
         <activity android:name=".gmod.MyCode" />

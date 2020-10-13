@@ -5,9 +5,25 @@ import com.rkrzmail.oto.AppActivity;
 
 public class ConstUtils {
 
+    //ARGUMENTS PARENT
+    public static final String TUGAS_PART_TERSEDIA = "TUGAS_PART_TERSEDIA";
+    public static final String TUGAS_PART_PERMINTAAN = "TUGAS_PART_PERMINTAAN";
+    public static final String TUGAS_PART_BATAL = "TUGAS_PART_BATAL";
+    public static final String TUGAS_PART_KOSONG = "TUGAS_PART_KOSONG";
+
     //CONST STRING
+    public static final String BENGKEL = "BENGKEL";
+    public static final String BATAL_PART = "BATAL_PART";
+    public static final String TAMBAH_PART = "TAMBAH_PART";
+    public static final String ID = "ID";
+    public static final String TOTAL_BIAYA = "TOTAL_BIAYA";
+    public static final String ESTIMASI_WAKTU = "ESTIMASI_WAKTU";
+    public static final String TAMBAH = "TAMBAH";
+    public static final String TIDAK_MENUNGGU = "TIDAK_MENUNGGU";
+    public static final String MENUNGGU = "MENUNGGU";
     public static final String MASTER_PART = "MASTER_PART";
-    public static final String PARTS = "PARTS";
+    public static final String PARTS_UPPERCASE = "PARTS";
+    public static final String JASA_LAIN = "JASA_LAIN";
     public static final String BATAL = "BATAL";
     public static final String ADD = "ADD";
     public static final String EDIT = "EDIT";
@@ -57,4 +73,6 @@ public class ConstUtils {
     public static final int REQUEST_CODE_SIGN = 37;
     public static final int PERMISSION_REQUEST_CODE = 38;
     public static final int REQUEST_LAYANAN = 39;
+    public static final int REQUEST_TAMBAH_PART_JASA_LAIN = 40;
+    public static final int REQUEST_STATUS = 41;
 }

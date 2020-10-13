@@ -41,6 +41,7 @@ import java.util.Map;
 
 import static com.rkrzmail.utils.APIUrls.VIEW_JASA_LAIN;
 import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.JASA_LAIN;
 
 public class JasaLain_Activity extends AppActivity {
 
@@ -100,7 +101,7 @@ public class JasaLain_Activity extends AppActivity {
             public void onItemClick(Nson parent, View view, int position) {
                 Intent i = new Intent(getActivity(), BiayaJasa_Activity.class);
                 i.putExtra(DATA, parent.get(position).toJson());
-                i.putExtra("jasa_lain", "");
+                i.putExtra(JASA_LAIN, JASA_LAIN);
                 Log.d("JASA_LAIN_CLASS", "JASA : " + parent);
                 startActivityForResult(i, REQUEST_BIAYA);
             }
