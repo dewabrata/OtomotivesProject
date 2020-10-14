@@ -1,5 +1,6 @@
-package com.rkrzmail.oto.modules.jasa.discount_jasa_lain;
+package com.rkrzmail.oto.modules.discount;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -28,12 +29,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class AturDiscountJasaLain_Activity extends AppActivity implements View.OnClickListener {
+import static com.rkrzmail.utils.ConstUtils.DATA;
 
-    private MultiSelectionSpinner spPekerjaan;
+public class AturDiscountJasaLain_Activity extends AppActivity {
+
     private EditText etDiscPart;
-    private TextView tvTgl;
-    private Spinner spAktifitas, spKelompokPart;
+    private Spinner spAktifitas, spKelompokPart, spPekerjaan;
     private String aktivitas = "", kelompokPart = "", pekerjaan = "";
     private List<String> partList = new ArrayList<>(), aktivitasList = new ArrayList<>(), dummy = new ArrayList<>();
 
@@ -54,26 +55,15 @@ public class AturDiscountJasaLain_Activity extends AppActivity implements View.O
 
     private void initComponent() {
         etDiscPart = findViewById(R.id.et_discPart_discJasa);
-        tvTgl = findViewById(R.id.tv_tglEffect_discJasa);
         spPekerjaan = findViewById(R.id.sp_pekerjaan_discJasa);
         spAktifitas = findViewById(R.id.sp_aktifitas_discJasa);
         spKelompokPart = findViewById(R.id.sp_kelompokPart_discJasa);
-
         etDiscPart.addTextChangedListener(new PercentFormat(etDiscPart));
-        tvTgl.setOnClickListener(this);
-        try {
-            loadData();
-            setSpPekerjaan();
-            setSpinnerFromApi(spAktifitas, "cari", "", "viewjasalain", "AKTIVITAS", aktivitas);
-            setSpinnerFromApi(spKelompokPart, "search", " ", "viewjasalain", "NAMA", kelompokPart);
-        } catch (Exception e) {
-            Log.d("Exception___", "initComponent: " + e.getMessage());
-        }
 
+        loadData();
     }
 
     private void saveData() {
-        final String parseTgl = Tools.setFormatDayAndMonthToDb(tvTgl.getText().toString());
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -82,8 +72,8 @@ public class AturDiscountJasaLain_Activity extends AppActivity implements View.O
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "add");
-                args.put("tanggal", parseTgl);
-                args.put("pekerjaan", spPekerjaan.getSelectedItemsAsString());
+                args.put("status", find(R.id.sp_status, Spinner.class).getSelectedItem().toString());
+                args.put("pekerjaan", spPekerjaan.getSelectedItem().toString());
                 args.put("kategori", spKelompokPart.getSelectedItem().toString());
                 args.put("aktivitas", spAktifitas.getSelectedItem().toString());
                 args.put("pesan", find(R.id.cb_mssg_discJasa, CheckBox.class).isChecked() ? "YA" : "TIDAK");
@@ -105,18 +95,17 @@ public class AturDiscountJasaLain_Activity extends AppActivity implements View.O
         });
     }
 
+    @SuppressLint("SetTextI18n")
     private void loadData() {
         final Nson data = Nson.readJson(getIntentStringExtra("data"));
         Log.d("Disc___", "loadData: " + data);
         Intent intent = getIntent();
-        if (intent.hasExtra("data")) {
-            kelompokPart = data.get("KATEGORI_JASA_LAIN").asString();
-            aktivitas = data.get("AKTIVITAS").asString();
-
-            dummy.add(data.get("PEKERJAAN").asString());
-
+        if (intent.hasExtra(DATA)) {
+            setSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN", data.get("PEKERJAAN").asString());
+            setSpinnerFromApi(spAktifitas, "cari", "", "viewjasalain", "AKTIVITAS", data.get("AKTIVITAS").asString());
+            setSpinnerFromApi(spKelompokPart, "search", " ", "viewjasalain", "NAMA", data.get("KATEGORI_JASA_LAIN").asString());
+            setSpStatus(data.get("STATUS").asString());
             etDiscPart.setText(data.get("DISC_JASA").asString());
-            tvTgl.setText(data.get("TANGGAL").asString());
             find(R.id.btn_hapus, Button.class).setVisibility(View.VISIBLE);
             find(R.id.btn_hapus, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -132,6 +121,10 @@ public class AturDiscountJasaLain_Activity extends AppActivity implements View.O
                 }
             });
         } else {
+            setSpStatus("");
+            setSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN", "");
+            setSpinnerFromApi(spAktifitas, "cari", "", "viewjasalain", "AKTIVITAS", "");
+            setSpinnerFromApi(spKelompokPart, "search", " ", "viewjasalain", "NAMA", "");
             find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -142,21 +135,21 @@ public class AturDiscountJasaLain_Activity extends AppActivity implements View.O
     }
 
     private void updateData(final Nson id) {
-        final String parseTgl = Tools.setFormatDayAndMonthToDb(tvTgl.getText().toString());
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
             @Override
             public void run() {
 //              update parameter action : update, CID, tanggal, pekerjaan, kategori, aktivitas, pesan, diskon
+
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "update");
                 args.put("id", id.get("ID").asString());
-                args.put("tanggal", parseTgl);
-                args.put("pekerjaan", spPekerjaan.getSelectedItemsAsString());
+                args.put("status", find(R.id.sp_status, Spinner.class).getSelectedItem().toString());
+                args.put("pekerjaan", spPekerjaan.getSelectedItem().toString());
                 args.put("kategori", spKelompokPart.getSelectedItem().toString());
                 //args.put("aktifitas", spAktifitas.getSelectedItem().toString());
-                args.put("pesan", find(R.id.cb_mssg_discJasa, CheckBox.class).isChecked() ? "YA" : "TIDAK");
+                args.put("pesan", find(R.id.cb_mssg_discJasa, CheckBox.class).isChecked() ? "Y" : "N");
                 args.put("diskon", etDiscPart.getText().toString());
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturdiskonjasalain"), args));
@@ -201,55 +194,21 @@ public class AturDiscountJasaLain_Activity extends AppActivity implements View.O
         });
     }
 
-    private void setSpPekerjaan() {
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
+    private void setSpStatus(String status) {
+        List<String> statusList = new ArrayList<>();
+        statusList.add("TIDAK AKTIF");
+        statusList.add("AKTIF");
 
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("nama", "PEKERJAAN");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewmst"), args));
-            }
-
-            @Override
-            public void runUI() {
-                List<String> pekerjaanList = new ArrayList<>();
-                for (int i = 0; i < result.get("data").size(); i++) {
-                    pekerjaanList.add(result.get("data").get(i).get("PEKERJAAN").asString());
-                }
-                try {
-                    spPekerjaan.setItems(pekerjaanList);
-                    spPekerjaan.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
-                        @Override
-                        public void selectedIndices(List<Integer> indices) {
-
-                        }
-
-                        @Override
-                        public void selectedStrings(List<String> strings) {
-
-                        }
-                    });
-                    spPekerjaan.setSelection(dummy, true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    showInfo("Perlu di Muat Ulang");
+        ArrayAdapter<String> statusAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, statusList);
+        statusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        find(R.id.sp_status, Spinner.class).setAdapter(statusAdapter);
+        if (!status.isEmpty()) {
+            for (int i = 0; i < find(R.id.sp_status, Spinner.class).getCount(); i++) {
+                if (find(R.id.sp_status, Spinner.class).getItemAtPosition(i).equals(status)) {
+                    find(R.id.sp_status, Spinner.class).setSelection(i);
+                    break;
                 }
             }
-        });
-    }
-
-    private void setSpAktifitas() {
-
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.tv_tglEffect_discJasa:
-                getDatePickerDialogTextView(getActivity(), tvTgl);
-                break;
         }
     }
 }

@@ -21,7 +21,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.jasa.discount_jasa_lain.AturDiscountJasaLain_Activity;
+import com.rkrzmail.oto.modules.discount.AturDiscountJasaLain_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 

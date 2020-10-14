@@ -35,7 +35,7 @@ import com.rkrzmail.oto.gmod.MessageWA;
 import com.rkrzmail.oto.gmod.Penerimaan_PartAcitivity;
 import com.rkrzmail.oto.modules.LoginActivity;
 import com.rkrzmail.oto.modules.biayamekanik.BiayaMekanik2Activity;
-import com.rkrzmail.oto.modules.sparepart.diskon_part.DiscountPart_Activity;
+import com.rkrzmail.oto.modules.discount.DiscountPart_Activity;
 import com.rkrzmail.oto.modules.discount.SpotDiscount_Activity;
 import com.rkrzmail.oto.modules.jurnal.DaftarJurnal_Activity;
 import com.rkrzmail.oto.modules.layanan.Layanan_Avtivity;

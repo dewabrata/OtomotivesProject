@@ -1,4 +1,4 @@
-package com.rkrzmail.oto.modules.sparepart.diskon_part;
+package com.rkrzmail.oto.modules.discount;
 
 import android.app.SearchManager;
 import android.content.Context;
@@ -22,19 +22,19 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.discount.AturDiscountJasaLain_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 
-import static com.rkrzmail.utils.APIUrls.ATUR_DISKON_PART;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 
-public class DiscountPart_Activity extends AppActivity {
+public class DiscountJasaLain_Activity extends AppActivity {
 
-    private RecyclerView rvDiscPart;
-
+    private RecyclerView rvDiscJasa;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,11 +43,10 @@ public class DiscountPart_Activity extends AppActivity {
         initComponent();
     }
 
-
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Discount Part");
+        getSupportActionBar().setTitle("Discount Jasa Lain");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -56,48 +55,42 @@ public class DiscountPart_Activity extends AppActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(new Intent(getActivity(), AturDiscountPart_Activity.class), 10);
+                startActivityForResult(new Intent(getActivity(), AturDiscountJasaLain_Activity.class), 10);
             }
         });
 
-        rvDiscPart = findViewById(R.id.recyclerView);
-        rvDiscPart.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rvDiscPart.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_discount_part) {
-            @Override
-            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                super.onBindViewHolder(viewHolder, position);
-                String tglDisc = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("TANGGAL").asString());
-
-                viewHolder.find(R.id.tv_noPart_disc, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
-                viewHolder.find(R.id.tv_namaPart_disc, TextView.class).setText(nListArray.get(position).get("NAMA_PART").asString());
-                viewHolder.find(R.id.tv_hpp_disc, TextView.class).setText(nListArray.get(position).get("TOTAL").asString());
-                viewHolder.find(R.id.tv_pekerjaan_disc, TextView.class).setText(nListArray.get(position).get("PEKERJAAN").asString());
-                viewHolder.find(R.id.tv_discount_disc, TextView.class).setText(nListArray.get(position).get("DISCOUNT_PART").asString());
-                viewHolder.find(R.id.tv_tgl_disc, TextView.class).setText(tglDisc);
-
-            }
-        }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+        rvDiscJasa = findViewById(R.id.recyclerView);
+        rvDiscJasa.setLayoutManager(new LinearLayoutManager(this));
+        rvDiscJasa.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_discount_jasa_lain) {
+                    @Override
+                    public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+                        super.onBindViewHolder(viewHolder, position);
+                        viewHolder.find(R.id.tv_kategori_discJasa, TextView.class).setText(nListArray.get(position).get("KATEGORI_JASA_LAIN").asString());
+                        viewHolder.find(R.id.tv_disc_discJasa, TextView.class).setText(nListArray.get(position).get("DISC_JASA").asString());
+                        viewHolder.find(R.id.tv_status, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
+                    }
+                }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(Nson parent, View view, int position) {
-                        Intent i = new Intent(getActivity(), AturDiscountPart_Activity.class);
+                        Intent i = new Intent(getActivity(), AturDiscountJasaLain_Activity.class);
                         i.putExtra(DATA, nListArray.get(position).toJson());
                         startActivityForResult(i, 10);
                     }
                 })
         );
+
         catchData("");
     }
 
     private void catchData(final String cari) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 args.put("search", cari);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_DISKON_PART), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturdiskonjasalain"), args));
             }
 
             @Override
@@ -105,9 +98,9 @@ public class DiscountPart_Activity extends AppActivity {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
-                    rvDiscPart.getAdapter().notifyDataSetChanged();
+                    rvDiscJasa.getAdapter().notifyDataSetChanged();
                 } else {
-                    showWarning("Gagal Meload Aktifitas");
+                    showInfo("GAGAL!");
                 }
             }
         });
@@ -119,10 +112,11 @@ public class DiscountPart_Activity extends AppActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_part, menu);
 
+
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         mSearchView = new SearchView(getSupportActionBar().getThemedContext());
-        mSearchView.setQueryHint("Cari Part"); /// YOUR HINT MESSAGE
+        mSearchView.setQueryHint("Cari Jasa Lain"); /// YOUR HINT MESSAGE
         mSearchView.setMaxWidth(Integer.MAX_VALUE);
 
         final MenuItem searchMenu = menu.findItem(R.id.action_search);
@@ -134,7 +128,7 @@ public class DiscountPart_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        adapterSearchView(mSearchView, "search", ATUR_DISKON_PART, "NAMA_PART", "");
+        adapterSearchView(mSearchView, "search", "aturdiskonjasalain", "KATEGORI_JASA_LAIN", "");
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
 
@@ -143,6 +137,7 @@ public class DiscountPart_Activity extends AppActivity {
 
             public boolean onQueryTextSubmit(String query) {
                 searchMenu.collapseActionView();
+                //filter(null);
                 catchData(query);
                 return true;
             }

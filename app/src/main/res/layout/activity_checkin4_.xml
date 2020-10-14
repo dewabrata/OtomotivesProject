@@ -493,19 +493,13 @@
                     android:id="@+id/et_ket_checkin4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="KETERANGAN TAMBAHAN "
+                    android:hint="@string/keterangan_tambahan"
                     android:inputType="textMultiLine|textCapCharacters"
                     android:maxLines="5"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    tools:ignore="Autofill" />
 
             </android.support.design.widget.TextInputLayout>
-
-            <CheckBox
-                android:id="@+id/cb_aggrement_checkin4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="SETUJU DENGAN SYARAT DAN KETENTUAN BENGKEL" />
 
             <LinearLayout
                 android:id="@+id/ly_ttd"
@@ -514,10 +508,18 @@
                 android:layout_marginBottom="5dp"
                 android:orientation="vertical">
 
+                <CheckBox
+                    android:id="@+id/cb_aggrement_checkin4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/setuju_dengan_syarat_dan_ketentuan_bengkel" />
+
                 <ImageView
                     android:id="@+id/img_tandaTangan_checkin4"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp" />
+                    android:layout_height="100dp"
+                    tools:ignore="ContentDescription" />
 
                 <Button
                     android:id="@+id/btn_ttd_checkin4"

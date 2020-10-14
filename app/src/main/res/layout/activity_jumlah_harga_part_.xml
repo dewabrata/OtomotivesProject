@@ -160,6 +160,7 @@
                             android:layout_height="wrap_content"
                             android:enabled="false"
                             android:hint="HH:JJ:MM"
+                            android:text="@string/_00_00_00"
                             android:textSize="14sp" />
 
                     </android.support.design.widget.TextInputLayout>
@@ -176,6 +177,7 @@
                             android:layout_height="wrap_content"
                             android:enabled="false"
                             android:hint="@string/hh_jj_mm"
+                            android:text="@string/_00_00_00"
                             android:textSize="14sp" />
 
                     </android.support.design.widget.TextInputLayout>
@@ -220,6 +222,7 @@
                             android:layout_height="wrap_content"
                             android:enabled="false"
                             android:hint="HH:JJ:MM"
+                            android:text="@string/_00_00_00"
                             android:textSize="14sp" />
 
                     </android.support.design.widget.TextInputLayout>
@@ -236,6 +239,7 @@
                             android:layout_height="wrap_content"
                             android:enabled="false"
                             android:hint="@string/hh_jj_mm"
+                            android:text="@string/_00_00_00"
                             android:textSize="14sp" />
 
                     </android.support.design.widget.TextInputLayout>

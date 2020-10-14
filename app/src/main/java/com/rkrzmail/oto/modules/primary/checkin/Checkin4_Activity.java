@@ -149,8 +149,8 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         } else if (getData.get("JENIS_ANTRIAN").asString().equals("H+")) {
             isExtraAndHplus = true;
             Tools.setViewAndChildrenEnabled(find(R.id.ly_estimasi_selesai, LinearLayout.class), true);
-            find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).setEnabled(true);
-            find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setEnabled(false);
+            //find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).setEnabled(true);
+            //find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setEnabled(false);
             find(R.id.tv_disable_estimasi).setVisibility(View.GONE);
         } else {
             isExpressAndStandard = true;
@@ -234,8 +234,8 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
 
                 Tools.setViewAndChildrenEnabled(find(R.id.ly_estimasi_selesai, LinearLayout.class), true);
                 find(R.id.tv_disable_estimasi).setVisibility(View.GONE);
-                find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setEnabled(false);
-                find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setChecked(true);
+                //find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setEnabled(false);
+                //find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setChecked(true);
             } else {
                 isExtraAndHplus = false;
                 result = jenisLayanan;
@@ -456,7 +456,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         });
     }
 
-    private void totalWaktu(Nson result){
+    private void totalWaktu(Nson result) {
         Tools.TimePart waktuMulai = null;
         Tools.TimePart waktuLayanan = Tools.TimePart.parse(waktuLayananStandartExpress);
         Tools.TimePart totalWaktuSelesai;
@@ -696,8 +696,10 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         find(R.id.sp_namaMekanik_checkin4, Spinner.class).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(!parent.getSelectedItem().toString().equals("--PILIH--")){
-                    loadAvailMekanik(parent.getSelectedItem().toString(), find(R.id.tv_jenis_antrian, TextView.class).getText().toString());
+                if (!parent.getSelectedItem().toString().equals("--PILIH--")) {
+                    if (isExpressAndStandard) {
+                        loadAvailMekanik(parent.getSelectedItem().toString(), find(R.id.tv_jenis_antrian, TextView.class).getText().toString());
+                    }
                 }
             }
 
@@ -788,21 +790,21 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         switch (buttonView.getId()) {
             case R.id.cb_konfirmTambah_checkin4:
                 if (buttonView.isChecked()) {
-                    find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setEnabled(false);
+                    //find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setEnabled(false);
                     find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setChecked(false);
                 } else {
-                    find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setEnabled(true);
+                    //find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setEnabled(true);
                     find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setChecked(true);
                 }
                 break;
             case R.id.cb_tidakMenunggu_checkin4:
                 if (buttonView.isChecked()) {
-//                    find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).setEnabled(false);
-//                    find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).setChecked(false);
+                    //find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).setEnabled(false);
+                    find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).setChecked(false);
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_waktuAmbil, LinearLayout.class), true);
                     find(R.id.tv_disable_waktu_antar).setVisibility(View.GONE);
                 } else {
-                    find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).setEnabled(true);
+                    //find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).setEnabled(true);
                     find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).setChecked(true);
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_waktuAmbil, LinearLayout.class), false);
                     find(R.id.tv_disable_waktu_antar).setVisibility(View.VISIBLE);

@@ -27,9 +27,9 @@
                 android:id="@+id/tv_noPart_disc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="No. Part"
-                android:layout_gravity="start"
-                android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Menu"/>
+                android:text="@string/no_part"
+                android:textSize="12sp"
+                android:layout_gravity="start" android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
         </TableRow>
 

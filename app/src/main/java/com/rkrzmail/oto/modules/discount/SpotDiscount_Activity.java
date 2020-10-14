@@ -1,15 +1,17 @@
 package com.rkrzmail.oto.modules.discount;
 
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
+import android.support.annotation.Nullable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,10 +29,15 @@ import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 
+import static com.rkrzmail.utils.ConstUtils.REQUEST_DISC_SPOT;
+
 public class SpotDiscount_Activity extends AppActivity {
 
-    private RecyclerView rvDisc;
+    private RecyclerView rvDisc, rvPelanggan;
     private SearchView mSearchView;
+    private AlertDialog alertDialog;
+    private View dialogView;
+    private Nson pelangganList = Nson.newArray();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,19 +56,22 @@ public class SpotDiscount_Activity extends AppActivity {
     private void initComponent() {
         initToolbar();
 
-        rvDisc = findViewById(R.id.recyclerView);
-        FloatingActionButton fab = findViewById(R.id.fab_tambah);
-        fab.setOnClickListener(new View.OnClickListener() {
+        find(R.id.fab_tambah).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), AturSpotDiscount_Activity.class));
-                finish();
+                initDialogPelanggan();
             }
         });
 
+        initRecylerviewDisc();
+        viewDiscSpot("");
+        viewPelanggan();
+    }
+
+    private void initRecylerviewDisc(){
+        rvDisc = findViewById(R.id.recyclerView);
         rvDisc.setHasFixedSize(true);
         rvDisc.setLayoutManager(new LinearLayoutManager(getActivity()));
-
         rvDisc.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_spot_discount) {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
@@ -75,10 +85,30 @@ public class SpotDiscount_Activity extends AppActivity {
                 viewHolder.find(R.id.tv_disc_spotDisc, TextView.class).setText(nListArray.get(position).get("").asString());
             }
         });
-        catchData("");
     }
 
-    private void catchData(final String cari) {
+    private void initRecylerviewPelanggan(View dialogView){
+        rvPelanggan = dialogView.findViewById(R.id.recyclerView);
+        rvPelanggan.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvPelanggan.setHasFixedSize(true);
+        rvPelanggan.setAdapter(new NikitaRecyclerAdapter(pelangganList, R.layout.item_pelanggan){
+            @Override
+            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+                super.onBindViewHolder(viewHolder, position);
+                viewHolder.find(R.id.tv_nama_pelanggan, TextView.class).setText(pelangganList.get(position).get("NAMA_PELANGGAM").asString());
+                viewHolder.find(R.id.tv_no_ponsel, TextView.class).setText(pelangganList.get(position).get("NO_PONSEL").asString());
+                viewHolder.find(R.id.tv_total_biaya, TextView.class).setText(pelangganList.get(position).get("TOTAL_BIAYA").asString());
+                viewHolder.find(R.id.tv_layanan, TextView.class).setText(pelangganList.get(position).get("LAYANAN").asString());
+            }
+        }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Nson parent, View view, int position) {
+                startActivityForResult(new Intent(getActivity(), AturSpotDiscount_Activity.class), REQUEST_DISC_SPOT);
+            }
+        }));
+    }
+
+    private void viewDiscSpot(final String cari) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
@@ -98,6 +128,40 @@ public class SpotDiscount_Activity extends AppActivity {
                 }
             }
         });
+    }
+
+    private void viewPelanggan(){
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+
+                args.put("action", "view");
+
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturdiskonspot"), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    pelangganList.asArray().addAll(result.get("data").asArray());
+                } else {
+                    showInfo("Gagal");
+                }
+            }
+        });
+    }
+
+    private void initDialogPelanggan(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        dialogView = inflater.inflate(R.layout.activity_list_basic, null);
+        builder.setView(dialogView);
+        builder.create();
+
+        initRecylerviewPelanggan(dialogView);
+        alertDialog = builder.show();
     }
 
     @Override
@@ -129,7 +193,7 @@ public class SpotDiscount_Activity extends AppActivity {
             public boolean onQueryTextSubmit(String query) {
                 searchMenu.collapseActionView();
                 //filter(null);
-                catchData(query);
+                viewDiscSpot(query);
 
                 return true;
             }
@@ -138,4 +202,10 @@ public class SpotDiscount_Activity extends AppActivity {
         return true;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK && requestCode == REQUEST_DISC_SPOT)
+            viewDiscSpot("");
+    }
 }

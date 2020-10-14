@@ -106,10 +106,12 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
     private List<Tools.TimePart> timePartsList = new ArrayList<>();
     private List<Integer> jumlahList = new ArrayList<>();
     private Tools.TimePart dummyTime = Tools.TimePart.parse("00:00:00");
+
     private boolean flagPartWajib = false,
             flagMasterPart = false,
             isPartWajib = false, isSelanjutnya = false, isDelete = false;
     private boolean isPartKosong = false;
+    private boolean isBatal = false;
     private int idAntrian = 0;
 
     @Override
@@ -296,7 +298,6 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
         final String sisa = find(R.id.et_sisa_checkin3, EditText.class).getText().toString().replaceAll("[^0-9]+", "");
         final String tungguKonfirmasi = find(R.id.cb_konfirmBiaya_checkin3, CheckBox.class).isChecked() ? "Y" : "N";
         final int totalPartJasa = jasaList.size() + partList.size();
-
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -308,20 +309,26 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 args.put("action", "add");
                 args.put("check", "1");
                 args.put("id", nson.get("id").asString());
-                args.put("alasanBatal", alasanBatal);
-                args.put("layanan", layanan);
-                args.put("layananestimasi", layananEstimasi);
-                args.put("total", total);
-                args.put("dp", dp);
-                args.put("sisa", sisa);
-                args.put("tunggu", tungguKonfirmasi);
                 args.put("status", status);
-                args.put("partbook", partList.toJson());
-                args.put("jasabook", jasaList.toJson());
-                args.put("totalpartjasa", String.valueOf(totalPartJasa));
-                args.put("antrian", find(R.id.tv_jenis_antrian, TextView.class).getText().toString());
-                args.put("biayaLayanan", formatOnlyNumber(find(R.id.tv_biayaLayanan_checkin, TextView.class).getText().toString()));
-                //inserting waktu layanan part
+
+                if (isBatal) {
+                    args.put("isBatal", "true");
+                    args.put("alasanBatal", alasanBatal);
+                } else {
+                    args.put("layanan", layanan);
+                    args.put("layananestimasi", layananEstimasi);
+                    args.put("total", total);
+                    args.put("dp", dp);
+                    args.put("sisa", sisa);
+                    args.put("tunggu", tungguKonfirmasi);
+                    args.put("partbook", partList.toJson());
+                    args.put("jasabook", jasaList.toJson());
+                    args.put("totalpartjasa", String.valueOf(totalPartJasa));
+                    args.put("antrian", find(R.id.tv_jenis_antrian, TextView.class).getText().toString());
+                    args.put("biayaLayanan", formatOnlyNumber(find(R.id.tv_biayaLayanan_checkin, TextView.class).getText().toString()));
+                    //inserting waktu layanan part
+                }
+
                 args.put("kendaraan", nson.get("jeniskendaraan").asString());
                 args.put("merk", nson.get("merk").asString());
                 args.put("model", nson.get("model").asString());
@@ -344,18 +351,9 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         setResult(RESULT_OK);
                         finish();
                     } else if (status.equalsIgnoreCase("BATAL CHECKIN")) {
-                        if (!alasanBatal.equals("")) {
-                            showSuccess("Layanan Di Batalkan Pelanggan, Data Di Masukkan Ke Kontrol Layanan");
-                            setResult(RESULT_OK);
-                            finish();
-                            return;
-                        }
-
-                        showInfo("Layanan Di Batalkan Pelanggan, Silahkan Isi Field Keterangan Tambahan");
-                        Intent i = new Intent(getActivity(), Checkin4_Activity.class);
-                        i.putExtra(BATAL, "");
-                        startActivityForResult(i, REQUEST_BATAL);
-
+                        showSuccess("Layanan Di Batalkan Pelanggan, Data Di Masukkan Ke Kontrol Layanan");
+                        setResult(RESULT_OK);
+                        finish();
                     } else {
                         nson.set("TOTAL", find(R.id.et_totalBiaya_checkin3, EditText.class).getText().toString());
                         nson.set("WAKTU_LAYANAN", dummyTime.toString());
@@ -649,7 +647,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
 
             initToolbarPartWajib(dialogView);
             initRecylerviewPartWajib(dialogView);
-            builder.setCancelable(false);
+
             builder.create();
             alertDialog = builder.show();
         } else {
@@ -724,7 +722,10 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 break;
             case R.id.btn_batal_checkin3:
                 //batal
-                setSelanjutnya("BATAL CHECKIN", "");
+                showInfo("Layanan Di Batalkan Pelanggan, Silahkan Isi Field Keterangan Tambahan");
+                i = new Intent(getActivity(), Checkin4_Activity.class);
+                i.putExtra(BATAL, "");
+                startActivityForResult(i, REQUEST_BATAL);
                 break;
         }
     }
@@ -831,7 +832,8 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         finish();
                         break;
                     case REQUEST_BATAL:
-                        setSelanjutnya("BATAL CHECKIN", Nson.readJson(getIntentStringExtra("alasanBatal")).asString());
+                        isBatal = true;
+                        setSelanjutnya("BATAL CHECKIN", getIntentStringExtra(data, "alasanBatal"));
                         break;
                     case REQUEST_LAYANAN:
                         setSpNamaLayanan();

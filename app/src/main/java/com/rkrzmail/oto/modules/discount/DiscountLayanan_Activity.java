@@ -30,6 +30,9 @@ import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 
+import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_DISCOUNT;
+
 public class DiscountLayanan_Activity extends AppActivity {
 
     private RecyclerView rvDiscLayanan;
@@ -54,7 +57,7 @@ public class DiscountLayanan_Activity extends AppActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(new Intent(getActivity(), AturDiscountLayanan_Activity.class), 10);
+                startActivityForResult(new Intent(getActivity(), AturDiscountLayanan_Activity.class), REQUEST_DISCOUNT);
             }
         });
 
@@ -76,8 +79,8 @@ public class DiscountLayanan_Activity extends AppActivity {
                     @Override
                     public void onItemClick(Nson parent, View view, int position) {
                         Intent i = new Intent(getActivity(), AturDiscountLayanan_Activity.class);
-                        i.putExtra("data", nListArray.get(position).toJson());
-                        startActivityForResult(i, 10);
+                        i.putExtra(DATA, nListArray.get(position).toJson());
+                        startActivityForResult(i, REQUEST_DISCOUNT);
                     }
                 })
         );
@@ -152,7 +155,7 @@ public class DiscountLayanan_Activity extends AppActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK && requestCode == 10)
+        if(resultCode == RESULT_OK && requestCode == REQUEST_DISCOUNT)
             catchData("");
     }
 }

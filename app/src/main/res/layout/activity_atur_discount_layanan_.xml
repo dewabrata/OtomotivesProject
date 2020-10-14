@@ -129,7 +129,6 @@
 
             </LinearLayout>
 
-
             <android.support.design.widget.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
@@ -159,10 +158,10 @@
                     android:layout_width="0dp"
                     android:layout_weight="3"
                     android:layout_height="wrap_content"
-                    android:text="TANGGAL EFEKTIVE"
+                    android:text="@string/status"
                     android:textColor="@color/grey_900"
                     android:textSize="12sp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
                 <RelativeLayout
                     android:layout_width="0dp"
@@ -170,19 +169,13 @@
                     android:layout_weight="6"
                     android:background="@drawable/background_edittext">
 
-                    <TextView
-                        android:id="@+id/tv_tglEffect_discLayanan"
+                    <Spinner
+                        android:id="@+id/sp_status"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:drawableLeft="@drawable/icon_tanggal"
-                        android:gravity="center"
-                        android:padding="10dp"
-                        android:textStyle="bold"
-                        tools:ignore="RtlHardcoded" />
+                        android:textAlignment="center"/>
 
                 </RelativeLayout>
-
-
 
             </LinearLayout>
 

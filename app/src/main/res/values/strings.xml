@@ -152,6 +152,12 @@
         <item>INDIVIDUAL</item>
     </string-array>
 
+    <string-array name="aktif_tidak_aktif">
+        <item>--PILIH--</item>
+        <item>AKTIF</item>
+        <item>TIDAK AKTIF</item>
+    </string-array>
+
     <string-array name="jenis_booking">
         <item>--PILIH--</item>
         <item>BOOK DEREK</item>
@@ -330,6 +336,7 @@
     <string name="keterangan_message">KETERANGAN / MESSAGE</string>
     <string name="nama_mekanik">Nama Mekanik</string>
     <string name="tanggal_checkin">Tanggal Checkin</string>
-
-
+    <string name="_00_00_00">00:00:00</string>
+    <string name="rp_total_biaya">Rp. Total Biaya</string>
+    <string name="keterangan_tambahan">KETERANGAN TAMBAHAN</string>
 </resources>

@@ -35,18 +35,6 @@
 
         </TableRow>
 
-
-        <TextView
-            android:id="@+id/tv_aktifitas_discJasa"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="Aktivitas"
-            android:textColor="@color/grey_900"
-            android:textSize="12sp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
-
-
         <TableRow android:layout_marginTop="@dimen/spacing_medium">
 
             <TextView
@@ -60,11 +48,11 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
             <TextView
-                android:id="@+id/tv_tgl_discJasa"
+                android:id="@+id/tv_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:text="@string/tanggal"
+                android:text="@string/status"
                 android:textColor="@color/grey_900"
                 android:textSize="12sp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />

@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.discount;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -29,7 +30,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class AturDiscountLayanan_Activity extends AppActivity implements View.OnClickListener {
+import static com.rkrzmail.utils.ConstUtils.DATA;
+
+public class AturDiscountLayanan_Activity extends AppActivity {
 
     private MultiSelectionSpinner spPekerjaan;
     private String lokasi;
@@ -61,7 +64,6 @@ public class AturDiscountLayanan_Activity extends AppActivity implements View.On
 
         find(R.id.et_discPart_discLayanan, EditText.class).addTextChangedListener(new PercentFormat
                 (find(R.id.et_discPart_discLayanan, EditText.class)));
-        find(R.id.tv_tglEffect_discLayanan).setOnClickListener(this);
 
         try {
             setSpLayanan();
@@ -86,6 +88,7 @@ public class AturDiscountLayanan_Activity extends AppActivity implements View.On
                 }, "PEKERJAAN", "");
     }
 
+    @SuppressLint("SetTextI18n")
     private void loadData() {
         final Nson n = Nson.readJson(getIntentStringExtra("data"));
         Intent i = getIntent();
@@ -100,9 +103,9 @@ public class AturDiscountLayanan_Activity extends AppActivity implements View.On
         if (n.get("MESSAGE_PELANGGAN").asString().equalsIgnoreCase("YA")) {
             flagMssg = true;
         }
-        if (i.hasExtra("data")) {
+        if (i.hasExtra(DATA)) {
             layanan = n.get("NAMA_LAYANAN").asString();
-            find(R.id.tv_tglEffect_discLayanan, TextView.class).setText(n.get("TANGGAL").asString());
+            setSpStatus(n.get("STATUS").asString());
             find(R.id.et_discPart_discLayanan, EditText.class).setText(n.get("DISKON").asString());
             find(R.id.cb_bengkel_discLayanan, CheckBox.class).setChecked(flagBengkel);
             find(R.id.cb_tenda_discLayanan, CheckBox.class).setChecked(flagTenda);
@@ -133,7 +136,6 @@ public class AturDiscountLayanan_Activity extends AppActivity implements View.On
     }
 
     private void addData() {
-        final String parseTgl = Tools.setFormatDayAndMonthToDb(find(R.id.tv_tglEffect_discLayanan, TextView.class).getText().toString());
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
@@ -141,7 +143,7 @@ public class AturDiscountLayanan_Activity extends AppActivity implements View.On
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "add");
-                args.put("tanggal", parseTgl);
+                args.put("status", find(R.id.sp_status, Spinner.class).getSelectedItem().toString());
                 args.put("pekerjaan", spPekerjaan.getSelectedItemsAsString());
                 args.put("nama", find(R.id.sp_paketLayanan_discLayanan, Spinner.class).getSelectedItem().toString());
                 args.put("diskon", find(R.id.et_discPart_discLayanan, EditText.class).getText().toString());
@@ -167,7 +169,6 @@ public class AturDiscountLayanan_Activity extends AppActivity implements View.On
     }
 
     private void updateData(final Nson id) {
-        final String parseTgl = Tools.setFormatDayAndMonthToDb(find(R.id.tv_tglEffect_discLayanan, EditText.class).getText().toString());
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
@@ -176,7 +177,7 @@ public class AturDiscountLayanan_Activity extends AppActivity implements View.On
 
                 args.put("action", "update");
                 args.put("id", id.get("ID").asString());
-                args.put("tanggal", parseTgl);
+                args.put("status", find(R.id.sp_status, Spinner.class).getSelectedItem().toString());
                 args.put("pekerjaan", spPekerjaan.getSelectedItemsAsString());
                 args.put("nama", find(R.id.sp_paketLayanan_discLayanan, Spinner.class).getSelectedItem().toString());
                 args.put("diskon", find(R.id.et_discPart_discLayanan, EditText.class).getText().toString());
@@ -237,6 +238,24 @@ public class AturDiscountLayanan_Activity extends AppActivity implements View.On
         }
     };
 
+    private void setSpStatus(String status){
+        List<String> statusList = new ArrayList<>();
+        statusList.add("TIDAK AKTIF");
+        statusList.add("AKTIF");
+
+        ArrayAdapter<String> statusAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, statusList);
+        statusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        find(R.id.sp_status, Spinner.class).setAdapter(statusAdapter);
+        if(!status.isEmpty()){
+            for (int i = 0; i < find(R.id.sp_status, Spinner.class).getCount(); i++) {
+                if(find(R.id.sp_status, Spinner.class).getItemAtPosition(i).equals(status)){
+                    find(R.id.sp_status, Spinner.class).setSelection(i);
+                    break;
+                }
+            }
+        }
+    }
+
     private void setSpLayanan() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
@@ -270,14 +289,5 @@ public class AturDiscountLayanan_Activity extends AppActivity implements View.On
                 }
             }
         });
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.tv_tglEffect_discLayanan:
-                getDatePickerDialogTextView(getActivity(), find(R.id.tv_tglEffect_discLayanan, TextView.class));
-                break;
-        }
     }
 }

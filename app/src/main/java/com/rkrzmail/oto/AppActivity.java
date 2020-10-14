@@ -700,8 +700,9 @@ public class AppActivity extends AppCompatActivity {
                 spinner.setAdapter(spinnerAdapter);
                 if (!selection.isEmpty()) {
                     for (int i = 0; i < newStr.size(); i++) {
-                        if (spinner.getItemAtPosition(i).toString().contains(selection)) {
+                        if (spinner.getItemAtPosition(i).toString().equals(selection)) {
                             spinner.setSelection(i);
+                            break;
                         }
                     }
                 }

@@ -145,8 +145,8 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
             etJumlah.setEnabled(false);
             etBiayaJasa.setEnabled(false);
             etBiayaJasa.setText("0");
-            find(R.id.et_waktuDefault, EditText.class).setText("0");
-            find(R.id.et_waktuSet, EditText.class).setText("0");
+            find(R.id.et_waktuDefault, EditText.class).setText(getResources().getString(R.string._00_00_00));
+            find(R.id.et_waktuSet, EditText.class).setText(getResources().getString(R.string._00_00_00));
             find(R.id.btn_img_waktu_kerja, ImageButton.class).setEnabled(false);
             //find(R.id.et_waktuDefault, EditText.class).setText(loadWaktuKerja("0", nson.get("WAKTU_KERJA_JAM").asString(), nson.get("WAKTU_KERJA_MENIT").asString()));
             find(R.id.btn_simpan_jumlah_harga_part, Button.class).setOnClickListener(new View.OnClickListener() {
