@@ -13,7 +13,7 @@ public class APIUrls {
     public static final String VIEW_NOMOR_PONSEL = "nomorponsel";
     public static final String VIEW_JENIS_KENDARAAN = "jeniskendaraan";
     public static final String VIEW_NOMOR_POLISI = "viewnopol";
-    public static final String VIEW_PELANGGAN = "datapelanggan";
+    public static final String VIEW_PELANGGAN = "viewpelanggan";
     public static final String VIEW_JASA_LAIN = "viewjasalain";
     public static final String VIEW_JASA_LAIN_BERKALA = "viewjasalainberkala";
     public static final String VIEW_DATA_BENGKEL = "databengkel";
@@ -34,4 +34,5 @@ public class APIUrls {
     public static final String ATUR_LOKASI_PART = "aturlokasipart";
     public static final String ATUR_DISKON_PART = "aturdiskonpart";
     public static final String ATUR_KONTROL_LAYANAN = "aturkontrollayanan";
+    public static final String ATUR_DISC_SPOT = "aturdiskonspot";
 }

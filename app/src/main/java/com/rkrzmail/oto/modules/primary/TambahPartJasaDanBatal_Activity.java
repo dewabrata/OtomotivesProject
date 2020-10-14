@@ -137,9 +137,14 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
 
         if (getIntent().hasExtra(TAMBAH_PART)) {
             isTambah = true;
-            find(R.id.et_estimasi_lama, EditText.class).setText(getIntentStringExtra(ESTIMASI_WAKTU));
-            dummyTime.add(Tools.TimePart.parse("00:" + find(R.id.et_estimasi_lama, EditText.class).getText().toString()));
-
+            String estimasiLama;
+            if(!getIntentStringExtra(ESTIMASI_WAKTU).contains(":")){
+                estimasiLama = "00:00";
+            }else{
+                estimasiLama = getIntentStringExtra(ESTIMASI_WAKTU);
+            }
+            dummyTime.add(Tools.TimePart.parse("00:" + estimasiLama));
+            find(R.id.et_estimasi_lama, EditText.class).setText(estimasiLama);
             if (getIntent().hasExtra(TIDAK_MENUNGGU)) {
                 isNotWait = true;
                 find(R.id.ly_tidak_menunggu).setVisibility(View.VISIBLE);
@@ -165,7 +170,6 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                 rvJasaLain.getAdapter().notifyDataSetChanged();
             }
         }
-
     }
 
     public void getTimePickerDialogEstimasiSelesai() {

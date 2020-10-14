@@ -12,82 +12,71 @@
     android:layout_marginBottom="4dp"
     android:layout_weight="5"
     android:padding="10dp"
-    app:cardElevation="5dp"
-    app:cardCornerRadius="10dp">
+    app:cardCornerRadius="10dp"
+    app:cardElevation="2dp">
 
-    <LinearLayout
+    <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:orientation="vertical"
+        android:stretchColumns="*"
         android:padding="10dp">
 
-        <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:stretchColumns="*">
+        <TableRow>
 
-            <TableRow android:layout_marginTop="5dp">
+            <TextView
+                android:id="@+id/tv_tanggal_spotDisc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/tanggal"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp" />
 
-                <TextView
-                    android:id="@+id/tv_tanggal_spotDisc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tanggal"
-                    android:textSize="12sp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:layout_gravity="start"/>
+            <TextView
+                android:id="@+id/tv_user_spotDisc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="@string/user"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp" />
 
-                <TextView
-                    android:id="@+id/tv_user_spotDisc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="User"
-                    android:textSize="12sp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:layout_gravity="end"/>
+        </TableRow>
 
-            </TableRow>
+        <TableRow android:layout_marginTop="5dp">
 
-            <TableRow android:layout_marginTop="5dp">
+            <TextView
+                android:id="@+id/tv_namaPelanggan_spotDisc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/nama_pelanggan"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp" />
 
-                <TextView
-                    android:id="@+id/tv_namaPelanggan_spotDisc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Nama Pelanggan"
-                    android:textSize="12sp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:layout_gravity="start"/>
+        </TableRow>
 
-            </TableRow>
+        <TableRow android:layout_marginTop="5dp">
 
-            <TableRow android:layout_marginTop="5dp">
+            <TextView
+                android:id="@+id/tv_transaksi_spotDisc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/transaksi"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp" />
 
-                <TextView
-                    android:id="@+id/tv_transaksi_spotDisc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Transaksi"
-                    android:textSize="12sp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+            <TextView
+                android:id="@+id/tv_disc_spotDisc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="@string/spot_disc"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp" />
 
-                <TextView
-                    android:id="@+id/tv_disc_spotDisc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Spot Disc"
-                    android:textSize="12sp"
-                    android:layout_gravity="end"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+        </TableRow>
 
-            </TableRow>
-
-
-        </TableLayout>
-
-
-    </LinearLayout>
+    </TableLayout>
 
 </android.support.v7.widget.CardView>

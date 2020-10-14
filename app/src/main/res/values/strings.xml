@@ -339,4 +339,11 @@
     <string name="_00_00_00">00:00:00</string>
     <string name="rp_total_biaya">Rp. Total Biaya</string>
     <string name="keterangan_tambahan">KETERANGAN TAMBAHAN</string>
+    <string name="total_biaya">TOTAL BIAYA</string>
+    <string name="discount_lain">DISCOUNT LAIN</string>
+    <string name="net_transaksi">NET TRANSAKSI</string>
+    <string name="total_transaksi">TOTAL TRANSAKSI</string>
+    <string name="nama_pelanggan_uppercase">NAMA PELANGGAN</string>
+    <string name="transaksi">Transaksi</string>
+    <string name="spot_disc">Spot Disc</string>
 </resources>

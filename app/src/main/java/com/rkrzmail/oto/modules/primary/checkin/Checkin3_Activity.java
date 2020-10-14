@@ -173,13 +173,13 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 try {
                     if (Tools.isNumeric(partList.get(position).get("HARGA_PART").asString())) {
                         viewHolder.find(R.id.tv_hargaNet_booking3_checkin3, TextView.class).setText(
-                                "Rp. " + formatRp(partList.get(position).get("HARGA_PART").asString()));
+                                RP + formatRp(partList.get(position).get("HARGA_PART").asString()));
                     } else {
                         viewHolder.find(R.id.tv_hargaNet_booking3_checkin3, TextView.class).setText(partList.get(position).get("HARGA_PART").asString());
                     }
                     if (Tools.isNumeric(partList.get(position).get("HARGA_JASA").asString()) || !partList.get(position).get("HARGA_JASA").asString().isEmpty()) {
                         viewHolder.find(R.id.tv_jasaNet_booking3_checkin3, TextView.class).setText(
-                                "Rp. " + formatRp(partList.get(position).get("HARGA_JASA").asString()));
+                                RP + formatRp(partList.get(position).get("HARGA_JASA").asString()));
                     } else {
                         viewHolder.find(R.id.tv_jasaNet_booking3_checkin3, TextView.class).setText("");
                     }

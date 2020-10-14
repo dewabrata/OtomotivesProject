@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.registrasi_bengkel;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -46,12 +47,14 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
     private String[] itemsMerk;
     private String typeKendaraan, bidangUsaha = "";
     private boolean isKategori, isRegist = false;
+
     private List<String> motorList = new ArrayList<>(),
             mobilList = new ArrayList<>(),
             allList = new ArrayList<>(),
             noHpList = new ArrayList<>(),
             merkMotorList = new ArrayList<>(),
             merkMobilList = new ArrayList<>(), allMerkList = new ArrayList<>();
+
     private int count = 0;
 
     @Override
@@ -95,6 +98,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                 }
             }
 
+            @SuppressLint("SetTextI18n")
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 int counting = (s == null) ? 0 : s.toString().length();

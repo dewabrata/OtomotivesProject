@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.discount;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
@@ -28,8 +29,15 @@ import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
+import java.util.Objects;
 
+import static com.rkrzmail.utils.APIUrls.ATUR_DISC_SPOT;
+import static com.rkrzmail.utils.APIUrls.VIEW_PELANGGAN;
+import static com.rkrzmail.utils.ConstUtils.ADD;
+import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.EDIT;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DISC_SPOT;
+import static com.rkrzmail.utils.ConstUtils.RP;
 
 public class SpotDiscount_Activity extends AppActivity {
 
@@ -55,17 +63,14 @@ public class SpotDiscount_Activity extends AppActivity {
 
     private void initComponent() {
         initToolbar();
-
         find(R.id.fab_tambah).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 initDialogPelanggan();
             }
         });
-
         initRecylerviewDisc();
         viewDiscSpot("");
-        viewPelanggan();
     }
 
     private void initRecylerviewDisc(){
@@ -73,18 +78,26 @@ public class SpotDiscount_Activity extends AppActivity {
         rvDisc.setHasFixedSize(true);
         rvDisc.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvDisc.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_spot_discount) {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
-                String tglSet = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("").asString());
-
+                String tglSet = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("TANGGAL").asString());
                 viewHolder.find(R.id.tv_tanggal_spotDisc, TextView.class).setText(tglSet);
-                viewHolder.find(R.id.tv_user_spotDisc, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_namaPelanggan_spotDisc, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_transaksi_spotDisc, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_disc_spotDisc, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_user_spotDisc, TextView.class).setText(nListArray.get(position).get("USER").asString());
+                viewHolder.find(R.id.tv_namaPelanggan_spotDisc, TextView.class).setText(nListArray.get(position).get("NAMA_PELANGGAN").asString());
+                viewHolder.find(R.id.tv_transaksi_spotDisc, TextView.class).setText(RP + formatRp(nListArray.get(position).get("TRANSAKSI").asString()));
+                viewHolder.find(R.id.tv_disc_spotDisc, TextView.class).setText(nListArray.get(position).get("SPOT_DISCOUNT").asString());
             }
-        });
+        }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Nson parent, View view, int position) {
+                Intent i = new Intent(getActivity(), AturSpotDiscount_Activity.class);
+                i.putExtra(EDIT, "");
+                i.putExtra(DATA, pelangganList.get(position).toJson());
+                startActivityForResult(i, REQUEST_DISC_SPOT);
+            }
+        }));
     }
 
     private void initRecylerviewPelanggan(View dialogView){
@@ -92,18 +105,26 @@ public class SpotDiscount_Activity extends AppActivity {
         rvPelanggan.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvPelanggan.setHasFixedSize(true);
         rvPelanggan.setAdapter(new NikitaRecyclerAdapter(pelangganList, R.layout.item_pelanggan){
+            @SuppressLint("SetTextI18n")
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
-                viewHolder.find(R.id.tv_nama_pelanggan, TextView.class).setText(pelangganList.get(position).get("NAMA_PELANGGAM").asString());
-                viewHolder.find(R.id.tv_no_ponsel, TextView.class).setText(pelangganList.get(position).get("NO_PONSEL").asString());
-                viewHolder.find(R.id.tv_total_biaya, TextView.class).setText(pelangganList.get(position).get("TOTAL_BIAYA").asString());
+                viewHolder.find(R.id.tv_nama_pelanggan, TextView.class).setText(pelangganList.get(position).get("NAMA_PELANGGAN").asString());
+                String nomor =  pelangganList.get(position).get("NO_PONSEL").asString();
+                if(pelangganList.get(position).get("NO_PONSEL").asString().length() > 4){
+                    nomor = "XXXXXXXXX" + nomor.substring(nomor.length() - 4);
+                }
+                viewHolder.find(R.id.tv_no_ponsel, TextView.class).setText(nomor);
+                viewHolder.find(R.id.tv_total_biaya, TextView.class).setText(RP + formatRp(pelangganList.get(position).get("TOTAL_BIAYA").asString()));
                 viewHolder.find(R.id.tv_layanan, TextView.class).setText(pelangganList.get(position).get("LAYANAN").asString());
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
-                startActivityForResult(new Intent(getActivity(), AturSpotDiscount_Activity.class), REQUEST_DISC_SPOT);
+                Intent i = new Intent(getActivity(), AturSpotDiscount_Activity.class);
+                i.putExtra(ADD, "");
+                i.putExtra(DATA, pelangganList.get(position).toJson());
+                startActivityForResult(i, REQUEST_DISC_SPOT);
             }
         }));
     }
@@ -116,38 +137,43 @@ public class SpotDiscount_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 args.put("search", cari);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturdiskonspot"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_DISC_SPOT), args));
             }
 
+            @SuppressLint("NewApi")
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-
+                    nListArray.asArray().clear();
+                    nListArray.asArray().addAll(result.get("data").asArray());
+                    Objects.requireNonNull(rvDisc.getAdapter()).notifyDataSetChanged();
                 } else {
-                    showInfo("Gagal");
+                    showError(result.get("message").asString());
                 }
             }
         });
     }
 
-    private void viewPelanggan(){
+    private void viewPelanggan(final AlertDialog.Builder builder){
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-
-                args.put("action", "view");
-
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturdiskonspot"), args));
+                args.put("action", "DISC_SPOT");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PELANGGAN), args));
             }
 
+            @SuppressLint("NewApi")
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    pelangganList.asArray().clear();
                     pelangganList.asArray().addAll(result.get("data").asArray());
+                    Objects.requireNonNull(rvPelanggan.getAdapter()).notifyDataSetChanged();
+                    alertDialog = builder.show();
                 } else {
-                    showInfo("Gagal");
+                    showError(result.get("message").asString());
                 }
             }
         });
@@ -161,7 +187,7 @@ public class SpotDiscount_Activity extends AppActivity {
         builder.create();
 
         initRecylerviewPelanggan(dialogView);
-        alertDialog = builder.show();
+        viewPelanggan(builder);
     }
 
     @Override
