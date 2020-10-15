@@ -30,7 +30,7 @@ import static com.rkrzmail.utils.ConstUtils.CARI_PART;
 import static com.rkrzmail.utils.ConstUtils.DETAIL;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
 
-public class JumlahPartKeluar_Activity extends AppActivity {
+public class JumlahPart_PartKeluar_Activity extends AppActivity {
 
     private int countScan = 0;
     private Nson partKeluarList = Nson.newObject();

@@ -561,7 +561,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
 
     private void saveData(final String status) {
         final Nson nson = Nson.readJson(getIntentStringExtra(DATA));
-        final String namaMekanik = find(R.id.sp_namaMekanik_checkin4, Spinner.class).getSelectedItem().toString();
+        final String namaMekanik = find(R.id.sp_namaMekanik_checkin4, Spinner.class).getSelectedItem().toString().contains("--PILIH--") ? "" : find(R.id.sp_namaMekanik_checkin4, Spinner.class).getSelectedItem().toString();
         final String antrian = find(R.id.tv_jenis_antrian, TextView.class).getText().toString().replace("Jenis Antrian : ", "").trim();
         final String levelBbm = find(R.id.tv_ketBbbm_checkin4, TextView.class).getText().toString();
         final String tidakMenunggu = find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).isChecked() ? "Y" : "N";

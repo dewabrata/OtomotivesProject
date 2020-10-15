@@ -36,7 +36,7 @@ import java.util.Objects;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CONTACT;
 
-public class StatusPartKosong_Activity extends AppActivity {
+public class Status_PartKosong_Activity extends AppActivity {
 
     Spinner spStatus, spTipeSupplier;
     private boolean isOrder = false;

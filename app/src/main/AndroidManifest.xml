@@ -27,7 +27,7 @@
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,UnusedAttribute"
         tools:replace="android:label">
-        <activity android:name=".modules.sparepart.StatusPartKosong_Activity"></activity>
+        <activity android:name=".modules.sparepart.Status_PartKosong_Activity"></activity>
         <activity android:name=".modules.checkin.TambahPartJasaDanBatal_Activity" />
         <activity android:name=".modules.sparepart.AturPartKeluar_Activity" />
         <activity android:name=".modules.sparepart.DetailPartKeluar_Activity" />
@@ -46,7 +46,7 @@
         <activity android:name=".modules.hutang.DetailPiutang_Activity" />
         <activity android:name=".modules.hutang.Piutang_Activity" />
         <activity android:name=".modules.LocationPicker_Activity" />
-        <activity android:name=".modules.sparepart.StatusTugasPart_Activity" />
+        <activity android:name=".modules.sparepart.Status_TugasPart_Activity" />
         <activity android:name=".modules.bengkel.ManualMessage_Activity" />
         <activity android:name=".modules.bengkel.Message_Activity" />
         <activity android:name=".modules.antar_jemput.SerahTerima_Activity" />
@@ -78,7 +78,7 @@
         <activity android:name=".modules.jasa.BiayaJasa_Activity" />
         <activity android:name=".modules.jasa.JasaLainBerkala_Activity" />
         <activity android:name=".modules.jasa.JasaLain_Activity" />
-        <activity android:name=".modules.sparepart.JumlahHargaPart_Activity" />
+        <activity android:name=".modules.sparepart.JumlahPart_HargaPart_Activity" />
         <activity android:name=".modules.sparepart.Part_Activity" />
         <activity android:name=".modules.sparepart.PartBerkala_Activity" />
         <activity android:name=".modules.checkin.Checkin3_Activity" />
@@ -86,7 +86,7 @@
         <activity android:name=".modules.checkin.Checkin1_Activity" />
         <activity android:name=".modules.sparepart.TugasPart_MainTab_Activity" />
         <activity android:name=".modules.bengkel.ProfileBengkel_Activity" />
-        <activity android:name=".modules.sparepart.JumlahPartKeluar_Activity" />
+        <activity android:name=".modules.sparepart.JumlahPart_PartKeluar_Activity" />
         <activity android:name=".modules.sparepart.PartKeluar_Activity" />
         <activity android:name=".modules.sparepart.DaftarJualPart_Activity" />
         <activity android:name=".modules.sparepart.DetailJualPart_Activity" />

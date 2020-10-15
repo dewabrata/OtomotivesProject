@@ -20,7 +20,7 @@ import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.sparepart.StatusPartKosong_Activity;
+import com.rkrzmail.oto.modules.sparepart.Status_PartKosong_Activity;
 import com.rkrzmail.oto.modules.sparepart.TugasPart_MainTab_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
@@ -33,13 +33,13 @@ import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_PART_KOSONG;
 import static com.rkrzmail.utils.ConstUtils.TUGAS_PART_KOSONG;
 
-public class PartKosong_Tugas_Part_Fragment extends Fragment {
+public class PartKosong_TugasPart_Fragment extends Fragment {
 
 
     RecyclerView rvPartKosong;
     private Nson partKosongList = Nson.newArray();
 
-    public PartKosong_Tugas_Part_Fragment() {
+    public PartKosong_TugasPart_Fragment() {
 
     }
 
@@ -91,7 +91,7 @@ public class PartKosong_Tugas_Part_Fragment extends Fragment {
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
-                Intent i = new Intent(getActivity(), StatusPartKosong_Activity.class);
+                Intent i = new Intent(getActivity(), Status_PartKosong_Activity.class);
                 i.putExtra(DATA, partKosongList.get(position).toJson());
                 startActivityForResult(i, REQUEST_PART_KOSONG);
             }

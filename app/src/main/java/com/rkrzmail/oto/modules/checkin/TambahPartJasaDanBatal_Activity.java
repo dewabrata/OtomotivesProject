@@ -35,7 +35,7 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.gmod.Capture;
 import com.rkrzmail.oto.modules.jasa.JasaLain_Activity;
 import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
-import com.rkrzmail.oto.modules.sparepart.JumlahHargaPart_Activity;
+import com.rkrzmail.oto.modules.sparepart.JumlahPart_HargaPart_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
@@ -507,7 +507,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                     }
                     break;
                 case REQUEST_CARI_PART:
-                    i = new Intent(getActivity(), JumlahHargaPart_Activity.class);
+                    i = new Intent(getActivity(), JumlahPart_HargaPart_Activity.class);
                     i.putExtra(DATA, Nson.readJson(getIntentStringExtra(data, PART)).toJson());
                     i.putExtra(BENGKEL, "");
                     startActivityForResult(i, REQUEST_HARGA_PART);

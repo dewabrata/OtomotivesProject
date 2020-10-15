@@ -20,6 +20,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.sparepart.DetailTerimaPart_Activity;
+import com.rkrzmail.oto.modules.sparepart.Status_TugasPart_Activity;
 import com.rkrzmail.oto.modules.sparepart.TugasPart_MainTab_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
@@ -31,32 +32,15 @@ import static com.rkrzmail.utils.APIUrls.VIEW_TUGAS_PART;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.PART;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
-import static com.rkrzmail.utils.ConstUtils.TUGAS_PART_TERSEDIA;
+import static com.rkrzmail.utils.ConstUtils.TUGAS_PART_PERMINTAAN;
 
+public class Permintaan_TugasPart_Fragment extends Fragment {
 
-public class Tersedia_TugasPart_Fragment extends Fragment {
+    RecyclerView rvPermintaanPart;
+    Nson permintaanPartList = Nson.newArray();
 
+    public Permintaan_TugasPart_Fragment() {
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    private String mParam1;
-    private String mParam2;
-
-    RecyclerView rvPartTersedia;
-
-    private Nson tersediaList = Nson.newArray();
-
-    public Tersedia_TugasPart_Fragment() {
-
-    }
-
-    public static Tersedia_TugasPart_Fragment newInstance(String param1, String param2) {
-        Tersedia_TugasPart_Fragment fragment = new Tersedia_TugasPart_Fragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
@@ -64,7 +48,7 @@ public class Tersedia_TugasPart_Fragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             Nson dataList = Nson.newArray();
-            dataList.add(getArguments().getString(TUGAS_PART_TERSEDIA));
+            dataList.add(getArguments().getString(TUGAS_PART_PERMINTAAN));
             Log.d("Tersedia__", "onCreate: " + dataList);
         }
     }
@@ -74,8 +58,9 @@ public class Tersedia_TugasPart_Fragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_list_basic, container, false);
         initHideToolbar(view);
-        initComponent(view);
-        viewPartTersedia();
+        rvPermintaanPart = view.findViewById(R.id.recyclerView);
+        initRecylerviewPermintaan();
+        viewPartPermintaan();
         return view;
     }
 
@@ -84,32 +69,31 @@ public class Tersedia_TugasPart_Fragment extends Fragment {
         appBarLayout.setVisibility(View.GONE);
     }
 
-    private void initComponent(View view){
-        rvPartTersedia = view.findViewById(R.id.recyclerView);
-        rvPartTersedia.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rvPartTersedia.setHasFixedSize(true);
-        rvPartTersedia.setAdapter(new NikitaRecyclerAdapter(tersediaList, R.layout.item_tersedia_permintaan_tugas_part){
+    private void initRecylerviewPermintaan(){
+        rvPermintaanPart.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvPermintaanPart.setHasFixedSize(true);
+        rvPermintaanPart.setAdapter(new NikitaRecyclerAdapter(permintaanPartList, R.layout.item_tersedia_permintaan_tugas_part){
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
-                viewHolder.find(R.id.tv_nama_mekanik, TextView.class).setText(tersediaList.get(position).get("MEKANIK").asString());
-                viewHolder.find(R.id.tv_nama_pelanggan, TextView.class).setText(tersediaList.get(position).get("NAMA_PELANGGAN").asString());
-                viewHolder.find(R.id.tv_nopol, TextView.class).setText(tersediaList.get(position).get("NOPOL").asString());
-                viewHolder.find(R.id.tv_tgl_checkin, TextView.class).setText(tersediaList.get(position).get("TANGGAL_CHECKIN").asString());
+                viewHolder.find(R.id.tv_nama_mekanik, TextView.class).setText(permintaanPartList.get(position).get("MEKANIK").asString());
+                viewHolder.find(R.id.tv_nama_pelanggan, TextView.class).setText(permintaanPartList.get(position).get("NAMA_PELANGGAN").asString());
+                viewHolder.find(R.id.tv_nopol, TextView.class).setText(permintaanPartList.get(position).get("NOPOL").asString());
+                viewHolder.find(R.id.tv_tgl_checkin, TextView.class).setText(permintaanPartList.get(position).get("TANGGAL_CHECKIN").asString());
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
-                Intent i = new Intent(getActivity(), DetailTerimaPart_Activity.class);
-                i.putExtra(TUGAS_PART_TERSEDIA, "");
-                i.putExtra(DATA, tersediaList.get(position).toJson());
+                Intent i = new Intent(getActivity(), Status_TugasPart_Activity.class);
+                i.putExtra(TUGAS_PART_PERMINTAAN, "");
+                i.putExtra(DATA, permintaanPartList.get(position).toJson());
                 startActivityForResult(i, REQUEST_DETAIL);
             }
         }));
     }
 
     @SuppressLint("NewApi")
-    private void viewPartTersedia() {
+    private void viewPartPermintaan() {
         ((TugasPart_MainTab_Activity) Objects.requireNonNull(getActivity())).newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
@@ -117,7 +101,7 @@ public class Tersedia_TugasPart_Fragment extends Fragment {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "view");
-                args.put("mgroup", "TERSEDIA");
+                args.put("mgroup", "PERMINTAAN");
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_TUGAS_PART), args));
             }
@@ -126,13 +110,12 @@ public class Tersedia_TugasPart_Fragment extends Fragment {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    tersediaList.asArray().addAll(result.get("data").asArray());
-                    Objects.requireNonNull(rvPartTersedia.getAdapter()).notifyDataSetChanged();
+                    permintaanPartList.asArray().addAll(result.get("data").asArray());
+                    rvPermintaanPart.getAdapter().notifyDataSetChanged();
                 } else {
                     ((TugasPart_MainTab_Activity) Objects.requireNonNull(getActivity())).showError(result.get("message").asString());
                 }
             }
         });
     }
-
 }

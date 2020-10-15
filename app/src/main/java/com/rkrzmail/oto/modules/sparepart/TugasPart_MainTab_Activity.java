@@ -20,9 +20,9 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.Fragment.BatalPart_Tugas_Part_Fragment;
-import com.rkrzmail.oto.modules.Fragment.PartKosong_Tugas_Part_Fragment;
-import com.rkrzmail.oto.modules.Fragment.Permintaan_Tugas_Part_Fragment;
+import com.rkrzmail.oto.modules.Fragment.BatalPart_TugasPart_Fragment;
+import com.rkrzmail.oto.modules.Fragment.PartKosong_TugasPart_Fragment;
+import com.rkrzmail.oto.modules.Fragment.Permintaan_TugasPart_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Tersedia_TugasPart_Fragment;
 import com.rkrzmail.srv.FragmentsAdapter;
 
@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.rkrzmail.utils.APIUrls.VIEW_TUGAS_PART;
 import static com.rkrzmail.utils.ConstUtils.TUGAS_PART_BATAL;
 import static com.rkrzmail.utils.ConstUtils.TUGAS_PART_KOSONG;
 import static com.rkrzmail.utils.ConstUtils.TUGAS_PART_PERMINTAAN;
@@ -60,29 +61,27 @@ public class TugasPart_MainTab_Activity extends AppActivity {
     private void initComponent() {
         initToolbar();
 
-        viewPartPermintaan();
-        viewPartTersedia();
         viewPartBatal();
 
         ViewPager vpTugasParts = findViewById(R.id.vp_tugas_part);
         TabLayout tabLayoutTugasParts = findViewById(R.id.tablayout_tugas_part);
 
         ArrayList<Fragment> fragments = new ArrayList<>();
-        fragments.add(new Permintaan_Tugas_Part_Fragment());
+        fragments.add(new Permintaan_TugasPart_Fragment());
         fragments.add(new Tersedia_TugasPart_Fragment());
-        fragments.add(new BatalPart_Tugas_Part_Fragment());
-        fragments.add(new PartKosong_Tugas_Part_Fragment());
+        fragments.add(new BatalPart_TugasPart_Fragment());
+        fragments.add(new PartKosong_TugasPart_Fragment());
 
         FragmentsAdapter pagerAdapter = new FragmentsAdapter(getSupportFragmentManager());
 
         for (int i = 0; i < fragments.size(); i++) {
-            if(fragments.get(i) instanceof Permintaan_Tugas_Part_Fragment){
+            if(fragments.get(i) instanceof Permintaan_TugasPart_Fragment){
                 pagerAdapter = new FragmentsAdapter(getSupportFragmentManager(), getActivity(), fragments, partPermintaanList, TUGAS_PART_PERMINTAAN);
             }else if(fragments.get(i) instanceof Tersedia_TugasPart_Fragment){
                 pagerAdapter = new FragmentsAdapter(getSupportFragmentManager(), getActivity(), fragments, partTersediaList, TUGAS_PART_TERSEDIA);
-            }else if(fragments.get(i) instanceof BatalPart_Tugas_Part_Fragment){
+            }else if(fragments.get(i) instanceof BatalPart_TugasPart_Fragment){
                 pagerAdapter = new FragmentsAdapter(getSupportFragmentManager(), getActivity(), fragments, partBatalList, TUGAS_PART_BATAL);
-            }else if(fragments.get(i) instanceof PartKosong_Tugas_Part_Fragment){
+            }else if(fragments.get(i) instanceof PartKosong_TugasPart_Fragment){
                 pagerAdapter = new FragmentsAdapter(getSupportFragmentManager(), getActivity(), fragments, partKosongList, TUGAS_PART_KOSONG);
             }
         }
@@ -92,66 +91,17 @@ public class TugasPart_MainTab_Activity extends AppActivity {
         tabLayoutTugasParts.setupWithViewPager(vpTugasParts);
     }
 
-    private void viewPartTersedia() {
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-
-                args.put("parts", "TERSEDIA");
-                
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(""), args));
-            }
-
-            @SuppressLint("NewApi")
-            @Override
-            public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    partTersediaList.asArray().addAll(result.get("data").asArray());
-                } else {
-                    showInfo("Gagal Memperbaharui Status");
-                }
-            }
-        });
-    }
-
-    private void viewPartPermintaan() {
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                
-                
-                args.put("pars", "PERMINTAAN");
-                
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(""), args));
-            }
-
-            @SuppressLint("NewApi")
-            @Override
-            public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    partPermintaanList.asArray().addAll(result.get("data").asArray());
-                } else {
-                    showInfo("Gagal Memperbaharui Status");
-                }
-            }
-        });
-    }
-
     private void viewPartBatal() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                
-                
-                args.put("parts", "BATAL");
-                
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(""), args));
+
+                args.put("action", "view");
+                args.put("mgroup", "BATAL");
+
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_TUGAS_PART), args));
             }
 
             @SuppressLint("NewApi")

@@ -20,6 +20,7 @@ public class APIUrls {
     public static final String VIEW_MEKANIK = "viewmekanik";
     public static final String VIEW_KONTROL_LAYANAN = "viewkontrollayanan";
     public static final String VIEW_ANTRIAN = "viewantrian";
+    public static final String VIEW_TUGAS_PART = "viewtugaspart";
     //INSERT, UPDATE, DELETE
     public static final String SET_LOGIN = "login";
     public static final String SET_CHECKIN = "checkin" ;
@@ -35,4 +36,5 @@ public class APIUrls {
     public static final String ATUR_DISKON_PART = "aturdiskonpart";
     public static final String ATUR_KONTROL_LAYANAN = "aturkontrollayanan";
     public static final String ATUR_DISC_SPOT = "aturdiskonspot";
+    public static final String ATUR_TUGAS_PART = "aturtugaspart";
 }

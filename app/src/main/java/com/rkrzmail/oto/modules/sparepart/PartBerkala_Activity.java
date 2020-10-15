@@ -96,7 +96,7 @@ public class PartBerkala_Activity extends AppActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK && requestCode == REQUEST_PART){
-            Intent intent = new Intent(getActivity(), JumlahHargaPart_Activity.class);
+            Intent intent = new Intent(getActivity(), JumlahPart_HargaPart_Activity.class);
             intent.putExtra("data", Nson.readJson(getIntentStringExtra(data, "data")).toJson());
             startActivityForResult(intent, REQUEST_BIAYA);
         }else if(resultCode == RESULT_OK && requestCode == REQUEST_BIAYA){

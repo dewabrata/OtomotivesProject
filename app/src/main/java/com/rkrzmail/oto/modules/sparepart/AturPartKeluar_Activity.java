@@ -205,7 +205,7 @@ public class AturPartKeluar_Activity extends AppActivity {
                     partKeluarJson.set("LOKASI", find(R.id.sp_lokasi_tenda, Spinner.class).getSelectedItem().toString());
                     partKeluarJson.set("PART_ID", nson.get("PART_ID"));
                     partKeluarJson.set("PENDING", nson.get("PENDING"));
-                    i = new Intent(getActivity(), JumlahPartKeluar_Activity.class);
+                    i = new Intent(getActivity(), JumlahPart_PartKeluar_Activity.class);
                     i.putExtra("part", partKeluarJson.toJson());
                     i.putExtra(ATUR, "");
                     startActivityForResult(i, REQUEST_DAFTAR_PART_KELUAR);

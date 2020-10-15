@@ -13,19 +13,19 @@ import com.rkrzmail.oto.R;
 
 import static com.rkrzmail.utils.ConstUtils.TUGAS_PART_BATAL;
 
-public class BatalPart_Tugas_Part_Fragment extends Fragment {
+public class BatalPart_TugasPart_Fragment extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private String mParam1;
     private String mParam2;
 
-    public BatalPart_Tugas_Part_Fragment() {
+    public BatalPart_TugasPart_Fragment() {
         // Required empty public constructor
     }
 
-    public static BatalPart_Tugas_Part_Fragment newInstance(String param1, String param2) {
-        BatalPart_Tugas_Part_Fragment fragment = new BatalPart_Tugas_Part_Fragment();
+    public static BatalPart_TugasPart_Fragment newInstance(String param1, String param2) {
+        BatalPart_TugasPart_Fragment fragment = new BatalPart_TugasPart_Fragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);

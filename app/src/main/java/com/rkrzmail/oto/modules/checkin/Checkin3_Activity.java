@@ -35,7 +35,7 @@ import com.rkrzmail.oto.modules.jasa.JasaExternal_Activity;
 import com.rkrzmail.oto.modules.jasa.JasaLainBerkala_Activity;
 import com.rkrzmail.oto.modules.jasa.JasaLain_Activity;
 import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
-import com.rkrzmail.oto.modules.sparepart.JumlahHargaPart_Activity;
+import com.rkrzmail.oto.modules.sparepart.JumlahPart_HargaPart_Activity;
 import com.rkrzmail.oto.modules.sparepart.PartBerkala_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
@@ -271,7 +271,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void onItemClick(Nson parent, View view, int position) {
                 daftarPartDummy.add(parent.get(position).get("PART_ID").asString());
-                Intent i = new Intent(getActivity(), JumlahHargaPart_Activity.class);
+                Intent i = new Intent(getActivity(), JumlahPart_HargaPart_Activity.class);
                 if (flagMasterPart) {
                     i.putExtra(PART_WAJIB, masterPartList.get(position).toJson());
                     i.putExtra(MASTER_PART, discFasilitas);
@@ -762,7 +762,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         break;
                     case REQUEST_CARI_PART:
                         flagPartWajib = false;
-                        i = new Intent(getActivity(), JumlahHargaPart_Activity.class);
+                        i = new Intent(getActivity(), JumlahPart_HargaPart_Activity.class);
                         i.putExtra(DATA, Nson.readJson(getIntentStringExtra(data, PART)).toJson());
                         i.putExtra("bengkel", "");
                         //Log.d("JUMLAH_HARGA_PART", "INTENT : "   + Nson.readJson(getIntentStringExtra(data, "part")).toJson());

@@ -38,7 +38,7 @@ import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
 import static com.rkrzmail.utils.ConstUtils.RP;
 import static com.rkrzmail.utils.ConstUtils.RUANG_PART;
 
-public class JumlahHargaPart_Activity extends AppActivity implements View.OnClickListener {
+public class JumlahPart_HargaPart_Activity extends AppActivity implements View.OnClickListener {
 
     private static final String TAG = "HargaPart____";
     private EditText etHpp, etHargaJual, etDiscPart, etBiayaJasa, etDiscJasa, etDp, etWaktuPesan, etJumlah;

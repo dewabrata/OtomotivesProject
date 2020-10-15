@@ -20,6 +20,7 @@ import com.rkrzmail.oto.modules.BarcodeActivity;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.rkrzmail.utils.APIUrls.ATUR_TUGAS_PART;
 import static com.rkrzmail.utils.APIUrls.VIEW_SPAREPART;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
@@ -32,6 +33,7 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
 
     private boolean isPermintaan = false;
     private boolean isBatal = false;
+    private boolean isTerseida = false;
 
     private int counScanPart = 0;
 
@@ -56,7 +58,6 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
         etNofolder = findViewById(R.id.et_noFolder_jumlahTp);
         etJumlahPart = findViewById(R.id.et_jumlah_part);
         etJumlahRequest = findViewById(R.id.et_jumlah_request);
-
         loadData();
     }
 
@@ -76,12 +77,7 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
         find(R.id.btn_simpan).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isPermintaan) {
-                    updatePermintaanPart();
-                }
-                if (isBatal) {
-                    updateBatalPart();
-                }
+              updateTugasPart();
             }
         });
 
@@ -94,7 +90,7 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
     }
 
 
-    private void updatePermintaanPart() {
+    private void updateTugasPart() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -102,30 +98,16 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "PERMINTAAN");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturtugaspart"), args));
-            }
+                if (isPermintaan) {
 
-            @Override
-            public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    setResult(RESULT_OK);
-                    finish();
-                } else {
-                    showError(result.get("message").asString());
                 }
-            }
-        });
-    }
+                if (isBatal) {
 
-    private void updateBatalPart() {
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
+                }
+                if(isTerseida){
 
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "BATAL");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturtugaspart"), args));
+                }
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_TUGAS_PART), args));
             }
 
             @Override

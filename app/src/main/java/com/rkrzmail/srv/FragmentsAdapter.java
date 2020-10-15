@@ -15,9 +15,9 @@ import com.rkrzmail.oto.modules.Fragment.TabUsaha_Fragment;
 import com.rkrzmail.oto.modules.sparepart.LokasiPart_Activity;
 import com.rkrzmail.oto.modules.Fragment.PartNonLokasi_Fragment;
 import com.rkrzmail.oto.modules.Fragment.PartTeralokasikan_Fragment;
-import com.rkrzmail.oto.modules.Fragment.BatalPart_Tugas_Part_Fragment;
-import com.rkrzmail.oto.modules.Fragment.PartKosong_Tugas_Part_Fragment;
-import com.rkrzmail.oto.modules.Fragment.Permintaan_Tugas_Part_Fragment;
+import com.rkrzmail.oto.modules.Fragment.BatalPart_TugasPart_Fragment;
+import com.rkrzmail.oto.modules.Fragment.PartKosong_TugasPart_Fragment;
+import com.rkrzmail.oto.modules.Fragment.Permintaan_TugasPart_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Tersedia_TugasPart_Fragment;
 import com.rkrzmail.oto.modules.sparepart.TugasPart_MainTab_Activity;
 
@@ -91,7 +91,7 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
         if(context instanceof TugasPart_MainTab_Activity){
             switch (i){
                 case 0:
-                    Permintaan_Tugas_Part_Fragment permintaan_tugas_part_fragment = new Permintaan_Tugas_Part_Fragment();
+                    Permintaan_TugasPart_Fragment permintaan_tugas_part_fragment = new Permintaan_TugasPart_Fragment();
                     permintaan_tugas_part_fragment.setArguments(setArguments(data, keyBundle));
                     return permintaan_tugas_part_fragment;
                 case 1:
@@ -99,10 +99,10 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
                     tersediaTugasPartFragment.setArguments(setArguments(data, keyBundle));
                     return tersediaTugasPartFragment;
                 case 2:
-                    fragment = Fragment.instantiate(context, BatalPart_Tugas_Part_Fragment.class.getName());
+                    fragment = Fragment.instantiate(context, BatalPart_TugasPart_Fragment.class.getName());
                     break;
                 case 3:
-                    fragment = Fragment.instantiate(context, PartKosong_Tugas_Part_Fragment.class.getName());
+                    fragment = Fragment.instantiate(context, PartKosong_TugasPart_Fragment.class.getName());
                     break;
             }
         }

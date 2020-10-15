@@ -135,7 +135,7 @@ public class DetailPartKeluar_Activity extends AppActivity {
                     @Override
                     public void onItemClick(Nson parent, View view, int position) {
                         if (isDetail) {
-                            Intent i = new Intent(getActivity(), JumlahPartKeluar_Activity.class);
+                            Intent i = new Intent(getActivity(), JumlahPart_PartKeluar_Activity.class);
                             i.putExtra(DETAIL, parent.get(position).toJson());
                             startActivityForResult(i, REQUEST_PART_KEMBALI);
                         }
@@ -248,7 +248,7 @@ public class DetailPartKeluar_Activity extends AppActivity {
                     return;
                 }
             }
-            Intent i = new Intent(getActivity(), JumlahPartKeluar_Activity.class);
+            Intent i = new Intent(getActivity(), JumlahPart_PartKeluar_Activity.class);
             i.putExtra("part", nson.toJson());
             startActivityForResult(i, REQUEST_JUMLAH_PART_KELUAR);
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_JUMLAH_PART_KELUAR) {

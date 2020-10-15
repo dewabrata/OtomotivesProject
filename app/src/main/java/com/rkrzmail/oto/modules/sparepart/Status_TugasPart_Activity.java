@@ -25,13 +25,14 @@ import com.rkrzmail.srv.NikitaViewHolder;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.rkrzmail.utils.APIUrls.VIEW_TUGAS_PART;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_TUGAS_PART;
 import static com.rkrzmail.utils.ConstUtils.TUGAS_PART_PERMINTAAN;
 import static com.rkrzmail.utils.ConstUtils.TUGAS_PART_TERSEDIA;
 
-public class StatusTugasPart_Activity extends AppActivity {
+public class Status_TugasPart_Activity extends AppActivity {
 
     private RecyclerView recyclerView;
     private EditText etPelanggan, etMekanik;
@@ -39,6 +40,7 @@ public class StatusTugasPart_Activity extends AppActivity {
 
     private boolean isPermintaan = false;
     private boolean isTersedia = false;
+    private String mekanik = "", tanggalCheckin = "", nopol = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +96,10 @@ public class StatusTugasPart_Activity extends AppActivity {
         etPelanggan.setText(n.get("NAMA_PELANGGAN").asString());
         etMekanik.setText(n.get("USER").asString());
 
+        mekanik = n.get("MEKANIK").asString();
+        nopol = n.get("NOPOL").asString();
+        tanggalCheckin = n.get("TANGGAL_CHECKIN").asString();
+
         if(isPermintaan){
             viewPermintaanPart();
         }
@@ -141,7 +147,13 @@ public class StatusTugasPart_Activity extends AppActivity {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturtugaspart"), args));
+                args.put("action", "view");
+                args.put("detail", "PERMINTAAN");
+                args.put("mekanik", mekanik);
+                args.put("nopol", nopol);
+                args.put("namaPelanggan", etPelanggan.getText().toString());
+                args.put("tanggalCheckin", tanggalCheckin);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_TUGAS_PART), args));
             }
 
             @Override
@@ -151,7 +163,7 @@ public class StatusTugasPart_Activity extends AppActivity {
                     nListArray.asArray().addAll(result.get("data").asArray());
                     recyclerView.getAdapter().notifyDataSetChanged();
                 } else {
-                    showInfo("Gagal");
+                    showInfo(result.get("message").asString());
                 }
             }
         });
@@ -164,7 +176,7 @@ public class StatusTugasPart_Activity extends AppActivity {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturtugaspart"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_TUGAS_PART), args));
             }
 
             @Override
