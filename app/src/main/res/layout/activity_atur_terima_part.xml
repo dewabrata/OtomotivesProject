@@ -60,7 +60,7 @@
                     android:id="@+id/spinnerSupplier"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:entries="@array/tipe_supplier"
+                    android:entries="@array/tipe_supplier_2"
                     android:focusable="true"
                     android:gravity="center"
                     android:textAlignment="center" />
@@ -81,7 +81,7 @@
                     android:layout_weight="4"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="NAMA SUPPLIER"
+                    android:text="@string/nama_supplier_uppercase"
                     android:textColor="@color/grey_900"
                     android:textSize="12sp"
                     android:textStyle="bold" />

@@ -207,6 +207,20 @@
         <item>BATAL KARENA BENGKEL</item>
     </string-array>
 
+    <string-array name="status_part_kosong">
+        <item>--PILIH--</item>
+        <item>ORDER</item>
+        <item>TERLAMBAT</item>
+        <item>TERIMA</item>
+        <item>TIDAK TERSEDIA</item>
+        <item>BATAL KARENA BENGKEL</item>
+    </string-array>
+
+    <string-array name="tipe_supplier">
+        <item>--PILIH--</item>
+        <item>ECOMMERCE</item>
+        <item>MAIN SUPPLIER</item>
+    </string-array>
 
     <string-array name="lokasi_penempatan_part">
         <item>RUANG PART</item>

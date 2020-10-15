@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".modules.sparepart.lokasi_part.PartTeralokasikan_Fragment">
+    tools:context=".modules.Fragment.PartTeralokasikan_Fragment">
 
     <LinearLayout
         android:layout_width="match_parent"

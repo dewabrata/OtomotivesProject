@@ -14,7 +14,7 @@ import android.widget.ImageButton;
 import com.naa.data.Nson;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.primary.checkin.Checkin3_Activity;
+import com.rkrzmail.oto.modules.checkin.Checkin3_Activity;
 import com.rkrzmail.utils.Tools;
 
 import static com.rkrzmail.utils.ConstUtils.DATA;

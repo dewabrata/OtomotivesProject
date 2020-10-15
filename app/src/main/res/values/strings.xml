@@ -1,4 +1,4 @@
-<resources xmlns:color="http://schemas.android.com/apk/res-auto">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:color="http://schemas.android.com/apk/res-auto">
     <string name="app_name">Otomotives</string>
     <string name="spinner_no_default_hint"></string>
     <string-array name="pola_harga_jual">
@@ -35,8 +35,8 @@
 
     </string-array>
 
-    <string-array name="tipe_supplier">
-        <item>--PILIH--</item>
+    <string-array name="tipe_supplier_2">
+        <item tools:ignore="InconsistentArrays">--PILIH--</item>
         <item>PRINCIPAL</item>
         <item>MAIN SUPPLIER</item>
         <item>RETAIL SUPPLIER</item>
@@ -313,10 +313,10 @@
     <string name="no_ponsel">No. Ponsel</string>
     <string name="mekanik">Mekanik</string>
     <string name="harga">Harga</string>
-    <string name="status">STATUS</string>
+    <string name="status_uppercase">STATUS</string>
     <string name="nama_part">Nama Part</string>
     <string name="no_part">No. Part</string>
-    <string name="jumlah_jumlah">Jumlah / Jumlah</string>
+    <string name="jumlah_jumlah">Jumlah</string>
     <string name="no_polisi_uppercase">NO. POLISI</string>
     <string name="pelanggan_uppercase">PELANGGAN</string>
     <string name="mekanik_uppercase">MEKANIK</string>
@@ -339,11 +339,27 @@
     <string name="_00_00_00">00:00:00</string>
     <string name="rp_total_biaya">Rp. Total Biaya</string>
     <string name="keterangan_tambahan">KETERANGAN TAMBAHAN</string>
-    <string name="total_biaya">TOTAL BIAYA</string>
+    <string name="total_biaya_uppercase">TOTAL BIAYA</string>
     <string name="discount_lain">DISCOUNT LAIN</string>
     <string name="net_transaksi">NET TRANSAKSI</string>
     <string name="total_transaksi">TOTAL TRANSAKSI</string>
     <string name="nama_pelanggan_uppercase">NAMA PELANGGAN</string>
     <string name="transaksi">Transaksi</string>
     <string name="spot_disc">Spot Disc</string>
+    <string name="nama_mekanik_uppercase">NAMA MEKANIK</string>
+    <string name="no_folder">No. Folder</string>
+    <string name="merk">Merk</string>
+    <string name="jumlah_di_minta">Jumlah Di minta</string>
+    <string name="kode_lokasi_tersedia">Kode Lokasi / Tersedia</string>
+    <string name="stock">Stock</string>
+    <string name="jumlah_permintaan">JUMLAH PERMINTAAN</string>
+    <string name="stock_uppercase">STOCK</string>
+    <string name="no_folder_uppercase">NO. FOLDER</string>
+    <string name="jumlah_batal">JUMLAH BATAL</string>
+    <string name="status">Status</string>
+    <string name="tanggal_uppercase">TANGGAL</string>
+    <string name="tipe_supplier_uppercase">TIPE SUPPLIER</string>
+    <string name="nama_supplier_uppercase">NAMA SUPPLIER</string>
+    <string name="nama_ecommerce_uppercase">NAMA ECOMMERCE</string>
+    <string name="estimasi_tiba_uppercase">ESTIMASI TIBA</string>
 </resources>

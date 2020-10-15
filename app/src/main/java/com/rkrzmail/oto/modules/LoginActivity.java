@@ -21,7 +21,7 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.MenuActivity;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.registrasi_bengkel.RegistrasiBengkel_Activity;
+import com.rkrzmail.oto.modules.bengkel.RegistrasiBengkel_Activity;
 
 import java.util.Map;
 

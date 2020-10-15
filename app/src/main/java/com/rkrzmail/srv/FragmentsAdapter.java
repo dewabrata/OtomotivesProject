@@ -8,21 +8,20 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.naa.data.Nson;
-import com.rkrzmail.oto.modules.profile.ProfileBengkel_Activity;
-import com.rkrzmail.oto.modules.profile.TabSchedule_Fragment;
-import com.rkrzmail.oto.modules.profile.TabTambahan_Fragment;
-import com.rkrzmail.oto.modules.profile.TabUsaha_Fragment;
-import com.rkrzmail.oto.modules.sparepart.lokasi_part.LokasiPart_Activity;
-import com.rkrzmail.oto.modules.sparepart.lokasi_part.PartNonLokasi_Fragment;
-import com.rkrzmail.oto.modules.sparepart.lokasi_part.PartTeralokasikan_Fragment;
-import com.rkrzmail.oto.modules.sparepart.tugas_part.BatalPart_Tugas_Part_Fragment;
-import com.rkrzmail.oto.modules.sparepart.tugas_part.PartKosong_Tugas_Part_Fragment;
-import com.rkrzmail.oto.modules.sparepart.tugas_part.Permintaan_Tugas_Part_Fragment;
-import com.rkrzmail.oto.modules.sparepart.tugas_part.Tersedia_TugasPart_Fragment;
-import com.rkrzmail.oto.modules.sparepart.tugas_part.TugasPart_MainTab_Activity;
+import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
+import com.rkrzmail.oto.modules.Fragment.TabSchedule_Fragment;
+import com.rkrzmail.oto.modules.Fragment.TabTambahan_Fragment;
+import com.rkrzmail.oto.modules.Fragment.TabUsaha_Fragment;
+import com.rkrzmail.oto.modules.sparepart.LokasiPart_Activity;
+import com.rkrzmail.oto.modules.Fragment.PartNonLokasi_Fragment;
+import com.rkrzmail.oto.modules.Fragment.PartTeralokasikan_Fragment;
+import com.rkrzmail.oto.modules.Fragment.BatalPart_Tugas_Part_Fragment;
+import com.rkrzmail.oto.modules.Fragment.PartKosong_Tugas_Part_Fragment;
+import com.rkrzmail.oto.modules.Fragment.Permintaan_Tugas_Part_Fragment;
+import com.rkrzmail.oto.modules.Fragment.Tersedia_TugasPart_Fragment;
+import com.rkrzmail.oto.modules.sparepart.TugasPart_MainTab_Activity;
 
 import java.util.ArrayList;
-import java.util.regex.Pattern;
 
 public class FragmentsAdapter extends FragmentStatePagerAdapter {
 

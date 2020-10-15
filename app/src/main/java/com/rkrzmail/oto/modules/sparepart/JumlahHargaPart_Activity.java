@@ -47,7 +47,7 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
 
     private boolean isFlexible = false, isPartKosong = false, isPartWajib = false;
     private String hari = "", jam = "", menit = "";
-    private String inspeksiJam = "", inspeksiMenit = "";
+    private String inspeksiJam = "", inspeksiMenit = "", idLokasiPart = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +61,7 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Jumlah & Harga Part");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initComponent() {
@@ -85,6 +86,7 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
         } else {
             isPartWajib = true;
             final Nson nson = Nson.readJson(getIntentStringExtra(PART_WAJIB));
+            idLokasiPart = nson.get("LOKASI_PART_ID").asString();
             find(R.id.btn_img_waktu_inspeksi).setEnabled(false);
             find(R.id.et_waktu_set_inspeksi, EditText.class).setText(getIntent().getStringExtra("WAKTU_INSPEKSI"));
             initPartKosongValidation(nson, nson.get("STOCK").asInteger(), true);
@@ -225,6 +227,7 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
     private void initData(final String intentExtra, Intent intent) {
         final Nson nson = Nson.readJson(getIntentStringExtra(intent, intentExtra));
         Log.d(TAG, "data : " + nson);
+        idLokasiPart = nson.get("LOKASI_PART_ID").asString();
         if (nson.get("STOCK_RUANG_PART").asInteger() == 0) {
             isPartKosong = true;
             initPartKosongValidation(nson, nson.get("STOCK_RUANG_PART").asInteger(), false);
@@ -330,6 +333,7 @@ public class JumlahHargaPart_Activity extends AppActivity implements View.OnClic
         sendData.set("MERK", nson.get("MERK").asString());
         sendData.set("HARGA_JASA", jasa);
         sendData.set("WAKTU", find(R.id.et_waktuSet, EditText.class).getText().toString());
+        sendData.set("LOKASI_PART_ID", idLokasiPart);
 
         if(!find(R.id.et_waktuSet, EditText.class).getText().toString().isEmpty()){
             //handling for index out of bounds

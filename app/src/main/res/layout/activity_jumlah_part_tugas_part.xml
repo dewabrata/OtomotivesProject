@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true">
 
@@ -22,6 +23,7 @@
             android:orientation="vertical">
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/tl_stock"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -31,24 +33,26 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:enabled="false"
-                    android:hint="STOCK"
-                    android:textSize="14sp" />
+                    android:hint="@string/stock_uppercase"
+                    android:textSize="14sp"
+                    tools:ignore="Autofill,TextFields" />
 
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/tl_jumlah"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="@dimen/paddingXSmall">
 
                 <EditText
-                    android:id="@+id/et_jumlahMinta_jumlahSisa_jumlahTp"
+                    android:id="@+id/et_jumlah_part"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:enabled="false"
-                    android:hint="(JUMLAH PERMINTAAN) / (JUMLAH SISA"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -56,36 +60,57 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="@dimen/paddingXSmall">
 
                 <EditText
                     android:id="@+id/et_noFolder_jumlahTp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:enabled="false"
-                    android:hint="NO. FOLDER"
-                    android:textSize="14sp" />
+                    android:hint="@string/no_folder_uppercase"
+                    android:textSize="14sp"
+                    tools:ignore="Autofill,TextFields" />
 
             </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/paddingXSmall">
 
-                <EditText
-                    android:id="@+id/et_jumlahSedia_jumlahKembali_jumlahTp"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4">
+
+                    <EditText
+                        android:id="@+id/et_jumlah_request"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:hint="@string/jumlah_uppercase"
+                        android:inputType="number"
+                        android:textSize="14sp"
+                        tools:ignore="Autofill" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <ImageButton
+                    android:id="@+id/img_scan_barcode_jumlah"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
-                    android:hint="(JUMLAH DI SEDIAKAN) / (JUMLAH DI KEMBALIKAN)"
-                    android:inputType="number"
-                    android:textSize="14sp" />
+                    app:srcCompat="@drawable/barcode"
+                    android:layout_gravity="right|center_vertical"
+                    tools:ignore="ContentDescription,RtlHardcoded,UnusedAttribute"
+                    android:backgroundTint="@color/transparent"/>
 
-            </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
 
             <Button
-                android:id="@+id/btn_simpan_jumlahTp"
+                android:id="@+id/btn_simpan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
@@ -110,14 +135,14 @@
 
             <include layout="@layout/toolbar" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/imgBarcode"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-                app:srcCompat="@drawable/scan"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:srcCompat="@drawable/barcode"
                 android:layout_gravity="right|center_vertical"
-                tools:ignore="RtlHardcoded" />
+                tools:ignore="ContentDescription,RtlHardcoded,UnusedAttribute"
+                android:backgroundTint="@color/transparent"/>
 
         </FrameLayout>
 

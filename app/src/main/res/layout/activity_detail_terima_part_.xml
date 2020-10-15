@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="10sp"
-            tools:context=".modules.sparepart.terima_part.DetailPartDiterima">
+            tools:context=".modules.sparepart.DetailPartDiterima">
 
 
             <android.support.design.widget.TextInputLayout

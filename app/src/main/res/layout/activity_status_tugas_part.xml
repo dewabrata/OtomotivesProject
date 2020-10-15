@@ -20,15 +20,14 @@
 
             <include layout="@layout/toolbar" />
 
-            <ImageView
-                android:id="@+id/imgBarcode"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-                app:srcCompat="@drawable/scan"
+            <ImageButton
+                android:id="@+id/img_scan_barcode"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:srcCompat="@drawable/barcode"
                 android:layout_gravity="right|center_vertical"
-                tools:ignore="RtlHardcoded"
-                android:visibility="gone"/>
+                tools:ignore="ContentDescription,RtlHardcoded,UnusedAttribute"
+                android:backgroundTint="@color/transparent" />
 
         </FrameLayout>
 
@@ -43,15 +42,14 @@
             android:id="@+id/ly_detailPart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
+            android:padding="@dimen/paddingMedium"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/tl_total_terimaPart"
@@ -96,14 +94,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:hint="USER">
+                android:hint="@string/nama_mekanik_uppercase">
 
                 <EditText
                     android:id="@+id/et_user_statusTp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -121,7 +120,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -130,8 +130,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:padding="5dp" />
+                android:layout_marginBottom="10dp" />
 
             <Button
                 android:id="@+id/btn_simpan_statusTp"

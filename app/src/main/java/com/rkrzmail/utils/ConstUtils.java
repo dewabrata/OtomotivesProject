@@ -45,6 +45,11 @@ public class ConstUtils {
     public static final String CARI_PART_OTOMOTIVES = "global";
     public static final String CARI_PART_TERALOKASIKAN = "TERALOKASI";
     //REQUEST CODE
+    public static final int  REQUEST_PART_TERSEDIA = 6;
+    public static final int REQUEST_PART_BATAL = 7;
+    public static final int REQUEST_PERMINTAAN_PART = 8;
+    public static final int REQUEST_PART_KOSONG = 9;
+    public static final int REQUEST_TUGAS_PART = 10;
     public static final int REQUEST_DISCOUNT = 11;
     public static final int REQUEST_CARI_PART = 12;
     public static final int REQUEST_DETAIL = 13;
@@ -77,4 +82,6 @@ public class ConstUtils {
     public static final int REQUEST_TAMBAH_PART_JASA_LAIN = 40;
     public static final int REQUEST_STATUS = 41;
     public static final int REQUEST_DISC_SPOT = 42;
+    public static final int REQUEST_CONTACT = 45;
+    public static final int REQUEST_REKENING = 46;
 }

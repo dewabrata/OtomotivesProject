@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    tools:context=".modules.primary.checkout.AturCheckout_Activity">
+    tools:context=".modules.checkin.AturCheckout_Activity">
 
     <ScrollView
         android:layout_width="match_parent"

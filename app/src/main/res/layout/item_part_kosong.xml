@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:card_view="http://schemas.android.com/tools"
     android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -11,66 +10,95 @@
     android:layout_marginRight="7dp"
     android:layout_marginBottom="4dp"
     android:padding="10dp"
-    app:cardElevation="2dp"
-    app:cardCornerRadius="10dp">
+    app:cardCornerRadius="5dp"
+    app:cardElevation="2dp">
 
-    <LinearLayout
+    <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:stretchColumns="*">
 
-        <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="5dp">
+        <TableRow>
 
-            <TableRow>
+            <TextView
+                android:id="@+id/tv_nopol"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/no_polisi"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp" />
 
-                <TextView
-                    android:id="@+id/tv_tgl_partKosong"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
-                    android:text="Tanggal" />
+            <TextView
+                android:id="@+id/tv_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="@string/status"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp" />
 
-                <TextView
-                    android:id="@+id/tv_user_partKosong"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
-                    android:text="User" />
+        </TableRow>
 
-            </TableRow>
+        <TableRow android:layout_marginTop="@dimen/paddingSmall">
 
-            <TableRow android:layout_marginTop="10dp">
+            <TextView
+                android:id="@+id/tv_namaPart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/nama_part"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp" />
 
-                <TextView
-                    android:id="@+id/tv_status_partKosong"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
-                    android:text="Status" />
+        </TableRow>
 
-                <TextView
-                    android:id="@+id/tv_ket_partKosong"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
-                    android:text="Keterangan" />
+        <TableRow android:layout_marginTop="@dimen/paddingSmall">
+
+            <TextView
+                android:id="@+id/tv_noPart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/no_part"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tv_merk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="@string/merk"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp" />
 
 
-            </TableRow>
-        </TableLayout>
+        </TableRow>
 
-    </LinearLayout>
+        <TableRow android:layout_marginTop="@dimen/paddingSmall">
+
+            <TextView
+                android:id="@+id/tv_jumlah"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/jumlah_jumlah"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tv_harga"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="@string/harga"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp" />
+
+        </TableRow>
+
+    </TableLayout>
 
 </android.support.v7.widget.CardView>

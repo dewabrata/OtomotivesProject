@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    tools:context=".modules.message.ManualMessage_Activity">
+    tools:context=".modules.bengkel.ManualMessage_Activity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"

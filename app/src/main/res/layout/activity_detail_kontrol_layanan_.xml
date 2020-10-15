@@ -50,7 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/paddingXSmall"
-                android:hint="@string/status">
+                android:hint="@string/status_uppercase">
 
                 <EditText
                     android:id="@+id/et_status"
