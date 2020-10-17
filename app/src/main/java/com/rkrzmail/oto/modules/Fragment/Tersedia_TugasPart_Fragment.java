@@ -20,6 +20,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.sparepart.DetailTerimaPart_Activity;
+import com.rkrzmail.oto.modules.sparepart.Status_TugasPart_Activity;
 import com.rkrzmail.oto.modules.sparepart.TugasPart_MainTab_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
@@ -100,7 +101,7 @@ public class Tersedia_TugasPart_Fragment extends Fragment {
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
-                Intent i = new Intent(getActivity(), DetailTerimaPart_Activity.class);
+                Intent i = new Intent(getActivity(),  Status_TugasPart_Activity.class);
                 i.putExtra(TUGAS_PART_TERSEDIA, "");
                 i.putExtra(DATA, tersediaList.get(position).toJson());
                 startActivityForResult(i, REQUEST_DETAIL);
@@ -117,6 +118,7 @@ public class Tersedia_TugasPart_Fragment extends Fragment {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "view");
+                args.put("detail", "");
                 args.put("mgroup", "TERSEDIA");
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_TUGAS_PART), args));

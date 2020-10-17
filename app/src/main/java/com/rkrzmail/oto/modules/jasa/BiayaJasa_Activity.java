@@ -3,6 +3,7 @@ package com.rkrzmail.oto.modules.jasa;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -23,6 +24,7 @@ import java.util.Objects;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.ID;
 import static com.rkrzmail.utils.ConstUtils.JASA_LAIN;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_JASA_LAIN;
 
 public class BiayaJasa_Activity extends AppActivity implements View.OnClickListener {
 
@@ -64,6 +66,7 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
         final Nson n = Nson.readJson(getIntentStringExtra(DATA));
         Log.d("BIAYAJASALAIN", "JASA : " + n);
         if (getIntent().hasExtra(JASA_LAIN)) {
+            initAvailJasa(n);
             etKelompokPart.setText(n.get("KELOMPOK_PART").toString());
             etAktivitas.setText(n.get("AKTIVITAS").asString());
             etAktivitas.setEnabled(false);
@@ -77,12 +80,12 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
                         etBiaya.requestFocus();
                     }else{
                         Nson nson = Nson.newObject();
-                        nson.set("NAMA_KELOMPOK_PART", etKelompokPart.getText().toString());
+                        nson.set("NAMA_KELOMPOK_PART", etKelompokPart.getText().toString());//dummy push to API
                         nson.set("JASA_ID", jasaId);
                         nson.set("HARGA_JASA", formatOnlyNumber(etBiaya.getText().toString()));
                         nson.set("AKTIVITAS", etAktivitas.getText().toString());
-                        nson.set("WAKTU", etWaktuKerja.getText().toString());
-                        nson.set("OUTSOURCE", find(R.id.cb_outsource, CheckBox.class).isChecked() ? "Y" : "N");
+                        nson.set("WAKTU", etWaktuKerja.getText().toString());//dummy push to API
+                        nson.set("OUTSOURCE", find(R.id.cb_outsource, CheckBox.class).isChecked() ? "Y" : "N");//dummy push to API
                         nson.set("NET", formatOnlyNumber(etBiaya.getText().toString()));
 
                         hari = find(R.id.et_waktuSet, EditText.class).getText().toString().substring(0, 2);
@@ -128,6 +131,20 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
         }
     }
 
+    private void initAvailJasa(Nson jasa){
+        Nson readAvailJasa = Nson.readJson(getIntentStringExtra(JASA_LAIN));
+        for (int i = 0; i < readAvailJasa.size(); i++) {
+            if(readAvailJasa.get(i).get("AKTIVITAS").asString().equals(jasa.get("AKTIVITAS").asString())){
+                showWarning("Jasa Lain Sudah Di tambahkan");
+                Intent intent = new Intent(getActivity(), JasaLain_Activity.class);
+                intent.putExtra("NEW", "");
+                startActivity(intent);
+                finish();
+                break;
+            }
+        }
+    }
+
     private void initListener(){
         etBiaya.addTextChangedListener(textWatcher);
         find(R.id.img_clear, ImageButton.class).setOnClickListener(this);
@@ -168,6 +185,7 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
         }
     };
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View v) {
         switch (v.getId()){
@@ -180,6 +198,14 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
             case R.id.btn_img_waktu_inspeksi:
                 getTimesDialog(find(R.id.et_waktu_set_inspeksi, EditText.class));
                 break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK && requestCode == REQUEST_JASA_LAIN){
+            initData();
         }
     }
 }

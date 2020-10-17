@@ -101,6 +101,7 @@ public class Permintaan_TugasPart_Fragment extends Fragment {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "view");
+                args.put("detail", "");
                 args.put("mgroup", "PERMINTAAN");
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_TUGAS_PART), args));

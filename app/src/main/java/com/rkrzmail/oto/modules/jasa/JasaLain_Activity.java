@@ -38,6 +38,7 @@ import com.rkrzmail.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.VIEW_JASA_LAIN;
 import static com.rkrzmail.utils.ConstUtils.DATA;
@@ -53,29 +54,34 @@ public class JasaLain_Activity extends AppActivity {
     ArrayList<Boolean> flagChecked = new ArrayList<>();
     boolean isCari = false;
     private SearchView mSearchView;
+    boolean isAvail = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_basic);
+        initToolbar();
         initComponent();
-
     }
 
+    @SuppressLint("NewApi")
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Jasa Lain");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Jasa Lain");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initComponent() {
-        initToolbar();
+        if (getIntent().hasExtra("NEW")) {
+            isAvail = true;
+        }
         rvJasa = findViewById(R.id.recyclerView);
         catchData("");
         rvJasa.setLayoutManager(new LinearLayoutManager(this));
         rvJasa.setHasFixedSize(true);
         rvJasa.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_jasa_lain) {
+
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
                 /*viewHolder.find(R.id.cb_jasaLain_jasa, CheckBox.class).setTag("check");
@@ -99,11 +105,12 @@ public class JasaLain_Activity extends AppActivity {
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
-                Intent i = new Intent(getActivity(), BiayaJasa_Activity.class);
-                i.putExtra(DATA, parent.get(position).toJson());
-                i.putExtra(JASA_LAIN, JASA_LAIN);
+                Intent intent = new Intent(getActivity(), BiayaJasa_Activity.class);
+                intent.putExtra(DATA, parent.get(position).toJson());
+                intent.putExtra(JASA_LAIN, Nson.readJson(getIntentStringExtra(JASA_LAIN)).toJson());
                 Log.d("JASA_LAIN_CLASS", "JASA : " + parent);
-                startActivityForResult(i, REQUEST_BIAYA);
+                startActivityForResult(intent, REQUEST_BIAYA);
+
             }
         }));
     }
@@ -117,19 +124,20 @@ public class JasaLain_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 args.put("search", cari);
-                if(isCari){
+                if (isCari) {
                     args.remove("search");
                     args.put("cari", cari);
                 }
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_JASA_LAIN), args));
             }
 
+            @SuppressLint("NewApi")
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
-                    rvJasa.getAdapter().notifyDataSetChanged();
+                    Objects.requireNonNull(rvJasa.getAdapter()).notifyDataSetChanged();
                 } else {
                     showError("Mohon Di Coba Kembali" + result.get("status").asString());
                 }
@@ -171,6 +179,20 @@ public class JasaLain_Activity extends AppActivity {
         };
         mSearchView.setOnQueryTextListener(queryTextListener);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(isAvail){
+            finish();
+        }
     }
 
     @Override

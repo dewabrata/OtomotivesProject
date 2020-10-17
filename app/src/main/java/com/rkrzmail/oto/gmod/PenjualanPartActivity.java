@@ -26,7 +26,7 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.MenuActivity;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.part.PartActivity;
+import com.rkrzmail.oto.gmod.part.PartActivity;
 import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;

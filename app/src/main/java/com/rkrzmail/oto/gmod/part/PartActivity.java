@@ -1,4 +1,4 @@
-package com.rkrzmail.oto.modules.part;
+package com.rkrzmail.oto.gmod.part;
 
 import android.app.SearchManager;
 import android.content.Context;

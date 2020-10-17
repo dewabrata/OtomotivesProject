@@ -2,10 +2,14 @@ package com.rkrzmail.oto.modules.sparepart;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.support.annotation.LongDef;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -35,6 +39,12 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
     private boolean isBatal = false;
     private boolean isTerseida = false;
 
+    private String
+            nopol = "", noAntrian = "",
+            namaPelanggan = "", status = "", layanan = "",
+            jamAntrian = "", partId ="", group = "", idCheckinDetail = "";
+    private String idLokasiPart = "";
+
     private int counScanPart = 0;
 
     @Override
@@ -61,23 +71,46 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
         loadData();
     }
 
+    @SuppressLint("SetTextI18n")
     private void loadData() {
         Nson nson = Nson.readJson(getIntentStringExtra(DATA));
+        Log.d("Status__", "loadData: " + nson);
+        idCheckinDetail = nson.get("CHECKIN_DETAIL_ID").asString();
+        nopol = nson.get("NOPOL").asString();
+        noAntrian = nson.get("NO_ANTRIAN").asString();
+        namaPelanggan = nson.get("NAMA_PELANGGAN").asString();
+        layanan =  nson.get("LAYANAN").asString();
+        status =  nson.get("STATUS").asString();//status checkin
+        jamAntrian = nson.get("ESTIMASI_SEBELUM").asString();//estimasi mulai checkin
+        partId = nson.get("LAYANAN").asString();
+        idLokasiPart = nson.get("LOKASI_PART_ID").asString();
+
         if (getIntent().hasExtra(TUGAS_PART_PERMINTAAN)) {
             isPermintaan = true;
+            group = "PERMINTAAN";
             find(R.id.tl_jumlah, TextInputLayout.class).setHint(getResources().getString(R.string.jumlah_permintaan));
+            etJumlahPart.setText(nson.get("JUMLAH_PERMINTAAN").asString());
             etStock.setText(nson.get("STOCK").asString());
             etNofolder.setText(nson.get("KODE").asString());
         } else if (getIntent().hasExtra(TUGAS_PART_BATAL)) {
             isBatal = true;
+            group = "BATAL";
             find(R.id.tl_stock).setVisibility(View.GONE);
             find(R.id.tl_jumlah, TextInputLayout.class).setHint(getResources().getString(R.string.jumlah_batal));
         }
 
+        initListener();
+    }
+
+    private void initListener(){
         find(R.id.btn_simpan).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              updateTugasPart();
+                if(find(R.id.tl_jumlah_request, TextInputLayout.class).isErrorEnabled()){
+                    etJumlahRequest.requestFocus();
+                }else{
+                    updateTugasPart();
+                }
             }
         });
 
@@ -85,6 +118,37 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
             @Override
             public void onClick(View v) {
                 startActivityForResult(new Intent(getActivity(), BarcodeActivity.class), REQUEST_BARCODE);
+            }
+        });
+
+        etJumlahRequest.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(charSequence.toString().length() == 0){
+                    find(R.id.tl_jumlah_request, TextInputLayout.class).setErrorEnabled(false);
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                etJumlahRequest.removeTextChangedListener(this);
+
+                String request = editable.toString();
+                String jumlah = etJumlahPart.getText().toString();
+                if(!request.isEmpty() && !jumlah.isEmpty()){
+                    int jumlahRequest = Integer.parseInt(request);
+                    int jumlahPermintaan = Integer.parseInt(jumlah);
+                    if(jumlahRequest > jumlahPermintaan){
+                        find(R.id.tl_jumlah_request, TextInputLayout.class).setError("Jumlah Penyediaan Melebihi Jumlah Request");
+                    }
+                }
+
+                etJumlahRequest.addTextChangedListener(this);
             }
         });
     }
@@ -97,15 +161,27 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "PERMINTAAN");
-                if (isPermintaan) {
+                args.put("action", "add");
+                args.put("nopol", nopol);
+                args.put("noAntrian", noAntrian);
+                args.put("namaPelanggan", namaPelanggan);
+                args.put("status", status);
+                args.put("layanan", layanan);
+                args.put("jamAntrian", jamAntrian);
+                args.put("partId", partId);
+                args.put("tanggal", currentDateTime("yyyy-MM-dd hh:mm"));
+                args.put("group", group);
 
+                args.put("idCheckinDetail", idCheckinDetail);
+                if (isPermintaan) {
+                    args.put("jumlahRequest", etJumlahRequest.getText().toString());
+                    args.put("idLokasiPart", idLokasiPart);
                 }
                 if (isBatal) {
-
+                    //args.put("", );
                 }
                 if(isTerseida){
-
+                    //args.put("", );
                 }
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_TUGAS_PART), args));
             }

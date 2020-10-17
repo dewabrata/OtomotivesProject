@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
+import static com.rkrzmail.utils.APIUrls.VIEW_TUGAS_PART;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_PART_KOSONG;
 import static com.rkrzmail.utils.ConstUtils.TUGAS_PART_KOSONG;
@@ -86,7 +87,8 @@ public class PartKosong_TugasPart_Fragment extends Fragment {
                 viewHolder.find(R.id.tv_noPart, TextView.class).setText(partKosongList.get(position).get("NO_PART").asString());
                 viewHolder.find(R.id.tv_jumlah, TextView.class).setText(partKosongList.get(position).get("JUMLAH").asString());
                 viewHolder.find(R.id.tv_merk, TextView.class).setText(partKosongList.get(position).get("MERK").asString());
-                viewHolder.find(R.id.tv_harga, TextView.class).setText(partKosongList.get(position).get("HARGA").asString());
+                viewHolder.find(R.id.tv_harga, TextView.class).setText(partKosongList.get(position).get("HARGA_PART").asString());
+                viewHolder.find(R.id.tv_status, TextView.class).setText(partKosongList.get(position).get("STATUS_PART").asString());
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
@@ -106,9 +108,10 @@ public class PartKosong_TugasPart_Fragment extends Fragment {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
-                args.put("parts", "KOSONG");
+                args.put("action", "view");
+                args.put("detail", "KOSONG");
 
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(""), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_TUGAS_PART), args));
             }
 
             @SuppressLint("NewApi")
@@ -118,7 +121,7 @@ public class PartKosong_TugasPart_Fragment extends Fragment {
                     partKosongList.asArray().addAll(result.get("data").asArray());
                     Objects.requireNonNull(rvPartKosong.getAdapter()).notifyDataSetChanged();
                 } else {
-                    ((TugasPart_MainTab_Activity) Objects.requireNonNull(getActivity())).showInfo("Gagal Memperbaharui Status");
+                    ((TugasPart_MainTab_Activity) Objects.requireNonNull(getActivity())).showInfo(result.get("message").asString());
                 }
             }
         });

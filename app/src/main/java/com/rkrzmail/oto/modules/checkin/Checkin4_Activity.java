@@ -73,7 +73,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
     private Nson penugasanMekanikList = Nson.newArray();
 
     private boolean isSign = false, isBatal = false;
-    private boolean isExpressAndStandard = false, isExtraAndHplus = false;
+    private boolean isExpressAndStandard = false, isExtra = false, isHplus = false;
 
     private long oneDay = 86400000;
 
@@ -130,7 +130,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
     private void initData() {
         getData = Nson.readJson(getIntentStringExtra(DATA));
         Tools.setViewAndChildrenEnabled(find(R.id.ly_waktuAmbil, LinearLayout.class), false);
-
+        Log.d("coba__", "DATA: " + getData);
         setSpMekanik("");
         setNoAntrian(getData.get("JENIS_ANTRIAN").asString());
         waktuLayananStandartExpress = getData.get("WAKTU_LAYANAN").asString();
@@ -140,11 +140,14 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         find(R.id.tv_jenis_antrian, TextView.class).setText("Jenis Antrian : " + getData.get("JENIS_ANTRIAN").asString());
 
         if (getData.get("JENIS_ANTRIAN").asString().equals("EXTRA")) {
-            isExtraAndHplus = true;
+            isExtra = true;
             Tools.setViewAndChildrenEnabled(find(R.id.ly_estimasi_selesai, LinearLayout.class), true);
             find(R.id.tv_disable_estimasi).setVisibility(View.GONE);
         } else if (getData.get("JENIS_ANTRIAN").asString().equals("H+")) {
-            isExtraAndHplus = true;
+            isHplus = true;
+            find(R.id.et_dp_checkin4, EditText.class).setText(RP + formatRp(getData.get("DP").asString()));
+            find(R.id.et_sisa_checkin4, EditText.class).setText(RP + formatRp(getData.get("DP").asString()));
+
             Tools.setViewAndChildrenEnabled(find(R.id.ly_estimasi_selesai, LinearLayout.class), true);
             //find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).setEnabled(true);
             //find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setEnabled(false);
@@ -216,15 +219,14 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             if (timeMilisEstimasi > currentDateTimeMilis) {
                 result = "H+";
                 updateAntrian(result);
-                isExtraAndHplus = true;
-
+                isExtra = true;
                 try {
-                    double dp = Double.parseDouble(getSetting("DP_PERSEN"));
-                    int totalBiaya = Integer.parseInt(find(R.id.et_totalBiaya_checkin4, EditText.class).getText().toString().replaceAll("[^0-9]+", ""));
-                    int totalSisa = totalBiaya - calculateDp(dp, totalBiaya);
-
-                    find(R.id.et_dp_checkin4, EditText.class).setText(RP + formatRp(String.valueOf(calculateDp(dp, totalBiaya))));
-                    find(R.id.et_sisa_checkin4, EditText.class).setText(RP + formatRp(String.valueOf(totalSisa)));
+                    find(R.id.et_dp_checkin4, EditText.class).setText(RP +
+                            formatRp(String.valueOf(calculateDp(Double.parseDouble(getSetting("DP_PERSEN")),
+                                    Integer.parseInt(find(R.id.et_totalBiaya_checkin4, EditText.class).getText().toString())))));
+                    find(R.id.et_sisa_checkin4, EditText.class).setText(RP +
+                            formatRp(String.valueOf(Integer.parseInt(find(R.id.et_totalBiaya_checkin4, EditText.class).getText().toString()) -
+                                    Integer.parseInt(find(R.id.et_dp_checkin4, EditText.class).getText().toString()))));
                 } catch (Exception e) {
                     showError(e.getMessage());
                 }
@@ -234,7 +236,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 //find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setEnabled(false);
                 //find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setChecked(true);
             } else {
-                isExtraAndHplus = false;
+                isExtra = false;
                 result = jenisLayanan;
             }
         }
@@ -242,9 +244,9 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         return result;
     }
 
-    private int calculateDp(double dp, int harga) {
+    private double calculateDp(double dp, int harga) {
         if (dp > 0 && harga > 0) {
-            return (int) (dp * harga) / 100;
+            return (dp / 100) * harga;
         }
         return 0;
     }
@@ -275,16 +277,14 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void onDismiss(DialogInterface dialog) {
                 tglEstimasi = find(R.id.tv_tgl_estimasi_checkin4, TextView.class).getText().toString();
-                if (isExtraAndHplus) {
+                if (isExtra) {
                     find(R.id.et_selesaiWaktu_checkin, TextView.class).setText(waktuLayananHplusExtra);
+                    try {
+                        find(R.id.tv_jenis_antrian, TextView.class).setText(parseEstimasiSelesai(tglEstimasi, getData.get("JENIS_ANTRIAN").asString().replace("Jenis Antrian : ", "").trim()));
+                    } catch (ParseException e) {
+                        showError(e.getMessage());
+                    }
                 }
-                try {
-                    find(R.id.tv_jenis_antrian, TextView.class).setText(parseEstimasiSelesai(tglEstimasi, getData.get("JENIS_ANTRIAN").asString().replace("Jenis Antrian : ", "").trim()));
-                    Log.d(TAG, "WAKTU: " + parseEstimasiSelesai(tglEstimasi, getData.get("JENIS_ANTRIAN").asString()));
-                } catch (ParseException e) {
-                    showError(e.getMessage());
-                }
-                Log.d(TAG, "TGL: " + tglEstimasi);
             }
         });
 
@@ -732,6 +732,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         });
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -763,7 +764,11 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 else if (!isSign) {
                     showWarning("Tanda Tangan Wajib di Input");
                 } else {
-                    saveData("CHECKIN ANTRIAN");
+                    if (!find(R.id.sp_namaMekanik_checkin4, Spinner.class).getSelectedItem().toString().equals("--PILIH--")) {
+                        saveData("PENUGASAN MEKANIK");
+                    } else {
+                        saveData("CHECKIN ANTRIAN");
+                    }
                 }
                 break;
             case R.id.btn_ttd_checkin4:
@@ -782,6 +787,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         }
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {

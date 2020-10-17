@@ -1,4 +1,4 @@
-package com.rkrzmail.oto.modules.part;
+package com.rkrzmail.oto.gmod.part;
 
 import android.content.Context;
 import android.content.SharedPreferences;

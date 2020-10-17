@@ -43,7 +43,9 @@ import com.rkrzmail.utils.Tools;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +57,7 @@ import static com.rkrzmail.utils.ConstUtils.BATAL;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_OTOMOTIVES;
 import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.JASA_LAIN;
 import static com.rkrzmail.utils.ConstUtils.MASTER_PART;
 import static com.rkrzmail.utils.ConstUtils.PART;
 import static com.rkrzmail.utils.ConstUtils.PARTS_UPPERCASE;
@@ -93,6 +96,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
     private Nson varianList = Nson.newArray();
     private Nson masterPartList = Nson.newArray();
     private Nson partIdList = Nson.newArray();
+    private Nson partKosongList = Nson.newArray();
 
     private String namaLayanan, jenisLayanan = "", waktuMekanik = "", waktuInspeksi = "", waktuLayanan = "";
     private String jenisAntrian = "", isOutsource = "", noAntrian = "", discFasilitas = "";
@@ -101,7 +105,9 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             batasanKm = 0,
             batasanBulan = 0,
             jumlahPartWajib = 0;
+    private int idAntrian = 0;
     private int hargaPartLayanan = 0; // afs, recall, otomotives
+    private double sisaDp = 0;
     private List<Tools.TimePart> timePartsList = new ArrayList<>();
     private List<Integer> jumlahList = new ArrayList<>();
     private Tools.TimePart dummyTime = Tools.TimePart.parse("00:00:00");
@@ -111,7 +117,9 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             isPartWajib = false, isSelanjutnya = false, isDelete = false;
     private boolean isPartKosong = false;
     private boolean isBatal = false;
-    private int idAntrian = 0;
+    private boolean isJasaExternal = false;
+    private boolean isHplusLayanan = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -297,6 +305,8 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
         final String sisa = find(R.id.et_sisa_checkin3, EditText.class).getText().toString().replaceAll("[^0-9]+", "");
         final String tungguKonfirmasi = find(R.id.cb_konfirmBiaya_checkin3, CheckBox.class).isChecked() ? "Y" : "N";
         final int totalPartJasa = jasaList.size() + partList.size();
+        final String waktuLayanan = dummyTime.toString();
+
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -313,10 +323,14 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 if (isBatal) {
                     args.put("isBatal", "true");
                     args.put("alasanBatal", alasanBatal);
-                }else {
-                    if(isPartKosong){
-                        args.put("isPartKosong", "true");
+                } else {
+                    if (isPartKosong) {
+                        if (partKosongList.size() > 0) {
+                            args.put("isPartKosong", "true");
+                            args.put("partKosongList", partKosongList.toJson());
+                        }
                     }
+
                     args.put("layanan", layanan);
                     args.put("layananestimasi", layananEstimasi);
                     args.put("total", total);
@@ -325,17 +339,14 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                     args.put("tunggu", tungguKonfirmasi);
                     args.put("partbook", partList.toJson());
                     args.put("jasabook", jasaList.toJson());
-                    args.put("totalpartjasa", String.valueOf(totalPartJasa));
                     args.put("antrian", find(R.id.tv_jenis_antrian, TextView.class).getText().toString());
                     args.put("biayaLayanan", formatOnlyNumber(find(R.id.tv_biayaLayanan_checkin, TextView.class).getText().toString()));
                     //inserting waktu layanan part
                 }
 
-                args.put("kendaraan", nson.get("jeniskendaraan").asString());
-                args.put("merk", nson.get("merk").asString());
-                args.put("model", nson.get("model").asString());
-                args.put("jenis", nson.get("jenis").asString());
-                args.put("varian", nson.get("varian").asString());
+                args.put("waktuLayananHari", waktuLayanan.substring(0, 2));
+                args.put("waktuLayananJam", waktuLayanan.substring(3, 5));
+                args.put("waktuLayananMenit", waktuLayanan.substring(6, 8));
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
             }
@@ -362,7 +373,9 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         nson.set("LOKASI_LAYANAN", lokasiLayananList.toJson());
                         nson.set("PART_KOSONG", isPartKosong);
                         nson.set("OUTSOURCE", isOutsource);
-                        nson.set("JENIS_ANTRIAN", validasiAntrian(isPartKosong));
+                        nson.set("JENIS_ANTRIAN", find(R.id.tv_jenis_antrian, TextView.class).getText().toString());
+                        nson.set("DP", formatOnlyNumber(find(R.id.et_dp_checkin3, EditText.class).getText().toString()));
+                        nson.set("SISA", formatOnlyNumber(find(R.id.et_sisa_checkin3, EditText.class).getText().toString()));
 
                         if (layanan.equals("PERAWATAN LAINNYA")) {
                             nson.set("JENIS_LAYANAN", layanan);
@@ -657,8 +670,9 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
         }
     }
 
-    private String validasiAntrian(boolean isHplus) {
+    private String validasiAntrian(boolean isHplusPartKosong) {
         String jenisAntrian = "";
+        String totalLayanan = find(R.id.tv_waktu_layanan, TextView.class).getText().toString().replace("Total Waktu Layanan : ", "");
         Tools.TimePart maxAntrianExpress = Tools.TimePart.parse(getSetting("MAX_ANTRIAN_EXPRESS_MENIT"));
         Tools.TimePart maxAntrianStandard = Tools.TimePart.parse(getSetting("MAX_ANTRIAN_STANDART_MENIT"));
         Tools.TimePart totalLamaLayanan = Tools.TimePart.parse(find(R.id.tv_waktu_layanan, TextView.class).getText().toString().replace("Total Waktu Layanan : ", ""));
@@ -666,15 +680,22 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             @SuppressLint("SimpleDateFormat") Date maxExpress = new SimpleDateFormat("HH:mm:ss").parse(maxAntrianExpress.toString());
             @SuppressLint("SimpleDateFormat") Date maxStandard = new SimpleDateFormat("HH:mm:ss").parse(maxAntrianStandard.toString());
             @SuppressLint("SimpleDateFormat") Date totalAntrian = new SimpleDateFormat("HH:mm:ss").parse(totalLamaLayanan.toString());
+            int hplus = Integer.parseInt(totalLayanan.substring(0, 2));
             //after is >
             //before is <
-            if (isHplus) {
+            long express = maxExpress.getTime();
+            long standard = maxStandard.getTime();
+            long totalWaktu = totalAntrian.getTime();
+            if (isHplusPartKosong) {
                 jenisAntrian = "H+";
             } else {
-                if (totalAntrian.before(maxExpress)) {
+                if (totalWaktu <= express) {
                     jenisAntrian = "EXPRESS";
-                } else if (totalAntrian.before(maxStandard)) {
+                } else if (totalWaktu <= standard) {
                     jenisAntrian = "STANDART";
+                } else if (hplus > 0) {
+                    jenisAntrian = "H+";
+                    isHplusLayanan = true;
                 } else {
                     jenisAntrian = "EXTRA";
                 }
@@ -686,12 +707,22 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
         return jenisAntrian;
     }
 
+    public static Date addDays(Date date, int days) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.DATE, days); //minus number would decrement the days
+        return cal.getTime();
+    }
+
     @Override
     public void onClick(View view) {
         Intent i;
         switch (view.getId()) {
             case R.id.btn_jasaLain_checkin3:
                 i = new Intent(getActivity(), JasaLain_Activity.class);
+                if (jasaList.size() > 0) {
+                    i.putExtra(JASA_LAIN, jasaList.toJson());
+                }
                 startActivityForResult(i, REQUEST_JASA_LAIN);
                 break;
             case R.id.btn_sparePart_checkin3:
@@ -744,11 +775,12 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 switch (requestCode) {
                     case REQUEST_JASA_LAIN:
                         dataAccept = Nson.readJson(getIntentStringExtra(data, DATA));
+                        Log.d(TAG, "JASA : " + dataAccept);
                         isOutsource = dataAccept.get("OUTSOURCE").asString();
                         Tools.TimePart waktu = Tools.TimePart.parse(dataAccept.get("WAKTU").asString());
                         timePartsList.add(waktu);
                         totalWaktuLayanan(timePartsList);
-                        totalHarga += Integer.parseInt(dataAccept.get("HARGA_JASA").asString().replaceAll("[^0-9]+", ""));
+                        totalHarga += Integer.parseInt(formatOnlyNumber(dataAccept.get("HARGA_JASA").asString()));
                         jasaList.add(dataAccept);
                         Objects.requireNonNull(rvJasaLain.getAdapter()).notifyDataSetChanged();
                         break;
@@ -757,7 +789,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         jasaList.add(dataAccept);
                         Tools.TimePart waktu1 = Tools.TimePart.parse(dataAccept.get("WAKTU").asString());
                         timePartsList.add(waktu1);
-                        totalHarga += Integer.parseInt(dataAccept.get("HARGA_PART").asString().replaceAll("[^0-9]+", ""));
+                        totalHarga += Integer.parseInt(formatOnlyNumber(dataAccept.get("HARGA_PART").asString()));
                         Objects.requireNonNull(rvJasaLain.getAdapter()).notifyDataSetChanged();
                         break;
                     case REQUEST_CARI_PART:
@@ -772,7 +804,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         dataAccept = Nson.readJson(getIntentStringExtra(data, DATA));
                         Tools.TimePart waktu2 = Tools.TimePart.parse(dataAccept.get("WAKTU").asString());
                         timePartsList.add(waktu2);
-                        totalHarga += Integer.parseInt(dataAccept.get("HARGA_PART").asString().replaceAll("[^0-9]+", ""));
+                        totalHarga += Integer.parseInt(formatOnlyNumber(dataAccept.get("HARGA_PART").asString()));
                         partList.add(dataAccept);
                         Objects.requireNonNull(rvPart.getAdapter()).notifyDataSetChanged();
                         break;
@@ -783,17 +815,20 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         break;
                     case REQUEST_JASA_EXTERNAL:
                         dataAccept = Nson.readJson(getIntentStringExtra(data, DATA));
+                        isJasaExternal = true;
                         Tools.TimePart waktu3 = Tools.TimePart.parse(dataAccept.get("WAKTU").asString());
                         timePartsList.add(waktu3);
                         totalWaktuLayanan(timePartsList);
-                        totalHarga += Integer.parseInt(dataAccept.get("HARGA_JASA").asString().replaceAll("[^0-9]+", ""));
+                        totalHarga += Integer.parseInt(formatOnlyNumber(dataAccept.get("HARGA_JASA").asString()));
                         partList.add(dataAccept);
                         Objects.requireNonNull(rvPart.getAdapter()).notifyDataSetChanged();
                         break;
                     case REQUEST_HARGA_PART:
                         dataAccept = Nson.readJson(getIntentStringExtra(data, DATA));
                         try {
-                            totalHarga += Integer.parseInt(dataAccept.get("HARGA_PART").asString().replaceAll("[^0-9]+", ""));
+                            totalHarga += Integer.parseInt(formatOnlyNumber(dataAccept.get("HARGA_PART").asString()));
+                            totalHarga += Integer.parseInt(formatOnlyNumber(dataAccept.get("HARGA_JASA").asString()));
+                            sisaDp = totalHarga - calculateDp(Double.parseDouble(getSetting("DP_PERSEN")), totalHarga);
                         } catch (Exception e) {
                             totalHarga = 0;
                         }
@@ -805,15 +840,13 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                             }
                         } else {
                             if (dataAccept.get("PART_KOSONG") != null && dataAccept.get("PART_KOSONG").asString().equals("true")) {
-                                Log.d(TAG, "DP : " + getSetting("DP_PERSEN"));
+                                Nson partKosong = Nson.readJson(getIntentStringExtra(data, "PART_KOSONG_LIST"));
+                                partKosong = partKosong.get("PART_KOSONG");
+                                partKosongList.add(partKosong);
+                                Log.d(TAG, "PARTKOSONG : " + partKosongList);
                                 isPartKosong = true;
                                 try {
-                                    int total = totalHarga - calculateDp(Double.parseDouble(getSetting("DP_PERSEN")), totalHarga);
-                                    Log.d(TAG, "total : " + total);
-                                    find(R.id.tv_dp_bengkel, TextView.class).setVisibility(View.VISIBLE);
-                                    find(R.id.tv_dp_bengkel, TextView.class).setText("DP Bengkel : " + getSetting("DP_PERSEN") + " %");
-                                    find(R.id.et_sisa_checkin3, EditText.class).setText(RP + formatRp(String.valueOf(total)));
-                                    find(R.id.et_dp_checkin3, EditText.class).setText(RP + formatRp(String.valueOf(calculateDp(Double.parseDouble(getSetting("DP_PERSEN")), totalHarga))));
+                                    setDpAndSisa();
                                     dataAccept.remove("PART_KOSONG");
                                 } catch (Exception e) {
                                     showError("PART KOSONG " + e.getMessage());
@@ -822,8 +855,8 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                             Tools.TimePart waktu4 = Tools.TimePart.parse(dataAccept.get("WAKTU").asString());
                             timePartsList.add(waktu4);
                             totalWaktuLayanan(timePartsList);
-                            if (Tools.isNumeric(dataAccept.get("HARGA_JASA").asString())) {
-                                totalHarga += Integer.parseInt(formatOnlyNumber(dataAccept.get("HARGA_JASA").asString()));
+                            if (isHplusLayanan) {
+                                setDpAndSisa();
                             }
                         }
                         partList.add(dataAccept);
@@ -863,10 +896,18 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
     }
 
 
-    private int calculateDp(double dp, int harga) {
+    private double calculateDp(double dp, int harga) {
         if (dp > 0 && harga > 0) {
-            return (int) (dp * harga) / 100;
+            return  (dp / 100) * harga;
         }
         return 0;
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void setDpAndSisa() {
+        find(R.id.tv_dp_bengkel, TextView.class).setVisibility(View.VISIBLE);
+        find(R.id.tv_dp_bengkel, TextView.class).setText("DP Bengkel : " + getSetting("DP_PERSEN") + " %");
+        find(R.id.et_sisa_checkin3, EditText.class).setText(RP + formatRp(String.valueOf(sisaDp)));
+        find(R.id.et_dp_checkin3, EditText.class).setText(RP + formatRp(String.valueOf(calculateDp(Double.parseDouble(getSetting("DP_PERSEN")), totalHarga))));
     }
 }

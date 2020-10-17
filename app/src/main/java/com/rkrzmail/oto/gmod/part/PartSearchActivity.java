@@ -1,11 +1,10 @@
-package com.rkrzmail.oto.modules.part;
+package com.rkrzmail.oto.gmod.part;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -28,17 +27,13 @@ import android.widget.Toast;
 
 
 import com.naa.data.Nson;
-import com.naa.data.UtilityAndroid;
 import com.naa.utils.InternetX;
-import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
-import com.rkrzmail.oto.MainActivity;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
-import com.rkrzmail.utils.Tools;
 import com.rkrzmail.utils.ViewAnimation;
 
 import java.util.Map;

@@ -12,14 +12,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
-import com.naa.data.UtilityAndroid;
 import com.naa.utils.InternetX;
 import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.part.PartActivity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 

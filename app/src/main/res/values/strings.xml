@@ -362,4 +362,6 @@
     <string name="nama_supplier_uppercase">NAMA SUPPLIER</string>
     <string name="nama_ecommerce_uppercase">NAMA ECOMMERCE</string>
     <string name="estimasi_tiba_uppercase">ESTIMASI TIBA</string>
+    <string name="discount_part_uppercase">DISCOUNT PART</string>
+    <string name="discount_jasa_uppercase">DISCOUNT JASA</string>
 </resources>

@@ -251,6 +251,12 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             @SuppressLint("SetTextI18n")
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                etNoPonsel.removeTextChangedListener(this);
                 int counting = (s == null) ? 0 : s.toString().length();
                 if (counting < 4 && !etNoPonsel.getText().toString().contains("+62 ")) {
                     etNoPonsel.setText("+62 ");
@@ -261,11 +267,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 } else {
                     find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
                 }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
+                etNoPonsel.addTextChangedListener(this);
             }
         });
     }

@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="5dp">
+            android:padding="@dimen/paddingMedium">
 
             <LinearLayout
                 android:id="@+id/ly_jumlahHarga_part"
@@ -82,14 +82,12 @@
                 </FrameLayout>
 
                 <android.support.design.widget.TextInputLayout
-                    android:id="@+id/ly_disc_jumlah_harga_part"
+                    android:id="@+id/ly_disc_part_jumlah_harga_part"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"
-                    android:layout_marginRight="10dp"
-                    android:hint="DISCOUNT"
+                    android:hint="@string/discount_part_uppercase"
                     android:visibility="gone">
 
                     <EditText
@@ -245,6 +243,7 @@
                     </android.support.design.widget.TextInputLayout>
 
                 </LinearLayout>
+
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -289,7 +288,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:hint="DISCOUNT"
+                    android:hint="@string/discount_jasa_uppercase"
                     android:visibility="gone">
 
                     <EditText
@@ -302,7 +301,6 @@
                         tools:ignore="Autofill,LabelFor" />
 
                 </android.support.design.widget.TextInputLayout>
-
 
             </LinearLayout>
 

@@ -33,13 +33,25 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.rkrzmail.utils.APIUrls.ATUR_TUGAS_PART;
+import static com.rkrzmail.utils.APIUrls.VIEW_TUGAS_PART;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CONTACT;
 
 public class Status_PartKosong_Activity extends AppActivity {
 
     Spinner spStatus, spTipeSupplier;
+
+    private String
+            nopol = "", noAntrian = "",
+            namaPelanggan = "", status = "", layanan = "",
+            jamAntrian = "", partId ="", group = "",
+            idCheckinDetail = "", idPartKosong = "", jumlahRequest = "";
+
+    private boolean isTerima = false;
     private boolean isOrder = false;
+    private boolean isBatal = false;
+    private boolean isKosong = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +80,17 @@ public class Status_PartKosong_Activity extends AppActivity {
     }
 
     private void initData(){
-        Nson data = Nson.readJson(getIntentStringExtra(DATA));
+        Nson nson = Nson.readJson(getIntentStringExtra(DATA));
+        idCheckinDetail = nson.get("CHECKIN_DETAIL_ID").asString();
+        nopol = nson.get("NOPOL").asString();
+        noAntrian = nson.get("NO_ANTRIAN").asString();
+        namaPelanggan = nson.get("NAMA_PELANGGAN").asString();
+        layanan =  nson.get("LAYANAN").asString();
+        status =  nson.get("STATUS").asString();//status checkin
+        jamAntrian = nson.get("ESTIMASI_SEBELUM").asString();//estimasi mulai checkin
+        partId = nson.get("LAYANAN").asString();
+        idPartKosong = nson.get("PART_KOSONG_ID").asString();
+        jumlahRequest = nson.get("JUMLAH_PART_KOSONG").asString();
     }
 
     private void viewStatusPartKosong(){
@@ -79,7 +101,7 @@ public class Status_PartKosong_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "delete");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturdiskonjasalain"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_TUGAS_PART), args));
             }
 
             @Override
@@ -100,14 +122,28 @@ public class Status_PartKosong_Activity extends AppActivity {
                 String item = parent.getSelectedItem().toString();
                 if(item.equals("ORDER")){
                     spTipeSupplier.setEnabled(true);
-                    Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_supplier, LinearLayout.class), true);
-                    find(R.id.tv_tanggal).setEnabled(true);
+                    find(R.id.tv_estimasi).setEnabled(true);
+                    find(R.id.tv_nama_supplier).setBackground(getResources().getDrawable(R.drawable.background_edittext));
+                    find(R.id.tv_estimasi).setBackground(getResources().getDrawable(R.drawable.background_edittext));
                     isOrder = true;
                 }else{
                     spTipeSupplier.setEnabled(false);
-                    Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_supplier, LinearLayout.class), false);
-                    find(R.id.tv_tanggal).setEnabled(false);
+                    find(R.id.tv_estimasi).setEnabled(false);
+                    find(R.id.tv_nama_supplier).setBackground(getResources().getDrawable(R.drawable.bg_disable));
+                    find(R.id.tv_estimasi).setBackground(getResources().getDrawable(R.drawable.bg_disable));
                     isOrder = false;
+                }
+
+                switch (item) {
+                    case "TERIMA":
+                        group = "TERIMA";
+                        break;
+                    case "BATAL KARENA BENGKEL":
+                        group = "BATAL";
+                        break;
+                    case "TIDAK TERSEDIA":
+                        group = "KOSONG";
+                        break;
                 }
             }
 
@@ -134,7 +170,7 @@ public class Status_PartKosong_Activity extends AppActivity {
             }
         });
         
-        find(R.id.tv_tanggal).setOnClickListener(new View.OnClickListener() {
+        find(R.id.tv_estimasi).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getDatePicker();
@@ -169,9 +205,9 @@ public class Status_PartKosong_Activity extends AppActivity {
                     showWarning("Tipe Supplier Belum di Pilih");
                 }else if(isOrder && spTipeSupplier.getSelectedItem().toString().equals("ECOMMERCE") &&  find(R.id.et_nama_ecommerce, EditText.class).getText().toString().isEmpty()){
                     find(R.id.et_nama_ecommerce, EditText.class).setError("Nama Ecommerce Harus Di Pilih");
-                }else if(isOrder && find(R.id.tv_tanggal, TextView.class).getText().toString().isEmpty()){
+                }else if(isOrder && find(R.id.tv_estimasi, TextView.class).getText().toString().isEmpty()){
                     showWarning("Tanggal Belum Di Masukkan");
-                    find(R.id.tv_tanggal, TextView.class).performClick();
+                    find(R.id.tv_estimasi, TextView.class).performClick();
                 }else{
                     updatePartKosong();
 
@@ -197,7 +233,7 @@ public class Status_PartKosong_Activity extends AppActivity {
                     e.printStackTrace();
                 }
                 String formattedTime = sdf.format(date);
-                find(R.id.tv_tanggal, TextView.class).setText(formattedTime);
+                find(R.id.tv_estimasi, TextView.class).setText(formattedTime);
             }
         }, year, month, day);
 
@@ -219,8 +255,40 @@ public class Status_PartKosong_Activity extends AppActivity {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "delete");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturdiskonjasalain"), args));
+
+                args.put("action", "add");
+                args.put("nopol", nopol);
+                args.put("noAntrian", noAntrian);
+                args.put("namaPelanggan", namaPelanggan);
+                args.put("status", spStatus.getSelectedItem().toString());
+                args.put("layanan", layanan);
+                args.put("jamAntrian", jamAntrian);
+                args.put("partId", partId);
+                args.put("tanggal", currentDateTime("yyyy-MM-dd hh:mm"));
+                args.put("group", group);
+
+                switch (group) {
+                    case "TERIMA":
+                        args.put("isTersedia", "true");
+                        args.put("jumlahRequest", jumlahRequest);
+                        break;
+                    case "BATAL KARENA BENGKEL":
+                        args.put("isBatal", "true");
+                        break;
+                    case "TIDAK TERSEDIA":
+
+                        break;
+                }
+
+                args.put("idPartKosong", idPartKosong);
+                args.put("idCheckinDetail", idCheckinDetail);
+                args.put("namaSupplier", find(R.id.tv_nama_supplier, TextView.class).getText().toString().replaceAll("[^a-zA-Z]", ""));
+                args.put("noSupplier",  find(R.id.tv_nama_supplier, TextView.class).getText().toString().replaceAll("[^0-9]", ""));
+                args.put("tipeSupplier", spTipeSupplier.getSelectedItem().toString());
+                args.put("estimasiTiba", find(R.id.tv_estimasi, TextView.class).getText().toString());
+                args.put("namaEcommerce", find(R.id.et_nama_ecommerce, EditText.class).getText().toString());
+
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_TUGAS_PART), args));
             }
 
             @Override

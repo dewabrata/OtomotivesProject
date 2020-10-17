@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.part.People;
+import com.rkrzmail.oto.gmod.part.People;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

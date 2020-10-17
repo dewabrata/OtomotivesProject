@@ -202,17 +202,17 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".modules.part.PartActivity"
+            android:name=".gmod.part.PartActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".modules.part.PartSearchActivity"
+            android:name=".gmod.part.PartSearchActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".modules.part.PartFavoriteActivity"
+            android:name=".gmod.part.PartFavoriteActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
