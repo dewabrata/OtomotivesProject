@@ -84,7 +84,7 @@ public class AppApplication extends Application {
     public HashMap<String, String> getArgsData() {
         HashMap<String, String> hashtable = new HashMap();
 
-        //hashtable.put("user", UtilityAndroid.getSetting(getApplicationContext(), "user", ""));
+        hashtable.put("user", UtilityAndroid.getSetting(getApplicationContext(), "user", ""));
         hashtable.put("session", UtilityAndroid.getSetting(getApplicationContext(), "session", ""));
         hashtable.put("user", UtilityAndroid.getSetting(getApplicationContext(), "NAMA_USER", ""));
         hashtable.put("CID", UtilityAndroid.getSetting(getApplicationContext(), "CID", ""));

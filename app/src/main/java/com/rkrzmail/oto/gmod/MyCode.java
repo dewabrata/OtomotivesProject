@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,15 +23,18 @@ import com.naa.data.Utility;
 import com.naa.data.UtilityAndroid;
 import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
+import com.naa.utils.RunnableX;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import static com.naa.data.ImageUtil.*;
 import static com.naa.data.ImageUtil.rkrzmaiImageA;
+import static com.rkrzmail.utils.APIUrls.SET_LOGIN;
 
 public class MyCode extends AppActivity {
     View view;
@@ -69,32 +73,37 @@ public class MyCode extends AppActivity {
 
 
         newProses(new Messagebox.DoubleRunnable() {
-            @Override
+            Nson nson;
             public void run() {
-                Nson sds = Nson.newObject();
-                sds.set("X", Utility.Now());
-                sds.set("S", UtilityAndroid.getSetting(getApplicationContext(), "session", ""));
-                sds.set("U", UtilityAndroid.getSetting(getApplicationContext(), "NAMA_USER", ""));
+                bitBitmap = null;
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("user", UtilityAndroid.getSetting(getApplicationContext(), "user", ""));
+                args.put("action","get");
+                nson = Nson.readJson (InternetX.postHttpConnection(AppApplication.getBaseUrlV3("mycode"), args));
+                if (nson.get("status").asString().equalsIgnoreCase("OK")) {
 
-                String barcode = sds.toJson();
-                QRCodeWriter writer = new QRCodeWriter();
-                try {
-                    BitMatrix bitMatrix = writer.encode(barcode, BarcodeFormat.QR_CODE, 240, 240);
-                    int width = bitMatrix.getWidth();
-                    int height = bitMatrix.getHeight();
-                    Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-                    for (int x = 0; x < width; x++) {
-                        for (int y = 0; y < height; y++) {
-                            bmp.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
+                    String barcode = nson.get("data").get("barcode").asString();
+                    QRCodeWriter writer = new QRCodeWriter();
+                    try {
+                        BitMatrix bitMatrix = writer.encode(barcode, BarcodeFormat.QR_CODE, 240, 240);
+                        int width = bitMatrix.getWidth();
+                        int height = bitMatrix.getHeight();
+                        Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+                        for (int x = 0; x < width; x++) {
+                            for (int y = 0; y < height; y++) {
+                                bmp.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
+                            }
                         }
+                        bitBitmap = bmp;
+                        string = "";
+                    } catch (WriterException e) {
+                        string = String.valueOf(e.getMessage());
                     }
-                    bitBitmap = bmp;
-                    string = "";
-                } catch (WriterException e) {
-                    string = String.valueOf(e.getMessage());
+                }else{
+                    string = nson.toString();
                 }
             }
-            @Override
+
             public void runUI() {
                 if (bitBitmap!=null){
                     (find(R.id.imgBarcode, ImageView.class)).setImageBitmap(bitBitmap);
@@ -106,6 +115,26 @@ public class MyCode extends AppActivity {
         });
 
     }
+    public interface RunnableWD {
+        public void runWD(Nson nson);
+    }
+    public static void checkMyCode(final AppActivity appActivity, final String barcode, final RunnableWD runnable){
+        Nson nson = Nson.newObject();
+        appActivity.newProses(new Messagebox.DoubleRunnable() {
+            Nson nson;
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("user", UtilityAndroid.getSetting(appActivity, "user", ""));
+                args.put("action","check");
+                args.put("barcode",barcode);
+                nson = Nson.readJson (InternetX.postHttpConnection(AppApplication.getBaseUrlV3("mycode"), args));
 
+            }
+
+            public void runUI() {
+                runnable.runWD(nson);//{"status":"OK","message":"Success","data":[{"USERID":"1"}]}
+            }
+        });
+     }
 
 }
