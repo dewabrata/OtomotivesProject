@@ -102,7 +102,8 @@ public class JasaExternal_Activity extends AppActivity {
             sendData.set("DISCOUNT_PART", "");
             sendData.set("HARGA_JASA", formatOnlyNumber(find(R.id.et_biayaJasa, EditText.class).getText().toString()));
             sendData.set("HARGA_PART", "");
-            sendData.set("WAKTU", find(R.id.et_waktuSet, EditText.class).getText().toString());
+            sendData.set("WAKTU_KERJA", find(R.id.et_waktuSet, EditText.class).getText().toString());
+            sendData.set("WAKTU_INSPEKSI", find(R.id.et_waktu_set_inspeksi, EditText.class).getText().toString());
             sendData.set("NET", formatOnlyNumber(find(R.id.et_biayaJasa, EditText.class).getText().toString()));
             sendData.set("WAKTU_KERJA_HARI", hari);
             sendData.set("WAKTU_KERJA_JAM", jam);
@@ -112,6 +113,8 @@ public class JasaExternal_Activity extends AppActivity {
             sendData.set("LOKASI_PART_ID", "");
             sendData.set("JASA_EXTERNAL", formatOnlyNumber(find(R.id.et_biayaJasa, EditText.class).getText().toString()));
             sendData.set("HPP", "");
+            sendData.set("WAKTU_PESAN", "");
+            sendData.set("DP", "");
 
             Intent i = new Intent();
             i.putExtra(DATA, sendData.toJson());

@@ -456,7 +456,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
     private void totalWaktu(Nson result) {
         Tools.TimePart waktuMulai = null;
         Tools.TimePart waktuLayanan = Tools.TimePart.parse(waktuLayananStandartExpress);
-        Tools.TimePart totalWaktuSelesai;
+
         Log.d(TAG, "antrian: " + result);
         result = result.get("data");
 
@@ -475,7 +475,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
 
         assert waktuMulai != null;
         find(R.id.et_mulaiWaktu_checkin, TextView.class).setText(waktuMulai.toString().substring(3, 8));
-        totalWaktuSelesai = waktuMulai.add(waktuLayanan);
+        Tools.TimePart totalWaktuSelesai = waktuMulai.add(waktuLayanan);
         find(R.id.et_selesaiWaktu_checkin, TextView.class).setText(totalWaktuSelesai.toString().substring(3, 8));
         find(R.id.tv_tgl_estimasi_checkin4, TextView.class).setText(currentDateTime());
         find(R.id.tv_jam_estimasi_checkin4, TextView.class).setText(find(R.id.et_selesaiWaktu_checkin, TextView.class).getText().toString());

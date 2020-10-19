@@ -289,7 +289,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             public View getView(int position, View convertView, ViewGroup parent) {
                 if (convertView == null) {
                     LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    convertView = inflater.inflate(R.layout.find_nophone, parent, false);
+                    convertView = inflater.inflate(R.layout.item_suggestion, parent, false);
                 }
 
                 String nama = getItem(position).get("NAMA_PELANGGAN").asString();
@@ -298,7 +298,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     nomor = nomor.substring(nomor.length() - 4);
                 }
 
-                findView(convertView, R.id.txtPhone, TextView.class).setText(nama + " " + nomor);
+                findView(convertView, R.id.title, TextView.class).setText(nama + " " + nomor);
                 return convertView;
             }
         });
@@ -355,9 +355,9 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             public View getView(int position, View convertView, ViewGroup parent) {
                 if (convertView == null) {
                     LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    convertView = inflater.inflate(R.layout.find_nopol, parent, false);
+                    convertView = inflater.inflate(R.layout.item_suggestion, parent, false);
                 }
-                findView(convertView, R.id.txtNopol, TextView.class).setText(formatNopol(getItem(position).get("NOPOL").asString()));
+                findView(convertView, R.id.title, TextView.class).setText(formatNopol(getItem(position).get("NOPOL").asString()));
                 return convertView;
             }
         });
