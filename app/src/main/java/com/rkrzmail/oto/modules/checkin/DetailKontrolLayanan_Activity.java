@@ -123,7 +123,6 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         Log.d(TAG, "loadData: " + data);
 
         setSpMekanik(data.get("MEKANIK").asString());
-        setSpAktifitas();
         getDetailCheckin(data);
         idCheckinDetail = data.get(ID).asString();
 
@@ -178,6 +177,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 updateData(idCheckinDetail);
             }
         });
+        setSpAktifitas();
     }
 
     private void initRecyclerviewParts() {

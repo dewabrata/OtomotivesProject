@@ -26,9 +26,9 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
+
                     android:layout_marginTop="5dp"
-                    android:layout_marginRight="10dp"
+
                     android:hint="JENIS KENDARAAN">
 
                     <com.rkrzmail.srv.NikitaAutoComplete
@@ -61,9 +61,9 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
+
                     android:layout_marginTop="5dp"
-                    android:layout_marginRight="10dp"
+
                     android:hint="NAMA PELANGGAN">
 
                     <com.rkrzmail.srv.NikitaAutoComplete
@@ -111,9 +111,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
                 android:hint="NO. PONSEL">
 
                 <com.rkrzmail.srv.NikitaAutoComplete
@@ -131,9 +129,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
                 android:hint="NAMA USAHA">
 
                 <EditText
@@ -151,7 +147,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_margin="10dp"
+                android:layout_marginTop="@dimen/paddingMedium"
                 android:background="@drawable/btn_rounded_accent"
                 android:text="Lanjut"
                 android:textColor="@android:color/white" />

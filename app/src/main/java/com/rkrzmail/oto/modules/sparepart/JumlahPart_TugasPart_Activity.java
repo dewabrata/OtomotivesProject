@@ -82,7 +82,7 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
         layanan =  nson.get("LAYANAN").asString();
         status =  nson.get("STATUS").asString();//status checkin
         jamAntrian = nson.get("ESTIMASI_SEBELUM").asString();//estimasi mulai checkin
-        partId = nson.get("LAYANAN").asString();
+        partId = nson.get("PART_ID").asString();
         idLokasiPart = nson.get("LOKASI_PART_ID").asString();
 
         if (getIntent().hasExtra(TUGAS_PART_PERMINTAAN)) {

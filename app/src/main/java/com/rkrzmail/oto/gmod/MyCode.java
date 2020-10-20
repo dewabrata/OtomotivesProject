@@ -35,8 +35,10 @@ import java.util.TimerTask;
 import static com.naa.data.ImageUtil.*;
 import static com.naa.data.ImageUtil.rkrzmaiImageA;
 import static com.rkrzmail.utils.APIUrls.SET_LOGIN;
+import static com.rkrzmail.utils.APIUrls.VIEW_MY_CODE;
 
 public class MyCode extends AppActivity {
+
     View view;
     SwipeRefreshLayout swipeRefreshLayout;
     Bitmap bitBitmap = null;
@@ -50,39 +52,66 @@ public class MyCode extends AppActivity {
         setContentView(R.layout.mycode);
 
         view = findViewById(R.id.view_mycode);
+        refreshSession();
 
-        ((TextView)findViewById(R.id.txtName)).setText(getSetting( "NAMA_USER"));
-        ((TextView)findViewById(R.id.txtEmail)).setText(getSetting("session" ));
         findViewById(R.id.icon).setVisibility(View.GONE);
         rkrzmaiImageA((find(R.id.icon, ImageView.class)), getSetting("XLOGO"), new ImageLoadingListener() {
-            public void onLoadingStarted(String var1, View var2) { }
-            public void onLoadingFailed(String var1, View var2, String var3) {  }
+            public void onLoadingStarted(String var1, View var2) {
+            }
+
+            public void onLoadingFailed(String var1, View var2, String var3) {
+            }
+
             public void onLoadingComplete(String var1, View var2, Bitmap var3) {
                 find(R.id.icon, ImageView.class).setVisibility(View.VISIBLE);
             }
-            public void onLoadingCancelled(String var1, View var2) {}
+
+            public void onLoadingCancelled(String var1, View var2) {
+            }
         });
 
+
+        //find(R.id.swiperefresh, SwipeRefreshLayout.class).setRefreshing(true);
         find(R.id.swiperefresh, SwipeRefreshLayout.class).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
             public void onRefresh() {
-                ob = 0;ix=0;
-                swipeRefreshLayout.setRefreshing(false);
-             }
+                //ob = 0;
+                //ix = 0;
+                refreshSession();
+                //swipeRefreshLayout.setRefreshing(false);
+            }
         });
-        find(R.id.swiperefresh, SwipeRefreshLayout.class).setRefreshing(true);
+    }
 
-
+    private void refreshSession(){
         newProses(new Messagebox.DoubleRunnable() {
             Nson nson;
-            public void run() {
-                bitBitmap = null;
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("user", UtilityAndroid.getSetting(getApplicationContext(), "user", ""));
-                args.put("action","get");
-                nson = Nson.readJson (InternetX.postHttpConnection(AppApplication.getBaseUrlV3("mycode"), args));
-                if (nson.get("status").asString().equalsIgnoreCase("OK")) {
 
-                    String barcode = nson.get("data").get("barcode").asString();
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+
+                bitBitmap = null;
+                args.put("userid", formatOnlyNumber(UtilityAndroid.getSetting(getApplicationContext(), "user", "")));
+                args.put("action", "get");
+                swipeProgress(true);
+
+                nson = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MY_CODE), args));
+            }
+
+            public void runUI() {
+                swipeProgress(false);
+                if (nson.get("status").asString().equalsIgnoreCase("OK")) {
+                    if(!nson.get("message").asString().equals("Success")){
+                        showError(nson.get("message").asString());
+                        return;
+                    }
+
+                    ((TextView) findViewById(R.id.txtName)).setText(nson.get("data").get("NAMA").asString());
+                    ((TextView) findViewById(R.id.tv_posisi)).setText(nson.get("data").get("POSISI").asString());
+                    ((TextView) findViewById(R.id.txtEmail)).setText(nson.get("data").get("EMAIL").asString());
+
+                    showSuccess("Barcode Terefresh");
+                    String barcode = nson.get("data").get("session").asString();
                     QRCodeWriter writer = new QRCodeWriter();
                     try {
                         BitMatrix bitMatrix = writer.encode(barcode, BarcodeFormat.QR_CODE, 240, 240);
@@ -99,35 +128,48 @@ public class MyCode extends AppActivity {
                     } catch (WriterException e) {
                         string = String.valueOf(e.getMessage());
                     }
-                }else{
+                } else {
                     string = nson.toString();
                 }
-            }
-
-            public void runUI() {
-                if (bitBitmap!=null){
+                if (bitBitmap != null) {
                     (find(R.id.imgBarcode, ImageView.class)).setImageBitmap(bitBitmap);
-                }else{
-                    Toast.makeText(getActivity().getApplicationContext(), string, Toast.LENGTH_SHORT).show();
+                } else {
+                   showError("Gagal Refresh Barcode");
                 }
 
             }
         });
+    }
 
+    private void swipeProgress(final boolean show) {
+        if (!show) {
+            find(R.id.swiperefresh, SwipeRefreshLayout.class).setRefreshing(show);
+            return;
+        }
+        find(R.id.swiperefresh, SwipeRefreshLayout.class).post(new Runnable() {
+            @Override
+            public void run() {
+                find(R.id.swiperefresh, SwipeRefreshLayout.class).setRefreshing(show);
+            }
+        });
     }
+
     public interface RunnableWD {
-        public void runWD(Nson nson);
+        void runWD(Nson nson);
     }
-    public static void checkMyCode(final AppActivity appActivity, final String barcode, final RunnableWD runnable){
-        Nson nson = Nson.newObject();
+
+    public static void checkMyCode(final AppActivity appActivity, final String barcode, final RunnableWD runnable) {
         appActivity.newProses(new Messagebox.DoubleRunnable() {
             Nson nson;
+
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("user", UtilityAndroid.getSetting(appActivity, "user", ""));
-                args.put("action","check");
-                args.put("barcode",barcode);
-                nson = Nson.readJson (InternetX.postHttpConnection(AppApplication.getBaseUrlV3("mycode"), args));
+
+                // args.put("user", UtilityAndroid.getSetting(appActivity, "user", ""));
+                args.put("action", "check");
+                args.put("barcode", barcode);
+
+                nson = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("mycode"), args));
 
             }
 
@@ -135,6 +177,6 @@ public class MyCode extends AppActivity {
                 runnable.runWD(nson);//{"status":"OK","message":"Success","data":[{"USERID":"1"}]}
             }
         });
-     }
+    }
 
 }

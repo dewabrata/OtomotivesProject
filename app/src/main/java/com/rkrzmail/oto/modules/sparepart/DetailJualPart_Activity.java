@@ -28,13 +28,21 @@ import com.rkrzmail.srv.RupiahFormat;
 import java.text.DecimalFormat;
 import java.util.Map;
 
+import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
+import static com.rkrzmail.utils.ConstUtils.PART;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
+import static com.rkrzmail.utils.ConstUtils.RUANG_PART;
+
 public class DetailJualPart_Activity extends AppActivity {
 
     private EditText etHpp, etHargaJual, etDisc, etJumlah;
     private int finalStock, stock, minStock;
     private String namaPart;
     private Nson parts = Nson.newObject();
-    private boolean isJual;
+    private Nson getData;
+
+    private String idLokasiPart = "";
+    private boolean isJual, isPartKosong;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,27 +60,26 @@ public class DetailJualPart_Activity extends AppActivity {
     }
 
     private void initComponent() {
-        final Nson nson = Nson.readJson(getIntentStringExtra("part"));
-        namaPart = nson.get("NAMA_PART").asString();
-        getJualPart();
-        Log.d("detailpartttt", "data" + Nson.readJson(getIntentStringExtra("part")));
-
         etDisc = findViewById(R.id.et_disc_detailPart);
         etHargaJual = findViewById(R.id.et_hargaJual_detailPart);
         etHpp = findViewById(R.id.et_hpp_detailPart);
         etJumlah = findViewById(R.id.et_jumlah_detailPart);
 
         loadData();
+        initListener();
+    }
 
+    private void initListener(){
         etHargaJual.addTextChangedListener(new RupiahFormat(etHargaJual));
         etJumlah.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
+                if (etJumlah.getText().toString().isEmpty() && hasFocus) {
                     etJumlah.setText("1");
                 }
             }
         });
+
         etJumlah.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -88,20 +95,21 @@ public class DetailJualPart_Activity extends AppActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                stock = nson.get("STOCK").asInteger();
-                minStock = nson.get("STOCK_MINIMUM").asInteger();
+                stock = getData.get("STOCK_RUANG_PART").asInteger();
+                minStock = getData.get("STOCK_MINIMUM").asInteger();
                 String text = s.toString();
                 if (!text.equals("")) {
                     int jumlah = Integer.parseInt(text);
                     if (jumlah > stock) {
                         find(R.id.tl_jumlah, TextInputLayout.class).setHelperTextEnabled(true);
                         find(R.id.tl_jumlah, TextInputLayout.class).setError("Jumlah Melebihi Stock tersedia");
-                    } else if (jumlah > minStock) {
-                        find(R.id.tl_jumlah, TextInputLayout.class).setHelperTextEnabled(true);
-                        find(R.id.tl_jumlah, TextInputLayout.class).setError("Jumlah Melebihi Stock Minimum");
                     } else {
                         find(R.id.tl_jumlah, TextInputLayout.class).setHelperTextEnabled(false);
                     }
+                     /*else if (jumlah > minStock) {
+                        find(R.id.tl_jumlah, TextInputLayout.class).setHelperTextEnabled(true);
+                        find(R.id.tl_jumlah, TextInputLayout.class).setError("Jumlah Melebihi Stock Minimum");
+                    }*/
                 }
             }
         });
@@ -153,48 +161,60 @@ public class DetailJualPart_Activity extends AppActivity {
         });
     }
 
+    private void setIntent() {
+        Messagebox.showDialog(getActivity(), "Konfirmasi", "Stock Part Kosong, Cari Part ?", "OK", "TIDAK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(getActivity(), CariPart_Activity.class);
+                intent.putExtra(CARI_PART_LOKASI, RUANG_PART);
+                startActivityForResult(intent, REQUEST_CARI_PART);
+            }
+        }, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+               finish();
+               dialog.dismiss();
+            }
+        });
+    }
+
     @SuppressLint("SetTextI18n")
     private void loadData() {
         try {
-            Nson n = Nson.readJson(getIntentStringExtra("part"));
-            Log.d("detail__", "data : " + n);
-            if (n.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE") || n.get("HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE")) {
+           getData = Nson.readJson(getIntentStringExtra(PART));
+
+            if (getData.get("STOCK_RUANG_PART").asInteger() == 0) {
+                setIntent();
+                return;
+            }
+            namaPart = getData.get("NAMA_PART").asString();
+            idLokasiPart = getData.get("LOKASI_PART_ID").asString();
+            Log.d("detail__", "data : " + getData);
+
+            if (getData.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE") || getData.get("HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE")) {
                 find(R.id.tl_hpp, TextInputLayout.class).setVisibility(View.VISIBLE);
                 etHpp.setEnabled(false);
-                etHpp.setText("Rp. " + formatRp(n.get("HPP").asString()));
+                etHpp.setText("Rp. " + formatRp(getData.get("HPP").asString()));
                 etHargaJual.setEnabled(true);
                 showInfo("Pola Harga Jual Flexible, Silahkan Masukkan Harga Jual", Toast.LENGTH_LONG);
-            } else if (n.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("NOMINAL")) {
-                etHargaJual.setText("Rp. " + formatRp(n.get("HARGA_JUAL").asString()));
-            } else if (n.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("BELI + MARGIN")) {
-                etHargaJual.setText("Rp. " + formatRp(n.get("HARGA_JUAL").asString()));
-            } else if (n.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("RATA - RATA + MARGIN")) {
-                etHargaJual.setText("Rp. " + formatRp(n.get("HARGA_JUAL").asString()));
-            }else if (n.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("HET")) {
-                etHargaJual.setText("Rp. " + formatRp(n.get("HARGA_JUAL").asString()));
+            } else if (getData.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("NOMINAL")) {
+                etHargaJual.setText("Rp. " + formatRp(getData.get("HARGA_JUAL").asString()));
+            } else if (getData.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("BELI + MARGIN")) {
+                etHargaJual.setText("Rp. " + formatRp(getData.get("HARGA_JUAL").asString()));
+            } else if (getData.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("RATA - RATA + MARGIN")) {
+                etHargaJual.setText("Rp. " + formatRp(getData.get("HARGA_JUAL").asString()));
+            } else if (getData.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("HET")) {
+                etHargaJual.setText("Rp. " + formatRp(getData.get("HARGA_JUAL").asString()));
             }
 
+            etDisc.setText(getData.get("DISCOUNT").asString());
 
-            etDisc.setText(n.get("DISCOUNT").asString());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void saveData() {
-        Intent i = this.getIntent();
-        Nson n = Nson.readJson(getIntentStringExtra(i, "part"));
-
-        parts.set("NAMA_PELANGGAN", n.get("NAMA_PELANGGAN").asString());
-        parts.set("JENIS_KENDARAAN", n.get("JENIS_KENDARAAN").asString());
-        parts.set("NAMA_USAHA", n.get("NAMA_USAHA").asString());
-        parts.set("NO_PONSEL", n.get("NO_PONSEL").asString());
-        parts.set("PART_ID", n.get("PART_ID").asString());
-        parts.set("NO_PART", n.get("NO_PART").asString());
-        parts.set("NAMA_PART", n.get("NAMA_PART").asString());
-        parts.set("HARGA_JUAL", etHargaJual.getText().toString());
-        parts.set("JUMLAH", etJumlah.getText().toString());
-        parts.set("DISC", etDisc.getText().toString());
         int jumlah = 0;
         if (etJumlah.getText().toString().isEmpty()) {
             jumlah++;
@@ -202,40 +222,31 @@ public class DetailJualPart_Activity extends AppActivity {
             jumlah = Integer.parseInt(etJumlah.getText().toString());
         }
 
-        parts.set("TOTAL", jumlah * Integer.parseInt(etHargaJual.getText().toString().trim().replaceAll("[^0-9]", "")));
-        parts.set("NET", jumlah * Integer.parseInt(etHargaJual.getText().toString().trim().replaceAll("[^0-9]", "")));
+        parts.set("NAMA_PELANGGAN", getData.get("NAMA_PELANGGAN").asString());
+        parts.set("JENIS_KENDARAAN", getData.get("JENIS_KENDARAAN").asString());
+        parts.set("NAMA_USAHA", getData.get("NAMA_USAHA").asString());
+        parts.set("NO_PONSEL", getData.get("NO_PONSEL").asString());
+        parts.set("PART_ID", getData.get("PART_ID").asString());
+        parts.set("NO_PART", getData.get("NO_PART").asString());
+        parts.set("NAMA_PART", getData.get("NAMA_PART").asString());
+        parts.set("HARGA_JUAL", etHargaJual.getText().toString());
+        parts.set("JUMLAH", etJumlah.getText().toString());
+        parts.set("DISC", etDisc.getText().toString());
+        parts.set("'LOKASI_PART_ID'", idLokasiPart);
+        parts.set("TOTAL", jumlah * Integer.parseInt(formatOnlyNumber(etHargaJual.getText().toString())));
+        parts.set("NET", jumlah * Integer.parseInt(formatOnlyNumber(etHargaJual.getText().toString())));
 
         Intent intent = new Intent();
-        intent.putExtra("part", parts.toJson());
-        Log.d("partcuy", "dataParts : " + parts.toJson());
-        Log.d("partcuy", "fromCariPart : " + n.toJson());
-
+        intent.putExtra(PART, parts.toJson());
         setResult(RESULT_OK, intent);
         finish();
     }
 
-    private void getJualPart() {
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
-
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "view");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturjualpart"), args));
-            }
-
-            @Override
-            public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    for (int i = 0; i < result.size(); i++) {
-                        if (namaPart.equalsIgnoreCase(result.get("data").get(i).get("NAMA").asString())) {
-                            showWarning("Part Duplikat", Toast.LENGTH_LONG);
-                            finish();
-                        }
-                    }
-                }
-            }
-        });
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK && requestCode == REQUEST_CARI_PART)
+            getData = Nson.readJson(getIntentStringExtra(data, PART));
+            loadData();
     }
 }

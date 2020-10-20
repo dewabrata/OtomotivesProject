@@ -1,6 +1,7 @@
 package com.rkrzmail.oto.modules.Fragment;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -102,7 +103,7 @@ public class Permintaan_TugasPart_Fragment extends Fragment {
 
                 args.put("action", "view");
                 args.put("detail", "");
-                args.put("mgroup", "PERMINTAAN");
+                args.put("status", "PERMINTAAN");
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_TUGAS_PART), args));
             }
@@ -118,5 +119,12 @@ public class Permintaan_TugasPart_Fragment extends Fragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_DETAIL)
+            viewPartPermintaan();
     }
 }

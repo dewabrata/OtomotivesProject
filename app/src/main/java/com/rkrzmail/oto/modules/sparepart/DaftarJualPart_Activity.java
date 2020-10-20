@@ -1,10 +1,12 @@
 package com.rkrzmail.oto.modules.sparepart;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -30,8 +32,11 @@ import java.util.Map;
 
 import static com.rkrzmail.utils.APIUrls.ATUR_JUAL_PART;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
+import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.PART;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
+import static com.rkrzmail.utils.ConstUtils.RP;
 import static com.rkrzmail.utils.ConstUtils.RUANG_PART;
 
 public class DaftarJualPart_Activity extends AppActivity {
@@ -41,6 +46,7 @@ public class DaftarJualPart_Activity extends AppActivity {
     private int count = 0;
     private ArrayList<Integer> harga = new ArrayList<>();
     private DecimalFormat formatter;
+    private boolean isPartKosong = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,12 +72,13 @@ public class DaftarJualPart_Activity extends AppActivity {
             Tools.hideKeyboard(getActivity());
         }
 
-        nListArray.add(Nson.readJson(getIntentStringExtra("data")));
+        nListArray.add(Nson.readJson(getIntentStringExtra(DATA)));
         int harga = 0;
         for (int i = 0; i < nListArray.size(); i++) {
-            String hargaJual = nListArray.get(i).get("TOTAL").asString().replaceAll("[^0-9]", "");
+            String hargaJual = formatOnlyNumber(nListArray.get(i).get("TOTAL").asString());
             harga = harga + Integer.parseInt(hargaJual);
         }
+
         String finalTotal = String.valueOf(harga);
         tvTotal.setText("Total : Rp. " + formatRp(finalTotal));
 
@@ -87,14 +94,24 @@ public class DaftarJualPart_Activity extends AppActivity {
                         viewHolder.find(R.id.tv_harga_jualPart, TextView.class).setText(nListArray.get(position).get("HARGA_JUAL").asString());
                         viewHolder.find(R.id.tv_disc_jualPart, TextView.class).setText(nListArray.get(position).get("DISC").asString());
                         viewHolder.find(R.id.tv_jumlah_jualPart, TextView.class).setText(nListArray.get(position).get("JUMLAH").asString());
-                        String str = nListArray.get(position).get("TOTAL").asString();
-                        viewHolder.find(R.id.tv_total_jualPart, TextView.class).setText("Rp. " + formatRp(str));
+                        viewHolder.find(R.id.tv_total_jualPart, TextView.class).setText(RP + formatRp(nListArray.get(position).get("TOTAL").asString()));
 
                         viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                nListArray.asArray().remove(position);
-                                notifyItemRemoved(position);
+                                Messagebox.showDialog(getActivity(), "Konfirmasi", "Hapus Part?", "OK", "TIDAK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        nListArray.asArray().remove(position);
+                                        notifyItemRemoved(position);
+                                        showSuccess("Part Berhasil di Hapus");
+                                    }
+                                }, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
                             }
                         });
                     }
@@ -142,20 +159,17 @@ public class DaftarJualPart_Activity extends AppActivity {
             Nson result;
             @Override
             public void run() {
-                Nson fromAtur = Nson.readJson(getIntentStringExtra("data"));
+                Nson fromAtur = Nson.readJson(getIntentStringExtra(DATA));
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "add");
-                args.put("jeniskendaraan", fromAtur.get("JENIS_KENDARAAN").asString());
-                args.put("tanggal", currentDateTime());
-                args.put("nohp",fromAtur.get("NO_PONSEL").asString());
-                args.put("namapelanggan",fromAtur.get("NAMA_PELANGGAN").asString());
-                args.put("namausaha",fromAtur.get("NAMA_USAHA").asString());
-                args.put("status", "PENDING");
+                args.put("jenisKendaraan", fromAtur.get("JENIS_KENDARAAN").asString());
+                args.put("noHp",fromAtur.get("NO_PONSEL").asString());
+                args.put("namaPelanggan",fromAtur.get("NAMA_PELANGGAN").asString());
+                args.put("namaUsaha",fromAtur.get("NAMA_USAHA").asString());
+                args.put("status", "PERMINTAAN JUAL PART");
+                args.put("hargaBersih", formatOnlyNumber(tvTotal.getText().toString()));
                 args.put("parts", nListArray.toJson());
-
-                Log.d("data__", "NLIST_ARRAY : " + nListArray);
-                Log.d("data__", "DATA : " + fromAtur);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_JUAL_PART), args));
             }
@@ -179,27 +193,24 @@ public class DaftarJualPart_Activity extends AppActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_CARI_PART) {
-            Nson nson =  Nson.readJson(getIntentStringExtra(data,"part"));
+            Nson nson =  Nson.readJson(getIntentStringExtra(data,PART));
             Intent i = new Intent(getActivity(), DetailJualPart_Activity.class);
-            i.putExtra("part", nson.toJson());
+            i.putExtra(PART, nson.toJson());
             Log.d("partpartpart", "data" + Nson.readJson(getIntentStringExtra(data,"part")));
             startActivityForResult(i, REQUEST_DETAIL);
 
         }else if (resultCode == RESULT_OK && requestCode == REQUEST_DETAIL) {
-            Nson fromCariPart = Nson.readJson(getIntentStringExtra(data, "part"));
+            Nson fromCariPart = Nson.readJson(getIntentStringExtra(data, PART));
             Log.d("terimaData", "data "+ fromCariPart);
             nListArray.add(fromCariPart);
             rvTotalJualPart.getAdapter().notifyDataSetChanged();
             int harga = 0;
             for (int i = 0; i < nListArray.size(); i++) {
-                String hargaJual = nListArray.get(i).get("TOTAL").asString().replaceAll("[^0-9]", "");
+                String hargaJual = formatOnlyNumber(nListArray.get(i).get("TOTAL").asString());
                 harga = harga + Integer.parseInt(hargaJual);
             }
             String finalTotal = String.valueOf(harga);
-            Log.d("nlistArray__", "data" + nListArray);
-
             tvTotal.setText("Total : Rp. " + formatter.format(Double.valueOf(finalTotal)));
-
         }
     }
 }

@@ -119,7 +119,7 @@ public class Tersedia_TugasPart_Fragment extends Fragment {
 
                 args.put("action", "view");
                 args.put("detail", "");
-                args.put("mgroup", "TERSEDIA");
+                args.put("status", "TERSEDIA");
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_TUGAS_PART), args));
             }

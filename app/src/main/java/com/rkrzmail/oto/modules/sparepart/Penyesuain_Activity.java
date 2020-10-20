@@ -21,6 +21,7 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.gmod.BarcodeActivity;
+import com.rkrzmail.oto.gmod.MyCode;
 import com.rkrzmail.utils.Tools;
 
 import java.text.SimpleDateFormat;
@@ -193,8 +194,18 @@ public class Penyesuain_Activity extends AppActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_BARCODE) {
-            String barcode = getIntentStringExtra(data, "TEXT");
-            getDataBarcode(barcode);
+            String barcodeResult = data != null ? data.getStringExtra("TEXT").replace("\n", "").trim() : "";
+            MyCode.checkMyCode(this, getIntentStringExtra(data, barcodeResult), new MyCode.RunnableWD() {
+                @Override
+                public void runWD(Nson nson) {
+                    if(nson.get("status").asString().equals("OK")){
+                        showSuccess(nson.get("USERID").asString());
+                    }else{
+                        showError(nson.get("message").asString());
+                    }
+                }
+            });
+            //getDataBarcode(barcode);
         }
     }
 }

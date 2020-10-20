@@ -61,7 +61,7 @@ import static com.rkrzmail.utils.ConstUtils.REQUEST_CODE_SIGN;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_MEKANIK;
 import static com.rkrzmail.utils.ConstUtils.RP;
 
-public class Checkin4_Activity extends AppActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public class Checkin4_Activity extends AppActivity implements View.OnClickListener {
 
     private static final String TAG = "Checking4____";
 
@@ -167,8 +167,6 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
     }
 
     private void initListener() {
-        find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).setOnCheckedChangeListener(this);
-        find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setOnCheckedChangeListener(this);
         find(R.id.tv_waktu_checkin4, TextView.class).setOnClickListener(this);
         find(R.id.tv_tgl_estimasi_checkin4, TextView.class).setOnClickListener(this);
         find(R.id.tv_jam_estimasi_checkin4, TextView.class).setOnClickListener(this);
@@ -233,8 +231,6 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
 
                 Tools.setViewAndChildrenEnabled(find(R.id.ly_estimasi_selesai, LinearLayout.class), true);
                 find(R.id.tv_disable_estimasi).setVisibility(View.GONE);
-                //find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setEnabled(false);
-                //find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setChecked(true);
             } else {
                 isExtra = false;
                 result = jenisLayanan;
@@ -782,35 +778,6 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                         Intent intent = new Intent(getActivity(), Capture.class);
                         startActivityForResult(intent, REQUEST_CODE_SIGN);
                     }
-                }
-                break;
-        }
-    }
-
-    @SuppressLint("NonConstantResourceId")
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        switch (buttonView.getId()) {
-            case R.id.cb_konfirmTambah_checkin4:
-                if (buttonView.isChecked()) {
-                    //find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setEnabled(false);
-                    find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setChecked(false);
-                } else {
-                    //find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setEnabled(true);
-                    find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setChecked(true);
-                }
-                break;
-            case R.id.cb_tidakMenunggu_checkin4:
-                if (buttonView.isChecked()) {
-                    //find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).setEnabled(false);
-                    find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).setChecked(false);
-                    Tools.setViewAndChildrenEnabled(find(R.id.ly_waktuAmbil, LinearLayout.class), true);
-                    find(R.id.tv_disable_waktu_antar).setVisibility(View.GONE);
-                } else {
-                    //find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).setEnabled(true);
-                    find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).setChecked(true);
-                    Tools.setViewAndChildrenEnabled(find(R.id.ly_waktuAmbil, LinearLayout.class), false);
-                    find(R.id.tv_disable_waktu_antar).setVisibility(View.VISIBLE);
                 }
                 break;
         }

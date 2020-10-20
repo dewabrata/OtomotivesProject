@@ -884,7 +884,6 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
         dummyTime.add(waktuLayanan);
         find(R.id.tv_waktu_layanan, TextView.class).setText("Total Waktu Layanan : " + dummyTime.toString());
         Log.d(TAG, "TOTAL WAKTU : " + dummyTime.toString());
-        showInfo(dummyTime.toString());
         find(R.id.tv_jenis_antrian, TextView.class).setText(validasiAntrian(isPartKosong));
     }
 

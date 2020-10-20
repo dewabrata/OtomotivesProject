@@ -6,12 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,70 +26,107 @@ import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
+import java.util.Objects;
+
+import static com.rkrzmail.utils.ConstUtils.RP;
 
 public class PenjualanPart_Activity extends AppActivity {
 
     private static final String TAG = "Penjualan__";
-    private RecyclerView rvJualPart;
+    private RecyclerView rvJualPartPelanggan, rvJualPartUsaha;
     public static final int REQUEST_PENJUALAN = 110;
     public static final int RESULT_DETAIL = 5;
     private boolean isNamaUsaha = false;
+    private Nson pelangganList = Nson.newArray(), usahaList = Nson.newArray();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_basic_with_fab);
+        initToolbar();
         initComponent();
     }
 
+    @SuppressLint("NewApi")
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Penjualan Part");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Penjualan Part");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initComponent() {
-        initToolbar();
-        FloatingActionButton fab = findViewById(R.id.fab_tambah);
-        fab.setOnClickListener(new View.OnClickListener() {
+        initRecylerviewUsaha();
+        initRecylerviewPelanggan();
+        catchData("");
+
+        find(R.id.fab_tambah).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivityForResult(new Intent(getActivity(), AturPenjualanPart_Activity.class), REQUEST_PENJUALAN);
             }
         });
+    }
 
-        rvJualPart = findViewById(R.id.recyclerView);
-        rvJualPart.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rvJualPart.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_jual_part) {
+    private void initRecylerviewPelanggan(){
+        rvJualPartPelanggan = findViewById(R.id.recyclerView2);
+        rvJualPartPelanggan.setVisibility(View.VISIBLE);
+        rvJualPartPelanggan.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvJualPartPelanggan.setAdapter(new NikitaRecyclerAdapter(pelangganList, R.layout.item_jual_part_pelanggan) {
             @SuppressLint("SetTextI18n")
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
-                String tgl = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("TANGGAL").asString());
-
-                viewHolder.find(R.id.tv_tgl_jualPart, TextView.class).setText(tgl);
-                viewHolder.find(R.id.tv_nama_namaUsaha_jualPart, TextView.class).setText(nListArray.get(position).get("NAMA_PELANGGAN").asString() + (isNamaUsaha ? " / " : "") + nListArray.get(position).get("NAMA_USAHA").asString());
-                viewHolder.find(R.id.tv_noPhone_jualPart, TextView.class).setText(nListArray.get(position).get("NO_PONSEL").asString());
-                viewHolder.find(R.id.tv_disc_jualPart, TextView.class).setText(nListArray.get(position).get("DISCOUNT").asString());
-                viewHolder.find(R.id.tv_status_jualPart, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
-                viewHolder.find(R.id.tv_userJual_jualPart, TextView.class).setText(nListArray.get(position).get("USER_JUAL").asString());
-                viewHolder.find(R.id.tv_userUpdate_jualPart, TextView.class).setText(nListArray.get(position).get("USER_UPDATE").asString());
-                //HARGA KOTOR ?
-                viewHolder.find(R.id.tv_harga_jualPart, TextView.class).setText(nListArray.get(position).get("HARGA_BERSIH").asString());
-                try {
-                    viewHolder.find(R.id.tv_total_jualPart, TextView.class).setText("Rp. " + formatRp(nListArray.get(position).get("TOTAL").asString()));
-                }catch (Exception e){
-                    Log.d(TAG, "Number Exception : " + e.getMessage());
+                String tgl = Tools.setFormatDayAndMonthFromDb(pelangganList.get(position).get("TANGGAL").asString());
+                String noHp = pelangganList.get(position).get("NO_PONSEL").asString();
+                if(noHp.length() > 4){
+                    noHp = noHp.substring(noHp.length() - 4);
                 }
+                viewHolder.find(R.id.tv_tgl_jualPart, TextView.class).setText(tgl);
+                viewHolder.find(R.id.tv_status_pelanggan, TextView.class).setText(pelangganList.get(position).get("STATUS").asString());
+                viewHolder.find(R.id.tv_nama_pelanggan, TextView.class).setText(pelangganList.get(position).get("NAMA_PELANGGAN").asString());
+                viewHolder.find(R.id.tv_noPhone_jualPart, TextView.class).setText("XXXXXXXX" + noHp);
+                viewHolder.find(R.id.tv_harga_jualPart, TextView.class).setText(RP + formatRp(pelangganList.get(position).get("TOTAL").asString()));
             }
         });
-        catchData("");
+    }
+
+    private void initRecylerviewUsaha(){
+        rvJualPartUsaha  = findViewById(R.id.recyclerView);
+        rvJualPartUsaha.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvJualPartUsaha.setAdapter(new NikitaRecyclerAdapter(usahaList, R.layout.item_jual_part_usaha) {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+                super.onBindViewHolder(viewHolder, position);
+                String tgl = Tools.setFormatDayAndMonthFromDb(usahaList.get(position).get("TANGGAL").asString());
+                String noHp = pelangganList.get(position).get("NO_PONSEL").asString();
+
+                if(noHp.length() > 4){
+                    noHp = noHp.substring(noHp.length() - 4);
+                }
+
+                if(!usahaList.get(position).get("NAMA_PELANGGAN").asString().isEmpty()){
+                    viewHolder.find(R.id.tv_namaUsaha_jualPart, TextView.class).setText(usahaList.get(position).get("NAMA_USAHA").asString() + " (" + usahaList.get(position).get("NAMA_PELANGGAN").asString() + ")");
+                }else{
+                    viewHolder.find(R.id.tv_namaUsaha_jualPart, TextView.class).setText(usahaList.get(position).get("NAMA_USAHA").asString());
+                }
+
+                viewHolder.find(R.id.tv_tgl_jualPart, TextView.class).setText(tgl);
+                viewHolder.find(R.id.tv_status_usaha, TextView.class).setText(usahaList.get(position).get("STATUS").asString());
+                viewHolder.find(R.id.tv_disc_jualPart, TextView.class).setText(usahaList.get(position).get("DISCOUNT").asString());
+                viewHolder.find(R.id.tv_user_usaha, TextView.class).setText(usahaList.get(position).get("USER_JUAL").asString());
+                viewHolder.find(R.id.tv_total_jualPart, TextView.class).setText(RP + formatRp(usahaList.get(position).get("NET").asString()));
+                viewHolder.find(R.id.tv_harga_jualPart, TextView.class).setText(RP + formatRp(usahaList.get(position).get("TOTAL").asString()));
+                viewHolder.find(R.id.tv_noPhone_jualPart, TextView.class).setText("XXXXXXXX" + noHp);
+            }
+        });
     }
 
     private void catchData(final String cari) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -99,20 +134,23 @@ public class PenjualanPart_Activity extends AppActivity {
                 args.put("search", cari);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturjualpart"), args));
             }
+
+            @SuppressLint("NewApi")
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    nListArray.asArray().clear();
-                    nListArray.asArray().addAll(result.get("data").asArray());
-                    if(nListArray.size() > 0){
-                        for (int i = 0; i < nListArray.size(); i++) {
-                            if(!nListArray.get(i).get("NAMA_USAHA").equals("")){
-                                //|| !nListArray.get(i).get("NAMA_PELANGGAN").equals("")
-                                isNamaUsaha = true;
-                            }
+                   result = result.get("data");
+                    for (int i = 0; i < result.size(); i++) {
+                        if(!result.get(i).get("NAMA_PELANGGAN").asString().isEmpty() && result.get(i).get("NAMA_USAHA").asString().isEmpty()){
+                            pelangganList.add(result.get(i));
+                        }
+                        if(!result.get(i).get("NAMA_USAHA").asString().isEmpty()){
+                            usahaList.add(result.get(i));
                         }
                     }
-                    rvJualPart.getAdapter().notifyDataSetChanged();
+
+                    Objects.requireNonNull(rvJualPartPelanggan.getAdapter()).notifyDataSetChanged();
+                    Objects.requireNonNull(rvJualPartUsaha.getAdapter()).notifyDataSetChanged();
                 } else {
                     showError("Gagal Memuat Aktifitas");
                 }
@@ -162,7 +200,7 @@ public class PenjualanPart_Activity extends AppActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK && requestCode == REQUEST_PENJUALAN){
+        if (resultCode == RESULT_OK && requestCode == REQUEST_PENJUALAN) {
             catchData("");
         }
     }

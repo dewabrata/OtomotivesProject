@@ -29,7 +29,10 @@ import com.rkrzmail.srv.NsonAutoCompleteAdapter;
 
 import java.util.Map;
 
+import static com.rkrzmail.utils.APIUrls.VIEW_PELANGGAN;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
+import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.PART;
 import static com.rkrzmail.utils.ConstUtils.REQEST_DAFTAR_JUAL;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
 import static com.rkrzmail.utils.ConstUtils.RUANG_PART;
@@ -38,7 +41,7 @@ public class AturPenjualanPart_Activity extends AppActivity {
 
     public static final String ERROR = "Silahkan Isi ";
     private String noHp = "";
-    private boolean isNoHp = false;
+    private boolean isNoHp = false, isPartKosong = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,10 +62,10 @@ public class AturPenjualanPart_Activity extends AppActivity {
         find(R.id.btn_lanjut_jualPart).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               if (find(R.id.et_namaPelanggan_jualPart, EditText.class).getText().toString().isEmpty() || find(R.id.et_namaPelanggan_jualPart, EditText.class).getText().toString().length() < 5) {
+                if (find(R.id.et_namaPelanggan_jualPart, EditText.class).getText().toString().isEmpty() || find(R.id.et_namaPelanggan_jualPart, EditText.class).getText().toString().length() < 5) {
                     find(R.id.et_namaPelanggan_jualPart, EditText.class).setError(ERROR);
                     find(R.id.et_namaPelanggan_jualPart, EditText.class).requestFocus();
-                }else{
+                } else {
                     setIntent();
                 }
             }
@@ -148,7 +151,7 @@ public class AturPenjualanPart_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "Pelanggan");
                 args.put("nama", bookTitle);
-                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("datapelanggan"), args));
+                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PELANGGAN), args));
                 return result.get("data");
             }
 
@@ -157,28 +160,35 @@ public class AturPenjualanPart_Activity extends AppActivity {
             public View getView(int position, View convertView, ViewGroup parent) {
                 if (convertView == null) {
                     LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    convertView = inflater.inflate(R.layout.find_nophone, parent, false);
+                    convertView = inflater.inflate(R.layout.item_suggestion, parent, false);
                 }
+
                 String nama = getItem(position).get("NAMA_PELANGGAN").asString();
-                String nomor = "";
-                noHp = getItem(position).get("NO_PONSEL").asString();
-                if(noHp.length() > 4){
-                    nomor += noHp.substring(noHp.length() - 4);
-                }else{
-                    nomor = noHp;
+                String nomor = getItem(position).get("NO_PONSEL").asString();
+                if (nomor.length() > 4) {
+                    nomor = nomor.substring(nomor.length() - 4);
                 }
-                findView(convertView, R.id.txtPhone, TextView.class).setText(nama + " " + nomor);
+
+                findView(convertView, R.id.title, TextView.class).setText(nama + " " + nomor);
                 return convertView;
             }
         });
 
         find(R.id.et_namaPelanggan_jualPart, NikitaAutoComplete.class).setLoadingIndicator((android.widget.ProgressBar) findViewById(R.id.pb_namaPelanggan));
         find(R.id.et_namaPelanggan_jualPart, NikitaAutoComplete.class).setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
+
                 isNoHp = true;
-                find(R.id.et_noPhone_jualPart, NikitaAutoComplete.class).setText(n.get("NO_PONSEL").asString());
+                noHp = n.get("NO_PONSEL").asString();
+                String nomor = n.get("NO_PONSEL").asString();
+                if (nomor.length() > 4) {
+                    nomor = nomor.substring(nomor.length() - 4);
+                }
+
+                find(R.id.et_noPhone_jualPart, NikitaAutoComplete.class).setText("XXXXXXXX" + nomor);
                 find(R.id.et_namaPelanggan_jualPart, NikitaAutoComplete.class).setText(n.get("NAMA_PELANGGAN").asString());
                 find(R.id.tl_nohp, TextInputLayout.class).setHelperTextEnabled(false);
             }
@@ -195,31 +205,30 @@ public class AturPenjualanPart_Activity extends AppActivity {
     }
 
 
-    private void setIntent(){
+    private void setIntent() {
         Intent intent = new Intent(getActivity(), CariPart_Activity.class);
         intent.putExtra(CARI_PART_LOKASI, RUANG_PART);
         startActivityForResult(intent, REQUEST_CARI_PART);
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_CARI_PART) {
-            Nson nson = Nson.readJson(getIntentStringExtra(data, "part"));
+            Nson nson = Nson.readJson(getIntentStringExtra(data, PART));
             nson.set("JENIS_KENDARAAN", find(R.id.et_jenisKendaraan_jualPart, NikitaAutoComplete.class).getText().toString());
             nson.set("NAMA_PELANGGAN", find(R.id.et_namaPelanggan_jualPart, EditText.class).getText().toString());
             nson.set("NAMA_USAHA", find(R.id.et_namaUsaha_jualPart, EditText.class).getText().toString());
             nson.set("NO_PONSEL", isNoHp ? noHp : find(R.id.et_noPhone_jualPart, NikitaAutoComplete.class).getText().toString().replaceAll("[^0-9]+", ""));
 
             Intent i = new Intent(getActivity(), DetailJualPart_Activity.class);
-            i.putExtra("part", nson.toJson());
-            Log.d("datanihcuy", "data " + nson.toJson());
+            i.putExtra(PART, nson.toJson());
             startActivityForResult(i, REQEST_DAFTAR_JUAL);
         } else if (resultCode == RESULT_OK && requestCode == REQEST_DAFTAR_JUAL) {
-            Nson nson = Nson.readJson(getIntentStringExtra(data, "part"));
-            Log.d("datanihcuy", "containsName : " + Nson.readJson(getIntentStringExtra(data, "part")));
+            Nson nson = Nson.readJson(getIntentStringExtra(data, PART));
             Intent i = new Intent(getActivity(), DaftarJualPart_Activity.class);
-            i.putExtra("data", nson.toJson());
+            i.putExtra(DATA, nson.toJson());
             startActivityForResult(i, PenjualanPart_Activity.REQUEST_PENJUALAN);
         } else if (resultCode == RESULT_OK && requestCode == PenjualanPart_Activity.REQUEST_PENJUALAN) {
             setResult(RESULT_OK);

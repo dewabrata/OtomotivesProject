@@ -74,4 +74,10 @@
         <item name="android:textColorPrimary">#FF4081</item>
     </style>
 
-    </resources>
+    <style name="TabLayoutTextSize" parent="TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+
+</resources>

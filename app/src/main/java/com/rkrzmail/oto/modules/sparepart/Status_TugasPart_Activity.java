@@ -18,6 +18,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.gmod.MyCode;
 import com.rkrzmail.oto.modules.BarcodeActivity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
@@ -90,7 +91,8 @@ public class Status_TugasPart_Activity extends AppActivity {
         find(R.id.btn_simpan).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                setResult(RESULT_OK);
+                finish();
             }
         });
     }
@@ -115,7 +117,7 @@ public class Status_TugasPart_Activity extends AppActivity {
                         viewHolder.find(R.id.tv_merk_statusTp, TextView.class).setText(nListArray.get(position).get("MERK").asString());
                         viewHolder.find(R.id.tv_namaPart_statusTp, TextView.class).setText(nListArray.get(position).get("NAMA_PART").asString());
                         viewHolder.find(R.id.tv_noPart_statusTp, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
-                        viewHolder.find(R.id.tv_jumlah, TextView.class).setText(nListArray.get(position).get("JUMLAH").asString());
+                        viewHolder.find(R.id.tv_jumlah, TextView.class).setText(nListArray.get(position).get("JUMLAH_PERMINTAAN").asString());
 
                         if(isPermintaan){
                             viewHolder.find(R.id.tv_kode_lokasi_or_tersedia, TextView.class).
@@ -180,8 +182,24 @@ public class Status_TugasPart_Activity extends AppActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK && requestCode == REQUEST_TUGAS_PART){
-
+        if(resultCode == RESULT_OK ){
+            switch (requestCode){
+                case REQUEST_TUGAS_PART:
+                    viewTugasPart();
+                case REQUEST_BARCODE:
+                    String barcodeResult = data != null ? data.getStringExtra("TEXT").replace("\n", "").trim() : "";
+                    MyCode.checkMyCode(this, getIntentStringExtra(data, barcodeResult), new MyCode.RunnableWD() {
+                        @Override
+                        public void runWD(Nson nson) {
+                            if(nson.get("status").asString().equals("OK")){
+                                showSuccess(nson.get("USERID").asString());
+                            }else{
+                                showError(nson.get("message").asString());
+                            }
+                        }
+                    });
+                    break;
+            }
         }
     }
 }

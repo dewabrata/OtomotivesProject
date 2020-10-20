@@ -84,7 +84,8 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
                         nson.set("JASA_ID", jasaId);
                         nson.set("HARGA_JASA", formatOnlyNumber(etBiaya.getText().toString()));
                         nson.set("AKTIVITAS", etAktivitas.getText().toString());
-                        nson.set("WAKTU", etWaktuKerja.getText().toString());//dummy push to API
+                        nson.set("WAKTU_KERJA", etWaktuKerja.getText().toString());//dummy push to API
+                        nson.set("WAKTU_INSPEKSI", find(R.id.et_waktu_set_inspeksi, EditText.class).getText().toString());
                         nson.set("OUTSOURCE", find(R.id.cb_outsource, CheckBox.class).isChecked() ? "Y" : "N");//dummy push to API
                         nson.set("NET", formatOnlyNumber(etBiaya.getText().toString()));
 

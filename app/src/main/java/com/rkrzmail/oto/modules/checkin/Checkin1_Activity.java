@@ -319,8 +319,6 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     nomor = nomor.substring(nomor.length() - 4);
                 }
 
-
-
                 etNoPonsel.setText("XXXXXXXX" + nomor);
                 etNamaPelanggan.setText(n.get("NAMA_PELANGGAN").asString());
 
