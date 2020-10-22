@@ -335,6 +335,7 @@ public class JumlahPart_HargaPart_Activity extends AppActivity implements View.O
         int hargaJasa = Integer.parseInt(formatOnlyNumber(etBiayaJasa.getText().toString()));
         int jumlahPart = 0;
         int totalHargaPart;
+        int net = 0;
         String hari = find(R.id.et_waktuSet, EditText.class).getText().toString().substring(0, 2);
         String jam = find(R.id.et_waktuSet, EditText.class).getText().toString().substring(3, 5);
         String menit = find(R.id.et_waktuSet, EditText.class).getText().toString().substring(6, 8);
@@ -348,6 +349,7 @@ public class JumlahPart_HargaPart_Activity extends AppActivity implements View.O
         }
 
         totalHargaPart = harga * jumlahPart;
+        net = totalHargaPart + hargaJasa;
 
         sendData.set("NAMA_PART", nson.get("NAMA_PART").asString());
         sendData.set("NO_PART", nson.get("NO_PART").asString());
@@ -360,7 +362,7 @@ public class JumlahPart_HargaPart_Activity extends AppActivity implements View.O
         if(isPartKosong){
             sendData.set("WAKTU_KERJA", "");
             sendData.set("WAKTU_INSPEKSI", "");
-            sendData.set("DP", calculateDp(Double.parseDouble(getSetting("DP_PERSEN")), totalHargaPart));
+            sendData.set("DP", formatOnlyNumber(formatRp(String.valueOf(calculateDp(Double.parseDouble(getSetting("DP_PERSEN")), net)))));
         }else{
             sendData.set("WAKTU_KERJA", find(R.id.et_waktuSet, EditText.class).getText().toString());
             sendData.set("WAKTU_INSPEKSI", find(R.id.et_waktu_set_inspeksi, EditText.class).getText().toString());
@@ -375,7 +377,7 @@ public class JumlahPart_HargaPart_Activity extends AppActivity implements View.O
         sendData.set("JASA_EXTERNAL", "");
         sendData.set("HPP", hpp);
         sendData.set("WAKTU_PESAN", etWaktuPesan.getText().toString());
-        sendData.set("NET", harga + hargaJasa);
+        sendData.set("NET", net);
 
         if (isPartWajib) {
             sendData.set("HARGA_PART", harga);

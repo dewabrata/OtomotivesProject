@@ -83,7 +83,7 @@ public class MyCode extends AppActivity {
         });
     }
 
-    private void refreshSession(){
+    private void refreshSession() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson nson;
 
@@ -101,7 +101,7 @@ public class MyCode extends AppActivity {
             public void runUI() {
                 swipeProgress(false);
                 if (nson.get("status").asString().equalsIgnoreCase("OK")) {
-                    if(!nson.get("message").asString().equals("Success")){
+                    if (!nson.get("message").asString().equals("Success")) {
                         showError(nson.get("message").asString());
                         return;
                     }
@@ -134,7 +134,7 @@ public class MyCode extends AppActivity {
                 if (bitBitmap != null) {
                     (find(R.id.imgBarcode, ImageView.class)).setImageBitmap(bitBitmap);
                 } else {
-                   showError("Gagal Refresh Barcode");
+                    showError("Gagal Refresh Barcode");
                 }
 
             }
@@ -165,11 +165,11 @@ public class MyCode extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
-                // args.put("user", UtilityAndroid.getSetting(appActivity, "user", ""));
+                args.put("userid", UtilityAndroid.getSetting(appActivity, "user", ""));
                 args.put("action", "check");
                 args.put("barcode", barcode);
 
-                nson = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("mycode"), args));
+                nson = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MY_CODE), args));
 
             }
 

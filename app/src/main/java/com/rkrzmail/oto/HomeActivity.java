@@ -117,7 +117,6 @@ public class HomeActivity extends MenuActivity{
 
         GridView gridView = findViewById(R.id.gridView);
         populate(gridView);
-
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

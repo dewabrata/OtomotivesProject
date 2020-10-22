@@ -81,6 +81,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
     private String tglEstimasi = "", waktuEstimasi = "", antrianSebelumnya = "";
 
     private int idAntrian = 0;
+    private int waktuPesan = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,8 +134,10 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         Log.d("coba__", "DATA: " + getData);
         setSpMekanik("");
         setNoAntrian(getData.get("JENIS_ANTRIAN").asString());
+
         waktuLayananStandartExpress = getData.get("WAKTU_LAYANAN").asString();
         jenisLayanan = getData.get("JENIS_LAYANAN").asString();
+        waktuPesan = getData.get("WAKTU_PESAN").asInteger();
 
         find(R.id.et_lamaWaktu_checkin, EditText.class).setText(waktuLayananStandartExpress);
         find(R.id.tv_jenis_antrian, TextView.class).setText("Jenis Antrian : " + getData.get("JENIS_ANTRIAN").asString());
@@ -198,6 +201,24 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         });
     }
 
+    private Calendar parseWaktuPesan(){
+        long current = 0;
+        try {
+            @SuppressLint("SimpleDateFormat") Date now = new SimpleDateFormat("dd/MM/yyyy").parse(currentDateTime("dd/MM/yyyy"));
+            current = now.getTime();
+        } catch (ParseException e) {
+            Log.d(TAG, "Exception waktu pesan : " + e.getMessage());
+        }
+
+        long pesanPart = waktuPesan * oneDay;
+        long totalDate = current + pesanPart;
+        Log.d(TAG, "parseWaktuPesan: " + current);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(totalDate);
+
+        return calendar;
+    }
+
 
     @SuppressLint("SetTextI18n")
     private String parseEstimasiSelesai(String tglEstimasi, String jenisLayanan) throws ParseException {
@@ -219,12 +240,12 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 updateAntrian(result);
                 isExtra = true;
                 try {
-                    find(R.id.et_dp_checkin4, EditText.class).setText(RP +
-                            formatRp(String.valueOf(calculateDp(Double.parseDouble(getSetting("DP_PERSEN")),
-                                    Integer.parseInt(find(R.id.et_totalBiaya_checkin4, EditText.class).getText().toString())))));
-                    find(R.id.et_sisa_checkin4, EditText.class).setText(RP +
-                            formatRp(String.valueOf(Integer.parseInt(find(R.id.et_totalBiaya_checkin4, EditText.class).getText().toString()) -
-                                    Integer.parseInt(find(R.id.et_dp_checkin4, EditText.class).getText().toString()))));
+                    int totalHarga =  Integer.parseInt(formatOnlyNumber(find(R.id.et_totalBiaya_checkin4, EditText.class).getText().toString()));
+                    double dp = calculateDp(Double.parseDouble(getSetting("DP_PERSEN")), totalHarga);
+                    double sisaDp = totalHarga - dp;
+
+                    find(R.id.et_dp_checkin4, EditText.class).setText(RP + dp);
+                    find(R.id.et_sisa_checkin4, EditText.class).setText(RP + formatRp(String.valueOf(sisaDp)));
                 } catch (Exception e) {
                     showError(e.getMessage());
                 }
@@ -283,8 +304,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 }
             }
         });
-
-        datePickerDialog.setMinDate(cldr);
+        datePickerDialog.setMinDate(parseWaktuPesan());
         datePickerDialog.show(getFragmentManager(), "Datepickerdialog");
     }
 

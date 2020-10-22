@@ -107,6 +107,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             batasanBulan = 0,
             jumlahPartWajib = 0;
     private int idAntrian = 0;
+    private int waktuPesan = 0;
     private int hargaPartLayanan = 0; // afs, recall, otomotives
     private double sisaDp = 0;
     private List<Integer> jumlahList = new ArrayList<>();
@@ -296,7 +297,6 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
     }
 
     private void setSelanjutnya(final String status, final String alasanBatal) {
-        final boolean[] isTrue = {false};
         final Nson nson = Nson.readJson(getIntentStringExtra(DATA));
         final String layanan = spLayanan.getSelectedItem().toString();
         final String layananEstimasi = find(R.id.cb_estimasi_checkin3, CheckBox.class).isChecked() ? "Y" : "N";
@@ -347,7 +347,6 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    isTrue[0] = true;
                     if (status.equalsIgnoreCase("LAYANAN ESTIMASI")) {
                         showSuccess("Layanan Di tambahkan Ke Daftar Kontrol Layanan");
                         setResult(RESULT_OK);
@@ -369,6 +368,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         nson.set("JENIS_ANTRIAN", find(R.id.tv_jenis_antrian, TextView.class).getText().toString());
                         nson.set("DP", formatOnlyNumber(find(R.id.et_dp_checkin3, EditText.class).getText().toString()));
                         nson.set("SISA", formatOnlyNumber(find(R.id.et_sisa_checkin3, EditText.class).getText().toString()));
+                        nson.set("WAKTU_PESAN", waktuPesan);
 
                         if (layanan.equals("PERAWATAN LAINNYA")) {
                             nson.set("JENIS_LAYANAN", layanan);
@@ -747,7 +747,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 // Check in Antrian (CHECKIN 4), layanan estimasi status (LAYANAN ESTIMASI ISCHECKED()), TUNGGU KONFIRMASI (TUNGGU KONFIRMASI ISCHECKED())
                 if (find(R.id.cb_estimasi_checkin3, CheckBox.class).isChecked()) {
                     setSelanjutnya("LAYANAN ESTIMASI", "");
-                } else if (find(R.id.cb_estimasi_checkin3, CheckBox.class).isChecked()) {
+                } else if (find(R.id.cb_konfirmBiaya_checkin3, CheckBox.class).isChecked()) {
                     setSelanjutnya("TUNGGU KONFIRMASI", "");
                 } else {
                     setSelanjutnya("CHECKIN 3", "");
@@ -845,9 +845,9 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                             }
                         } else {
                             if (!dataAccept.get("WAKTU_PESAN").asString().isEmpty()) {
+                                waktuPesan += dataAccept.get("WAKTU_PESAN").asInteger();
                                 String hariWaktuPesan = dataAccept.get("WAKTU_PESAN").asString() + ":00:" + "00";
                                 totalWaktuLayanan(Tools.TimePart.parse(hariWaktuPesan));
-                                showInfo("" + hariWaktuPesan);
                             }else{
                                 totalWaktuLayanan(Tools.TimePart.parse(dataAccept.get("WAKTU_KERJA").asString()));
                                 totalWaktuLayanan(Tools.TimePart.parse(dataAccept.get("WAKTU_INSPEKSI").asString()));

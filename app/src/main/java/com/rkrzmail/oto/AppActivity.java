@@ -461,7 +461,7 @@ public class AppActivity extends AppCompatActivity {
                 dateTime.setText(formattedTime);
             }
         }, year, month, day);
-        //datePickerDialog.setMinDate(cldr);
+        //datePickerDialog.setMinDate(new Da);
         datePickerDialog.show(getFragmentManager(), "Datepickerdialog");
     }
 

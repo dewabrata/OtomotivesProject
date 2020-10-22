@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -23,13 +24,13 @@ import com.rkrzmail.oto.modules.BarcodeActivity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.rkrzmail.utils.APIUrls.ATUR_TUGAS_PART;
 import static com.rkrzmail.utils.APIUrls.VIEW_TUGAS_PART;
 import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.ID;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_TUGAS_PART;
 import static com.rkrzmail.utils.ConstUtils.TUGAS_PART_PERMINTAAN;
@@ -41,9 +42,12 @@ public class Status_TugasPart_Activity extends AppActivity {
     private EditText etPelanggan, etMekanik;
     private Toolbar toolbar;
 
+    private Nson partSerahTerimaList = Nson.newArray();
     private boolean isPermintaan = false;
     private boolean isTersedia = false;
     private String mekanik = "", tanggalCheckin = "", nopol = "";
+    private String idLokasiPart = "", idCheckinDetail = "";
+    private int jumlahSerahTerima = 0;
     private Boolean isPermintaanList = false;
 
     @Override
@@ -59,10 +63,11 @@ public class Status_TugasPart_Activity extends AppActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        if(getIntent().hasExtra(TUGAS_PART_PERMINTAAN)){
+        if (getIntent().hasExtra(TUGAS_PART_PERMINTAAN)) {
             getSupportActionBar().setTitle("Penyediaan Part");
             isPermintaan = true;
-        }else if(getIntent().hasExtra(TUGAS_PART_TERSEDIA)){
+            find(R.id.img_scan_barcode).setVisibility(View.GONE);
+        } else if (getIntent().hasExtra(TUGAS_PART_TERSEDIA)) {
             getSupportActionBar().setTitle("Serah Terima Part");
             isTersedia = true;
             find(R.id.btn_simpan).setVisibility(View.GONE);
@@ -79,7 +84,7 @@ public class Status_TugasPart_Activity extends AppActivity {
         loadData();
     }
 
-    private void initListener(){
+    private void initListener() {
         find(R.id.img_scan_barcode).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,16 +102,19 @@ public class Status_TugasPart_Activity extends AppActivity {
         });
     }
 
-    private void loadData(){
+    private void loadData() {
         Nson n = Nson.readJson(getIntentStringExtra(DATA));
         etPelanggan.setText(n.get("NAMA_PELANGGAN").asString());
         etMekanik.setText(n.get("MEKANIK").asString());
+
+        idLokasiPart = n.get("LOKASI_PART_ID").asString();
+        idCheckinDetail = n.get("CHECKIN_DETAIL_ID").asString();
         nopol = n.get("NOPOL").asString();
         tanggalCheckin = n.get("TANGGAL_CHECKIN").asString();
         viewTugasPart();
     }
 
-    private void initRecyclerView(){
+    private void initRecyclerView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_status_tugas_part) {
@@ -119,10 +127,10 @@ public class Status_TugasPart_Activity extends AppActivity {
                         viewHolder.find(R.id.tv_noPart_statusTp, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
                         viewHolder.find(R.id.tv_jumlah, TextView.class).setText(nListArray.get(position).get("JUMLAH_PERMINTAAN").asString());
 
-                        if(isPermintaan){
+                        if (isPermintaan) {
                             viewHolder.find(R.id.tv_kode_lokasi_or_tersedia, TextView.class).
                                     setText(nListArray.get(position).get("KODE").asString());
-                        }else{
+                        } else {
                             viewHolder.find(R.id.tv_kode_lokasi_or_tersedia, TextView.class).
                                     setText(nListArray.get(position).get("JUMLAH_TERSEDIA").asString());
                         }
@@ -130,7 +138,7 @@ public class Status_TugasPart_Activity extends AppActivity {
                 }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(Nson parent, View view, int position) {
-                        if(isPermintaan){
+                        if (isPermintaan) {
                             Intent i = new Intent(getActivity(), JumlahPart_TugasPart_Activity.class);
                             i.putExtra(TUGAS_PART_PERMINTAAN, "");
                             i.putExtra(DATA, nListArray.get(position).toJson());
@@ -152,10 +160,10 @@ public class Status_TugasPart_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
-                if(isPermintaan){
+                if (isPermintaan) {
                     args.put("detail", "PERMINTAAN");
                 }
-                if(isTersedia){
+                if (isTersedia) {
                     args.put("detail", "TERSEDIA");
                 }
                 args.put("mekanik", etMekanik.getText().toString());
@@ -171,7 +179,45 @@ public class Status_TugasPart_Activity extends AppActivity {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
+                    if(isTersedia){
+                        for (int i = 0; i < nListArray.size(); i++) {
+                            partSerahTerimaList.add(Nson.newObject()
+                                    .set("CHECKIN_DETAIL_ID", nListArray.get(i).get("CHECKIN_DETAIL_ID").asString())
+                                    .set("JUMLAH", nListArray.get(i).get("JUMLAH_TERSEDIA").asString()));
+                        }
+                    }
+                    Log.d("PART__", "SERAHTERIMA: " + partSerahTerimaList);
                     recyclerView.getAdapter().notifyDataSetChanged();
+                } else {
+                    showInfo(result.get("message").asString());
+                }
+            }
+        });
+    }
+
+    private void setSerahTerima() {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+
+                args.put("action", "update");
+                args.put("group", "SERAH TERIMA");
+                //args.put("idCheckin", idCheckinDetail);
+                args.put("partList", partSerahTerimaList.toJson());
+                args.put("idLokasiPart", idLokasiPart);
+
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_TUGAS_PART), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    showSuccess("Part Telah Di Serahterimakan");
+                    setResult(RESULT_OK);
+                    finish();
                 } else {
                     showInfo(result.get("message").asString());
                 }
@@ -182,18 +228,24 @@ public class Status_TugasPart_Activity extends AppActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK ){
-            switch (requestCode){
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
                 case REQUEST_TUGAS_PART:
                     viewTugasPart();
                 case REQUEST_BARCODE:
                     String barcodeResult = data != null ? data.getStringExtra("TEXT").replace("\n", "").trim() : "";
-                    MyCode.checkMyCode(this, getIntentStringExtra(data, barcodeResult), new MyCode.RunnableWD() {
+                    MyCode.checkMyCode(this, barcodeResult, new MyCode.RunnableWD() {
                         @Override
                         public void runWD(Nson nson) {
-                            if(nson.get("status").asString().equals("OK")){
-                                showSuccess(nson.get("USERID").asString());
-                            }else{
+                            if (nson.get("status").asString().equals("OK")) {
+                                Log.d("Barcode__", "onActivityResult: " + nson);
+                                nson = nson.get("data").get(0);
+                                if(nson.get("NAMA").asString().equals(etMekanik.getText().toString())){
+                                    setSerahTerima();
+                                }else{
+                                    showWarning("Mekanik Tidak Valid");
+                                }
+                            } else {
                                 showError(nson.get("message").asString());
                             }
                         }

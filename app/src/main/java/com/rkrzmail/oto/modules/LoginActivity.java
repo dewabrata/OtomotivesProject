@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -77,6 +78,15 @@ public class LoginActivity extends AppActivity {
             }
         });
 
+        find(R.id.user, EditText.class).setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if(hasFocus &&  !find(R.id.user, EditText.class).getText().toString().startsWith("+62")){
+                    find(R.id.user, EditText.class).setText("+62 ");
+                }
+            }
+        });
         find(R.id.user, EditText.class).addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -90,10 +100,7 @@ public class LoginActivity extends AppActivity {
                 int counting = (s == null) ? 0 : s.toString().length();
                 if (counting == 0) {
                     find(R.id.tl_user, TextInputLayout.class).setErrorEnabled(false);
-                } else if (counting < 4) {
-                    find(R.id.user, EditText.class).setText("+62 ");
-                    Selection.setSelection(find(R.id.user, EditText.class).getText(), find(R.id.user, EditText.class).getText().length());
-                } else if (counting < 12) {
+                }else if (counting < 12) {
                     find(R.id.tl_user, TextInputLayout.class).setError("No. Hp Min. 6 Karakter");
                     find(R.id.user, EditText.class).requestFocus();
                 } else {
@@ -170,6 +177,11 @@ public class LoginActivity extends AppActivity {
                     }
 
                     nson = nson.get("data").get(0);
+                    if(nson.get("TIPE_USER").asString().equals("MEKANIK") || nson.get("MEKANIK").asString().equals("YA")){
+                        setSetting("MEKANIK", "TRUE");
+                    }else{
+                        setSetting("MEKANIK", "FALSE");
+                    }
                     setSetting("L", "L");
                     setSetting("NAMA_BENGKEL", nson.get("NAMA_BENGKEL").asString());
                     setSetting("JENIS_KENDARAAN", nson.get("JENIS_KENDARAAN").asString().trim());

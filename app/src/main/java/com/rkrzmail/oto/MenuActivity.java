@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -66,6 +67,7 @@ import com.rkrzmail.oto.modules.mekanik.PenugasanActivity;
 import com.rkrzmail.oto.modules.bengkel.RekeningBank_Activity;
 import com.rkrzmail.oto.modules.bengkel.Tenda_Activity;
 import com.rkrzmail.oto.modules.sparepart.TerimaPart;
+import com.rkrzmail.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,6 +79,7 @@ public class MenuActivity extends AppActivity {
 
     Nson nPopulate = Nson.newArray();
     Nson dataBengkel = Nson.newObject();
+    Nson mekanikMenuArray = Nson.newArray();
     public final int MN_CHECKIN         =   3;
     public final int MN_PART            =   4;
     public final int MN_PART_SEARCH     =   5;
@@ -170,7 +173,6 @@ public class MenuActivity extends AppActivity {
 
         GridView gridView = findViewById(R.id.gridView);
         populate(gridView);
-
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -195,6 +197,8 @@ public class MenuActivity extends AppActivity {
                     Intent intent = new Intent(MenuActivity.this, DaftarJurnal_Activity.class);
                     startActivity(intent);
                 }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_MEKANIK)){
+                    Intent intent = new Intent(MenuActivity.this, DaftarJurnal_Activity.class);
+                    startActivity(intent);
                 }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_MENUNGGU)){
                     Intent intent =  new Intent(MenuActivity.this, MenungguPart_Activity.class);
                     startActivity(intent);
@@ -441,12 +445,15 @@ public class MenuActivity extends AppActivity {
         addHome(8,R.drawable.m_mekanik, M_MEKANIK);
         addHome(9,R.drawable.m_menunggu, M_MENUNGGU);
         addHome(10,R.drawable.m_message, M_MESSAGE);
-        addHome(11,R.drawable.m_mycode, M_MY_CODE);
+        //addHome(11,R.drawable.m_mycode, M_MY_CODE);
         addHome(12,R.drawable.m_part, M_PART);
         addHome(13,R.drawable.m_pembayaran, M_PEMBAYARAN);
         addHome(14,R.drawable.m_stock, M_STOCK_OPNAME);
         addHome(15,R.drawable.m_terimapart, M_TERIMA_PARTS);
         addHome(15,R.drawable.m_tugaspart, M_TUGAS_PARTS);
+
+        nPopulate.add(Nson.newObject().set("id", 11).set("icon", R.drawable.m_mycode).set("text", M_MY_CODE));
+
 
         ArrayAdapter<Vector<String>> arrayAdapter = new ArrayAdapter<Vector<String>>(MenuActivity.this, R.layout.activity_main_item, nPopulate.asArray()) {
             public View getView(int position, View convertView, ViewGroup parent) {
