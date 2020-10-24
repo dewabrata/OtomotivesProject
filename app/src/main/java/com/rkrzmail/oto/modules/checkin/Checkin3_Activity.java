@@ -664,7 +664,11 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if(flagPartWajib) showWarning("Part Wajib Harus di Pilih");
+        if(flagPartWajib){
+            showWarning("Part Wajib Harus di Pilih");
+            return;
+        }
+        finish();
     }
 
     private String validasiAntrian(boolean isHplusPartKosong) {

@@ -10,7 +10,6 @@
     android:layout_marginTop="4dp"
     android:layout_marginRight="7dp"
     android:layout_marginBottom="4dp"
-    android:layout_weight="5"
     android:padding="10dp"
     app:cardElevation="2dp"
     app:cardCornerRadius="10dp">
@@ -30,11 +29,14 @@
             <TableRow>
 
                 <TextView
-                    android:id="@+id/tv_namaP_pembayaran"
+                    android:id="@+id/tv_nama_pelanggan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Nama Pelanggan"
-                    android:textStyle="bold" />
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:layout_gravity="start"/>
 
 
             </TableRow>
@@ -42,56 +44,48 @@
             <TableRow android:layout_marginTop="@dimen/spacing_medium">
 
                 <TextView
-                    android:id="@+id/tv_noPhone_pembayaran"
+                    android:id="@+id/tv_no_ponsel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="No. Ponsel"
-                    android:textStyle="bold" />
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:layout_gravity="start"/>
 
                 <TextView
-                    android:id="@+id/tv_nopol_pembayaran"
+                    android:id="@+id/tv_nopol"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="No. Polisi"
-                    android:textStyle="bold" />
+                    android:text="@string/no_polisi"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:layout_gravity="end"/>
 
             </TableRow>
 
             <TableRow android:layout_marginTop="@dimen/spacing_medium">
 
                 <TextView
-                    android:id="@+id/tv_tipePembayaran_pembayaran"
+                    android:id="@+id/tv_jenis_kendaraan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tipe Pemabyaran"
-                    android:textStyle="bold" />
+                    android:text="@string/jenis_kendaraan_lowercase"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:layout_gravity="start"/>
 
                 <TextView
-                    android:id="@+id/tv_user_pembayaran"
+                    android:id="@+id/tv_layanan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="User"
-                    android:textStyle="bold" />
-
-            </TableRow>
-
-            <TableRow android:layout_marginTop="@dimen/spacing_medium">
-
-                <TextView
-                    android:id="@+id/tv_waktuPembayaran_pembayaran"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Waktu Pembayaran"
-                    android:textColor="@color/red_400"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tv_total_pembayaran"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/red_400"
-                    android:text="Total"
-                    android:textStyle="bold" />
+                    android:text="@string/layanan"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:layout_gravity="end"/>
 
             </TableRow>
 

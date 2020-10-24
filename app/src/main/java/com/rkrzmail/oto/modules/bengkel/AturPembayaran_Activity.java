@@ -99,7 +99,7 @@ public class AturPembayaran_Activity extends AppActivity {
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     showInfo("Sukses Menyimpan Aktifitas");
-                    startActivity(new Intent(getActivity(), DaftarPembayaran_Activity.class));
+                    startActivity(new Intent(getActivity(), Pembayaran_Activity.class));
                     finish();
                 } else {
                     showError("Gagal Menyimpan Aktifitas");

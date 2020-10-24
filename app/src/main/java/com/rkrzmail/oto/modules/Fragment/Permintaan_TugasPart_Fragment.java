@@ -20,7 +20,6 @@ import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.sparepart.DetailTerimaPart_Activity;
 import com.rkrzmail.oto.modules.sparepart.Status_TugasPart_Activity;
 import com.rkrzmail.oto.modules.sparepart.TugasPart_MainTab_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
@@ -31,7 +30,6 @@ import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.VIEW_TUGAS_PART;
 import static com.rkrzmail.utils.ConstUtils.DATA;
-import static com.rkrzmail.utils.ConstUtils.PART;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 import static com.rkrzmail.utils.ConstUtils.TUGAS_PART_PERMINTAAN;
 
@@ -73,7 +71,7 @@ public class Permintaan_TugasPart_Fragment extends Fragment {
     private void initRecylerviewPermintaan(){
         rvPermintaanPart.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvPermintaanPart.setHasFixedSize(true);
-        rvPermintaanPart.setAdapter(new NikitaRecyclerAdapter(permintaanPartList, R.layout.item_tersedia_permintaan_tugas_part){
+        rvPermintaanPart.setAdapter(new NikitaRecyclerAdapter(permintaanPartList, R.layout.item_batal_tersedia_permintaan_tugas_part){
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
@@ -112,6 +110,7 @@ public class Permintaan_TugasPart_Fragment extends Fragment {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    permintaanPartList.asArray().clear();
                     permintaanPartList.asArray().addAll(result.get("data").asArray());
                     rvPermintaanPart.getAdapter().notifyDataSetChanged();
                 } else {

@@ -20,7 +20,6 @@ import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.sparepart.DetailTerimaPart_Activity;
 import com.rkrzmail.oto.modules.sparepart.Status_TugasPart_Activity;
 import com.rkrzmail.oto.modules.sparepart.TugasPart_MainTab_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
@@ -31,7 +30,6 @@ import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.VIEW_TUGAS_PART;
 import static com.rkrzmail.utils.ConstUtils.DATA;
-import static com.rkrzmail.utils.ConstUtils.PART;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 import static com.rkrzmail.utils.ConstUtils.TUGAS_PART_TERSEDIA;
 
@@ -90,7 +88,7 @@ public class Tersedia_TugasPart_Fragment extends Fragment {
         rvPartTersedia = view.findViewById(R.id.recyclerView);
         rvPartTersedia.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvPartTersedia.setHasFixedSize(true);
-        rvPartTersedia.setAdapter(new NikitaRecyclerAdapter(tersediaList, R.layout.item_tersedia_permintaan_tugas_part){
+        rvPartTersedia.setAdapter(new NikitaRecyclerAdapter(tersediaList, R.layout.item_batal_tersedia_permintaan_tugas_part){
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
@@ -129,6 +127,7 @@ public class Tersedia_TugasPart_Fragment extends Fragment {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    tersediaList.asArray().clear();
                     tersediaList.asArray().addAll(result.get("data").asArray());
                     Objects.requireNonNull(rvPartTersedia.getAdapter()).notifyDataSetChanged();
                 } else {

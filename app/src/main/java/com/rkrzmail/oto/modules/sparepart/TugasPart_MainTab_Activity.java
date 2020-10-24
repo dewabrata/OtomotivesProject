@@ -40,7 +40,6 @@ public class TugasPart_MainTab_Activity extends AppActivity {
 
     private Nson partTersediaList = Nson.newArray();
     private Nson partPermintaanList = Nson.newArray();
-    private Nson partBatalList = Nson.newArray();
     private Nson partKosongList = Nson.newArray();
     
     @Override
@@ -60,9 +59,6 @@ public class TugasPart_MainTab_Activity extends AppActivity {
 
     private void initComponent() {
         initToolbar();
-
-        viewPartBatal();
-
         ViewPager vpTugasParts = findViewById(R.id.vp_tugas_part);
         TabLayout tabLayoutTugasParts = findViewById(R.id.tablayout_tugas_part);
 
@@ -73,49 +69,10 @@ public class TugasPart_MainTab_Activity extends AppActivity {
         fragments.add(new PartKosong_TugasPart_Fragment());
 
         FragmentsAdapter pagerAdapter = new FragmentsAdapter(getSupportFragmentManager());
-
-        for (int i = 0; i < fragments.size(); i++) {
-            if(fragments.get(i) instanceof Permintaan_TugasPart_Fragment){
-                pagerAdapter = new FragmentsAdapter(getSupportFragmentManager(), getActivity(), fragments, partPermintaanList, TUGAS_PART_PERMINTAAN);
-            }else if(fragments.get(i) instanceof Tersedia_TugasPart_Fragment){
-                pagerAdapter = new FragmentsAdapter(getSupportFragmentManager(), getActivity(), fragments, partTersediaList, TUGAS_PART_TERSEDIA);
-            }else if(fragments.get(i) instanceof BatalPart_TugasPart_Fragment){
-                pagerAdapter = new FragmentsAdapter(getSupportFragmentManager(), getActivity(), fragments, partBatalList, TUGAS_PART_BATAL);
-            }else if(fragments.get(i) instanceof PartKosong_TugasPart_Fragment){
-                pagerAdapter = new FragmentsAdapter(getSupportFragmentManager(), getActivity(), fragments, partKosongList, TUGAS_PART_KOSONG);
-            }
-        }
-
         vpTugasParts.setAdapter(pagerAdapter);
         vpTugasParts.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayoutTugasParts));
         tabLayoutTugasParts.setupWithViewPager(vpTugasParts);
     }
-
-    private void viewPartBatal() {
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-
-                args.put("action", "view");
-                args.put("mgroup", "BATAL");
-
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_TUGAS_PART), args));
-            }
-
-            @SuppressLint("NewApi")
-            @Override
-            public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    partBatalList.asArray().addAll(result.get("data").asArray());
-                } else {
-                    showInfo("Gagal Memperbaharui Status");
-                }
-            }
-        });
-    }
-
 
     SearchView mSearchView;
 

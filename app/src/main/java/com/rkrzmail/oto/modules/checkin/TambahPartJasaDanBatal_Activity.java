@@ -114,8 +114,8 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
         rvJasaLain = findViewById(R.id.rv_jasa_lain);
         initRecylerViewPart();
         initRecylerviewJasaLain();
-        initListener();
         initData();
+        initListener();
     }
 
     private void initListener() {
@@ -388,7 +388,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
             case R.id.btn_simpan:
                 if (idCheckinDetail.isEmpty()) {
                     showError("ID CHECKIN NULL");
-                }else if(isNotWait){
+                }else if(isWait){
                     if(!isSign){
                         showWarning("Tanda Tangan belum terisi");
                     }
@@ -402,7 +402,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
             case R.id.tv_max_jam_konfirmasi:
                 getTimePickerDialogEstimasiSelesai();
                 break;
-            case R.id.btn_ttd_checkin4:
+            case R.id.btn_ttd:
                 if (!checkPermission()) {
                     Intent intent = new Intent(getActivity(), Capture.class);
                     startActivityForResult(intent, REQUEST_CODE_SIGN);
@@ -490,7 +490,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                     }
                     if (imgFile != null && imgFile.exists()) {
                         Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                        find(R.id.img_tandaTangan_checkin4, ImageView.class).setImageBitmap(myBitmap);
+                        find(R.id.img_tandaTangan, ImageView.class).setImageBitmap(myBitmap);
                     }
                     break;
                 case REQUEST_JASA_LAIN:

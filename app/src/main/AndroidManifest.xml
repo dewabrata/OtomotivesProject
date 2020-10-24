@@ -68,9 +68,9 @@
         <activity android:name=".modules.mekanik.DetailKerjaMekanik_Activity" />
         <activity android:name=".modules.mekanik.PerintahKerjaMekanik_Activity" />
         <activity android:name=".modules.bengkel.AturPembayaran_Activity" />
-        <activity android:name=".modules.bengkel.RincianPembelian_Activity" />
-        <activity android:name=".modules.bengkel.RincianLayanan_Activity" />
-        <activity android:name=".modules.bengkel.DaftarPembayaran_Activity" />
+        <activity android:name=".modules.bengkel.RincianJualPart_Pembayaran_Activity" />
+        <activity android:name=".modules.bengkel.Rincian_Pembayaran_Activity" />
+        <activity android:name=".modules.bengkel.Pembayaran_Activity" />
         <activity android:name=".modules.checkin.DetailKontrolLayanan_Activity" />
         <activity android:name=".modules.checkin.KontrolLayanan_Activity" />
         <activity android:name=".modules.checkin.Checkin4_Activity" />

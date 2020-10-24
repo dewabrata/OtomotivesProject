@@ -11,7 +11,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -39,7 +38,7 @@ import com.rkrzmail.oto.modules.hutang.Hutang_Activity;
 import com.rkrzmail.oto.modules.hutang.Piutang_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiPart_Activity;
 import com.rkrzmail.oto.modules.sparepart.MenungguPart_Activity;
-import com.rkrzmail.oto.modules.bengkel.DaftarPembayaran_Activity;
+import com.rkrzmail.oto.modules.bengkel.Pembayaran_Activity;
 import com.rkrzmail.oto.modules.checkin.KontrolLayanan_Activity;
 import com.rkrzmail.oto.modules.checkin.KontrolBooking_Activity;
 import com.rkrzmail.oto.modules.discount.DiscountJasaLain_Activity;
@@ -67,7 +66,6 @@ import com.rkrzmail.oto.modules.mekanik.PenugasanActivity;
 import com.rkrzmail.oto.modules.bengkel.RekeningBank_Activity;
 import com.rkrzmail.oto.modules.bengkel.Tenda_Activity;
 import com.rkrzmail.oto.modules.sparepart.TerimaPart;
-import com.rkrzmail.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -213,7 +211,7 @@ public class MenuActivity extends AppActivity {
                     Intent intent =  new Intent(MenuActivity.this, MessageWA.class);
                     startActivity(intent);
                 }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_PEMBAYARAN)){
-                    Intent intent =  new Intent(MenuActivity.this, DaftarPembayaran_Activity.class);
+                    Intent intent =  new Intent(MenuActivity.this, Pembayaran_Activity.class);
                     startActivity(intent);
                 }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_STOCK_OPNAME)){
                     Intent intent =  new Intent(MenuActivity.this, HistoryStockOpname_Activity.class);

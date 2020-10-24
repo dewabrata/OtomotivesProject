@@ -364,4 +364,5 @@
     <string name="estimasi_tiba_uppercase">ESTIMASI TIBA</string>
     <string name="discount_part_uppercase">DISCOUNT PART</string>
     <string name="discount_jasa_uppercase">DISCOUNT JASA</string>
+    <string name="jenis_kendaraan_lowercase">Jenis Kendaraan</string>
 </resources>

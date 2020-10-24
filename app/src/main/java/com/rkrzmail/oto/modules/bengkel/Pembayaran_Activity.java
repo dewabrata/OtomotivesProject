@@ -1,10 +1,12 @@
 package com.rkrzmail.oto.modules.bengkel;
 
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -25,58 +27,59 @@ import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
 import java.util.Map;
+import java.util.Objects;
 
-public class DaftarPembayaran_Activity extends AppActivity {
+import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
+
+public class Pembayaran_Activity extends AppActivity {
 
     private RecyclerView rvPembayaran;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_daftar_pembayaran_);
-        initComponent();
+        setContentView(R.layout.activity_list_basic);
+        initToolbar();
+        initRecylerviewPembayaran();
+        viewPembayaran("");
     }
 
+    @SuppressLint("NewApi")
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_pembayaran);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Pembayaran");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Pembayaran");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void initComponent() {
-        initToolbar();
-
-
-        rvPembayaran = findViewById(R.id.recyclerView_pembayaran);
+    private void initRecylerviewPembayaran() {
+        rvPembayaran = findViewById(R.id.recyclerView);
+        rvPembayaran.setHasFixedSize(true);
         rvPembayaran.setLayoutManager(new LinearLayoutManager(this));
         rvPembayaran.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_pembayaran) {
                     @Override
                     public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, final int position) {
                         super.onBindViewHolder(viewHolder, position);
-
-                        viewHolder.find(R.id.tv_namaP_pembayaran, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_nopol_pembayaran, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_waktuPembayaran_pembayaran, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_noPhone_pembayaran, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_user_pembayaran, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_tipePembayaran_pembayaran, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_total_pembayaran, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_jenis_kendaraan, TextView.class).setText(nListArray.get(position).get("JENIS_KENDARAAN").asString());
+                        viewHolder.find(R.id.tv_nama_pelanggan, TextView.class).setText(nListArray.get(position).get("NAMA_PELANGGAN").asString());
+                        viewHolder.find(R.id.tv_nopol, TextView.class).setText(nListArray.get(position).get("NOPOL").asString());
+                        viewHolder.find(R.id.tv_layanan, TextView.class).setText(nListArray.get(position).get("LAYANAN").asString());
+                        viewHolder.find(R.id.tv_no_ponsel, TextView.class).setText(nListArray.get(position).get("NO_PONSEL").asString());
 
                     }
                 }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(Nson parent, View view, int position) {
                         Intent i = new Intent(getActivity(), DetailKontrolLayanan_Activity.class);
-                        i.putExtra("data", nListArray.get(position).toJson());
-                        startActivity(i);
+                        i.putExtra(DATA, nListArray.get(position).toJson());
+                        startActivityForResult(i, REQUEST_DETAIL);
                     }
                 })
         );
-        catchData("");
     }
 
-    private void catchData(final String cari) {
+    private void viewPembayaran(final String cari) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -107,9 +110,6 @@ public class DaftarPembayaran_Activity extends AppActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_part, menu);
-
-
-        // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         mSearchView = new SearchView(getSupportActionBar().getThemedContext());
         mSearchView.setQueryHint("Cari No. Polisi"); /// YOUR HINT MESSAGE
@@ -134,13 +134,21 @@ public class DaftarPembayaran_Activity extends AppActivity {
             public boolean onQueryTextSubmit(String query) {
                 searchMenu.collapseActionView();
                 //filter(null);
-                catchData(query);
+                viewPembayaran(query);
 
                 return true;
             }
         };
         mSearchView.setOnQueryTextListener(queryTextListener);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK && requestCode == REQUEST_DETAIL){
+
+        }
     }
 }
 

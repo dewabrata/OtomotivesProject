@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
 
-public class RincianPembelian_Activity extends AppActivity {
+public class RincianJualPart_Pembayaran_Activity extends AppActivity {
 
     private RecyclerView rvRinciBeli;
     private TextView tvNamaP, tvNoPhone, tvNamaUsaha, tvFrek, tvTotalPart, tvTotalDisc,

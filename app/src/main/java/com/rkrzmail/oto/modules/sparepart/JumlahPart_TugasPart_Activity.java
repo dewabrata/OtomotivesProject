@@ -97,6 +97,8 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
             group = "BATAL";
             find(R.id.tl_stock).setVisibility(View.GONE);
             find(R.id.tl_jumlah, TextInputLayout.class).setHint(getResources().getString(R.string.jumlah_batal));
+            etNofolder.setText(nson.get("KODE").asString());
+            etJumlahPart.setText("0");
         }
 
         initListener();

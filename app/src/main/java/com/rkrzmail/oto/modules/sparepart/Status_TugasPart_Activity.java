@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -79,9 +80,9 @@ public class Status_TugasPart_Activity extends AppActivity {
         etPelanggan = findViewById(R.id.et_pelanggan_statusTp);
         etMekanik = findViewById(R.id.et_user_statusTp);
 
+        loadData();
         initListener();
         initRecyclerView();
-        loadData();
     }
 
     private void initListener() {
@@ -215,7 +216,7 @@ public class Status_TugasPart_Activity extends AppActivity {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    showSuccess("Part Telah Di Serahterimakan");
+                    showSuccess("Part Telah Di Serahterimakan", Toast.LENGTH_LONG);
                     setResult(RESULT_OK);
                     finish();
                 } else {
@@ -228,30 +229,26 @@ public class Status_TugasPart_Activity extends AppActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case REQUEST_TUGAS_PART:
-                    viewTugasPart();
-                case REQUEST_BARCODE:
-                    String barcodeResult = data != null ? data.getStringExtra("TEXT").replace("\n", "").trim() : "";
-                    MyCode.checkMyCode(this, barcodeResult, new MyCode.RunnableWD() {
-                        @Override
-                        public void runWD(Nson nson) {
-                            if (nson.get("status").asString().equals("OK")) {
-                                Log.d("Barcode__", "onActivityResult: " + nson);
-                                nson = nson.get("data").get(0);
-                                if(nson.get("NAMA").asString().equals(etMekanik.getText().toString())){
-                                    setSerahTerima();
-                                }else{
-                                    showWarning("Mekanik Tidak Valid");
-                                }
-                            } else {
-                                showError(nson.get("message").asString());
-                            }
+        if (resultCode == RESULT_OK && requestCode == REQUEST_BARCODE) {
+            String barcodeResult = data != null ? data.getStringExtra("TEXT").replace("\n", "").trim() : "";
+            MyCode.checkMyCode(this, barcodeResult, new MyCode.RunnableWD() {
+                @Override
+                public void runWD(Nson nson) {
+                    if (nson.get("status").asString().equals("OK")) {
+                        Log.d("Barcode__", "onActivityResult: " + nson);
+                        nson = nson.get("data").get(0);
+                        if(nson.get("NAMA").asString().equals(etMekanik.getText().toString())){
+                            setSerahTerima();
+                        }else{
+                            showWarning("Mekanik Tidak Valid");
                         }
-                    });
-                    break;
-            }
+                    } else {
+                        showError(nson.get("message").asString());
+                    }
+                }
+            });
+        }else if(resultCode == RESULT_OK && requestCode == REQUEST_TUGAS_PART){
+            viewTugasPart();
         }
     }
 }

@@ -174,7 +174,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                     return;
                 }
 
-                updateData(idCheckinDetail);
+                updateData(idCheckin);
             }
         });
 
