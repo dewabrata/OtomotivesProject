@@ -18,6 +18,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -80,16 +81,15 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
     public static final String TAG = "Tambah___";
 
     private RecyclerView rvPart, rvJasaLain;
-
     private Nson partList = Nson.newArray();
     private Nson jasaList = Nson.newArray();
     private Tools.TimePart dummyTime = Tools.TimePart.parse("00:00:00");
-    private List<Tools.TimePart> timePartList = new ArrayList<>();
 
     private String idCheckinDetail = "", idCheckin = "";
     private int totalBiaya = 0;
     private int totalTambah = 0;
     private int totalBatal = 0, countBatal = 0;
+
     private boolean isWait = false, isPartKosong = false, isBatal = false, isTambah = false, isNotWait = false;
     private boolean isSign = false;
 
@@ -281,7 +281,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
                 super.onBindViewHolder(viewHolder, position);
                 viewHolder.find(R.id.tv_kelompokPart_booking3_checkin3, TextView.class)
-                        .setText(jasaList.get(position).get("KELOMPOK_PART").asString());
+                        .setText(jasaList.get(position).get("NAMA_KELOMPOK_PART").asString());
                 viewHolder.find(R.id.tv_aktifitas_booking3_checkin3, TextView.class)
                         .setText(jasaList.get(position).get("AKTIVITAS").asString());
                 viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class)
@@ -325,7 +325,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
         }
     }
 
-    private void updateTambahOrBatal(final String id) {
+    private void updateTambahOrBatal() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -336,24 +336,26 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                 args.put("action", "update");
                 if (isTambah) {
                     args.put("aktivitas", "TAMBAH PART - JASA");
-                    args.put("id", idCheckin);
+                    args.put("detailId", idCheckinDetail);
                     args.put("parts", partList.toJson());
                     args.put("jasaLain", jasaList.toJson());
                 }
                 if (isBatal) {
-                    args.put("detailId", id);
                     args.put("aktivitas", "BATAL PART");
                     args.put("jumlahBatal", String.valueOf(totalBatal));
                 }
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_KONTROL_LAYANAN), args));
+                Log.d("cok__", "run: " + result);
             }
 
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     showSuccess("Update Aktivitas Berhasil");
-                    setResult(RESULT_OK);
+                    Intent i = new Intent();
+                    i.putExtra(DATA, idCheckin);
+                    setResult(RESULT_OK, i);
                     finish();
                 } else {
                     showInfo(result.get("message").asString());
@@ -363,13 +365,13 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
     }
 
     @SuppressLint("SetTextI18n")
-    private void totalWaktuLayanan(List<Tools.TimePart> timePartsList) {
-        for (Tools.TimePart timePart : timePartsList) {
-            dummyTime = dummyTime.add(timePart);
-            find(R.id.et_estimasi_selesai, EditText.class).setText(dummyTime.toString().substring(dummyTime.toString().length() - 5));
-        }
+    private void totalWaktuLayanan(Tools.TimePart waktuLayanan) {
+        dummyTime.add(waktuLayanan);
+        find(R.id.et_estimasi_selesai, EditText.class).setText(dummyTime.toString());
     }
 
+
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View v) {
         Intent i;
@@ -391,7 +393,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                         showWarning("Tanda Tangan belum terisi");
                     }
                 }else {
-                    updateTambahOrBatal(idCheckinDetail);
+                    updateTambahOrBatal();
                 }
                 break;
             case R.id.tv_max_tgl_konfirmasi:
@@ -494,14 +496,15 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                 case REQUEST_JASA_LAIN:
                     try {
                         dataAccept = Nson.readJson(getIntentStringExtra(data, DATA));
+                        dataAccept.set("CHECKIN_ID", idCheckin);
                         jasaList.add(dataAccept);
                         Objects.requireNonNull(rvJasaLain.getAdapter()).notifyDataSetChanged();
 
                         totalBiaya += Integer.parseInt(formatOnlyNumber(dataAccept.get("HARGA_JASA").asString()));
                         totalTambah += Integer.parseInt(formatOnlyNumber(dataAccept.get("HARGA_JASA").asString()));
 
-                        timePartList.add(Tools.TimePart.parse(dataAccept.get("WAKTU").asString()));
-                        totalWaktuLayanan(timePartList);
+                        totalWaktuLayanan(Tools.TimePart.parse(dataAccept.get("WAKTU_KERJA").asString()));
+                        totalWaktuLayanan(Tools.TimePart.parse(dataAccept.get("WAKTU_INSPEKSI").asString()));
                     } catch (Exception e) {
                         showWarning(JASA_LAIN + e.getMessage(), Toast.LENGTH_LONG);
                     }
@@ -509,12 +512,14 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                 case REQUEST_CARI_PART:
                     i = new Intent(getActivity(), JumlahPart_HargaPart_Activity.class);
                     i.putExtra(DATA, Nson.readJson(getIntentStringExtra(data, PART)).toJson());
-                    i.putExtra(BENGKEL, "");
+                    i.putExtra(TAMBAH_PART, "");
                     startActivityForResult(i, REQUEST_HARGA_PART);
                     break;
                 case REQUEST_HARGA_PART:
                     try {
                         dataAccept = Nson.readJson(getIntentStringExtra(data, DATA));
+                        dataAccept.set("CHECKIN_ID", idCheckin);
+                        dataAccept.set("CHECKIN_DETAIL_ID", idCheckinDetail);
                         partList.add(dataAccept);
                         Objects.requireNonNull(rvPart.getAdapter()).notifyDataSetChanged();
 
@@ -523,8 +528,8 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                         totalTambah += Integer.parseInt(formatOnlyNumber(dataAccept.get("HARGA_PART").asString()));
                         totalTambah += Integer.parseInt(formatOnlyNumber(dataAccept.get("HARGA_JASA").asString()));
 
-                        timePartList.add(Tools.TimePart.parse(dataAccept.get("WAKTU").asString()));
-                        totalWaktuLayanan(timePartList);
+                        totalWaktuLayanan(Tools.TimePart.parse(dataAccept.get("WAKTU_KERJA").asString()));
+                        totalWaktuLayanan(Tools.TimePart.parse(dataAccept.get("WAKTU_INSPEKSI").asString()));
                     } catch (Exception e) {
                         showWarning(PART + e.getMessage(), Toast.LENGTH_LONG);
                     }

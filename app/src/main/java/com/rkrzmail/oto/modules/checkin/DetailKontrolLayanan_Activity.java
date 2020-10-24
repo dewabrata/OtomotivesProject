@@ -124,7 +124,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
 
         setSpMekanik(data.get("MEKANIK").asString());
         getDetailCheckin(data);
-        idCheckinDetail = data.get(ID).asString();
+        idCheckin = data.get(ID).asString();
 
         etNoAntrian.setText(data.get("NO_ANTRIAN").asString());
         etStatus.setText(data.get("STATUS").asString());
@@ -142,7 +142,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         etNamaLayanan.setText(data.get("LAYANAN").asString());
         tvNamaLayanan.setText(data.get("LAYANAN").asString());
         tvBiayaLayanan.setText(RP + formatRp(formatOnlyNumber(data.get("BIAYA_LAYANAN").asString())));
-
+        setSpAktifitas();
         if (data.get("TUNGGU_KONFIRMASI_BIAYA").asString().equals("Y")) {
             find(R.id.cb_tungguConfirm_biaya, CheckBox.class).setChecked(true);
         }
@@ -177,7 +177,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 updateData(idCheckinDetail);
             }
         });
-        setSpAktifitas();
+
     }
 
     private void initRecyclerviewParts() {
@@ -198,7 +198,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                         RP + formatRp(detailCheckinListParts.get(position).get("HARGA_JASA").asString()));
                 viewHolder.find(R.id.tv_merk_booking3_checkin3, TextView.class)
                         .setText(detailCheckinListParts.get(position).get("MERK").asString());
-                if(isBatal){
+                if (isBatal) {
                     viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.VISIBLE);
                     viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -217,7 +217,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                             });
                         }
                     });
-                }else{
+                } else {
                     viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.GONE);
                 }
             }
@@ -238,7 +238,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                         .setText(detailCheckinListJasa.get(position).get("AKTIVITAS").asString());
                 viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class)
                         .setText(RP + formatRp(detailCheckinListJasa.get(position).get("HARGA_JASA").asString()));
-                if(isBatal){
+                if (isBatal) {
                     viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.VISIBLE);
                     viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -257,7 +257,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                             });
                         }
                     });
-                }else{
+                } else {
                     viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.GONE);
                 }
             }
@@ -281,8 +281,8 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     result = result.get("data");
-                    idCheckin = result.get("CHECKIN_ID").asString();
                     for (int i = 0; i < result.size(); i++) {
+                        idCheckinDetail = result.get(i).get(ID).asString();
                         if (!result.get(i).get("NAMA_PART").asString().isEmpty()) {
                             detailCheckinListParts.add(result.get(i));
                         }
@@ -369,248 +369,28 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
     }
 
     private void setSpAktifitas() {
-       /* List<String> aktifitasList = new ArrayList<>();
-
+        List<String> aktifitasList = new ArrayList<>();
         aktifitasList.add("--PILIH--");
-        aktifitasList.add("MESSAGE PELANGGAN");
-        aktifitasList.add("KONFIRMASI BIAYA");
-        aktifitasList.add("BATAL BENGKEL");
-        aktifitasList.add("BATAL PART");
-        aktifitasList.add("BATAL PELANGGAN");
-        aktifitasList.add("GANTI MEKANIK");
-        aktifitasList.add("PENUGASAN MEKANIK");
-        aktifitasList.add("TAMBAH MEKANIK");
-        aktifitasList.add("PERINTAH ANTAR");
-        aktifitasList.add("TAMBAH PART - JASA");
-        aktifitasList.add("TAMBAH PART - JASA MSG"); //perlu persetujuan
-        aktifitasList.add("TAMBAH PART - JASA OK");
-        aktifitasList.add("TAMBAH PART - JASA TOLAK");*/
-
         if (etStatus.getText().toString().equals("CHECKIN ANTRIAN")) {
-            List<String> aktifitasList = new ArrayList<>();
-
-            aktifitasList.add("--PILIH--");
             aktifitasList.add("BATAL BENGKEL");
             aktifitasList.add("BATAL PELANGGAN");
             aktifitasList.add("PENUGASAN MEKANIK");
-
-            ArrayAdapter<String> aktifitasAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, aktifitasList);
-            aktifitasAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spAktifitas.setAdapter(aktifitasAdapter);
-            spAktifitas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    status = parent.getSelectedItem().toString();
-                    if (status.equals("PENUGASAN MEKANIK")
-                            || status.equals("GANTI MEKANIK")
-                            || status.equals("TAMBAH MEKANIK")) {
-                        isMekanik = true;
-                        Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_mekanik, LinearLayout.class), true);
-                    } else {
-                        Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_mekanik, LinearLayout.class), false);
-                    }
-
-                    if (status.equals("MESSAGE PELANGGAN")
-                            || status.equals("BATAL BENGKEL")
-                            || status.equals("BATAL PELANGGAN")) {
-                        etAlasanBatal.setEnabled(true);
-                    } else {
-                        etAlasanBatal.setEnabled(false);
-                    }
-
-                    Intent intent = new Intent(getActivity(), TambahPartJasaDanBatal_Activity.class);
-                    intent.putExtra(ID, idCheckinDetail);
-                    intent.putExtra("CHECKIN_ID", idCheckin);
-                    intent.putExtra(TOTAL_BIAYA, etTotal.getText().toString().replaceAll("[^0-9]+", ""));
-
-                    if (status.equals("BATAL PART")) {
-                        isBatal = true;
-                        rvLayananParts.getAdapter().notifyDataSetChanged();
-                        rvLayananJasa.getAdapter().notifyDataSetChanged();
-                    /*intent.putExtra(BATAL_PART, "");
-                    if(detailCheckinListJasa.size() > 0){
-                        intent.putExtra(JASA_LAIN, detailCheckinListJasa.toJson());
-                    }
-                    if(detailCheckinListParts.size() > 0){
-                        intent.putExtra(PARTS_UPPERCASE, detailCheckinListParts.toJson());
-                    }
-                    startActivityForResult(intent, REQUEST_TAMBAH_PART_JASA_LAIN);*/
-                    }else{
-                        isBatal = false;
-                        rvLayananParts.getAdapter().notifyDataSetChanged();
-                        rvLayananJasa.getAdapter().notifyDataSetChanged();
-                    }
-
-                    if (status.equals("TAMBAH PART - JASA")) { //|| status.equals("TAMBAH PART - JASA MSG") || status.equals("TAMBAH PART - JASA OK")
-                        intent.putExtra(TAMBAH_PART, "");
-                        intent.putExtra(ESTIMASI_WAKTU, etEstimasiSebelum.getText().toString());
-                        if (find(R.id.cb_tidak_menunggu, CheckBox.class).isChecked()) {
-                            intent.putExtra(TIDAK_MENUNGGU, TIDAK_MENUNGGU);
-                        } else {
-                            intent.putExtra(MENUNGGU, MENUNGGU);
-                        }
-                        startActivityForResult(intent, REQUEST_TAMBAH_PART_JASA_LAIN);
-                    }
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-
-                }
-            });
+            aktifitasList.add("TAMBAH PART - JASA");
+            aktifitasList.add("KURANGI PART - JASA");
         } else if (etStatus.getText().toString().equals("BATAL PART") || etStatus.getText().toString().equals("MEKANIK SELESAI") || etStatus.getText().toString().equals("PELAYANAN SELESAI")
-            || etStatus.getText().toString().equals("PERINTAH ANTAR") || etStatus.getText().toString().equals("REFUND DP")){
-            List<String> aktifitasList = new ArrayList<>();
-
-            aktifitasList.add("--PILIH--");
+                || etStatus.getText().toString().equals("PERINTAH ANTAR") || etStatus.getText().toString().equals("REFUND DP")) {
             aktifitasList.add("MESSAGE PELANGGAN");
-
-            ArrayAdapter<String> aktifitasAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, aktifitasList);
-            aktifitasAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spAktifitas.setAdapter(aktifitasAdapter);
-            spAktifitas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    status = parent.getSelectedItem().toString();
-                    if (status.equals("PENUGASAN MEKANIK")
-                            || status.equals("GANTI MEKANIK")
-                            || status.equals("TAMBAH MEKANIK")) {
-                        isMekanik = true;
-                        Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_mekanik, LinearLayout.class), true);
-                    } else {
-                        Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_mekanik, LinearLayout.class), false);
-                    }
-
-                    if (status.equals("MESSAGE PELANGGAN")
-                            || status.equals("BATAL BENGKEL")
-                            || status.equals("BATAL PELANGGAN")) {
-                        etAlasanBatal.setEnabled(true);
-                    } else {
-                        etAlasanBatal.setEnabled(false);
-                    }
-
-                    Intent intent = new Intent(getActivity(), TambahPartJasaDanBatal_Activity.class);
-                    intent.putExtra(ID, idCheckinDetail);
-                    intent.putExtra("CHECKIN_ID", idCheckin);
-                    intent.putExtra(TOTAL_BIAYA, etTotal.getText().toString().replaceAll("[^0-9]+", ""));
-
-                    if (status.equals("BATAL PART")) {
-                        isBatal = true;
-                        rvLayananParts.getAdapter().notifyDataSetChanged();
-                        rvLayananJasa.getAdapter().notifyDataSetChanged();
-                    /*intent.putExtra(BATAL_PART, "");
-                    if(detailCheckinListJasa.size() > 0){
-                        intent.putExtra(JASA_LAIN, detailCheckinListJasa.toJson());
-                    }
-                    if(detailCheckinListParts.size() > 0){
-                        intent.putExtra(PARTS_UPPERCASE, detailCheckinListParts.toJson());
-                    }
-                    startActivityForResult(intent, REQUEST_TAMBAH_PART_JASA_LAIN);*/
-                    }else{
-                        isBatal = false;
-                        rvLayananParts.getAdapter().notifyDataSetChanged();
-                        rvLayananJasa.getAdapter().notifyDataSetChanged();
-                    }
-
-                    if (status.equals("TAMBAH PART - JASA")) { //|| status.equals("TAMBAH PART - JASA MSG") || status.equals("TAMBAH PART - JASA OK")
-                        intent.putExtra(TAMBAH_PART, "");
-                        intent.putExtra(ESTIMASI_WAKTU, etEstimasiSebelum.getText().toString());
-                        if (find(R.id.cb_tidak_menunggu, CheckBox.class).isChecked()) {
-                            intent.putExtra(TIDAK_MENUNGGU, TIDAK_MENUNGGU);
-                        } else {
-                            intent.putExtra(MENUNGGU, MENUNGGU);
-                        }
-                        startActivityForResult(intent, REQUEST_TAMBAH_PART_JASA_LAIN);
-                    }
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-
-                }
-            });
-        } else if (etStatus.getText().toString().equals("GANTI MEKANIK")){
-            List<String> aktifitasList = new ArrayList<>();
-
-            aktifitasList.add("--PILIH--");
+        } else if (etStatus.getText().toString().equals("GANTI MEKANIK")) {
             aktifitasList.add("BATAL PART");
             aktifitasList.add("BATAL PELANGGAN");
             aktifitasList.add("TAMBAH MEKANIK");
             aktifitasList.add("TAMBAH PART - JASA");
             aktifitasList.add("KURANGI PART - JASA");
-
-            ArrayAdapter<String> aktifitasAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, aktifitasList);
-            aktifitasAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spAktifitas.setAdapter(aktifitasAdapter);
-            spAktifitas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    status = parent.getSelectedItem().toString();
-                    if (status.equals("PENUGASAN MEKANIK")
-                            || status.equals("GANTI MEKANIK")
-                            || status.equals("TAMBAH MEKANIK")) {
-                        isMekanik = true;
-                        Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_mekanik, LinearLayout.class), true);
-                    } else {
-                        Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_mekanik, LinearLayout.class), false);
-                    }
-
-                    if (status.equals("MESSAGE PELANGGAN")
-                            || status.equals("BATAL BENGKEL")
-                            || status.equals("BATAL PELANGGAN")) {
-                        etAlasanBatal.setEnabled(true);
-                    } else {
-                        etAlasanBatal.setEnabled(false);
-                    }
-
-                    Intent intent = new Intent(getActivity(), TambahPartJasaDanBatal_Activity.class);
-                    intent.putExtra(ID, idCheckinDetail);
-                    intent.putExtra("CHECKIN_ID", idCheckin);
-                    intent.putExtra(TOTAL_BIAYA, etTotal.getText().toString().replaceAll("[^0-9]+", ""));
-
-                    if (status.equals("BATAL PART")) {
-                        isBatal = true;
-                        rvLayananParts.getAdapter().notifyDataSetChanged();
-                        rvLayananJasa.getAdapter().notifyDataSetChanged();
-                    /*intent.putExtra(BATAL_PART, "");
-                    if(detailCheckinListJasa.size() > 0){
-                        intent.putExtra(JASA_LAIN, detailCheckinListJasa.toJson());
-                    }
-                    if(detailCheckinListParts.size() > 0){
-                        intent.putExtra(PARTS_UPPERCASE, detailCheckinListParts.toJson());
-                    }
-                    startActivityForResult(intent, REQUEST_TAMBAH_PART_JASA_LAIN);*/
-                    }else{
-                        isBatal = false;
-                        rvLayananParts.getAdapter().notifyDataSetChanged();
-                        rvLayananJasa.getAdapter().notifyDataSetChanged();
-                    }
-
-                    if (status.equals("TAMBAH PART - JASA")) { //|| status.equals("TAMBAH PART - JASA MSG") || status.equals("TAMBAH PART - JASA OK")
-                        intent.putExtra(TAMBAH_PART, "");
-                        intent.putExtra(ESTIMASI_WAKTU, etEstimasiSebelum.getText().toString());
-                        if (find(R.id.cb_tidak_menunggu, CheckBox.class).isChecked()) {
-                            intent.putExtra(TIDAK_MENUNGGU, TIDAK_MENUNGGU);
-                        } else {
-                            intent.putExtra(MENUNGGU, MENUNGGU);
-                        }
-                        startActivityForResult(intent, REQUEST_TAMBAH_PART_JASA_LAIN);
-                    }
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-
-                }
-            });
         } else if (etStatus.getText().toString().equals("GANTI PART") || etStatus.getText().toString().equals("MEKANIK MULAI") || etStatus.getText().toString().equals("MEKANIK PAUSE")
-        || etStatus.getText().toString().equals("OUTSOURCE SELESAI") || etStatus.getText().toString().equals("PART MEKANIK")
-        || etStatus.getText().toString().equals("PART TERSEDIA") || etStatus.getText().toString().equals("PART TIDAK TERSEDIA") || etStatus.getText().toString().equals("PENUGASAN MEKANIK")
+                || etStatus.getText().toString().equals("OUTSOURCE SELESAI") || etStatus.getText().toString().equals("PART MEKANIK")
+                || etStatus.getText().toString().equals("PART TERSEDIA") || etStatus.getText().toString().equals("PART TIDAK TERSEDIA") || etStatus.getText().toString().equals("PENUGASAN MEKANIK")
                 || etStatus.getText().toString().equals("TAMBAH MEKANIK") || etStatus.getText().toString().equals("TAMBAH PART - JASA") || etStatus.getText().toString().equals("TAMBAH PART - JASA OK")
-                || etStatus.getText().toString().equals("TAMBAH PART - JASA TOLAK") || etStatus.getText().toString().equals("TERIMA PART KOSONG") || etStatus.getText().toString().equals("MESSAGE PELANGGAN")){
-            List<String> aktifitasList = new ArrayList<>();
-
-            aktifitasList.add("--PILIH--");
+                || etStatus.getText().toString().equals("TAMBAH PART - JASA TOLAK") || etStatus.getText().toString().equals("TERIMA PART KOSONG") || etStatus.getText().toString().equals("MESSAGE PELANGGAN")) {
             aktifitasList.add("BATAL PART");
             aktifitasList.add("BATAL BENGKEL");
             aktifitasList.add("BATAL PELANGGAN");
@@ -618,220 +398,65 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             aktifitasList.add("GANTI MEKANIK");
             aktifitasList.add("TAMBAH PART - JASA");
             aktifitasList.add("KURANGI PART - JASA");
-
-            ArrayAdapter<String> aktifitasAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, aktifitasList);
-            aktifitasAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spAktifitas.setAdapter(aktifitasAdapter);
-            spAktifitas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    status = parent.getSelectedItem().toString();
-                    if (status.equals("PENUGASAN MEKANIK")
-                            || status.equals("GANTI MEKANIK")
-                            || status.equals("TAMBAH MEKANIK")) {
-                        isMekanik = true;
-                        Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_mekanik, LinearLayout.class), true);
-                    } else {
-                        Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_mekanik, LinearLayout.class), false);
-                    }
-
-                    if (status.equals("MESSAGE PELANGGAN")
-                            || status.equals("BATAL BENGKEL")
-                            || status.equals("BATAL PELANGGAN")) {
-                        etAlasanBatal.setEnabled(true);
-                    } else {
-                        etAlasanBatal.setEnabled(false);
-                    }
-
-                    Intent intent = new Intent(getActivity(), TambahPartJasaDanBatal_Activity.class);
-                    intent.putExtra(ID, idCheckinDetail);
-                    intent.putExtra("CHECKIN_ID", idCheckin);
-                    intent.putExtra(TOTAL_BIAYA, etTotal.getText().toString().replaceAll("[^0-9]+", ""));
-
-                    if (status.equals("BATAL PART")) {
-                        isBatal = true;
-                        rvLayananParts.getAdapter().notifyDataSetChanged();
-                        rvLayananJasa.getAdapter().notifyDataSetChanged();
-                    /*intent.putExtra(BATAL_PART, "");
-                    if(detailCheckinListJasa.size() > 0){
-                        intent.putExtra(JASA_LAIN, detailCheckinListJasa.toJson());
-                    }
-                    if(detailCheckinListParts.size() > 0){
-                        intent.putExtra(PARTS_UPPERCASE, detailCheckinListParts.toJson());
-                    }
-                    startActivityForResult(intent, REQUEST_TAMBAH_PART_JASA_LAIN);*/
-                    }else{
-                        isBatal = false;
-                        rvLayananParts.getAdapter().notifyDataSetChanged();
-                        rvLayananJasa.getAdapter().notifyDataSetChanged();
-                    }
-
-                    if (status.equals("TAMBAH PART - JASA")) { //|| status.equals("TAMBAH PART - JASA MSG") || status.equals("TAMBAH PART - JASA OK")
-                        intent.putExtra(TAMBAH_PART, "");
-                        intent.putExtra(ESTIMASI_WAKTU, etEstimasiSebelum.getText().toString());
-                        if (find(R.id.cb_tidak_menunggu, CheckBox.class).isChecked()) {
-                            intent.putExtra(TIDAK_MENUNGGU, TIDAK_MENUNGGU);
-                        } else {
-                            intent.putExtra(MENUNGGU, MENUNGGU);
-                        }
-                        startActivityForResult(intent, REQUEST_TAMBAH_PART_JASA_LAIN);
-                    }
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-
-                }
-            });
-
-        } else if (etStatus.getText().toString().equals("TRANSFER")){
-            List<String> aktifitasList = new ArrayList<>();
-
-            aktifitasList.add("--PILIH--");
+        } else if (etStatus.getText().toString().equals("TRANSFER")) {
             aktifitasList.add("PERINTAH ANTAR");
-
-
-            ArrayAdapter<String> aktifitasAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, aktifitasList);
-            aktifitasAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spAktifitas.setAdapter(aktifitasAdapter);
-            spAktifitas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    status = parent.getSelectedItem().toString();
-                    if (status.equals("PENUGASAN MEKANIK")
-                            || status.equals("GANTI MEKANIK")
-                            || status.equals("TAMBAH MEKANIK")) {
-                        isMekanik = true;
-                        Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_mekanik, LinearLayout.class), true);
-                    } else {
-                        Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_mekanik, LinearLayout.class), false);
-                    }
-
-                    if (status.equals("MESSAGE PELANGGAN")
-                            || status.equals("BATAL BENGKEL")
-                            || status.equals("BATAL PELANGGAN")) {
-                        etAlasanBatal.setEnabled(true);
-                    } else {
-                        etAlasanBatal.setEnabled(false);
-                    }
-
-                    Intent intent = new Intent(getActivity(), TambahPartJasaDanBatal_Activity.class);
-                    intent.putExtra(ID, idCheckinDetail);
-                    intent.putExtra("CHECKIN_ID", idCheckin);
-                    intent.putExtra(TOTAL_BIAYA, etTotal.getText().toString().replaceAll("[^0-9]+", ""));
-
-                    if (status.equals("BATAL PART")) {
-                        isBatal = true;
-                        rvLayananParts.getAdapter().notifyDataSetChanged();
-                        rvLayananJasa.getAdapter().notifyDataSetChanged();
-                    /*intent.putExtra(BATAL_PART, "");
-                    if(detailCheckinListJasa.size() > 0){
-                        intent.putExtra(JASA_LAIN, detailCheckinListJasa.toJson());
-                    }
-                    if(detailCheckinListParts.size() > 0){
-                        intent.putExtra(PARTS_UPPERCASE, detailCheckinListParts.toJson());
-                    }
-                    startActivityForResult(intent, REQUEST_TAMBAH_PART_JASA_LAIN);*/
-                    }else{
-                        isBatal = false;
-                        rvLayananParts.getAdapter().notifyDataSetChanged();
-                        rvLayananJasa.getAdapter().notifyDataSetChanged();
-                    }
-
-                    if (status.equals("TAMBAH PART - JASA")) { //|| status.equals("TAMBAH PART - JASA MSG") || status.equals("TAMBAH PART - JASA OK")
-                        intent.putExtra(TAMBAH_PART, "");
-                        intent.putExtra(ESTIMASI_WAKTU, etEstimasiSebelum.getText().toString());
-                        if (find(R.id.cb_tidak_menunggu, CheckBox.class).isChecked()) {
-                            intent.putExtra(TIDAK_MENUNGGU, TIDAK_MENUNGGU);
-                        } else {
-                            intent.putExtra(MENUNGGU, MENUNGGU);
-                        }
-                        startActivityForResult(intent, REQUEST_TAMBAH_PART_JASA_LAIN);
-                    }
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-
-                }
-            });
-        } else if (etStatus.getText().toString().equals("TUNGGU ESTIMASI")){
-            List<String> aktifitasList = new ArrayList<>();
-
-            aktifitasList.add("--PILIH--");
+        } else if (etStatus.getText().toString().equals("TUNGGU ESTIMASI")) {
             aktifitasList.add("KONFIRMASI BIAYA");
             aktifitasList.add("BATAL PELANGGAN");
+        }
+
+        ArrayAdapter<String> aktifitasAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, aktifitasList);
+        aktifitasAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spAktifitas.setAdapter(aktifitasAdapter);
+        spAktifitas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                status = parent.getSelectedItem().toString();
+                if (status.equals("PENUGASAN MEKANIK")
+                        || status.equals("GANTI MEKANIK")
+                        || status.equals("TAMBAH MEKANIK")) {
+                    isMekanik = true;
+                    Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_mekanik, LinearLayout.class), true);
+                } else {
+                    Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_mekanik, LinearLayout.class), false);
+                }
+
+                etAlasanBatal.setEnabled(status.equals("MESSAGE PELANGGAN") || status.equals("BATAL BENGKEL") || status.equals("BATAL PELANGGAN"));
 
 
+                if (status.equals("BATAL PART")) {
+                    isBatal = true;
+                    rvLayananParts.getAdapter().notifyDataSetChanged();
+                    rvLayananJasa.getAdapter().notifyDataSetChanged();
+                } else {
+                    isBatal = false;
+                    rvLayananParts.getAdapter().notifyDataSetChanged();
+                    rvLayananJasa.getAdapter().notifyDataSetChanged();
+                }
 
-
-            ArrayAdapter<String> aktifitasAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, aktifitasList);
-            aktifitasAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spAktifitas.setAdapter(aktifitasAdapter);
-            spAktifitas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    status = parent.getSelectedItem().toString();
-                    if (status.equals("PENUGASAN MEKANIK")
-                            || status.equals("GANTI MEKANIK")
-                            || status.equals("TAMBAH MEKANIK")) {
-                        isMekanik = true;
-                        Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_mekanik, LinearLayout.class), true);
-                    } else {
-                        Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_mekanik, LinearLayout.class), false);
-                    }
-
-                    if (status.equals("MESSAGE PELANGGAN")
-                            || status.equals("BATAL BENGKEL")
-                            || status.equals("BATAL PELANGGAN")) {
-                        etAlasanBatal.setEnabled(true);
-                    } else {
-                        etAlasanBatal.setEnabled(false);
-                    }
-
+                if (status.equals("TAMBAH PART - JASA")) { //|| status.equals("TAMBAH PART - JASA MSG") || status.equals("TAMBAH PART - JASA OK")
                     Intent intent = new Intent(getActivity(), TambahPartJasaDanBatal_Activity.class);
                     intent.putExtra(ID, idCheckinDetail);
                     intent.putExtra("CHECKIN_ID", idCheckin);
-                    intent.putExtra(TOTAL_BIAYA, etTotal.getText().toString().replaceAll("[^0-9]+", ""));
-
-                    if (status.equals("BATAL PART")) {
-                        isBatal = true;
-                        rvLayananParts.getAdapter().notifyDataSetChanged();
-                        rvLayananJasa.getAdapter().notifyDataSetChanged();
-                    /*intent.putExtra(BATAL_PART, "");
-                    if(detailCheckinListJasa.size() > 0){
-                        intent.putExtra(JASA_LAIN, detailCheckinListJasa.toJson());
+                    intent.putExtra(TOTAL_BIAYA, formatOnlyNumber(etTotal.getText().toString()));
+                    intent.putExtra(TAMBAH_PART, "");
+                    intent.putExtra(ESTIMASI_WAKTU, etEstimasiSebelum.getText().toString());
+                    if (find(R.id.cb_tidak_menunggu, CheckBox.class).isChecked()) {
+                        intent.putExtra(TIDAK_MENUNGGU, TIDAK_MENUNGGU);
+                    } else {
+                        intent.putExtra(MENUNGGU, MENUNGGU);
                     }
-                    if(detailCheckinListParts.size() > 0){
-                        intent.putExtra(PARTS_UPPERCASE, detailCheckinListParts.toJson());
-                    }
-                    startActivityForResult(intent, REQUEST_TAMBAH_PART_JASA_LAIN);*/
-                    }else{
-                        isBatal = false;
-                        rvLayananParts.getAdapter().notifyDataSetChanged();
-                        rvLayananJasa.getAdapter().notifyDataSetChanged();
-                    }
-
-                    if (status.equals("TAMBAH PART - JASA")) { //|| status.equals("TAMBAH PART - JASA MSG") || status.equals("TAMBAH PART - JASA OK")
-                        intent.putExtra(TAMBAH_PART, "");
-                        intent.putExtra(ESTIMASI_WAKTU, etEstimasiSebelum.getText().toString());
-                        if (find(R.id.cb_tidak_menunggu, CheckBox.class).isChecked()) {
-                            intent.putExtra(TIDAK_MENUNGGU, TIDAK_MENUNGGU);
-                        } else {
-                            intent.putExtra(MENUNGGU, MENUNGGU);
-                        }
-                        startActivityForResult(intent, REQUEST_TAMBAH_PART_JASA_LAIN);
-                    }
+                    startActivityForResult(intent, REQUEST_TAMBAH_PART_JASA_LAIN);
                 }
+            }
 
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
-                }
-            });
-        }
-
+            }
+        });
     }
+
 
     private void updateData(final String id) {
         newProses(new Messagebox.DoubleRunnable() {
@@ -866,7 +491,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
     }
 
     // if part not yet accepted they cannot be cancel
-    private void viewSerahTerimaPart(){
+    private void viewSerahTerimaPart() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 

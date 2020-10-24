@@ -37,6 +37,7 @@ import static com.rkrzmail.utils.ConstUtils.PART_WAJIB;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
 import static com.rkrzmail.utils.ConstUtils.RP;
 import static com.rkrzmail.utils.ConstUtils.RUANG_PART;
+import static com.rkrzmail.utils.ConstUtils.TAMBAH_PART;
 
 public class JumlahPart_HargaPart_Activity extends AppActivity implements View.OnClickListener {
 
@@ -45,7 +46,7 @@ public class JumlahPart_HargaPart_Activity extends AppActivity implements View.O
 
     private final Nson sendData = Nson.newObject();
 
-    private boolean isFlexible = false, isPartKosong = false, isPartWajib = false;
+    private boolean isFlexible = false, isPartKosong = false, isPartWajib = false, isTambahPart = false;
     private String idLokasiPart = "", hpp = "";
     private int stock = 0;
 
@@ -81,6 +82,10 @@ public class JumlahPart_HargaPart_Activity extends AppActivity implements View.O
 
     @SuppressLint("SetTextI18n")
     private void initData() {
+        if(getIntent().hasExtra(TAMBAH_PART)){
+            isTambahPart = true;
+        }
+
         if (getIntent().hasExtra(DATA)) {
             initData(DATA, getIntent());
         } else {
