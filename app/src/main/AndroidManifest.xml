@@ -27,7 +27,8 @@
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,UnusedAttribute"
         tools:replace="android:label">
-        <activity android:name=".modules.sparepart.Status_PartKosong_Activity"></activity>
+        <activity android:name=".modules.bengkel.KonfirmasiData_Pembayaran_Activity"></activity>
+        <activity android:name=".modules.sparepart.Status_PartKosong_Activity" />
         <activity android:name=".modules.checkin.TambahPartJasaDanBatal_Activity" />
         <activity android:name=".modules.sparepart.AturPartKeluar_Activity" />
         <activity android:name=".modules.sparepart.DetailPartKeluar_Activity" />

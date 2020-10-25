@@ -39,4 +39,5 @@ public class APIUrls {
     public static final String ATUR_DISC_SPOT = "aturdiskonspot";
     public static final String ATUR_TUGAS_PART = "aturtugaspart";
     public static final String ATUR_PART_KOSONG = "aturpartkosong";
+    public static final String VIEW_PEMBAYARAN = "viewpembayaran";
 }

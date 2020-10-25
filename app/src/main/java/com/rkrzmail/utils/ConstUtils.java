@@ -10,6 +10,9 @@ public class ConstUtils {
     public static final String TUGAS_PART_PERMINTAAN = "TUGAS_PART_PERMINTAAN";
     public static final String TUGAS_PART_BATAL = "TUGAS_PART_BATAL";
     public static final String TUGAS_PART_KOSONG = "TUGAS_PART_KOSONG";
+    public static final String RINCIAN_LAYANAN = "Rincian Layanan";
+    public static final String RINCIAN_DP = "Rincian DP";
+    public static final String RINCIAN_JUAL_PART = "Rincian Jual Part";
 
     //CONST STRING
     public static final String BENGKEL = "BENGKEL";

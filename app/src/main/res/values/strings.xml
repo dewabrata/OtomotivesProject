@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:color="http://schemas.android.com/apk/res-auto">
+<resources xmlns:color="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Otomotives</string>
     <string name="spinner_no_default_hint"></string>
     <string-array name="pola_harga_jual">
@@ -365,4 +365,6 @@
     <string name="discount_part_uppercase">DISCOUNT PART</string>
     <string name="discount_jasa_uppercase">DISCOUNT JASA</string>
     <string name="jenis_kendaraan_lowercase">Jenis Kendaraan</string>
+    <string name="nn_n_dp_uppercase">NN.N% DP</string>
+    <string name="sisa_biaya_uppercase">SISA BIAYA</string>
 </resources>

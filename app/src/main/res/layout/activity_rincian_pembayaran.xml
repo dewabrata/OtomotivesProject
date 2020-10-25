@@ -31,7 +31,7 @@
                     android:padding="@dimen/paddingSemiLarge">
 
                     <TextView
-                        android:id="@+id/tv_namaP"
+                        android:id="@+id/tv_nama_pelanggan"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Nama Pelanggan"
@@ -47,10 +47,10 @@
                         <TableRow android:layout_marginTop="@dimen/paddingMedium">
 
                             <TextView
-                                android:id="@+id/tv_noPhone"
+                                android:id="@+id/tv_no_ponsel"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="No. Ponsel"
+                                android:text="@string/no_ponsel"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                                 android:textColor="@color/grey_900"
                                 android:textSize="12sp" />
@@ -130,7 +130,7 @@
                         android:textSize="12sp" />
 
                     <CheckBox
-                        android:id="@+id/cb_aj"
+                        android:id="@+id/cb_antar_jemput"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -228,6 +228,7 @@
                 app:cardUseCompatPadding="true">
 
             <TableLayout
+                android:id="@+id/table_layanan"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:stretchColumns="*"
@@ -357,7 +358,7 @@
                         android:textSize="12sp" />
 
                     <TextView
-                        android:id="@+id/tv_jasaPart"
+                        android:id="@+id/tv_harga_jasa_part"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp. 0 "
@@ -401,7 +402,7 @@
                         android:textSize="12sp" />
 
                     <TextView
-                        android:id="@+id/tv_jasaLain"
+                        android:id="@+id/tv_harga_jasa_lain"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp. 0 "
@@ -424,7 +425,7 @@
                         android:textSize="12sp" />
 
                     <TextView
-                        android:id="@+id/tv_disc"
+                        android:id="@+id/tv_disc_jasa_lain"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp. 0 "
@@ -447,7 +448,7 @@
                         android:textSize="12sp" />
 
                     <TextView
-                        android:id="@+id/tv_derekTransport"
+                        android:id="@+id/tv_harga_derek_transport"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp. 0 "
@@ -470,7 +471,7 @@
                         android:textSize="12sp" />
 
                     <TextView
-                        android:id="@+id/tv_penyimpanan"
+                        android:id="@+id/tv_harga_penyimpanan"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp. 0 "
@@ -492,6 +493,52 @@
 
                     <TextView
                         android:id="@+id/tv_total_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp. 0 "
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/row_dp_persen"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/nn_n_dp_uppercase"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_biaya_dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp. 0 "
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/row_sisa_dp_persen"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sisa_biaya_uppercase"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_sisa_biaya_dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp. 0 "
@@ -616,55 +663,57 @@
 
                 </TableRow>
 
-                <android.support.design.widget.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp">
-
-                    <EditText
-                        android:id="@+id/et_ket_tambahan"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:enabled="false"
-                        android:gravity="top|left"
-                        android:hint="KETERANGAN TAMBAHAN"
-                        android:textSize="14sp" />
-
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/ly_catatanMekanik"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp">
-
-                    <EditText
-                        android:id="@+id/et_catatan"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:enabled="false"
-                        android:gravity="top|left"
-                        android:hint="CATATAN MEKANIK"
-                        android:textSize="14sp" />
-
-                </android.support.design.widget.TextInputLayout>
-
             </TableLayout>
 
             </android.support.v7.widget.CardView>
 
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/ly_ket"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/paddingSemiLarge">
+
+                <EditText
+                    android:id="@+id/et_ket_tambahan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:gravity="top|left"
+                    android:hint="KETERANGAN TAMBAHAN"
+                    android:textSize="14sp" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/ly_catatanMekanik"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
+
+                <EditText
+                    android:id="@+id/et_catatan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:gravity="top|left"
+                    android:hint="CATATAN MEKANIK"
+                    android:textSize="14sp" />
+
+            </android.support.design.widget.TextInputLayout>
+
+
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/paddingMedium"
+                android:layout_marginTop="@dimen/paddingSemiLarge"
                 android:stretchColumns="*">
 
                 <TableRow>
 
                     <Button
-                        android:id="@+id/btn_jasaPart"
+                        android:id="@+id/btn_jasa_part"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
