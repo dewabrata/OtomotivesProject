@@ -403,6 +403,9 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         } else if (etStatus.getText().toString().equals("TUNGGU ESTIMASI")) {
             aktifitasList.add("KONFIRMASI BIAYA");
             aktifitasList.add("BATAL PELANGGAN");
+        } else if (etStatus.getText().toString().equals("KONFIRMASI BIAYA")) {
+            aktifitasList.add("BIAYA OK");
+            aktifitasList.add("BIAYA BATAL");
         }
 
         ArrayAdapter<String> aktifitasAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, aktifitasList);
