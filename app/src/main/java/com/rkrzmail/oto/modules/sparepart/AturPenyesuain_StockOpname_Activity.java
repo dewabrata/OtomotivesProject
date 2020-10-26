@@ -3,12 +3,11 @@ package com.rkrzmail.oto.modules.sparepart;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputEditText;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -24,17 +23,16 @@ import com.rkrzmail.oto.gmod.BarcodeActivity;
 import com.rkrzmail.oto.gmod.MyCode;
 import com.rkrzmail.utils.Tools;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
+import static com.rkrzmail.utils.APIUrls.ATUR_TUGAS_PART;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.PENYESUAIAN;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
 
-public class Penyesuain_Activity extends AppActivity {
+public class AturPenyesuain_StockOpname_Activity extends AppActivity {
 
     String kodeLokasi = "";
 
@@ -167,45 +165,30 @@ public class Penyesuain_Activity extends AppActivity {
         });
     }
 
-    public void getDataBarcode(final String user) {
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
-
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "view");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewsparepart"), args));
-            }
-
-            @Override
-            public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    result = result.get("data").get(0);
-
-                } else {
-                    showError(result.get("message").asString());
-                }
-            }
-        });
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_BARCODE) {
             String barcodeResult = data != null ? data.getStringExtra("TEXT").replace("\n", "").trim() : "";
-            MyCode.checkMyCode(this, getIntentStringExtra(data, barcodeResult), new MyCode.RunnableWD() {
+            MyCode.checkMyCode(this, barcodeResult, new MyCode.RunnableWD() {
                 @Override
                 public void runWD(Nson nson) {
-                    if(nson.get("status").asString().equals("OK")){
-                        showSuccess(nson.get("USERID").asString());
-                    }else{
+                    if (nson.get("status").asString().equals("OK")) {
+                        nson = nson.get("data").get(0);
+                        if(nson.asArray().isEmpty()){
+                            showWarning("User Saksi Tidak Valid");
+                            return;
+                        }else{
+                            showSuccess("Scan Barcode Berhasil");
+                        }
+
+                        Log.d("Barcode__", "onActivityResult: " + nson);
+                        find(R.id.et_user_saksi_penyesuaian, EditText.class).setText(nson.get("USERID").asString());
+                    } else {
                         showError(nson.get("message").asString());
                     }
                 }
             });
-            //getDataBarcode(barcode);
         }
     }
 }

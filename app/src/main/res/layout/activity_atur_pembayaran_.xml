@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:descendantFocusability="beforeDescendants"
@@ -15,23 +16,24 @@
             android:id="@+id/ly_pembayaran"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_medium">
 
             <android.support.design.widget.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
+
                 android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
+
                 android:textAlignment="center">
 
                 <EditText
-                    android:id="@+id/et_biayaJual_aturPembayaran"
+                    android:id="@+id/et_total_biaya"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:enabled="false"
-                    android:hint="BIAYA JUAL"
+                    android:hint="TOTAL"
                     android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
@@ -39,93 +41,94 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginTop="@dimen/paddingSemiLarge"
+                android:layout_marginBottom="@dimen/paddingMedium"
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="100dp"
+                    android:id="@+id/txttittle9"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="3"
                     android:text="TIPE PEMBAYARAN"
-                    android:textColor="@color/grey_80"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
 
-                <Spinner
-                    android:id="@+id/sp_tipePembayaran_aturPembayaran"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:entries="@array/tipe_pembayaran"
-                    android:textAlignment="center" />
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
+
+                    <Spinner
+                        android:id="@+id/sp_tipe_pembayaran"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textAlignment="center"
+                        android:entries="@array/tipe_pembayaran"/>
+
+                </RelativeLayout>
 
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ly_norek"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/paddingSemiLarge"
+                android:layout_marginBottom="@dimen/paddingMedium"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:text="REKENING INTERNAL"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
+
+                    <Spinner
+                        android:id="@+id/sp_norek"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textAlignment="center" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp">
-
-                    <TextView
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="REKENING BANK"
-                        android:textColor="@color/grey_80"
-                        android:textStyle="bold" />
-
-                    <Spinner
-                        android:id="@+id/sp_noRek_aturPembayaran"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textAlignment="center" />
-
-                </LinearLayout>
-
                 <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="@dimen/spacing_medium"
                     android:textAlignment="center">
 
-                    <EditText
-                        android:id="@+id/et_namaBankEpay_aturPembayaran"
+                    <com.rkrzmail.srv.NikitaAutoComplete
+                        android:id="@+id/et_namaBankEpay"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:hint="NAMA BANK / EPAY"
                         android:inputType="number"
-                        android:textSize="14sp" />
-
-                </android.support.design.widget.TextInputLayout>
-
-
-                <android.support.design.widget.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp"
-                    android:textAlignment="center">
-
-                    <EditText
-                        android:id="@+id/et_noKartu_aturPembayaran"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:hint="NO. KARTU"
-                        android:inputType="number"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:padding="@dimen/paddingLarge"
+                        android:singleLine="true"/>
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -133,13 +136,11 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="@dimen/spacing_medium"
                     android:textAlignment="center">
 
                     <EditText
-                        android:id="@+id/et_noTrack_aturPembayaran"
+                        android:id="@+id/et_noTrack"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:enabled="false"
@@ -153,33 +154,84 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="@dimen/spacing_medium"
                     android:textAlignment="center">
 
                     <EditText
-                        android:id="@+id/et_discRate_aturPembayaran"
+                        android:id="@+id/et_ppn"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:enabled="false"
-                        android:hint="MERC. DISC RATE"
+                        android:hint="PPN"
+                        android:inputType="number"
                         android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/spacing_medium">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="@string/merc_disc_rate_uppercase"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:layout_gravity="center"/>
+
+                    <android.support.design.widget.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="@dimen/spacing_small">
+
+                        <EditText
+                            android:id="@+id/et_percent_disc_merc"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:enabled="false"
+                            android:hint="@string/percent"
+                            android:textSize="14sp"
+                            tools:ignore="Autofill,TextFields" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:layout_weight="4">
+
+                        <EditText
+                            android:id="@+id/et_rp_disc_merc"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:enabled="false"
+                            android:hint="@string/rp"
+                            android:textSize="14sp"
+                            tools:ignore="Autofill,TextFields" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                </LinearLayout>
 
                 <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="@dimen/spacing_medium"
                     android:textAlignment="center">
 
                     <EditText
-                        android:id="@+id/et_grandTotal_aturPembayaran"
+                        android:id="@+id/et_grandTotal"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:enabled="false"
@@ -193,15 +245,13 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="@dimen/spacing_medium"
                     android:textAlignment="center">
 
                     <EditText
-                        android:id="@+id/et_totalBayar_aturPembayaran"
+                        android:id="@+id/et_totalBayar"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="57dp"
                         android:layout_weight="1"
                         android:hint="TOTAL BAYAR"
                         android:inputType="numberDecimal"
@@ -213,13 +263,11 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="@dimen/spacing_medium"
                     android:textAlignment="center">
 
                     <EditText
-                        android:id="@+id/et_kembalian_aturPembayaran"
+                        android:id="@+id/et_kembalian"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -229,32 +277,79 @@
 
                 </android.support.design.widget.TextInputLayout>
 
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:stretchColumns="*"
+                    android:layout_marginTop="@dimen/paddingMedium">
+
+                    <TableRow>
+
+                        <TextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:layout_gravity="start|center"
+                            android:gravity="center"
+                            android:text="@string/tujuan_reminder_uppercase"
+                            android:textColor="@color/grey_900"
+                            android:textSize="12sp"
+                            android:textStyle="bold"/>
+
+                        <CheckBox
+                            android:id="@+id/cb_pelanggan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/pelanggan_uppercase"/>
+
+                        <CheckBox
+                            android:id="@+id/cb_pemilik"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/pemilik_uppercase"/>
+
+                    </TableRow>
+
+                    <TableRow>
+
+                        <CheckBox
+                            android:id="@+id/cb_checkout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/checkout_uppercase"
+                            android:layout_gravity="start"
+                            android:layout_column="1"/>
+
+                    </TableRow>
+
+                </TableLayout>
+
             </LinearLayout>
 
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
-                android:stretchColumns="*">
+                android:stretchColumns="*"
+                android:layout_marginTop="@dimen/paddingSemiLarge"
+                android:layout_marginBottom="@dimen/paddingSemiLarge">
 
                 <TableRow>
 
-                    <CheckBox
-                        android:id="@+id/cb_checkOut_aturPembayaran"
-                        android:layout_width="wrap_content"
+                    <Button
+                        android:id="@+id/btn_print_bukti"
                         android:layout_height="wrap_content"
-                        android:text="CHECK OUT" />
+                        android:layout_width="wrap_content"
+                        android:text="@string/print_bukti_uppercase"
+                        android:layout_gravity="start"
+                        android:background="@drawable/btn_rounded_accent"
+                        android:textColor="@android:color/white" />
 
                     <Button
-                        android:id="@+id/btn_simpan_aturPembayaran"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/btn_simpan"
                         android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:text="@string/simpan_uppercase"
                         android:layout_gravity="end"
-                        android:layout_marginEnd="10dp"
                         android:background="@drawable/btn_rounded_accent"
-                        android:text="Simpan"
                         android:textColor="@android:color/white" />
 
                 </TableRow>
@@ -267,14 +362,10 @@
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
-
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_aturPembayaran"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize" />
+       <include layout="@layout/toolbar"/>
 
     </android.support.design.widget.AppBarLayout>
 

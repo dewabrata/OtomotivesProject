@@ -1,0 +1,704 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:id="@+id/ly_rincian_layanan">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_medium">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="2dp"
+            app:cardPreventCornerOverlap="true"
+            app:cardUseCompatPadding="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/paddingSemiLarge">
+
+                <TextView
+                    android:id="@+id/tv_nama_pelanggan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/nama_pelanggan"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp" />
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:stretchColumns="*">
+
+                    <TableRow android:layout_marginTop="@dimen/paddingMedium">
+
+                        <TextView
+                            android:id="@+id/tv_no_ponsel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/no_ponsel"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                            android:textColor="@color/grey_900"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/tv_layanan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:text="Layanan"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                            android:textColor="@color/grey_900"
+                            android:textSize="12sp" />
+
+                    </TableRow>
+
+                    <TableRow android:layout_marginTop="@dimen/paddingMedium">
+
+                        <TextView
+                            android:id="@+id/tv_nopol"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="No. Polisi"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                            android:textColor="@color/grey_900"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/tv_frek"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:text="Frek"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                            android:textColor="@color/grey_900"
+                            android:textSize="12sp" />
+
+                    </TableRow>
+
+                </TableLayout>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/paddingSemiLarge"
+            android:layout_marginBottom="@dimen/paddingSemiLarge"
+            android:background="@drawable/background_edittext"
+            android:orientation="horizontal"
+            android:padding="@dimen/paddingSemiLarge">
+
+            <CheckBox
+                android:id="@+id/cb_derek"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:text="DEREK"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textColor="@color/grey_900"
+                android:textSize="12sp" />
+
+            <CheckBox
+                android:id="@+id/cb_buangPart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:text="BUANG PART BEKAS"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textColor="@color/grey_900"
+                android:textSize="12sp" />
+
+            <CheckBox
+                android:id="@+id/cb_antar_jemput"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:text="ANTAR - JEMPUT"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textColor="@color/grey_900"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ly_refundDp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/ly_total_refundDp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
+
+                <EditText
+                    android:id="@+id/et_total_totalRefund"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="TOTAL REFUND"
+                    android:inputType="numberDecimal"
+                    android:textSize="14sp" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/ly_bank_refundDp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
+
+                <EditText
+                    android:id="@+id/et_bank_totalRefund"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="BANK"
+                    android:inputType="text"
+                    android:textSize="14sp" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/ly_noRek_refundDp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
+
+                <EditText
+                    android:id="@+id/et_noRek_totalRefund"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="NO. REK"
+                    android:inputType="text"
+                    android:textSize="14sp" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/ly_namaRek_refundDp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
+
+                <EditText
+                    android:id="@+id/et_namaRek_totalRefund"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="NAMA REKENING"
+                    android:inputType="text"
+                    android:textSize="14sp" />
+
+            </android.support.design.widget.TextInputLayout>
+
+        </LinearLayout>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="2dp"
+            app:cardPreventCornerOverlap="true"
+            app:cardUseCompatPadding="true">
+
+            <TableLayout
+                android:id="@+id/table_layanan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stretchColumns="*"
+                android:padding="@dimen/paddingMedium">
+
+                <TableRow android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="LAYANAN"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_totalLayanan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp. 0"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/row_disc_layanan"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="( DISCOUNT LAYANAN )"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_disc_layanan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp. 0"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/row_disc_frekwensi"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="( DISCOUNT FREKWENSI )"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_disc_frekwensi"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp. 0 "
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                </TableRow>
+
+
+                <TableRow android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="PART"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_totalPart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp. 0 "
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/row_disc_part"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="( DISCOUNT PART )"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_disc_part"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp. 0 "
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                </TableRow>
+
+
+                <TableRow android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="JASA PART"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_harga_jasa_part"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp. 0 "
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/row_disc_jasa_part"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="( DISCOUNT JASA PART )"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_disc_jasa_part"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp. 0 "
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                </TableRow>
+
+                <TableRow android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="JASA LAIN"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_harga_jasa_lain"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp. 0 "
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/row_disc_jasa_lain"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="( DISCOUNT JASA LAIN )"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_disc_jasa_lain"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp. 0 "
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/row_transport"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="( TRANSPORT / DEREK )"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_harga_derek_transport"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp. 0 "
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/row_penyimpanan"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="PENYIMPANAN"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_harga_penyimpanan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp. 0 "
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                </TableRow>
+
+                <TableRow android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TOTAL 1"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_total_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp. 0 "
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/row_dp_persen"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/nn_n_dp_uppercase"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_biaya_dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp. 0 "
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/row_sisa_dp_persen"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sisa_biaya_uppercase"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_sisa_biaya_dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp. 0 "
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/row_dp"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="( DOWNPAYMENT )"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp. 0 "
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/row_sisa_biaya"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="( SISA BIAYA )"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_sisa_biaya"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp. 0 "
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginTop="5dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="PPN"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_ppn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp. 0 "
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/row_disc_spot"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="( DISCOUNT SPOT )"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_disc_spot"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp. 0 "
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/row_total_2"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TOTAL 2"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_total_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp. 0 "
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                </TableRow>
+
+            </TableLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/ly_ket"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/paddingSemiLarge">
+
+            <EditText
+                android:id="@+id/et_ket_tambahan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:gravity="top|left"
+                android:hint="KETERANGAN TAMBAHAN"
+                android:textSize="14sp" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/ly_catatanMekanik"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp">
+
+            <EditText
+                android:id="@+id/et_catatan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:gravity="top|left"
+                android:hint="CATATAN MEKANIK"
+                android:textSize="14sp" />
+
+        </android.support.design.widget.TextInputLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

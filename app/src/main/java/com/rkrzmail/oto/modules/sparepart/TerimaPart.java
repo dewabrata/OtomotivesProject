@@ -66,7 +66,7 @@ public class TerimaPart extends AppActivity {
         find(R.id.fab_tambah).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult( new Intent(getActivity(), AturTerimaPart.class), REQUEST_TERIMA_PART);
+                startActivityForResult( new Intent(getActivity(), AturTerimaPart_Activity.class), REQUEST_TERIMA_PART);
             }
         });
 

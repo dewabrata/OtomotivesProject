@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -35,6 +36,7 @@ import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 public class Pembayaran_Activity extends AppActivity {
 
     private RecyclerView rvPembayaran;
+    private Nson sample = Nson.newArray();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +44,7 @@ public class Pembayaran_Activity extends AppActivity {
         setContentView(R.layout.activity_list_basic);
         initToolbar();
         initRecylerviewPembayaran();
-        viewPembayaran("");
+        //viewPembayaran("");
     }
 
     @SuppressLint("NewApi")
@@ -57,15 +59,25 @@ public class Pembayaran_Activity extends AppActivity {
         rvPembayaran = findViewById(R.id.recyclerView);
         rvPembayaran.setHasFixedSize(true);
         rvPembayaran.setLayoutManager(new LinearLayoutManager(this));
-        rvPembayaran.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_pembayaran) {
-                    @Override
+        rvPembayaran.setAdapter(new NikitaRecyclerAdapter(nListArray, sample, R.layout.item_pembayaran, R.layout.item_jual_part_pelanggan, "PART", "JASA") {
+
+            @Override
                     public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, final int position) {
                         super.onBindViewHolder(viewHolder, position);
-                        viewHolder.find(R.id.tv_jenis_kendaraan, TextView.class).setText(nListArray.get(position).get("JENIS_KENDARAAN").asString());
-                        viewHolder.find(R.id.tv_nama_pelanggan, TextView.class).setText(nListArray.get(position).get("NAMA_PELANGGAN").asString());
-                        viewHolder.find(R.id.tv_nopol, TextView.class).setText(nListArray.get(position).get("NOPOL").asString());
-                        viewHolder.find(R.id.tv_layanan, TextView.class).setText(nListArray.get(position).get("LAYANAN").asString());
-                        viewHolder.find(R.id.tv_no_ponsel, TextView.class).setText(nListArray.get(position).get("NO_PONSEL").asString());
+
+                        switch (viewHolder.getItemViewType()) {
+                            case NikitaRecyclerAdapter.VIEW_1:
+                                viewHolder.find(R.id.tv_jenis_kendaraan, TextView.class).setText(nListArray.get(position).get("JENIS_KENDARAAN").asString());
+                                viewHolder.find(R.id.tv_nama_pelanggan, TextView.class).setText(nListArray.get(position).get("NAMA_PELANGGAN").asString());
+                                viewHolder.find(R.id.tv_nopol, TextView.class).setText(nListArray.get(position).get("NOPOL").asString());
+                                viewHolder.find(R.id.tv_layanan, TextView.class).setText(nListArray.get(position).get("LAYANAN").asString());
+                                viewHolder.find(R.id.tv_no_ponsel, TextView.class).setText(nListArray.get(position).get("NO_PONSEL").asString());
+                                break;
+                            case NikitaRecyclerAdapter.VIEW_2:
+                                viewHolder.find(R.id.tv_status_pelanggan, TextView.class).setText(sample.get(position).get("SAMPLE").asString());
+                                break;
+                        }
+
 
                     }
                 }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
@@ -77,6 +89,10 @@ public class Pembayaran_Activity extends AppActivity {
                     }
                 })
         );
+
+        nListArray.add(Nson.newObject().set("PART", "PART").set("NAMA_PELANGGAN", "sample1"));
+        sample.add(Nson.newObject().set("JASA", "JASA").set("SAMPLE", "sample5"));
+        rvPembayaran.getAdapter().notifyDataSetChanged();
     }
 
     private void viewPembayaran(final String cari) {
@@ -146,7 +162,7 @@ public class Pembayaran_Activity extends AppActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK && requestCode == REQUEST_DETAIL){
+        if (resultCode == RESULT_OK && requestCode == REQUEST_DETAIL) {
 
         }
     }

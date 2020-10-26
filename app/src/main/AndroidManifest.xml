@@ -69,7 +69,6 @@
         <activity android:name=".modules.mekanik.DetailKerjaMekanik_Activity" />
         <activity android:name=".modules.mekanik.PerintahKerjaMekanik_Activity" />
         <activity android:name=".modules.bengkel.AturPembayaran_Activity" />
-        <activity android:name=".modules.bengkel.RincianJualPart_Pembayaran_Activity" />
         <activity android:name=".modules.bengkel.Rincian_Pembayaran_Activity" />
         <activity android:name=".modules.bengkel.Pembayaran_Activity" />
         <activity android:name=".modules.checkin.DetailKontrolLayanan_Activity" />
@@ -138,11 +137,11 @@
         <activity android:name=".modules.bengkel.PembayaranJurnal_Activity" />
         <activity android:name=".modules.bengkel.AturJurnal_Activity" />
         <activity android:name=".modules.bengkel.DaftarJurnal_Activity" />
-        <activity android:name=".modules.sparepart.Penyesuain_Activity" />
+        <activity android:name=".modules.sparepart.AturPenyesuain_StockOpname_Activity" />
         <activity android:name=".modules.sparepart.AturStockOpname_Activity" />
         <activity android:name=".modules.sparepart.TerimaPart" />
         <activity android:name=".modules.sparepart.AturLokasiPart_Activity" />
-        <activity android:name=".modules.sparepart.AturTerimaPart" />
+        <activity android:name=".modules.sparepart.AturTerimaPart_Activity" />
         <activity android:name=".modules.sparepart.DetailPartDiterima" />
         <activity android:name=".modules.mekanik.AturBiayaMekanik2" />
         <activity android:name=".modules.mekanik.BiayaMekanik2Activity" />

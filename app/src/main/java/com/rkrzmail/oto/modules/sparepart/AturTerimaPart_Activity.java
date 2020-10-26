@@ -36,11 +36,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static com.rkrzmail.utils.APIUrls.SET_REKENING_BANK;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CONTACT;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_REKENING;
 
 
-public class AturTerimaPart extends AppActivity implements View.OnClickListener {
+public class AturTerimaPart_Activity extends AppActivity implements View.OnClickListener {
 
     private static final String TAG = "AturTerimaPart";
     public static final int MIN_SPINNER = 2;
@@ -268,7 +269,7 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
                     return;
                 }
 
-                Intent i = new Intent(AturTerimaPart.this, DetailPartDiterima.class);
+                Intent i = new Intent(AturTerimaPart_Activity.this, DetailPartDiterima.class);
                 i.putExtra("detail", sendObject().toJson());
                 startActivityForResult(i, TerimaPart.REQUEST_TERIMA_PART);
             }
@@ -282,7 +283,7 @@ public class AturTerimaPart extends AppActivity implements View.OnClickListener 
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("setrekeningbank"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_REKENING_BANK), args));
             }
 
             @Override
