@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:padding="10dp"
+            android:padding="@dimen/paddingSemiLarge"
             android:stretchColumns="*">
 
             <TableRow>
@@ -32,9 +32,10 @@
                     android:id="@+id/tv_noAntrian_kerjaMekanik"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="No. Antrian"
-                    android:textAppearance="@style/TextAppearance.AppCompat.SearchResult.Title"
-                    />
+                    android:text="No. Antrian / Jam / Home"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="start"/>
 
                 <TextView
                     android:id="@+id/tv_layanan_kerjaMekanik"
@@ -42,7 +43,8 @@
                     android:layout_height="wrap_content"
                     android:text="Layanan"
                     android:textSize="12sp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="end"/>
 
             </TableRow>
 
@@ -53,6 +55,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Jenis"
+                    android:layout_gravity="start"
                     android:textSize="12sp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
@@ -60,7 +63,8 @@
                     android:id="@+id/tv_nopol_kerjaMekanik"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="No. Polisi"
+                    android:text="@string/no_polisi"
+                    android:layout_gravity="end"
                     android:textSize="12sp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
@@ -74,6 +78,7 @@
                     android:layout_height="wrap_content"
                     android:text="Nama Pelanggan"
                     android:textSize="12sp"
+                    android:layout_gravity="start"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
             </TableRow>

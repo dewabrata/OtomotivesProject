@@ -19,13 +19,67 @@
             android:orientation="vertical"
             android:padding="5dp">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/keluhan_uppercase"
+                    android:background="@drawable/btn_rounded_accent"
+                    android:textColor="@android:color/white"/>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/point_layanan_uppercase"
+                    android:background="@drawable/btn_rounded_accent"
+                    android:textColor="@android:color/white"/>
+
+
+            </LinearLayout>
+
             <android.support.design.widget.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
+                android:hint="@string/jam_home_uppercase">
+
+                <EditText
+                    android:id="@+id/et_jam_home"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:enabled="false" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:hint="@string/alamat_uppercase">
+
+                <EditText
+                    android:id="@+id/et_alamat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:enabled="false" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:hint="NO. ANTRIAN">
 
                 <EditText
@@ -41,9 +95,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
                 android:hint="JENIS">
 
                 <EditText
@@ -59,9 +111,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
                 android:hint="NOMOR POLISI">
 
                 <EditText
@@ -78,9 +128,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
                 android:hint="NO. KUNCI">
 
                 <EditText
@@ -96,9 +144,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
                 android:hint="LAYANAN">
 
                 <EditText
@@ -114,9 +160,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
                 android:hint="NAMA PELANGGAN">
 
                 <EditText
@@ -132,26 +176,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="ESTIMASI WAKTU"
-                android:layout_marginTop="10dp"
+                android:textColor="@color/grey_900"
                 android:textStyle="bold"
-                android:textColor="@color/grey_80"
-                android:layout_gravity="center" />
+                android:textSize="12sp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/background_edittext"
+                android:padding="10dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginTop="10dp">
 
                 <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_weight="1"
-                    android:layout_marginRight="5dp">
+                    android:layout_weight="1">
 
                     <EditText
                         android:id="@+id/et_Ewaktu_kerjaMekanik"
@@ -167,9 +211,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp">
+                    android:layout_weight="1">
 
                     <EditText
                         android:id="@+id/et_Eselesai_kerjaMekanik"
@@ -183,6 +225,22 @@
 
             </LinearLayout>
 
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:hint="@string/pengambilan_uppercase">
+
+                <EditText
+                    android:id="@+id/et_pengambilan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:enabled="false" />
+
+            </android.support.design.widget.TextInputLayout>
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerView_kerjaMekanik"
                 android:layout_width="match_parent"
@@ -190,6 +248,15 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:padding="10dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/background_edittext"
+            android:padding="@dimen/paddingSemiLarge"
+            android:layout_marginTop="@dimen/paddingSemiLarge"
+            android:layout_marginBottom="@dimen/paddingSemiLarge">
 
             <CheckBox
                 android:id="@+id/cb_tambahPartJasa_kerjaMekanik"
@@ -208,6 +275,69 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="10dp"
                 android:text="BUANG PART BEKAS" />
+
+        </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/paddingSemiLarge"
+                android:layout_marginBottom="@dimen/paddingSemiLarge">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/ic_location"
+                    android:backgroundTint="@color/transparent"/>
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/icon_stopwatch"
+                    android:backgroundTint="@color/transparent"/>
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/icon_stopwatch"
+                    android:backgroundTint="@color/transparent"/>
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/icon_stopwatch"
+                    android:backgroundTint="@color/transparent"/>
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/icon_stopwatch"
+                    android:backgroundTint="@color/transparent"/>
+
+            </LinearLayout>
+
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:hint="CATATAN MEKANIK">
+
+                <EditText
+                    android:id="@+id/et_catatan_mekanik"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:enabled="false" />
+
+            </android.support.design.widget.TextInputLayout>
+
 
             <Button
                 android:id="@+id/btn_lanjut_kerjaMekanik"

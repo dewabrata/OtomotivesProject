@@ -1,8 +1,10 @@
 package com.rkrzmail.oto.modules.mekanik;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -20,6 +22,10 @@ import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
 import java.util.Map;
+import java.util.Objects;
+
+import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 
 public class PerintahKerjaMekanik_Activity extends AppActivity {
 
@@ -28,46 +34,47 @@ public class PerintahKerjaMekanik_Activity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_perintah_kerja_mekanik_);
+        setContentView(R.layout.activity_list_basic);
+        initToolbar();
         initComponent();
     }
 
+    @SuppressLint("NewApi")
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_kerjaMekanik);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Perintah Kerja Mekanik");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Perintah Kerja Mekanik");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initComponent() {
-        initToolbar();
-        rvKerjaMekanik = findViewById(R.id.recyclerView_kerjaMekanik);
+        rvKerjaMekanik = findViewById(R.id.recyclerView);
         rvKerjaMekanik.setLayoutManager(new LinearLayoutManager(this));
         rvKerjaMekanik.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_kerja_mekanik) {
                     @Override
                     public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, final int position) {
                         super.onBindViewHolder(viewHolder, position);
 
-                        viewHolder.find(R.id.tv_jenis_kerjaMekanik, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_nopol_kerjaMekanik, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_layanan_kerjaMekanik, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_namaP_kerjaMekanik, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_noAntrian_kerjaMekanik, TextView.class).setText(nListArray.get(position).get("").asString());
+                        viewHolder.find(R.id.tv_jenis_kerjaMekanik, TextView.class).setText(nListArray.get(position).get("JENIS").asString());
+                        viewHolder.find(R.id.tv_nopol_kerjaMekanik, TextView.class).setText(nListArray.get(position).get("NOPOL").asString());
+                        viewHolder.find(R.id.tv_layanan_kerjaMekanik, TextView.class).setText(nListArray.get(position).get("LAYANAN").asString());
+                        viewHolder.find(R.id.tv_namaP_kerjaMekanik, TextView.class).setText(nListArray.get(position).get("NAMA_PELANGGAN").asString());
+                        viewHolder.find(R.id.tv_noAntrian_kerjaMekanik, TextView.class).setText(nListArray.get(position).get("NO_ANTRIAN").asString());
 
                     }
                 }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(Nson parent, View view, int position) {
                         Intent i = new Intent(getActivity(), DetailKontrolLayanan_Activity.class);
-                        i.putExtra("data", nListArray.get(position).toJson());
-                        startActivity(i);
+                        i.putExtra(DATA, nListArray.get(position).toJson());
+                        startActivityForResult(i, REQUEST_DETAIL);
                     }
                 })
         );
-        catchData("");
+        viewPerintahMekanik("");
     }
 
-    private void catchData(final String cari) {
+    private void viewPerintahMekanik(final String cari) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -89,5 +96,13 @@ public class PerintahKerjaMekanik_Activity extends AppActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK && requestCode == REQUEST_DETAIL)
+            viewPerintahMekanik("");
+
     }
 }

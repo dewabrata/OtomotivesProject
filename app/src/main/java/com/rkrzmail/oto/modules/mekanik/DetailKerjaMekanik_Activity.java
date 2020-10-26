@@ -36,7 +36,7 @@ public class DetailKerjaMekanik_Activity extends AppActivity {
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_kerjaMekanik);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Perintah Kerja Mekanik");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

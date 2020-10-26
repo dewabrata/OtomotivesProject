@@ -97,7 +97,7 @@ public class AppActivity extends AppCompatActivity {
         MessageMsg.newTask(this, runnable);
     }
 
-    
+
     public void newProses(Messagebox.DoubleRunnable runnable) {
         MessageMsg.showProsesBar(this, runnable);
     }

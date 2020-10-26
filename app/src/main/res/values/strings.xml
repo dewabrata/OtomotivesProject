@@ -374,4 +374,8 @@
     <string name="pemilik_uppercase">PEMILIK</string>
     <string name="checkout_uppercase">CHECKOUT</string>
     <string name="print_bukti_uppercase">PRINT BUKTI</string>
+    <string name="jam_home_uppercase">JAM HOME</string>
+    <string name="pengambilan_uppercase">PENGAMBILAN</string>
+    <string name="point_layanan_uppercase">POINT LAYANAN</string>
+    <string name="keluhan_uppercase">KELUHAN</string>
 </resources>
