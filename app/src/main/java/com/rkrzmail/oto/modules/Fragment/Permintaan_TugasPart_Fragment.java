@@ -25,6 +25,7 @@ import com.rkrzmail.oto.modules.sparepart.TugasPart_MainTab_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -75,11 +76,13 @@ public class Permintaan_TugasPart_Fragment extends Fragment {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
+
                 viewHolder.find(R.id.tv_nama_mekanik, TextView.class).setText(permintaanPartList.get(position).get("MEKANIK").asString());
                 viewHolder.find(R.id.tv_nama_pelanggan, TextView.class).setText(permintaanPartList.get(position).get("NAMA_PELANGGAN").asString());
                 viewHolder.find(R.id.tv_nopol, TextView.class).setText(permintaanPartList.get(position).get("NOPOL").asString());
                 viewHolder.find(R.id.tv_tgl_checkin, TextView.class).setText(permintaanPartList.get(position).get("TANGGAL_CHECKIN").asString());
             }
+
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Nson parent, View view, int position) {

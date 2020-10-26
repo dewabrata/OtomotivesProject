@@ -648,7 +648,6 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             LayoutInflater inflater = getLayoutInflater();
             dialogView = inflater.inflate(R.layout.activity_list_basic, null);
             builder.setView(dialogView);
-            builder.setCancelable(true);
 
             initToolbarPartWajib(dialogView);
             initRecylerviewPartWajib(dialogView);

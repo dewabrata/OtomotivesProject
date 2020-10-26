@@ -99,7 +99,7 @@ public class AturStockOpname_Activity extends AppActivity {
                 if (stockAkhir < stockAwal || stockAkhir > stockAwal) {
                     stockBeda = stockAwal - stockAkhir;
                     showInfo("Diperlukan Penyesuaian");
-                    intent = new Intent(getActivity(), Penyesuain_Activity.class);
+                    intent = new Intent(getActivity(), AturPenyesuain_StockOpname_Activity.class);
                     intent.putExtra(PENYESUAIAN, lokasiArray.toJson());
                     startActivityForResult(intent, REQUEST_PENYESUAIAN);
                 }else {
@@ -206,14 +206,7 @@ public class AturStockOpname_Activity extends AppActivity {
                         return;
                     }
                     counterBarcode++;
-                    noPart.setText(result.get("NO_PART").asString());
-                    namaPart.setText(result.get("NAMA_PART").asString());
-                    etMerk.setText(result.get("MERK").asString());
-                    noFolder.setText(result.get("KODE").asString());
-                    etStock.setText(result.get("STOCK_RUANG_PART").asString());
-                    etPending.setText(result.get("PENDING").asString());
                     etJumlahOpname.setText("" + counterBarcode);
-                    setSpLokasi(result.get("LOKASI").asArray());
                 } else {
                     showError(result.get("message").asString());
                 }
@@ -321,8 +314,8 @@ public class AturStockOpname_Activity extends AppActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_BARCODE && resultCode == RESULT_OK) {
-            String barcode = getIntentStringExtra(data, "TEXT");
-            getDataBarcode(barcode);
+            String barcodeResult = data != null ? data.getStringExtra("TEXT").replace("\n", "").trim() : "";
+            getDataBarcode(barcodeResult);
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_PENYESUAIAN) {
             saveData(Nson.readJson(getIntentStringExtra(data, DATA)));
         }
