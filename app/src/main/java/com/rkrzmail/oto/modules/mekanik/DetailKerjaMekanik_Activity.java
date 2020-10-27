@@ -1,14 +1,21 @@
 package com.rkrzmail.oto.modules.mekanik;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -20,18 +27,27 @@ import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
 import java.util.Map;
+import java.util.Objects;
+
+import static com.rkrzmail.utils.APIUrls.VIEW_TUGAS_PART;
+import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
+import static com.rkrzmail.utils.ConstUtils.RP;
 
 public class DetailKerjaMekanik_Activity extends AppActivity {
 
     private EditText etNoAntrian, etJenis, etLayanan, etNopol, etNoKunci, etNamaPelanggan, etWaktu, etSelesai;
-    private RecyclerView rvItem;
+    private RecyclerView rvPart, rvJasa, rvPointLayanan, rvKeluhan;
     private Nson partList = Nson.newArray(),
-            jasaList = Nson.newArray();
+            jasaList = Nson.newArray(),
+            keluhanList = Nson.newArray(),
+            pointLayananList = Nson.newArray();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_kerja_mekanik);
+        initToolbar();
         initComponent();
     }
 
@@ -42,8 +58,21 @@ public class DetailKerjaMekanik_Activity extends AppActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    private void initToolbarKeluhan(View dialogView){
+        Toolbar toolbar = dialogView.findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Keluhan");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void initToolbarPointLayanan(View dialogView){
+        Toolbar toolbar = dialogView.findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Point Layanan");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
     private void initComponent() {
-        initToolbar();
         etNoAntrian = findViewById(R.id.et_noAntrian_kerjaMekanik);
         etJenis = findViewById(R.id.et_jenis_kerjaMekanik);
         etLayanan = findViewById(R.id.et_layanan_kerjaMekanik);
@@ -52,32 +81,35 @@ public class DetailKerjaMekanik_Activity extends AppActivity {
         etNamaPelanggan = findViewById(R.id.et_namaP_kerjaMekanik);
         etWaktu = findViewById(R.id.et_Ewaktu_kerjaMekanik);
         etSelesai = findViewById(R.id.et_Eselesai_kerjaMekanik);
-        rvItem = findViewById(R.id.recyclerView_kerjaMekanik);
+        rvJasa = findViewById(R.id.recyclerView_jasa);
+        rvPart = findViewById(R.id.recyclerView_part);
 
         loadData();
-        rvItem.setLayoutManager(new LinearLayoutManager(this));
-        rvItem.setHasFixedSize(true);
-        rvItem.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_part_booking3_checkin3) {
+        initRecyclerviewJasa();
+        initRecyclerviewParts();
+
+        find(R.id.btn_lanjut_kerjaMekanik).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                super.onBindViewHolder(viewHolder, position);
-//                viewHolder.find(R.id.tv_namaPart_booking3_checkin3, TextView.class).setText(nListArray.get(position).get("").asString());
-//                viewHolder.find(R.id.tv_harga_booking3_checkin3, TextView.class).setText(nListArray.get(position).get("").asString());
-//                viewHolder.find(R.id.tv_disc_booking3_checkin3, TextView.class).setText(nListArray.get(position).get("").asString());
-//                viewHolder.find(R.id.tv_net_booking3_checkin3, TextView.class).setText(nListArray.get(position).get("").asString());
+            public void onClick(View v) {
             }
         });
 
-        find(R.id.btn_lanjut_kerjaMekanik, Button.class).setOnClickListener(new View.OnClickListener() {
+        find(R.id.btn_keluhan).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), PointLayanan_Activity.class));
+                initKeluhanDialog();
+            }
+        });
+        find(R.id.btn_point_layanan).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initPointLayananDialog();
             }
         });
     }
 
     private void loadData() {
-        Nson n = Nson.readJson(getIntentStringExtra("data"));
+        Nson n = Nson.readJson(getIntentStringExtra(DATA));
         etNoAntrian.setText(n.get("").asString());
         etNopol.setText(n.get("").asString());
         etNoKunci.setText(n.get("").asString());
@@ -87,6 +119,133 @@ public class DetailKerjaMekanik_Activity extends AppActivity {
         etJenis.setText(n.get("").asString());
         etLayanan.setText(n.get("").asString());
     }
+
+
+    private void initRecyclerviewParts() {
+        rvPart.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvPart.setHasFixedSize(true);
+        rvPart.setAdapter(new NikitaRecyclerAdapter(partList, R.layout.item_part_booking3_checkin3) {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
+                super.onBindViewHolder(viewHolder, position);
+                viewHolder.find(R.id.tv_namaPart_booking3_checkin3, TextView.class)
+                        .setText(partList.get(position).get("NAMA_PART").asString());
+                viewHolder.find(R.id.tv_noPart_booking3_checkin3, TextView.class)
+                        .setText(partList.get(position).get("NO_PART").asString());
+                viewHolder.find(R.id.tv_hargaNet_booking3_checkin3, TextView.class).setText(
+                        RP + formatRp(partList.get(position).get("HARGA_PART").asString()));
+                viewHolder.find(R.id.tv_jasaNet_booking3_checkin3, TextView.class).setText(
+                        RP + formatRp(partList.get(position).get("HARGA_JASA").asString()));
+                viewHolder.find(R.id.tv_merk_booking3_checkin3, TextView.class)
+                        .setText(partList.get(position).get("MERK").asString());
+                
+            }
+        });
+    }
+
+    private void initRecyclerviewJasa() {
+        rvJasa.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvJasa.setHasFixedSize(true);
+        rvJasa.setAdapter(new NikitaRecyclerAdapter(jasaList, R.layout.item_jasalain_booking_checkin) {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
+                super.onBindViewHolder(viewHolder, position);
+                viewHolder.find(R.id.tv_kelompokPart_booking3_checkin3, TextView.class)
+                        .setText(jasaList.get(position).get("KELOMPOK_PART").asString());
+                viewHolder.find(R.id.tv_aktifitas_booking3_checkin3, TextView.class)
+                        .setText(jasaList.get(position).get("AKTIVITAS").asString());
+                viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class)
+                        .setText(RP + formatRp(jasaList.get(position).get("HARGA_JASA").asString()));
+            }
+        });
+    }
+
+    private void initRecylerviewKeluhan(View dialogView){
+        rvKeluhan = dialogView.findViewById(R.id.recyclerView);
+        rvKeluhan.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvKeluhan.setHasFixedSize(true);
+        rvKeluhan.setAdapter(new NikitaRecyclerAdapter(jasaList, R.layout.item_keluhan) {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
+                super.onBindViewHolder(viewHolder, position);
+                viewHolder.find(R.id.tv_keluhan, TextView.class).setText(keluhanList.get(position).get("KELUHAN").asString());
+                viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.GONE);
+            }
+        });
+
+    }
+
+    private void initRecylerviewPointLayanan(View dialogView){
+        rvPointLayanan = dialogView.findViewById(R.id.recyclerView);
+        rvPointLayanan.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvPointLayanan.setHasFixedSize(true);
+        rvPointLayanan.setAdapter(new NikitaRecyclerAdapter(jasaList, R.layout.item_keluhan) {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
+                super.onBindViewHolder(viewHolder, position);
+                viewHolder.find(R.id.tv_keluhan, TextView.class).setText(keluhanList.get(position).get("KELUHAN").asString());
+                viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.GONE);
+
+            }
+        });
+    }
+
+    private void initKeluhanDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.activity_list_basic, null);
+        builder.setView(dialogView);
+
+        initToolbarKeluhan(dialogView);
+        initRecylerviewKeluhan(dialogView);
+
+        builder.create();
+        AlertDialog alertDialog = builder.show();
+       // alertDialog.setCancelable(false);
+    }
+
+    private void initPointLayananDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.activity_list_basic, null);
+        builder.setView(dialogView);
+
+        initToolbarPointLayanan(dialogView);
+        initRecylerviewPointLayanan(dialogView);
+
+        builder.create();
+        AlertDialog alertDialog = builder.show();
+        //alertDialog.setCancelable(false);
+    }
+
+    private void viewLayananPartJasa() {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "view");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_TUGAS_PART), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+//                    nListArray.asArray().clear();
+//                    nListArray.asArray().addAll(result.get("data").asArray());
+//                    recyclerView.getAdapter().notifyDataSetChanged();
+                } else {
+                    showInfo(result.get("message").asString());
+                }
+            }
+        });
+    }
+
 
     private void setSelanjutnya() {
         newProses(new Messagebox.DoubleRunnable() {

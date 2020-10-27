@@ -25,19 +25,20 @@ import com.rkrzmail.oto.modules.sparepart.TugasPart_MainTab_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.rkrzmail.utils.APIUrls.ATUR_JUAL_PART;
 import static com.rkrzmail.utils.APIUrls.VIEW_TUGAS_PART;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 import static com.rkrzmail.utils.ConstUtils.TUGAS_PART_PERMINTAAN;
 
+
 public class Permintaan_TugasPart_Fragment extends Fragment {
 
-    RecyclerView rvPermintaanPart;
-    Nson permintaanPartList = Nson.newArray();
+    RecyclerView rvPermintaanCheckin, rvPermintaanJualPart;
+    Nson permintaanCheckinList = Nson.newArray(), permintaanJualPartList = Nson.newArray();
 
     public Permintaan_TugasPart_Fragment() {
 
@@ -58,9 +59,12 @@ public class Permintaan_TugasPart_Fragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_list_basic, container, false);
         initHideToolbar(view);
-        rvPermintaanPart = view.findViewById(R.id.recyclerView);
-        initRecylerviewPermintaan();
-        viewPartPermintaan();
+        rvPermintaanCheckin = view.findViewById(R.id.recyclerView);
+        rvPermintaanJualPart = view.findViewById(R.id.recyclerView2);
+        initRecylerviewPermintaanCheckin();
+        initRecylerviewPermintaanJualPart();
+        viewPartPermintaanCheckin();
+        viewPartPermintaanJualPart();
         return view;
     }
 
@@ -69,33 +73,63 @@ public class Permintaan_TugasPart_Fragment extends Fragment {
         appBarLayout.setVisibility(View.GONE);
     }
 
-    private void initRecylerviewPermintaan(){
-        rvPermintaanPart.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rvPermintaanPart.setHasFixedSize(true);
-        rvPermintaanPart.setAdapter(new NikitaRecyclerAdapter(permintaanPartList, R.layout.item_batal_tersedia_permintaan_tugas_part){
+    @SuppressLint("SetTextI18n")
+    private void initRecylerviewPermintaanJualPart() {
+        rvPermintaanJualPart.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvPermintaanJualPart.setHasFixedSize(true);
+        rvPermintaanJualPart.setAdapter(new NikitaRecyclerAdapter(permintaanJualPartList, R.layout.item_permintaan_jual_part_tugas_part){
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
-
-                viewHolder.find(R.id.tv_nama_mekanik, TextView.class).setText(permintaanPartList.get(position).get("MEKANIK").asString());
-                viewHolder.find(R.id.tv_nama_pelanggan, TextView.class).setText(permintaanPartList.get(position).get("NAMA_PELANGGAN").asString());
-                viewHolder.find(R.id.tv_nopol, TextView.class).setText(permintaanPartList.get(position).get("NOPOL").asString());
-                viewHolder.find(R.id.tv_tgl_checkin, TextView.class).setText(permintaanPartList.get(position).get("TANGGAL_CHECKIN").asString());
+                String noHp = permintaanJualPartList.get(position).get("NO_PONSEL").asString();
+                if(noHp.length() > 4){
+                    noHp = noHp.substring(noHp.length() - 4);
+                }
+                viewHolder.find(R.id.tv_nama_mekanik, TextView.class).setText(permintaanJualPartList.get(position).get("USER_JUAL").asString());
+                viewHolder.find(R.id.tv_nama_pelanggan_nama_usaha, TextView.class).setText(
+                        permintaanJualPartList.get(position).get("NAMA_PELANGGAN").asString() + " " + permintaanJualPartList.get(position).get("NAMA_USAHA").asString());
+                viewHolder.find(R.id.tv_no_ponsel, TextView.class).setText("XXXXXXXX" + noHp);
+                viewHolder.find(R.id.tv_tgl, TextView.class).setText(permintaanJualPartList.get(position).get("TANGGAL").asString());
             }
 
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
                 Intent i = new Intent(getActivity(), Status_TugasPart_Activity.class);
-                i.putExtra(TUGAS_PART_PERMINTAAN, "");
-                i.putExtra(DATA, permintaanPartList.get(position).toJson());
+                i.putExtra(TUGAS_PART_PERMINTAAN, "JUAL PART");
+                i.putExtra(DATA, permintaanJualPartList.get(position).toJson());
+                startActivityForResult(i, REQUEST_DETAIL);
+            }
+        }));
+    }
+
+    private void initRecylerviewPermintaanCheckin(){
+        rvPermintaanCheckin.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvPermintaanCheckin.setHasFixedSize(true);
+        rvPermintaanCheckin.setAdapter(new NikitaRecyclerAdapter(permintaanCheckinList, R.layout.item_batal_tersedia_permintaan_tugas_part){
+            @Override
+            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+                super.onBindViewHolder(viewHolder, position);
+
+                viewHolder.find(R.id.tv_nama_mekanik, TextView.class).setText(permintaanCheckinList.get(position).get("MEKANIK").asString());
+                viewHolder.find(R.id.tv_nama_pelanggan, TextView.class).setText(permintaanCheckinList.get(position).get("NAMA_PELANGGAN").asString());
+                viewHolder.find(R.id.tv_nopol, TextView.class).setText(permintaanCheckinList.get(position).get("NOPOL").asString());
+                viewHolder.find(R.id.tv_tgl_checkin, TextView.class).setText(permintaanCheckinList.get(position).get("TANGGAL_CHECKIN").asString());
+            }
+
+        }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Nson parent, View view, int position) {
+                Intent i = new Intent(getActivity(), Status_TugasPart_Activity.class);
+                i.putExtra(TUGAS_PART_PERMINTAAN, "CHECKIN");
+                i.putExtra(DATA, permintaanCheckinList.get(position).toJson());
                 startActivityForResult(i, REQUEST_DETAIL);
             }
         }));
     }
 
     @SuppressLint("NewApi")
-    private void viewPartPermintaan() {
+    private void viewPartPermintaanCheckin() {
         ((TugasPart_MainTab_Activity) Objects.requireNonNull(getActivity())).newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
@@ -105,6 +139,7 @@ public class Permintaan_TugasPart_Fragment extends Fragment {
                 args.put("action", "view");
                 args.put("detail", "");
                 args.put("status", "PERMINTAAN");
+                args.put("group", "CHECKIN");
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_TUGAS_PART), args));
             }
@@ -113,9 +148,39 @@ public class Permintaan_TugasPart_Fragment extends Fragment {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    permintaanPartList.asArray().clear();
-                    permintaanPartList.asArray().addAll(result.get("data").asArray());
-                    rvPermintaanPart.getAdapter().notifyDataSetChanged();
+                    permintaanCheckinList.asArray().clear();
+                    permintaanCheckinList.asArray().addAll(result.get("data").asArray());
+                    rvPermintaanCheckin.getAdapter().notifyDataSetChanged();
+                } else {
+                    ((TugasPart_MainTab_Activity) Objects.requireNonNull(getActivity())).showError(result.get("message").asString());
+                }
+            }
+        });
+    }
+
+    @SuppressLint("NewApi")
+    private void viewPartPermintaanJualPart() {
+        ((TugasPart_MainTab_Activity) Objects.requireNonNull(getActivity())).newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+
+                args.put("action", "view");
+                args.put("detail", "");
+                args.put("status", "PERMINTAAN");
+                args.put("group", "JUAL PART");
+
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_TUGAS_PART), args));
+            }
+
+            @SuppressLint("NewApi")
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    permintaanJualPartList.asArray().clear();
+                    permintaanJualPartList.asArray().addAll(result.get("data").asArray());
+                    rvPermintaanJualPart.getAdapter().notifyDataSetChanged();
                 } else {
                     ((TugasPart_MainTab_Activity) Objects.requireNonNull(getActivity())).showError(result.get("message").asString());
                 }
@@ -126,7 +191,9 @@ public class Permintaan_TugasPart_Fragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_DETAIL)
-            viewPartPermintaan();
+        if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_DETAIL){
+            viewPartPermintaanCheckin();
+            viewPartPermintaanJualPart();
+        }
     }
 }

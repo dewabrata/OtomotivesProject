@@ -15,10 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.naa.data.Nson;
-import com.naa.utils.InternetX;
-import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
-import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.Fragment.BatalPart_TugasPart_Fragment;
 import com.rkrzmail.oto.modules.Fragment.PartKosong_TugasPart_Fragment;
@@ -27,14 +24,7 @@ import com.rkrzmail.oto.modules.Fragment.Tersedia_TugasPart_Fragment;
 import com.rkrzmail.srv.FragmentsAdapter;
 
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Objects;
-
-import static com.rkrzmail.utils.APIUrls.VIEW_TUGAS_PART;
-import static com.rkrzmail.utils.ConstUtils.TUGAS_PART_BATAL;
-import static com.rkrzmail.utils.ConstUtils.TUGAS_PART_KOSONG;
-import static com.rkrzmail.utils.ConstUtils.TUGAS_PART_PERMINTAAN;
-import static com.rkrzmail.utils.ConstUtils.TUGAS_PART_TERSEDIA;
 
 public class TugasPart_MainTab_Activity extends AppActivity {
 
@@ -68,7 +58,7 @@ public class TugasPart_MainTab_Activity extends AppActivity {
         fragments.add(new BatalPart_TugasPart_Fragment());
         fragments.add(new PartKosong_TugasPart_Fragment());
 
-        FragmentsAdapter pagerAdapter = new FragmentsAdapter(getSupportFragmentManager());
+        FragmentsAdapter pagerAdapter = new FragmentsAdapter(getSupportFragmentManager(), this, fragments);
         vpTugasParts.setAdapter(pagerAdapter);
         vpTugasParts.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayoutTugasParts));
         tabLayoutTugasParts.setupWithViewPager(vpTugasParts);

@@ -31,7 +31,6 @@ import java.util.Objects;
 import static com.rkrzmail.utils.APIUrls.ATUR_TUGAS_PART;
 import static com.rkrzmail.utils.APIUrls.VIEW_TUGAS_PART;
 import static com.rkrzmail.utils.ConstUtils.DATA;
-import static com.rkrzmail.utils.ConstUtils.ID;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_TUGAS_PART;
 import static com.rkrzmail.utils.ConstUtils.TUGAS_PART_PERMINTAAN;
@@ -46,10 +45,11 @@ public class Status_TugasPart_Activity extends AppActivity {
     private Nson partSerahTerimaList = Nson.newArray();
     private boolean isPermintaan = false;
     private boolean isTersedia = false;
-    private String mekanik = "", tanggalCheckin = "", nopol = "";
+    private boolean isJualPart = false;
+    private String mGroup = "";
+    private String mekanik = "", tanggalCheckin = "", nopol = "", noHp = "";
     private String idLokasiPart = "", idCheckinDetail = "";
     private int jumlahSerahTerima = 0;
-    private Boolean isPermintaanList = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,10 +67,18 @@ public class Status_TugasPart_Activity extends AppActivity {
         if (getIntent().hasExtra(TUGAS_PART_PERMINTAAN)) {
             getSupportActionBar().setTitle("Penyediaan Part");
             isPermintaan = true;
+            mGroup = getIntentStringExtra(TUGAS_PART_PERMINTAAN);
+            if(mGroup.equals("JUAL PART")){
+                isJualPart = true;
+            }
             find(R.id.img_scan_barcode).setVisibility(View.GONE);
         } else if (getIntent().hasExtra(TUGAS_PART_TERSEDIA)) {
             getSupportActionBar().setTitle("Serah Terima Part");
             isTersedia = true;
+            mGroup = getIntentStringExtra(TUGAS_PART_TERSEDIA);
+            if(mGroup.equals("JUAL PART")){
+                isJualPart = true;
+            }
             find(R.id.btn_simpan).setVisibility(View.GONE);
         }
     }
@@ -106,12 +114,13 @@ public class Status_TugasPart_Activity extends AppActivity {
     private void loadData() {
         Nson n = Nson.readJson(getIntentStringExtra(DATA));
         etPelanggan.setText(n.get("NAMA_PELANGGAN").asString());
-        etMekanik.setText(n.get("MEKANIK").asString());
+        etMekanik.setText(isJualPart ? n.get("USER_JUAL").asString() : n.get("MEKANIK").asString());
 
+        noHp = n.get("NO_PONSEL").asString();
         idLokasiPart = n.get("LOKASI_PART_ID").asString();
         idCheckinDetail = n.get("CHECKIN_DETAIL_ID").asString();
         nopol = n.get("NOPOL").asString();
-        tanggalCheckin = n.get("TANGGAL_CHECKIN").asString();
+        tanggalCheckin = isJualPart ? n.get("TANGGAL").asString() : n.get("TANGGAL_CHECKIN").asString();
         viewTugasPart();
     }
 
@@ -141,7 +150,7 @@ public class Status_TugasPart_Activity extends AppActivity {
                     public void onItemClick(Nson parent, View view, int position) {
                         if (isPermintaan) {
                             Intent i = new Intent(getActivity(), JumlahPart_TugasPart_Activity.class);
-                            i.putExtra(TUGAS_PART_PERMINTAAN, "");
+                            i.putExtra(TUGAS_PART_PERMINTAAN, mGroup);
                             i.putExtra(DATA, nListArray.get(position).toJson());
                             startActivityForResult(i, REQUEST_TUGAS_PART);
                         }
@@ -161,6 +170,7 @@ public class Status_TugasPart_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
+                args.put("group", mGroup);
                 if (isPermintaan) {
                     args.put("detail", "PERMINTAAN");
                 }
@@ -171,6 +181,7 @@ public class Status_TugasPart_Activity extends AppActivity {
                 args.put("nopol", nopol);
                 args.put("namaPelanggan", etPelanggan.getText().toString());
                 args.put("tanggalCheckin", tanggalCheckin);
+                args.put("noHp", noHp);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_TUGAS_PART), args));
             }
@@ -183,8 +194,9 @@ public class Status_TugasPart_Activity extends AppActivity {
                     if(isTersedia){
                         for (int i = 0; i < nListArray.size(); i++) {
                             partSerahTerimaList.add(Nson.newObject()
-                                    .set("CHECKIN_DETAIL_ID", nListArray.get(i).get("CHECKIN_DETAIL_ID").asString())
-                                    .set("JUMLAH", nListArray.get(i).get("JUMLAH_TERSEDIA").asString()));
+                                    .set("DETAIL_ID", nListArray.get(i).get("DETAIL_ID").asString())
+                                    .set("JUMLAH", nListArray.get(i).get("JUMLAH_TERSEDIA").asString())
+                                    .set("MGROUP", mGroup));
                         }
                     }
                     Log.d("PART__", "SERAHTERIMA: " + partSerahTerimaList);
@@ -208,7 +220,7 @@ public class Status_TugasPart_Activity extends AppActivity {
                 args.put("group", "SERAH TERIMA");
                 //args.put("idCheckin", idCheckinDetail);
                 args.put("partList", partSerahTerimaList.toJson());
-                args.put("idLokasiPart", idLokasiPart);
+                //args.put("idLokasiPart", idLokasiPart);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_TUGAS_PART), args));
             }
@@ -224,6 +236,12 @@ public class Status_TugasPart_Activity extends AppActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
     }
 
     @Override

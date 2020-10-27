@@ -2,7 +2,6 @@ package com.rkrzmail.oto.modules.sparepart;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.support.annotation.LongDef;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -27,6 +26,7 @@ import java.util.Objects;
 import static com.rkrzmail.utils.APIUrls.ATUR_TUGAS_PART;
 import static com.rkrzmail.utils.APIUrls.VIEW_SPAREPART;
 import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.ID;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
 import static com.rkrzmail.utils.ConstUtils.TUGAS_PART_BATAL;
 import static com.rkrzmail.utils.ConstUtils.TUGAS_PART_PERMINTAAN;
@@ -42,8 +42,10 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
     private String
             nopol = "", noAntrian = "",
             namaPelanggan = "", status = "", layanan = "",
-            jamAntrian = "", partId ="", group = "", idCheckinDetail = "";
+            jamAntrian = "", partId ="", group = "", id = "", noHp = "";
+    String mGroup = "";
     private String idLokasiPart = "";
+    private boolean isJualPart = false;
 
     private int counScanPart = 0;
 
@@ -75,7 +77,9 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
     private void loadData() {
         Nson nson = Nson.readJson(getIntentStringExtra(DATA));
         Log.d("Status__", "loadData: " + nson);
-        idCheckinDetail = nson.get("CHECKIN_DETAIL_ID").asString();
+
+        id =  nson.get("DETAIL_ID").asString();
+        noHp = nson.get("NO_PONSEL").asString();
         nopol = nson.get("NOPOL").asString();
         noAntrian = nson.get("NO_ANTRIAN").asString();
         namaPelanggan = nson.get("NAMA_PELANGGAN").asString();
@@ -87,7 +91,7 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
 
         if (getIntent().hasExtra(TUGAS_PART_PERMINTAAN)) {
             isPermintaan = true;
-            group = "PERMINTAAN";
+            group = "PERMINTAAN " + getIntentStringExtra(TUGAS_PART_PERMINTAAN);
             find(R.id.tl_jumlah, TextInputLayout.class).setHint(getResources().getString(R.string.jumlah_permintaan));
             etJumlahPart.setText(nson.get("JUMLAH_PERMINTAAN").asString());
             etStock.setText(nson.get("STOCK").asString());
@@ -174,7 +178,7 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
                 args.put("tanggal", currentDateTime("yyyy-MM-dd hh:mm"));
                 args.put("group", group);
 
-                args.put("idCheckinDetail", idCheckinDetail);
+                args.put("detailId", id);
                 if (isPermintaan) {
                     args.put("jumlahRequest", etJumlahRequest.getText().toString());
                     args.put("idLokasiPart", idLokasiPart);

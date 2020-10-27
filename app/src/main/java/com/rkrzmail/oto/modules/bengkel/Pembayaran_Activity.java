@@ -59,24 +59,24 @@ public class Pembayaran_Activity extends AppActivity {
         rvPembayaran = findViewById(R.id.recyclerView);
         rvPembayaran.setHasFixedSize(true);
         rvPembayaran.setLayoutManager(new LinearLayoutManager(this));
-        rvPembayaran.setAdapter(new NikitaRecyclerAdapter(nListArray, sample, R.layout.item_pembayaran, R.layout.item_jual_part_pelanggan, "PART", "JASA") {
+        rvPembayaran.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_pembayaran) {
 
             @Override
                     public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, final int position) {
                         super.onBindViewHolder(viewHolder, position);
 
-                        switch (viewHolder.getItemViewType()) {
-                            case NikitaRecyclerAdapter.VIEW_1:
-                                viewHolder.find(R.id.tv_jenis_kendaraan, TextView.class).setText(nListArray.get(position).get("JENIS_KENDARAAN").asString());
-                                viewHolder.find(R.id.tv_nama_pelanggan, TextView.class).setText(nListArray.get(position).get("NAMA_PELANGGAN").asString());
-                                viewHolder.find(R.id.tv_nopol, TextView.class).setText(nListArray.get(position).get("NOPOL").asString());
-                                viewHolder.find(R.id.tv_layanan, TextView.class).setText(nListArray.get(position).get("LAYANAN").asString());
-                                viewHolder.find(R.id.tv_no_ponsel, TextView.class).setText(nListArray.get(position).get("NO_PONSEL").asString());
-                                break;
-                            case NikitaRecyclerAdapter.VIEW_2:
-                                viewHolder.find(R.id.tv_status_pelanggan, TextView.class).setText(sample.get(position).get("SAMPLE").asString());
-                                break;
-                        }
+//                        switch (viewHolder.getItemViewType()) {
+//                            case NikitaRecyclerAdapter.VIEW_1:
+//                                viewHolder.find(R.id.tv_jenis_kendaraan, TextView.class).setText(nListArray.get(position).get("JENIS_KENDARAAN").asString());
+//                                viewHolder.find(R.id.tv_nama_pelanggan, TextView.class).setText(nListArray.get(position).get("NAMA_PELANGGAN").asString());
+//                                viewHolder.find(R.id.tv_nopol, TextView.class).setText(nListArray.get(position).get("NOPOL").asString());
+//                                viewHolder.find(R.id.tv_layanan, TextView.class).setText(nListArray.get(position).get("LAYANAN").asString());
+//                                viewHolder.find(R.id.tv_no_ponsel, TextView.class).setText(nListArray.get(position).get("NO_PONSEL").asString());
+//                                break;
+//                            case NikitaRecyclerAdapter.VIEW_2:
+//                                viewHolder.find(R.id.tv_status_pelanggan, TextView.class).setText(sample.get(position).get("SAMPLE").asString());
+//                                break;
+//                        }
 
 
                     }

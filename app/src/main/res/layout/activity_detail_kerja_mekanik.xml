@@ -25,6 +25,7 @@
                 android:orientation="horizontal">
 
                 <Button
+                    android:id="@+id/btn_keluhan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -33,6 +34,7 @@
                     android:textColor="@android:color/white"/>
 
                 <Button
+                    android:id="@+id/btn_point_layanan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -241,13 +243,24 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerView_kerjaMekanik"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:padding="10dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="10dp">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recyclerView_part"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recyclerView_jasa"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"

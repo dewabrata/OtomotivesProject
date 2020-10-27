@@ -24,6 +24,7 @@ import com.rkrzmail.srv.NikitaViewHolder;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.rkrzmail.utils.APIUrls.VIEW_PERINTAH_KERJA_MEKANIK;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 
@@ -55,7 +56,7 @@ public class PerintahKerjaMekanik_Activity extends AppActivity {
                     public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, final int position) {
                         super.onBindViewHolder(viewHolder, position);
 
-                        viewHolder.find(R.id.tv_jenis_kerjaMekanik, TextView.class).setText(nListArray.get(position).get("JENIS").asString());
+                        viewHolder.find(R.id.tv_jenis_kerjaMekanik, TextView.class).setText(nListArray.get(position).get("JENIS_KENDARAAN").asString());
                         viewHolder.find(R.id.tv_nopol_kerjaMekanik, TextView.class).setText(nListArray.get(position).get("NOPOL").asString());
                         viewHolder.find(R.id.tv_layanan_kerjaMekanik, TextView.class).setText(nListArray.get(position).get("LAYANAN").asString());
                         viewHolder.find(R.id.tv_namaP_kerjaMekanik, TextView.class).setText(nListArray.get(position).get("NAMA_PELANGGAN").asString());
@@ -65,7 +66,7 @@ public class PerintahKerjaMekanik_Activity extends AppActivity {
                 }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(Nson parent, View view, int position) {
-                        Intent i = new Intent(getActivity(), DetailKontrolLayanan_Activity.class);
+                        Intent i = new Intent(getActivity(), DetailKerjaMekanik_Activity.class);
                         i.putExtra(DATA, nListArray.get(position).toJson());
                         startActivityForResult(i, REQUEST_DETAIL);
                     }
@@ -82,7 +83,7 @@ public class PerintahKerjaMekanik_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(""), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PERINTAH_KERJA_MEKANIK), args));
             }
 
             @Override
