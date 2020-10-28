@@ -35,6 +35,8 @@ import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
 public class AturPenyesuain_StockOpname_Activity extends AppActivity {
 
     String kodeLokasi = "";
+    boolean isStockLebih = false;
+    boolean isStockKurang = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,14 +44,12 @@ public class AturPenyesuain_StockOpname_Activity extends AppActivity {
         setContentView(R.layout.activity_penyesuain);
         initToolbar();
         setSpLokasi();
-
-        Nson penyesuaian = Nson.readJson(getIntentStringExtra(PENYESUAIAN));
-        List<String> lokasiList = new ArrayList<>();
-
-        for (int i = 0; i < penyesuaian.size(); i++) {
-            lokasiList.add(penyesuaian.get(i).get("LOKASI").asString());
+        if(getIntent().hasExtra("STOCK LEBIH")){
+            isStockLebih = true;
+        }else if(getIntent().hasExtra("STOCK KURANG")){
+            isStockKurang = true;
         }
-        setSpPenyesuaian(lokasiList, penyesuaian.get("FUNGSI").asString());
+        setSpPenyesuaian();
         initButton();
     }
 
@@ -75,19 +75,14 @@ public class AturPenyesuain_StockOpname_Activity extends AppActivity {
         finish();
     }
 
-    private void setSpPenyesuaian(List<String> penyesuaian, String fungsi) {
+    private void setSpPenyesuaian() {
         List<String> penyesuaianList = new ArrayList<>();
         penyesuaianList.add("--PILIH--");
-        penyesuaianList.add("HILANG");
-        penyesuaianList.add("RUSAK");
-        if (fungsi.equals("SUPPLIES")) {
-            penyesuaianList.add("PEMAKAIAN");
-        }
-        if (penyesuaian.size() == 1) {
-            penyesuaianList.clear();
-            penyesuaianList.add("--PILIH--");
+        if(isStockLebih){
             penyesuaianList.add("SALAH CATAT"); //HANYA AKTIF BILA LEBIH BESAR DARI STOCK
-        } else {
+        }else{
+            penyesuaianList.add("HILANG");
+            penyesuaianList.add("RUSAK");
             penyesuaianList.add("PINDAH LOKASI"); //HANYA AKTIF BILA LOKASI TERSEDIA GUDANG DAN DISPLAY
         }
 

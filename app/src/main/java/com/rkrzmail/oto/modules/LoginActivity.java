@@ -132,7 +132,7 @@ public class LoginActivity extends AppActivity {
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     showSuccess("Sukses Request OTP, Silahkan Login");
-                    find(R.id.password, EditText.class).setText("123456");
+                   // find(R.id.password, EditText.class).setText("123456");
                 } else {
                     if(result.get("message").asString().contains("Gagal")){
                         showError(result.get("message").asString());

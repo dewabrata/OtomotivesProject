@@ -85,22 +85,21 @@ public class AturStockOpname_Activity extends AppActivity {
                     return;
                 }
 
-                int stockPending, totalStock = 0;
                 int stockAwal = Integer.parseInt(etStock.getText().toString());
                 int stockAkhir = Integer.parseInt(etJumlahOpname.getText().toString());
+                intent = new Intent(getActivity(), AturPenyesuain_StockOpname_Activity.class);
 
-                if (!etPending.getText().toString().isEmpty()) {
-                    stockPending = Integer.parseInt(etPending.getText().toString());
-                    totalStock = stockAwal + stockPending;
-                } else {
-                    stockPending = 0;
-                }
-
-                if (stockAkhir < stockAwal || stockAkhir > stockAwal) {
+                if(stockAkhir > stockAwal){
+                    stockBeda = stockAkhir - stockAwal;
+                    showInfo("Diperlukan Penyesuaian");
+                    intent.putExtra(PENYESUAIAN, lokasiArray.toJson());
+                    intent.putExtra("STOCK LEBIH", stockBeda);
+                    startActivityForResult(intent, REQUEST_PENYESUAIAN);
+                }else if (stockAkhir < stockAwal) {
                     stockBeda = stockAwal - stockAkhir;
                     showInfo("Diperlukan Penyesuaian");
-                    intent = new Intent(getActivity(), AturPenyesuain_StockOpname_Activity.class);
                     intent.putExtra(PENYESUAIAN, lokasiArray.toJson());
+                    intent.putExtra("STOCK KURANG", stockBeda);
                     startActivityForResult(intent, REQUEST_PENYESUAIAN);
                 }else {
                     saveData(null);

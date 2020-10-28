@@ -14,7 +14,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -23,28 +22,32 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.checkin.DetailKontrolLayanan_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
 import java.util.Map;
 import java.util.Objects;
 
+import static com.rkrzmail.utils.APIUrls.VIEW_PEMBAYARAN;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
+import static com.rkrzmail.utils.ConstUtils.RINCIAN_JUAL_PART;
+import static com.rkrzmail.utils.ConstUtils.RINCIAN_LAYANAN;
 
 public class Pembayaran_Activity extends AppActivity {
 
-    private RecyclerView rvPembayaran;
-    private Nson sample = Nson.newArray();
+    private RecyclerView rvPembayaranCheckin, rvPembayaranJualPart;
+    private Nson jualPartList = Nson.newArray();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_basic);
         initToolbar();
-        initRecylerviewPembayaran();
-        //viewPembayaran("");
+        initRecylerviewPembayaranCheckin();
+        initRecylerviewPembayaranJualPart();
+        viewPembayaranCheckin();
+        viewPembayaranJualPart();
     }
 
     @SuppressLint("NewApi")
@@ -55,47 +58,65 @@ public class Pembayaran_Activity extends AppActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void initRecylerviewPembayaran() {
-        rvPembayaran = findViewById(R.id.recyclerView);
-        rvPembayaran.setHasFixedSize(true);
-        rvPembayaran.setLayoutManager(new LinearLayoutManager(this));
-        rvPembayaran.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_pembayaran) {
+    private void initRecylerviewPembayaranCheckin() {
+        rvPembayaranCheckin = findViewById(R.id.recyclerView);
+        rvPembayaranCheckin.setHasFixedSize(true);
+        rvPembayaranCheckin.setLayoutManager(new LinearLayoutManager(this));
+        rvPembayaranCheckin.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_pembayaran) {
 
-            @Override
+                    @Override
                     public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, final int position) {
                         super.onBindViewHolder(viewHolder, position);
-
-//                        switch (viewHolder.getItemViewType()) {
-//                            case NikitaRecyclerAdapter.VIEW_1:
-//                                viewHolder.find(R.id.tv_jenis_kendaraan, TextView.class).setText(nListArray.get(position).get("JENIS_KENDARAAN").asString());
-//                                viewHolder.find(R.id.tv_nama_pelanggan, TextView.class).setText(nListArray.get(position).get("NAMA_PELANGGAN").asString());
-//                                viewHolder.find(R.id.tv_nopol, TextView.class).setText(nListArray.get(position).get("NOPOL").asString());
-//                                viewHolder.find(R.id.tv_layanan, TextView.class).setText(nListArray.get(position).get("LAYANAN").asString());
-//                                viewHolder.find(R.id.tv_no_ponsel, TextView.class).setText(nListArray.get(position).get("NO_PONSEL").asString());
-//                                break;
-//                            case NikitaRecyclerAdapter.VIEW_2:
-//                                viewHolder.find(R.id.tv_status_pelanggan, TextView.class).setText(sample.get(position).get("SAMPLE").asString());
-//                                break;
-//                        }
-
-
+                        viewHolder.find(R.id.tv_jenis_kendaraan, TextView.class).setText(nListArray.get(position).get("JENIS_KENDARAAN").asString());
+                        viewHolder.find(R.id.tv_nama_pelanggan, TextView.class).setText(nListArray.get(position).get("NAMA_PELANGGAN").asString());
+                        viewHolder.find(R.id.tv_nopol, TextView.class).setText(nListArray.get(position).get("NOPOL").asString());
+                        viewHolder.find(R.id.tv_layanan, TextView.class).setText(nListArray.get(position).get("LAYANAN").asString());
+                        viewHolder.find(R.id.tv_no_ponsel, TextView.class).setText(nListArray.get(position).get("NO_PONSEL").asString());
                     }
                 }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(Nson parent, View view, int position) {
-                        Intent i = new Intent(getActivity(), DetailKontrolLayanan_Activity.class);
+                        Intent i = new Intent(getActivity(), Rincian_Pembayaran_Activity.class);
+                        i.putExtra(RINCIAN_LAYANAN, "");
                         i.putExtra(DATA, nListArray.get(position).toJson());
                         startActivityForResult(i, REQUEST_DETAIL);
                     }
                 })
         );
-
-        nListArray.add(Nson.newObject().set("PART", "PART").set("NAMA_PELANGGAN", "sample1"));
-        sample.add(Nson.newObject().set("JASA", "JASA").set("SAMPLE", "sample5"));
-        rvPembayaran.getAdapter().notifyDataSetChanged();
     }
 
-    private void viewPembayaran(final String cari) {
+    @SuppressLint("SetTextI18n")
+    private void initRecylerviewPembayaranJualPart() {
+        rvPembayaranJualPart = findViewById(R.id.recyclerView2);
+        rvPembayaranJualPart.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvPembayaranJualPart.setHasFixedSize(true);
+        rvPembayaranJualPart.setAdapter(new NikitaRecyclerAdapter(jualPartList, R.layout.item_permintaan_jual_part_tugas_part){
+            @Override
+            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+                super.onBindViewHolder(viewHolder, position);
+                String noHp = jualPartList.get(position).get("NO_PONSEL").asString();
+                if(noHp.length() > 4){
+                    noHp = noHp.substring(noHp.length() - 4);
+                }
+                viewHolder.find(R.id.tv_nama_mekanik, TextView.class).setText(jualPartList.get(position).get("USER_JUAL").asString());
+                viewHolder.find(R.id.tv_nama_pelanggan_nama_usaha, TextView.class).setText(
+                        jualPartList.get(position).get("NAMA_PELANGGAN").asString() + " " + jualPartList.get(position).get("NAMA_USAHA").asString());
+                viewHolder.find(R.id.tv_no_ponsel, TextView.class).setText("XXXXXXXX" + noHp);
+                viewHolder.find(R.id.tv_tgl, TextView.class).setText(jualPartList.get(position).get("TANGGAL").asString());
+            }
+
+        }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Nson parent, View view, int position) {
+                Intent i = new Intent(getActivity(), Rincian_Pembayaran_Activity.class);
+                i.putExtra(RINCIAN_JUAL_PART, "");
+                i.putExtra(DATA, jualPartList.get(position).toJson());
+                startActivityForResult(i, REQUEST_DETAIL);
+            }
+        }));
+    }
+
+    private void viewPembayaranCheckin() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -103,9 +124,8 @@ public class Pembayaran_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
-                args.put("search", cari);
-
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(""), args));
+                args.put("jenisPembayaran", "CHECKIN");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PEMBAYARAN), args));
             }
 
             @Override
@@ -113,7 +133,32 @@ public class Pembayaran_Activity extends AppActivity {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
-                    rvPembayaran.getAdapter().notifyDataSetChanged();
+                    rvPembayaranCheckin.getAdapter().notifyDataSetChanged();
+                } else {
+                    showError("Mohon Di Coba Kembali");
+                }
+            }
+        });
+    }
+
+    private void viewPembayaranJualPart() {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "view");
+                args.put("jenisPembayaran", "JUAL PART");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PEMBAYARAN), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    jualPartList.asArray().clear();
+                    jualPartList.asArray().addAll(result.get("data").asArray());
+                    rvPembayaranJualPart.getAdapter().notifyDataSetChanged();
                 } else {
                     showError("Mohon Di Coba Kembali");
                 }
@@ -150,7 +195,6 @@ public class Pembayaran_Activity extends AppActivity {
             public boolean onQueryTextSubmit(String query) {
                 searchMenu.collapseActionView();
                 //filter(null);
-                viewPembayaran(query);
 
                 return true;
             }

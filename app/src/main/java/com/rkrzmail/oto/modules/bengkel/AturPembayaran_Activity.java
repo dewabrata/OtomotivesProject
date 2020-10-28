@@ -105,7 +105,7 @@ public class AturPembayaran_Activity extends AppActivity {
 
     private void initData() {
         Nson nson = Nson.readJson(getIntentStringExtra(DATA));
-        find(R.id.et_total_biaya, EditText.class).setText(formatRp(nson.get("").asString()));
+        find(R.id.et_total_biaya, EditText.class).setText(getIntentStringExtra(DATA));
         find(R.id.et_namaBankEpay, EditText.class).setText(formatRp(nson.get("").asString()));
         find(R.id.et_noTrack, EditText.class).setText(formatRp(nson.get("").asString()));
         find(R.id.et_ppn, EditText.class).setText(formatRp(nson.get("").asString()));
@@ -133,19 +133,19 @@ public class AturPembayaran_Activity extends AppActivity {
                 }
 
                 if (tipePembayaran.equals("CASH") || tipePembayaran.equals("INVOICE")) {
-                    find(R.id.et_totalBayar, EditText.class).setVisibility(View.VISIBLE);
-                    find(R.id.et_noTrack).setVisibility(View.GONE);
+                    find(R.id.tl_totalBayar).setVisibility(View.VISIBLE);
+                    find(R.id.tl_noTrack).setVisibility(View.GONE);
                 } else {
-                    find(R.id.et_totalBayar, EditText.class).setVisibility(View.GONE);
-                    find(R.id.et_noTrack).setVisibility(View.VISIBLE);
+                    find(R.id.tl_totalBayar, EditText.class).setVisibility(View.GONE);
+                    find(R.id.tl_noTrack).setVisibility(View.VISIBLE);
                 }
 
                 if (tipePembayaran.equals("DEBIT") || tipePembayaran.equals("KREDIT") || tipePembayaran.equals("E-PAY")) {
-                    find(R.id.et_namaBankEpay).setVisibility(View.VISIBLE);
-                    find(R.id.et_ppn, EditText.class).setVisibility(View.GONE);
+                    find(R.id.tl_namaBankEpay).setVisibility(View.VISIBLE);
+                    find(R.id.tl_ppn).setVisibility(View.GONE);
                 } else {
-                    find(R.id.et_ppn, EditText.class).setVisibility(View.VISIBLE);
-                    find(R.id.et_namaBankEpay).setVisibility(View.GONE);
+                    find(R.id.tl_ppn).setVisibility(View.VISIBLE);
+                    find(R.id.tl_namaBankEpay).setVisibility(View.GONE);
                 }
 
             }

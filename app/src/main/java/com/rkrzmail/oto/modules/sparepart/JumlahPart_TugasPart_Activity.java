@@ -44,7 +44,7 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
             namaPelanggan = "", status = "", layanan = "",
             jamAntrian = "", partId ="", group = "", id = "", noHp = "";
     String mGroup = "";
-    private String idLokasiPart = "";
+    private String idLokasiPart = "", idTugasPat = "";
     private boolean isJualPart = false;
 
     private int counScanPart = 0;
@@ -78,6 +78,7 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
         Nson nson = Nson.readJson(getIntentStringExtra(DATA));
         Log.d("Status__", "loadData: " + nson);
 
+        idTugasPat = nson.get("TUGAS_PART_ID").asString();
         id =  nson.get("DETAIL_ID").asString();
         noHp = nson.get("NO_PONSEL").asString();
         nopol = nson.get("NOPOL").asString();
@@ -177,6 +178,7 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
                 args.put("partId", partId);
                 args.put("tanggal", currentDateTime("yyyy-MM-dd hh:mm"));
                 args.put("group", group);
+                args.put("idTugasPart", idTugasPat);
 
                 args.put("detailId", id);
                 if (isPermintaan) {

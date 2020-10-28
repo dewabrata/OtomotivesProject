@@ -48,7 +48,7 @@ public class Status_TugasPart_Activity extends AppActivity {
     private boolean isJualPart = false;
     private String mGroup = "";
     private String mekanik = "", tanggalCheckin = "", nopol = "", noHp = "";
-    private String idLokasiPart = "", idCheckinDetail = "";
+    private String idLokasiPart = "", idCheckinDetail = "", idTugasPat = "";
     private int jumlahSerahTerima = 0;
 
     @Override
