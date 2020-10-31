@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -10,18 +11,24 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
+import com.naa.data.Utility;
 import com.naa.utils.InternetX;
+import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
+import com.rkrzmail.oto.MenuActivity;
 import com.rkrzmail.oto.R;
 
 import java.util.Map;
 
+import static com.rkrzmail.utils.APIUrls.SET_LOGIN;
+import static com.rkrzmail.utils.APIUrls.VIEW_DATA_BENGKEL;
+
 public class Otp_Activity extends AppActivity {
 
     private char[] otp;
-    private String one, two, three, four, five;
+    private String one, two, three, four, five, six;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,9 +162,21 @@ public class Otp_Activity extends AppActivity {
                 } else if (s.length() == 0) {
                     find(R.id.et5, EditText.class).requestFocus();
                 }
-                if(!one.equals("") && !two.equals("") && !three.equals("") && !four.equals("") && !five.equals("")){
-                    find(R.id.tv_reqOtp, TextView.class).performClick();
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append(((EditText)findViewById(R.id.et1)).getText().toString());
+                stringBuilder.append(((EditText)findViewById(R.id.et2)).getText().toString());
+                stringBuilder.append(((EditText)findViewById(R.id.et3)).getText().toString());
+                stringBuilder.append(((EditText)findViewById(R.id.et4)).getText().toString());
+                stringBuilder.append(((EditText)findViewById(R.id.et5)).getText().toString());
+                stringBuilder.append(((EditText)findViewById(R.id.et6)).getText().toString());
+                String dummy = stringBuilder.toString();
+                if (dummy.length()==6){
+                    login(dummy);
+                }else{
+                    showError("Lengkapi Request OTP");
                 }
+
+
             }
         });
 
@@ -179,7 +198,7 @@ public class Otp_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "Request");
-                args.put("user", find(R.id.user, EditText.class).getText().toString().replaceAll("[^0-9]+", ""));
+                args.put("user",   getIntentStringExtra("user"));
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("login"), args));
             }
 
@@ -191,6 +210,91 @@ public class Otp_Activity extends AppActivity {
                 } else {
                     showError("Gagal Request OTP");
                 }
+            }
+        });
+    }
+
+    private String formatPhone(String phone) {
+        if (phone.startsWith("+62")) {
+            phone = phone.substring(1);
+        } else if (phone.startsWith("0")) {
+            phone = "62" + phone.substring(1);
+        }
+        phone = Utility.replace(phone," ","");
+        return phone.trim();
+    }
+    private void login(final String otp) {
+        MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
+            String sResult;
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "Login");
+                args.put("user",   getIntentStringExtra("user"));
+                args.put("password", otp);
+
+                sResult = (InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_LOGIN), args));
+            }
+
+            @Override
+            public void runUI() {
+                Nson nson = Nson.readNson(sResult);//test1
+                if (nson.get("status").asString().equalsIgnoreCase("OK")) {
+                    if (nson.get("data").get(0).get("status").asString().equalsIgnoreCase("error")) {
+                        showError("User tidak di temukan / password salah");
+                        return;
+                    }
+
+                    nson = nson.get("data").get(0);
+                    if(nson.get("TIPE_USER").asString().equals("MEKANIK") || nson.get("MEKANIK").asString().equals("YA")){
+                        setSetting("MEKANIK", "TRUE");
+                    }else{
+                        setSetting("MEKANIK", "FALSE");
+                    }
+                    setSetting("L", "L");
+                    setSetting("NAMA_BENGKEL", nson.get("NAMA_BENGKEL").asString());
+                    setSetting("JENIS_KENDARAAN", nson.get("JENIS_KENDARAAN").asString().trim());
+                    setSetting("result", nson.toJson());
+                    setSetting("CID", nson.get("CID").asString());
+                    viewDataBengkel();
+                    setSetting("NAMA_USER", nson.get("NAMA_USER").asString());
+                    setSetting("TIPE_USER", nson.get("TIPE_USER").asString());
+                    setSetting("ACCESS_MENU", nson.get("AKSES_APP").asString());
+                    setSetting("JENIS_KENDARAAN_BENGKEL", nson.get("JENIS_KENDARAAN_BENGKEL").asString());
+                    setSetting("MERK_KENDARAAN_BENGKEL", nson.get("MERK_KENDARAAN").asString());
+                    setSetting("KATEGORI_BENGKEL", nson.get("KATEGORI_BENGKEL").asString());
+                    setSetting("userId", nson.get("USER_ID").asString());
+                    setSetting("session", nson.get("token").asString());
+                    setSetting("user", formatOnlyNumber(  getIntentStringExtra("user") ));
+                    Intent intent = new Intent(getActivity(), MenuActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    showError(nson.get("error").asString());
+                }
+            }
+        });
+    }
+
+    private void viewDataBengkel(){
+        newTask(new Messagebox.DoubleRunnable() {
+            Nson result;
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "Data Bengkel");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_DATA_BENGKEL), args));
+                if(result.get("status").asString().equalsIgnoreCase("OK")) {
+                    result = result.get("data").get(0);
+                    setSetting("MAX_ANTRIAN_EXPRESS_MENIT", result.get("MAX_ANTRIAN_EXPRESS_MENIT").asString());
+                    setSetting("MAX_ANTRIAN_STANDART_MENIT", result.get("MAX_ANTRIAN_STANDART_MENIT").asString());
+                    setSetting("DP_PERSEN", result.get("DP_PERSEN").asString());
+                }
+            }
+            @Override
+            public void runUI() {
+
             }
         });
     }
