@@ -306,32 +306,36 @@
                     android:backgroundTint="@color/transparent"/>
 
                 <ImageView
+                    android:id="@+id/imgRestart"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/icon_stopwatch"
-                    android:backgroundTint="@color/transparent"/>
+                    android:backgroundTint="@color/transparent"
+                    app:srcCompat="@drawable/icon_stopwatch" />
 
                 <ImageView
+                    android:id="@+id/imgPause"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/icon_stopwatch"
-                    android:backgroundTint="@color/transparent"/>
+                    android:backgroundTint="@color/transparent"
+                    app:srcCompat="@drawable/icon_stopwatch" />
 
                 <ImageView
+                    android:id="@+id/imgStart"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/icon_stopwatch"
-                    android:backgroundTint="@color/transparent"/>
+                    android:backgroundTint="@color/transparent"
+                    app:srcCompat="@drawable/icon_stopwatch" />
 
                 <ImageView
+                    android:id="@+id/imgStop"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/icon_stopwatch"
-                    android:backgroundTint="@color/transparent"/>
+                    android:backgroundTint="@color/transparent"
+                    app:srcCompat="@drawable/icon_stopwatch" />
 
             </LinearLayout>
 
