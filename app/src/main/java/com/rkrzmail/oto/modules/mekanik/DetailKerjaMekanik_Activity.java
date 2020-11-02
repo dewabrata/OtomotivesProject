@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -38,6 +41,11 @@ public class DetailKerjaMekanik_Activity extends AppActivity {
 
     private EditText etNoAntrian, etJenis, etLayanan, etNopol, etNoKunci, etNamaPelanggan, etWaktu, etSelesai;
     private RecyclerView rvPart, rvJasa, rvPointLayanan, rvKeluhan;
+    ImageView imgStart, imgPause, imgStop, imgRestart;
+    String timer ;
+    long MillisecondTime, StartTime, TimeBuff, UpdateTime = 0L ;
+    Handler handler;
+    int Seconds, Minutes, MilliSeconds ;
     private Nson partList = Nson.newArray(),
             jasaList = Nson.newArray(),
             keluhanList = Nson.newArray(),
@@ -83,7 +91,14 @@ public class DetailKerjaMekanik_Activity extends AppActivity {
         etSelesai = findViewById(R.id.et_Eselesai_kerjaMekanik);
         rvJasa = findViewById(R.id.recyclerView_jasa);
         rvPart = findViewById(R.id.recyclerView_part);
+        imgStart = findViewById(R.id.imgStart);
+        imgPause = findViewById(R.id.imgPause);
+        imgRestart = findViewById(R.id.imgRestart);
+        imgStop = findViewById(R.id.imgStop);
 
+        imgPause.setEnabled(false);
+        imgRestart.setEnabled(false);
+        imgStop.setEnabled(false);
         loadData();
         initRecyclerviewJasa();
         initRecyclerviewParts();
@@ -106,7 +121,105 @@ public class DetailKerjaMekanik_Activity extends AppActivity {
                 initPointLayananDialog();
             }
         });
+
+        handler = new Handler() ;
+
+        imgStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                StartTime = SystemClock.uptimeMillis();
+                handler.postDelayed(runnable, 0);
+
+                imgStart.setEnabled(false);
+                imgPause.setEnabled(true);
+                imgStop.setEnabled(true);
+                imgRestart.setEnabled(true);
+
+            }
+        });
+
+        imgPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                TimeBuff += MillisecondTime;
+
+                handler.removeCallbacks(runnable);
+
+                imgStart.setEnabled(true);
+                imgPause.setEnabled(false);
+                imgStop.setEnabled(true);
+                imgRestart.setEnabled(true);
+
+            }
+        });
+
+        imgRestart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                MillisecondTime = 0L ;
+                StartTime = 0L ;
+                TimeBuff = 0L ;
+                UpdateTime = 0L ;
+                Seconds = 0 ;
+                Minutes = 0 ;
+                MilliSeconds = 0 ;
+
+                showInfo("Waktu Kerja di Ulang");
+                imgStart.setEnabled(true);
+                imgPause.setEnabled(false);
+                imgStop.setEnabled(false);
+                imgRestart.setEnabled(false);
+
+            }
+        });
+
+        imgStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                timer = String.valueOf(Seconds);
+                MillisecondTime = 0L ;
+                StartTime = 0L ;
+                TimeBuff = 0L ;
+                UpdateTime = 0L ;
+                Seconds = 0 ;
+                Minutes = 0 ;
+                MilliSeconds = 0 ;
+
+                showInfo("Waktu Kerja Anda" + Minutes + "Menit");
+                imgStart.setEnabled(true);
+                imgPause.setEnabled(false);
+                imgStop.setEnabled(false);
+                imgRestart.setEnabled(false);
+
+            }
+        });
     }
+    public Runnable runnable = new Runnable() {
+
+        public void run() {
+
+            MillisecondTime = SystemClock.uptimeMillis() - StartTime;
+
+            UpdateTime = TimeBuff + MillisecondTime;
+
+            Seconds = (int) (UpdateTime / 1000);
+
+            Minutes = Seconds / 60;
+
+            Seconds = Seconds % 60;
+
+            MilliSeconds = (int) (UpdateTime % 1000);
+
+
+
+            handler.postDelayed(this, 0);
+        }
+
+    };
 
     private void loadData() {
         Nson n = Nson.readJson(getIntentStringExtra(DATA));
