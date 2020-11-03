@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,8 +15,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -23,21 +27,31 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.checkin.Checkin2_Activity;
+import com.rkrzmail.oto.modules.checkin.Checkin3_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
 import java.util.Map;
 import java.util.Objects;
 
+import static com.rkrzmail.utils.APIUrls.SET_CHECKIN;
 import static com.rkrzmail.utils.APIUrls.VIEW_TUGAS_PART;
 import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_CHECKIN;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_NEW_CS;
 import static com.rkrzmail.utils.ConstUtils.RP;
 
 public class DetailKerjaMekanik_Activity extends AppActivity {
 
-    private EditText etNoAntrian, etJenis, etLayanan, etNopol, etNoKunci, etNamaPelanggan, etWaktu, etSelesai;
+    private EditText etNoAntrian, etJenis, etLayanan, etNopol, etNoKunci, etNamaPelanggan, etWaktu, etSelesai, etCatatanMekanik;
     private RecyclerView rvPart, rvJasa, rvPointLayanan, rvKeluhan;
+    ImageView imgStart, imgPause, imgStop, imgRestart;
+    String timer, cid, idCheckin, idAturPerintah, mekanik, catatanMekanik;
+    long MillisecondTime, StartTime, TimeBuff, UpdateTime = 0L ;
+    Handler handler;
+    int Seconds, Minutes, MilliSeconds ;
     private Nson partList = Nson.newArray(),
             jasaList = Nson.newArray(),
             keluhanList = Nson.newArray(),
@@ -83,7 +97,15 @@ public class DetailKerjaMekanik_Activity extends AppActivity {
         etSelesai = findViewById(R.id.et_Eselesai_kerjaMekanik);
         rvJasa = findViewById(R.id.recyclerView_jasa);
         rvPart = findViewById(R.id.recyclerView_part);
+        imgStart = findViewById(R.id.imgStart);
+        imgPause = findViewById(R.id.imgPause);
+        imgRestart = findViewById(R.id.imgRestart);
+        imgStop = findViewById(R.id.imgStop);
+        etCatatanMekanik = findViewById(R.id.et_catatan_mekanik);
 
+        imgPause.setEnabled(false);
+        imgRestart.setEnabled(false);
+        imgStop.setEnabled(false);
         loadData();
         initRecyclerviewJasa();
         initRecyclerviewParts();
@@ -106,18 +128,252 @@ public class DetailKerjaMekanik_Activity extends AppActivity {
                 initPointLayananDialog();
             }
         });
-    }
 
+        handler = new Handler() ;
+
+        imgStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                StartTime = SystemClock.uptimeMillis();
+                handler.postDelayed(runnable, 0);
+
+                imgStart.setEnabled(false);
+                imgPause.setEnabled(true);
+                imgStop.setEnabled(true);
+                imgRestart.setEnabled(true);
+
+                startWork();
+
+            }
+        });
+
+        imgPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                TimeBuff += MillisecondTime;
+
+                handler.removeCallbacks(runnable);
+
+                imgStart.setEnabled(true);
+                imgPause.setEnabled(false);
+                imgStop.setEnabled(true);
+                imgRestart.setEnabled(true);
+                pauseWork();
+
+            }
+        });
+
+        imgRestart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                MillisecondTime = 0L ;
+                StartTime = 0L ;
+                TimeBuff = 0L ;
+                UpdateTime = 0L ;
+                Seconds = 0 ;
+                Minutes = 0 ;
+                MilliSeconds = 0 ;
+
+                showInfo("Waktu Kerja di Ulang");
+                imgStart.setEnabled(true);
+                imgPause.setEnabled(false);
+                imgStop.setEnabled(false);
+                imgRestart.setEnabled(false);
+                restartWork();
+
+            }
+        });
+
+        imgStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                timer = String.valueOf(Seconds);
+                MillisecondTime = 0L ;
+                StartTime = 0L ;
+                TimeBuff = 0L ;
+                UpdateTime = 0L ;
+                Seconds = 0 ;
+                Minutes = 0 ;
+                MilliSeconds = 0 ;
+
+                showInfo("Waktu Kerja Anda" + Minutes + "Menit");
+                imgStart.setEnabled(true);
+                imgPause.setEnabled(false);
+                imgStop.setEnabled(false);
+                imgRestart.setEnabled(false);
+
+                stopWork();
+
+            }
+        });
+    }
+    public Runnable runnable = new Runnable() {
+
+        public void run() {
+
+            MillisecondTime = SystemClock.uptimeMillis() - StartTime;
+
+            UpdateTime = TimeBuff + MillisecondTime;
+
+            Seconds = (int) (UpdateTime / 1000);
+
+            Minutes = Seconds / 60;
+
+            Seconds = Seconds % 60;
+
+            MilliSeconds = (int) (UpdateTime % 1000);
+
+
+
+            handler.postDelayed(this, 0);
+        }
+
+    };
+
+    private void startWork() {
+
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+
+                args.put("action", "add");
+                args.put("aktivitas", "START");
+                args.put("id", idCheckin);
+                args.put("mekanik", mekanik);
+
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    idAturPerintah = String.valueOf(result.get("data").get(0));
+
+
+
+                } else {
+                    showWarning(result.get("message").asString());
+                }
+            }
+
+            @Override
+            public void runUI() {
+
+            }
+
+        });
+    }
+    private void pauseWork() {
+
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+
+                args.put("action", "add");
+                args.put("id", idCheckin);
+                args.put("aktivitas", "PAUSE");
+                args.put("iddetail", idAturPerintah);
+
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+
+                } else {
+                    showWarning(result.get("message").asString());
+                }
+            }
+
+            @Override
+            public void runUI() {
+
+            }
+
+        });
+    }
+    private void stopWork() {
+
+        catatanMekanik = etCatatanMekanik.getText().toString().toUpperCase();
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+
+                args.put("action", "add");
+                args.put("aktivitas", "DONE");
+                args.put("id", idCheckin);
+                args.put("iddetail", idAturPerintah);
+                args.put("catatan", catatanMekanik);
+
+
+
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+
+
+
+                } else {
+                    showWarning(result.get("message").asString());
+                }
+            }
+
+            @Override
+            public void runUI() {
+
+            }
+
+        });
+    }
+    private void restartWork() {
+
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+
+                args.put("action", "add");
+                args.put("aktivitas", "RESTART");
+                args.put("id", idCheckin);
+
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+
+
+
+
+                } else {
+                    showWarning(result.get("message").asString());
+                }
+            }
+
+            @Override
+            public void runUI() {
+
+            }
+
+        });
+    }
     private void loadData() {
         Nson n = Nson.readJson(getIntentStringExtra(DATA));
-        etNoAntrian.setText(n.get("").asString());
-        etNopol.setText(n.get("").asString());
-        etNoKunci.setText(n.get("").asString());
-        etNamaPelanggan.setText(n.get("").asString());
-        etWaktu.setText(n.get("").asString());
-        etSelesai.setText(n.get("").asString());
-        etJenis.setText(n.get("").asString());
-        etLayanan.setText(n.get("").asString());
+        etNoAntrian.setText(n.get("NO_ANTRIAN").asString());
+        etNopol.setText(n.get("NOPOL").asString());
+        etNoKunci.setText(n.get("NO_KUNCI").asString());
+        etNamaPelanggan.setText(n.get("NAMA_PELANGGAN").asString());
+        etWaktu.setText(n.get("ESTIMASI_SEBELUM").asString());
+        etSelesai.setText(n.get("ESTIMASI_SESUDAH").asString());
+        etJenis.setText(n.get("JENIS_KENDARAAN").asString());
+        etLayanan.setText(n.get("LAYANAN").asString());
+        cid = n.get("CID").asString();
+        idCheckin = n.get("ID").asString();
+        mekanik = n.get("MEKANIK").asString();
     }
 
 

@@ -130,6 +130,7 @@ public class MenuActivity extends AppActivity {
     private final String DISCOUNT = "DISCOUNT";
     private final String KOMISI = "KOMISI";
     private final String SARAN = "SARAN";
+
     private final String PENGATURAN_USER = "USER";
     private final String PENGATURAN_PENUGASAN = "PENUGASAN MEKANIK";
     private final String PENGATURAN_USER_LAYANAN= "LAYANAN";
@@ -141,6 +142,7 @@ public class MenuActivity extends AppActivity {
     private final String KOMISI_JASA_LAIN = "KOMISI JASA LAIN";
     private final String KOMISI_LAYANAN = "KOMISI LAYANAN";
     private final String KOMISI_PART = "KOMISI PART";
+    private final String KOMISI_PEMBAYARAN = "PEMBAYARAN KOMISI";
     private final String DISCOUNT_JASA_LAIN = "DISCOUNT JASA LAIN";
     private final String DISCOUNT_LAYANAN = "DISCOUNT LAYANAN";
     private final String DISCOUNT_PART = "DISCOUNT PART";
@@ -148,10 +150,13 @@ public class MenuActivity extends AppActivity {
     private final String DISCOUNT_FREKWENSI = "DISCOUNT FREKWENSI";
 
     private final String MY_BUSINESS_BILLING = "BILLING";
-    private final String MY_BUSINESS_INFO_USAHA = "INFO USAHA";
+    private final String MY_BUSINESS_INFO_USAHA = "PROFILE BENGKEL";//gant nama
     private final String MY_BUSINESS_HUTANG = "HUTANG";
     private final String MY_BUSINESS_PIUTANG = "PIUTANG";
     private final String MY_BUSINESS_ASET= "ASET";
+    private final String MY_BUSINESS_CUSTOMER= "CUSTOMER";//tambahan
+    private final String MY_BUSINESS_PAYROLL= "PAYROLL";//tambahan
+
     private final String LOKASI_PART= "LOKASI PART";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,7 +189,10 @@ public class MenuActivity extends AppActivity {
                     Intent intent = new Intent(MenuActivity.this, KontrolLayanan_Activity.class);
                     startActivity(intent);
                 }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_DASHBOARD)){
-
+                    Intent intent = new Intent(MenuActivity.this, WebActivity.class);
+                    intent.putExtra("title","Dashboard");
+                    intent.putExtra("url","https://m.otomotives.com/#/?"+getWebUrl());
+                    startActivity(intent);
                 }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_INSPEKSI)){
                     Intent intent = new Intent(MenuActivity.this, KontrolLayanan_Activity.class);
                     startActivity(intent);
@@ -192,7 +200,9 @@ public class MenuActivity extends AppActivity {
                     Intent intent = new Intent(MenuActivity.this, PenjualanPart_Activity.class);
                     startActivity(intent);
                 }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_JURNAL)){
-                    Intent intent = new Intent(MenuActivity.this, DaftarJurnal_Activity.class);
+                    Intent intent = new Intent(MenuActivity.this, WebActivity.class);
+                    intent.putExtra("title","Dashboard");
+                    intent.putExtra("url","https://m.otomotives.com/#/jurnal?"+getWebUrl());
                     startActivity(intent);
                 }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_MEKANIK)){
                     Intent intent = new Intent(MenuActivity.this, DaftarJurnal_Activity.class);
@@ -245,16 +255,31 @@ public class MenuActivity extends AppActivity {
         }
         //Business
         else if(item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_HUTANG)){
-            Intent intent = new Intent(MenuActivity.this, Hutang_Activity.class);
+            /*Intent intent = new Intent(MenuActivity.this, Hutang_Activity.class);
+            startActivity(intent);*/
+            Intent intent = new Intent(MenuActivity.this, WebActivity.class);
+            intent.putExtra("title","Dashboard");
+            intent.putExtra("url","https://m.otomotives.com/#/hutang?"+getWebUrl());
             startActivity(intent);
         }else if(item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_PIUTANG)){
-            Intent intent = new Intent(MenuActivity.this, Piutang_Activity.class);
+           /* Intent intent = new Intent(MenuActivity.this, Piutang_Activity.class);
+            startActivity(intent);*/
+            Intent intent = new Intent(MenuActivity.this, WebActivity.class);
+            intent.putExtra("title","Dashboard");
+            intent.putExtra("url","https://m.otomotives.com/#/piutang?"+getWebUrl());
             startActivity(intent);
         }else if(item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_BILLING)){
 
         }else if(item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_INFO_USAHA)){
 
         }else if(item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_ASET)){
+            Intent intent = new Intent(MenuActivity.this, WebActivity.class);
+            intent.putExtra("title","Dashboard");
+            intent.putExtra("url","https://m.otomotives.com/#/aset?"+getWebUrl());
+            startActivity(intent);
+        }else if(item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_CUSTOMER)){
+
+        }else if(item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_PAYROLL)){
 
         }
             //Pengaturan
@@ -315,6 +340,9 @@ public class MenuActivity extends AppActivity {
         }else if(item.getTitle().toString().equalsIgnoreCase(KOMISI_PART)){
             Intent intent = new Intent(MenuActivity.this, KomisiPart_Activity.class);
             startActivity(intent);
+        }else if(item.getTitle().toString().equalsIgnoreCase(KOMISI_PEMBAYARAN)){
+            Intent intent = new Intent(MenuActivity.this, KomisiPart_Activity.class);
+            startActivity(intent);
         }
 
         else if (item.getItemId() == R.id.action_logout){
@@ -339,7 +367,12 @@ public class MenuActivity extends AppActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
+    private String getWebUrl(){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("user=").append( UtilityAndroid.getSetting(getApplicationContext(), "user", "") );;
+        stringBuilder.append("&token=").append( UtilityAndroid.getSetting(getApplicationContext(), "session", "") );
+        return stringBuilder.toString();
+    }
     private int count ;
     private Handler handler;
     private void banner(){
@@ -412,11 +445,13 @@ public class MenuActivity extends AppActivity {
     public final String M_ANTAR_JEMPUT = "ANTAR JEMPUT";
     public final String M_BOOKING = "BOOKING";
     public final String M_CHECK_IN = "CHECK IN";
+    public final String M_COLLECTION = "COLLECTION";
     public final String M_INSPEKSI = "INSPEKSI";
     public final String M_JUAL_PARTS = "JUAL PARTS";
     public final String M_JURNAL = "JURNAL";
     public final String M_DASHBOARD = "DASHBOARD";
     public final String M_MEKANIK = "MEKANIK";
+    public final String M_PENUGASAN_MEKANIK = "PENUGASAN MEKANIK";
     public final String M_MENUNGGU = "MENUNGGU";
     public final String M_MESSAGE = "MESSAGE";
     public final String M_MY_CODE = "MY CODE";
@@ -433,23 +468,24 @@ public class MenuActivity extends AppActivity {
     }
 
     public void populate(GridView v){
-        addHome(1,R.drawable.m_antarjemput, M_ANTAR_JEMPUT);
+        //addHome(1,R.drawable.m_antarjemput, M_ANTAR_JEMPUT);
         addHome(2,R.drawable.m_booking, M_BOOKING);
         addHome(3,R.drawable.m_checkin, M_CHECK_IN);
+        addHome(3,R.drawable.m_collection, M_COLLECTION);
+        addHome(7,R.drawable.speed, M_DASHBOARD);
         addHome(4,R.drawable.m_inspeksi, M_INSPEKSI);
         addHome(5,R.drawable.m_jualpart, M_JUAL_PARTS);
         addHome(6,R.drawable.m_jurnal, M_JURNAL);
-        addHome(7,R.drawable.speed, M_DASHBOARD);
         addHome(8,R.drawable.m_mekanik, M_MEKANIK);
-        addHome(9,R.drawable.m_menunggu, M_MENUNGGU);
         addHome(10,R.drawable.m_message, M_MESSAGE);
-        //addHome(11,R.drawable.m_mycode, M_MY_CODE);
+        addHome(11,R.drawable.m_mycode, M_MY_CODE);
         addHome(12,R.drawable.m_part, M_PART);
         addHome(13,R.drawable.m_pembayaran, M_PEMBAYARAN);
+        addHome(13,R.drawable.m_penugasan, M_PENUGASAN_MEKANIK);
         addHome(14,R.drawable.m_stock, M_STOCK_OPNAME);
         addHome(15,R.drawable.m_terimapart, M_TERIMA_PARTS);
         addHome(15,R.drawable.m_tugaspart, M_TUGAS_PARTS);
-
+        //addHome(9,R.drawable.m_menunggu, M_MENUNGGU);
         nPopulate.add(Nson.newObject().set("id", 11).set("icon", R.drawable.m_mycode).set("text", M_MY_CODE));
 
 
@@ -504,6 +540,8 @@ public class MenuActivity extends AppActivity {
             subMenu.add(MY_BUSINESS_HUTANG);
             subMenu.add(MY_BUSINESS_PIUTANG);
             subMenu.add(MY_BUSINESS_ASET);
+            subMenu.add(MY_BUSINESS_CUSTOMER);
+            subMenu.add(MY_BUSINESS_PAYROLL);
         }
         if (getAccess(PENGATURAN)) {
             subMenu = menu.addSubMenu(PENGATURAN);
@@ -533,6 +571,7 @@ public class MenuActivity extends AppActivity {
             subMenu.add(KOMISI_JASA_LAIN);
             subMenu.add(KOMISI_LAYANAN);
             subMenu.add(KOMISI_PART);
+            subMenu.add(KOMISI_PEMBAYARAN);
         }
 //        if (getAccess(LOKASI_PART)) {
 //            menu.add(LOKASI_PART);
