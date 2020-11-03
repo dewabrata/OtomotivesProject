@@ -191,7 +191,7 @@ public class MenuActivity extends AppActivity {
                 }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_DASHBOARD)){
                     Intent intent = new Intent(MenuActivity.this, WebActivity.class);
                     intent.putExtra("title","Dashboard");
-                    intent.putExtra("url","https://m.otomotives.com/#/?token=349385835008985");
+                    intent.putExtra("url","https://m.otomotives.com/#/?"+getWebUrl());
                     startActivity(intent);
                 }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_INSPEKSI)){
                     Intent intent = new Intent(MenuActivity.this, KontrolLayanan_Activity.class);
@@ -202,7 +202,7 @@ public class MenuActivity extends AppActivity {
                 }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_JURNAL)){
                     Intent intent = new Intent(MenuActivity.this, WebActivity.class);
                     intent.putExtra("title","Dashboard");
-                    intent.putExtra("url","https://m.otomotives.com/#/jurnal?token=349385835008985");
+                    intent.putExtra("url","https://m.otomotives.com/#/jurnal?"+getWebUrl());
                     startActivity(intent);
                 }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_MEKANIK)){
                     Intent intent = new Intent(MenuActivity.this, DaftarJurnal_Activity.class);
@@ -259,14 +259,14 @@ public class MenuActivity extends AppActivity {
             startActivity(intent);*/
             Intent intent = new Intent(MenuActivity.this, WebActivity.class);
             intent.putExtra("title","Dashboard");
-            intent.putExtra("url","https://m.otomotives.com/#/hutang?token=349385835008985");
+            intent.putExtra("url","https://m.otomotives.com/#/hutang?"+getWebUrl());
             startActivity(intent);
         }else if(item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_PIUTANG)){
            /* Intent intent = new Intent(MenuActivity.this, Piutang_Activity.class);
             startActivity(intent);*/
             Intent intent = new Intent(MenuActivity.this, WebActivity.class);
             intent.putExtra("title","Dashboard");
-            intent.putExtra("url","https://m.otomotives.com/#/piutang?token=349385835008985");
+            intent.putExtra("url","https://m.otomotives.com/#/piutang?"+getWebUrl());
             startActivity(intent);
         }else if(item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_BILLING)){
 
@@ -275,7 +275,7 @@ public class MenuActivity extends AppActivity {
         }else if(item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_ASET)){
             Intent intent = new Intent(MenuActivity.this, WebActivity.class);
             intent.putExtra("title","Dashboard");
-            intent.putExtra("url","https://m.otomotives.com/#/aset?token=349385835008985");
+            intent.putExtra("url","https://m.otomotives.com/#/aset?"+getWebUrl());
             startActivity(intent);
         }else if(item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_CUSTOMER)){
 
@@ -367,7 +367,12 @@ public class MenuActivity extends AppActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
+    private String getWebUrl(){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("user=").append( UtilityAndroid.getSetting(getApplicationContext(), "user", "") );;
+        stringBuilder.append("&token=").append( UtilityAndroid.getSetting(getApplicationContext(), "session", "") );
+        return stringBuilder.toString();
+    }
     private int count ;
     private Handler handler;
     private void banner(){
