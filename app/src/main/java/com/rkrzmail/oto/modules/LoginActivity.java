@@ -42,11 +42,14 @@ public class LoginActivity extends AppActivity {
                 if (find(R.id.user, EditText.class).getText().toString().isEmpty() || find(R.id.tl_user, TextInputLayout.class).isHelperTextEnabled()) {
                     showWarning("Nomor Handphone Harus Di isi");
                     find(R.id.user, EditText.class).requestFocus();
-                } else if (find(R.id.password, EditText.class).getText().toString().isEmpty()) {
+               /* } else if (find(R.id.password, EditText.class).getText().toString().isEmpty()) {
                     showWarning("Otp Harus Di isi");
-                    find(R.id.password, EditText.class).requestFocus();
+                    find(R.id.password, EditText.class).requestFocus();*/
                 } else {
-                    login();
+                    //login();//lanjut
+                    requestOtp();
+
+
                 }
             }
         });
@@ -132,7 +135,11 @@ public class LoginActivity extends AppActivity {
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     showSuccess("Sukses Request OTP, Silahkan Login");
-                   // find(R.id.password, EditText.class).setText("123456");
+                    // find(R.id.password, EditText.class).setText("123456");
+
+                    Intent intent = new Intent(getActivity(), Otp_Activity.class);
+                    intent.putExtra("user",  formatPhone(  find(R.id.user, EditText.class).getText().toString().replaceAll("[^0-9]+", "")));
+                    startActivity(intent);
                 } else {
                     if(result.get("message").asString().contains("Gagal")){
                         showError(result.get("message").asString());

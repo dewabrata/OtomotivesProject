@@ -2,10 +2,16 @@ package com.rkrzmail.oto;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.naa.data.UtilityAndroid;
 import com.rkrzmail.oto.modules.LoginActivity;
+
+import java.io.File;
+
+import pl.droidsonroids.gif.GifDrawable;
+import pl.droidsonroids.gif.GifImageView;
 
 public class MainActivity extends AppActivity {
 
@@ -21,6 +27,14 @@ public class MainActivity extends AppActivity {
         if (String.valueOf(refreshedToken).length()>=13){
             UtilityAndroid.setSetting(this, "FCMID", refreshedToken);
         }
+
+        final GifImageView gifView = (GifImageView) findViewById(R.id.gif);
+        try {
+            GifDrawable gifDrawable = new GifDrawable(getResources().openRawResource(R.raw.spash1));
+            gifView.setImageDrawable(gifDrawable);
+
+        }catch (Exception e){}
+
 
 //        RotateAnimation anim = new RotateAnimation(0f, 350f, 15f, 15f);
 //        anim.setInterpolator(new LinearInterpolator());
@@ -42,7 +56,7 @@ public class MainActivity extends AppActivity {
                 }
                 finish();
             }
-        },3000);
+        },2000);
     }
 
     @Override

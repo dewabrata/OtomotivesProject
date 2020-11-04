@@ -34,7 +34,9 @@
             android:textAlignment="center"
             android:textColor="@color/grey_900"
             android:textSize="17sp"
-            android:textStyle="bold" />
+            android:textStyle="bold" >
+            <requestFocus/>
+        </EditText>
 
         <Space
             android:layout_width="10dp"

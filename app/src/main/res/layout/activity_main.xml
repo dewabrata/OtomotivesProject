@@ -55,11 +55,12 @@
                 android:padding="10dp"></FrameLayout>
         </FrameLayout>
         <FrameLayout
-            android:background="@color/blue_bg"
+            android:background="@drawable/a_backgroud"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <ImageView
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="128dp"
                 android:layout_gravity="top|center_horizontal"
@@ -67,8 +68,9 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="152dp"
-                android:layout_gravity="top|center_horizontal"
-                android:src="@drawable/menutop"></ImageView>
+                android:layout_gravity="top"
+                android:scaleType="fitXY"
+                android:src="@drawable/a_header"></ImageView>
 
             <GridView
                 android:id="@+id/gridView"

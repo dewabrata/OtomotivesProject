@@ -469,22 +469,22 @@ public class MenuActivity extends AppActivity {
 
     public void populate(GridView v){
         //addHome(1,R.drawable.m_antarjemput, M_ANTAR_JEMPUT);
-        addHome(2,R.drawable.m_booking, M_BOOKING);
-        addHome(3,R.drawable.m_checkin, M_CHECK_IN);
-        addHome(3,R.drawable.m_collection, M_COLLECTION);
-        addHome(7,R.drawable.speed, M_DASHBOARD);
-        addHome(4,R.drawable.m_inspeksi, M_INSPEKSI);
-        addHome(5,R.drawable.m_jualpart, M_JUAL_PARTS);
-        addHome(6,R.drawable.m_jurnal, M_JURNAL);
-        addHome(8,R.drawable.m_mekanik, M_MEKANIK);
-        addHome(10,R.drawable.m_message, M_MESSAGE);
-        addHome(11,R.drawable.m_mycode, M_MY_CODE);
-        addHome(12,R.drawable.m_part, M_PART);
-        addHome(13,R.drawable.m_pembayaran, M_PEMBAYARAN);
-        addHome(13,R.drawable.m_penugasan, M_PENUGASAN_MEKANIK);
-        addHome(14,R.drawable.m_stock, M_STOCK_OPNAME);
-        addHome(15,R.drawable.m_terimapart, M_TERIMA_PARTS);
-        addHome(15,R.drawable.m_tugaspart, M_TUGAS_PARTS);
+        addHome(2,R.drawable.x_booking, M_BOOKING);
+        addHome(3,R.drawable.x_checkin, M_CHECK_IN);
+        addHome(3,R.drawable.x_collection, M_COLLECTION);
+        addHome(7,R.drawable.x_dashboard, M_DASHBOARD);
+        addHome(4,R.drawable.x_inpeksi, M_INSPEKSI);
+        addHome(5,R.drawable.x_jualpart, M_JUAL_PARTS);
+        addHome(6,R.drawable.x_jurnal, M_JURNAL);
+        addHome(8,R.drawable.x_mekanik, M_MEKANIK);
+        addHome(10,R.drawable.x_message, M_MESSAGE);
+        addHome(11,R.drawable.x_mycode, M_MY_CODE);
+        addHome(12,R.drawable.x_part, M_PART);
+        addHome(13,R.drawable.x_pembayaran, M_PEMBAYARAN);
+        addHome(13,R.drawable.x_penuasan, M_PENUGASAN_MEKANIK);
+        addHome(14,R.drawable.x_stock, M_STOCK_OPNAME);
+        addHome(15,R.drawable.x_terimapart, M_TERIMA_PARTS);
+        addHome(15,R.drawable.x_tugaspart, M_TUGAS_PARTS);
         //addHome(9,R.drawable.m_menunggu, M_MENUNGGU);
         nPopulate.add(Nson.newObject().set("id", 11).set("icon", R.drawable.m_mycode).set("text", M_MY_CODE));
 
