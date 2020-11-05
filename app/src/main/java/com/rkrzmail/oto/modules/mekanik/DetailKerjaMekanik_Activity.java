@@ -27,6 +27,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.bengkel.Pembayaran_Activity;
 import com.rkrzmail.oto.modules.checkin.Checkin2_Activity;
 import com.rkrzmail.oto.modules.checkin.Checkin3_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
@@ -113,6 +114,7 @@ public class DetailKerjaMekanik_Activity extends AppActivity {
         find(R.id.btn_lanjut_kerjaMekanik).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setSelanjutnya();
             }
         });
 
@@ -248,7 +250,7 @@ public class DetailKerjaMekanik_Activity extends AppActivity {
                 args.put("id", idCheckin);
                 args.put("mekanik", mekanik);
 
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturperintahkerjamekanik"), args));
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     idAturPerintah = String.valueOf(result.get("data").get(0));
 
@@ -280,7 +282,7 @@ public class DetailKerjaMekanik_Activity extends AppActivity {
                 args.put("aktivitas", "PAUSE");
                 args.put("iddetail", idAturPerintah);
 
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturperintahkerjamekanik"), args));
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
 
                 } else {
@@ -313,7 +315,7 @@ public class DetailKerjaMekanik_Activity extends AppActivity {
 
 
 
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturperintahkerjamekanik"), args));
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
 
 
@@ -343,7 +345,7 @@ public class DetailKerjaMekanik_Activity extends AppActivity {
                 args.put("aktivitas", "RESTART");
                 args.put("id", idCheckin);
 
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturperintahkerjamekanik"), args));
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
 
 
@@ -510,13 +512,24 @@ public class DetailKerjaMekanik_Activity extends AppActivity {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(""), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewinspeksi"), args));
+                args.put("check", "check");
+                args.put("id", idCheckin);
             }
 
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-
+                    result = result.get("data");
+                    if (result.get(0).get("CHECKIN_DETAIL").asInteger() != 0) {
+                       Intent intent = new Intent (getActivity(), InspectionFinal_Activity.class);
+                       intent.putExtra("data", idCheckin);
+                       startActivity(intent);
+                    } else {
+                        Intent intent = new Intent (getActivity(), Pembayaran_Activity.class);
+                        intent.putExtra("data", idCheckin);
+                        startActivity(intent);
+                    }
                 } else {
                     showInfo("Gagal");
                 }
