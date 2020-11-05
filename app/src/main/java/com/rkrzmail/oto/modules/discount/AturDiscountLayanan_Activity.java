@@ -34,7 +34,7 @@ import static com.rkrzmail.utils.ConstUtils.DATA;
 
 public class AturDiscountLayanan_Activity extends AppActivity {
 
-    private MultiSelectionSpinner spPekerjaan;
+    private Spinner spPekerjaan;
     private String lokasi;
     private List<String> listChecked = new ArrayList<>();
     private ViewGroup layoutCheckBox;
@@ -74,18 +74,6 @@ public class AturDiscountLayanan_Activity extends AppActivity {
 
         find(R.id.cb_tenda_discLayanan, CheckBox.class).setOnCheckedChangeListener(listener);
         find(R.id.cb_bengkel_discLayanan, CheckBox.class).setOnCheckedChangeListener(listener);
-        setMultiSelectionSpinnerFromApi(spPekerjaan, "nama",
-                "PEKERJAAN", "viewmst", new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
-                    @Override
-                    public void selectedIndices(List<Integer> indices) {
-
-                    }
-
-                    @Override
-                    public void selectedStrings(List<String> strings) {
-
-                    }
-                }, "PEKERJAAN", "");
     }
 
     @SuppressLint("SetTextI18n")
@@ -104,12 +92,12 @@ public class AturDiscountLayanan_Activity extends AppActivity {
             flagMssg = true;
         }
         if (i.hasExtra(DATA)) {
+            setSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN", n.get("PEKERJAAN").asString());
             layanan = n.get("NAMA_LAYANAN").asString();
             setSpStatus(n.get("STATUS").asString());
             find(R.id.et_discPart_discLayanan, EditText.class).setText(n.get("DISKON").asString());
             find(R.id.cb_bengkel_discLayanan, CheckBox.class).setChecked(flagBengkel);
             find(R.id.cb_tenda_discLayanan, CheckBox.class).setChecked(flagTenda);
-            find(R.id.cb_mssg_discLayanan, CheckBox.class).setChecked(flagMssg);
 
             find(R.id.btn_hapus_discLayanan, Button.class).setVisibility(View.VISIBLE);
             find(R.id.btn_hapus_discLayanan, Button.class).setOnClickListener(new View.OnClickListener() {
@@ -126,6 +114,7 @@ public class AturDiscountLayanan_Activity extends AppActivity {
                 }
             });
         } else {
+            setSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN");
             find(R.id.btn_simpan_discLayanan, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -144,10 +133,9 @@ public class AturDiscountLayanan_Activity extends AppActivity {
 
                 args.put("action", "add");
                 args.put("status", find(R.id.sp_status, Spinner.class).getSelectedItem().toString());
-                args.put("pekerjaan", spPekerjaan.getSelectedItemsAsString());
+                args.put("pekerjaan", spPekerjaan.getSelectedItem().toString());
                 args.put("nama", find(R.id.sp_paketLayanan_discLayanan, Spinner.class).getSelectedItem().toString());
                 args.put("diskon", find(R.id.et_discPart_discLayanan, EditText.class).getText().toString());
-                args.put("pesan", find(R.id.cb_mssg_discLayanan, CheckBox.class).isChecked() ? "YA" : "TIDAK");
                 for(String str : listChecked){
                     args.put("lokasi", str);
                 }
@@ -178,10 +166,9 @@ public class AturDiscountLayanan_Activity extends AppActivity {
                 args.put("action", "update");
                 args.put("id", id.get("ID").asString());
                 args.put("status", find(R.id.sp_status, Spinner.class).getSelectedItem().toString());
-                args.put("pekerjaan", spPekerjaan.getSelectedItemsAsString());
+                args.put("pekerjaan", spPekerjaan.getSelectedItem().toString());
                 args.put("nama", find(R.id.sp_paketLayanan_discLayanan, Spinner.class).getSelectedItem().toString());
                 args.put("diskon", find(R.id.et_discPart_discLayanan, EditText.class).getText().toString());
-                args.put("pesan", find(R.id.cb_mssg_discLayanan, CheckBox.class).isChecked() ? "YA" : "TIDAK");
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturdiskonlayanan"), args));
             }

@@ -24,9 +24,7 @@
                 android:layout_marginTop="@dimen/paddingMedium"
                 android:layout_marginBottom="@dimen/paddingMedium"
                 android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingStart="@dimen/paddingMedium"
-                android:paddingEnd="@dimen/paddingMedium">
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_height="wrap_content"
@@ -54,40 +52,6 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/paddingMedium"
-                android:layout_marginBottom="@dimen/paddingMedium"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingStart="@dimen/paddingMedium"
-                android:paddingEnd="@dimen/paddingMedium">
-
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:text="AKTIVITAS"
-                    android:layout_width="0dp"
-                    android:layout_weight="3"
-                    android:textColor="@color/grey_900"
-                    android:textStyle="bold"
-                    android:textSize="12sp"/>
-
-                <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_height="34dp"
-                    android:layout_weight="6"
-                    android:background="@drawable/background_edittext">
-
-                    <Spinner
-                        android:id="@+id/sp_aktifitas_discJasa"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:textAlignment="center" />
-
-                </RelativeLayout>
-
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -95,9 +59,7 @@
                 android:layout_marginTop="@dimen/paddingMedium"
                 android:layout_marginBottom="@dimen/paddingMedium"
                 android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingStart="@dimen/paddingMedium"
-                android:paddingEnd="@dimen/paddingMedium">
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_height="wrap_content"
@@ -181,6 +143,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:visibility="gone"
                 android:text="MESSAGE PELANGGAN" />
 
             <include layout="@layout/layout_btn_simpan_hapus"/>

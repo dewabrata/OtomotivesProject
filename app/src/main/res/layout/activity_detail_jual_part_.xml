@@ -15,16 +15,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="5dp">
+            android:padding="@dimen/paddingMedium">
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/tl_hpp"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
                 android:visibility="gone"
                 android:hint="HPP">
 
@@ -41,9 +39,9 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
+
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
+
                 android:hint="HARGA JUAL">
 
                 <EditText
@@ -60,9 +58,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
+                android:visibility="gone"
                 android:hint="DISCOUNT">
 
                 <EditText
@@ -81,9 +77,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
                 android:hint="JUMLAH"
                 app:helperTextEnabled="true">
 
@@ -101,7 +95,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_margin="10dp"
+                android:layout_marginTop="@dimen/paddingMedium"
                 android:background="@drawable/btn_rounded_accent"
                 android:text="@string/simpan_uppercase"
                 android:textColor="@android:color/white" />

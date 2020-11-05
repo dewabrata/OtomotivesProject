@@ -231,8 +231,10 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    setSetting("noponsel", etNoPonsel.getText().toString().replaceAll("[^0-9]+", ""));
                     showSuccess("Registrasi Berhasil");
+                    Intent i = new Intent();
+                    i.putExtra("NO_PONSEL", etNoPonsel.getText().toString().replaceAll("[^0-9]+", ""));
+                    setResult(RESULT_OK, i);
                     finish();
                 } else {
                     if (result.get("message").asString().contains("Duplicate entry")) {

@@ -242,6 +242,7 @@ public class LoginActivity extends AppActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == 10) {
             showInfo("Akun telah di buat Silahkan Login");
+            find(R.id.user, EditText.class).setText(data.getStringExtra("NO_PONSEL"));
             find(R.id.user, EditText.class).requestFocus();
         }
     }

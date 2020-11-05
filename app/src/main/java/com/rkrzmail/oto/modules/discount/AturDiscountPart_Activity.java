@@ -109,17 +109,16 @@ public class AturDiscountPart_Activity extends AppActivity{
             flagMssg = true;
         }
         if (i.hasExtra(DATA)) {
+            setSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN", nson.get("PEKERJAAN").asString());
             setSpinnerOffline(statusList, find(R.id.sp_status, Spinner.class), nson.get("STATUS").asString());
             etDiscJasa.setText(nson.get("DISCOUNT_JASA_PASANG").asString());
             etDiscPart.setText(nson.get("DISCOUNT_PART").asString());
             etNamaPart.setText(nson.get("NAMA_PART").asString());
             etNoPart.setText(nson.get("NO_PART").asString());
-            //spPekerjaan.setSelection(nson.get("PEKERJAAN").asStringArray(), true);
             Log.d("DISC___", "id: " + nson.get("ID"));
             Log.d("DISC___", "flagTenda: " + flagTenda + "\n" + "flagBengkel : " + flagBengkel + "\n" + "flagMssg : " + flagMssg);
             find(R.id.cb_bengkel_discPart, CheckBox.class).setChecked(flagBengkel);
             find(R.id.cb_tenda_discPart, CheckBox.class).setChecked(flagTenda);
-            find(R.id.cb_mssg_discPart, CheckBox.class).setChecked(flagMssg);
             find(R.id.btn_hapus_discPart, Button.class).setVisibility(View.VISIBLE);
             find(R.id.btn_hapus_discPart, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -158,6 +157,7 @@ public class AturDiscountPart_Activity extends AppActivity{
                 }
             });
         } else {
+            setSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN");
             setSpinnerOffline(statusList, find(R.id.sp_status, Spinner.class), "");
             find(R.id.btn_simpan_discPart, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -210,7 +210,6 @@ public class AturDiscountPart_Activity extends AppActivity{
                 args.put("partid", String.valueOf(partId));
                 args.put("diskonpart", etDiscPart.getText().toString());
                 args.put("diskonjasa", etDiscJasa.getText().toString());
-                args.put("pesan", find(R.id.cb_mssg_discPart, CheckBox.class).isChecked() ? "YA" : "TIDAK");
                 args.put("lokasi", lokasi);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_DISKON_PART), args));
@@ -243,7 +242,6 @@ public class AturDiscountPart_Activity extends AppActivity{
                 args.put("pekerjaan", spPekerjaan.getSelectedItem().toString());
                 args.put("diskonpart", etDiscPart.getText().toString());
                 args.put("diskonjasa", etDiscJasa.getText().toString());
-                args.put("pesan", find(R.id.cb_mssg_discPart, CheckBox.class).isChecked() ? "YA" : "TIDAK");
                 for (String lok : listChecked) {
                     args.put("lokasi", lok);
                 }

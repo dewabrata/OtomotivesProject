@@ -21,6 +21,7 @@ public class MultiSelectionSpinner extends Spinner implements
 
     public interface OnMultipleItemsSelectedListener {
         void selectedIndices(List<Integer> indices);
+
         void selectedStrings(List<String> strings);
     }
 
@@ -81,9 +82,13 @@ public class MultiSelectionSpinner extends Spinner implements
         builder.setNegativeButton("Batal", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                simple_adapter.clear();
-                simple_adapter.add(_itemsAtStart);
-                System.arraycopy(mSelectionAtStartBool, 0, mSelectionBool, 0, mSelectionAtStartBool.length);
+                try{
+                    simple_adapter.clear();
+                    simple_adapter.add(_itemsAtStart);
+                    System.arraycopy(mSelectionAtStartBool, 0, mSelectionBool, 0, mSelectionAtStartBool.length);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         });
         builder.show();
@@ -241,18 +246,21 @@ public class MultiSelectionSpinner extends Spinner implements
     }
 
     public String getSelectedItemsAsString() {
-        StringBuilder sb = new StringBuilder();
-        boolean foundOne = false;
-
-        for (int i = 0; i < _items.length; ++i) {
-            if (mSelectionBool[i]) {
-                if (foundOne) {
-                    sb.append(", ");
+        try {
+            StringBuilder sb = new StringBuilder();
+            boolean foundOne = false;
+            for (int i = 0; i < _items.length; ++i) {
+                if (mSelectionBool[i]) {
+                    if (foundOne) {
+                        sb.append(", ");
+                    }
+                    foundOne = true;
+                    sb.append(_items[i]);
                 }
-                foundOne = true;
-                sb.append(_items[i]);
             }
+            return sb.toString();
+        } catch (Exception e) {
+            return "";
         }
-        return sb.toString();
     }
 }

@@ -275,18 +275,12 @@
                 android:id="@+id/cb_tambahPartJasa_kerjaMekanik"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
                 android:text="KONFIRMASI PENAMBAHAN PART DAN JASA" />
 
             <CheckBox
                 android:id="@+id/cb_buangPart_kerjaMekanik"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
                 android:text="BUANG PART BEKAS" />
 
         </LinearLayout>
@@ -302,7 +296,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/ic_location"
+                    app:srcCompat="@drawable/icon_location"
                     android:backgroundTint="@color/transparent"/>
 
                 <ImageView
@@ -311,7 +305,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:backgroundTint="@color/transparent"
-                    app:srcCompat="@drawable/icon_stopwatch" />
+                    android:tint="@android:color/black"
+                    app:srcCompat="@drawable/icon_oto" />
 
                 <ImageView
                     android:id="@+id/imgPause"
@@ -319,7 +314,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:backgroundTint="@color/transparent"
-                    app:srcCompat="@drawable/icon_stopwatch" />
+                    app:srcCompat="@drawable/icon_paused" />
 
                 <ImageView
                     android:id="@+id/imgStart"
@@ -327,7 +322,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:backgroundTint="@color/transparent"
-                    app:srcCompat="@drawable/icon_stopwatch" />
+                    app:srcCompat="@drawable/icon_start" />
 
                 <ImageView
                     android:id="@+id/imgStop"
@@ -335,7 +330,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:backgroundTint="@color/transparent"
-                    app:srcCompat="@drawable/icon_stopwatch" />
+                    app:srcCompat="@drawable/icon_stop" />
 
             </LinearLayout>
 

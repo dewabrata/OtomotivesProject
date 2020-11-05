@@ -50,6 +50,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rincian_pembayaran);
+        initToolbar();
         initComponent();
     }
 
@@ -83,7 +84,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
     }
 
     private void initComponent() {
-        initToolbar();
+        initRecylerviewPartPembelian();
         loadData();
         viewRincianPembayaran();
         find(R.id.btn_jasa_part, Button.class).setOnClickListener(new View.OnClickListener() {
@@ -149,7 +150,9 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                         loadDataRincianLayanan(result);
                     }
                     if (isJualPart) {
+                        partList.asArray().addAll(result.get("data").asArray());
                         loadRincianJualPart(result);
+                        rvPartJualPart.getAdapter().notifyDataSetChanged();
                     }
                 } else {
                     result.get("message").asString();
@@ -237,17 +240,33 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         find(R.id.row_penyimpanan).setVisibility(View.GONE);
     }
 
+    @SuppressLint("SetTextI18n")
     private void loadRincianJualPart(Nson result) {
-        initRecylerviewPartPembelian();
-        find(R.id.tv_nama_pelanggan_jual_part, TextView.class).setText(formatRp(result.get("NAMA_PELANGGAN").asString()));
-        find(R.id.tv_no_ponsel_jual_part, TextView.class).setText(formatRp(result.get("NO_PONSEL").asString()));
-        find(R.id.tv_frek, TextView.class).setText(formatRp(result.get("FREKWENSI").asString()));
-        find(R.id.tv_nama_usaha_jual_part, TextView.class).setText(formatRp(result.get("NAMA_USAHA").asString()));
-        find(R.id.tv_harga_part_jual_part, TextView.class).setText(formatRp(result.get("HARGA_PART").asString()));
-        find(R.id.tv_harga_disc_jual_part, TextView.class).setText(formatRp(result.get("DISC_PART").asString()));
-        find(R.id.tv_total_jual_part, TextView.class).setText(formatRp(result.get("").asString()));
-        find(R.id.tv_total_ppn_jual_part, TextView.class).setText(formatRp(result.get("PPN").asString()));
-        find(R.id.tv_total_penjualan_jual_part, TextView.class).setText(formatRp(result.get("").asString()));
+        int totalPart = 0;
+        double discPart = 0;
+        double totalDisc = 0;
+
+        result = result.get("data");
+        for (int i = 0; i < result.size(); i++) {
+            totalPart += result.get(i).get("TOTAL").asInteger();
+            discPart += result.get(i).get("DISCOUNT").asDouble();
+
+            find(R.id.tv_nama_pelanggan_jual_part, TextView.class).setText(result.get(i).get("NAMA_PELANGGAN").asString());
+            find(R.id.tv_no_ponsel_jual_part, TextView.class).setText(result.get(i).get("NO_PONSEL").asString());
+            find(R.id.tv_frek_jual_part, TextView.class).setText(result.get(i).get("FREKWENSI").asString());
+            find(R.id.tv_nama_usaha_jual_part, TextView.class).setText(result.get(i).get("NAMA_USAHA").asString());
+        }
+        if(discPart > 0){
+            totalDisc = (discPart / 100) * totalPart;
+        }
+        double totalKeseluruhan = totalPart + totalDisc;
+
+        find(R.id.tv_harga_part_jual_part, TextView.class).setText(RP + formatRp(String.valueOf(totalPart)));
+        find(R.id.tv_harga_disc_jual_part, TextView.class).setText(RP + formatRp(String.valueOf(totalDisc)));
+
+        find(R.id.tv_total_jual_part, TextView.class).setText(RP + formatRp(String.valueOf(totalKeseluruhan)));
+        find(R.id.tv_total_ppn_jual_part, TextView.class).setText(RP + formatRp(result.get("PPN").asString()));
+        find(R.id.tv_total_penjualan_jual_part, TextView.class).setText(RP + formatRp(String.valueOf(totalKeseluruhan)));
     }
 
     private void viewJasaPart() {
@@ -278,7 +297,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         rvPartJualPart = findViewById(R.id.recyclerView_rincian_pembelian);
         rvPartJualPart.setHasFixedSize(true);
         rvPartJualPart.setLayoutManager(new LinearLayoutManager(this));
-        rvPart.setAdapter(new NikitaRecyclerAdapter(partList, R.layout.item_part_booking3_checkin3) {
+        rvPartJualPart.setAdapter(new NikitaRecyclerAdapter(partList, R.layout.item_part_booking3_checkin3) {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);

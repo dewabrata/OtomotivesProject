@@ -274,7 +274,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
-                        android:inputType="textCapSentences" />
+                        android:inputType="textCapSentences"
+                        android:padding="@dimen/spacing_large"/>
 
                 </android.support.design.widget.TextInputLayout>
 

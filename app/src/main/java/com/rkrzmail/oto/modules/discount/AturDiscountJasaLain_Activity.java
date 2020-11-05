@@ -34,7 +34,7 @@ import static com.rkrzmail.utils.ConstUtils.DATA;
 public class AturDiscountJasaLain_Activity extends AppActivity {
 
     private EditText etDiscPart;
-    private Spinner spAktifitas, spKelompokPart, spPekerjaan;
+    private Spinner spKelompokPart, spPekerjaan;
     private String aktivitas = "", kelompokPart = "", pekerjaan = "";
     private List<String> partList = new ArrayList<>(), aktivitasList = new ArrayList<>(), dummy = new ArrayList<>();
 
@@ -56,7 +56,6 @@ public class AturDiscountJasaLain_Activity extends AppActivity {
     private void initComponent() {
         etDiscPart = findViewById(R.id.et_discPart_discJasa);
         spPekerjaan = findViewById(R.id.sp_pekerjaan_discJasa);
-        spAktifitas = findViewById(R.id.sp_aktifitas_discJasa);
         spKelompokPart = findViewById(R.id.sp_kelompokPart_discJasa);
         etDiscPart.addTextChangedListener(new PercentFormat(etDiscPart));
 
@@ -75,8 +74,6 @@ public class AturDiscountJasaLain_Activity extends AppActivity {
                 args.put("status", find(R.id.sp_status, Spinner.class).getSelectedItem().toString());
                 args.put("pekerjaan", spPekerjaan.getSelectedItem().toString());
                 args.put("kategori", spKelompokPart.getSelectedItem().toString());
-                args.put("aktivitas", spAktifitas.getSelectedItem().toString());
-                args.put("pesan", find(R.id.cb_mssg_discJasa, CheckBox.class).isChecked() ? "YA" : "TIDAK");
                 args.put("diskon", etDiscPart.getText().toString());
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturdiskonjasalain"), args));
@@ -102,7 +99,6 @@ public class AturDiscountJasaLain_Activity extends AppActivity {
         Intent intent = getIntent();
         if (intent.hasExtra(DATA)) {
             setSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN", data.get("PEKERJAAN").asString());
-            setSpinnerFromApi(spAktifitas, "cari", "", "viewjasalain", "AKTIVITAS", data.get("AKTIVITAS").asString());
             setSpinnerFromApi(spKelompokPart, "search", " ", "viewjasalain", "NAMA", data.get("KATEGORI_JASA_LAIN").asString());
             setSpStatus(data.get("STATUS").asString());
             etDiscPart.setText(data.get("DISC_JASA").asString());
@@ -123,7 +119,6 @@ public class AturDiscountJasaLain_Activity extends AppActivity {
         } else {
             setSpStatus("");
             setSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN", "");
-            setSpinnerFromApi(spAktifitas, "cari", "", "viewjasalain", "AKTIVITAS", "");
             setSpinnerFromApi(spKelompokPart, "search", " ", "viewjasalain", "NAMA", "");
             find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -148,8 +143,6 @@ public class AturDiscountJasaLain_Activity extends AppActivity {
                 args.put("status", find(R.id.sp_status, Spinner.class).getSelectedItem().toString());
                 args.put("pekerjaan", spPekerjaan.getSelectedItem().toString());
                 args.put("kategori", spKelompokPart.getSelectedItem().toString());
-                //args.put("aktifitas", spAktifitas.getSelectedItem().toString());
-                args.put("pesan", find(R.id.cb_mssg_discJasa, CheckBox.class).isChecked() ? "Y" : "N");
                 args.put("diskon", etDiscPart.getText().toString());
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturdiskonjasalain"), args));

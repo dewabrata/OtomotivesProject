@@ -91,7 +91,7 @@ public class DaftarJualPart_Activity extends AppActivity {
 
                         viewHolder.find(R.id.tv_noPart_jualPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
                         viewHolder.find(R.id.tv_namaPart_jualPart, TextView.class).setText(nListArray.get(position).get("NAMA_PART").asString());
-                        viewHolder.find(R.id.tv_harga_jualPart, TextView.class).setText(nListArray.get(position).get("HARGA_JUAL").asString());
+                        viewHolder.find(R.id.tv_harga_jualPart, TextView.class).setText(RP + formatRp(nListArray.get(position).get("HARGA_PART").asString()));
                         viewHolder.find(R.id.tv_disc_jualPart, TextView.class).setText(nListArray.get(position).get("DISC").asString());
                         viewHolder.find(R.id.tv_jumlah_jualPart, TextView.class).setText(nListArray.get(position).get("JUMLAH").asString());
                         viewHolder.find(R.id.tv_total_jualPart, TextView.class).setText(RP + formatRp(nListArray.get(position).get("TOTAL").asString()));

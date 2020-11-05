@@ -216,10 +216,19 @@ public class DetailJualPart_Activity extends AppActivity {
 
     private void saveData() {
         int jumlah = 0;
+        double net = 0;
+
         if (etJumlah.getText().toString().isEmpty()) {
             jumlah++;
         } else {
             jumlah = Integer.parseInt(etJumlah.getText().toString());
+        }
+        int total = jumlah * Integer.parseInt(formatOnlyNumber(etHargaJual.getText().toString()));
+        if(!etDisc.getText().toString().isEmpty()){
+            double disc = Double.parseDouble(formatOnlyNumber(etDisc.getText().toString()));
+            net =  (disc / 100) * total;
+        }else{
+            net = total;
         }
 
         parts.set("NAMA_PELANGGAN", getData.get("NAMA_PELANGGAN").asString());
@@ -229,12 +238,12 @@ public class DetailJualPart_Activity extends AppActivity {
         parts.set("PART_ID", getData.get("PART_ID").asString());
         parts.set("NO_PART", getData.get("NO_PART").asString());
         parts.set("NAMA_PART", getData.get("NAMA_PART").asString());
-        parts.set("HARGA_JUAL", etHargaJual.getText().toString());
+        parts.set("HARGA_PART", formatOnlyNumber(etHargaJual.getText().toString()));
         parts.set("JUMLAH", etJumlah.getText().toString());
-        parts.set("DISC", etDisc.getText().toString());
-        parts.set("'LOKASI_PART_ID'", idLokasiPart);
-        parts.set("TOTAL", jumlah * Integer.parseInt(formatOnlyNumber(etHargaJual.getText().toString())));
-        parts.set("NET", jumlah * Integer.parseInt(formatOnlyNumber(etHargaJual.getText().toString())));
+        parts.set("DISC", formatOnlyNumber(etDisc.getText().toString()));
+        parts.set("LOKASI_PART_ID", idLokasiPart);
+        parts.set("TOTAL", total);
+        parts.set("NET", net);
 
         Intent intent = new Intent();
         intent.putExtra(PART, parts.toJson());
