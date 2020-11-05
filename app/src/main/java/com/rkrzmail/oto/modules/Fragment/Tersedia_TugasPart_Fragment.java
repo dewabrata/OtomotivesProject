@@ -205,7 +205,9 @@ public class Tersedia_TugasPart_Fragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_DETAIL)
+        if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_DETAIL){
             viewPartTersediaCheckin();
+            viewPartPermintaanJualPart();
+        }
     }
 }

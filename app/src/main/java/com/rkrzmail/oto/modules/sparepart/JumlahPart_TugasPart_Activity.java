@@ -26,7 +26,6 @@ import java.util.Objects;
 import static com.rkrzmail.utils.APIUrls.ATUR_TUGAS_PART;
 import static com.rkrzmail.utils.APIUrls.VIEW_SPAREPART;
 import static com.rkrzmail.utils.ConstUtils.DATA;
-import static com.rkrzmail.utils.ConstUtils.ID;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
 import static com.rkrzmail.utils.ConstUtils.TUGAS_PART_BATAL;
 import static com.rkrzmail.utils.ConstUtils.TUGAS_PART_PERMINTAAN;
@@ -42,9 +41,8 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
     private String
             nopol = "", noAntrian = "",
             namaPelanggan = "", status = "", layanan = "",
-            jamAntrian = "", partId ="", group = "", id = "", noHp = "";
-    String mGroup = "";
-    private String idLokasiPart = "", idTugasPat = "";
+            jamAntrian = "", partId ="", group = "", noHp = "";
+    private String idLokasiPart = "", idTugasPat = "", idDetail = "";
     private boolean isJualPart = false;
 
     private int counScanPart = 0;
@@ -79,7 +77,7 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
         Log.d("Status__", "loadData: " + nson);
 
         idTugasPat = nson.get("TUGAS_PART_ID").asString();
-        id =  nson.get("DETAIL_ID").asString();
+        idDetail =  nson.get("DETAIL_ID").asString();
         noHp = nson.get("NO_PONSEL").asString();
         nopol = nson.get("NOPOL").asString();
         noAntrian = nson.get("NO_ANTRIAN").asString();
@@ -180,7 +178,7 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
                 args.put("group", group);
                 args.put("idTugasPart", idTugasPat);
 
-                args.put("detailId", id);
+                args.put("detailId", idDetail);
                 if (isPermintaan) {
                     args.put("jumlahRequest", etJumlahRequest.getText().toString());
                     args.put("idLokasiPart", idLokasiPart);

@@ -47,8 +47,8 @@ public class Status_TugasPart_Activity extends AppActivity {
     private boolean isTersedia = false;
     private boolean isJualPart = false;
     private String mGroup = "";
-    private String mekanik = "", tanggalCheckin = "", nopol = "", noHp = "";
-    private String idLokasiPart = "", idCheckinDetail = "", idTugasPat = "";
+    private String mekanik = "", tanggal = "", nopol = "", noHp = "";
+    private String idLokasiPart = "", idDetail = "", idTugasPat = "";
     private int jumlahSerahTerima = 0;
 
     @Override
@@ -118,9 +118,9 @@ public class Status_TugasPart_Activity extends AppActivity {
 
         noHp = n.get("NO_PONSEL").asString();
         idLokasiPart = n.get("LOKASI_PART_ID").asString();
-        idCheckinDetail = n.get("CHECKIN_DETAIL_ID").asString();
+        idDetail = n.get("DETAIL_ID").asString();
         nopol = n.get("NOPOL").asString();
-        tanggalCheckin = isJualPart ? n.get("TANGGAL").asString() : n.get("TANGGAL_CHECKIN").asString();
+        tanggal = isJualPart ? n.get("TANGGAL").asString() : n.get("TANGGAL_CHECKIN").asString();
         viewTugasPart();
     }
 
@@ -135,12 +135,13 @@ public class Status_TugasPart_Activity extends AppActivity {
                         viewHolder.find(R.id.tv_merk_statusTp, TextView.class).setText(nListArray.get(position).get("MERK").asString());
                         viewHolder.find(R.id.tv_namaPart_statusTp, TextView.class).setText(nListArray.get(position).get("NAMA_PART").asString());
                         viewHolder.find(R.id.tv_noPart_statusTp, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
-                        viewHolder.find(R.id.tv_jumlah, TextView.class).setText(nListArray.get(position).get("JUMLAH_PERMINTAAN").asString());
-
                         if (isPermintaan) {
                             viewHolder.find(R.id.tv_kode_lokasi_or_tersedia, TextView.class).
                                     setText(nListArray.get(position).get("KODE").asString());
+                            viewHolder.find(R.id.tv_jumlah, TextView.class).setText(nListArray.get(position).get("JUMLAH_PERMINTAAN").asString());
+
                         } else {
+                            viewHolder.find(R.id.tv_jumlah, TextView.class).setText(nListArray.get(position).get("JUMLAH").asString());
                             viewHolder.find(R.id.tv_kode_lokasi_or_tersedia, TextView.class).
                                     setText(nListArray.get(position).get("JUMLAH_TERSEDIA").asString());
                         }
@@ -180,7 +181,7 @@ public class Status_TugasPart_Activity extends AppActivity {
                 args.put("mekanik", etMekanik.getText().toString());
                 args.put("nopol", nopol);
                 args.put("namaPelanggan", etPelanggan.getText().toString());
-                args.put("tanggalCheckin", tanggalCheckin);
+                args.put("tanggal", tanggal);
                 args.put("noHp", noHp);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_TUGAS_PART), args));
@@ -196,7 +197,7 @@ public class Status_TugasPart_Activity extends AppActivity {
                             partSerahTerimaList.add(Nson.newObject()
                                     .set("DETAIL_ID", nListArray.get(i).get("DETAIL_ID").asString())
                                     .set("JUMLAH", nListArray.get(i).get("JUMLAH_TERSEDIA").asString())
-                                    .set("MGROUP", mGroup));
+                                    .set("GROUP", mGroup));
                         }
                     }
                     Log.d("PART__", "SERAHTERIMA: " + partSerahTerimaList);
@@ -236,12 +237,6 @@ public class Status_TugasPart_Activity extends AppActivity {
                 }
             }
         });
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        finish();
     }
 
     @Override
