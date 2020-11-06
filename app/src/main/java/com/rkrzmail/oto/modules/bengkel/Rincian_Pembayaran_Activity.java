@@ -147,6 +147,15 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     if (isLayanan || isDp) {
+                        result = result.get("data");
+                        for (int i = 0; i < result.size(); i++) {
+                            if (!result.get(i).get("NAMA_PART").asString().isEmpty()) {
+                                partList.add(result.get(i));
+                            }
+                            if (!result.get(i).get("KELOMPOK_PART").asString().isEmpty()) {
+                                jasaList.add(result.get(i));
+                            }
+                        }
                         loadDataRincianLayanan(result);
                     }
                     if (isJualPart) {
