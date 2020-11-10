@@ -68,18 +68,16 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
     private Bitmap ttd;
     private SeekBar seekBar;
 
-    private Nson mekanikArray = Nson.newArray();
+    private Nson mekanikArray = Nson.newArray(), idMekanikArray = Nson.newArray();
     private Nson getData;
     private Nson penugasanMekanikList = Nson.newArray();
 
     private boolean isSign = false, isBatal = false;
-    private boolean isExpressAndStandard = false, isExtra = false, isHplus = false;
-
+    private boolean isExpressAndStandard = false, isExtra = false, isHplus = false, isDp = false;
     private long oneDay = 86400000;
-
     private String waktuLayananHplusExtra = "", jenisLayanan = "", waktuLayananStandartExpress = "";
     private String tglEstimasi = "", waktuEstimasi = "", antrianSebelumnya = "";
-
+    private int idMekanik = 0;
     private int idAntrian = 0;
     private int waktuPesan = 0;
 
@@ -149,12 +147,10 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         } else if (getData.get("JENIS_ANTRIAN").asString().equals("H+")) {
             isHplus = true;
             find(R.id.et_dp_checkin4, EditText.class).setText(RP + formatRp(getData.get("DP").asString()));
-            find(R.id.et_sisa_checkin4, EditText.class).setText(RP + formatRp(getData.get("DP").asString()));
-
+            find(R.id.et_sisa_checkin4, EditText.class).setText(RP + formatRp(getData.get("SISA").asString()));
             Tools.setViewAndChildrenEnabled(find(R.id.ly_estimasi_selesai, LinearLayout.class), true);
-            //find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).setEnabled(true);
-            //find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setEnabled(false);
             find(R.id.tv_disable_estimasi).setVisibility(View.GONE);
+            find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setEnabled(false);
         } else {
             isExpressAndStandard = true;
             viewAntrianStandartExpress(getData.get("JENIS_ANTRIAN").asString());
@@ -165,8 +161,6 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         } catch (Exception e) {
             showError(e.getMessage());
         }
-
-        Log.d(TAG, "initComponent: " + getData);
     }
 
     private void initListener() {
@@ -605,8 +599,9 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 args.put("action", "add");
                 args.put("check", "2");
                 args.put("id", nson.get("id").asString());
-                args.put("status", status);
+                args.put("status", isHplus ? "TUNGGU DP" : status);
                 args.put("mekanik", namaMekanik);
+                args.put("mekanikId", String.valueOf(idMekanik));
                 args.put("antrian", antrian);
                 args.put("noAntrian", find(R.id.et_no_antrian_checkin4, EditText.class).getText().toString());
                 args.put("levelBbm", levelBbm);
@@ -629,11 +624,16 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    if (status.equalsIgnoreCase("BATAL CHECKIN 4")) {
-                        showSuccess("Layanan di Batalkan, Data Di masukkan Ke Daftar Kontrol Layanan");
-                    } else {
-                        showSuccess("Data Pelanggan Berhasil Di masukkan Ke Daftar Kontrol Layanan");
+                    if(isHplus){
+                        showSuccess("MOHON BAYARKAN UANG MUKA PELAYANAN " + jenisLayanan + ". RINCIAN BIAYA & UANG MUKA");
+                    }else{
+                        if (status.equalsIgnoreCase("BATAL CHECKIN 4")) {
+                            showSuccess("Layanan di Batalkan, Data Di masukkan Ke Daftar Kontrol Layanan");
+                        } else {
+                            showSuccess("Data Pelanggan Berhasil Di masukkan Ke Daftar Kontrol Layanan");
+                        }
                     }
+
                     setResult(RESULT_OK);
                     finish();
                 } else {
@@ -673,9 +673,9 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                     }
                     mekanikArray.asArray().clear();
                     mekanikArray.add("--PILIH--");
-
+                    idMekanikArray.add(0);
                     for (int i = 0; i < data.get("data").size(); i++) {
-                        //idMekanikArray.add(Nson.newObject().set("ID", data.get("data").get(i).get("ID").asString()).set("NAMA", data.get("data").get(i).get("NAMA").asString()));
+                        idMekanikArray.add(Nson.newObject().set("ID", data.get("data").get(i).get("ID").asString()).set("NAMA", data.get("data").get(i).get("NAMA").asString()));
                         mekanikArray.add(data.get("data").get(i).get("NAMA").asString());
                     }
 
@@ -712,6 +712,9 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 if (!parent.getSelectedItem().toString().equals("--PILIH--")) {
                     if (isExpressAndStandard) {
                         loadAvailMekanik(parent.getSelectedItem().toString(), find(R.id.tv_jenis_antrian, TextView.class).getText().toString());
+                    }
+                    if(idMekanikArray.get(position).get("NAMA").asString().equals(parent.getSelectedItem().toString())){
+                        idMekanik = idMekanikArray.get(position).get("ID").asInteger();
                     }
                 }
             }

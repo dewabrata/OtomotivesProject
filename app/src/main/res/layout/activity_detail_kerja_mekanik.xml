@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    tools:context=".modules.mekanik.DetailKerjaMekanik_Activity">
+    tools:context=".modules.mekanik.AturKerjaMekanik_Activity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -46,6 +46,7 @@
             </LinearLayout>
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/tl_jam_home"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -62,6 +63,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/tl_alamat"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -127,6 +129,7 @@
 
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/tl_no_kunci"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -228,6 +231,7 @@
             </LinearLayout>
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/tl_pengambilan"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -243,62 +247,48 @@
 
             </android.support.design.widget.TextInputLayout>
 
-                <LinearLayout
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:hint="@string/sisa_waktu_uppercase">
+
+                <EditText
+                    android:id="@+id/et_sisa_waktu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginTop="10dp">
+                    android:textSize="14sp"
+                    android:text="@string/_00_00_00"
+                    android:enabled="false" />
 
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/recyclerView_part"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/recyclerView_jasa"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                </LinearLayout>
+            </android.support.design.widget.TextInputLayout>
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/background_edittext"
-            android:padding="@dimen/paddingSemiLarge"
-            android:layout_marginTop="@dimen/paddingSemiLarge"
-            android:layout_marginBottom="@dimen/paddingSemiLarge">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/background_edittext"
+                android:padding="@dimen/paddingSemiLarge"
+                android:layout_marginTop="@dimen/paddingSemiLarge"
+                android:layout_marginBottom="@dimen/paddingSemiLarge">
 
             <CheckBox
-                android:id="@+id/cb_tambahPartJasa_kerjaMekanik"
+                android:id="@+id/cb_tambahPartJasa"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:enabled="false"
                 android:text="KONFIRMASI PENAMBAHAN PART DAN JASA" />
 
             <CheckBox
-                android:id="@+id/cb_buangPart_kerjaMekanik"
+                android:id="@+id/cb_buangPart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:enabled="false"
                 android:text="BUANG PART BEKAS" />
 
         </LinearLayout>
-
-            <TextView
-                android:id="@+id/tv_timer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="00:00"
-                android:textColor="@color/grey_900"
-                android:textStyle="bold"
-                android:textSize="12sp"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:layout_marginTop="@dimen/paddingSemiLarge"
-                android:layout_marginBottom="@dimen/paddingSemiLarge"
-                android:background="@drawable/background_edittext"
-                android:padding="10dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -307,40 +297,31 @@
                 android:layout_marginTop="@dimen/paddingSemiLarge"
                 android:layout_marginBottom="@dimen/paddingSemiLarge">
 
-                <ImageView
+                <ImageButton
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     app:srcCompat="@drawable/icon_location"
                     android:backgroundTint="@color/transparent"/>
 
-                <ImageView
-                    android:id="@+id/imgRestart"
+                <ImageButton
+                    android:id="@+id/imgBtn_note"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:backgroundTint="@color/transparent"
-                    android:tint="@android:color/black"
-                    app:srcCompat="@drawable/icon_oto" />
+                    app:srcCompat="@drawable/icon_note" />
 
-                <ImageView
-                    android:id="@+id/imgPause"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/transparent"
-                    app:srcCompat="@drawable/icon_paused" />
-
-                <ImageView
-                    android:id="@+id/imgStart"
+                <ImageButton
+                    android:id="@+id/imgBtn_start"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:backgroundTint="@color/transparent"
                     app:srcCompat="@drawable/icon_start" />
 
-                <ImageView
-                    android:id="@+id/imgStop"
+                <ImageButton
+                    android:id="@+id/imgBtn_stop"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -348,33 +329,6 @@
                     app:srcCompat="@drawable/icon_stop" />
 
             </LinearLayout>
-
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:hint="CATATAN MEKANIK">
-
-                <EditText
-                    android:id="@+id/et_catatan_mekanik"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:enabled="false" />
-
-            </android.support.design.widget.TextInputLayout>
-
-
-            <Button
-                android:id="@+id/btn_lanjut_kerjaMekanik"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_margin="10dp"
-                android:background="@drawable/btn_rounded_accent"
-                android:text="Lanjut"
-                android:textColor="@android:color/white" />
 
         </LinearLayout>
 
@@ -385,7 +339,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
+
         <include layout="@layout/toolbar"/>
+
     </android.support.design.widget.AppBarLayout>
 
 

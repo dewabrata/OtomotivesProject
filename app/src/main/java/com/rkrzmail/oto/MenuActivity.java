@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
@@ -37,7 +38,7 @@ import com.rkrzmail.oto.modules.antar_jemput.AntarJemput_Activity;
 import com.rkrzmail.oto.modules.mekanik.BiayaMekanik2Activity;
 import com.rkrzmail.oto.modules.LoginActivity;
 import com.rkrzmail.oto.modules.komisi.KomisiPart_Activity;
-import com.rkrzmail.oto.modules.mekanik.InspectionFinal_Activity;
+import com.rkrzmail.oto.modules.mekanik.InspeksiMekanik_Activity;
 import com.rkrzmail.oto.modules.mekanik.PerintahKerjaMekanik_Activity;
 import com.rkrzmail.oto.modules.sparepart.MenungguPart_Activity;
 import com.rkrzmail.oto.modules.bengkel.Pembayaran_Activity;
@@ -167,6 +168,8 @@ public class MenuActivity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getActivity().getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         Drawable iconOto = getResources().getDrawable(R.drawable.icon_oto);
@@ -203,7 +206,7 @@ public class MenuActivity extends AppActivity {
                     intent.putExtra("url", "https://m.otomotives.com/#/?" + getWebUrl());
                     startActivity(intent);
                 } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_INSPEKSI)) {
-                    Intent intent = new Intent(MenuActivity.this, InspectionFinal_Activity.class);
+                    Intent intent = new Intent(MenuActivity.this, InspeksiMekanik_Activity.class);
                     startActivity(intent);
                 } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_JUAL_PARTS)) {
                     Intent intent = new Intent(MenuActivity.this, PenjualanPart_Activity.class);

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <include layout="@layout/toolbar"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.design.widget.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:hint="CATATAN"
+        android:layout_marginStart="@dimen/paddingSemiLarge"
+        android:layout_marginEnd="@dimen/paddingSemiLarge">
+
+        <EditText
+            android:id="@+id/et_catatan_mekanik"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:singleLine="false"
+            android:layout_gravity="top|left"
+            android:textSize="14sp"
+            android:maxLines="5"
+            tools:ignore="RtlHardcoded" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:id="@+id/btn_simpan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_margin="10dp"
+        android:background="@drawable/btn_rounded_accent"
+        android:text="@string/simpan_uppercase"
+        android:textColor="@android:color/white"
+        android:layout_marginStart="@dimen/paddingSemiLarge"
+        android:layout_marginEnd="@dimen/paddingSemiLarge"/>
+
+
+
+</LinearLayout>

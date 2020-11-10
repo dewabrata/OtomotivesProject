@@ -31,70 +31,92 @@
             android:visibility="gone"
             card_view:ignore="ContentDescription,RtlSymmetry" />
 
-        <TableLayout
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:stretchColumns="*"
-            android:padding="15dp">
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:gravity="center">
 
-            <TableRow>
+            <TextView
+                android:id="@+id/tv_no"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="No. "
+                android:paddingStart="@dimen/paddingMedium"
+                android:textColor="@color/grey_900"
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:visibility="gone"/>
 
-                <TextView
-                    android:id="@+id/tv_namaPart_booking3_checkin3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="NAMA PART"
-                    android:layout_gravity="start"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textSize="12sp"/>
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stretchColumns="*"
+                android:padding="15dp">
 
-            </TableRow>
+                <TableRow>
 
-            <TableRow android:layout_marginTop="5dp">
+                    <TextView
+                        android:id="@+id/tv_namaPart_booking3_checkin3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="NAMA PART"
+                        android:layout_gravity="start"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12sp" />
 
-                <TextView
-                    android:id="@+id/tv_noPart_booking3_checkin3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:text="NO. PART"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textSize="12sp"/>
+                </TableRow>
 
-                <TextView
-                    android:id="@+id/tv_merk_booking3_checkin3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:text="MERK"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textSize="12sp"/>
+                <TableRow android:layout_marginTop="5dp">
 
-            </TableRow>
+                    <TextView
+                        android:id="@+id/tv_noPart_booking3_checkin3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:text="NO. PART"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12sp" />
 
-            <TableRow android:layout_marginTop="5dp">
+                    <TextView
+                        android:id="@+id/tv_merk_booking3_checkin3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:text="MERK"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12sp" />
 
-                <TextView
-                    android:id="@+id/tv_hargaNet_booking3_checkin3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="HARGA NET"
-                    android:layout_gravity="start"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textSize="12sp"/>
+                </TableRow>
 
-                <TextView
-                    android:id="@+id/tv_jasaNet_booking3_checkin3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:text="JASA NET"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textSize="12sp"/>
+                <TableRow android:layout_marginTop="5dp">
 
-            </TableRow>
+                    <TextView
+                        android:id="@+id/tv_hargaNet_booking3_checkin3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="HARGA NET"
+                        android:layout_gravity="start"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12sp" />
 
-        </TableLayout>
+                    <TextView
+                        android:id="@+id/tv_jasaNet_booking3_checkin3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:text="JASA NET"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12sp" />
+
+                </TableRow>
+
+            </TableLayout>
+
+        </LinearLayout>
 
     </FrameLayout>
 

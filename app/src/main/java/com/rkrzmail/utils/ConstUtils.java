@@ -6,6 +6,7 @@ import com.rkrzmail.oto.AppActivity;
 public class ConstUtils {
 
     //ARGUMENTS PARENT
+    public static final String ERROR_INFO = "Terjadi Kesalahan Silahkan Coba Kembali";
     public static final String TUGAS_PART_TERSEDIA = "TUGAS_PART_TERSEDIA";
     public static final String TUGAS_PART_PERMINTAAN = "TUGAS_PART_PERMINTAAN";
     public static final String TUGAS_PART_BATAL = "TUGAS_PART_BATAL";

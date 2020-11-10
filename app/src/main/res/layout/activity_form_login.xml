@@ -90,7 +90,7 @@
                          android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                        <AutoCompleteTextView
+                        <EditText
                             android:textColor="@android:color/white"
                             android:id="@+id/user"
                             android:layout_width="match_parent"
@@ -101,27 +101,7 @@
                             android:maxLines="1"
                             android:singleLine="true" >
 
-                            <requestFocus/>
-                        </AutoCompleteTextView>
-
-                    </android.support.design.widget.TextInputLayout>
-
-                    <android.support.design.widget.TextInputLayout
-
-                        android:visibility="invisible"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <EditText
-                             android:id="@+id/password"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="OTP"
-                            android:maxLength="6"
-                            android:imeOptions="actionUnspecified"
-                            android:inputType="number"
-                            android:maxLines="1"
-                            android:singleLine="true" />
+                        </EditText>
 
                     </android.support.design.widget.TextInputLayout>
 
@@ -142,30 +122,32 @@
                         android:textColor="@android:color/white" />
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:orientation="vertical"
                         android:layout_gravity="center">
 
                         <TextView
                             android:layout_width="wrap_content"
+                            android:layout_weight="3"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
                             android:layout_marginBottom="10dp"
                             android:textStyle="bold"
                             android:textSize="15sp"
-                            android:text="Bengkel Anda Belum Terdaftar ? "/>
+                            android:layout_gravity="center"
+                            android:text="Bengkel Anda Belum Terdaftar ? "
+                            android:layout_marginTop="@dimen/paddingSemiLarge"/>
 
                         <TextView
                             android:id="@+id/registrasi"
                             android:layout_width="wrap_content"
+                            android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginBottom="10dp"
                             android:layout_marginStart="10dp"
-                            android:layout_gravity="center"
                             android:textStyle="bold"
-                            android:textSize="15sp"/>
+                            android:layout_gravity="center"
+                            android:textSize="15sp"
+                            android:layout_marginTop="@dimen/paddingSemiLarge"/>
 
 
                     </LinearLayout>

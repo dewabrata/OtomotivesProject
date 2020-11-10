@@ -44,7 +44,7 @@ public class JasaExternal_Activity extends AppActivity {
         watcher(find(R.id.img_clear2, ImageButton.class), find(R.id.et_biayaJasa, EditText.class));
         Log.d(TAG, "Jasa External : " + nson);
 
-        String waktuDefault = Checkin3_Activity.totalWaktu("00", nson.get("WAKTU_KERJA_JAM").asString(), nson.get("WAKTU_KERJA_MENIT").asString());
+        String waktuDefault =totalWaktuKerja("00", nson.get("WAKTU_KERJA_JAM").asString(), nson.get("WAKTU_KERJA_MENIT").asString());
         find(R.id.et_waktuDefault, EditText.class).setText(waktuDefault);
         find(R.id.btn_lanjut, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override

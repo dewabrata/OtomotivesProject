@@ -17,7 +17,6 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.checkin.DetailKontrolLayanan_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
@@ -57,7 +56,7 @@ public class PerintahKerjaMekanik_Activity extends AppActivity {
                         super.onBindViewHolder(viewHolder, position);
 
                         viewHolder.find(R.id.tv_jenis_kerjaMekanik, TextView.class).setText(nListArray.get(position).get("JENIS_KENDARAAN").asString());
-                        viewHolder.find(R.id.tv_nopol_kerjaMekanik, TextView.class).setText(nListArray.get(position).get("NOPOL").asString());
+                        viewHolder.find(R.id.tv_nopol_kerjaMekanik, TextView.class).setText(formatNopol(nListArray.get(position).get("NOPOL").asString()));
                         viewHolder.find(R.id.tv_layanan_kerjaMekanik, TextView.class).setText(nListArray.get(position).get("LAYANAN").asString());
                         viewHolder.find(R.id.tv_namaP_kerjaMekanik, TextView.class).setText(nListArray.get(position).get("NAMA_PELANGGAN").asString());
                         viewHolder.find(R.id.tv_noAntrian_kerjaMekanik, TextView.class).setText(nListArray.get(position).get("NO_ANTRIAN").asString());
@@ -66,7 +65,7 @@ public class PerintahKerjaMekanik_Activity extends AppActivity {
                 }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(Nson parent, View view, int position) {
-                        Intent i = new Intent(getActivity(), DetailKerjaMekanik_Activity.class);
+                        Intent i = new Intent(getActivity(), AturKerjaMekanik_Activity.class);
                         i.putExtra(DATA, nListArray.get(position).toJson());
                         startActivityForResult(i, REQUEST_DETAIL);
                     }
@@ -104,6 +103,5 @@ public class PerintahKerjaMekanik_Activity extends AppActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK && requestCode == REQUEST_DETAIL)
             viewPerintahMekanik("");
-
     }
 }

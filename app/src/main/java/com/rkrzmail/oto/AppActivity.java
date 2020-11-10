@@ -882,4 +882,60 @@ public class AppActivity extends AppCompatActivity {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
     }
+
+    @SuppressLint("DefaultLocale")
+    public String totalWaktuKerja(String hari, String jam, String menit) {
+        boolean isSubsString = false;
+        String[] result = new String[3];
+        result[0] = hari;
+        result[1] = jam;
+        result[2] = menit;
+
+        int incrementWaktu = 0;
+        int calculateJam = 0;
+        int calculateHari = 0;
+
+        for (String s : result) {
+            if (s.contains(":")) {
+                isSubsString = true;
+                break;
+            }
+        }
+
+        if (!menit.equals("0")) {
+            int minutes = Integer.parseInt(menit);
+            while (minutes >= 60) {
+                incrementWaktu++;
+                minutes -= 60;
+            }
+            if (incrementWaktu > 0) {
+                calculateJam = incrementWaktu;
+                result[2] = String.valueOf(minutes);
+            }
+        } else {
+            result[2] = "0";
+        }
+        if (!jam.equals("0") || calculateJam > 0) {
+            incrementWaktu = 0;
+            int finalJam = Integer.parseInt(jam) + calculateJam;
+            result[1] = String.valueOf(finalJam);
+            while (finalJam >= 24) {
+                incrementWaktu++;
+                finalJam -= 24;
+            }
+            if (incrementWaktu > 0) {
+                calculateHari = incrementWaktu;
+            }
+        } else {
+            result[1] = "0";
+        }
+        if (!hari.equals("0") || calculateHari > 0) {
+            int finalJam = Integer.parseInt(hari) + calculateHari;
+            result[0] = String.valueOf(finalJam);
+        } else {
+            result[0] = "0";
+        }
+
+        return String.format("%02d:%02d:%02d", Integer.parseInt(result[0]), Integer.parseInt(result[1]), Integer.parseInt(result[2]));
+    }
 }

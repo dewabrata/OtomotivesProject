@@ -1,10 +1,12 @@
 package com.rkrzmail.oto.modules.mekanik;
 
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -25,8 +27,13 @@ import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
 import java.util.Map;
+import java.util.Objects;
 
-public class InspectionFinal_Activity extends AppActivity {
+import static com.rkrzmail.utils.APIUrls.VIEW_INSPEKSI;
+import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
+
+public class InspeksiMekanik_Activity extends AppActivity {
 
     private RecyclerView rvInspection;
     private SearchView mSearchView;
@@ -35,18 +42,19 @@ public class InspectionFinal_Activity extends AppActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_basic);
+        initToolbar();
+        initComponent();
     }
 
+    @SuppressLint("NewApi")
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Pengembalian Part");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Inspeksi");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initComponent() {
-
-        initToolbar();
         rvInspection = findViewById(R.id.recyclerView);
         rvInspection.setLayoutManager(new LinearLayoutManager(this));
         rvInspection.setHasFixedSize(true);
@@ -55,35 +63,35 @@ public class InspectionFinal_Activity extends AppActivity {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
 
-                viewHolder.find(R.id.tv_jenis_ins, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_nopol_ins, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_layanan_ins, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_namaP_ins, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_noAntrian_ins, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_jamS_ins, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_jenis_ins, TextView.class).setText(nListArray.get(position).get("JENIS_KENDARAAN").asString());
+                viewHolder.find(R.id.tv_nopol_ins, TextView.class).setText(formatNopol(nListArray.get(position).get("NOPOL").asString()));
+                viewHolder.find(R.id.tv_layanan_ins, TextView.class).setText(nListArray.get(position).get("LAYANAN").asString());
+                viewHolder.find(R.id.tv_nama_mekanik, TextView.class).setText(nListArray.get(position).get("MEKANIK").asString());
+                viewHolder.find(R.id.tv_noAntrian_ins, TextView.class).setText(nListArray.get(position).get("NO_ANTRIAN").asString());
+                viewHolder.find(R.id.tv_jamS_ins, TextView.class).setText(nListArray.get(position).get("JAM_SELESAI").asString());
 
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
-                Intent intent = new Intent(getActivity(), PointLayanan_Activity.class);
-                intent.putExtra("data", nListArray.get(position).toJson());
-                startActivity(intent);
-                finish();
+                Intent intent = new Intent(getActivity(), AturInspeksi_Activity.class);
+                intent.putExtra(DATA, nListArray.get(position).toJson());
+                startActivityForResult(intent, REQUEST_DETAIL);
             }
         }));
-        catchData();
+
+        viewInspeksi();
     }
 
-    private void catchData() {
+    private void viewInspeksi() {
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result;
 
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(""), args));
-
+                args.put("action", "view");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_INSPEKSI), args));
             }
             @Override
             public void runUI() {
@@ -132,5 +140,13 @@ public class InspectionFinal_Activity extends AppActivity {
         };
         mSearchView.setOnQueryTextListener(queryTextListener);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK && requestCode == REQUEST_DETAIL){
+            viewInspeksi();
+        }
     }
 }

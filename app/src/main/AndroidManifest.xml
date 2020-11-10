@@ -56,7 +56,7 @@
         <activity android:name=".modules.antar_jemput.AntarJemput_Activity" />
         <activity android:name=".modules.sparepart.AturOutSource_Activity" />
         <activity android:name=".modules.sparepart.OutSource_Activity" />
-        <activity android:name=".modules.mekanik.InspectionFinal_Activity" />
+        <activity android:name=".modules.mekanik.InspeksiMekanik_Activity" />
         <activity android:name=".modules.bengkel.CashCollection_Activity" />
         <activity android:name=".modules.bengkel.Collection_Activity" />
         <activity android:name=".modules.sparepart.UpdatePartKosong_Activity" />
@@ -64,9 +64,9 @@
         <activity android:name=".modules.sparepart.DetailTerimaPart_Activity" />
         <activity android:name=".modules.checkin.AturCheckout_Activity" />
         <activity android:name=".modules.checkin.CheckOut_Activity" />
-        <activity android:name=".modules.mekanik.PointLayanan_Activity" />
+        <activity android:name=".modules.mekanik.AturInspeksi_Activity" />
         <activity android:name=".modules.sparepart.JumlahPart_TugasPart_Activity" />
-        <activity android:name=".modules.mekanik.DetailKerjaMekanik_Activity" />
+        <activity android:name=".modules.mekanik.AturKerjaMekanik_Activity" />
         <activity android:name=".modules.mekanik.PerintahKerjaMekanik_Activity" />
         <activity android:name=".modules.bengkel.AturPembayaran_Activity" />
         <activity android:name=".modules.bengkel.Rincian_Pembayaran_Activity" />

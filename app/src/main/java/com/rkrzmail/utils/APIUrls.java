@@ -3,6 +3,8 @@ package com.rkrzmail.utils;
 public class APIUrls {
 
     //VIEW
+    public static final String VIEW_INSPEKSI = "viewinspeksi";
+    public static final String VIEW_KELUHAN = "viewkeluhan";
     public static final String VIEW_PERINTAH_KERJA_MEKANIK = "viewperintahkerjamekanik";
     public static final String VIEW_TERIMA_PART = "viewterimapart";
     public static final String VIEW_MASTER = "viewmst";
@@ -24,6 +26,7 @@ public class APIUrls {
     public static final String VIEW_TUGAS_PART = "viewtugaspart";
     public static final String VIEW_MY_CODE = "mycode";
     //INSERT, UPDATE, DELETE
+    public static final String ATUR_INSPEKSI = "aturinspeksi";
     public static final String SET_LOGIN = "login";
     public static final String SET_CHECKIN = "checkin" ;
     public static final String SET_ANTRIAN = "antrian";

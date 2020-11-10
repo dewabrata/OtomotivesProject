@@ -5,8 +5,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
@@ -45,7 +43,6 @@ import com.rkrzmail.utils.Tools;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -106,6 +103,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             batasanKm = 0,
             batasanBulan = 0,
             jumlahPartWajib = 0;
+    private String layananId = "";
     private int idAntrian = 0;
     private int waktuPesan = 0;
     private int hargaPartLayanan = 0; // afs, recall, otomotives
@@ -336,7 +334,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                     args.put("biayaLayanan", formatOnlyNumber(find(R.id.tv_biayaLayanan_checkin, TextView.class).getText().toString()));
                     //inserting waktu layanan part
                 }
-
+                args.put("layananId", layananId);
                 args.put("waktuLayananHari", waktuLayanan.substring(0, 2));
                 args.put("waktuLayananJam", waktuLayanan.substring(3, 5));
                 args.put("waktuLayananMenit", waktuLayanan.substring(6, 8));
@@ -348,7 +346,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     if (status.equalsIgnoreCase("LAYANAN ESTIMASI")) {
-                        showSuccess("Layanan Di tambahkan Ke Daftar Kontrol Layanan");
+                        showSuccess("ESTIMASI BIAYA PELAYANAN  KENDARAAN " + nson.get("jeniskendaraan").asString());
                         setResult(RESULT_OK);
                         finish();
                     } else if (status.equalsIgnoreCase("TUNGGU KONFIRMASI")) {
@@ -476,16 +474,17 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                     partWajibList.asArray().clear();
                     masterPartList.asArray().clear();
                     if (dataLayananList.get(i).get("NAMA_LAYANAN").asString().equalsIgnoreCase(item)) {
+                        layananId = dataLayananList.get(i).get("LAYANAN_ID").asString();
                         jenisLayanan = dataLayananList.get(i).get("JENIS_LAYANAN").asString();
-                        waktuLayanan = totalWaktu(
+                        waktuLayanan = totalWaktuKerja(
                                 dataLayananList.get(i).get("WAKTU_LAYANAN_HARI").asString(),
                                 dataLayananList.get(i).get("WAKTU_LAYANAN_JAM").asString(),
                                 dataLayananList.get(i).get("WAKTU_LAYANAN_MENIT").asString());
-                        waktuMekanik = totalWaktu(
+                        waktuMekanik = totalWaktuKerja(
                                 dataLayananList.get(i).get("WAKTU_MEKANIK_HARI").asString(),
                                 dataLayananList.get(i).get("WAKTU_MEKANIK_JAM").asString(),
                                 dataLayananList.get(i).get("WAKTU_MEKANIK_MENIT").asString());
-                        waktuInspeksi = totalWaktu(
+                        waktuInspeksi = totalWaktuKerja(
                                 dataLayananList.get(i).get("WAKTU_INSPEKSI_HARI").asString(),
                                 dataLayananList.get(i).get("WAKTU_INSPEKSI_JAM").asString(),
                                 dataLayananList.get(i).get("WAKTU_INSPEKSI_MENIT").asString());
@@ -555,62 +554,6 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
 
             }
         });
-    }
-
-    @SuppressLint("DefaultLocale")
-    public static String totalWaktu(String hari, String jam, String menit) {
-        boolean isSubsString = false;
-        String[] result = new String[3];
-        result[0] = hari;
-        result[1] = jam;
-        result[2] = menit;
-
-        int incrementWaktu = 0;
-        int calculateJam = 0;
-        int calculateHari = 0;
-
-        for (String s : result) {
-            if (s.contains(":")) {
-                isSubsString = true;
-                break;
-            }
-        }
-
-        if (!menit.equals("0")) {
-            int minutes = Integer.parseInt(menit);
-            while (minutes >= 60) {
-                incrementWaktu++;
-                minutes -= 60;
-            }
-            if (incrementWaktu > 0) {
-                calculateJam = incrementWaktu;
-                result[2] = String.valueOf(minutes);
-            }
-        } else {
-            result[2] = "0";
-        }
-        if (!jam.equals("0") || calculateJam > 0) {
-            incrementWaktu = 0;
-            int finalJam = Integer.parseInt(jam) + calculateJam;
-            result[1] = String.valueOf(finalJam);
-            while (finalJam >= 24) {
-                incrementWaktu++;
-                finalJam -= 24;
-            }
-            if (incrementWaktu > 0) {
-                calculateHari = incrementWaktu;
-            }
-        } else {
-            result[1] = "0";
-        }
-        if (!hari.equals("0") || calculateHari > 0) {
-            int finalJam = Integer.parseInt(hari) + calculateHari;
-            result[0] = String.valueOf(finalJam);
-        } else {
-            result[0] = "0";
-        }
-
-        return String.format("%02d:%02d:%02d", Integer.parseInt(result[0]), Integer.parseInt(result[1]), Integer.parseInt(result[2]));
     }
 
     private void viewLayananBengkel() {

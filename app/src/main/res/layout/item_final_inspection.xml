@@ -13,7 +13,7 @@
     android:layout_weight="5"
     android:padding="10dp"
     app:cardElevation="2dp"
-    app:cardCornerRadius="10dp">
+    app:cardCornerRadius="@dimen/paddingMedium">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -33,14 +33,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="No. Antrian"
-                    android:textStyle="bold" />
+                    android:layout_gravity="start"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
                 <TextView
                     android:id="@+id/tv_layanan_ins"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Layanan"
-                    android:textStyle="bold" />
+                    android:layout_gravity="end"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
             </TableRow>
 
@@ -51,32 +57,44 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Jenis"
-                    android:textStyle="bold" />
+                    android:layout_gravity="start"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
                 <TextView
                     android:id="@+id/tv_nopol_ins"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="No. Polisi"
-                    android:textStyle="bold" />
+                    android:layout_gravity="end"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
             </TableRow>
 
             <TableRow android:layout_marginTop="@dimen/spacing_medium">
 
                 <TextView
-                    android:id="@+id/tv_namaP_ins"
+                    android:id="@+id/tv_nama_mekanik"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Nama Pelanggan"
-                    android:textStyle="bold" />
+                    android:layout_gravity="start"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
                 <TextView
                     android:id="@+id/tv_jamS_ins"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Jam Selesai"
-                    android:textStyle="bold" />
+                    android:layout_gravity="end"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
 
             </TableRow>

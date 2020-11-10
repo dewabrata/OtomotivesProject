@@ -12,8 +12,7 @@
     android:layout_marginBottom="4dp"
     android:layout_weight="5"
     android:padding="10dp"
-    app:cardCornerRadius="10dp"
-    app:cardElevation="2dp">
+    app:cardElevation="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,7 +22,19 @@
         android:layout_gravity="center"
         android:gravity="center">
 
-            <TextView
+        <TextView
+            android:id="@+id/tv_no"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="No. "
+            android:textColor="@color/grey_900"
+            android:textSize="12sp"
+            android:layout_weight="0.3"
+            android:visibility="gone"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+        <TextView
                 android:id="@+id/tv_keluhan"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

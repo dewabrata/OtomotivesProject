@@ -31,52 +31,72 @@
             app:srcCompat="@drawable/ic_close"
             card_view:ignore="ContentDescription,RtlSymmetry" />
 
-        <TableLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:stretchColumns="*">
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:gravity="center">
 
-            <TableRow>
+            <TextView
+                android:id="@+id/tv_no"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="No. "
+                android:paddingStart="@dimen/paddingMedium"
+                android:textColor="@color/grey_900"
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:visibility="gone" />
 
-                <TextView
-                    android:id="@+id/tv_kelompokPart_booking3_checkin3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:text="KELOMPOK PART"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textSize="12sp" />
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:stretchColumns="*">
 
-            </TableRow>
+                <TableRow>
 
-            <TableRow android:layout_marginTop="5dp">
+                    <TextView
+                        android:id="@+id/tv_kelompokPart_booking3_checkin3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:text="KELOMPOK PART"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12sp" />
 
-                <TextView
-                    android:id="@+id/tv_aktifitas_booking3_checkin3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:text="AKTIFITAS"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textSize="12sp" />
+                </TableRow>
 
-            </TableRow>
+                <TableRow android:layout_marginTop="5dp">
 
-            <TableRow android:layout_marginTop="5dp">
+                    <TextView
+                        android:id="@+id/tv_aktifitas_booking3_checkin3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:text="AKTIFITAS"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12sp" />
 
-                <TextView
-                    android:id="@+id/tv_jasaLainNet_booking3_checkin3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:text="JASA NET"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textSize="12sp" />
+                </TableRow>
 
-            </TableRow>
+                <TableRow android:layout_marginTop="5dp">
 
-        </TableLayout>
+                    <TextView
+                        android:id="@+id/tv_jasaLainNet_booking3_checkin3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:text="JASA NET"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12sp" />
+
+                </TableRow>
+
+            </TableLayout>
+        </LinearLayout>
 
     </FrameLayout>
 
