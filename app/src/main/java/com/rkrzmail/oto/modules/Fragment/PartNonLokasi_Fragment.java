@@ -49,6 +49,12 @@ public class PartNonLokasi_Fragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getNonTeralokasikan("");
+    }
+
     public void initComponent(String cari) {
         getNonTeralokasikan(cari);
         rvNonAlokasi.setLayoutManager(new LinearLayoutManager(getContext()));

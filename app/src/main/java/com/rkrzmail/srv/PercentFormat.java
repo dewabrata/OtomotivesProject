@@ -42,4 +42,13 @@ public class PercentFormat implements TextWatcher {
         editText.setSelection(percentNumber.length() -1);
         editText.addTextChangedListener(this);
     }
+
+
+    public static double calculatePercentage(double percent, int value) {
+        if (percent > 0 && value > 0) {
+            return (percent / 100) * value;
+        }
+        return 0;
+    }
+
 }

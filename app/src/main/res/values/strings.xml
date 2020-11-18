@@ -55,7 +55,7 @@
 
     <string-array name="pembayaran">
         <item>--PILIH--</item>
-        <item>TRANSFER DIMUKA</item>
+        <item>TRANSFER</item>
         <item>COD</item>
         <item>INVOICE</item>
         <item>KONSIGNMENT</item>

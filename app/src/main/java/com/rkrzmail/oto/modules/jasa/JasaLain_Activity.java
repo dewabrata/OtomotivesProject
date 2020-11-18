@@ -123,6 +123,7 @@ public class JasaLain_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
+                args.put("cari", "c");
                 args.put("search", cari);
                 if (isCari) {
                     args.remove("search");
@@ -139,7 +140,7 @@ public class JasaLain_Activity extends AppActivity {
                     nListArray.asArray().addAll(result.get("data").asArray());
                     Objects.requireNonNull(rvJasa.getAdapter()).notifyDataSetChanged();
                 } else {
-                    showError("Mohon Di Coba Kembali" + result.get("status").asString());
+                    showError(result.get("message").asString());
                 }
             }
         });

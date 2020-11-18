@@ -117,7 +117,7 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
                 if (item.equalsIgnoreCase("INVOICE")) {
                     find(R.id.layout_jatuh_tempo).setVisibility(View.VISIBLE);
                     find(R.id.ly_rek, LinearLayout.class).setVisibility(View.GONE);
-                } else if (item.equalsIgnoreCase("TRANSFER DIMUKA")) {
+                } else if (item.equalsIgnoreCase("TRANSFER")) {
                     find(R.id.ly_rek, LinearLayout.class).setVisibility(View.VISIBLE);
                     if(spRek.getCount() < MIN_SPINNER){
                         showInfoDialog("Rekening Belum Di tambah, Tambah Rekening ? ", new DialogInterface.OnClickListener() {

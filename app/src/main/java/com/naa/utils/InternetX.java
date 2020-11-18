@@ -24,7 +24,7 @@ import java.util.Map;
 public class InternetX {
 
     public static String multipartHttp(String url, Map<String, String> arg, String imagename, InputStream file) {
-        HashtableMulti<String, String, InputStream> inps = new HashtableMulti<String, String, InputStream>  ();
+        HashtableMulti<String, String, InputStream> inps = new HashtableMulti<String, String, InputStream>();
         inps.put("image", imagename, file);
         return multipartHttp(url, arg, inps);
     }
@@ -60,21 +60,21 @@ public class InternetX {
                 StringBuilder builder = new StringBuilder();
                 for (int i = 0; i < keys.size(); i++) {
 
-                    builder.append((urlEncode(keys.get(i).asString())+"="));
+                    builder.append((urlEncode(keys.get(i).asString()) + "="));
                     builder.append(urlEncode(args.get(keys.get(i).asString()).asString()));
 
                     writer.append("--" + boundary).append(LINE_FEED);
                     writer.append("Content-Disposition: form-data; name=\"" + keys.get(i).asString() + "\"")
                             .append(LINE_FEED);
-                    writer.append("Content-Type: text/plain; charset=UTF-8" ).append(
+                    writer.append("Content-Type: text/plain; charset=UTF-8").append(
                             LINE_FEED);
                     writer.append(LINE_FEED);
-                    writer.append(  args.get(keys.get(i).asString()).asString()  ).append(LINE_FEED);
+                    writer.append(args.get(keys.get(i).asString()).asString()).append(LINE_FEED);
                     writer.flush();
                 }
 
-                Nson nson = new Nson(file) ;
-                keys =  nson.getObjectKeys();
+                Nson nson = new Nson(file);
+                keys = nson.getObjectKeys();
                 for (int i = 0; i < keys.size(); i++) {
                     String fieldName = "image";
                     String fileName = file.get(keys.get(i).asString());
@@ -171,15 +171,19 @@ public class InternetX {
         }
 
     }
-    public static String urlEncode(String s){
+
+    public static String urlEncode(String s) {
         try {
-            return URLEncoder.encode(s,"UTF-8");
-        } catch (Exception e) { }
-        return  "";
+            return URLEncoder.encode(s, "UTF-8");
+        } catch (Exception e) {
+        }
+        return "";
     }
+
     public static String postHttpConnection(String stringURL, Map args) {
-        return  postHttpConnection(stringURL, new Nson(args));
+        return postHttpConnection(stringURL, new Nson(args));
     }
+
     public static String postHttpConnection(String stringURL, Nson args) {
         URL object;
         try {
@@ -203,10 +207,10 @@ public class InternetX {
                 StringBuilder builder = new StringBuilder();
                 for (int i = 0; i < keys.size(); i++) {
                     String ds = keys.get(i).asString();
-                    if (i > 0){
+                    if (i > 0) {
                         builder.append("&");
                     }
-                    builder.append(urlEncode(keys.get(i).asString())+"=");
+                    builder.append(urlEncode(keys.get(i).asString()) + "=");
                     builder.append(urlEncode(args.get(keys.get(i).asString()).asString()));
                 }
                 /*builder.append("&");
@@ -246,7 +250,7 @@ public class InternetX {
                     br.close();
                     return sb.toString();
 
-                     //return Utility.readFile(inputStream);
+                    //return Utility.readFile(inputStream);
                 } else {
                     System.out.println(con.getResponseMessage());
                     System.out.println(con.getResponseMessage());
@@ -278,7 +282,7 @@ public class InternetX {
                 return nson.toJson();
             } catch (Exception e) {
                 e.printStackTrace();
-               // Utility.nikitaErrorConn();
+                // Utility.nikitaErrorConn();
                 Nson nson = Nson.newObject();
                 nson.set("STATUS", "ERROR");
                 nson.set("ERROR", e.getMessage());
@@ -305,24 +309,27 @@ public class InternetX {
         addParam.append(Utility.urlEncode(getSetting("ID_USER")));*/
 
         if (url.contains("?")) {
-            result.append(url.substring(0,url.indexOf("?")+1)).append(addParam.toString()).append("&").append(url.substring(url.indexOf("?")+1));
-        }else if (url.contains("&")) {
+            result.append(url.substring(0, url.indexOf("?") + 1)).append(addParam.toString()).append("&").append(url.substring(url.indexOf("?") + 1));
+        } else if (url.contains("&")) {
             result.append(url.substring(0, url.indexOf("&"))).append("?").append(addParam.toString()).append(url.substring(url.indexOf("&")));
-        }else{
+        } else {
             result.append(url).append("?").append(addParam.toString());
         }
 
         return result.toString();
     }
-    public static String getSetting(String key){
+
+    public static String getSetting(String key) {
         return UtilityAndroid.getSetting(AppApplication.getInstance(), key, "");
     }
-    public static void setSetting(String key, String value){
+
+    public static void setSetting(String key, String value) {
         UtilityAndroid.setSetting(AppApplication.getInstance(), key, value);
     }
+
     public static String getHttpConnectionX(String stringURL, Map<String, String> args) {
-        Nson nset = new Nson(args) ;
-        Nson keys =  nset.getObjectKeys();
+        Nson nset = new Nson(args);
+        Nson keys = nset.getObjectKeys();
 
         String[] strings = new String[keys.size()];
         for (int i = 0; i < keys.size(); i++) {
@@ -330,22 +337,23 @@ public class InternetX {
         }
         return getHttpConnectionX(stringURL, strings);
     }
-    public static String getHttpConnectionX(String stringURL, String...paramvalue) {
+
+    public static String getHttpConnectionX(String stringURL, String... paramvalue) {
         URL object;
         try {
             stringURL = nikitaYToken(stringURL);
-            if (paramvalue!=null) {
+            if (paramvalue != null) {
                 StringBuffer stringBuffer = new StringBuffer();
                 for (int i = 0; i < paramvalue.length; i++) {
                     if (paramvalue[i].contains("=")) {
-                        int split = paramvalue[i].indexOf("=");String sdata = urlEncode(paramvalue[i].substring(split+1));
+                        int split = paramvalue[i].indexOf("=");
+                        String sdata = urlEncode(paramvalue[i].substring(split + 1));
                         stringBuffer.append(paramvalue[i].substring(0, split)).append("=").append(sdata).append("&");
                     }
                 }
-                stringURL =  stringURL+(stringURL.contains("?")?"&":"?")+stringBuffer.toString();
+                stringURL = stringURL + (stringURL.contains("?") ? "&" : "?") + stringBuffer.toString();
             }
             object = new URL(stringURL);
-
 
 
             HttpURLConnection con;
@@ -420,18 +428,19 @@ public class InternetX {
         }
 
     }
-    public static String getString(String str){
+
+    public static String getString(String str) {
         return str;
     }
 
 
-    public static void sendBroadcastIfUnauthorized401(int HttpResult){
-        if (HttpResult == 401){
+    public static void sendBroadcastIfUnauthorized401(int HttpResult) {
+        if (HttpResult == 401) {
             Intent intent = new Intent();
             intent.setAction("com.nikita.generator.service");
             intent.putExtra("action", "logout");
             AppApplication.getInstance().sendBroadcast(intent);
-        }else if (HttpResult == 303){
+        } else if (HttpResult == 303) {
             Intent intent = new Intent();
             intent.setAction("com.nikita.generator.service");
             intent.putExtra("action", "update");

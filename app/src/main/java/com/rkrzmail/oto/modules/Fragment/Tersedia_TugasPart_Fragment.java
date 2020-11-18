@@ -31,7 +31,6 @@ import java.util.Objects;
 import static com.rkrzmail.utils.APIUrls.VIEW_TUGAS_PART;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
-import static com.rkrzmail.utils.ConstUtils.TUGAS_PART_PERMINTAAN;
 import static com.rkrzmail.utils.ConstUtils.TUGAS_PART_TERSEDIA;
 
 
@@ -79,9 +78,20 @@ public class Tersedia_TugasPart_Fragment extends Fragment {
         rvTersediaJualPart = view.findViewById(R.id.recyclerView2);
         initRecylerviewTersediaJualPart();
         initRecylerviewTersediaCheckin();
-        viewPartTersediaCheckin();
-        viewPartPermintaanJualPart();
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(isVisible()){
+            viewPartTersediaCheckin();
+            viewPartPermintaanJualPart();
+            Log.d("visi__", "setUserVisibleHint: " + "visible tersedia");
+        }else{
+            Log.d("visi__", "setUserVisibleHint: " + "invisible tersedia");
+        }
+
     }
 
     private void initHideToolbar(View view){
@@ -92,7 +102,7 @@ public class Tersedia_TugasPart_Fragment extends Fragment {
     private void initRecylerviewTersediaCheckin(){
         rvTersediaCheckin.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvTersediaCheckin.setHasFixedSize(true);
-        rvTersediaCheckin.setAdapter(new NikitaRecyclerAdapter(tersediaCheckinList, R.layout.item_batal_tersedia_permintaan_tugas_part){
+        rvTersediaCheckin.setAdapter(new NikitaRecyclerAdapter(tersediaCheckinList, R.layout.item_tersedia_permintaan_tugas_part){
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
@@ -143,7 +153,7 @@ public class Tersedia_TugasPart_Fragment extends Fragment {
     }
 
     @SuppressLint("NewApi")
-    private void viewPartTersediaCheckin() {
+    public void viewPartTersediaCheckin() {
         ((TugasPart_MainTab_Activity) Objects.requireNonNull(getActivity())).newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
@@ -173,7 +183,7 @@ public class Tersedia_TugasPart_Fragment extends Fragment {
     }
 
     @SuppressLint("NewApi")
-    private void viewPartPermintaanJualPart() {
+    public void viewPartPermintaanJualPart() {
         ((TugasPart_MainTab_Activity) Objects.requireNonNull(getActivity())).newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override

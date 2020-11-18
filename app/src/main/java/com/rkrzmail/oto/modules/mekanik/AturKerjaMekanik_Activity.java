@@ -141,9 +141,9 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
             find(R.id.tl_pengambilan).setVisibility(View.GONE);
 
         String lamaLayanan = totalWaktuKerja(
-                n.get("WAKTU_LAYANAN_LAMA_HARI").asString(),
-                n.get("WAKTU_LAYANAN_LAMA_JAM").asString(),
-                n.get("WAKTU_LAYANAN_LAMA_MENIT").asString());
+                n.get("WAKTU_KERJA_HARI").asString(),
+                n.get("WAKTU_KERJA_JAM").asString(),
+                n.get("WAKTU_KERJA_MENIT").asString());
         etNoAntrian.setText(n.get("NO_ANTRIAN").asString());
         etNopol.setText(formatNopol(n.get("NOPOL").asString()));
         etNoKunci.setText(n.get("NO_KUNCI").asString());
@@ -364,14 +364,21 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PERINTAH_KERJA_MEKANIK), args));
                 partJasaList.asArray().clear();
                 partJasaList.asArray().addAll(result.get("data").asArray());
+
                 args.remove("detail");
                 args.put("detail", "JASA LAYANAN");
+
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PERINTAH_KERJA_MEKANIK), args));
-                for (int i = 0; i < result.get("data").size(); i++) {
-                    if(!result.get(i).get("AKTIFITAS").asString().isEmpty()){
-                        partJasaList.add(result.get(i));
+                partJasaList.asArray().addAll(result.get("data").asArray());
+                /*for (int i = 0; i < result.size(); i++) {
+                    for (int j = 0; j < partJasaList.size(); j++) {
+                        if (!result.get("data").get(i).get("JASA_LAIN_ID").asString().isEmpty()
+                                && !partJasaList.get(j).get("JASA_ID").asString().equals(result.get("data").get(i).get("JASA_LAIN_ID").asString())) {
+                            partJasaList.add(result.get("data").get(i));
+                            break;
+                        }
                     }
-                }
+                }*/
             }
 
             @Override

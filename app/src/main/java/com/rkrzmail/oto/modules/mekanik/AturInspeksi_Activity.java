@@ -29,6 +29,7 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaMultipleViewAdapter;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 import java.util.Objects;
@@ -41,6 +42,7 @@ import static com.rkrzmail.utils.APIUrls.VIEW_PERINTAH_KERJA_MEKANIK;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.ID;
+import static com.rkrzmail.utils.Tools.removeDuplicates;
 
 public class AturInspeksi_Activity extends AppActivity implements View.OnClickListener {
 
@@ -151,7 +153,7 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
                 super.onBindViewHolder(viewHolder, position);
                 final int itemType = getItemViewType(position);
                 int no = position + 1;
-                if (itemType == ITEM_VIEW_1) {
+                    if (itemType == ITEM_VIEW_1) {
                     viewHolder.find(R.id.tv_namaPart_booking3_checkin3, TextView.class)
                             .setText(nListArray.get(position).get("NAMA_PART").asString());
                     viewHolder.find(R.id.tv_noPart_booking3_checkin3, TextView.class)
@@ -207,14 +209,24 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
                 args.put("id", idCheckin);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_INSPEKSI), args));
-                nListArray.asArray().clear();
-                nListArray.asArray().addAll(result.get("data").asArray());
+                for (int i = 0; i < result.size(); i++) {
+                    if(!result.get("data").get(i).get("PART_ID").asString().isEmpty()){
+                        nListArray.add(result.get("data").get(i));
+                    }
+                    if(!result.get("data").get(i).get("JASA_ID").asString().isEmpty()){
+                        nListArray.add(result.get("data").get(i));
+                    }
+                }
                 args.remove("detail");
                 args.put("detail", "JASA LAYANAN");
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_INSPEKSI), args));
-                for (int i = 0; i < result.get("data").size(); i++) {
-                    if(!result.get(i).get("AKTIFITAS").asString().isEmpty() || result.get(i).get("AKTIFITAS") != null){
-                        nListArray.add(result.get(i));
+                for (int i = 0; i < result.size(); i++) {
+                    for (int j = 0; j < nListArray.size(); j++) {
+                        if (!result.get("data").get(i).get("JASA_LAIN_ID").asString().isEmpty()
+                                && !nListArray.get(j).get("JASA_ID").asString().equals(result.get("data").get(i).get("JASA_LAIN_ID").asString())) {
+                            nListArray.add(result.get("data").get(i));
+                            break;
+                        }
                     }
                 }
             }

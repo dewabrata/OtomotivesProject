@@ -266,6 +266,7 @@ public class Otp_Activity extends AppActivity {
                     setSetting("JENIS_KENDARAAN_BENGKEL", nson.get("JENIS_KENDARAAN_BENGKEL").asString());
                     setSetting("MERK_KENDARAAN_BENGKEL", nson.get("MERK_KENDARAAN").asString());
                     setSetting("KATEGORI_BENGKEL", nson.get("KATEGORI_BENGKEL").asString());
+                    setSetting("USER_ID", nson.get("USER_ID").asString());
                     setSetting("userId", nson.get("USER_ID").asString());
                     setSetting("session", nson.get("token").asString());
                     setSetting("user", formatOnlyNumber(  getIntentStringExtra("user") ));

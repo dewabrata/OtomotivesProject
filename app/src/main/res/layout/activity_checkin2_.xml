@@ -170,7 +170,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="NO. RANGKA"
-                            android:inputType="numberDecimal"
+                            android:inputType="textCapCharacters"
                             android:maxLength="30"
                             android:textSize="14sp" />
 
@@ -187,7 +187,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="NO. MESIN"
-                            android:inputType="numberDecimal"
+                            android:inputType="textCapCharacters"
                             android:maxLength="30"
                             android:textSize="14sp" />
 

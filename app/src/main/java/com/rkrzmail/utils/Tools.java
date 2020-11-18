@@ -503,6 +503,16 @@ public class Tools {
         return newList;
     }
 
+    public static Nson removeDuplicates(Nson list) {
+        Nson nson = Nson.newArray();
+        for (Object object : list.asArray()) {
+            if (!nson.asArray().contains(object)) {
+               nson.asArray().add(object);
+            }
+        }
+        return nson;
+    }
+
     @SuppressLint("NewApi")
     public static void hideKeyboard(Activity context) {
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -616,6 +626,6 @@ public class Tools {
                 return "December";
         }
         return "January";
-
     }
+
 }

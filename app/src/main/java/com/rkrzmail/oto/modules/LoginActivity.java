@@ -48,8 +48,8 @@ public class LoginActivity extends AppActivity {
                     showWarning("Otp Harus Di isi");
                     find(R.id.password, EditText.class).requestFocus();*/
                 } else {
-                    login();//lanjut
-                   // requestOtp();
+                    //login();//lanjut
+                   requestOtp();
 
 
                 }
@@ -121,6 +121,7 @@ public class LoginActivity extends AppActivity {
                 args.put("action", "Request");
                 args.put("user", formatOnlyNumber(find(R.id.user, EditText.class).getText().toString()));
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_LOGIN), args));
+
             }
 
             @Override

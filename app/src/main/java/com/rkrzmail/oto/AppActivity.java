@@ -1,6 +1,7 @@
 package com.rkrzmail.oto;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
@@ -9,6 +10,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -16,12 +18,15 @@ import android.graphics.Matrix;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -51,6 +56,7 @@ import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.modules.TimePicker_Dialog;
 import com.rkrzmail.oto.modules.YearPicker_Dialog;
+import com.rkrzmail.oto.modules.checkin.TambahPartJasaDanBatal_Activity;
 import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NsonAutoCompleteAdapter;
@@ -68,6 +74,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static com.rkrzmail.utils.ConstUtils.PERMISSION_REQUEST_CODE;
 
 
 public class AppActivity extends AppCompatActivity {
@@ -937,5 +947,58 @@ public class AppActivity extends AppCompatActivity {
         }
 
         return String.format("%02d:%02d:%02d", Integer.parseInt(result[0]), Integer.parseInt(result[1]), Integer.parseInt(result[2]));
+    }
+
+    public String generateNoAntrian(String statusAntrian, String noAntrian) {
+        String result = "";
+        String currentDateTime = Tools.setFormatDayAndMonthFromDb(currentDateTime("yyyy-MM-dd"), "dd/MM");
+        if (!noAntrian.equals("")) {
+            switch (statusAntrian) {
+                case "STANDART":
+                    result = "S" + "." + currentDateTime + "." + noAntrian;
+                    break;
+                case "EXTRA":
+                    result = "E" + "." + currentDateTime + "." + noAntrian;
+                    break;
+                case "EXPRESS":
+                    result = "EX" + "." + currentDateTime + "." + noAntrian;
+                    break;
+                default:
+                    result = "H" + "." + currentDateTime + "." + noAntrian;
+                    break;
+            }
+        }
+        return result;
+    }
+
+    public boolean checkPermission() {
+        return ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
+    }
+
+    public void requestPermissionAndContinue() {
+        if (ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, WRITE_EXTERNAL_STORAGE)
+                    && ActivityCompat.shouldShowRequestPermissionRationale(this, READ_EXTERNAL_STORAGE)) {
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+                alertBuilder.setCancelable(true);
+                alertBuilder.setTitle("");
+                alertBuilder.setMessage("");
+                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions(getActivity(), new String[]{WRITE_EXTERNAL_STORAGE
+                                , READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+                    }
+                });
+                AlertDialog alert = alertBuilder.create();
+                alert.show();
+            } else {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{WRITE_EXTERNAL_STORAGE,
+                        READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+            }
+        }
     }
 }

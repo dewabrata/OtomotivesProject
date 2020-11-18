@@ -20,14 +20,11 @@ import com.naa.data.Nson;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
 import com.rkrzmail.utils.Tools;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
+import static com.rkrzmail.srv.PercentFormat.calculatePercentage;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.MASTER_PART;
@@ -49,6 +46,7 @@ public class JumlahPart_HargaPart_Activity extends AppActivity implements View.O
     private boolean isFlexible = false, isPartKosong = false, isPartWajib = false, isTambahPart = false;
     private String idLokasiPart = "", hpp = "";
     private int stock = 0;
+    private double discPart = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +85,7 @@ public class JumlahPart_HargaPart_Activity extends AppActivity implements View.O
         }
 
         if (getIntent().hasExtra(DATA)) {
-            initData(DATA, getIntent());
+            loadData(DATA, getIntent());
         } else {
             isPartWajib = true;
             final Nson nson = Nson.readJson(getIntentStringExtra(PART_WAJIB));
@@ -199,8 +197,15 @@ public class JumlahPart_HargaPart_Activity extends AppActivity implements View.O
     }
 
     private void initPartKosongValidation(final Nson nson, final boolean isPartWajib) {
-        Log.d("KOSONG__", "KOSONG : " + nson);
         if (stock == 0) {
+            if(isPartWajib){
+                showWarning("Part Wajib Layanan Stock Kosong!");
+                Intent i = new Intent();
+                i.putExtra("PART_KOSONG", "OK");
+                setResult(RESULT_OK, i);
+                finish();
+                return;
+            }
             Messagebox.showDialog(getActivity(),
                     "Konfirmasi", "Buka Form Part Kosong ? ", "Ya", "Tidak", new DialogInterface.OnClickListener() {
                         @SuppressLint("SetTextI18n")
@@ -243,7 +248,7 @@ public class JumlahPart_HargaPart_Activity extends AppActivity implements View.O
     }
 
     @SuppressLint("SetTextI18n")
-    private void initData(final String intentExtra, Intent intent) {
+    private void loadData(final String intentExtra, Intent intent) {
         final Nson nson = Nson.readJson(getIntentStringExtra(intent, intentExtra));
         hpp = nson.get("HPP").asString();
         stock = nson.get("STOCK_RUANG_PART").asInteger();
@@ -271,14 +276,17 @@ public class JumlahPart_HargaPart_Activity extends AppActivity implements View.O
             }
         }
 
-        if (nson.containsKey("DISCOUNT_PART") && !nson.get("DISCOUNT_PART").asString().equalsIgnoreCase("")) {
-            etDiscPart.setVisibility(View.VISIBLE);
-            etDiscPart.setText(nson.get("DISCOUNT_PART").asString());
+        if (!nson.get("DISCOUNT_PART").asString().isEmpty()) {
+            find(R.id.ly_disc_part_jumlah_harga_part).setVisibility(View.VISIBLE);
+            if(!nson.get("HARGA_JUAL").asString().isEmpty()){
+                discPart = calculateDiscFasilitas(nson.get("DISCOUNT_PART").asDouble(), nson.get("HARGA_JUAL").asInteger());
+            }
+            etDiscPart.setText(RP + formatRp(String.valueOf(discPart)));
         }
 
-        if (nson.containsKey("DISC_JASA") && !nson.get("DISC_JASA").asString().equalsIgnoreCase("")) {
-            etDiscJasa.setVisibility(View.VISIBLE);
-            etDiscJasa.setText(nson.get("DISC_JASA").asString());
+        if (!nson.get("DISCOUNT_JASA_PASANG").asString().isEmpty()) {
+            find(R.id.ly_discJasa_jumlah_harga_part).setVisibility(View.VISIBLE);
+            etDiscJasa.setText(nson.get("DISCOUNT_JASA_PASANG").asString() + " %");
         }
 
         find(R.id.btn_simpan_jumlah_harga_part, Button.class).setOnClickListener(new View.OnClickListener() {
@@ -336,11 +344,11 @@ public class JumlahPart_HargaPart_Activity extends AppActivity implements View.O
     }
 
     private void nextForm(Nson nson) {
-        int harga = Integer.parseInt(formatOnlyNumber(etHargaJual.getText().toString()));
+        int hargaPart = Integer.parseInt(formatOnlyNumber(etHargaJual.getText().toString()));
         int hargaJasa = Integer.parseInt(formatOnlyNumber(etBiayaJasa.getText().toString()));
-        int jumlahPart = 0;
-        int totalHargaPart;
-        int net = 0;
+        int jumlahPart = 0, totalPart = 0, totalJasa = 0;
+        int totalHarga = 0;
+        double discJasa = 0;
         String hari = find(R.id.et_waktuSet, EditText.class).getText().toString().substring(0, 2);
         String jam = find(R.id.et_waktuSet, EditText.class).getText().toString().substring(3, 5);
         String menit = find(R.id.et_waktuSet, EditText.class).getText().toString().substring(6, 8);
@@ -353,26 +361,59 @@ public class JumlahPart_HargaPart_Activity extends AppActivity implements View.O
             jumlahPart = Integer.parseInt(etJumlah.getText().toString());
         }
 
-        totalHargaPart = harga * jumlahPart;
-        net = totalHargaPart + hargaJasa;
+        if(!etDiscJasa.getText().toString().isEmpty()){
+            discJasa = Double.parseDouble(etDiscJasa.getText().toString()
+                    .replace("%", "")
+                    .replace(",", "."));
+            discJasa = calculatePercentage(discJasa, hargaJasa);
+        }
 
-        sendData.set("NAMA_PART", nson.get("NAMA_PART").asString());
-        sendData.set("NO_PART", nson.get("NO_PART").asString());
-        sendData.set("PART_ID", nson.get("PART_ID").asString());
-        sendData.set("JUMLAH", jumlahPart);
-        sendData.set("DISCOUNT_JASA", "");
-        sendData.set("DISCOUNT_PART", "");
-        sendData.set("MERK", nson.get("MERK").asString());
-        sendData.set("HARGA_JASA", hargaJasa);
+        if(discJasa > 0) {
+            totalJasa = (int) (hargaJasa - discJasa);
+        }
+        if(discPart > 0) {
+            totalPart = (int) (hargaPart - discPart) * jumlahPart;
+        }else{
+            totalPart = hargaPart * jumlahPart;
+        }
+
+        totalHarga =  totalPart + hargaJasa;
+
         if(isPartKosong){
             sendData.set("WAKTU_KERJA", "");
             sendData.set("WAKTU_INSPEKSI", "");
-            sendData.set("DP", formatOnlyNumber(formatRp(String.valueOf(calculateDp(Double.parseDouble(getSetting("DP_PERSEN")), net)))));
+            sendData.set("DP", formatOnlyNumber(formatRp(String.valueOf(calculateDp(Double.parseDouble(getSetting("DP_PERSEN")), totalHarga)))));
         }else{
             sendData.set("WAKTU_KERJA", find(R.id.et_waktuSet, EditText.class).getText().toString());
             sendData.set("WAKTU_INSPEKSI", find(R.id.et_waktu_set_inspeksi, EditText.class).getText().toString());
             sendData.set("DP", "");
         }
+
+        if (isPartWajib) {
+            sendData.set("HARGA_PART", hargaPart);
+            sendData.set("INSPEKSI", "");
+        } else {
+            String inspeksi;
+            if (hargaPart > 0) {
+                sendData.set("HARGA_PART", hargaPart);
+            }
+            if(!find(R.id.et_waktu_set_inspeksi, EditText.class).getText().toString().equals(getResources().getString(R.string._00_00_00))){
+                inspeksi = "Y";
+            }else{
+                inspeksi = "N";
+            }
+            sendData.set("INSPEKSI", inspeksi);
+        }
+
+        sendData.set("NAMA_PART", nson.get("NAMA_PART").asString());
+        sendData.set("NO_PART", nson.get("NO_PART").asString());
+        sendData.set("PART_ID", nson.get("PART_ID").asString());
+        sendData.set("JUMLAH", jumlahPart);
+        sendData.set("DISCOUNT_JASA", discJasa);
+        sendData.set("DISCOUNT_PART", discPart);
+        sendData.set("MERK", nson.get("MERK").asString());
+        sendData.set("HARGA_JASA", hargaJasa);
+        sendData.set("HARGA_JASA_NET", totalJasa);
         sendData.set("LOKASI_PART_ID", idLokasiPart);
         sendData.set("WAKTU_KERJA_HARI", hari);
         sendData.set("WAKTU_KERJA_JAM", jam);
@@ -382,15 +423,7 @@ public class JumlahPart_HargaPart_Activity extends AppActivity implements View.O
         sendData.set("JASA_EXTERNAL", "");
         sendData.set("HPP", hpp);
         sendData.set("WAKTU_PESAN", etWaktuPesan.getText().toString());
-        sendData.set("NET", net);
-
-        if (isPartWajib) {
-            sendData.set("HARGA_PART", harga);
-        } else {
-            if (harga > 0) {
-                sendData.set("HARGA_PART", totalHargaPart);
-            }
-        }
+        sendData.set("NET", totalHarga);
 
         Intent i = new Intent();
         i.putExtra(DATA, sendData.toJson());
@@ -465,7 +498,7 @@ public class JumlahPart_HargaPart_Activity extends AppActivity implements View.O
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_CARI_PART) {
-            initData(PART, data);
+            loadData(PART, data);
         }
     }
 }

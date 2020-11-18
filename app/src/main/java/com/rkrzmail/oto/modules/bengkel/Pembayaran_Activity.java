@@ -7,10 +7,12 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,11 +20,13 @@ import android.widget.TextView;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
+import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
+import com.rkrzmail.oto.modules.discount.AturDiscountJasaLain_Activity;
+import com.rkrzmail.srv.NikitaMultipleViewAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
 import java.util.Map;
@@ -30,24 +34,26 @@ import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.VIEW_PEMBAYARAN;
 import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
+import static com.rkrzmail.utils.ConstUtils.ID;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_KONFIRMASI;
 import static com.rkrzmail.utils.ConstUtils.RINCIAN_JUAL_PART;
 import static com.rkrzmail.utils.ConstUtils.RINCIAN_LAYANAN;
 
 public class Pembayaran_Activity extends AppActivity {
 
-    private RecyclerView rvPembayaranCheckin, rvPembayaranJualPart;
+    private RecyclerView rvPembayaranCheckin;
     private Nson jualPartList = Nson.newArray();
+    private String idCheckin = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_basic);
         initToolbar();
-        initRecylerviewPembayaranCheckin();
-        initRecylerviewPembayaranJualPart();
-        viewPembayaranCheckin();
-        viewPembayaranJualPart();
+        initRecylerviewPembayaran();
+        viewPembayaran();
     }
 
     @SuppressLint("NewApi")
@@ -58,113 +64,114 @@ public class Pembayaran_Activity extends AppActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void initRecylerviewPembayaranCheckin() {
+    private void initRecylerviewPembayaran() {
         rvPembayaranCheckin = findViewById(R.id.recyclerView);
         rvPembayaranCheckin.setHasFixedSize(true);
         rvPembayaranCheckin.setLayoutManager(new LinearLayoutManager(this));
-        rvPembayaranCheckin.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_pembayaran) {
-
-                    @Override
-                    public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, final int position) {
-                        super.onBindViewHolder(viewHolder, position);
-                        viewHolder.find(R.id.tv_jenis_kendaraan, TextView.class).setText(nListArray.get(position).get("JENIS_KENDARAAN").asString());
-                        viewHolder.find(R.id.tv_nama_pelanggan, TextView.class).setText(nListArray.get(position).get("NAMA_PELANGGAN").asString());
-                        viewHolder.find(R.id.tv_nopol, TextView.class).setText(nListArray.get(position).get("NOPOL").asString());
-                        viewHolder.find(R.id.tv_layanan, TextView.class).setText(nListArray.get(position).get("LAYANAN").asString());
-                        viewHolder.find(R.id.tv_no_ponsel, TextView.class).setText(nListArray.get(position).get("NO_PONSEL").asString());
-                    }
-                }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(Nson parent, View view, int position) {
-                        Intent i = new Intent(getActivity(), Rincian_Pembayaran_Activity.class);
-                        i.putExtra(RINCIAN_LAYANAN, "");
-                        i.putExtra(DATA, nListArray.get(position).toJson());
-                        startActivityForResult(i, REQUEST_DETAIL);
-                    }
-                })
-        );
-    }
-
-    @SuppressLint("SetTextI18n")
-    private void initRecylerviewPembayaranJualPart() {
-        rvPembayaranJualPart = findViewById(R.id.recyclerView2);
-        rvPembayaranJualPart.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rvPembayaranJualPart.setHasFixedSize(true);
-        rvPembayaranJualPart.setAdapter(new NikitaRecyclerAdapter(jualPartList, R.layout.item_permintaan_jual_part_tugas_part){
+        rvPembayaranCheckin.setAdapter(new NikitaMultipleViewAdapter(nListArray, R.layout.item_pembayaran, R.layout.item_permintaan_jual_part_tugas_part) {
+            @SuppressLint("SetTextI18n")
             @Override
-            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+            public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
                 super.onBindViewHolder(viewHolder, position);
-                String noHp = jualPartList.get(position).get("NO_PONSEL").asString();
-                if(noHp.length() > 4){
-                    noHp = noHp.substring(noHp.length() - 4);
-                }
-                viewHolder.find(R.id.tv_nama_mekanik, TextView.class).setText(jualPartList.get(position).get("USER_JUAL").asString());
-                viewHolder.find(R.id.tv_nama_pelanggan_nama_usaha, TextView.class).setText(
-                        jualPartList.get(position).get("NAMA_PELANGGAN").asString() + " " + jualPartList.get(position).get("NAMA_USAHA").asString());
-                viewHolder.find(R.id.tv_no_ponsel, TextView.class).setText("XXXXXXXX" + noHp);
-                viewHolder.find(R.id.tv_tgl, TextView.class).setText(jualPartList.get(position).get("TANGGAL").asString());
-            }
+                int viewType = getItemViewType(position);
 
-        }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Nson parent, View view, int position) {
-                Intent i = new Intent(getActivity(), Rincian_Pembayaran_Activity.class);
-                i.putExtra(RINCIAN_JUAL_PART, "");
-                i.putExtra(DATA, jualPartList.get(position).toJson());
-                startActivityForResult(i, REQUEST_DETAIL);
+                if (viewType == ITEM_VIEW_1) {
+                    viewHolder.find(R.id.tv_jenis_kendaraan, TextView.class).setText(nListArray.get(position).get("JENIS_KENDARAAN").asString());
+                    viewHolder.find(R.id.tv_nama_pelanggan, TextView.class).setText(nListArray.get(position).get("NAMA_PELANGGAN").asString());
+                    viewHolder.find(R.id.tv_nopol, TextView.class).setText(nListArray.get(position).get("NOPOL").asString());
+                    viewHolder.find(R.id.tv_layanan, TextView.class).setText(nListArray.get(position).get("LAYANAN").asString());
+                    viewHolder.find(R.id.tv_no_ponsel, TextView.class).setText(nListArray.get(position).get("NO_PONSEL").asString());
+                    viewHolder.find(R.id.cv_pembayaran_checkin, CardView.class).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            idCheckin = nListArray.get(position).get(ID).asString();
+                            checkDataConfirmation(position);
+                        }
+                    });
+                } else if (viewType == ITEM_VIEW_2) {
+                    String noHp = nListArray.get(position).get("NO_PONSEL").asString();
+                    if (noHp.length() > 4) {
+                        noHp = noHp.substring(noHp.length() - 4);
+                    }
+                    viewHolder.find(R.id.tv_nama_mekanik, TextView.class).setText(nListArray.get(position).get("USER_JUAL").asString());
+                    viewHolder.find(R.id.tv_nama_pelanggan_nama_usaha, TextView.class).setText(
+                            nListArray.get(position).get("NAMA_PELANGGAN").asString() + " " + nListArray.get(position).get("NAMA_USAHA").asString());
+                    viewHolder.find(R.id.tv_no_ponsel, TextView.class).setText("XXXXXXXX" + noHp);
+                    viewHolder.find(R.id.tv_tgl, TextView.class).setText(nListArray.get(position).get("TANGGAL").asString());
+                    viewHolder.find(R.id.cv_pembayaran_jual_part, CardView.class).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent i = new Intent(getActivity(), Rincian_Pembayaran_Activity.class);
+                            i.putExtra(RINCIAN_JUAL_PART, "");
+                            i.putExtra(DATA, nListArray.get(position).toJson());
+                            startActivityForResult(i, REQUEST_DETAIL);
+                        }
+                    });
+                }
             }
-        }));
+        });
     }
 
-    private void viewPembayaranCheckin() {
+    private void checkDataConfirmation(final int position) {
+        MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "HISTORY CHECKIN");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PEMBAYARAN), args));
+            }
+
+            @Override
+            public void runUI() {
+                Intent i;
+                if (result.get("data").asArray().size() > 1) {
+                    i = new Intent(getActivity(), Rincian_Pembayaran_Activity.class);
+                    i.putExtra(RINCIAN_LAYANAN, "");
+                    i.putExtra(DATA, nListArray.get(position).toJson());
+                    startActivityForResult(i, REQUEST_DETAIL);
+                } else {
+                    i = new Intent(getActivity(), KonfirmasiData_Pembayaran_Activity.class);
+                    i.putExtra(DATA, nListArray.get(position).toJson());
+                    startActivityForResult(i, REQUEST_KONFIRMASI);
+                    Log.d("u__", "runUI: " + nListArray.get(position).toJson());
+                }
+            }
+        });
+    }
+
+    private void viewPembayaran() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
+
                 args.put("action", "view");
                 args.put("jenisPembayaran", "CHECKIN");
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PEMBAYARAN), args));
-            }
+                nListArray.asArray().clear();
+                nListArray.asArray().addAll(result.get("data").asArray());
 
-            @Override
-            public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    nListArray.asArray().clear();
-                    nListArray.asArray().addAll(result.get("data").asArray());
-                    rvPembayaranCheckin.getAdapter().notifyDataSetChanged();
-                } else {
-                    showError("Mohon Di Coba Kembali");
-                }
-            }
-        });
-    }
-
-    private void viewPembayaranJualPart() {
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
-
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "view");
+                args.remove("jenisPembayaran");
                 args.put("jenisPembayaran", "JUAL PART");
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PEMBAYARAN), args));
+                nListArray.asArray().addAll(result.get("data").asArray());
             }
 
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    jualPartList.asArray().clear();
-                    jualPartList.asArray().addAll(result.get("data").asArray());
-                    rvPembayaranJualPart.getAdapter().notifyDataSetChanged();
+                    rvPembayaranCheckin.getAdapter().notifyDataSetChanged();
                 } else {
-                    showError("Mohon Di Coba Kembali");
+                    showError(ERROR_INFO);
                 }
             }
         });
     }
+
 
     SearchView mSearchView;
 
@@ -207,6 +214,13 @@ public class Pembayaran_Activity extends AppActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_DETAIL) {
+            viewPembayaran();
+        }else if(resultCode == RESULT_OK && requestCode == REQUEST_KONFIRMASI){
+            Intent i = new Intent(getActivity(), Rincian_Pembayaran_Activity.class);
+            i.putExtra(RINCIAN_LAYANAN, "");
+            i.putExtra(DATA, getIntentStringExtra(data, DATA));
+            startActivityForResult(i, REQUEST_DETAIL);
+            Log.d("u__", "accept: " + getIntentStringExtra(data, DATA));
 
         }
     }

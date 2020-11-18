@@ -48,7 +48,7 @@ public class Status_TugasPart_Activity extends AppActivity {
     private boolean isJualPart = false;
     private String mGroup = "";
     private String mekanik = "", tanggal = "", nopol = "", noHp = "";
-    private String idLokasiPart = "", idDetail = "", idTugasPat = "";
+    private String idLokasiPart = "", idDetail = "", idTugasPat = "", idCheckin = "";
     private int jumlahSerahTerima = 0;
 
     @Override
@@ -120,6 +120,7 @@ public class Status_TugasPart_Activity extends AppActivity {
         idLokasiPart = n.get("LOKASI_PART_ID").asString();
         idDetail = n.get("DETAIL_ID").asString();
         nopol = n.get("NOPOL").asString();
+        idCheckin = n.get("CHECKIN_ID").asString();
         tanggal = isJualPart ? n.get("TANGGAL").asString() : n.get("TANGGAL_CHECKIN").asString();
         viewTugasPart();
     }
@@ -219,7 +220,7 @@ public class Status_TugasPart_Activity extends AppActivity {
 
                 args.put("action", "update");
                 args.put("group", "SERAH TERIMA");
-                //args.put("idCheckin", idCheckinDetail);
+                args.put("idCheckin", idCheckin);
                 args.put("partList", partSerahTerimaList.toJson());
                 //args.put("idLokasiPart", idLokasiPart);
 

@@ -134,25 +134,6 @@
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
-                    android:id="@+id/tl_noTrack"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_medium"
-                    android:textAlignment="center">
-
-                    <EditText
-                        android:id="@+id/et_noTrack"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:enabled="false"
-                        android:hint="NO. TRACE"
-                        android:inputType="number"
-                        android:textSize="14sp" />
-
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
                     android:id="@+id/tl_ppn"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
@@ -264,6 +245,26 @@
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/tl_noTrack"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_medium"
+                    android:textAlignment="center">
+
+                    <EditText
+                        android:id="@+id/et_noTrack"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:enabled="false"
+                        android:hint="NO. TRACE"
+                        android:inputType="number"
+                        android:textSize="14sp" />
+
+                </android.support.design.widget.TextInputLayout>
+
+
+                <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -282,9 +283,12 @@
                 </android.support.design.widget.TextInputLayout>
 
                 <TableLayout
+                    android:id="@+id/tl_reminder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:stretchColumns="*"
+                    android:background="@drawable/background_edittext"
+                    android:padding="@dimen/paddingMedium"
                     android:layout_marginTop="@dimen/paddingMedium">
 
                     <TableRow>
@@ -309,7 +313,8 @@
                             android:id="@+id/cb_pemilik"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/pemilik_uppercase"/>
+                            android:text="@string/pemilik_uppercase"
+                            android:enabled="false"/>
 
                     </TableRow>
 
@@ -345,20 +350,21 @@
                         android:text="@string/print_bukti_uppercase"
                         android:layout_gravity="start"
                         android:background="@drawable/btn_rounded_accent"
-                        android:textColor="@android:color/white" />
-
-                    <Button
-                        android:id="@+id/btn_simpan"
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:text="@string/simpan_uppercase"
-                        android:layout_gravity="end"
-                        android:background="@drawable/btn_rounded_accent"
-                        android:textColor="@android:color/white" />
+                        android:textColor="@android:color/white"
+                        android:visibility="gone"/>
 
                 </TableRow>
 
             </TableLayout>
+
+            <Button
+                android:id="@+id/btn_simpan"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/simpan_uppercase"
+                android:layout_gravity="end"
+                android:background="@drawable/btn_rounded_accent"
+                android:textColor="@android:color/white" />
 
         </LinearLayout>
 

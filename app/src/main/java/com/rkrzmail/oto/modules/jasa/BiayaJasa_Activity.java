@@ -21,6 +21,7 @@ import com.rkrzmail.utils.Tools;
 
 import java.util.Objects;
 
+import static com.rkrzmail.srv.PercentFormat.calculatePercentage;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.ID;
 import static com.rkrzmail.utils.ConstUtils.JASA_LAIN;
@@ -62,12 +63,20 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
         initData();
     }
 
+    @SuppressLint("SetTextI18n")
     private void initData(){
         final Nson n = Nson.readJson(getIntentStringExtra(DATA));
         Log.d("BIAYAJASALAIN", "JASA : " + n);
         if (getIntent().hasExtra(JASA_LAIN)) {
             initAvailJasa(n);
-            etKelompokPart.setText(n.get("KELOMPOK_PART").toString());
+            if(!n.get("DISCOUNT_JASA").asString().isEmpty() ||
+                    !n.get("DISCOUNT_JASA").asString().equals("0") ||
+                    !n.get("DISCOUNT_JASA").asString().equals("0.0")){
+                find(R.id.et_discJasa).setVisibility(View.VISIBLE);
+                find(R.id.et_discJasa, EditText.class).setText(n.get("DISCOUNT_JASA").asString() + " %");
+            }
+
+            etKelompokPart.setText(n.get("KELOMPOK_PART").asString());
             etAktivitas.setText(n.get("AKTIVITAS").asString());
             etAktivitas.setEnabled(false);
             jasaId = n.get(ID).asInteger();
@@ -80,14 +89,26 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
                         etBiaya.requestFocus();
                     }else{
                         Nson nson = Nson.newObject();
+                        double discJasa = 0;
+                        int net;
+                        if(!find(R.id.et_discJasa, EditText.class).getText().toString().isEmpty()){
+                            discJasa = Double.parseDouble(find(R.id.et_discJasa, EditText.class).getText().toString()
+                                    .replace("%", "")
+                                    .replace(",", ".").trim());
+                            discJasa = calculatePercentage(discJasa, Integer.parseInt(formatOnlyNumber(etBiaya.getText().toString())));
+                            net = (int) (Integer.parseInt(formatOnlyNumber(etBiaya.getText().toString())) - discJasa);
+                        }else{
+                            net = Integer.parseInt(formatOnlyNumber(etBiaya.getText().toString()));
+                        }
                         nson.set("NAMA_KELOMPOK_PART", etKelompokPart.getText().toString());//dummy push to API
                         nson.set("JASA_ID", jasaId);
                         nson.set("HARGA_JASA", formatOnlyNumber(etBiaya.getText().toString()));
                         nson.set("AKTIVITAS", etAktivitas.getText().toString());
                         nson.set("WAKTU_KERJA", etWaktuKerja.getText().toString());//dummy push to API
                         nson.set("WAKTU_INSPEKSI", find(R.id.et_waktu_set_inspeksi, EditText.class).getText().toString());
-                        nson.set("OUTSOURCE", find(R.id.cb_outsource, CheckBox.class).isChecked() ? "Y" : "N");//dummy push to API
-                        nson.set("NET", formatOnlyNumber(etBiaya.getText().toString()));
+                        nson.set("OUTSOURCE", find(R.id.cb_outsource, CheckBox.class).isChecked() ? "Y" : "N");
+                        nson.set("NET", net);
+                        nson.set("DISCOUNT_JASA", discJasa);
 
                         hari = find(R.id.et_waktuSet, EditText.class).getText().toString().substring(0, 2);
                         jam = find(R.id.et_waktuSet, EditText.class).getText().toString().substring(3, 5);
@@ -95,6 +116,14 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
                         inspeksiJam = find(R.id.et_waktu_set_inspeksi, EditText.class).getText().toString().substring(3, 5);
                         inspeksiMenit = find(R.id.et_waktu_set_inspeksi, EditText.class).getText().toString().substring(6, 8);
 
+                        String inspeksi;
+                        if(!find(R.id.et_waktu_set_inspeksi, EditText.class).getText().toString().equals(getResources().getString(R.string._00_00_00))){
+                            inspeksi = "Y";
+                        }else{
+                            inspeksi = "N";
+                        }
+
+                        nson.set("INSPEKSI", inspeksi);
                         nson.set("WAKTU_KERJA_HARI", hari);
                         nson.set("WAKTU_KERJA_JAM", jam);
                         nson.set("WAKTU_KERJA_MENIT", menit);

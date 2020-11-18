@@ -244,6 +244,9 @@ public class MenuActivity extends AppActivity {
                 } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_TUGAS_PARTS)) {
                     Intent intent = new Intent(MenuActivity.this, TugasPart_MainTab_Activity.class);
                     startActivity(intent);
+                }else if(nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_PENUGASAN_MEKANIK)){
+                    Intent intent = new Intent(MenuActivity.this, PenugasanActivity.class);
+                    startActivity(intent);
                 }
             }
         });

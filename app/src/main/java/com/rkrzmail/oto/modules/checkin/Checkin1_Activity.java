@@ -70,7 +70,9 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             modelKendaraan = "",
             rangka = "",
             mesin = "",
-            lokasi = "", kendaraanId = "", jenis = "";
+            lokasi = "",
+            jenis = "";
+    private int kendaraanId = 0;
     private Nson nopolList = Nson.newArray(), keluhanList = Nson.newArray();
     private boolean keyDel = false, isNoHp = false, isNamaValid = false, isRemoved;
     private RecyclerView rvKeluhan;
@@ -372,7 +374,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 jenisKendaraan = n.get("TYPE").asString();
                 varianKendaraan = n.get("VARIAN").asString();
                 modelKendaraan = n.get("MODEL").asString();
-                kendaraanId = n.get("KENDARAAN_ID").asString();
+                kendaraanId = n.get("KENDARAAN_ID").asInteger();
                 noHp = n.get("NO_PONSEL").asString();
                 pekerjaan = n.get("PEKERJAAN").asString();
 
@@ -442,7 +444,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 }
                 //stringBuilder.append(n.get("MODEL").asString()).append(" ");
 
-                kendaraanId = n.get("ID").asString();
+                kendaraanId = n.get("ID").asInteger();
                 merkKendaraan = n.get("MERK").asString();
                 varianKendaraan = n.get("VARIAN").asString();
                 modelKendaraan = n.get("MODEL").asString();
@@ -486,7 +488,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 args.put("model", modelKendaraan);
                 args.put("merk", merkKendaraan);
                 args.put("varian", varianKendaraan);
-                args.put("kendaraan_id", kendaraanId);
+                args.put("kendaraan_id", String.valueOf(kendaraanId));
                 args.put("lokasiLayanan", getSetting("LOKASI_PENUGASAN"));
                 args.put("rangka", "");
                 args.put("mesin", "");

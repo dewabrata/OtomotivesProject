@@ -1,6 +1,7 @@
 package com.rkrzmail.oto.modules.checkin;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +23,8 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class DetailKontrolBooking_Activity extends AppActivity {
@@ -87,6 +90,59 @@ public class DetailKontrolBooking_Activity extends AppActivity {
                 saveUpdate();
             }
         });
+    }
+
+    private void setSpAktivitas(View view){
+        List<String> aktifitasList = new ArrayList<>();
+        aktifitasList.add("--PILIH--");
+        EditText etStatus = (EditText) view;
+        if (etStatus.getText().toString().equals("BATAL BOOK")) {
+            aktifitasList.add("MESSAGE PELANGGAN");
+        } else if (etStatus.getText().toString().equals("BOOK DEREK")) {
+            aktifitasList.add("PERINTAH DEREK");
+            aktifitasList.add("BATAL BOOK BENGKEL");
+            aktifitasList.add("BATAL BOOK PELANGGAN");
+            aktifitasList.add("CHECK IN");
+        } else if (etStatus.getText().toString().equals("BOOK BENGKEL")) {
+            aktifitasList.add("BATAL BOOK BENGKEL");
+            aktifitasList.add("BATAL BOOK PELANGGAN");
+            aktifitasList.add("CHECK IN");
+        } else if (etStatus.getText().toString().equals("BOOK HOME")) {
+            aktifitasList.add("BATAL BOOK BENGKEL");
+            aktifitasList.add("BATAL BOOK PELANGGAN");
+            aktifitasList.add("PENUGASAN MEKANIK");
+        } else if (etStatus.getText().toString().equals("BOOK JEMPUT")) {
+            aktifitasList.add("BATAL BOOK BENGKEL");
+            aktifitasList.add("BATAL BOOK PELANGGAN");
+            aktifitasList.add("PERINTAH JEMPUT");
+        } else if (etStatus.getText().toString().equals("DEREK OTW")) {
+            aktifitasList.add("BATAL BOOK PELANGGAN");
+            aktifitasList.add("CHECK IN");
+        } else if (etStatus.getText().toString().equals("CHECKIN")
+                || etStatus.getText().toString().equals("LAYANAN ESTIMASI")
+                || etStatus.getText().toString().equals("SERAH TERIMA JEMPUT")) {
+            aktifitasList.add("CHECK IN");
+        } else if (etStatus.getText().toString().equals("JEMPUT") || etStatus.getText().toString().equals("PENJEMPUTAN")) {
+            aktifitasList.add("BATAL PELANGGAN");
+        }
+
+        String status = etStatus.getText().toString();
+        if(status.equals("CHECKIN")){
+            Messagebox.showDialog(getActivity(),
+                    "Konfirmasi", "Masukkan Antrian ", "Ya", "Tidak", new DialogInterface.OnClickListener() {
+                        @SuppressLint("SetTextI18n")
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //setNoAntrian(jenisAntrian);
+                        }
+                    }, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+        }
+
     }
 
     void saveUpdate(){

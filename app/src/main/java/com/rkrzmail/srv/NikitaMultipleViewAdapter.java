@@ -47,42 +47,12 @@ public class NikitaMultipleViewAdapter extends RecyclerView.Adapter<NikitaViewHo
         NikitaViewHolder nikitaViewHolder;
         if(viewType == ITEM_VIEW_1){
             nikitaViewHolder = NikitaViewHolder.getInstance(viewGroup, rlayout);
-            if (onitemClickListener != null) {
-                nikitaViewHolder.itemView.setTag(String.valueOf(viewType));
-                nikitaViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        if (onitemClickListener != null) {
-                            onitemClickListener.onItemClick(nson, v, Utility.getInt(String.valueOf(v.getTag())));
-                        }
-                    }
-                });
-            }
             return nikitaViewHolder;
         }else if (viewType == ITEM_VIEW_2){
             nikitaViewHolder = NikitaViewHolder.getInstance(viewGroup, rlayout2);
-            if (onitemClickListener != null) {
-                nikitaViewHolder.itemView.setTag(String.valueOf(viewType));
-                nikitaViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        if (onitemClickListener != null) {
-                            onitemClickListener.onItemClick(nson, v, Utility.getInt(String.valueOf(v.getTag())));
-                        }
-                    }
-                });
-            }
             return nikitaViewHolder;
         }else{
             nikitaViewHolder = NikitaViewHolder.getInstance(viewGroup, rlayout);
-            if (onitemClickListener != null) {
-                nikitaViewHolder.itemView.setTag(String.valueOf(viewType));
-                nikitaViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        if (onitemClickListener != null) {
-                            onitemClickListener.onItemClick(nson, v, Utility.getInt(String.valueOf(v.getTag())));
-                        }
-                    }
-                });
-            }
             return nikitaViewHolder;
         }
     }

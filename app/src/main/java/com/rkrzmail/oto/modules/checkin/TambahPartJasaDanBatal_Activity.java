@@ -60,6 +60,7 @@ import static com.rkrzmail.utils.ConstUtils.BATAL_PART;
 import static com.rkrzmail.utils.ConstUtils.BENGKEL;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
 import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.ESTIMASI_WAKTU;
 import static com.rkrzmail.utils.ConstUtils.ID;
 import static com.rkrzmail.utils.ConstUtils.JASA_LAIN;
@@ -85,7 +86,9 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
     private Nson jasaList = Nson.newArray();
     private Tools.TimePart dummyTime = Tools.TimePart.parse("00:00:00");
 
-    private String idCheckinDetail = "", idCheckin = "";
+    private String idCheckin = "";
+    private String layanan = "";
+   // private Nson idCheckinDetailList = Nson.newArray();
     private int totalBiaya = 0;
     private int totalTambah = 0;
     private int totalBatal = 0, countBatal = 0;
@@ -129,10 +132,11 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
 
     @SuppressLint("SetTextI18n")
     private void initData() {
-        idCheckinDetail = getIntentStringExtra(ID);
         idCheckin = getIntentStringExtra("CHECKIN_ID");
+        Log.d(TAG, "initData: " + idCheckin);
         totalBiaya += Integer.parseInt(getIntentStringExtra(TOTAL_BIAYA));
         find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));
+        layanan = getIntentStringExtra("LAYANAN");
 
         if (getIntent().hasExtra(TAMBAH_PART)) {
             isTambah = true;
@@ -336,9 +340,11 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                 args.put("action", "update");
                 if (isTambah) {
                     args.put("aktivitas", "TAMBAH PART - JASA");
-                    args.put("detailId", idCheckinDetail);
+                    //args.put("detailId", idCheckinDetail);
+                    args.put("layanan", layanan);
                     args.put("parts", partList.toJson());
                     args.put("jasaLain", jasaList.toJson());
+                    args.put("idDetail", getIntentStringExtra(ID));
                 }
                 if (isBatal) {
                     args.put("aktivitas", "BATAL PART");
@@ -352,13 +358,13 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    showSuccess("Update Aktivitas Berhasil");
+                    showSuccess("Menambahkan Part Berhasil");
                     Intent i = new Intent();
                     i.putExtra(DATA, idCheckin);
                     setResult(RESULT_OK, i);
                     finish();
                 } else {
-                    showInfo(result.get("message").asString());
+                    showError(ERROR_INFO);
                 }
             }
         });
@@ -386,11 +392,11 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                 startActivityForResult(i, REQUEST_CARI_PART);
                 break;
             case R.id.btn_simpan:
-                if (idCheckinDetail.isEmpty()) {
-                    showError("ID CHECKIN NULL");
-                }else if(isWait){
+               if(isWait){
                     if(!isSign){
                         showWarning("Tanda Tangan belum terisi");
+                    }else{
+                        updateTambahOrBatal();
                     }
                 }else {
                     updateTambahOrBatal();
@@ -415,37 +421,6 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                     }
                 }
                 break;
-        }
-    }
-
-    private boolean checkPermission() {
-        return ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void requestPermissionAndContinue() {
-        if (ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, WRITE_EXTERNAL_STORAGE)
-                    && ActivityCompat.shouldShowRequestPermissionRationale(this, READ_EXTERNAL_STORAGE)) {
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
-                alertBuilder.setCancelable(true);
-                alertBuilder.setTitle("");
-                alertBuilder.setMessage("");
-                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                    public void onClick(DialogInterface dialog, int which) {
-                        ActivityCompat.requestPermissions(TambahPartJasaDanBatal_Activity.this, new String[]{WRITE_EXTERNAL_STORAGE
-                                , READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
-                    }
-                });
-                AlertDialog alert = alertBuilder.create();
-                alert.show();
-            } else {
-                ActivityCompat.requestPermissions(TambahPartJasaDanBatal_Activity.this, new String[]{WRITE_EXTERNAL_STORAGE,
-                        READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
-            }
         }
     }
 
@@ -519,7 +494,6 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                     try {
                         dataAccept = Nson.readJson(getIntentStringExtra(data, DATA));
                         dataAccept.set("CHECKIN_ID", idCheckin);
-                        dataAccept.set("CHECKIN_DETAIL_ID", idCheckinDetail);
                         partList.add(dataAccept);
                         Objects.requireNonNull(rvPart.getAdapter()).notifyDataSetChanged();
 

@@ -67,7 +67,14 @@ public class PartKosong_TugasPart_Fragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initRecylerview();
-        viewPartKosong();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(isVisible()){
+            viewPartKosong();
+        }
     }
 
     private void initHideToolbar(View view){
@@ -118,6 +125,7 @@ public class PartKosong_TugasPart_Fragment extends Fragment {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    partKosongList.asArray().clear();
                     partKosongList.asArray().addAll(result.get("data").asArray());
                     Objects.requireNonNull(rvPartKosong.getAdapter()).notifyDataSetChanged();
                 } else {

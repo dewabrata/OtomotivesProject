@@ -28,7 +28,6 @@ import com.rkrzmail.srv.NikitaViewHolder;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.rkrzmail.utils.APIUrls.ATUR_JUAL_PART;
 import static com.rkrzmail.utils.APIUrls.VIEW_TUGAS_PART;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
@@ -37,8 +36,9 @@ import static com.rkrzmail.utils.ConstUtils.TUGAS_PART_PERMINTAAN;
 
 public class Permintaan_TugasPart_Fragment extends Fragment {
 
-    RecyclerView rvPermintaanCheckin, rvPermintaanJualPart;
-    Nson permintaanCheckinList = Nson.newArray(), permintaanJualPartList = Nson.newArray();
+    public RecyclerView rvPermintaanCheckin, rvPermintaanJualPart;
+    public Nson permintaanCheckinList = Nson.newArray(), permintaanJualPartList = Nson.newArray();
+    boolean isVisited = false;
 
     public Permintaan_TugasPart_Fragment() {
 
@@ -63,9 +63,19 @@ public class Permintaan_TugasPart_Fragment extends Fragment {
         rvPermintaanJualPart = view.findViewById(R.id.recyclerView2);
         initRecylerviewPermintaanCheckin();
         initRecylerviewPermintaanJualPart();
-        viewPartPermintaanCheckin();
-        viewPartPermintaanJualPart();
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(isVisible()){
+            viewPartPermintaanJualPart();
+            viewPartPermintaanCheckin();
+            Log.d("visi__", "setUserVisibleHint: " + "visible permintaan");
+        }else{
+            Log.d("visi__", "setUserVisibleHint: " + "invisible permintaan");
+        }
     }
 
     private void initHideToolbar(View view){
@@ -106,7 +116,7 @@ public class Permintaan_TugasPart_Fragment extends Fragment {
     private void initRecylerviewPermintaanCheckin(){
         rvPermintaanCheckin.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvPermintaanCheckin.setHasFixedSize(true);
-        rvPermintaanCheckin.setAdapter(new NikitaRecyclerAdapter(permintaanCheckinList, R.layout.item_batal_tersedia_permintaan_tugas_part){
+        rvPermintaanCheckin.setAdapter(new NikitaRecyclerAdapter(permintaanCheckinList, R.layout.item_tersedia_permintaan_tugas_part){
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
@@ -129,7 +139,7 @@ public class Permintaan_TugasPart_Fragment extends Fragment {
     }
 
     @SuppressLint("NewApi")
-    private void viewPartPermintaanCheckin() {
+    public void viewPartPermintaanCheckin() {
         ((TugasPart_MainTab_Activity) Objects.requireNonNull(getActivity())).newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
@@ -159,7 +169,7 @@ public class Permintaan_TugasPart_Fragment extends Fragment {
     }
 
     @SuppressLint("NewApi")
-    private void viewPartPermintaanJualPart() {
+    public void viewPartPermintaanJualPart() {
         ((TugasPart_MainTab_Activity) Objects.requireNonNull(getActivity())).newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override

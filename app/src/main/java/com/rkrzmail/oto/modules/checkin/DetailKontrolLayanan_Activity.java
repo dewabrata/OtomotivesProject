@@ -3,6 +3,7 @@ package com.rkrzmail.oto.modules.checkin;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,14 +23,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
+import com.naa.data.Utility;
 import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.gmod.MessageWA;
 import com.rkrzmail.oto.modules.bengkel.AturUser_Activity;
 import com.rkrzmail.srv.NikitaMultipleViewAdapter;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
 
@@ -39,14 +41,18 @@ import java.util.Map;
 import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.ATUR_KONTROL_LAYANAN;
+import static com.rkrzmail.utils.APIUrls.SET_ANTRIAN;
 import static com.rkrzmail.utils.APIUrls.SET_CHECKIN;
 import static com.rkrzmail.utils.APIUrls.VIEW_MEKANIK;
 import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.ESTIMASI_WAKTU;
 import static com.rkrzmail.utils.ConstUtils.ID;
 import static com.rkrzmail.utils.ConstUtils.MENUNGGU;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_CHECKIN;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_MEKANIK;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_TAMBAH_PART_JASA_LAIN;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_WA;
 import static com.rkrzmail.utils.ConstUtils.RP;
 import static com.rkrzmail.utils.ConstUtils.TAMBAH;
 import static com.rkrzmail.utils.ConstUtils.TAMBAH_PART;
@@ -64,14 +70,16 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
     private TextView tvNamaLayanan, tvBiayaLayanan;
 
     private Nson mekanikArray = Nson.newArray(), idMekanikArray = Nson.newArray();
-    private Nson detailCheckinList = Nson.newArray(), detailCheckinListJasa = Nson.newArray();
+    private Nson detailCheckinList = Nson.newArray(), dataDetailList = Nson.newArray();
+    private Nson batalPartJasaList = Nson.newArray();
 
     private boolean isMekanik = false; // true = part, false = jasa
-    private boolean isBatal = false;
+    private boolean isKurangi = false;
 
-    private String idCheckinDetail = "", idCheckin = "";
+    private String idCheckinDetail = "", idCheckin = "", idAntrian = "";
     private String status = "";
     private String namaMekanik = "", idMekanik = "";
+    private String jenisAntrian = "", noPonsel = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,9 +128,9 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         final Nson data = Nson.readJson(getIntentStringExtra(DATA));
         Log.d(TAG, "loadData: " + data);
 
-        setSpMekanik(data.get("MEKANIK").asString());
-        getDetailCheckin(data);
         idCheckin = data.get(ID).asString();
+        jenisAntrian = data.get("ANTRIAN").asString();
+        noPonsel = data.get("NO_PONSEL").asString();
 
         etNoAntrian.setText(data.get("NO_ANTRIAN").asString());
         etStatus.setText(data.get("STATUS").asString());
@@ -133,14 +141,17 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         etDp.setText(RP + formatRp(data.get("DP").asString()));
         etSisa.setText(RP + formatRp(data.get("SISA").asString()));
         etEstimasiSebelum.setText(data.get("ESTIMASI_SEBELUM").asString());
-        etEstimasiLama.setText(data.get("ESTIMASI_SESUDAH").asString());
+        etEstimasiLama.setText(totalWaktuKerja(
+                data.get("WAKTU_KERJA_HARI").asString(),
+                data.get("WAKTU_KERJA_JAM").asString(),
+                data.get("WAKTU_KERJA_MENIT").asString()));
         etEstimasiSelesai.setText(Tools.setFormatDateTimeFromDb(data.get("ESTIMASI_SELESAI").asString(), "yyyy-MM-dd hh:mm", "dd/MM-hh:mm", false));
         etPengambilan.setText(data.get("JAM_PENGAMBILAN").asString());
         etAlasanBatal.setText(data.get("ALASAN_BATAL").asString());
         etNamaLayanan.setText(data.get("LAYANAN").asString());
         tvNamaLayanan.setText(data.get("LAYANAN").asString());
         tvBiayaLayanan.setText(RP + formatRp(formatOnlyNumber(data.get("BIAYA_LAYANAN").asString())));
-        setSpAktifitas();
+
         if (data.get("TUNGGU_KONFIRMASI_BIAYA").asString().equals("Y")) {
             find(R.id.cb_tungguConfirm_biaya, CheckBox.class).setChecked(true);
         }
@@ -176,6 +187,10 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             }
         });
 
+        setSpAktifitas();
+        setSpMekanik(data.get("MEKANIK").asString());
+        getDetailCheckin(data);
+
     }
 
     private void initRecyclerviewDetail() {
@@ -201,15 +216,69 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                             RP + formatRp(detailCheckinList.get(position).get("HARGA_PART").asString()));
                     viewHolder.find(R.id.tv_jasaNet_booking3_checkin3, TextView.class).setText(
                             RP + formatRp(detailCheckinList.get(position).get("HARGA_JASA").asString()));
+                    if (isKurangi) {
+                        viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.VISIBLE);
+                        viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Messagebox.showDialog(getActivity(), "Konfirmasi", "Kurangi Part?", "Ya", "Tidak", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        batalPartJasaList.add(Nson.newObject()
+                                                .set("ID", detailCheckinList.get(position).get("CHECKIN_DETAIL_ID"))
+                                                .set("PART_ID", detailCheckinList.get(position).get("PART_ID"))
+                                                .set("JASA_ID", detailCheckinList.get(position).get("JASA_ID"))
+                                                .set("JUMLAH", detailCheckinList.get(position).get("JUMLAH"))
+                                                .set("TUGAS_PART_ID", detailCheckinList.get(position).get("TUGAS_PART_ID")));
+                                        detailCheckinList.asArray().remove(position);
+                                        notifyItemRemoved(position);
+                                    }
+                                }, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                            }
+                        });
+                    }else{
+                        viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.GONE);
+                    }
                 } else if (itemType == ITEM_VIEW_2) {
                     viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class)
-                            .setText(RP + formatRp(detailCheckinListJasa.get(position).get("HARGA_JASA").asString()));
+                            .setText(RP + formatRp(detailCheckinList.get(position).get("HARGA_JASA").asString()));
                     viewHolder.find(R.id.tv_no, TextView.class).setText(detailCheckinList.get(position).get("NO").asString() + ". ");
                     viewHolder.find(R.id.tv_kelompokPart_booking3_checkin3, TextView.class)
                             .setText(detailCheckinList.get(position).get("KELOMPOK_PART").asString());
                     viewHolder.find(R.id.tv_aktifitas_booking3_checkin3, TextView.class)
                             .setText(detailCheckinList.get(position).get("AKTIVITAS").asString());
                     viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class).setVisibility(View.GONE);
+                    if(isKurangi){
+                        viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.VISIBLE);
+                        viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Messagebox.showDialog(getActivity(), "Konfirmasi", "Kurangi Jasa?", "Ya", "Tidak", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        batalPartJasaList.add(Nson.newObject()
+                                                .set("ID", detailCheckinList.get(position).get("CHECKIN_DETAIL_ID"))
+                                                .set("PART_ID", detailCheckinList.get(position).get("PART_ID"))
+                                                .set("JASA_ID", detailCheckinList.get(position).get("JASA_ID"))
+                                                .set("JUMLAH", detailCheckinList.get(position).get("JUMLAH"))
+                                                .set("TUGAS_PART_ID", detailCheckinList.get(position).get("TUGAS_PART_ID")));
+                                        detailCheckinList.asArray().remove(position);
+                                        notifyItemRemoved(position);
+                                    }
+                                }, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                            }
+                        });
+                    }
                 }
             }
         });
@@ -233,6 +302,13 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     detailCheckinList.asArray().clear();
                     detailCheckinList.asArray().addAll(result.get("data").asArray());
+                    for (int i = 0; i < detailCheckinList.size(); i++) {
+                        dataDetailList.add(Nson.newObject()
+                                .set("CHECKIN_DETAIL_ID", detailCheckinList.get(i).get("CHECKIN_DETAIL_ID"))
+                                .set("PART_ID", detailCheckinList.get(i).get("PART_ID"))
+                                .set("JUMLAH", detailCheckinList.get(i).get("JUMLAH"))
+                                .set("CHECKIN_ID", idCheckin));
+                    }
                     rvDetail.getAdapter().notifyDataSetChanged();
                 } else {
                     showError(result.get("message").asString());
@@ -302,7 +378,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 namaMekanik = parent.getSelectedItem().toString();
-                if(idMekanikArray.get(position).get("NAMA").asString().equals(parent.getSelectedItem().toString())){
+                if (idMekanikArray.get(position).get("NAMA").asString().equals(parent.getSelectedItem().toString())) {
                     idMekanik = idMekanikArray.get(position).get("ID").asString();
                 }
             }
@@ -321,38 +397,42 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             aktifitasList.add("BATAL BENGKEL");
             aktifitasList.add("BATAL PELANGGAN");
             aktifitasList.add("PENUGASAN MEKANIK");
-            aktifitasList.add("TAMBAH PART - JASA");
-            aktifitasList.add("KURANGI PART - JASA");
-        } else if (etStatus.getText().toString().equals("BATAL PART") || etStatus.getText().toString().equals("MEKANIK SELESAI") || etStatus.getText().toString().equals("PELAYANAN SELESAI")
-                || etStatus.getText().toString().equals("PERINTAH ANTAR") || etStatus.getText().toString().equals("REFUND DP")) {
+        } else if (etStatus.getText().toString().equals("BATAL PART")
+                || etStatus.getText().toString().equals("MEKANIK SELESAI")
+                || etStatus.getText().toString().equals("PELAYANAN SELESAI")
+                || etStatus.getText().toString().equals("PERINTAH ANTAR")
+                || etStatus.getText().toString().equals("REFUND DP")) {
             aktifitasList.add("MESSAGE PELANGGAN");
-        } else if (etStatus.getText().toString().equals("GANTI MEKANIK")) {
-            aktifitasList.add("BATAL PART");
-            aktifitasList.add("BATAL PELANGGAN");
+        } else if (etStatus.getText().toString().equals("LAYANAN ESTIMASI")) {
+            aktifitasList.add("CHECKIN");
+        } else if (etStatus.getText().toString().equals("KONFIRMASI BIAYA")) {
+            aktifitasList.add("BIAYA OK");
+            aktifitasList.add("BATAL DP");
+            aktifitasList.add("BATAL PELANGAN");
+        } else if (etStatus.getText().toString().equals("TUNGGU KONFIRMASI")) {
+            aktifitasList.add("PENUGASAN MEKANIK");
+        } else if (etStatus.getText().toString().equals("TUNGGU DP")) {
+            aktifitasList.add("BATAL PELANGAN");
+            aktifitasList.add("MESSAGE PELANGGAN");
+        } else if (etStatus.getText().toString().equals("PENUGASAN MEKANIK") || etStatus.getText().toString().equals("TAMBAH PART - JASA")) {
             aktifitasList.add("TAMBAH MEKANIK");
+            aktifitasList.add("GANTI MEKANIK");
             aktifitasList.add("TAMBAH PART - JASA");
             aktifitasList.add("KURANGI PART - JASA");
-            aktifitasList.add("GANTI MEKANIK");
-        } else if (etStatus.getText().toString().equals("GANTI PART") || etStatus.getText().toString().equals("MEKANIK MULAI") || etStatus.getText().toString().equals("MEKANIK PAUSE")
-                || etStatus.getText().toString().equals("OUTSOURCE SELESAI") || etStatus.getText().toString().equals("PART MEKANIK")
-                || etStatus.getText().toString().equals("PART TERSEDIA") || etStatus.getText().toString().equals("PART TIDAK TERSEDIA") || etStatus.getText().toString().equals("PENUGASAN MEKANIK")
-                || etStatus.getText().toString().equals("TAMBAH MEKANIK") || etStatus.getText().toString().equals("TAMBAH PART - JASA") || etStatus.getText().toString().equals("TAMBAH PART - JASA OK")
-                || etStatus.getText().toString().equals("TAMBAH PART - JASA TOLAK") || etStatus.getText().toString().equals("TERIMA PART KOSONG") || etStatus.getText().toString().equals("MESSAGE PELANGGAN")) {
             aktifitasList.add("BATAL PART");
             aktifitasList.add("BATAL BENGKEL");
-            aktifitasList.add("BATAL PELANGGAN");
+        } else if (etStatus.getText().toString().equals("KURANGI PART")) {
             aktifitasList.add("TAMBAH MEKANIK");
             aktifitasList.add("GANTI MEKANIK");
             aktifitasList.add("TAMBAH PART - JASA");
-            aktifitasList.add("KURANGI PART - JASA");
-        } else if (etStatus.getText().toString().equals("TRANSFER")) {
-            aktifitasList.add("PERINTAH ANTAR");
-        } else if (etStatus.getText().toString().equals("TUNGGU ESTIMASI")) {
-            aktifitasList.add("KONFIRMASI BIAYA");
+            aktifitasList.add("BATAL PART");
+            aktifitasList.add("BATAL BENGKEL");
+        } else if (etStatus.getText().toString().equals("MEKANIK PAUSE")) {
+            aktifitasList.add("TAMBAH MEKANIK");
+            aktifitasList.add("GANTI MEKANIK");
+        } else if (etStatus.getText().toString().equals("CHECKIN ANTRIAN PENUGASAN")) {
+            aktifitasList.add("BATAL BENGKEL");
             aktifitasList.add("BATAL PELANGGAN");
-        } else if (etStatus.getText().toString().equals("KONFIRMASI BIAYA") || etStatus.getText().toString().equals("TUNGGU DP")) {
-            aktifitasList.add("BIAYA OK");
-            aktifitasList.add("BIAYA BATAL");
         }
 
         ArrayAdapter<String> aktifitasAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, aktifitasList);
@@ -371,13 +451,33 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_mekanik, LinearLayout.class), false);
                 }
 
+                if(status.equals("TAMBAH PART - JASA")){
+                    //moveWa();//with specific message
+                }
+
+                if (status.equals("MESSAGE PELANGGAN")) {
+                    moveWa();
+                }
+                if (status.equals("KURANGI PART - JASA")) {
+                    isKurangi = true;
+                    rvDetail.getAdapter().notifyDataSetChanged();
+                } else {
+                    isKurangi = false;
+                    rvDetail.getAdapter().notifyDataSetChanged();
+                }
+                if(status.equals("CHECKIN")){
+                    setNoAntrian(jenisAntrian);
+                    status = "CHECKIN ANTRIAN";
+                }
+
                 etAlasanBatal.setEnabled(status.equals("MESSAGE PELANGGAN") || status.equals("BATAL BENGKEL") || status.equals("BATAL PELANGGAN"));
                 if (status.equals("TAMBAH PART - JASA")) { //|| status.equals("TAMBAH PART - JASA MSG") || status.equals("TAMBAH PART - JASA OK")
                     Intent intent = new Intent(getActivity(), TambahPartJasaDanBatal_Activity.class);
-                    intent.putExtra(ID, idCheckinDetail);
+                    intent.putExtra(ID, dataDetailList.toJson());
                     intent.putExtra("CHECKIN_ID", idCheckin);
                     intent.putExtra(TOTAL_BIAYA, formatOnlyNumber(etTotal.getText().toString()));
                     intent.putExtra(TAMBAH_PART, "");
+                    intent.putExtra("LAYANAN", etNamaLayanan.getText().toString());
                     intent.putExtra(ESTIMASI_WAKTU, etEstimasiSebelum.getText().toString());
                     if (find(R.id.cb_tidak_menunggu, CheckBox.class).isChecked()) {
                         intent.putExtra(TIDAK_MENUNGGU, TIDAK_MENUNGGU);
@@ -395,6 +495,16 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         });
     }
 
+    private String mssgTambahPart(){
+        String result = "";
+        return result;
+    }
+
+    private void moveWa() {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("http://api.whatsapp.com/send?phone=" + formatOnlyNumber(noPonsel)));//+ "&text=" + Utility.urlEncode("Konfirmasi"))
+        startActivityForResult(intent, REQUEST_WA);
+    }
 
     private void updateData(final String id) {
         newProses(new Messagebox.DoubleRunnable() {
@@ -410,8 +520,15 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 if (isMekanik) {
                     args.put("aktivitas", "MEKANIK");
                     args.put("mekanik", namaMekanik);
+                    args.put("mekanikId", idMekanik);
                 }
-                args.put("mekanikId", idMekanik);
+                if (status.equals("KURANGI PART - JASA")) {
+                    args.put("aktivitas", "KURANGI PART - JASA");
+                    args.put("partJasaList", batalPartJasaList.toJson());
+                } else if (status.equals("BATAL DP")) {
+                    args.put("aktivitas", "BATAL DP");
+                    args.put("partJasaList", dataDetailList.toJson());
+                }
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_KONTROL_LAYANAN), args));
             }
@@ -423,7 +540,33 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                     setResult(RESULT_OK);
                     finish();
                 } else {
-                    showInfo("Gagal");
+                    showInfo(ERROR_INFO);
+                }
+            }
+        });
+    }
+
+    private void setNoAntrian(final String jenisAntrian) {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "add");
+                args.put("status", jenisAntrian);
+                args.put("spec", "Bengkel");
+                args.put("statusantri", jenisAntrian);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_ANTRIAN), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    result = result.get("data").get(0);
+                    idAntrian = result.asString();
+                    find(R.id.et_no_antrian_checkin4, EditText.class).setText(generateNoAntrian(jenisAntrian, result.asString()));
+                    Log.d(TAG, "NO_ANTRIAN: " + generateNoAntrian(jenisAntrian, result.asString()));
                 }
             }
         });
@@ -463,6 +606,8 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_TAMBAH_PART_JASA_LAIN) {
             Nson nson = Nson.readJson(getIntentStringExtra(data, TAMBAH));
             getDetailCheckin(nson.get(ID));
+        } else if (resultCode == RESULT_OK && requestCode == REQUEST_CHECKIN) {
+            loadData();
         }
     }
 }

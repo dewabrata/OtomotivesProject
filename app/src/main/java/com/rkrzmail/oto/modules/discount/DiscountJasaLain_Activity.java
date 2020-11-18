@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.discount;
 
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -30,6 +31,7 @@ import com.rkrzmail.utils.Tools;
 import java.util.Map;
 
 import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 
 public class DiscountJasaLain_Activity extends AppActivity {
 
@@ -55,18 +57,19 @@ public class DiscountJasaLain_Activity extends AppActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(new Intent(getActivity(), AturDiscountJasaLain_Activity.class), 10);
+                startActivityForResult(new Intent(getActivity(), AturDiscountJasaLain_Activity.class), REQUEST_DETAIL);
             }
         });
 
         rvDiscJasa = findViewById(R.id.recyclerView);
         rvDiscJasa.setLayoutManager(new LinearLayoutManager(this));
         rvDiscJasa.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_discount_jasa_lain) {
+                    @SuppressLint("SetTextI18n")
                     @Override
                     public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                         super.onBindViewHolder(viewHolder, position);
                         viewHolder.find(R.id.tv_kategori_discJasa, TextView.class).setText(nListArray.get(position).get("KATEGORI_JASA_LAIN").asString());
-                        viewHolder.find(R.id.tv_disc_discJasa, TextView.class).setText(nListArray.get(position).get("DISC_JASA").asString());
+                        viewHolder.find(R.id.tv_disc_discJasa, TextView.class).setText(nListArray.get(position).get("DISCOUNT_JASA").asString() + " %");
                         viewHolder.find(R.id.tv_status, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
                     }
                 }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
@@ -74,7 +77,7 @@ public class DiscountJasaLain_Activity extends AppActivity {
                     public void onItemClick(Nson parent, View view, int position) {
                         Intent i = new Intent(getActivity(), AturDiscountJasaLain_Activity.class);
                         i.putExtra(DATA, nListArray.get(position).toJson());
-                        startActivityForResult(i, 10);
+                        startActivityForResult(i, REQUEST_DETAIL);
                     }
                 })
         );
@@ -149,7 +152,7 @@ public class DiscountJasaLain_Activity extends AppActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK && requestCode == 10){
+        if(resultCode == RESULT_OK && requestCode == REQUEST_DETAIL){
             catchData("");
         }
     }

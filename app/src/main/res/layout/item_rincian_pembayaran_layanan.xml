@@ -229,7 +229,9 @@
                 android:stretchColumns="*"
                 android:padding="@dimen/paddingMedium">
 
-                <TableRow android:layout_marginTop="5dp">
+                <TableRow
+                    android:id="@+id/row_layanan"
+                    android:layout_marginTop="5dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -240,7 +242,7 @@
                         android:textSize="12sp" />
 
                     <TextView
-                        android:id="@+id/tv_totalLayanan"
+                        android:id="@+id/tv_biaya_layanan"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp. 0"
@@ -257,7 +259,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="( DISCOUNT LAYANAN )"
+                        android:text="DISCOUNT LAYANAN"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                         android:textColor="@color/grey_900"
                         android:textSize="12sp" />
@@ -280,7 +282,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="( DISCOUNT FREKWENSI )"
+                        android:text="DISCOUNT FREKWENSI"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                         android:textColor="@color/grey_900"
                         android:textSize="12sp" />
@@ -325,7 +327,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="( DISCOUNT PART )"
+                        android:text="DISCOUNT PART"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                         android:textColor="@color/grey_900"
                         android:textSize="12sp" />
@@ -370,7 +372,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="( DISCOUNT JASA PART )"
+                        android:text="DISCOUNT JASA PART"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                         android:textColor="@color/grey_900"
                         android:textSize="12sp" />
@@ -414,7 +416,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="( DISCOUNT JASA LAIN )"
+                        android:text="DISCOUNT JASA LAIN"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                         android:textColor="@color/grey_900"
                         android:textSize="12sp" />
@@ -437,7 +439,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="( TRANSPORT / DEREK )"
+                        android:text="TRANSPORT / DEREK"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                         android:textColor="@color/grey_900"
                         android:textSize="12sp" />
@@ -550,7 +552,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="( DOWNPAYMENT )"
+                        android:text="DOWNPAYMENT"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                         android:textColor="@color/grey_900"
                         android:textSize="12sp" />
@@ -573,7 +575,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="( SISA BIAYA )"
+                        android:text="SISA BIAYA"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                         android:textColor="@color/grey_900"
                         android:textSize="12sp" />
@@ -619,7 +621,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="( DISCOUNT SPOT )"
+                        android:text="DISCOUNT SPOT"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                         android:textColor="@color/grey_900"
                         android:textSize="12sp" />

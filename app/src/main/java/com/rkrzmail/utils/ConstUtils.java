@@ -14,7 +14,6 @@ public class ConstUtils {
     public static final String RINCIAN_LAYANAN = "Rincian Layanan";
     public static final String RINCIAN_DP = "Rincian DP";
     public static final String RINCIAN_JUAL_PART = "Rincian Jual Part";
-
     //CONST STRING
     public static final String BENGKEL = "BENGKEL";
     public static final String BATAL_PART = "BATAL_PART";
@@ -49,9 +48,8 @@ public class ConstUtils {
     public static final String CARI_PART_OTOMOTIVES = "global";
     public static final String CARI_PART_TERALOKASIKAN = "TERALOKASI";
     //REQUEST CODE
-    public static final int  REQUEST_PART_TERSEDIA = 6;
-    public static final int REQUEST_PART_BATAL = 7;
-    public static final int REQUEST_PERMINTAAN_PART = 8;
+    public static final int REQUEST_KONFIRMASI = 4;
+    public static final int REQUEST_WA = 5;
     public static final int REQUEST_PART_KOSONG = 9;
     public static final int REQUEST_TUGAS_PART = 10;
     public static final int REQUEST_DISCOUNT = 11;

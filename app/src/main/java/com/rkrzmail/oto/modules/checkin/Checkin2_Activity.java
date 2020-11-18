@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 
 public class Checkin2_Activity extends AppActivity {
 
@@ -56,7 +57,11 @@ public class Checkin2_Activity extends AppActivity {
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_checkin2);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Check-In");
+        if(getIntent().hasExtra("KONFIRMASI DATA")){
+            Objects.requireNonNull(getSupportActionBar()).setTitle("Konfirmasi Data Kendaraan");
+        }else{
+            Objects.requireNonNull(getSupportActionBar()).setTitle("Check-In");
+        }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -216,12 +221,16 @@ public class Checkin2_Activity extends AppActivity {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    readCheckin.set("NO_RANGKA", noRangka);
+                    readCheckin.set("NO_MESIN", noMesin);
+                    readCheckin.set("CHECKIN_ID", readCheckin.get("id").asString());
+
                     Intent intent = new Intent();
                     intent.putExtra(DATA, readCheckin.toJson());
                     setResult(RESULT_OK, intent);
                     finish();
                 } else {
-                    showWarning("Gagal");
+                    showWarning(ERROR_INFO);
                 }
             }
         });

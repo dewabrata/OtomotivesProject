@@ -72,7 +72,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
     private Nson getData;
     private Nson penugasanMekanikList = Nson.newArray();
 
-    private boolean isSign = false, isBatal = false;
+    private boolean isSign = false, isBatal = false, isMekanik = false;
     private boolean isExpressAndStandard = false, isExtra = false, isHplus = false, isDp = false;
     private long oneDay = 86400000;
     private String waktuLayananHplusExtra = "", jenisLayanan = "", waktuLayananStandartExpress = "";
@@ -547,28 +547,6 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         return !waktuAmbil.after(waktuEstimasi);
     }
 
-    private String generateNoAntrian(String statusAntrian, String noAntrian) {
-        String result = "";
-        String currentDateTime = Tools.setFormatDayAndMonthFromDb(currentDateTime("yyyy-MM-dd"), "dd/MM");
-        if (!noAntrian.equals("")) {
-            switch (statusAntrian) {
-                case "STANDART":
-                    result = "S" + "." + currentDateTime + "." + noAntrian;
-                    break;
-                case "EXTRA":
-                    result = "E" + "." + currentDateTime + "." + noAntrian;
-                    break;
-                case "EXPRESS":
-                    result = "EX" + "." + currentDateTime + "." + noAntrian;
-                    break;
-                default:
-                    result = "H" + "." + currentDateTime + "." + noAntrian;
-                    break;
-            }
-        }
-        return result;
-    }
-
     private void saveData(final String status) {
         final Nson nson = Nson.readJson(getIntentStringExtra(DATA));
         final String namaMekanik = find(R.id.sp_namaMekanik_checkin4, Spinner.class).getSelectedItem().toString().contains("--PILIH--") ? "" : find(R.id.sp_namaMekanik_checkin4, Spinner.class).getSelectedItem().toString();
@@ -587,7 +565,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         Log.d(TAG, "menit : " + menit);
         final String estimasiSebelum = find(R.id.et_mulaiWaktu_checkin, TextView.class).getText().toString();
         final String estimasiSesudah = find(R.id.et_selesaiWaktu_checkin, TextView.class).getText().toString();
-        final String estimasiSelesai = currentDateTime("yyyy-MM-dd") + " " + find(R.id.et_selesaiWaktu_checkin, TextView.class).getText().toString();
+        final String estimasiSelesai = find(R.id.et_selesaiWaktu_checkin, TextView.class).getText().toString();//currentDateTime("yyyy-MM-dd") + " " +
         //final String ttd = find(R.id.img_tandaTangan_checkin4 , ImageView.class).getText().toString();
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
@@ -616,6 +594,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 args.put("estimasiSebelum", estimasiSebelum);
                 args.put("estimasiSesudah", estimasiSesudah);
                 args.put("estimasiSelesai", estimasiSelesai);
+                args.put("keterangan", find(R.id.et_ket_checkin4, EditText.class).getText().toString());
                 //args.put("ttd", ttd);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
@@ -710,6 +689,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (!parent.getSelectedItem().toString().equals("--PILIH--")) {
+                    isMekanik = true;
                     if (isExpressAndStandard) {
                         loadAvailMekanik(parent.getSelectedItem().toString(), find(R.id.tv_jenis_antrian, TextView.class).getText().toString());
                     }
@@ -784,7 +764,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                     showWarning("Tanda Tangan Wajib di Input");
                 } else {
                     if (!find(R.id.sp_namaMekanik_checkin4, Spinner.class).getSelectedItem().toString().equals("--PILIH--")) {
-                        saveData("PENUGASAN MEKANIK");
+                        saveData("CHECKIN ANTRIAN PENUGASAN");
                     } else {
                         saveData("CHECKIN ANTRIAN");
                     }
@@ -803,37 +783,6 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                     }
                 }
                 break;
-        }
-    }
-
-    private boolean checkPermission() {
-        return ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void requestPermissionAndContinue() {
-        if (ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, WRITE_EXTERNAL_STORAGE)
-                    && ActivityCompat.shouldShowRequestPermissionRationale(this, READ_EXTERNAL_STORAGE)) {
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
-                alertBuilder.setCancelable(true);
-                alertBuilder.setTitle("");
-                alertBuilder.setMessage("");
-                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                    public void onClick(DialogInterface dialog, int which) {
-                        ActivityCompat.requestPermissions(Checkin4_Activity.this, new String[]{WRITE_EXTERNAL_STORAGE
-                                , READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
-                    }
-                });
-                AlertDialog alert = alertBuilder.create();
-                alert.show();
-            } else {
-                ActivityCompat.requestPermissions(Checkin4_Activity.this, new String[]{WRITE_EXTERNAL_STORAGE,
-                        READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
-            }
         }
     }
 

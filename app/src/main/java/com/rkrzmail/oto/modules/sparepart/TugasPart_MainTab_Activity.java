@@ -52,7 +52,7 @@ public class TugasPart_MainTab_Activity extends AppActivity {
         ViewPager vpTugasParts = findViewById(R.id.vp_tugas_part);
         TabLayout tabLayoutTugasParts = findViewById(R.id.tablayout_tugas_part);
 
-        ArrayList<Fragment> fragments = new ArrayList<>();
+        final ArrayList<Fragment> fragments = new ArrayList<>();
         fragments.add(new Permintaan_TugasPart_Fragment());
         fragments.add(new Tersedia_TugasPart_Fragment());
         fragments.add(new BatalPart_TugasPart_Fragment());
@@ -63,6 +63,7 @@ public class TugasPart_MainTab_Activity extends AppActivity {
         vpTugasParts.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayoutTugasParts));
         tabLayoutTugasParts.setupWithViewPager(vpTugasParts);
     }
+
 
     SearchView mSearchView;
 
