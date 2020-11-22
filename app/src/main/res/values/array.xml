@@ -262,8 +262,6 @@
         <item>TRANSFER</item>
         <item>DEBIT</item>
         <item>KREDIT</item>
-        <item>E-PAY</item>
-        <item>INVOICE</item>
     </string-array>
 
     <string-array name="aktivitas_usaha">

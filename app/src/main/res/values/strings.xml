@@ -1,316 +1,88 @@
 <resources xmlns:color="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Otomotives</string>
     <string name="spinner_no_default_hint"></string>
-    <string-array name="pola_harga_jual">
-        <item>FLEXIBLE</item>
-        <item>BELI + MARGIN</item>
-        <item>RATA - RATA + MARGIN</item>
-        <item>NOMINAL</item>
-        <item>HET</item>
-    </string-array>
-
     <string name="hint_cari_part">CARI PART</string>
-    <string-array name="pekerjaan">
-        <item>MAHASISWA</item>
-        <item>OJOL</item>
-        <item>PNS</item>
 
-    </string-array>
-
-    <string-array name="penjualan_part">
-        <item>KENDARAAN</item>
-        <item>GROSIR</item>
-
-    </string-array>
-
-    <string-array name="pola_refund">
-        <item>CASH</item>
-        <item>TRANSFER</item>
-
-    </string-array>
-
-    <string-array name="bank">
-        <item>BAN</item>
-        <item>CC</item>
-
-    </string-array>
-
-    <string-array name="tipe_supplier_2">
-        <item tools:ignore="InconsistentArrays">--PILIH--</item>
-        <item>PRINCIPAL</item>
-        <item>MAIN SUPPLIER</item>
-        <item>RETAIL SUPPLIER</item>
-        <item>ECOMERCE</item>
-        <item>BENGKEL LAIN</item>
-        <item>LAINNYA</item>
-    </string-array>
-
-    <string-array name="pola_beli">
-        <item>ONLINE</item>
-        <item>OFFLINE</item>
-        <item>LANGSUNG</item>
-
-
-    </string-array>
-
-    <string-array name="pembayaran">
-        <item>--PILIH--</item>
-        <item>TRANSFER</item>
-        <item>COD</item>
-        <item>INVOICE</item>
-        <item>KONSIGNMENT</item>
-    </string-array>
-
-    <string-array name="gender">
-        <item>--PILIH--</item>
-        <item>LAKI - LAKI</item>
-        <item>PEREMPUAN</item>
-    </string-array>
-
-    <string-array name="posisi">
-        <item>--PILIH--</item>
-        <item>MEKANIK</item>
-        <item>ADMIN PART</item>
-        <item>KASIR</item>
-    </string-array>
-
-    <string-array name="status">
-        <item>--PILIH--</item>
-        <item>AKTIF</item>
-        <item>NON-AKTIF</item>
-    </string-array>
-
-    <string-array name="penggajian">
-        <item>--PILIH--</item>
-        <item>HARIAN</item>
-        <item>MINGGUAN</item>
-        <item>BULANAN</item>
-    </string-array>
-
-    <string-array name="tipe_penerima">
-
-    </string-array>
-
-    <string-array name="akses_app">
-        <item>--PILIH--</item>
-        <item>CHECK IN</item>
-        <item>PART</item>
-    </string-array>
-
-    <string-array name="penggunaan">
-        <item>TENT</item>
-        <item>HOME SERVIS</item>
-        <item>EMERGENCY</item>
-
-    </string-array>
-
-    <string-array name="discount">
-        <item>LAYANAN</item>
-
-    </string-array>
-
-
-    <string-array name="tambahan">
-        <item>AKTIVITAS JASA LAIN</item>
-
-    </string-array>
-
-    <string-array name="komplimen">
-        <item>MERCH</item>
-        <item>PART</item>
-        <item>LAYANAN</item>
-
-    </string-array>
-
-    <string-array name="layanan">
-        <item>SERVIS LENGKAP</item>
-
-    </string-array>
-
-    <string-array name="tipe_penerimaan">
-        <item>--PILIH--</item>
-        <item>PEMBELIAN</item>
-        <item>PENGANTIAN RETURN</item>
-        <item>PENGANTIAN FASILITAS</item>
-        <item>REFUND</item>
-        <item>PENGEMBALIAN USER</item>
-    </string-array>
-    <string-array name="object_diskon">
-        <item>LAYANAN</item>
-    </string-array>
-
-    <string-array name="lokasi">
-        <item>--PILIH--</item>
-        <item>BENGKEL</item>
-        <item>HOME</item>
-        <item>TENDA</item>
-        <item>EMERGENCY</item>
-    </string-array>
-
-    <string-array name="afiliasi_usaha">
-        <item>JARINGAN</item>
-        <item>INDIVIDUAL</item>
-    </string-array>
-
-    <string-array name="aktif_tidak_aktif">
-        <item>--PILIH--</item>
-        <item>AKTIF</item>
-        <item>TIDAK AKTIF</item>
-    </string-array>
-
-    <string-array name="jenis_booking">
-        <item>--PILIH--</item>
-        <item>BOOK DEREK</item>
-        <item>BOOK BENGEKL</item>
-        <item>BOOK HOME</item>
-        <item>BOOK JEMPUT</item>
-    </string-array>
-
-    <string-array name="aktifitas_kontrol">
-        <item>--PILIH--</item>
-        <item>TUGASKAN PENJEMPUT</item>
-        <item>CHECK IN</item>
-        <item>TUGASKAN PENGANTAR</item>
-        <item>DIBATALKAN PELANGGAN</item>
-    </string-array>
-
-    <string-array name="tipe_schedule">
-        <item>--PILIH--</item>
-        <item>OPERASIONAL</item>
-        <item>LAYANAN BOOKING</item>
-        <item>LAYANAN HOME SERVICES</item>
-        <item>LAYANAN EMERGENCY</item>
-        <item></item>
-    </string-array>
-
-    <string-array name="ya_tidak">
-        <item>TIDAK</item>
-        <item>YA</item>
-    </string-array>
-
-    <string-array name="layanan_tambahan">
-        <item>HOME</item>
-        <item>ANTAR - JEMPUT</item>
-        <item>EMERGENCY</item>
-    </string-array>
-
-    <string-array name="lokasi_penugasan">
-        <item>BENGKEL</item>
-        <item>TENDA</item>
-    </string-array>
-
-    <string-array name="jenis_gift">
-        <item>PART</item>
-        <item>MERCHANDISE</item>
-        <item>FREE SERVICE</item>
-    </string-array>
-
-    <string-array name="penugasan">
-        <item>EXPRESS</item>
-        <item>PART</item>
-        <item>STANDART</item>
-        <item>FRONT OFFICE</item>
-        <item>KOMPLIMENT</item>
-        <item>H+1</item>
-        <item>OFF</item>
-        <item>TRAINING</item>
-        <item>CUTI</item>
-    </string-array>
-
-    <string-array name="tipe_antrian">
-        <item>STANDART</item>
-        <item>H+1</item>
-        <item>EXPRESS</item>
-    </string-array>
-
-    <string-array name="item_komisi">
-        <item>LAYANAN</item>
-        <item>PART</item>
-        <item>PART BERKALA</item>
-        <item>JASA LAIN</item>
-        <item>JASA LAIN BERKALA</item>
-    </string-array>
-
-    <string-array name="lokasi_simpan">
-        <item>--PILIH--</item>
-        <item>RUANG PART</item>
-        <item>GUDANG</item>
-        <item>DISPLAY</item>
-    </string-array>
-
-    <string-array name="pembayaran_bengkel">
-        <item>CASH</item>
-        <item>TRANSFER</item>
-        <item>INVOICE</item>
-        <item>DEBIT</item>
-        <item>CREDIT</item>
-    </string-array>
-
-    <string-array name="kondisi_part">
-        <item>BAIK</item>
-        <item>GANTI PART</item>
-    </string-array>
-
-    <string-array name="tipe_collection">
-        <item>CASH</item>
-        <item>SETOR CASH</item>
-    </string-array>
-
-    <string-array name="harga_jual_part">
-        <item>FIX</item>
-        <item>NON FIX</item>
-
-    </string-array>
-
-    <string-array name="schedule">
-        <item>OPERASIONAL</item>
-        <item>BOOK</item>
-        <item>HOME</item>
-        <item>EMG</item>
-
-    </string-array>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="discount">Discount</string>
+
     <string name="pekerjaan">Pekerjaan</string>
+
     <string name="kategori_part">Kategori Part</string>
+
     <string name="kategori_part_uppercase">KATEGORI PART</string>
+
     <string name="hapus_uppercase">HAPUS</string>
+
     <string name="simpan_uppercase">SIMPAN</string>
+
     <string name="penggunaan_uppercase">PENGGUNAAN</string>
+
     <string name="lanjut_uppercase">LANJUT</string>
+
     <string name="jumlah_uppercase">JUMLAH</string>
+
     <string name="upah_minimum_kota_uppercase">UPAH MINIMUM KOTA</string>
+
     <string name="nama_bengkel_uppercase">NAMA BENGKEL</string>
+
     <string name="nama_badan_usaha_uppercase">NAMA BADAN USAHA</string>
+
     <string name="alamat_uppercase">ALAMAT</string>
+
     <string name="kota_kabupaten_uppercase">KOTA / KABUPATEN</string>
+
     <string name="nib_uppercase">NIB</string>
+
+
     <string name="no_telp_uupercase">NO. TELP</string>
+
     <string name="npwp_uppercase">NPWP</string>
+
     <string name="nama_jaringan_uppercase">NAMA JARINGAN</string>
+
     <string name="jenis_kendaraan_uppercase">JENIS KENDARAAN</string>
     <string name="bidang_usaha_uppercase">BIDANG USAHA</string>
+
     <string name="jumlah_user_uppercase">JUMLAH USER</string>
+
     <string name="fasilitas_pelanggan_uppercase">FASILITAS PELANGGAN *</string>
+
     <string name="booking_uppercase">BOOKING</string>
+
     <string name="layanan_tambahan_uppercase">LAYANAN TAMBAHAN</string>
+
     <string name="home">HOME</string>
+
     <string name="jemput">JEMPUT</string>
+
     <string name="emergency">EMERGENCY</string>
+
     <string name="kapasitas_simpan">KAPASITAS SIMPAN</string>
+
     <string name="tipe_schedule">TIPE SCHEDULE</string>
+
     <string name="senin_jumat">SENIN - JUMAT</string>
+
     <string name="jumat">JUMAT</string>
+
     <string name="sabtu">SABTU</string>
+
     <string name="libur">LIBUR</string>
+
     <string name="minggu">MINGGU</string>
+
     <string name="format_jam">HH:MM</string>
+
     <string name="tanggal">Tanggal</string>
+
     <string name="no_polisi">No. Polisi</string>
+
     <string name="layanan">Layanan</string>
+
     <string name="no_ponsel">No. Ponsel</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="mekanik">Mekanik</string>
     <string name="harga">Harga</string>
     <string name="status_uppercase">STATUS</string>
@@ -380,4 +152,233 @@
     <string name="keluhan_uppercase">KELUHAN</string>
     <string name="nama_pelanggan_nama_usaha">Nama Pelanggan / Nama Usaha</string>
     <string name="sisa_waktu_uppercase">SISA WAKTU</string>
+    <string name="nama_bank_uppercase">NAMA BANK</string>
+    <string-array name="pola_harga_jual">
+        <item>FLEXIBLE</item>
+        <item>BELI + MARGIN</item>
+        <item>RATA - RATA + MARGIN</item>
+        <item>NOMINAL</item>
+        <item>HET</item>
+    </string-array>
+    <string-array name="pekerjaan">
+        <item>MAHASISWA</item>
+        <item>OJOL</item>
+        <item>PNS</item>
+
+    </string-array>
+    <string-array name="penjualan_part">
+        <item>KENDARAAN</item>
+        <item>GROSIR</item>
+
+    </string-array>
+    <string-array name="pola_refund">
+        <item>CASH</item>
+        <item>TRANSFER</item>
+
+    </string-array>
+    <string-array name="bank">
+        <item>BAN</item>
+        <item>CC</item>
+
+    </string-array>
+    <string-array name="tipe_supplier_2">
+        <item tools:ignore="InconsistentArrays">--PILIH--</item>
+        <item>PRINCIPAL</item>
+        <item>MAIN SUPPLIER</item>
+        <item>RETAIL SUPPLIER</item>
+        <item>ECOMERCE</item>
+        <item>BENGKEL LAIN</item>
+        <item>LAINNYA</item>
+    </string-array>
+    <string-array name="pola_beli">
+        <item>ONLINE</item>
+        <item>OFFLINE</item>
+        <item>LANGSUNG</item>
+
+
+    </string-array>
+    <string-array name="pembayaran">
+        <item>--PILIH--</item>
+        <item>TRANSFER</item>
+        <item>COD</item>
+        <item>INVOICE</item>
+        <item>KONSIGNMENT</item>
+    </string-array>
+    <string-array name="gender">
+        <item>--PILIH--</item>
+        <item>LAKI - LAKI</item>
+        <item>PEREMPUAN</item>
+    </string-array>
+    <string-array name="posisi">
+        <item>--PILIH--</item>
+        <item>MEKANIK</item>
+        <item>ADMIN PART</item>
+        <item>KASIR</item>
+    </string-array>
+    <string-array name="status">
+        <item>--PILIH--</item>
+        <item>AKTIF</item>
+        <item>NON-AKTIF</item>
+    </string-array>
+    <string-array name="penggajian">
+        <item>--PILIH--</item>
+        <item>HARIAN</item>
+        <item>MINGGUAN</item>
+        <item>BULANAN</item>
+    </string-array>
+    <string-array name="tipe_penerima">
+
+    </string-array>
+    <string-array name="akses_app">
+        <item>--PILIH--</item>
+        <item>CHECK IN</item>
+        <item>PART</item>
+    </string-array>
+    <string-array name="penggunaan">
+        <item>TENT</item>
+        <item>HOME SERVIS</item>
+        <item>EMERGENCY</item>
+
+    </string-array>
+    <string-array name="discount">
+        <item>LAYANAN</item>
+
+    </string-array>
+    <string-array name="tambahan">
+        <item>AKTIVITAS JASA LAIN</item>
+
+    </string-array>
+    <string-array name="komplimen">
+        <item>MERCH</item>
+        <item>PART</item>
+        <item>LAYANAN</item>
+
+    </string-array>
+    <string-array name="layanan">
+        <item>SERVIS LENGKAP</item>
+
+    </string-array>
+    <string-array name="tipe_penerimaan">
+        <item>--PILIH--</item>
+        <item>PEMBELIAN</item>
+        <item>PENGANTIAN RETURN</item>
+        <item>PENGANTIAN FASILITAS</item>
+        <item>REFUND</item>
+        <item>PENGEMBALIAN USER</item>
+    </string-array>
+    <string-array name="object_diskon">
+        <item>LAYANAN</item>
+    </string-array>
+    <string-array name="lokasi">
+        <item>--PILIH--</item>
+        <item>BENGKEL</item>
+        <item>HOME</item>
+        <item>TENDA</item>
+        <item>EMERGENCY</item>
+    </string-array>
+    <string-array name="afiliasi_usaha">
+        <item>JARINGAN</item>
+        <item>INDIVIDUAL</item>
+    </string-array>
+    <string-array name="aktif_tidak_aktif">
+        <item>--PILIH--</item>
+        <item>AKTIF</item>
+        <item>TIDAK AKTIF</item>
+    </string-array>
+    <string-array name="jenis_booking">
+        <item>--PILIH--</item>
+        <item>BOOK DEREK</item>
+        <item>BOOK BENGEKL</item>
+        <item>BOOK HOME</item>
+        <item>BOOK JEMPUT</item>
+    </string-array>
+    <string-array name="aktifitas_kontrol">
+        <item>--PILIH--</item>
+        <item>TUGASKAN PENJEMPUT</item>
+        <item>CHECK IN</item>
+        <item>TUGASKAN PENGANTAR</item>
+        <item>DIBATALKAN PELANGGAN</item>
+    </string-array>
+    <string-array name="tipe_schedule">
+        <item>--PILIH--</item>
+        <item>OPERASIONAL</item>
+        <item>LAYANAN BOOKING</item>
+        <item>LAYANAN HOME SERVICES</item>
+        <item>LAYANAN EMERGENCY</item>
+        <item></item>
+    </string-array>
+    <string-array name="ya_tidak">
+        <item>TIDAK</item>
+        <item>YA</item>
+    </string-array>
+    <string-array name="layanan_tambahan">
+        <item>HOME</item>
+        <item>ANTAR - JEMPUT</item>
+        <item>EMERGENCY</item>
+    </string-array>
+    <string-array name="lokasi_penugasan">
+        <item>BENGKEL</item>
+        <item>TENDA</item>
+    </string-array>
+    <string-array name="jenis_gift">
+        <item>PART</item>
+        <item>MERCHANDISE</item>
+        <item>FREE SERVICE</item>
+    </string-array>
+    <string-array name="penugasan">
+        <item>EXPRESS</item>
+        <item>PART</item>
+        <item>STANDART</item>
+        <item>FRONT OFFICE</item>
+        <item>KOMPLIMENT</item>
+        <item>H+1</item>
+        <item>OFF</item>
+        <item>TRAINING</item>
+        <item>CUTI</item>
+    </string-array>
+    <string-array name="tipe_antrian">
+        <item>STANDART</item>
+        <item>H+1</item>
+        <item>EXPRESS</item>
+    </string-array>
+    <string-array name="item_komisi">
+        <item>LAYANAN</item>
+        <item>PART</item>
+        <item>PART BERKALA</item>
+        <item>JASA LAIN</item>
+        <item>JASA LAIN BERKALA</item>
+    </string-array>
+    <string-array name="lokasi_simpan">
+        <item>--PILIH--</item>
+        <item>RUANG PART</item>
+        <item>GUDANG</item>
+        <item>DISPLAY</item>
+    </string-array>
+    <string-array name="pembayaran_bengkel">
+        <item>CASH</item>
+        <item>TRANSFER</item>
+        <item>INVOICE</item>
+        <item>DEBIT</item>
+        <item>CREDIT</item>
+    </string-array>
+    <string-array name="kondisi_part">
+        <item>BAIK</item>
+        <item>GANTI PART</item>
+    </string-array>
+    <string-array name="tipe_collection">
+        <item>CASH</item>
+        <item>SETOR CASH</item>
+    </string-array>
+    <string-array name="harga_jual_part">
+        <item>FIX</item>
+        <item>NON FIX</item>
+
+    </string-array>
+    <string-array name="schedule">
+        <item>OPERASIONAL</item>
+        <item>BOOK</item>
+        <item>HOME</item>
+        <item>EMG</item>
+
+    </string-array>
 </resources>

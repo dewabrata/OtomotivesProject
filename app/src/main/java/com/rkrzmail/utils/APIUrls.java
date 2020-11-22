@@ -25,6 +25,7 @@ public class APIUrls {
     public static final String VIEW_ANTRIAN = "viewantrian";
     public static final String VIEW_TUGAS_PART = "viewtugaspart";
     public static final String VIEW_MY_CODE = "mycode";
+    public static final String VIEW_MST = "viewmst";
     //INSERT, UPDATE, DELETE
     public static final String DISCOUNT_LAYANAN = "aturdiskonlayanan";
     public static final String ATUR_PEMBAYARAN = "aturpembayaran";

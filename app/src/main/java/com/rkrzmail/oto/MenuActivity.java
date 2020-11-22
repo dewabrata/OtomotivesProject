@@ -41,7 +41,7 @@ import com.rkrzmail.oto.modules.komisi.KomisiPart_Activity;
 import com.rkrzmail.oto.modules.mekanik.InspeksiMekanik_Activity;
 import com.rkrzmail.oto.modules.mekanik.PerintahKerjaMekanik_Activity;
 import com.rkrzmail.oto.modules.sparepart.MenungguPart_Activity;
-import com.rkrzmail.oto.modules.bengkel.Pembayaran_Activity;
+import com.rkrzmail.oto.modules.bengkel.Pembayaran_MainTab_Activity;
 import com.rkrzmail.oto.modules.checkin.KontrolLayanan_Activity;
 import com.rkrzmail.oto.modules.checkin.KontrolBooking_Activity;
 import com.rkrzmail.oto.modules.discount.DiscountJasaLain_Activity;
@@ -233,7 +233,7 @@ public class MenuActivity extends AppActivity {
                     Intent intent = new Intent(MenuActivity.this, MessageWA.class);
                     startActivity(intent);
                 } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_PEMBAYARAN)) {
-                    Intent intent = new Intent(MenuActivity.this, Pembayaran_Activity.class);
+                    Intent intent = new Intent(MenuActivity.this, Pembayaran_MainTab_Activity.class);
                     startActivity(intent);
                 } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_STOCK_OPNAME)) {
                     Intent intent = new Intent(MenuActivity.this, HistoryStockOpname_Activity.class);

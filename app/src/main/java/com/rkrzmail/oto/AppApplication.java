@@ -87,7 +87,7 @@ public class AppApplication extends Application {
         hashtable.put("userId", UtilityAndroid.getSetting(getApplicationContext(), "USER_ID", ""));
         hashtable.put("user", UtilityAndroid.getSetting(getApplicationContext(), "user", ""));
         hashtable.put("session", UtilityAndroid.getSetting(getApplicationContext(), "session", ""));
-        hashtable.put("user", UtilityAndroid.getSetting(getApplicationContext(), "NAMA_USER", ""));
+        hashtable.put("namaUser", UtilityAndroid.getSetting(getApplicationContext(), "NAMA_USER", ""));
         hashtable.put("CID", UtilityAndroid.getSetting(getApplicationContext(), "CID", ""));
         hashtable.put("FCM", UtilityAndroid.getSetting(getApplicationContext(), "FCMID", ""));
         hashtable.put("date", Utility.Now());

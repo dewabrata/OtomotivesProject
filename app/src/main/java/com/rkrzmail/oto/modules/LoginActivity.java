@@ -41,17 +41,12 @@ public class LoginActivity extends AppActivity {
         find(R.id.email_sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (find(R.id.user, EditText.class).getText().toString().isEmpty() || find(R.id.tl_user, TextInputLayout.class).isHelperTextEnabled()) {
+                if (find(R.id.user, EditText.class).getText().toString().isEmpty()
+                        || find(R.id.tl_user, TextInputLayout.class).isHelperTextEnabled()) {
                     showWarning("Nomor Handphone Harus Di isi");
                     find(R.id.user, EditText.class).requestFocus();
-               /* } else if (find(R.id.password, EditText.class).getText().toString().isEmpty()) {
-                    showWarning("Otp Harus Di isi");
-                    find(R.id.password, EditText.class).requestFocus();*/
                 } else {
-                    //login();//lanjut
                    requestOtp();
-
-
                 }
             }
         });
@@ -121,7 +116,6 @@ public class LoginActivity extends AppActivity {
                 args.put("action", "Request");
                 args.put("user", formatOnlyNumber(find(R.id.user, EditText.class).getText().toString()));
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_LOGIN), args));
-
             }
 
             @Override

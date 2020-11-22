@@ -9,6 +9,46 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_jasa_part"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:background="@drawable/btn_rounded_accent"
+            android:text="@string/jasa_dan_part"
+            android:layout_weight="1.5"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/btn_data_pelanggan"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:background="@drawable/btn_rounded_accent"
+            android:text="Data Pelanggan"
+            android:layout_weight="2"
+            android:textSize="12sp"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/btn_data_kendaraan"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:background="@drawable/btn_rounded_accent"
+            android:text="Data Kendaraan"
+            android:layout_weight="2"
+            android:textSize="12sp"
+            android:textColor="@android:color/white" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="@dimen/spacing_medium">
 
@@ -111,7 +151,7 @@
                 android:text="DEREK"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:textColor="@color/grey_900"
-                android:textSize="12sp" />
+                android:textSize="10sp" />
 
             <CheckBox
                 android:id="@+id/cb_buangPart"
@@ -122,7 +162,7 @@
                 android:text="BUANG PART BEKAS"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:textColor="@color/grey_900"
-                android:textSize="12sp" />
+                android:textSize="10sp" />
 
             <CheckBox
                 android:id="@+id/cb_antar_jemput"
@@ -133,7 +173,7 @@
                 android:text="ANTAR - JEMPUT"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:textColor="@color/grey_900"
-                android:textSize="12sp" />
+                android:textSize="10sp" />
 
         </LinearLayout>
 
@@ -344,7 +384,9 @@
                 </TableRow>
 
 
-                <TableRow android:layout_marginTop="5dp">
+                <TableRow
+                    android:id="@+id/row_biaya_jasa_part"
+                    android:layout_marginTop="5dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -388,7 +430,9 @@
 
                 </TableRow>
 
-                <TableRow android:layout_marginTop="5dp">
+                <TableRow
+                    android:id="@+id/row_biaya_jasa_lain"
+                    android:layout_marginTop="5dp">
 
                     <TextView
                         android:layout_width="wrap_content"

@@ -24,18 +24,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/paddingSemiLarge"
+                android:layout_marginBottom="@dimen/paddingSemiLarge"
                 android:stretchColumns="*">
 
                 <TableRow>
-
-                    <Button
-                        android:id="@+id/btn_jasa_part"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:background="@drawable/btn_rounded_accent"
-                        android:text="@string/jasa_dan_part"
-                        android:textColor="@android:color/white" />
 
                     <Button
                         android:id="@+id/btn_lanjut"

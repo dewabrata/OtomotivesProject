@@ -29,6 +29,7 @@ import java.util.Map;
 
 import static com.rkrzmail.utils.APIUrls.SET_REKENING_BANK;
 import static com.rkrzmail.utils.APIUrls.VIEW_MASTER;
+import static com.rkrzmail.utils.ConstUtils.DATA;
 
 public class AturRekening_Activity extends AppActivity {
 
@@ -36,10 +37,11 @@ public class AturRekening_Activity extends AppActivity {
     private EditText etNoRek, etNamaRek;
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
     final String dateTime = simpleDateFormat.format(Calendar.getInstance().getTime());
-    private String namaBank = "";
+
     private List<String> dataBank = new ArrayList<>();
     private List<Boolean> isCheckedList = new ArrayList<>();
     private Nson n, rekeningList = Nson.newArray();
+    private String bankCode = "", namaBank = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,12 +62,11 @@ public class AturRekening_Activity extends AppActivity {
         etNoRek = findViewById(R.id.et_noRek_rekening);
         spBank = findViewById(R.id.sp_bank_rekening);
         etNamaRek = findViewById(R.id.et_namaRek_rekening);
-        try {
-            setSpBank();
-            loadData();
-        } catch (Exception e) {
-            Log.e("Exception__", "initComponent: " + e.getMessage());
-        }
+
+        setSpBank();
+        loadData();
+        viewEdcAndOffUs();
+
         find(R.id.cb_edc_rekening, CheckBox.class).setOnCheckedChangeListener(listener);
         find(R.id.cb_offUs_rekening, CheckBox.class).setOnCheckedChangeListener(listener);
     }
@@ -95,11 +96,10 @@ public class AturRekening_Activity extends AppActivity {
 
                 args.put("action", "add");
                 args.put("norek", etNoRek.getText().toString());
-                args.put("bank", spBank.getSelectedItem().toString());
+                args.put("bankCode", bankCode);
                 args.put("namarek", etNamaRek.getText().toString());
                 args.put("edc", find(R.id.cb_edc_rekening, CheckBox.class).isChecked() ? "Y" : "N");
                 args.put("off_us", find(R.id.cb_offUs_rekening, CheckBox.class).isChecked() ? "Y" : "N");
-                args.put("status", "");
                 args.put("tanggal", dateTime);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_REKENING_BANK), args));
@@ -119,7 +119,7 @@ public class AturRekening_Activity extends AppActivity {
     }
 
     private void loadData() {
-        n = Nson.readJson(getIntentStringExtra("data"));
+        n = Nson.readJson(getIntentStringExtra(DATA));
         Log.d("Nson____", "loadData: " + n);
         Intent i = getIntent();
 
@@ -127,16 +127,9 @@ public class AturRekening_Activity extends AppActivity {
             namaBank = n.get("BANK_NAME").asString();
             etNoRek.setText(n.get("NO_REKENING").asString());
             etNamaRek.setText(n.get("NAMA_REKENING").asString());
-            if (n.get("EDC_ACTIVE").asString().equalsIgnoreCase("Y")) {
-                find(R.id.cb_edc_rekening, CheckBox.class).setChecked(true);
-            } else {
-                find(R.id.cb_edc_rekening, CheckBox.class).setChecked(false);
-            }
-            if (n.get("OFF_US").asString().equalsIgnoreCase("Y")) {
-                find(R.id.cb_offUs_rekening, CheckBox.class).setChecked(true);
-            } else {
-                find(R.id.cb_offUs_rekening, CheckBox.class).setChecked(false);
-            }
+
+            find(R.id.cb_edc_rekening, CheckBox.class).setChecked(n.get("EDC_ACTIVE").asString().equalsIgnoreCase("Y"));
+            find(R.id.cb_offUs_rekening, CheckBox.class).setChecked(n.get("OFF_US").asString().equalsIgnoreCase("Y"));
 
             find(R.id.btn_hapus).setVisibility(View.VISIBLE);
             find(R.id.btn_hapus).setOnClickListener(new View.OnClickListener() {
@@ -240,26 +233,24 @@ public class AturRekening_Activity extends AppActivity {
         });
     }
 
-    private void viewEdcAndOffUs(final String codeBank){
+    private void viewEdcAndOffUs() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
-                args.put("edc", "DUMMY");
+                args.put("edc", "VIEW");
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_REKENING_BANK), args));
             }
 
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                   result = result.get("data");
-                    for (int i = 0; i < result.size(); i++) {
-                        if(result.get(i).get("BANK_CODE").asString().equals(codeBank)){
-                            find(R.id.cb_edc_rekening, CheckBox.class).setEnabled(false);
-                            break;
-                        }
+                    result = result.get("data");
+                    if (result.size() > 0) {
+                        find(R.id.cb_offUs_rekening, CheckBox.class).setEnabled(false);
                     }
                 }
             }
@@ -267,6 +258,7 @@ public class AturRekening_Activity extends AppActivity {
     }
 
     private void setSpBank() {
+        final Nson bankData = Nson.newArray();
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -280,10 +272,18 @@ public class AturRekening_Activity extends AppActivity {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    result = result.get("data");
                     dataBank.add("--PILIH--");
-                    for (int i = 0; i < result.get("data").size(); i++) {
-                        dataBank.add(result.get("data").get(i).get("BANK_CODE").asString() +
-                                " " + result.get("data").get(i).get("BANK_NAME").asString());
+                    bankData.add("");
+                    for (int i = 0; i < result.size(); i++) {
+                        bankData.add(Nson.newObject()
+                                .set("BANK_CODE", result.get(i).get("BANK_CODE").asString())
+                                .set("BANK_NAME", result.get(i).get("BANK_NAME").asString())
+                                .set("COMPARISON", result.get(i).get("BANK_CODE").asString() +
+                                        " " + result.get(i).get("BANK_NAME").asString())
+                        );
+                        dataBank.add(result.get(i).get("BANK_CODE").asString() +
+                                " " + result.get(i).get("BANK_NAME").asString());
                     }
                     ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, dataBank);
                     spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -311,9 +311,11 @@ public class AturRekening_Activity extends AppActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String item = parent.getSelectedItem().toString();
-                item = item.substring(0, 3);
-                showInfo(item);
-                viewEdcAndOffUs(item);
+                if (item.equals(bankData.get(position).get("COMPARISON").asString())) {
+                    bankCode = bankData.get(position).get("BANK_CODE").asString();
+                    namaBank = bankData.get(position).get("BANK_NAME").asString();
+                }
+
             }
 
             @Override

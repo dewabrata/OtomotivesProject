@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -23,6 +24,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.checkin.Checkin2_Activity;
 import com.rkrzmail.srv.NikitaMultipleViewAdapter;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
@@ -36,6 +38,8 @@ import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.ID;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_KONFIRMASI;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_NEW_CS;
 import static com.rkrzmail.utils.ConstUtils.RINCIAN_JUAL_PART;
 import static com.rkrzmail.utils.ConstUtils.RINCIAN_LAYANAN;
 import static com.rkrzmail.utils.ConstUtils.RP;
@@ -47,7 +51,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
     AlertDialog alertDialog;
 
     private Nson partList = Nson.newArray();
-    private boolean isLayanan = false, isDp = false, isJualPart = false, isConfirmData = false;
+    private boolean isLayanan = false, isDp = false, isJualPart = false, isMdrOffUs = false;
     private Nson data;
     private Nson sendData = Nson.newObject();
     private String
@@ -57,7 +61,8 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             jenisKendaraan = "",
             layanan = "",
             tanggal = "",
-            namaLayanan = "";
+            namaLayanan = "",
+            pemilik = "";
     private String idCheckin = "", idJualPart = "";
     int
             total1 = 0,
@@ -76,7 +81,11 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             discJasaPart = 0,
             discJasa = 0,
             discLayanan = 0,
-            discSpot = 0;
+            discSpot = 0,
+            discFrekwensi = 0,
+            mdrOnUs = 0,
+            mdrOfUs = 0,
+            mdrCreditCard = 0;
 
 
     @Override
@@ -98,7 +107,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             idCheckin = data.get(ID).asString();
             sendData.set("CHECKIN_ID", idCheckin);
             sendData.set("PEMILIK", data.get("PEMILIK").asString());
-            if(data.get("STATUS").asString().equals("TUNGGU DP")){
+            if (data.get("STATUS").asString().equals("TUNGGU DP")) {
                 sendData.set("JENIS", "DP");
                 isDp = true;
                 find(R.id.ly_rincian_jual_part).setVisibility(View.GONE); //layout rincian pembelian
@@ -109,7 +118,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                 find(R.id.row_total_2).setVisibility(View.GONE);
                 find(R.id.ly_ket).setVisibility(View.GONE);
                 find(R.id.et_catatan).setVisibility(View.GONE);
-            }else{
+            } else {
                 sendData.set("JENIS", "CHECKIN");
                 isLayanan = true;
                 find(R.id.ly_rincian_jual_part).setVisibility(View.GONE); //layout rincian pembelian
@@ -117,12 +126,11 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                 find(R.id.row_dp_persen).setVisibility(View.GONE);
                 find(R.id.row_sisa_dp_persen).setVisibility(View.GONE);
             }
-        }else if (data.containsKey("RINCIAN_JUAL_PART")) {
+        } else if (data.containsKey("RINCIAN_JUAL_PART")) {
             idJualPart = data.get("JUAL_PART_ID").asString();
             sendData.set("JUAL_PART_ID", idJualPart);
             sendData.set("JENIS", "JUAL PART");
             isJualPart = true;
-            find(R.id.btn_jasa_part).setVisibility(View.GONE);
             find(R.id.ly_rincian_layanan).setVisibility(View.GONE); //layout rincian layanan
             Objects.requireNonNull(getSupportActionBar()).setTitle(RINCIAN_JUAL_PART);
         }
@@ -137,6 +145,23 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             @Override
             public void onClick(View v) {
                 viewJasaPart();
+            }
+        });
+        find(R.id.btn_data_kendaraan, Button.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), Checkin2_Activity.class);
+                intent.putExtra(ID, idCheckin);
+                intent.putExtra("KONFIRMASI DATA", "");
+                startActivityForResult(intent, REQUEST_NEW_CS);
+            }
+        });
+        find(R.id.btn_data_pelanggan, Button.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity(), KonfirmasiData_Pembayaran_Activity.class);
+                i.putExtra(ID, idCheckin);
+                startActivityForResult(i, REQUEST_KONFIRMASI);
             }
         });
         find(R.id.btn_lanjut, Button.class).setOnClickListener(new View.OnClickListener() {
@@ -156,9 +181,15 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                 sendData.set("BIAYA_SIMPAN", biayaSimpan);
                 sendData.set("DISC_SPOT", discSpot);
                 sendData.set("HARGA_JASA_PART", totalJasaPart);
-                sendData.set("DISC_JASA_PART",  discJasaPart);
-                sendData.set("HARGA_JASA_PART_NET", totalJasaPart -  discJasaPart);
+                sendData.set("DISC_JASA_PART", discJasaPart);
+                sendData.set("HARGA_JASA_PART_NET", totalJasaPart - discJasaPart);
                 sendData.set("BIAYA_DEREK", biayaDerek);
+                sendData.set("PEMILIK", pemilik);
+                sendData.set("MDR_ON_US", mdrOnUs);
+                sendData.set("MDR_OFF_US", mdrOfUs);
+                sendData.set("MDR_KREDIT_CARD", mdrCreditCard);
+                sendData.set("IS_OFF_US", isMdrOffUs);
+
 
                 Intent i = new Intent(getActivity(), AturPembayaran_Activity.class);
                 i.putExtra(DATA, sendData.toJson());
@@ -168,13 +199,14 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         });
     }
 
-    private void loadData(){
+    private void loadData() {
         namaPelanggan = data.get("NAMA_PELANGGAN").asString();
         nopol = data.get("NOPOL").asString();
         noHp = data.get("NO_PONSEL").asString();
         tanggal = data.get("TANGGAL").asString();
         jenisKendaraan = data.get("JENIS_KENDARAAN").asString();
         layanan = data.get("LAYANAN").asString();
+        pemilik = data.get("PEMILIK").asString();
     }
 
     private void viewRincianPembayaran() {
@@ -187,19 +219,19 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
 
                 args.put("action", "view");
                 if (isLayanan) {
-                    args.put("jenisPembayaran","CHECKIN");
+                    args.put("jenisPembayaran", "CHECKIN");
                     args.put("checkinId", idCheckin);
-                    args.put("detail","RINCIAN LAYANAN");
+                    args.put("detail", "RINCIAN LAYANAN");
                 }
                 if (isDp) {
                     args.put("checkinId", idCheckin);
-                    args.put("jenisPembayaran","CHECKIN");
+                    args.put("jenisPembayaran", "CHECKIN");
                     args.put("detail", "RINCIAN DP");
                 }
                 if (isJualPart) {
-                    args.put("jenisPembayaran","JUAL PART");
+                    args.put("jenisPembayaran", "JUAL PART");
                     args.put("jualPartId", idJualPart);
-                    args.put("detail","RINCIAN JUAL PART");
+                    args.put("detail", "RINCIAN JUAL PART");
                 }
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PEMBAYARAN), args));
@@ -245,6 +277,10 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             discJasa += result.get(i).get("DISCOUNT_JASA_PART").asInteger();
             discLayanan += result.get(i).get("DISCOUNT_LAYANAN").asInteger();
             discSpot += result.get(i).get("DISCOUNT_SPOT").asInteger();
+            mdrOfUs = result.get(i).get("MDR_ON_US").asDouble();
+            mdrOfUs = result.get(i).get("MDR_OFF_US").asDouble();
+            mdrCreditCard = result.get(i).get("MDR_KREDIT_CARD").asDouble();
+
 
             biayaLayanan += result.get(i).get("BIAYA_LAYANAN").asInteger();
             biayaDerek += result.get(i).get("BIAYA_DEREK").asInteger();
@@ -252,7 +288,10 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
 
             namaLayanan = result.get(i).get("LAYANAN").asString();
 
-            if(result.get(i).get("BIAYA_LAYANAN").asString().equals("0")){
+            if (result.get(i).get("OFF_US").asString().equals("Y")) {
+                isMdrOffUs = true;
+            }
+            if (result.get(i).get("BIAYA_LAYANAN").asString().equals("0")) {
                 find(R.id.row_layanan).setVisibility(View.GONE);
             }
             if (result.get(i).get("DEREK").asString().equals("Y")) {
@@ -263,30 +302,6 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             }
             if (result.get(i).get("ANTAR_JEMPUT").asString().equals("Y")) {
                 find(R.id.cb_antar_jemput, CheckBox.class).setChecked(true);
-            }
-            if (result.get(i).get("DISCOUNT_LAYANAN").asString().isEmpty() || result.get(i).get("DISCOUNT_LAYANAN").asString().equals("0")) {
-                find(R.id.row_disc_layanan).setVisibility(View.GONE);
-            }
-            if (result.get(i).get("DISCOUNT_FREKWENSI").asString().isEmpty() || result.get(i).get("DISCOUNT_FREKWENSI").asString().equals("0")) {
-                find(R.id.row_disc_frekwensi).setVisibility(View.GONE);
-            }
-            if (result.get(i).get("DISCOUNT_PART").asString().isEmpty() || result.get(i).get("DISCOUNT_PART").asString().equals("0.0")) {
-                find(R.id.row_disc_part).setVisibility(View.GONE);
-            }
-            if (result.get(i).get("DISCOUNT_JASA_PART").asString().isEmpty() || result.get(i).get("DISCOUNT_JASA_PART").asString().equals("0.0")) {
-                find(R.id.row_disc_jasa_part).setVisibility(View.GONE);
-            }
-            if (result.get(i).get("DISCOUNT_JASA_LAIN").asString().isEmpty() || result.get(i).get("DISCOUNT_JASA_LAIN").asString().equals("0.0")) {
-                find(R.id.row_disc_jasa_lain).setVisibility(View.GONE);
-            }
-            if (result.get(i).get("DEREK").asString().isEmpty() || result.get(i).get("DEREK").asString().equals("0")) {
-                find(R.id.row_transport).setVisibility(View.GONE);
-            }
-            if (result.get(i).get("DP").asString().isEmpty() || result.get(i).get("DP").asString().equals("0")) {
-                find(R.id.row_dp).setVisibility(View.GONE);
-            }
-            if (result.get(i).get("DISCOUNT_SPOT").asString().isEmpty() || result.get(i).get("DISCOUNT_SPOT").asString().equals("0")) {
-                find(R.id.row_disc_spot).setVisibility(View.GONE);
             }
 
             find(R.id.tv_nama_pelanggan, TextView.class).setText(result.get(i).get("NAMA_PELANGGAN").asString());
@@ -310,52 +325,86 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             find(R.id.et_catatan, EditText.class).setText((result.get(i).get("CATATAN").asString()));
         }
 
-        if(discLayanan > 0){
+        if (discLayanan > 0) {
             discLayanan = calculatePercentage(discLayanan, biayaLayanan);
         }
 
         total1 = (int) (
                 biayaLayanan +
-                totalJasa +
-                totalJasaPart +
-                totalPart +
-                discPart +
-                discJasaPart +
-                discJasa +
-                biayaDerek + biayaSimpan
+                        totalJasa +
+                        totalJasaPart +
+                        totalPart +
+                        discPart +
+                        discJasaPart +
+                        discJasa +
+                        biayaDerek + biayaSimpan
         );
 
-        if(dp > 0 ){
+        if (dp > 0) {
             sisaBiaya = total1 - dp;
         }
-        if(discSpot > 0){
+        if (discSpot > 0) {
             discSpot = calculatePercentage(discSpot, sisaBiaya);
-            total2 = Math.round((int)(sisaBiaya - discSpot));
+            total2 = Math.round((int) (sisaBiaya - discSpot));
         }
 
-        if(total2 == 0){
+        if (total2 == 0) {
             find(R.id.row_total_2).setVisibility(View.GONE);
         }
-        if(sisaBiaya == 0){
+        if (sisaBiaya == 0) {
             find(R.id.row_sisa_biaya).setVisibility(View.GONE);
         }
-        if(biayaSimpan == 0){
+        if (biayaSimpan == 0) {
             find(R.id.row_penyimpanan).setVisibility(View.GONE);
+        }
+        if (discLayanan == 0) {
+            find(R.id.row_disc_layanan).setVisibility(View.GONE);
+        }
+        if (discFrekwensi == 0) {
+            find(R.id.row_disc_frekwensi).setVisibility(View.GONE);
+        }
+        if (discPart == 0) {
+            find(R.id.row_disc_part).setVisibility(View.GONE);
+        }
+        if (discJasaPart == 0) {
+            find(R.id.row_disc_jasa_part).setVisibility(View.GONE);
+        }
+        if (discJasa == 0) {
+            find(R.id.row_disc_jasa_lain).setVisibility(View.GONE);
+        }
+        if (biayaDerek == 0) {
+            find(R.id.row_transport).setVisibility(View.GONE);
+        }
+        if (dp == 0) {
+            find(R.id.row_dp).setVisibility(View.GONE);
+        }
+        if (discSpot == 0) {
+            find(R.id.row_disc_spot).setVisibility(View.GONE);
+        }
+        if (totalJasaPart == 0) {
+            find(R.id.row_biaya_jasa_part).setVisibility(View.GONE);
+        }
+        if (totalJasa == 0) {
+            find(R.id.row_biaya_jasa_lain).setVisibility(View.GONE);
         }
 
         find(R.id.tv_dp, TextView.class).setText(RP + formatRp(String.valueOf(dp)));
-        find(R.id.tv_biaya_layanan, TextView.class).setText(RP +formatRp(String.valueOf(biayaLayanan)));
-        find(R.id.tv_harga_jasa_lain, TextView.class).setText(RP +formatRp(String.valueOf(totalJasa)));
-        find(R.id.tv_harga_jasa_part, TextView.class).setText(RP +formatRp(String.valueOf(totalJasaPart)));
-        find(R.id.tv_totalPart, TextView.class).setText(RP +formatRp(String.valueOf(totalPart)));
+        find(R.id.tv_biaya_layanan, TextView.class).setText(RP + formatRp(String.valueOf(biayaLayanan)));
+        find(R.id.tv_harga_jasa_lain, TextView.class).setText(RP + formatRp(String.valueOf(totalJasa)));
+        find(R.id.tv_harga_jasa_part, TextView.class).setText(RP + formatRp(String.valueOf(totalJasaPart)));
+        find(R.id.tv_totalPart, TextView.class).setText(RP + formatRp(String.valueOf(totalPart)));
         find(R.id.tv_total_1, TextView.class).setText(RP + formatRp(String.valueOf(total1)));
         find(R.id.tv_total_2, TextView.class).setText(RP + formatRp(String.valueOf(total2)));
         find(R.id.tv_sisa_biaya, TextView.class).setText(RP + formatRp(String.valueOf(sisaBiaya)));
         find(R.id.tv_disc_spot, TextView.class).setText(RP + formatRp(String.valueOf(discSpot)));
 
-
-        sendData.set("TOTAL1", total1);
-        sendData.set("TOTAL2", total2);
+        int totalFinal;
+        if (total2 > 0) {
+            totalFinal = total2;
+        } else {
+            totalFinal = total1;
+        }
+        sendData.set("TOTAL", totalFinal);
     }
 
     @SuppressLint("SetTextI18n")
@@ -370,7 +419,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             find(R.id.tv_frek_jual_part, TextView.class).setText(result.get(i).get("FREKWENSI").asString());
             find(R.id.tv_nama_usaha_jual_part, TextView.class).setText(result.get(i).get("NAMA_USAHA").asString());
         }
-        if(discPart > 0){
+        if (discPart > 0) {
             discPart = (discPart / 100) * totalPart;
         }
 
@@ -397,7 +446,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
 
         initToolbarDialog();
         initRecylerViewRincianCheckin();
-        if(nListArray.size() > 0){
+        if (nListArray.size() > 0) {
             Objects.requireNonNull(rvDetail.getAdapter()).notifyDataSetChanged();
         }
 
@@ -471,5 +520,17 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == REQUEST_KONFIRMASI) {
+            showSuccess("Sukses Memperharui Data Pelanggan");
+        } else if (resultCode == RESULT_OK && requestCode == REQUEST_NEW_CS) {
+            showSuccess("Sukses Memperharui Data Kendraan");
+        } else if (resultCode == RESULT_OK && requestCode == REQUEST_DETAIL) {
+            showSuccess("Pembayaran Selesai");
+        }
     }
 }

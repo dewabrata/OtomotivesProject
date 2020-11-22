@@ -23,6 +23,7 @@ import com.rkrzmail.srv.NikitaViewHolder;
 import java.util.Map;
 
 import static com.rkrzmail.utils.APIUrls.SET_REKENING_BANK;
+import static com.rkrzmail.utils.ConstUtils.DATA;
 
 public class RekeningBank_Activity extends AppActivity {
 
@@ -70,7 +71,7 @@ public class RekeningBank_Activity extends AppActivity {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
                 Intent i = new Intent(getActivity(), AturRekening_Activity.class);
-                i.putExtra("data", nListArray.get(position).toJson());
+                i.putExtra(DATA, nListArray.get(position).toJson());
                 startActivityForResult(i, 10);
             }
         }));

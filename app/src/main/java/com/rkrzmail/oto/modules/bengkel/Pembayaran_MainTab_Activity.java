@@ -1,11 +1,9 @@
-package com.rkrzmail.oto.modules.sparepart;
+package com.rkrzmail.oto.modules.bengkel;
 
 import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -14,51 +12,45 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.naa.data.Nson;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.Fragment.BatalPart_TugasPart_Fragment;
-import com.rkrzmail.oto.modules.Fragment.PartKosong_TugasPart_Fragment;
+import com.rkrzmail.oto.modules.Fragment.Cash_Pembayaran_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Permintaan_TugasPart_Fragment;
+import com.rkrzmail.oto.modules.Fragment.Setoran_Pembayaran_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Tersedia_TugasPart_Fragment;
+import com.rkrzmail.oto.modules.Fragment.Transaksi_Pembayaran_Fragment;
 import com.rkrzmail.srv.FragmentsAdapter;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class TugasPart_MainTab_Activity extends AppActivity {
+public class Pembayaran_MainTab_Activity extends AppActivity {
 
-    private Nson partTersediaList = Nson.newArray();
-    private Nson partPermintaanList = Nson.newArray();
-    private Nson partKosongList = Nson.newArray();
-    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_tab_tugas_part);
+        setContentView(R.layout.activity_main_tab_layout);
+        initToolbar();
         initComponent();
     }
 
     @SuppressLint("NewApi")
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Tugas Part");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Pembayaran");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void initComponent() {
-        initToolbar();
-        ViewPager vpTugasParts = findViewById(R.id.vp_tugas_part);
-        TabLayout tabLayoutTugasParts = findViewById(R.id.tablayout_tugas_part);
-        tabLayoutTugasParts.setTabMode(TabLayout.MODE_SCROLLABLE);
+    private void initComponent(){
+        ViewPager vpTugasParts = findViewById(R.id.vp);
+        TabLayout tabLayoutTugasParts = findViewById(R.id.tablayout);
 
         final ArrayList<Fragment> fragments = new ArrayList<>();
-        fragments.add(new Permintaan_TugasPart_Fragment());
-        fragments.add(new Tersedia_TugasPart_Fragment());
-        fragments.add(new BatalPart_TugasPart_Fragment());
-        fragments.add(new PartKosong_TugasPart_Fragment());
-        fragments.add(new OutSource_Activity());
+        fragments.add(new Transaksi_Pembayaran_Fragment());
+        fragments.add(new Cash_Pembayaran_Fragment());
+        fragments.add(new Setoran_Pembayaran_Fragment());
 
         FragmentsAdapter pagerAdapter = new FragmentsAdapter(getSupportFragmentManager(), this, fragments);
         vpTugasParts.setAdapter(pagerAdapter);
@@ -72,11 +64,9 @@ public class TugasPart_MainTab_Activity extends AppActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_part, menu);
-
-        // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         mSearchView = new SearchView(getSupportActionBar().getThemedContext());
-        mSearchView.setQueryHint("Cari Part"); /// YOUR HINT MESSAGE
+        mSearchView.setQueryHint("Cari No. Polisi"); /// YOUR HINT MESSAGE
         mSearchView.setMaxWidth(Integer.MAX_VALUE);
 
         final MenuItem searchMenu = menu.findItem(R.id.action_search);
@@ -88,7 +78,7 @@ public class TugasPart_MainTab_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        adapterSearchView(mSearchView, "search", "aturtugaspart", "USER", "");
+        //adapterSearchView(mSearchView, "nopol", "viewnopol", "NOPOL");
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
 
@@ -102,15 +92,8 @@ public class TugasPart_MainTab_Activity extends AppActivity {
                 return true;
             }
         };
-
         mSearchView.setOnQueryTextListener(queryTextListener);
         return true;
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-
-    }
 }
+

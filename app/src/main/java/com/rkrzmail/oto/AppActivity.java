@@ -830,7 +830,7 @@ public class AppActivity extends AppCompatActivity {
     }
 
     public String formatOnlyNumber(String text){
-        if(text == null)
+        if(text == null || text.equals(""))
             return "0";
         else
             return text.replaceAll("[^0-9]+", "");

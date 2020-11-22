@@ -118,8 +118,8 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
         btnSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               catatan = etCatatan.getText().toString();
-               alertDialog.dismiss();
+                catatan = etCatatan.getText().toString();
+                alertDialog.dismiss();
             }
         });
 
@@ -153,7 +153,7 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
                 super.onBindViewHolder(viewHolder, position);
                 final int itemType = getItemViewType(position);
                 int no = position + 1;
-                    if (itemType == ITEM_VIEW_1) {
+                if (itemType == ITEM_VIEW_1) {
                     viewHolder.find(R.id.tv_namaPart_booking3_checkin3, TextView.class)
                             .setText(nListArray.get(position).get("NAMA_PART").asString());
                     viewHolder.find(R.id.tv_noPart_booking3_checkin3, TextView.class)
@@ -209,35 +209,38 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
                 args.put("id", idCheckin);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_INSPEKSI), args));
+                result = result.get("data");
                 for (int i = 0; i < result.size(); i++) {
-                    if(!result.get("data").get(i).get("PART_ID").asString().isEmpty()){
+                    if (!result.get(i).get("PART_ID").asString().isEmpty()) {
                         nListArray.add(result.get("data").get(i));
                     }
-                    if(!result.get("data").get(i).get("JASA_ID").asString().isEmpty()){
+                    if (!result.get(i).get("JASA_ID").asString().isEmpty()) {
                         nListArray.add(result.get("data").get(i));
                     }
                 }
                 args.remove("detail");
                 args.put("detail", "JASA LAYANAN");
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_INSPEKSI), args));
+                result = result.get("data");
                 for (int i = 0; i < result.size(); i++) {
-                    for (int j = 0; j < nListArray.size(); j++) {
-                        if (!result.get("data").get(i).get("JASA_LAIN_ID").asString().isEmpty()
-                                && !nListArray.get(j).get("JASA_ID").asString().equals(result.get("data").get(i).get("JASA_LAIN_ID").asString())) {
-                            nListArray.add(result.get("data").get(i));
-                            break;
+                    if(nListArray.size() > 0){
+                        for (int j = 0; j < nListArray.size(); j++) {
+                            if (!result.get(i).get("JASA_LAIN_ID").asString().isEmpty()
+                                    && !nListArray.get(j).get("JASA_ID").asString().equals(result.get(i).get("JASA_LAIN_ID").asString())) {
+                                nListArray.add(result.get(i));
+                                break;
+                            }
                         }
+
+                    }else{
+                        nListArray.add(result.get(i));
                     }
                 }
             }
 
             @Override
             public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    rvPointLayanan.getAdapter().notifyDataSetChanged();
-                } else {
-                    showWarning(ERROR_INFO);
-                }
+                rvPointLayanan.getAdapter().notifyDataSetChanged();
             }
         });
     }
@@ -324,9 +327,9 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    if(isRework){
+                    if (isRework) {
                         showInfo("Pekerjaan di Mulai Kembali");
-                    }else{
+                    } else {
                         showInfo("Pekerjaan di Mulai");
                     }
                 } else {
@@ -353,7 +356,7 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
                         }
                     });
 
-        }else{
+        } else {
             finish();
         }
     }

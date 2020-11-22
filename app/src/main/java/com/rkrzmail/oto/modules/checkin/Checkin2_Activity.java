@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -34,8 +35,10 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.rkrzmail.utils.APIUrls.ATUR_PEMBAYARAN;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
+import static com.rkrzmail.utils.ConstUtils.ID;
 
 public class Checkin2_Activity extends AppActivity {
 
@@ -45,6 +48,7 @@ public class Checkin2_Activity extends AppActivity {
     private Nson readCheckin;
     private long tahunBeli = 0;
     private long tahunSekarang = 0;
+    private boolean isKonfirmasi = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +61,12 @@ public class Checkin2_Activity extends AppActivity {
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_checkin2);
         setSupportActionBar(toolbar);
-        if(getIntent().hasExtra("KONFIRMASI DATA")){
+        if (getIntent().hasExtra("KONFIRMASI DATA")) {
             Objects.requireNonNull(getSupportActionBar()).setTitle("Konfirmasi Data Kendaraan");
-        }else{
+            viewDataKendaraan();
+            isKonfirmasi = true;
+            find(R.id.btn_lanjut_checkin2, Button.class).setText("Simpan");
+        } else {
             Objects.requireNonNull(getSupportActionBar()).setTitle("Check-In");
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -77,7 +84,7 @@ public class Checkin2_Activity extends AppActivity {
         initListener();
     }
 
-    private void initListener(){
+    private void initListener() {
         Tools.setViewAndChildrenEnabled(find(R.id.ly_tgl_beli_checkin2, LinearLayout.class), false);
         tvTgl.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -214,6 +221,7 @@ public class Checkin2_Activity extends AppActivity {
                 args.put("tanggalbeli", tanggalBeli);
                 args.put("norangka", noRangka);
                 args.put("nomesin", noMesin);
+                args.put("checkinId", getIntentStringExtra(ID));
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("checkin"), args));
             }
@@ -229,6 +237,34 @@ public class Checkin2_Activity extends AppActivity {
                     intent.putExtra(DATA, readCheckin.toJson());
                     setResult(RESULT_OK, intent);
                     finish();
+                } else {
+                    showWarning(ERROR_INFO);
+                }
+            }
+        });
+    }
+
+    private void viewDataKendaraan() {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "Konfirmasi Data");
+                args.put("checkinId", getIntentStringExtra(ID));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_PEMBAYARAN), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    result = result.get("data").get(0);
+                    etWarna.setText(result.get("WARNA").asString());
+                    find(R.id.tv_tahun_checkin2, TextView.class).setText(result.get("TAHUN").asString());
+                    tvTgl.setText(result.get("TANGGAL_BELI").asString());
+                    etNorangka.setText(result.get("NO_RANGKA").asString());
+                    etNomesin.setText(result.get("NO_MESIN").asString());
                 } else {
                     showWarning(ERROR_INFO);
                 }
