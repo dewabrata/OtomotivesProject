@@ -13,7 +13,7 @@
     android:layout_weight="5"
     android:padding="10dp"
     app:cardElevation="2dp"
-    app:cardCornerRadius="10dp">
+    app:cardCornerRadius="5dp">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -32,38 +32,37 @@
                     android:id="@+id/tv_nama_collection"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Nama"
-                    android:textStyle="bold" />
+                    android:text="Nama Kasir"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:layout_gravity="start"/>
 
             </TableRow>
+
+
 
             <TableRow android:layout_marginTop="@dimen/spacing_medium">
 
                 <TextView
-                    android:id="@+id/tv_tgl_collection"
+                    android:id="@+id/tv_balance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Balance"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:layout_gravity="start"/>
+
+                <TextView
+                    android:id="@+id/tv_tanggal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Tanggal Terakhir"
-                    android:textStyle="bold" />
-
-
-            </TableRow>
-
-            <TableRow android:layout_marginTop="@dimen/spacing_medium">
-
-                <TextView
-                    android:id="@+id/tv_cash_collection"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Cash"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tv_nonCash_collection"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Non Cash"
-                    android:textStyle="bold" />
+                    android:layout_gravity="end"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp" />
 
             </TableRow>
 

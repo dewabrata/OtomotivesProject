@@ -433,6 +433,13 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         } else if (etStatus.getText().toString().equals("CHECKIN ANTRIAN PENUGASAN")) {
             aktifitasList.add("BATAL BENGKEL");
             aktifitasList.add("BATAL PELANGGAN");
+        } else if(etStatus.getText().toString().equals("CASH") ||
+                etStatus.getText().toString().equals("DEBIT") ||
+                etStatus.getText().toString().equals("KREDIT") ||
+                etStatus.getText().toString().equals("INVOICE") ||
+                etStatus.getText().toString().equals("EPAY")){
+            aktifitasList.add("CHECK OUT");
+            aktifitasList.add("MESSAGE PELANGGAN");
         }
 
         ArrayAdapter<String> aktifitasAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, aktifitasList);

@@ -1,9 +1,11 @@
 package com.rkrzmail.oto.modules.bengkel;
 
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +13,7 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -21,8 +24,14 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
+
+import static com.rkrzmail.utils.APIUrls.VIEW_COLLECTION;
+import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
+import static com.rkrzmail.utils.ConstUtils.RP;
 
 public class Collection_Activity extends AppActivity {
 
@@ -32,6 +41,7 @@ public class Collection_Activity extends AppActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_basic);
+        initToolbar();
         initComponent();
     }
 
@@ -43,26 +53,31 @@ public class Collection_Activity extends AppActivity {
     }
 
     private void initComponent() {
-        initToolbar();
         rvColl = findViewById(R.id.recyclerView);
         rvColl.setLayoutManager(new LinearLayoutManager(this));
         rvColl.setHasFixedSize(true);
         rvColl.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_collection) {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-
-                viewHolder.find(R.id.tv_cash_collection, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_nama_collection, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_nonCash_collection, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_tgl_collection, TextView.class).setText(nListArray.get(position).get("").asString());
-
+                String tgl = Tools.setFormatDateTimeFromDb(nListArray.get(position).get("TANGGAL").asString());
+                viewHolder.find(R.id.tv_nama_collection, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
+                viewHolder.find(R.id.tv_balance, TextView.class).setText(RP + formatRp(nListArray.get(position).get("SALDO_KASIR").asString()));
+                viewHolder.find(R.id.tv_tanggal, TextView.class).setText(tgl);
             }
-        });
+        }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Nson parent, View view, int position) {
+                Intent i = new Intent(getActivity(), AturCollection_Activity.class);
+                i.putExtra(DATA, parent.get(position).toJson());
+                startActivityForResult(i, REQUEST_DETAIL);
+            }
+        }));
 
-        catchData();
+        viewCollection();
     }
 
-    private void catchData() {
+    private void viewCollection() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -70,7 +85,7 @@ public class Collection_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(""), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_COLLECTION), args));
             }
 
             @Override
@@ -123,5 +138,11 @@ public class Collection_Activity extends AppActivity {
         };
         mSearchView.setOnQueryTextListener(queryTextListener);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (resultCode == RESULT_OK && requestCode == REQUEST_DETAIL)
+            viewCollection();
     }
 }

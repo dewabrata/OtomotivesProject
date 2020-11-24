@@ -35,6 +35,7 @@ import com.rkrzmail.oto.fragment.pageindicator.CirclePageIndicator;
 import com.rkrzmail.oto.gmod.MessageWA;
 import com.rkrzmail.oto.gmod.MyCode;
 import com.rkrzmail.oto.modules.antar_jemput.AntarJemput_Activity;
+import com.rkrzmail.oto.modules.bengkel.Collection_Activity;
 import com.rkrzmail.oto.modules.mekanik.BiayaMekanik2Activity;
 import com.rkrzmail.oto.modules.LoginActivity;
 import com.rkrzmail.oto.modules.komisi.KomisiPart_Activity;
@@ -247,6 +248,9 @@ public class MenuActivity extends AppActivity {
                 }else if(nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_PENUGASAN_MEKANIK)){
                     Intent intent = new Intent(MenuActivity.this, PenugasanActivity.class);
                     startActivity(intent);
+                }else if(nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_COLLECTION)){
+                    Intent intent = new Intent(MenuActivity.this, Collection_Activity.class);
+                    startActivity(intent);
                 }
             }
         });
@@ -263,9 +267,6 @@ public class MenuActivity extends AppActivity {
             startActivity(intent);
         } else if (item.getTitle().toString().equalsIgnoreCase(CHECK_OUT)) {
             Intent intent = new Intent(MenuActivity.this, CheckOut_Activity.class);
-            startActivity(intent);
-        } else if (item.getTitle().toString().equalsIgnoreCase(COLLECTION)) {
-            Intent intent = new Intent(MenuActivity.this, KontrolBooking_Activity.class);
             startActivity(intent);
         }
         //Business
@@ -553,9 +554,9 @@ public class MenuActivity extends AppActivity {
         if (getAccess(M_MENUNGGU)) {
             menu.add(M_MENUNGGU);
         }
-        if (getAccess(OUTSOURCE)) {
-            menu.add(OUTSOURCE);
-        }
+//        if (getAccess(OUTSOURCE)) {
+//            menu.add(OUTSOURCE);
+//        }
         if (getAccess(PART_KELUAR)) {
             menu.add(PART_KELUAR);
         }

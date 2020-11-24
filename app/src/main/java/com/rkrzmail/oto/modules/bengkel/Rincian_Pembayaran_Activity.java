@@ -62,7 +62,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             layanan = "",
             tanggal = "",
             namaLayanan = "",
-            pemilik = "";
+            pemilik = "", isPkp = "";
     private String idCheckin = "", idJualPart = "";
     int
             total1 = 0,
@@ -189,7 +189,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                 sendData.set("MDR_OFF_US", mdrOfUs);
                 sendData.set("MDR_KREDIT_CARD", mdrCreditCard);
                 sendData.set("IS_OFF_US", isMdrOffUs);
-
+                sendData.set("PKP", isPkp);
 
                 Intent i = new Intent(getActivity(), AturPembayaran_Activity.class);
                 i.putExtra(DATA, sendData.toJson());
@@ -270,23 +270,23 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             totalPart += result.get(i).get("HARGA_PART").asInteger();
             totalJasaPart += result.get(i).get("HARGA_JASA_PART").asInteger();
             totalJasa += result.get(i).get("HARGA_JASA_LAIN").asInteger();
-            dp += result.get(i).get("DP").asInteger();
+            dp = result.get(i).get("DP").asInteger();
 
             discPart += result.get(i).get("DISCOUNT_PART").asInteger();
             discJasaPart += result.get(i).get("DISCOUNT_JASA_PART").asInteger();
             discJasa += result.get(i).get("DISCOUNT_JASA_PART").asInteger();
-            discLayanan += result.get(i).get("DISCOUNT_LAYANAN").asInteger();
-            discSpot += result.get(i).get("DISCOUNT_SPOT").asInteger();
+            discLayanan = result.get(i).get("DISCOUNT_LAYANAN").asInteger();
+            discSpot = result.get(i).get("DISCOUNT_SPOT").asInteger();
             mdrOfUs = result.get(i).get("MDR_ON_US").asDouble();
             mdrOfUs = result.get(i).get("MDR_OFF_US").asDouble();
             mdrCreditCard = result.get(i).get("MDR_KREDIT_CARD").asDouble();
 
-
-            biayaLayanan += result.get(i).get("BIAYA_LAYANAN").asInteger();
-            biayaDerek += result.get(i).get("BIAYA_DEREK").asInteger();
-            biayaSimpan += result.get(i).get("BIAYA_SIMPAN").asInteger();
+            biayaLayanan = result.get(i).get("BIAYA_LAYANAN").asInteger();
+            biayaDerek = result.get(i).get("BIAYA_DEREK").asInteger();
+            biayaSimpan = result.get(i).get("BIAYA_SIMPAN").asInteger();
 
             namaLayanan = result.get(i).get("LAYANAN").asString();
+            isPkp = result.get(i).get("PKP").asString();
 
             if (result.get(i).get("OFF_US").asString().equals("Y")) {
                 isMdrOffUs = true;
@@ -530,6 +530,8 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_NEW_CS) {
             showSuccess("Sukses Memperharui Data Kendraan");
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_DETAIL) {
+            setResult(RESULT_OK);
+            finish();
             showSuccess("Pembayaran Selesai");
         }
     }

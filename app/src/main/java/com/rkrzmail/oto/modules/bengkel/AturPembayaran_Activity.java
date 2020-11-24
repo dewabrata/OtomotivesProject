@@ -56,7 +56,8 @@ public class AturPembayaran_Activity extends AppActivity {
             donasi = "",
             namaBank = "",
             edcAktif = "",
-            offUs = "";
+            offUs = "",
+            isPkp = "";
     private double ppn = 0.1;
     private double
             mdrOnUs = 0,
@@ -192,6 +193,7 @@ public class AturPembayaran_Activity extends AppActivity {
         mdrOnUs = nson.get("MDR_ON_US").asDouble();
         mdrKreditCard = nson.get("MDR_KREDIT_CARD").asDouble();
         totalBiaya = nson.get("TOTAL").asInteger();
+        isPkp = nson.get("PKP").asString();
 
         find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));
     }
@@ -310,7 +312,7 @@ public class AturPembayaran_Activity extends AppActivity {
                         kembalian = Integer.parseInt(formatOnlyNumber(find(R.id.et_kembalian, EditText.class).getText().toString()));
                     }
 
-                    if (kembalian < 500) {
+                    if (kembalian < 500 && kembalian > 0) {
                         initMssgDonasi(RP + formatRp(String.valueOf(kembalian)), kembalian);
                     } else {
                         String ratusRupiah = String.valueOf(kembalian);
@@ -318,7 +320,12 @@ public class AturPembayaran_Activity extends AppActivity {
                             ratusRupiah = ratusRupiah.substring(ratusRupiah.length() - 3);
                             int castRatusRupiah = Integer.parseInt(ratusRupiah);
                             castRatusRupiah = castRatusRupiah > 500 && castRatusRupiah < 1000 ? castRatusRupiah - 500 : castRatusRupiah;
-                            initMssgDonasi(RP + formatRp(String.valueOf(castRatusRupiah)), castRatusRupiah);
+                            if(castRatusRupiah >= 500 || castRatusRupiah == 0){
+                                saveData();
+                            }else{
+                                initMssgDonasi(RP + formatRp(String.valueOf(castRatusRupiah)), castRatusRupiah);
+                            }
+
                         } else {
                             saveData();
                         }
@@ -450,10 +457,10 @@ public class AturPembayaran_Activity extends AppActivity {
                 args.put("noInvoice", "0");
                 args.put("reminderPelanggan", find(R.id.cb_pelanggan, CheckBox.class).isChecked() ? "Y" : "N");
                 args.put("reminderPemilik", find(R.id.cb_pemilik, CheckBox.class).isChecked() ? "Y" : "N");
-                args.put("kredit", "0");
-                args.put("debit", "0");
-                args.put("nominal", "0");
-                args.put("balance", "0");
+                args.put("kredit", String.valueOf(totalBiaya));
+                args.put("debit", String.valueOf(totalBiaya));
+                args.put("nominal", String.valueOf(totalBiaya));
+                args.put("balance", String.valueOf(totalBiaya));
                 args.put("jenisAkun", getSetting("TIPE_USER"));
                 args.put("partArray", getIntentStringExtra("PART_LIST"));
                 if (isDonasi) {

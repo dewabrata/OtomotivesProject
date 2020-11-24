@@ -57,7 +57,7 @@
         <activity android:name=".modules.sparepart.AturOutSource_Activity" />
         <activity android:name=".modules.sparepart.OutSource_Activity" />
         <activity android:name=".modules.mekanik.InspeksiMekanik_Activity" />
-        <activity android:name=".modules.bengkel.CashCollection_Activity" />
+        <activity android:name=".modules.bengkel.AturCollection_Activity" />
         <activity android:name=".modules.bengkel.Collection_Activity" />
         <activity android:name=".modules.sparepart.UpdatePartKosong_Activity" />
         <activity android:name=".modules.sparepart.MenungguPart_Activity" />
