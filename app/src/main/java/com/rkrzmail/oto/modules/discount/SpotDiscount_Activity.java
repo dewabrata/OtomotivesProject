@@ -61,6 +61,13 @@ public class SpotDiscount_Activity extends AppActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    private void initToolbarDialog() {
+        Toolbar toolbar = (Toolbar) dialogView.findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Pelanggan");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
     private void initComponent() {
         initToolbar();
         find(R.id.fab_tambah).setOnClickListener(new View.OnClickListener() {
@@ -186,6 +193,7 @@ public class SpotDiscount_Activity extends AppActivity {
         builder.setView(dialogView);
         builder.create();
 
+        initToolbarDialog();
         initRecylerviewPelanggan(dialogView);
         viewPelanggan(builder);
     }
@@ -231,7 +239,9 @@ public class SpotDiscount_Activity extends AppActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK && requestCode == REQUEST_DISC_SPOT)
+        if(resultCode == RESULT_OK && requestCode == REQUEST_DISC_SPOT){
+            alertDialog.dismiss();
             viewDiscSpot("");
+        }
     }
 }

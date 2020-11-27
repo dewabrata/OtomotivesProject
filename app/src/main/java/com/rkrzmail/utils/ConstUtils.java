@@ -5,6 +5,10 @@ import com.rkrzmail.oto.AppActivity;
 
 public class ConstUtils {
 
+    public static final long ONEDAY = 86400000;
+    public static int DAYS(long milliseconds) {
+        return  (int) (milliseconds / (1000*60*60*24));
+    }
     //ARGUMENTS PARENT
     public static final String ERROR_INFO = "Terjadi Kesalahan Silahkan Coba Kembali";
     public static final String TUGAS_PART_TERSEDIA = "TUGAS_PART_TERSEDIA";

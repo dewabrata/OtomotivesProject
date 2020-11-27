@@ -66,6 +66,19 @@ public class Permintaan_TugasPart_Fragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(isVisible()){
+            viewPartPermintaanCheckin();
+            viewPartPermintaanJualPart();
+            Log.d("visi__", "setUserVisibleHint: " + "visible tersedia");
+        }else{
+            Log.d("visi__", "setUserVisibleHint: " + "invisible tersedia");
+        }
+
+    }
+
     private void initHideToolbar(View view){
         AppBarLayout appBarLayout = view.findViewById(R.id.appbar);
         appBarLayout.setVisibility(View.GONE);

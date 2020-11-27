@@ -86,7 +86,7 @@ public class Tersedia_TugasPart_Fragment extends Fragment {
         super.onResume();
         if(isVisible()){
             viewPartTersediaCheckin();
-            viewPartPermintaanJualPart();
+            viewTersediaJualPart();
             Log.d("visi__", "setUserVisibleHint: " + "visible tersedia");
         }else{
             Log.d("visi__", "setUserVisibleHint: " + "invisible tersedia");
@@ -183,7 +183,7 @@ public class Tersedia_TugasPart_Fragment extends Fragment {
     }
 
     @SuppressLint("NewApi")
-    public void viewPartPermintaanJualPart() {
+    public void viewTersediaJualPart() {
         ((TugasPart_MainTab_Activity) Objects.requireNonNull(getActivity())).newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
@@ -217,7 +217,7 @@ public class Tersedia_TugasPart_Fragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_DETAIL){
             viewPartTersediaCheckin();
-            viewPartPermintaanJualPart();
+            viewTersediaJualPart();
         }
     }
 }

@@ -90,7 +90,8 @@ public class AppApplication extends Application {
         hashtable.put("namaUser", UtilityAndroid.getSetting(getApplicationContext(), "NAMA_USER", ""));
         hashtable.put("CID", UtilityAndroid.getSetting(getApplicationContext(), "CID", ""));
         hashtable.put("FCM", UtilityAndroid.getSetting(getApplicationContext(), "FCMID", ""));
-        hashtable.put("date", Utility.Now());
+        hashtable.put("date", Utility.NowOnlyDate());
+        hashtable.put("dateTime", Utility.NowDateTime());
         hashtable.put("Location", AppApplication.getLastCurrentLocation());
         if (hashtable.containsValue("--PILIH--")) {
             hashtable.values().remove("--PILIH--");

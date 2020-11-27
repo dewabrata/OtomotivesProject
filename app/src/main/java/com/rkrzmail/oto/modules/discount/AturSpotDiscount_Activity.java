@@ -33,6 +33,7 @@ import static com.rkrzmail.utils.APIUrls.ATUR_DISC_SPOT;
 import static com.rkrzmail.utils.ConstUtils.ADD;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.EDIT;
+import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.ID;
 import static com.rkrzmail.utils.ConstUtils.RP;
 
@@ -158,8 +159,8 @@ public class AturSpotDiscount_Activity extends AppActivity {
                 args.put("transaksi", formatOnlyNumber(etTotalBiaya.getText().toString()));
                 args.put("totaltransaksi", formatOnlyNumber(etTotalFinal.getText().toString()));
                 args.put("nettransaksi", formatOnlyNumber(etTotalBiaya.getText().toString()));
-                args.put("diskonlain", formatOnlyNumber(etDisc.getText().toString()));
-                args.put("diskonspot", formatOnlyNumber(etSpot.getText().toString()));
+                args.put("diskonlain", etDisc.getText().toString().length() >= 4 ? etDisc.getText().toString().substring(0, 4) : formatOnlyNumber(etDisc.getText().toString()));
+                args.put("diskonspot", etSpot.getText().toString().substring(0, 2));
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_DISC_SPOT), args));
             }
@@ -171,7 +172,7 @@ public class AturSpotDiscount_Activity extends AppActivity {
                     setResult(RESULT_OK);
                     finish();
                 } else {
-                    showError(result.get("message").asString());
+                    showError(ERROR_INFO);
                 }
             }
         });
@@ -212,7 +213,7 @@ public class AturSpotDiscount_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "update");
                 args.put("id", idDiscSpot);
-                args.put("diskonspot", formatOnlyNumber(etSpot.getText().toString()));
+                args.put("diskonspot", etSpot.getText().toString().substring(0, 2));
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_DISC_SPOT), args));
             }
 

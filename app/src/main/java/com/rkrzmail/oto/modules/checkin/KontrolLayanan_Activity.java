@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -40,6 +41,7 @@ import static com.rkrzmail.utils.ConstUtils.REQUEST_NEW_CS;
 public class KontrolLayanan_Activity extends AppActivity {
 
     private RecyclerView rvKontrolLayanan;
+    private boolean isSwipe = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,14 +114,24 @@ public class KontrolLayanan_Activity extends AppActivity {
                     }
                 })
         );
+
+        find(R.id.swiperefresh, SwipeRefreshLayout.class).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //ob = 0;
+                //ix = 0;
+                catchData("");
+                //swipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     private void catchData(final String cari) {
-        newProses(new Messagebox.DoubleRunnable() {
+        newTask(new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
+                swipeProgress(true);
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 args.put("search", cari);
@@ -128,6 +140,7 @@ public class KontrolLayanan_Activity extends AppActivity {
 
             @Override
             public void runUI() {
+                swipeProgress(false);
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
@@ -139,7 +152,18 @@ public class KontrolLayanan_Activity extends AppActivity {
         });
     }
 
-    
+    private void swipeProgress(final boolean show) {
+        if (!show) {
+            find(R.id.swiperefresh, SwipeRefreshLayout.class).setRefreshing(show);
+            return;
+        }
+        find(R.id.swiperefresh, SwipeRefreshLayout.class).post(new Runnable() {
+            @Override
+            public void run() {
+                find(R.id.swiperefresh, SwipeRefreshLayout.class).setRefreshing(show);
+            }
+        });
+    }
 
     SearchView mSearchView;
 

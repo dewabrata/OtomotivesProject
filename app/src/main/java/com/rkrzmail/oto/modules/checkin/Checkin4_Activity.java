@@ -56,6 +56,7 @@ import static com.rkrzmail.utils.APIUrls.SET_CHECKIN;
 import static com.rkrzmail.utils.APIUrls.VIEW_ANTRIAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_MEKANIK;
 import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.ONEDAY;
 import static com.rkrzmail.utils.ConstUtils.PERMISSION_REQUEST_CODE;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CODE_SIGN;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_MEKANIK;
@@ -74,7 +75,6 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
 
     private boolean isSign = false, isBatal = false, isMekanik = false;
     private boolean isExpressAndStandard = false, isExtra = false, isHplus = false, isDp = false;
-    private long oneDay = 86400000;
     private String waktuLayananHplusExtra = "", jenisLayanan = "", waktuLayananStandartExpress = "";
     private String tglEstimasi = "", waktuEstimasi = "", antrianSebelumnya = "";
     private int idMekanik = 0;
@@ -204,7 +204,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             Log.d(TAG, "Exception waktu pesan : " + e.getMessage());
         }
 
-        long pesanPart = waktuPesan * oneDay;
+        long pesanPart = waktuPesan * ONEDAY;
         long totalDate = current + pesanPart;
         Log.d(TAG, "parseWaktuPesan: " + current);
         Calendar calendar = Calendar.getInstance();

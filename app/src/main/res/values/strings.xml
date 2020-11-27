@@ -139,7 +139,7 @@
     <string name="jenis_kendaraan_lowercase">Jenis Kendaraan</string>
     <string name="nn_n_dp_uppercase">NN.N% DP</string>
     <string name="sisa_biaya_uppercase">SISA BIAYA</string>
-    <string name="merc_disc_rate_uppercase">MERC. DISC RATE</string>
+    <string name="merc_disc_rate_uppercase">MDR</string>
     <string name="rp">Rp</string>
     <string name="percent">%</string>
     <string name="tujuan_reminder_uppercase">TUJUAN REMINDER</string>

@@ -1327,11 +1327,18 @@ public class Utility {
 		return sb.toString();
 	}
 
-	public static String Now() {
+	public static String NowDateTime() {
 		Calendar calendar = Calendar.getInstance();
 
 		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());
 	}
+
+	public static String NowOnlyDate() {
+		Calendar calendar = Calendar.getInstance();
+
+		return new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
+	}
+
 	public static String formatTrack(String str) {
 		if (str == null) {
 			return "";

@@ -29,14 +29,19 @@ import com.rkrzmail.srv.NikitaMultipleViewAdapter;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
 import static com.rkrzmail.srv.PercentFormat.calculatePercentage;
 import static com.rkrzmail.utils.APIUrls.VIEW_PEMBAYARAN;
 import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.DAYS;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.ID;
+import static com.rkrzmail.utils.ConstUtils.ONEDAY;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_KONFIRMASI;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_NEW_CS;
@@ -62,8 +67,11 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             layanan = "",
             tanggal = "",
             namaLayanan = "",
-            pemilik = "", isPkp = "";
+            pemilik = "",
+            isPkp = "", ket = "", catatanMekanik = "";
     private String idCheckin = "", idJualPart = "";
+    private String tglLayanan = "";
+    private int maxFreePenyimpanan = 0;
     int
             total1 = 0,
             total2 = 0,
@@ -73,9 +81,10 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             totalJasa = 0,
             totalJasaPart = 0,
             dp = 0,
-            biayaSimpan = 0,
+            biayaSimpanBengkel = 0,
             biayaLayanan = 0,
-            biayaDerek = 0;
+            biayaDerek = 0,
+            totalBiayaSimpan = 0;
     double
             discPart = 0,
             discJasaPart = 0,
@@ -168,21 +177,21 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             @Override
             public void onClick(View v) {
                 sendData.set("BIAYA_LAYANAN", biayaLayanan);
-                sendData.set("DISC_LAYANAN", discLayanan);
-                sendData.set("BIAYA_LAYANAN_NET", biayaLayanan - discLayanan);
+                sendData.set("DISC_LAYANAN", biayaLayanan > 0 ? discLayanan : 0);
+                sendData.set("BIAYA_LAYANAN_NET", biayaLayanan > 0 ? biayaLayanan - discLayanan : biayaLayanan);
                 sendData.set("HARGA_PART", totalPart);
-                sendData.set("DISC_PART", discPart);
-                sendData.set("HARGA_PART_NET", totalPart - discPart);
+                sendData.set("DISC_PART", totalPart > 0 ? discPart : 0);
+                sendData.set("HARGA_PART_NET", totalPart > 0 ? totalPart - discPart : totalPart);
                 sendData.set("HARGA_JASA_LAIN", totalJasa);
-                sendData.set("DISC_JASA", discJasa);
-                sendData.set("HARGA_JASA_LAIN_NET", totalJasa - discJasa);
+                sendData.set("DISC_JASA", totalJasa > 0 ? discJasa : 0);
+                sendData.set("HARGA_JASA_LAIN_NET", totalJasa > 0 ? totalJasa - discJasa : totalJasa);
                 sendData.set("DP", dp);
-                sendData.set("SISA_BIAYA", total1 - dp);
-                sendData.set("BIAYA_SIMPAN", biayaSimpan);
+                sendData.set("SISA_BIAYA", sisaBiaya);
+                sendData.set("BIAYA_SIMPAN", totalBiayaSimpan);
                 sendData.set("DISC_SPOT", discSpot);
                 sendData.set("HARGA_JASA_PART", totalJasaPart);
-                sendData.set("DISC_JASA_PART", discJasaPart);
-                sendData.set("HARGA_JASA_PART_NET", totalJasaPart - discJasaPart);
+                sendData.set("DISC_JASA_PART", totalJasaPart > 0 ? discJasaPart : 0);
+                sendData.set("HARGA_JASA_PART_NET", totalJasaPart > 0 ? totalJasaPart - discJasaPart : totalJasaPart);
                 sendData.set("BIAYA_DEREK", biayaDerek);
                 sendData.set("PEMILIK", pemilik);
                 sendData.set("MDR_ON_US", mdrOnUs);
@@ -207,7 +216,11 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         jenisKendaraan = data.get("JENIS_KENDARAAN").asString();
         layanan = data.get("LAYANAN").asString();
         pemilik = data.get("PEMILIK").asString();
+        ket = data.get("KETERANGAN_TAMBAHAN").asString();
+        catatanMekanik = data.get("CATATAN_MEKANIK").asString();
+        tglLayanan =  data.get("TANGGAL_CHECKIN").asString();
     }
+
 
     private void viewRincianPembayaran() {
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
@@ -281,9 +294,10 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             mdrOfUs = result.get(i).get("MDR_OFF_US").asDouble();
             mdrCreditCard = result.get(i).get("MDR_KREDIT_CARD").asDouble();
 
-            biayaLayanan = result.get(i).get("BIAYA_LAYANAN").asInteger();
+            maxFreePenyimpanan =result.get(i).get("MAX_FREE_PENYIMPANAN").asInteger();
             biayaDerek = result.get(i).get("BIAYA_DEREK").asInteger();
-            biayaSimpan = result.get(i).get("BIAYA_SIMPAN").asInteger();
+            biayaSimpanBengkel = result.get(i).get("BIAYA_PENYIMPANAN").asInteger();
+            biayaLayanan = result.get(i).get("BIAYA_LAYANAN").asInteger();
 
             namaLayanan = result.get(i).get("LAYANAN").asString();
             isPkp = result.get(i).get("PKP").asString();
@@ -309,21 +323,9 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             find(R.id.tv_layanan, TextView.class).setText((result.get(i).get("LAYANAN").asString()));
             find(R.id.tv_nopol, TextView.class).setText((result.get(i).get("NOPOL").asString()));
             find(R.id.tv_frek, TextView.class).setText((result.get(i).get("FREKWENSI").asString()));
-
-            find(R.id.tv_disc_layanan, TextView.class).setText((result.get(i).get("DISC_LAYANAN").asString()));
-            find(R.id.tv_disc_frekwensi, TextView.class).setText((result.get(i).get("DISC_FREKWENSI").asString()));
-
-            find(R.id.tv_disc_part, TextView.class).setText((result.get(i).get("DISC_PART").asString()));
-
-            find(R.id.tv_disc_jasa_part, TextView.class).setText((result.get(i).get("DISC_JASA_PART").asString()));
-
-            find(R.id.tv_disc_jasa_lain, TextView.class).setText((result.get(i).get("DISC_JASA_LAIN").asString()));
-            find(R.id.tv_harga_derek_transport, TextView.class).setText(formatRp(result.get(i).get("HARGA_DEREK").asString()));
-            find(R.id.tv_harga_penyimpanan, TextView.class).setText(formatRp(result.get(i).get("").asString()));
-
-            find(R.id.et_ket_tambahan, EditText.class).setText((result.get(i).get("KETERANGAN").asString()));
-            find(R.id.et_catatan, EditText.class).setText((result.get(i).get("CATATAN").asString()));
         }
+
+        parseBiayaSimpan();
 
         if (discLayanan > 0) {
             discLayanan = calculatePercentage(discLayanan, biayaLayanan);
@@ -337,15 +339,15 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                         discPart +
                         discJasaPart +
                         discJasa +
-                        biayaDerek + biayaSimpan
+                        biayaDerek + totalBiayaSimpan
         );
 
         if (dp > 0) {
             sisaBiaya = total1 - dp;
         }
         if (discSpot > 0) {
-            discSpot = calculatePercentage(discSpot, sisaBiaya);
-            total2 = Math.round((int) (sisaBiaya - discSpot));
+            discSpot = calculatePercentage(discSpot, sisaBiaya > 0 ? sisaBiaya : total1);
+            total2 = (int) ((sisaBiaya > 0 ? sisaBiaya : total1) - discSpot);
         }
 
         if (total2 == 0) {
@@ -354,10 +356,10 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         if (sisaBiaya == 0) {
             find(R.id.row_sisa_biaya).setVisibility(View.GONE);
         }
-        if (biayaSimpan == 0) {
+        if (totalBiayaSimpan == 0) {
             find(R.id.row_penyimpanan).setVisibility(View.GONE);
         }
-        if (discLayanan == 0) {
+        if (discLayanan == 0 || biayaLayanan == 0) {
             find(R.id.row_disc_layanan).setVisibility(View.GONE);
         }
         if (discFrekwensi == 0) {
@@ -397,14 +399,17 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         find(R.id.tv_total_2, TextView.class).setText(RP + formatRp(String.valueOf(total2)));
         find(R.id.tv_sisa_biaya, TextView.class).setText(RP + formatRp(String.valueOf(sisaBiaya)));
         find(R.id.tv_disc_spot, TextView.class).setText(RP + formatRp(String.valueOf(discSpot)));
+        find(R.id.tv_harga_penyimpanan, TextView.class).setText(RP + formatRp(String.valueOf(totalBiayaSimpan)));
+        find(R.id.tv_disc_layanan, TextView.class).setText(RP + formatRp(String.valueOf(discLayanan)));
+        find(R.id.tv_disc_frekwensi, TextView.class).setText(RP + formatRp(String.valueOf(discFrekwensi)));
+        find(R.id.tv_disc_part, TextView.class).setText(RP + formatRp(String.valueOf(discPart)));
+        find(R.id.tv_disc_jasa_part, TextView.class).setText(RP + formatRp(String.valueOf(discJasaPart)));
+        find(R.id.tv_disc_jasa_lain, TextView.class).setText(RP + formatRp(String.valueOf(discJasa)));
+        find(R.id.tv_harga_derek_transport, TextView.class).setText(RP + formatRp(String.valueOf(biayaDerek)));
+        find(R.id.et_ket_tambahan, EditText.class).setText(ket);
+        find(R.id.et_catatan, EditText.class).setText(catatanMekanik);
 
-        int totalFinal;
-        if (total2 > 0) {
-            totalFinal = total2;
-        } else {
-            totalFinal = total1;
-        }
-        sendData.set("TOTAL", totalFinal);
+        sendData.set("TOTAL", total2 > 0 ? total2 : total1);
     }
 
     @SuppressLint("SetTextI18n")
@@ -521,6 +526,31 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             }
         });
     }
+
+    private void parseBiayaSimpan(){
+        long tglBayar;
+        long tglCheckin;
+        try {
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date now = sdf.parse(currentDateTime());
+            Date dayLayanan = sdf.parse(tglLayanan);
+            tglBayar = now.getTime();
+            tglCheckin = dayLayanan.getTime();
+        } catch (ParseException e) {
+            tglBayar = 0;
+            tglCheckin = 0;
+            showError(e.getMessage());
+        }
+        if(tglBayar > tglCheckin){
+            long dummy = tglBayar - tglCheckin;
+            long maxFree = maxFreePenyimpanan * ONEDAY;
+            if(maxFree < dummy){
+                int selisih = DAYS((dummy - maxFree));
+                totalBiayaSimpan = biayaSimpanBengkel * selisih;
+            }
+        }
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

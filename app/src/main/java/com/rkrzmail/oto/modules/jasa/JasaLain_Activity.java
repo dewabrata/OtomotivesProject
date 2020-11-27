@@ -77,7 +77,6 @@ public class JasaLain_Activity extends AppActivity {
             isAvail = true;
         }
         rvJasa = findViewById(R.id.recyclerView);
-        catchData("");
         rvJasa.setLayoutManager(new LinearLayoutManager(this));
         rvJasa.setHasFixedSize(true);
         rvJasa.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_jasa_lain) {
@@ -113,6 +112,8 @@ public class JasaLain_Activity extends AppActivity {
 
             }
         }));
+
+        catchData("");
     }
 
     private void catchData(final String cari) {
@@ -123,12 +124,8 @@ public class JasaLain_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
-                args.put("cari", "c");
-                args.put("search", cari);
-                if (isCari) {
-                    args.remove("search");
-                    args.put("cari", cari);
-                }
+                args.put("flag", "ALL");
+                args.put("cari", cari);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_JASA_LAIN), args));
             }
 
@@ -165,7 +162,7 @@ public class JasaLain_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        adapterSearchView(mSearchView, "", VIEW_JASA_LAIN, "NAMA", "");
+        adapterSearchView(mSearchView, "", VIEW_JASA_LAIN, "KELOMPOK_PART", "ALL");
         final SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
 
