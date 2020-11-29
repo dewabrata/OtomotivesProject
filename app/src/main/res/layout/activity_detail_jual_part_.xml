@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true">
 
@@ -23,8 +24,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:visibility="gone"
-                android:hint="HPP">
+                android:hint="HPP"
+                android:visibility="gone">
 
                 <EditText
                     android:id="@+id/et_hpp_detailPart"
@@ -36,12 +37,11 @@
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/tl_harga_jual"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:layout_marginTop="5dp"
-
                 android:hint="HARGA JUAL">
 
                 <EditText
@@ -55,6 +55,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/tl_disc_part"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -89,6 +90,52 @@
                     android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
+
+            <LinearLayout
+                android:id="@+id/ly_jumlahHarga_partKosong"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:hint="DP">
+
+                    <EditText
+                        android:id="@+id/et_dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:inputType="text"
+                        android:textSize="14sp"
+                        tools:ignore="Autofill,LabelFor" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:hint="WAKTU PESAN">
+
+                    <EditText
+                        android:id="@+id/et_waktu_pesan"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:inputType="number"
+                        android:textSize="14sp"
+                        tools:ignore="Autofill,LabelFor" />
+
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
 
             <Button
                 android:id="@+id/btn_simpan_detailPart"

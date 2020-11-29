@@ -44,7 +44,7 @@ public class Checkin2_Activity extends AppActivity {
 
     private EditText etNorangka, etNomesin;
     private TextView tvTgl;
-    private NikitaAutoComplete etWarna;
+    private NikitaAutoComplete etWarna, etKodeTipe;
     private Nson readCheckin;
     private long tahunBeli = 0;
     private long tahunSekarang = 0;
@@ -80,6 +80,7 @@ public class Checkin2_Activity extends AppActivity {
         tvTgl = findViewById(R.id.tv_tanggal_checkin2);
         etNorangka = findViewById(R.id.et_noRangka_checkin2);
         etNomesin = findViewById(R.id.et_noMesin_checkin2);
+        etKodeTipe = findViewById(R.id.et_kode_tipe);
 
         initListener();
     }
@@ -156,6 +157,37 @@ public class Checkin2_Activity extends AppActivity {
         });
 
         etWarna.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+            }
+        });
+
+        etKodeTipe.setThreshold(3);
+        etKodeTipe.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
+            Nson result;
+
+            @Override
+            public Nson onFindNson(Context context, String bookTitle) {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("warna", bookTitle);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(""), args));
+                return result;
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                if (convertView == null) {
+                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    convertView = inflater.inflate(R.layout.find_nopol, parent, false);
+                }
+                findView(convertView, R.id.txtNopol, TextView.class).setText(formatNopol(getItem(position).get("").asString()));
+                return convertView;
+            }
+        });
+
+        etKodeTipe.setLoadingIndicator((android.widget.ProgressBar) findViewById(R.id.pb_kode_tipe));
+        etKodeTipe.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 

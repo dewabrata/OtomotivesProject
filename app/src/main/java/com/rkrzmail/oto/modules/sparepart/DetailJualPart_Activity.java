@@ -14,6 +14,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.RupiahFormat;
+import com.rkrzmail.utils.Tools;
 
 import java.text.DecimalFormat;
 import java.util.Map;
@@ -69,7 +71,7 @@ public class DetailJualPart_Activity extends AppActivity {
         initListener();
     }
 
-    private void initListener(){
+    private void initListener() {
         etHargaJual.addTextChangedListener(new RupiahFormat(etHargaJual));
         etJumlah.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -161,32 +163,11 @@ public class DetailJualPart_Activity extends AppActivity {
         });
     }
 
-    private void setIntent() {
-        Messagebox.showDialog(getActivity(), "Konfirmasi", "Stock Part Kosong, Cari Part ?", "OK", "TIDAK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(getActivity(), CariPart_Activity.class);
-                intent.putExtra(CARI_PART_LOKASI, RUANG_PART);
-                startActivityForResult(intent, REQUEST_CARI_PART);
-            }
-        }, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-               finish();
-               dialog.dismiss();
-            }
-        });
-    }
-
     @SuppressLint("SetTextI18n")
     private void loadData() {
         try {
-           getData = Nson.readJson(getIntentStringExtra(PART));
-
-            if (getData.get("STOCK_RUANG_PART").asInteger() == 0) {
-                setIntent();
-                return;
-            }
+            getData = Nson.readJson(getIntentStringExtra(PART));
+            initPartKosongValidation(getData);
             namaPart = getData.get("NAMA_PART").asString();
             idLokasiPart = getData.get("LOKASI_PART_ID").asString();
             Log.d("detail__", "data : " + getData);
@@ -214,6 +195,37 @@ public class DetailJualPart_Activity extends AppActivity {
         }
     }
 
+    private void initPartKosongValidation(final Nson nson) {
+        if (nson.get("STOCK_RUANG_PART").asInteger() == 0) {
+            Messagebox.showDialog(getActivity(),
+                    "Konfirmasi", "Buka Form Part Kosong ? ", "Ya", "Tidak", new DialogInterface.OnClickListener() {
+                        @SuppressLint("SetTextI18n")
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //find(R.id.ly_hpp_jumlah_harga_part, TextInputLayout.class).setVisibility(View.VISIBLE);
+                            if (nson.get("DISCOUNT_PART").asString() != null) {
+                                //find(R.id.ly_disc_part_jumlah_harga_part, TextInputLayout.class).setVisibility(View.VISIBLE);
+                            }
+                            if (nson.get("DISCOUNT_JASA") != null) {
+                                //find(R.id.ly_discJasa_jumlah_harga_part, TextInputLayout.class).setVisibility(View.VISIBLE);
+                            }
+                            isPartKosong = true;
+                            find(R.id.ly_jumlahHarga_partKosong, LinearLayout.class).setVisibility(View.VISIBLE);
+                            find(R.id.et_dp, EditText.class).setText(Tools.convertToDoublePercentage(getSetting("DP_PERSEN")) + "%");
+                            find(R.id.et_waktu_pesan, EditText.class).setText(nson.get("WAKTU_PESAN_HARI").asString());
+                        }
+                    }, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                            dialog.dismiss();
+                        }
+                    });
+        }
+
+    }
+
+
     private void saveData() {
         int jumlah = 0;
         double net = 0;
@@ -224,10 +236,10 @@ public class DetailJualPart_Activity extends AppActivity {
             jumlah = Integer.parseInt(etJumlah.getText().toString());
         }
         int total = jumlah * Integer.parseInt(formatOnlyNumber(etHargaJual.getText().toString()));
-        if(!etDisc.getText().toString().isEmpty()){
+        if (!etDisc.getText().toString().isEmpty()) {
             double disc = Double.parseDouble(formatOnlyNumber(etDisc.getText().toString()));
-            net =  (disc / 100) * total;
-        }else{
+            net = (disc / 100) * total;
+        } else {
             net = total;
         }
 
@@ -254,8 +266,8 @@ public class DetailJualPart_Activity extends AppActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK && requestCode == REQUEST_CARI_PART)
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CARI_PART)
             getData = Nson.readJson(getIntentStringExtra(data, PART));
-            loadData();
+        loadData();
     }
 }

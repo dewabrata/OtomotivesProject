@@ -56,7 +56,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
     AlertDialog alertDialog;
 
     private Nson partList = Nson.newArray();
-    private boolean isLayanan = false, isDp = false, isJualPart = false, isMdrOffUs = false;
+    private boolean isLayanan = false, isDp = false, isJualPart = false, isMdrOffUs = false, isBatal = false;
     private Nson data;
     private Nson sendData = Nson.newObject();
     private String
@@ -80,11 +80,11 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             totalPart = 0,
             totalJasa = 0,
             totalJasaPart = 0,
-            dp = 0,
             biayaSimpanBengkel = 0,
             biayaLayanan = 0,
             biayaDerek = 0,
-            totalBiayaSimpan = 0;
+            totalBiayaSimpan = 0,
+            sisaBiayaDp = 0;
     double
             discPart = 0,
             discJasaPart = 0,
@@ -94,7 +94,8 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             discFrekwensi = 0,
             mdrOnUs = 0,
             mdrOfUs = 0,
-            mdrCreditCard = 0;
+            mdrCreditCard = 0,
+            dpPercent = 0;
 
 
     @Override
@@ -113,6 +114,8 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         setSupportActionBar(toolbar);
         data = Nson.readJson(getIntentStringExtra(DATA));
         if (data.containsKey("RINCIAN_CHECKIN")) {
+            if (data.get("STATUS").asString().contains("BATAL"))
+                isBatal = true;
             idCheckin = data.get(ID).asString();
             sendData.set("CHECKIN_ID", idCheckin);
             sendData.set("PEMILIK", data.get("PEMILIK").asString());
@@ -121,10 +124,12 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                 isDp = true;
                 find(R.id.ly_rincian_jual_part).setVisibility(View.GONE); //layout rincian pembelian
                 Objects.requireNonNull(getSupportActionBar()).setTitle(RINCIAN_LAYANAN);
+                find(R.id.row_total_1).setVisibility(View.GONE);
                 find(R.id.row_dp).setVisibility(View.GONE);
-                find(R.id.row_sisa_biaya).setVisibility(View.GONE);
+                find(R.id.row_layanan).setVisibility(View.GONE);
                 find(R.id.row_disc_spot).setVisibility(View.GONE);
                 find(R.id.row_total_2).setVisibility(View.GONE);
+                find(R.id.row_biaya_jasa_part).setVisibility(View.GONE);
                 find(R.id.ly_ket).setVisibility(View.GONE);
                 find(R.id.et_catatan).setVisibility(View.GONE);
             } else {
@@ -142,12 +147,12 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             isJualPart = true;
             find(R.id.ly_rincian_layanan).setVisibility(View.GONE); //layout rincian layanan
             Objects.requireNonNull(getSupportActionBar()).setTitle(RINCIAN_JUAL_PART);
+            initRecylerviewPartPembelian();
         }
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
     }
 
     private void initComponent() {
-        initRecylerviewPartPembelian();
         loadData();
         viewRincianPembayaran();
         find(R.id.btn_jasa_part, Button.class).setOnClickListener(new View.OnClickListener() {
@@ -185,7 +190,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                 sendData.set("HARGA_JASA_LAIN", totalJasa);
                 sendData.set("DISC_JASA", totalJasa > 0 ? discJasa : 0);
                 sendData.set("HARGA_JASA_LAIN_NET", totalJasa > 0 ? totalJasa - discJasa : totalJasa);
-                sendData.set("DP", dp);
+                sendData.set("DP", totalDp);
                 sendData.set("SISA_BIAYA", sisaBiaya);
                 sendData.set("BIAYA_SIMPAN", totalBiayaSimpan);
                 sendData.set("DISC_SPOT", discSpot);
@@ -199,6 +204,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                 sendData.set("MDR_KREDIT_CARD", mdrCreditCard);
                 sendData.set("IS_OFF_US", isMdrOffUs);
                 sendData.set("PKP", isPkp);
+                sendData.set("JENIS", isLayanan ? "CHECKIN" : (isDp ? "DP" : (isJualPart ? "JUAL PART" : "")));
 
                 Intent i = new Intent(getActivity(), AturPembayaran_Activity.class);
                 i.putExtra(DATA, sendData.toJson());
@@ -218,7 +224,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         pemilik = data.get("PEMILIK").asString();
         ket = data.get("KETERANGAN_TAMBAHAN").asString();
         catatanMekanik = data.get("CATATAN_MEKANIK").asString();
-        tglLayanan =  data.get("TANGGAL_CHECKIN").asString();
+        tglLayanan = data.get("TANGGAL_CHECKIN").asString();
     }
 
 
@@ -231,16 +237,12 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "view");
-                if (isLayanan) {
+                if (isLayanan || isDp) {
                     args.put("jenisPembayaran", "CHECKIN");
                     args.put("checkinId", idCheckin);
                     args.put("detail", "RINCIAN LAYANAN");
                 }
-                if (isDp) {
-                    args.put("checkinId", idCheckin);
-                    args.put("jenisPembayaran", "CHECKIN");
-                    args.put("detail", "RINCIAN DP");
-                }
+
                 if (isJualPart) {
                     args.put("jenisPembayaran", "JUAL PART");
                     args.put("jualPartId", idJualPart);
@@ -280,33 +282,40 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
     private void loadDataRincianLayanan(Nson result) {
         result = result.get("data");
         for (int i = 0; i < result.size(); i++) {
-            totalPart += result.get(i).get("HARGA_PART").asInteger();
-            totalJasaPart += result.get(i).get("HARGA_JASA_PART").asInteger();
-            totalJasa += result.get(i).get("HARGA_JASA_LAIN").asInteger();
-            dp = result.get(i).get("DP").asInteger();
+            if(!isBatal){
+                if(isDp && result.get(i).get("DP_DETAIL").asInteger() > 0){
+                    totalPart = result.get(i).get("HARGA_PART").asInteger() * result.get(i).get("JUMLAH").asInteger();
+                }else{
+                    totalPart += result.get(i).get("HARGA_PART").asInteger();
+                }
 
-            discPart += result.get(i).get("DISCOUNT_PART").asInteger();
-            discJasaPart += result.get(i).get("DISCOUNT_JASA_PART").asInteger();
-            discJasa += result.get(i).get("DISCOUNT_JASA_PART").asInteger();
-            discLayanan = result.get(i).get("DISCOUNT_LAYANAN").asInteger();
-            discSpot = result.get(i).get("DISCOUNT_SPOT").asInteger();
-            mdrOfUs = result.get(i).get("MDR_ON_US").asDouble();
-            mdrOfUs = result.get(i).get("MDR_OFF_US").asDouble();
-            mdrCreditCard = result.get(i).get("MDR_KREDIT_CARD").asDouble();
+                totalJasaPart += result.get(i).get("HARGA_JASA_PART").asInteger();
+                totalJasa += result.get(i).get("HARGA_JASA_LAIN").asInteger();
+                totalDp = result.get(i).get("DP").asInteger();
+                sisaBiayaDp = result.get(i).get("SISA").asInteger();
 
-            maxFreePenyimpanan =result.get(i).get("MAX_FREE_PENYIMPANAN").asInteger();
-            biayaDerek = result.get(i).get("BIAYA_DEREK").asInteger();
-            biayaSimpanBengkel = result.get(i).get("BIAYA_PENYIMPANAN").asInteger();
-            biayaLayanan = result.get(i).get("BIAYA_LAYANAN").asInteger();
+                dpPercent = result.get(i).get("DP_PERSEN").asDouble();
+                discPart += result.get(i).get("DISCOUNT_PART").asInteger();
+                discJasaPart += result.get(i).get("DISCOUNT_JASA_PART").asInteger();
+                discJasa += result.get(i).get("DISCOUNT_JASA_PART").asInteger();
+                discLayanan = result.get(i).get("DISCOUNT_LAYANAN").asInteger();
+                discSpot = result.get(i).get("DISCOUNT_SPOT").asInteger();
+                mdrOnUs = result.get(i).get("MDR_ON_US").asDouble();
+                mdrOfUs = result.get(i).get("MDR_OFF_US").asDouble();
+                mdrCreditCard = result.get(i).get("MDR_KREDIT_CARD").asDouble();
 
-            namaLayanan = result.get(i).get("LAYANAN").asString();
-            isPkp = result.get(i).get("PKP").asString();
+                maxFreePenyimpanan = result.get(i).get("MAX_FREE_PENYIMPANAN").asInteger();
+                biayaDerek = result.get(i).get("BIAYA_DEREK").asInteger();
+                biayaSimpanBengkel = result.get(i).get("BIAYA_PENYIMPANAN").asInteger();
+                biayaLayanan = result.get(i).get("BIAYA_LAYANAN").asInteger();
+
+                namaLayanan = result.get(i).get("LAYANAN").asString();
+                isPkp = result.get(i).get("PKP").asString();
+            }
+
 
             if (result.get(i).get("OFF_US").asString().equals("Y")) {
                 isMdrOffUs = true;
-            }
-            if (result.get(i).get("BIAYA_LAYANAN").asString().equals("0")) {
-                find(R.id.row_layanan).setVisibility(View.GONE);
             }
             if (result.get(i).get("DEREK").asString().equals("Y")) {
                 find(R.id.cb_derek, CheckBox.class).setChecked(true);
@@ -342,60 +351,37 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                         biayaDerek + totalBiayaSimpan
         );
 
-        if (dp > 0) {
-            sisaBiaya = total1 - dp;
+        if (!isDp && totalDp > 0) {
+            sisaBiaya = total1 - totalDp;
         }
         if (discSpot > 0) {
             discSpot = calculatePercentage(discSpot, sisaBiaya > 0 ? sisaBiaya : total1);
             total2 = (int) ((sisaBiaya > 0 ? sisaBiaya : total1) - discSpot);
         }
 
-        if (total2 == 0) {
-            find(R.id.row_total_2).setVisibility(View.GONE);
-        }
-        if (sisaBiaya == 0) {
-            find(R.id.row_sisa_biaya).setVisibility(View.GONE);
-        }
-        if (totalBiayaSimpan == 0) {
-            find(R.id.row_penyimpanan).setVisibility(View.GONE);
-        }
-        if (discLayanan == 0 || biayaLayanan == 0) {
-            find(R.id.row_disc_layanan).setVisibility(View.GONE);
-        }
-        if (discFrekwensi == 0) {
-            find(R.id.row_disc_frekwensi).setVisibility(View.GONE);
-        }
-        if (discPart == 0) {
-            find(R.id.row_disc_part).setVisibility(View.GONE);
-        }
-        if (discJasaPart == 0) {
-            find(R.id.row_disc_jasa_part).setVisibility(View.GONE);
-        }
-        if (discJasa == 0) {
-            find(R.id.row_disc_jasa_lain).setVisibility(View.GONE);
-        }
-        if (biayaDerek == 0) {
-            find(R.id.row_transport).setVisibility(View.GONE);
-        }
-        if (dp == 0) {
-            find(R.id.row_dp).setVisibility(View.GONE);
-        }
-        if (discSpot == 0) {
-            find(R.id.row_disc_spot).setVisibility(View.GONE);
-        }
-        if (totalJasaPart == 0) {
-            find(R.id.row_biaya_jasa_part).setVisibility(View.GONE);
-        }
-        if (totalJasa == 0) {
-            find(R.id.row_biaya_jasa_lain).setVisibility(View.GONE);
-        }
+        find(R.id.row_total_2).setVisibility(total2 == 0 | isDp ? View.GONE : View.VISIBLE);
+        find(R.id.row_sisa_biaya).setVisibility(sisaBiaya == 0 | isDp ? View.GONE : View.VISIBLE);
+        find(R.id.row_penyimpanan).setVisibility(totalBiayaSimpan == 0 | isDp ? View.GONE : View.VISIBLE);
+        find(R.id.row_disc_layanan).setVisibility(discLayanan == 0 | biayaLayanan == 0 | isDp? View.GONE : View.VISIBLE);
+        find(R.id.row_disc_frekwensi).setVisibility(discFrekwensi == 0 | isDp ? View.GONE : View.VISIBLE);
+        find(R.id.row_disc_part).setVisibility(discPart == 0 ? View.GONE : View.VISIBLE);
+        find(R.id.row_disc_jasa_part).setVisibility(discJasaPart == 0 | isDp ? View.GONE : View.VISIBLE);
+        find(R.id.row_disc_jasa_lain).setVisibility(discJasa == 0 | isDp ? View.GONE : View.VISIBLE);
+        find(R.id.row_transport).setVisibility(biayaDerek == 0 | isDp ? View.GONE : View.VISIBLE);
+        find(R.id.row_dp).setVisibility(totalDp == 0 ? View.GONE : View.VISIBLE);
+        find(R.id.row_disc_spot).setVisibility(discSpot == 0 | isDp ? View.GONE : View.VISIBLE);
+        find(R.id.row_biaya_jasa_part).setVisibility(totalJasaPart == 0 | isDp ? View.GONE : View.VISIBLE);
+        find(R.id.row_biaya_jasa_lain).setVisibility(totalJasa == 0 | isDp ? View.GONE : View.VISIBLE);
+        find(R.id.row_biaya_part).setVisibility(totalPart == 0 ? View.GONE : View.VISIBLE);
 
-        find(R.id.tv_dp, TextView.class).setText(RP + formatRp(String.valueOf(dp)));
+        find(R.id.tv_sisa_biaya_dp, TextView.class).setText(RP + formatRp(String.valueOf(sisaBiayaDp)));
+        find(R.id.tv_dp_percent, TextView.class).setText(dpPercent + "%");
+        find(R.id.tv_total_dp, TextView.class).setText(RP + formatRp(String.valueOf(totalDp)));
         find(R.id.tv_biaya_layanan, TextView.class).setText(RP + formatRp(String.valueOf(biayaLayanan)));
         find(R.id.tv_harga_jasa_lain, TextView.class).setText(RP + formatRp(String.valueOf(totalJasa)));
         find(R.id.tv_harga_jasa_part, TextView.class).setText(RP + formatRp(String.valueOf(totalJasaPart)));
         find(R.id.tv_totalPart, TextView.class).setText(RP + formatRp(String.valueOf(totalPart)));
-        find(R.id.tv_total_1, TextView.class).setText(RP + formatRp(String.valueOf(total1)));
+        find(R.id.tv_total_1, TextView.class).setText(RP + (isBatal ? "0" : formatRp(String.valueOf(total1))));
         find(R.id.tv_total_2, TextView.class).setText(RP + formatRp(String.valueOf(total2)));
         find(R.id.tv_sisa_biaya, TextView.class).setText(RP + formatRp(String.valueOf(sisaBiaya)));
         find(R.id.tv_disc_spot, TextView.class).setText(RP + formatRp(String.valueOf(discSpot)));
@@ -409,7 +395,8 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         find(R.id.et_ket_tambahan, EditText.class).setText(ket);
         find(R.id.et_catatan, EditText.class).setText(catatanMekanik);
 
-        sendData.set("TOTAL", total2 > 0 ? total2 : total1);
+        sendData.set("TOTAL", isBatal ? 0 : (total2 > 0 ? total2 : (isDp ? totalDp : 0)));
+
     }
 
     @SuppressLint("SetTextI18n")
@@ -527,7 +514,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         });
     }
 
-    private void parseBiayaSimpan(){
+    private void parseBiayaSimpan() {
         long tglBayar;
         long tglCheckin;
         try {
@@ -541,10 +528,10 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             tglCheckin = 0;
             showError(e.getMessage());
         }
-        if(tglBayar > tglCheckin){
+        if (tglBayar > tglCheckin) {
             long dummy = tglBayar - tglCheckin;
             long maxFree = maxFreePenyimpanan * ONEDAY;
-            if(maxFree < dummy){
+            if (maxFree < dummy) {
                 int selisih = DAYS((dummy - maxFree));
                 totalBiayaSimpan = biayaSimpanBengkel * selisih;
             }

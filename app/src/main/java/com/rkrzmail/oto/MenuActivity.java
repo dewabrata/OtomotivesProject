@@ -36,6 +36,7 @@ import com.rkrzmail.oto.gmod.MessageWA;
 import com.rkrzmail.oto.gmod.MyCode;
 import com.rkrzmail.oto.modules.antar_jemput.AntarJemput_Activity;
 import com.rkrzmail.oto.modules.bengkel.Collection_Activity;
+import com.rkrzmail.oto.modules.checkin.Checkin1_Activity;
 import com.rkrzmail.oto.modules.mekanik.BiayaMekanik2Activity;
 import com.rkrzmail.oto.modules.LoginActivity;
 import com.rkrzmail.oto.modules.komisi.KomisiPart_Activity;
@@ -199,9 +200,12 @@ public class MenuActivity extends AppActivity {
                     Intent intent = new Intent(MenuActivity.this, KontrolBooking_Activity.class);
                     startActivity(intent);
                 } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_CHECK_IN)) {
+                    Intent intent = new Intent(MenuActivity.this, Checkin1_Activity.class);
+                    startActivity(intent);
+                }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_KONTROL_LAYANAN)) {
                     Intent intent = new Intent(MenuActivity.this, KontrolLayanan_Activity.class);
                     startActivity(intent);
-                } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_DASHBOARD)) {
+                }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_DASHBOARD)) {
                     Intent intent = new Intent(MenuActivity.this, WebActivity.class);
                     intent.putExtra("title", "Dashboard");
                     intent.putExtra("url", "https://m.otomotives.com/#/?" + getWebUrl());
@@ -468,6 +472,7 @@ public class MenuActivity extends AppActivity {
 
     public final String M_BOOKING = "BOOKING";
     public final String M_CHECK_IN = "CHECK IN";
+    public final String M_KONTROL_LAYANAN = "KONTROL";
     public final String M_COLLECTION = "COLLECTION";
     public final String M_INSPEKSI = "INSPEKSI";
     public final String M_JUAL_PARTS = "JUAL PARTS";
@@ -495,6 +500,7 @@ public class MenuActivity extends AppActivity {
     public void populate(GridView v) {
         addHome(1, R.drawable.x_booking, M_BOOKING);
         addHome(2, R.drawable.x_checkin, M_CHECK_IN);
+        addHome(2, R.drawable.x_dashboard, M_KONTROL_LAYANAN);
         addHome(3, R.drawable.x_collection, M_COLLECTION);
         addHome(4, R.drawable.x_dashboard, M_DASHBOARD);
         addHome(5, R.drawable.x_inpeksi, M_INSPEKSI);

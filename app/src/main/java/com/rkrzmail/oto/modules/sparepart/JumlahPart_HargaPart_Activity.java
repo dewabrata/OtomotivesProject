@@ -87,14 +87,18 @@ public class JumlahPart_HargaPart_Activity extends AppActivity implements View.O
         if (getIntent().hasExtra(DATA)) {
             loadData(DATA, getIntent());
         } else {
+            find(R.id.ly_waktu_inspeksi).setVisibility(View.GONE);
+            find(R.id.ly_waktu_kerja).setVisibility(View.GONE);
+            etBiayaJasa.setVisibility(View.GONE);
             isPartWajib = true;
             final Nson nson = Nson.readJson(getIntentStringExtra(PART_WAJIB));
             stock = nson.get("STOCK").asInteger();
             Log.d(TAG, "data : " + nson);
             hpp = nson.get("HPP").asString();
             idLokasiPart = nson.get("LOKASI_PART_ID").asString();
-            find(R.id.btn_img_waktu_inspeksi).setEnabled(false);
-            find(R.id.et_waktu_set_inspeksi, EditText.class).setText(getIntent().getStringExtra("WAKTU_INSPEKSI"));
+
+            //find(R.id.btn_img_waktu_inspeksi).setEnabled(false);
+            //find(R.id.et_waktu_set_inspeksi, EditText.class).setText(getIntent().getStringExtra("WAKTU_INSPEKSI"));
             initPartKosongValidation(nson,true);
 
             boolean isMasterPartOrParts;
@@ -201,7 +205,7 @@ public class JumlahPart_HargaPart_Activity extends AppActivity implements View.O
             if(isPartWajib){
                 showWarning("Part Wajib Layanan Stock Kosong!");
                 Intent i = new Intent();
-                i.putExtra("PART_KOSONG", "OK");
+                i.putExtra("PART_KOSONG_PART_WAJIB", "OK");
                 setResult(RESULT_OK, i);
                 finish();
                 return;
@@ -349,6 +353,7 @@ public class JumlahPart_HargaPart_Activity extends AppActivity implements View.O
         int jumlahPart = 0, totalPart = 0, totalJasa = 0;
         int totalHarga = 0;
         double discJasa = 0;
+        String partKosong = "";
         String hari = find(R.id.et_waktuSet, EditText.class).getText().toString().substring(0, 2);
         String jam = find(R.id.et_waktuSet, EditText.class).getText().toString().substring(3, 5);
         String menit = find(R.id.et_waktuSet, EditText.class).getText().toString().substring(6, 8);
@@ -380,9 +385,10 @@ public class JumlahPart_HargaPart_Activity extends AppActivity implements View.O
         totalHarga =  totalPart + hargaJasa;
 
         if(isPartKosong){
+            partKosong = "YA";
             sendData.set("WAKTU_KERJA", "");
             sendData.set("WAKTU_INSPEKSI", "");
-            sendData.set("DP", formatOnlyNumber(formatRp(String.valueOf(calculateDp(Double.parseDouble(getSetting("DP_PERSEN")), totalHarga)))));
+            sendData.set("DP", formatOnlyNumber(formatRp(String.valueOf(calculateDp(Double.parseDouble(getSetting("DP_PERSEN")), totalPart)))));
         }else{
             sendData.set("WAKTU_KERJA", find(R.id.et_waktuSet, EditText.class).getText().toString());
             sendData.set("WAKTU_INSPEKSI", find(R.id.et_waktu_set_inspeksi, EditText.class).getText().toString());
@@ -391,6 +397,7 @@ public class JumlahPart_HargaPart_Activity extends AppActivity implements View.O
 
         if (isPartWajib) {
             sendData.set("HARGA_PART", hargaPart);
+            sendData.set("PERGANTIAN", getIntentStringExtra("PERGANTIAN"));
             sendData.set("INSPEKSI", "");
         } else {
             String inspeksi;
@@ -403,6 +410,7 @@ public class JumlahPart_HargaPart_Activity extends AppActivity implements View.O
                 inspeksi = "N";
             }
             sendData.set("INSPEKSI", inspeksi);
+            sendData.set("PERGANTIAN", "0");
         }
 
         sendData.set("NAMA_PART", nson.get("NAMA_PART").asString());
@@ -427,6 +435,8 @@ public class JumlahPart_HargaPart_Activity extends AppActivity implements View.O
 
         Intent i = new Intent();
         i.putExtra(DATA, sendData.toJson());
+        i.putExtra("PART_KOSONG", partKosong);
+        i.putExtra("TOTAL_PART", totalPart);
         setResult(RESULT_OK, i);
         finish();
     }

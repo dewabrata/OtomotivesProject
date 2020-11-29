@@ -46,7 +46,7 @@ public class KontrolLayanan_Activity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_basic_with_fab);
+        setContentView(R.layout.activity_list_basic);
         initComponent();
     }
 
@@ -59,12 +59,6 @@ public class KontrolLayanan_Activity extends AppActivity {
 
     private void initComponent() {
         initToolbar();
-        find(R.id.fab_tambah).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivityForResult(new Intent(getActivity(), Checkin1_Activity.class), REQUEST_CHECKIN);
-            }
-        });
         rvKontrolLayanan = findViewById(R.id.recyclerView);
         catchData("");
         rvKontrolLayanan.setLayoutManager(new LinearLayoutManager(this));
@@ -145,6 +139,7 @@ public class KontrolLayanan_Activity extends AppActivity {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
                     rvKontrolLayanan.getAdapter().notifyDataSetChanged();
+                    rvKontrolLayanan.scheduleLayoutAnimation();
                 } else {
                     showError(result.get("message").asString());
                 }

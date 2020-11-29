@@ -99,7 +99,7 @@ public class DaftarJualPart_Activity extends AppActivity {
                         viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Messagebox.showDialog(getActivity(), "Konfirmasi", "Hapus Part?", "OK", "TIDAK", new DialogInterface.OnClickListener() {
+                                Messagebox.showDialog(getActivity(), "Konfirmasi", "Kurangi Part?", "YA", "TIDAK", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         nListArray.asArray().remove(position);

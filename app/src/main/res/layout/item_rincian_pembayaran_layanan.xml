@@ -339,7 +339,9 @@
                 </TableRow>
 
 
-                <TableRow android:layout_marginTop="5dp">
+                <TableRow
+                    android:id="@+id/row_biaya_part"
+                    android:layout_marginTop="5dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -522,7 +524,9 @@
 
                 </TableRow>
 
-                <TableRow android:layout_marginTop="5dp">
+                <TableRow
+                    android:id="@+id/row_total_1"
+                    android:layout_marginTop="5dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -556,7 +560,7 @@
                         android:textSize="12sp" />
 
                     <TextView
-                        android:id="@+id/tv_biaya_dp"
+                        android:id="@+id/tv_dp_percent"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp. 0 "
@@ -602,7 +606,7 @@
                         android:textSize="12sp" />
 
                     <TextView
-                        android:id="@+id/tv_dp"
+                        android:id="@+id/tv_total_dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp. 0 "

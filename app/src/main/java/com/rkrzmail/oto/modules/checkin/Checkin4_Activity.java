@@ -44,8 +44,10 @@ import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -67,7 +69,6 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
     private static final String TAG = "Checking4____";
 
     private Bitmap ttd;
-    private SeekBar seekBar;
 
     private Nson mekanikArray = Nson.newArray(), idMekanikArray = Nson.newArray();
     private Nson getData;
@@ -131,6 +132,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         Tools.setViewAndChildrenEnabled(find(R.id.ly_waktuAmbil, LinearLayout.class), false);
         Log.d("coba__", "DATA: " + getData);
         setSpMekanik("");
+        setSpBbm();
         setNoAntrian(getData.get("JENIS_ANTRIAN").asString());
 
         waktuLayananStandartExpress = getData.get("WAKTU_LAYANAN").asString();
@@ -155,7 +157,6 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             isExpressAndStandard = true;
             viewAntrianStandartExpress(getData.get("JENIS_ANTRIAN").asString());
         }
-
         try {
             find(R.id.et_totalBiaya_checkin4, EditText.class).setText(getData.get("TOTAL").asString());
         } catch (Exception e) {
@@ -172,25 +173,16 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         find(R.id.btn_hapus, Button.class).setOnClickListener(this);
         find(R.id.btn_simpan, Button.class).setOnClickListener(this);
         find(R.id.btn_ttd_checkin4).setOnClickListener(this);
-
-        seekBar = findViewById(R.id.seekBar_bbm);
-        seekBar.setMax(100);
-        seekBar.setProgress(0);
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @SuppressLint("SetTextI18n")
+        find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                find(R.id.tv_ketBbbm_checkin4, TextView.class).setText(progress + "%");
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(compoundButton.isChecked()){
+                    Tools.setViewAndChildrenEnabled(find(R.id.ly_waktuAmbil, LinearLayout.class), true);
+                    find(R.id.tv_disable_waktu_antar).setVisibility(View.GONE);
+                }else{
+                    Tools.setViewAndChildrenEnabled(find(R.id.ly_waktuAmbil, LinearLayout.class), false);
+                    find(R.id.tv_disable_waktu_antar).setVisibility(View.VISIBLE);
+                }
             }
         });
     }
@@ -551,7 +543,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         final Nson nson = Nson.readJson(getIntentStringExtra(DATA));
         final String namaMekanik = find(R.id.sp_namaMekanik_checkin4, Spinner.class).getSelectedItem().toString().contains("--PILIH--") ? "" : find(R.id.sp_namaMekanik_checkin4, Spinner.class).getSelectedItem().toString();
         final String antrian = find(R.id.tv_jenis_antrian, TextView.class).getText().toString().replace("Jenis Antrian : ", "").trim();
-        final String levelBbm = find(R.id.tv_ketBbbm_checkin4, TextView.class).getText().toString();
+        final String levelBbm = find(R.id.sp_bbm, Spinner.class).getSelectedItem().toString();
         final String tidakMenunggu = find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).isChecked() ? "Y" : "N";
         final String konfirmTambahan = find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).isChecked() ? "Y" : "N";
         final String buangPart = find(R.id.cb_buangPart_checkin4, CheckBox.class).isChecked() ? "Y" : "N";
@@ -620,6 +612,15 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 }
             }
         });
+    }
+
+    private void setSpBbm(){
+        List<String> lvlBbmList = new ArrayList<>();
+        for (int i = 10; i <= 100; i++) {
+            if(i % 10 == 0)
+                lvlBbmList.add(i + "%");
+        }
+        setSpinnerOffline(lvlBbmList, find(R.id.sp_bbm, Spinner.class), "");
     }
 
     private void setSpMekanik(final String namaMekanik) {

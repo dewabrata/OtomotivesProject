@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
+import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.bengkel.Pembayaran_MainTab_Activity;
@@ -39,6 +41,7 @@ import static com.rkrzmail.utils.ConstUtils.RINCIAN_LAYANAN;
 public class Transaksi_Pembayaran_Fragment extends Fragment {
 
     private RecyclerView rvPembayaranCheckin;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private Nson pembayaranList = Nson.newArray();
     private String idCheckin = "";
@@ -81,6 +84,8 @@ public class Transaksi_Pembayaran_Fragment extends Fragment {
 
     private void initRecylerviewPembayaran(View view) {
         rvPembayaranCheckin = view.findViewById(R.id.recyclerView);
+        swipeRefreshLayout = view.findViewById(R.id.swiperefresh);
+
         rvPembayaranCheckin.setHasFixedSize(true);
         rvPembayaranCheckin.setLayoutManager(new LinearLayoutManager(getContext()));
         rvPembayaranCheckin.setAdapter(new NikitaMultipleViewAdapter(pembayaranList, R.layout.item_pembayaran, R.layout.item_permintaan_jual_part_tugas_part) {
@@ -128,14 +133,35 @@ public class Transaksi_Pembayaran_Fragment extends Fragment {
                 }
             }
         });
+
+       swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                viewPembayaran();
+            }
+        });
+    }
+
+    private void swipeProgress(final boolean show) {
+        if (!show) {
+            swipeRefreshLayout.setRefreshing(show);
+            return;
+        }
+        swipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeRefreshLayout.setRefreshing(show);
+            }
+        });
     }
 
     private void viewPembayaran() {
-        ((Pembayaran_MainTab_Activity) getActivity()).newProses(new Messagebox.DoubleRunnable() {
+        ((Pembayaran_MainTab_Activity) getActivity()).newTask(new Messagebox.DoubleRunnable() {
             Nson result;
 
             @Override
             public void run() {
+                swipeProgress(true);
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "view");
@@ -152,8 +178,10 @@ public class Transaksi_Pembayaran_Fragment extends Fragment {
 
             @Override
             public void runUI() {
+                swipeProgress(false);
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     rvPembayaranCheckin.getAdapter().notifyDataSetChanged();
+                    rvPembayaranCheckin.scheduleLayoutAnimation();
                 } else {
                     ((Pembayaran_MainTab_Activity) getActivity()).showError(ERROR_INFO);
                 }

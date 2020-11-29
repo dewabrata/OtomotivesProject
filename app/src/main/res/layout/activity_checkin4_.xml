@@ -41,37 +41,15 @@
 
                     <RelativeLayout
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="34dp"
                         android:layout_weight="6"
                         android:background="@drawable/background_edittext">
 
-                        <SeekBar
-                            android:id="@+id/seekBar_bbm"
-                            android:layout_width="170dp"
-                            android:layout_height="40dp"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignParentBottom="true"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginEnd="50dp"
-                            android:max="100"
-                            android:progress="10"
-                            android:progressDrawable="@drawable/badges"
-                            android:thumb="@null" />
-
-                        <TextView
-                            android:id="@+id/tv_ketBbbm_checkin4"
-                            android:layout_width="32dp"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginTop="11dp"
-                            android:layout_marginEnd="29dp"
-                            android:layout_marginBottom="11dp"
-                            android:text="0"
-                            android:textColor="@color/grey_900"
-                            android:textStyle="bold" />
+                        <Spinner
+                            android:id="@+id/sp_bbm"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAlignment="center"/>
 
                     </RelativeLayout>
 

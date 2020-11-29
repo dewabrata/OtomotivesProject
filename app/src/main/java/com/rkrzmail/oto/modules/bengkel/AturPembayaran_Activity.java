@@ -169,6 +169,7 @@ public class AturPembayaran_Activity extends AppActivity {
     @SuppressLint("SetTextI18n")
     private void initData() {
         Nson nson = Nson.readJson(getIntentStringExtra(DATA));
+        Log.d("test__", "initData: " + nson);
         if (nson.get("JENIS").asString().equals("CHECKIN")) {
             isCheckin = true;
             idCheckin = nson.get("CHECKIN_ID").asInteger();
@@ -178,11 +179,13 @@ public class AturPembayaran_Activity extends AppActivity {
             isDp = true;
             jenis = "DP";
             idCheckin = nson.get("CHECKIN_ID").asInteger();
+            find(R.id.cb_checkout, CheckBox.class).setChecked(false);
         } else {
             Tools.setViewAndChildrenEnabled(find(R.id.tl_reminder, TableLayout.class), false);
             isJualPart = true;
             jenis = "JUAL PART";
             idJualPart = nson.get("JUAL_PART_ID").asInteger();
+            find(R.id.cb_checkout, CheckBox.class).setChecked(false);
         }
 
         if (nson.get("PEMILIK").asString().equals("Y")) {
@@ -194,11 +197,13 @@ public class AturPembayaran_Activity extends AppActivity {
         mdrKreditCard = nson.get("MDR_KREDIT_CARD").asDouble();
         totalBiaya = nson.get("TOTAL").asInteger();
 
-        if(nson.get("PKP").asString().equals("Y")){
+        if (nson.get("PKP").asString().equals("Y") && !isDp) {
             totalPpn = (int) (ppn * totalBiaya);
             grandTotal = totalPpn + totalBiaya;
             find(R.id.et_ppn, EditText.class).setText(RP + formatRp(String.valueOf(totalPpn)));
             isPpn = true;
+        }else{
+            grandTotal = totalBiaya;
         }
         find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));
     }
@@ -235,7 +240,7 @@ public class AturPembayaran_Activity extends AppActivity {
                         totalMdrKreditCard = (int) (((mdrKreditCard / 100) * grandTotal));
 
                         find(R.id.et_grandTotal, EditText.class).setText(RP + formatRp(String.valueOf(grandTotal)));
-                        find(R.id.et_ppn, EditText.class).setText(RP + formatRp(String.valueOf(totalPpn)));
+                        find(R.id.et_ppn, EditText.class).setText(isDp ? "" : RP + formatRp(String.valueOf(totalPpn)));
                         find(R.id.et_namaBankEpay).setEnabled(true);
                         spNoRek.setSelection(0);
                         spNoRek.setEnabled(false);
@@ -306,7 +311,7 @@ public class AturPembayaran_Activity extends AppActivity {
                         find(R.id.et_totalBayar, EditText.class).setError("Total Bayar Belum di Isi");
                         return;
                     }
-                    if (Integer.parseInt(formatOnlyNumber(find(R.id.et_totalBayar, EditText.class).getText().toString())) < Integer.parseInt(formatOnlyNumber(find(R.id.et_total_biaya, EditText.class).getText().toString()))) {
+                    if (Integer.parseInt(formatOnlyNumber(find(R.id.et_totalBayar, EditText.class).getText().toString())) < grandTotal) {
                         find(R.id.et_totalBayar, EditText.class).setError("Total Bayar Tidak Valid");
                         return;
                     }
@@ -323,9 +328,9 @@ public class AturPembayaran_Activity extends AppActivity {
                             ratusRupiah = ratusRupiah.substring(ratusRupiah.length() - 3);
                             int castRatusRupiah = Integer.parseInt(ratusRupiah);
                             castRatusRupiah = castRatusRupiah > 500 && castRatusRupiah < 1000 ? castRatusRupiah - 500 : castRatusRupiah;
-                            if(castRatusRupiah >= 500 || castRatusRupiah == 0){
+                            if (castRatusRupiah >= 500 || castRatusRupiah == 0) {
                                 saveData();
-                            }else{
+                            } else {
                                 initMssgDonasi(RP + formatRp(String.valueOf(castRatusRupiah)), castRatusRupiah);
                             }
 
@@ -338,14 +343,20 @@ public class AturPembayaran_Activity extends AppActivity {
                     if (spNoRek.getSelectedItem().toString().equals("--PILIH--")) {
                         showWarning("Rekening Internal Belum di Pilig");
                         spNoRek.performClick();
+                    } else if (find(R.id.et_noTrack, EditText.class).getText().toString().isEmpty()) {
+                        find(R.id.et_noTrack, EditText.class).setError("No Trace Belum di Isi");
+                        find(R.id.et_noTrack, EditText.class).requestFocus();
                     } else {
                         saveData();
                     }
-                }else{
-                    if(find(R.id.et_namaBankEpay, NikitaAutoComplete.class).getText().toString().isEmpty()){
+                } else {
+                    if (find(R.id.et_namaBankEpay, NikitaAutoComplete.class).getText().toString().isEmpty()) {
                         find(R.id.et_namaBankEpay, NikitaAutoComplete.class).setError("Masukkan Nama Bank");
                         find(R.id.et_namaBankEpay, NikitaAutoComplete.class).requestFocus();
-                    }else{
+                    } else if (find(R.id.et_noTrack, EditText.class).getText().toString().isEmpty()) {
+                        find(R.id.et_noTrack, EditText.class).setError("No Trace Belum di Isi");
+                        find(R.id.et_noTrack, EditText.class).requestFocus();
+                    } else {
                         saveData();
                     }
                 }
@@ -457,7 +468,7 @@ public class AturPembayaran_Activity extends AppActivity {
                 args.put("ppn", String.valueOf(totalPpn));
                 args.put("transaksi", jenis);
                 args.put("kembalian", formatOnlyNumber(find(R.id.et_kembalian, EditText.class).getText().toString()));
-                if(tipePembayaran.equals("CASH")){
+                if (tipePembayaran.equals("CASH")) {
                     int totalPlusDonasi = grandTotal + (!nominalDonasi.equals("") ? Integer.parseInt(nominalDonasi) : 0);
                     args.put("debit", String.valueOf(totalPlusDonasi));
                     args.put("grandTotal", String.valueOf(totalPlusDonasi));
@@ -470,8 +481,8 @@ public class AturPembayaran_Activity extends AppActivity {
                     args.put("merchDiscRateRp", "0");
                     args.put("mechDiscRate", "0");
                     args.put("balance", formatOnlyNumber(find(R.id.et_totalBayar, EditText.class).getText().toString()));
-                }else{
-                    if(tipePembayaran.equals("TRANSFER")){
+                } else {
+                    if (tipePembayaran.equals("TRANSFER")) {
                         args.put("aktivitas", "TERIMA");
                         args.put("nominal", String.valueOf(grandTotal));
                         args.put("balance", String.valueOf(totalDue));
@@ -483,26 +494,26 @@ public class AturPembayaran_Activity extends AppActivity {
                         args.put("bankRekInternal", namaBank);
                         args.put("noRekInternal", noRek);
                         args.put("keterangan", "Transfer");
-                    }else{
-                        if(tipePembayaran.equals("KREDIT")){
+                    } else {
+                        if (tipePembayaran.equals("KREDIT")) {
                             args.put("keterangan", "Kredit");
-                        }else{
+                        } else {
                             args.put("keterangan", "Debet");
                         }
-                        if(isJualPart && !find(R.id.et_rp_disc_merc, EditText.class).getText().toString().isEmpty()){
+                        if (isJualPart && !find(R.id.et_rp_disc_merc, EditText.class).getText().toString().isEmpty()) {
                             args.remove("transaksi");
                             args.put("aktivitas", "MDR JUAL PART");
                             args.put("transaksi", "MDR JUAL PART");
                         }
-                        if(isMdrBank){
+                        if (isMdrBank) {
                             args.remove("transaksi");
                             args.put("aktivitas", "MDR BANK");
                             args.put("transaksi", "MDR BANK");
-                        }else{
+                        } else {
                             args.put("aktivitas", "TERIMA");
                         }
                         args.put("noRekening", "");
-                        args.put("namaBank",  find(R.id.et_namaBankEpay, EditText.class).getText().toString());
+                        args.put("namaBank", find(R.id.et_namaBankEpay, EditText.class).getText().toString());
                         args.put("mechDiscRate", find(R.id.et_percent_disc_merc, EditText.class).getText().toString());
                         args.put("merchDiscRateRp", formatOnlyNumber(find(R.id.et_rp_disc_merc, EditText.class).getText().toString()));
                         int totalNominalPkp = isPpn ? grandTotal - totalPpn : grandTotal;
@@ -515,11 +526,11 @@ public class AturPembayaran_Activity extends AppActivity {
                     args.put("totalBayar", String.valueOf(totalDue));
                     args.put("balance", String.valueOf((grandTotal + totalPpn)));
                     //totalDueBy Debit/Kredit
-                    if(isOnUs){
+                    if (isOnUs) {
                         args.put("totalDue", String.valueOf(grandTotal + totalMdrOnUs));
-                    }else if(isOffUs){
+                    } else if (isOffUs) {
                         args.put("totalDue", String.valueOf(grandTotal + totalMdrOffUs));
-                    }else if(isMdrKreditCard){
+                    } else if (isMdrKreditCard) {
                         args.put("totalDue", String.valueOf(grandTotal + totalMdrKreditCard));
                     }
                 }
@@ -528,10 +539,15 @@ public class AturPembayaran_Activity extends AppActivity {
                     args.put("isDonasi", "YA");
                     args.put("nominalDonasi", formatOnlyNumber(nominalDonasi));
                 }
-                if(isPpn){
+                if (isPpn) {
                     args.put("isPpn", "YA");
                     args.put("nominalPpn", String.valueOf(totalPpn));
                     args.put("balancePpn", String.valueOf(totalDue));
+                }
+
+                if(isDp){
+                    args.put("isDp", "YA");
+                    args.put("status", tipePembayaran + " DP," + " ANTRIAN");
                 }
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_PEMBAYARAN), args));
@@ -583,10 +599,10 @@ public class AturPembayaran_Activity extends AppActivity {
                     }
                     int finalMdrRp = 0;
                     double finalMdrPercent = 0;
-                    if(isMdrKreditCard){
+                    if (isMdrKreditCard) {
                         finalMdrPercent = mdrKreditCard;
                         finalMdrRp = totalMdrKreditCard;
-                    }else{
+                    } else {
                         if (isOffUs) {
                             showInfo("Anda Menggunakan EDC OFF US");
                             finalMdrPercent = mdrOfUs;
@@ -600,7 +616,7 @@ public class AturPembayaran_Activity extends AppActivity {
                     }
                     totalDue = finalMdrRp + grandTotal;
                     find(R.id.et_percent_disc_merc, EditText.class).setText(finalMdrPercent + "%");
-                    find(R.id.et_rp_disc_merc, EditText.class).setText(RP + formatRp(String.valueOf(finalMdrRp)));
+                    find(R.id.et_rp_disc_merc, EditText.class).setText(RP + formatRp(String.valueOf(totalDue)));
                     isMdrBank = true;
                 }
             }

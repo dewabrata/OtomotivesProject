@@ -51,7 +51,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <LinearLayout
-                android:id="@+id/ly_waktu"
+                android:id="@+id/ly_waktu_kerja"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"

@@ -393,7 +393,8 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
     private void setSpAktifitas() {
         List<String> aktifitasList = new ArrayList<>();
         aktifitasList.add("--PILIH--");
-        if (etStatus.getText().toString().equals("CHECKIN ANTRIAN")) {
+        if (etStatus.getText().toString().equals("CHECKIN ANTRIAN") ||
+                (etStatus.getText().toString().contains("DP") && !etStatus.getText().toString().equals("TUNGGU DP"))) {
             aktifitasList.add("BATAL BENGKEL");
             aktifitasList.add("BATAL PELANGGAN");
             aktifitasList.add("PENUGASAN MEKANIK");
@@ -408,11 +409,11 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         } else if (etStatus.getText().toString().equals("KONFIRMASI BIAYA")) {
             aktifitasList.add("BIAYA OK");
             aktifitasList.add("BATAL DP");
-            aktifitasList.add("BATAL PELANGAN");
+            aktifitasList.add("BATAL PELANGGAN");
         } else if (etStatus.getText().toString().equals("TUNGGU KONFIRMASI")) {
             aktifitasList.add("PENUGASAN MEKANIK");
         } else if (etStatus.getText().toString().equals("TUNGGU DP")) {
-            aktifitasList.add("BATAL PELANGAN");
+            aktifitasList.add("BATAL PELANGGAN");
             aktifitasList.add("MESSAGE PELANGGAN");
         } else if (etStatus.getText().toString().equals("PENUGASAN MEKANIK") || etStatus.getText().toString().equals("TAMBAH PART - JASA")) {
             aktifitasList.add("TAMBAH MEKANIK");
@@ -535,6 +536,8 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 } else if (status.equals("BATAL DP")) {
                     args.put("aktivitas", "BATAL DP");
                     args.put("partJasaList", dataDetailList.toJson());
+                }else if(status.contains("MESSAGE")){
+                    args.put("isMessage", "YA");
                 }
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_KONTROL_LAYANAN), args));

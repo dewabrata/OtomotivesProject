@@ -720,7 +720,7 @@ public class AppActivity extends AppCompatActivity {
         });
     }
 
-    public void setSpinnerOffline(List<String> listItem, Spinner spinner, String selection) {
+    public void setSpinnerOffline(List listItem, Spinner spinner, String selection) {
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, listItem);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinnerAdapter);
