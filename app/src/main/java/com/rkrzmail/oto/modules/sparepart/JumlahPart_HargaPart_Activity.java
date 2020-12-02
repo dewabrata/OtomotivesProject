@@ -126,7 +126,8 @@ public class JumlahPart_HargaPart_Activity extends AppActivity implements View.O
                         getIntent().getIntExtra("HARGA_LAYANAN", 0));
                 etHargaJual.setText(RP + finalTotal);
             } else {
-                if (nson.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE") || nson.get("HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE")) {
+                if (nson.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE") ||
+                        nson.get("HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE")) {
                     find(R.id.ly_hpp_jumlah_harga_part, TextInputLayout.class).setVisibility(View.VISIBLE);
                     try {
                         etHpp.setText(RP + formatRp(hpp));
@@ -162,7 +163,34 @@ public class JumlahPart_HargaPart_Activity extends AppActivity implements View.O
             find(R.id.btn_simpan_jumlah_harga_part, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    nextForm(nson);
+                    if (find(R.id.ly_hpp_jumlah_harga_part, TextInputLayout.class).getVisibility() == View.VISIBLE) {
+                        if (etHargaJual.isEnabled()) {
+                            if (!etHargaJual.getText().toString().isEmpty() && !etHpp.getText().toString().isEmpty()) {
+                                int hppPart = Integer.parseInt(formatOnlyNumber(etHpp.getText().toString()));
+                                int hargaJualPart = Integer.parseInt(formatOnlyNumber(etHargaJual.getText().toString()));
+                                if (hargaJualPart < hppPart) {
+                                    Messagebox.showDialog(getActivity(), "Konfirmasi", "Harga Jual Kurang Dari Hpp Part", "Lanjut", "Batal", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            nextForm(nson);
+                                        }
+                                    }, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            etHargaJual.setText("");
+                                            etHargaJual.requestFocus();
+                                        }
+                                    });
+                                } else {
+                                    nextForm(nson);
+                                }
+                            } else {
+                                etHargaJual.setError("Harga Jual Flexible, Harus Di isi");
+                            }
+                        }
+                    } else {
+                        nextForm(nson);
+                    }
                 }
             });
         }

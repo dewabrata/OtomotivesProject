@@ -246,8 +246,9 @@ public class Checkin2_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "add");
-                args.put("regris", "2");
-                args.put("id", readCheckin.get("id").asString());
+                args.put("jenisCheckin", "2");
+                args.put("id", readCheckin.get("CHECKIN_ID").asString());
+                args.put("idDataKendaraan", readCheckin.get("DATA_KENDARAAN_ID").asString());
                 args.put("warna", warna);
                 args.put("tahun", tahun);
                 args.put("tanggalbeli", tanggalBeli);

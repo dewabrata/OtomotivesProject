@@ -140,6 +140,10 @@ public class AppActivity extends AppCompatActivity {
         MDToast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT, MDToast.TYPE_ERROR).show();
     }
 
+    public void showError(String text, int timeToast) {
+        MDToast.makeText(getApplicationContext(), text, timeToast, MDToast.TYPE_ERROR).show();
+    }
+
     public void showWarning(String text, int timeToast) {
         MDToast.makeText(getApplicationContext(), text, timeToast, MDToast.TYPE_WARNING).show();
     }
@@ -472,7 +476,7 @@ public class AppActivity extends AppCompatActivity {
                 dateTime.setText(formattedTime);
             }
         }, year, month, day);
-        //datePickerDialog.setMinDate(new Da);
+        //datePickerDialog.setMinDate();
         datePickerDialog.show(getFragmentManager(), "Datepickerdialog");
     }
 

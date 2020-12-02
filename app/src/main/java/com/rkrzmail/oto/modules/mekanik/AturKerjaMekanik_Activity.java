@@ -214,8 +214,8 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
 
     private void initRecyclerviewPointLayanan(View view) {
         rvPointLayanan = view.findViewById(R.id.recyclerView);
-        rvPointLayanan.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true));
-        rvPointLayanan.setHasFixedSize(false);
+        rvPointLayanan.setLayoutManager(new LinearLayoutManager(this));
+        rvPointLayanan.setHasFixedSize(true);
         rvPointLayanan.setAdapter(new NikitaMultipleViewAdapter(partJasaList, R.layout.item_part_booking3_checkin3, R.layout.item_jasalain_booking_checkin) {
             @SuppressLint("SetTextI18n")
             @Override
@@ -236,13 +236,13 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                     viewHolder.find(R.id.tv_hargaNet_booking3_checkin3, TextView.class).setText("");
                     viewHolder.find(R.id.tv_no, TextView.class).setVisibility(View.VISIBLE);
                     viewHolder.find(R.id.tv_no, TextView.class).setText(no + ". ");
-                } else if (itemType == ITEM_VIEW_2) {
+                } else  {
                     viewHolder.find(R.id.tv_no, TextView.class).setVisibility(View.VISIBLE);
                     viewHolder.find(R.id.tv_no, TextView.class).setText(no + ". ");
                     viewHolder.find(R.id.tv_kelompokPart_booking3_checkin3, TextView.class)
                             .setText(partJasaList.get(position).get("KELOMPOK_PART").asString());
                     viewHolder.find(R.id.tv_aktifitas_booking3_checkin3, TextView.class)
-                            .setText(partJasaList.get(position).get("AKTIFITAS").asString());
+                            .setText(partJasaList.get(position).get("AKTIVITAS").asString());
                     viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class).setVisibility(View.GONE);
                 }
             }
@@ -299,7 +299,9 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
 
         initToolbarKeluhan(dialogView);
         initRecylerviewKeluhan(dialogView);
-        Objects.requireNonNull(rvKeluhan.getAdapter()).notifyDataSetChanged();
+        if(partJasaList.size() > 0){
+            Objects.requireNonNull(rvKeluhan.getAdapter()).notifyDataSetChanged();
+        }
 
         builder.create();
         alertDialog = builder.show();

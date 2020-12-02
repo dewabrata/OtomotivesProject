@@ -68,7 +68,6 @@ public class AturPenyesuain_StockOpname_Activity extends AppActivity {
         penyesuaian.set("KET", find(R.id.et_ket_penyesuaian, EditText.class).getText().toString());
         penyesuaian.set("USER_SAKSI", find(R.id.et_user_saksi_penyesuaian, EditText.class).getText().toString());
 
-
         Intent i = new Intent();
         i.putExtra(DATA, penyesuaian.toJson());
         setResult(RESULT_OK, i);

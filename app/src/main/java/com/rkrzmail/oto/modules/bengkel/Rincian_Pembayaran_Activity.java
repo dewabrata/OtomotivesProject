@@ -395,7 +395,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         find(R.id.et_ket_tambahan, EditText.class).setText(ket);
         find(R.id.et_catatan, EditText.class).setText(catatanMekanik);
 
-        sendData.set("TOTAL", isBatal ? 0 : (total2 > 0 ? total2 : (isDp ? totalDp : 0)));
+        sendData.set("TOTAL", isBatal ? 0 : (total2 > 0 ? total2 : (total1 > 0 ? total1 : (isDp ? totalDp : 0))));
 
     }
 

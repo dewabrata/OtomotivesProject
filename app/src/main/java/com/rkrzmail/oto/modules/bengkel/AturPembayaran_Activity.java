@@ -231,6 +231,8 @@ public class AturPembayaran_Activity extends AppActivity {
                         spNoRek.setEnabled(true);
                         find(R.id.et_namaBankEpay).setEnabled(false);
                         totalDue += grandTotal;
+                        find(R.id.et_grandTotal, EditText.class).setText(RP + formatRp(String.valueOf(grandTotal)));
+                        find(R.id.et_totalBayar, EditText.class).setText(RP + formatRp(String.valueOf(grandTotal)));
                     } else {
                         isMdrKreditCard = tipePembayaran.equals("KREDIT");
 
@@ -239,14 +241,12 @@ public class AturPembayaran_Activity extends AppActivity {
                         totalMdrOnUs = (int) (((mdrOnUs / 100) * grandTotal));
                         totalMdrKreditCard = (int) (((mdrKreditCard / 100) * grandTotal));
 
-                        find(R.id.et_grandTotal, EditText.class).setText(RP + formatRp(String.valueOf(grandTotal)));
                         find(R.id.et_ppn, EditText.class).setText(isDp ? "" : RP + formatRp(String.valueOf(totalPpn)));
                         find(R.id.et_namaBankEpay).setEnabled(true);
                         spNoRek.setSelection(0);
                         spNoRek.setEnabled(false);
                     }
 
-                    find(R.id.et_totalBayar, EditText.class).setText(RP + formatRp(String.valueOf(grandTotal)));
                     find(R.id.et_noTrack, EditText.class).setEnabled(true);
                     find(R.id.et_totalBayar, EditText.class).setEnabled(false);
                     find(R.id.et_kembalian, EditText.class).setText("");
@@ -580,6 +580,7 @@ public class AturPembayaran_Activity extends AppActivity {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    boolean notMdr = false;
                     result = result.get("data");
                     bankEdc = "";
                     for (int i = 0; i < result.size(); i++) {
@@ -595,29 +596,36 @@ public class AturPembayaran_Activity extends AppActivity {
                         }
                         if (i == (result.size() - 1) && !isOffUs && !isOnUs) {
                             showWarning("Anda tidak memiliki EDC OFF US!", Toast.LENGTH_LONG);
+                            notMdr = true;
                         }
                     }
-                    int finalMdrRp = 0;
-                    double finalMdrPercent = 0;
-                    if (isMdrKreditCard) {
-                        finalMdrPercent = mdrKreditCard;
-                        finalMdrRp = totalMdrKreditCard;
-                    } else {
-                        if (isOffUs) {
-                            showInfo("Anda Menggunakan EDC OFF US");
-                            finalMdrPercent = mdrOfUs;
-                            finalMdrRp = totalMdrOffUs;
+                    if(!notMdr){
+                        int finalMdrRp = 0;
+                        double finalMdrPercent = 0;
+                        if (isMdrKreditCard) {
+                            finalMdrPercent = mdrKreditCard;
+                            finalMdrRp = totalMdrKreditCard;
+                        } else {
+                            if (isOffUs) {
+                                showInfo("Anda Menggunakan EDC OFF US");
+                                finalMdrPercent = mdrOfUs;
+                                finalMdrRp = totalMdrOffUs;
+                            }
+                            if (isOnUs) {
+                                showInfo("Anda Menggunakan EDC ON US");
+                                finalMdrPercent = mdrOnUs;
+                                finalMdrRp = totalMdrOnUs;
+                            }
                         }
-                        if (isOnUs) {
-                            showInfo("Anda Menggunakan EDC ON US");
-                            finalMdrPercent = mdrOnUs;
-                            finalMdrRp = totalMdrOnUs;
-                        }
+                        isMdrBank = true;
+                        totalDue = finalMdrRp + grandTotal;
+                        find(R.id.et_percent_disc_merc, EditText.class).setText(finalMdrPercent + "%");
+                        find(R.id.et_rp_disc_merc, EditText.class).setText(RP + formatRp(String.valueOf(finalMdrRp)));
+                        find(R.id.et_grandTotal, EditText.class).setText(RP + formatRp(String.valueOf(totalDue)));
+                        find(R.id.et_totalBayar, EditText.class).setText(RP + formatRp(String.valueOf(totalDue)));
                     }
-                    totalDue = finalMdrRp + grandTotal;
-                    find(R.id.et_percent_disc_merc, EditText.class).setText(finalMdrPercent + "%");
-                    find(R.id.et_rp_disc_merc, EditText.class).setText(RP + formatRp(String.valueOf(totalDue)));
-                    isMdrBank = true;
+                }else{
+                    showError("Gagal Memuat Data MDR");
                 }
             }
         });

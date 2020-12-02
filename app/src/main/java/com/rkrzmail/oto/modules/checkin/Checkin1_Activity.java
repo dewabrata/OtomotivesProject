@@ -383,7 +383,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     nomor = nomor.substring(nomor.length() - 4);
                 }
 
-                etNopol.setText(formatNopol(n.get("NOPOL").asString()));
+                etNopol.setText(formatNopol(n.get("NO_POLISI").asString()));
                 etNoPonsel.setText("XXXXXXXX" + nomor);
                 etNamaPelanggan.setText(n.get("NAMA_PELANGGAN").asString());
                 etJenisKendaraan.setText(n.get("JENIS_KENDARAAN").asString());
@@ -475,23 +475,29 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "add");
-                args.put("regris", "1");
+                args.put("jenisCheckin", "1");
                 args.put("nopol", nopol);
-                args.put("jeniskendaraan", jenisKendaraan);
-                args.put("nopon", isNoHp ? noHp : etNoPonsel.getText().toString().replaceAll("[^0-9]+", ""));
+                args.put("jeniskendaraan", jenisKendaraan);//dateKendaraan
+                args.put("noPonsel", isNoHp ? noHp : etNoPonsel.getText().toString().replaceAll("[^0-9]+", ""));
                 args.put("nama", namaPelanggan);
-                args.put("pemilik", pemilik);
+                args.put("isPemilik", pemilik);//dateKendaraan
                 args.put("keluhan_list", keluhanList.toJson());
                 args.put("km", km);
                 args.put("pekerjaan", pekerjaan);
                 args.put("kendaraan", getSetting("JENIS_KENDARAAN"));
                 args.put("model", modelKendaraan);
-                args.put("merk", merkKendaraan);
-                args.put("varian", varianKendaraan);
+                args.put("merk", merkKendaraan);//dateKendaraan
+                args.put("varian", varianKendaraan);//dateKendaraan
                 args.put("kendaraan_id", String.valueOf(kendaraanId));
                 args.put("lokasiLayanan", getSetting("LOKASI_PENUGASAN"));
                 args.put("rangka", "");
                 args.put("mesin", "");
+                args.put("jenis", jenis);//dateKendaraan
+                args.put("noStnk", "");//dateKendaraan
+                args.put("kadaluarsa", "");//dateKendaraan
+                args.put("idDealer", "");//dateKendaraan
+                args.put("asalData", "");//dateKendaraan
+                args.put("type", jenisKendaraan);//dateKendaraan
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
             }
@@ -499,10 +505,10 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    result = result.get("data").get(0);
                     Nson nson = Nson.newObject();
 
-                    nson.set("id", result.get("ID").asString());
+                    nson.set("CHECKIN_ID", result.get("data").get("CHECKIN_ID").asString());
+                    nson.set("DATA_KENDARAAN_ID", result.get("data").get("DATA_KENDARAAN_ID").asString());
                     nson.set("jeniskendaraan", jenisKendaraan);
                     nson.set("model", modelKendaraan);
                     nson.set("merk", merkKendaraan);

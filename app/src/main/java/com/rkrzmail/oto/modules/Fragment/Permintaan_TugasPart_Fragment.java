@@ -86,6 +86,7 @@ public class Permintaan_TugasPart_Fragment extends Fragment {
 
     @SuppressLint("SetTextI18n")
     private void initRecylerviewPermintaanJualPart() {
+        rvPermintaanJualPart.setVisibility(View.VISIBLE);
         rvPermintaanJualPart.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvPermintaanJualPart.setHasFixedSize(true);
         rvPermintaanJualPart.setAdapter(new NikitaRecyclerAdapter(permintaanJualPartList, R.layout.item_permintaan_jual_part_tugas_part){

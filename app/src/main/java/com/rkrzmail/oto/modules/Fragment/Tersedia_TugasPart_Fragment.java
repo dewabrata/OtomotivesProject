@@ -124,6 +124,7 @@ public class Tersedia_TugasPart_Fragment extends Fragment {
 
     @SuppressLint("SetTextI18n")
     private void initRecylerviewTersediaJualPart() {
+        rvTersediaJualPart.setVisibility(View.VISIBLE);
         rvTersediaJualPart.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvTersediaJualPart.setHasFixedSize(true);
         rvTersediaJualPart.setAdapter(new NikitaRecyclerAdapter(tersediaJualPartList, R.layout.item_permintaan_jual_part_tugas_part){

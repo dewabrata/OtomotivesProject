@@ -144,7 +144,7 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
     }
 
     private void initRecyclerviewPointLayanan() {
-        rvPointLayanan.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true));
+        rvPointLayanan.setLayoutManager(new LinearLayoutManager(this));
         rvPointLayanan.setHasFixedSize(false);
         rvPointLayanan.setAdapter(new NikitaMultipleViewAdapter(nListArray, R.layout.item_part_booking3_checkin3, R.layout.item_jasalain_booking_checkin) {
             @SuppressLint("SetTextI18n")
@@ -209,15 +209,8 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
                 args.put("id", idCheckin);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_INSPEKSI), args));
-                result = result.get("data");
-                for (int i = 0; i < result.size(); i++) {
-                    if (!result.get(i).get("PART_ID").asString().isEmpty()) {
-                        nListArray.add(result.get("data").get(i));
-                    }
-                    if (!result.get(i).get("JASA_ID").asString().isEmpty()) {
-                        nListArray.add(result.get("data").get(i));
-                    }
-                }
+                nListArray.asArray().addAll(result.get("data").asArray());
+
                 args.remove("detail");
                 args.put("detail", "JASA LAYANAN");
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_INSPEKSI), args));

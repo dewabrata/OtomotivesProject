@@ -23,6 +23,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -357,7 +358,7 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
     public void getDataBarcode(final String nopart) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
+            int jumlahScan = 0;
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -371,19 +372,21 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     result = result.get("data").get(0);
                     if (result.size() == 0) {
-                        showError("Part Tidak Tersedia Di Bengkel");
-                        return;
+                        showError("Part Tidak Tersedia Di Bengkel", Toast.LENGTH_LONG);
+                    }else{
+                        jumlahScan++;
+                        txtJumlah.setText("" + jumlahScan);
+                        txtNoPart.setText(result.get("NO_PART").asString());
+                        txtNamaPart.setText(result.get("NAMA_PART").asString());
+                        etPenempatan.setText(penempatan);
+                        lokasiPart = result.get("LOKASI").asString();
+                        penempatan = result.get("PENEMPATAN").asString();
+                        kodeFolder = result.get("KODE").asString();
+                        merkPart = result.get("MERK").asString();
+                        setSpinnerLokasiSimpan(lokasiPart);
                     }
-                    txtNoPart.setText(result.get("NO_PART").asString());
-                    txtNamaPart.setText(result.get("NAMA_PART").asString());
-                    etPenempatan.setText(penempatan);
-                    lokasiPart = result.get("LOKASI").asString();
-                    penempatan = result.get("PENEMPATAN").asString();
-                    kodeFolder = result.get("KODE").asString();
-                    merkPart = result.get("MERK").asString();
-                    setSpinnerLokasiSimpan(lokasiPart);
+
                 } else {
-                    //error
                     showError(result.get("message").asString());
                 }
             }

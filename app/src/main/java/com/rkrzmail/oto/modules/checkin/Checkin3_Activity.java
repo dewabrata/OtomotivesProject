@@ -105,7 +105,8 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             totalPartJasa = 0,
             batasanKm = 0,
             batasanBulan = 0,
-            jumlahPartWajib = 0;
+            jumlahPartWajib = 0,
+            feeNonPaket = 0;
     private String layananId = "";
     private int idAntrian = 0;
     private int waktuPesan = 0;
@@ -327,8 +328,8 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "add");
-                args.put("check", "1");
-                args.put("id", nson.get("id").asString());
+                args.put("jenisCheckin", "3");
+                args.put("id", nson.get("CHECKIN_ID").asString());
                 args.put("status", status);
 
                 if (isBatal) {
@@ -352,6 +353,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 args.put("waktuLayananHari", waktuLayanan.substring(0, 2));
                 args.put("waktuLayananJam", waktuLayanan.substring(3, 5));
                 args.put("waktuLayananMenit", waktuLayanan.substring(6, 8));
+                args.put("feeNonPaket", String.valueOf(feeNonPaket));
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
             }
@@ -494,6 +496,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                             biayaLayanan = dataLayananList.get(i).get("BIAYA_NON_PAKET").asString();
                         }
 
+                        feeNonPaket = dataLayananList.get(i).get("FEE_NON_PAKET").asInteger();
                         discLayanan = dataLayananList.get(i).get("DISCOUNT_LAYANAN").asString();
                         layananId = dataLayananList.get(i).get("LAYANAN_ID").asString();
                         jenisLayanan = dataLayananList.get(i).get("JENIS_LAYANAN").asString();

@@ -498,23 +498,23 @@ public class MenuActivity extends AppActivity {
     }
 
     public void populate(GridView v) {
-        addHome(1, R.drawable.x_booking, M_BOOKING);
-        addHome(2, R.drawable.x_checkin, M_CHECK_IN);
-        addHome(2, R.drawable.x_dashboard, M_KONTROL_LAYANAN);
-        addHome(3, R.drawable.x_collection, M_COLLECTION);
-        addHome(4, R.drawable.x_dashboard, M_DASHBOARD);
-        addHome(5, R.drawable.x_inpeksi, M_INSPEKSI);
-        addHome(6, R.drawable.x_jualpart, M_JUAL_PARTS);
-        addHome(7, R.drawable.x_jurnal, M_JURNAL);
-        addHome(8, R.drawable.x_mekanik, M_MEKANIK);
-        addHome(9, R.drawable.x_message, M_MESSAGE);
-        nPopulate.add(Nson.newObject().set("id", 10).set("icon", R.drawable.m_mycode).set("text", M_MY_CODE));
-        nPopulate.add(Nson.newObject().set("id", 11).set("icon", R.drawable.x_part).set("text", M_PART));
-        addHome(12, R.drawable.x_pembayaran, M_PEMBAYARAN);
-        addHome(13, R.drawable.x_stock, M_STOCK_OPNAME);
-        addHome(14, R.drawable.x_penuasan, M_PENUGASAN_MEKANIK);
-        addHome(15, R.drawable.x_terimapart, M_TERIMA_PARTS);
-        addHome(16, R.drawable.x_tugaspart, M_TUGAS_PARTS);
+        addHome(1, R.drawable.x_checkin, M_CHECK_IN);
+        addHome(13, R.drawable.x_pembayaran, M_PEMBAYARAN);
+        addHome(3, R.drawable.x_dashboard, M_KONTROL_LAYANAN);
+        addHome(9, R.drawable.x_mekanik, M_MEKANIK);
+        addHome(17, R.drawable.ic_tugas_part, M_TUGAS_PARTS);
+        addHome(6, R.drawable.x_inpeksi, M_INSPEKSI);
+        nPopulate.add(Nson.newObject().set("id", 11).set("icon", R.drawable.m_mycode).set("text", M_MY_CODE));
+        addHome(7, R.drawable.ic_jual_part, M_JUAL_PARTS);
+        addHome(16, R.drawable.x_terimapart, M_TERIMA_PARTS);
+        addHome(14, R.drawable.x_stock, M_STOCK_OPNAME);
+        nPopulate.add(Nson.newObject().set("id", 12).set("icon", R.drawable.x_part).set("text", M_PART));
+        addHome(2, R.drawable.x_booking, M_BOOKING);
+        addHome(4, R.drawable.x_collection, M_COLLECTION);
+        addHome(5, R.drawable.ic_dashboard, M_DASHBOARD);
+        addHome(10, R.drawable.x_message, M_MESSAGE);
+        addHome(15, R.drawable.x_penuasan, M_PENUGASAN_MEKANIK);
+        addHome(8, R.drawable.x_jurnal, M_JURNAL);
 
         ArrayAdapter<Vector<String>> arrayAdapter = new ArrayAdapter<Vector<String>>(MenuActivity.this, R.layout.activity_main_item, nPopulate.asArray()) {
             public View getView(int position, View convertView, ViewGroup parent) {

@@ -11,6 +11,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -221,10 +222,14 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     result = result.get("data").get(0);
-                    counScanPart++;
-                    etJumlahRequest.setText(counScanPart);
+                    if(result.get("NO_PART").asString().equalsIgnoreCase(nopart)){
+                        counScanPart++;
+                        showSuccess(result.get("NO_PART").asString());
+                        etJumlahRequest.setText(""+counScanPart);
+                    }else{
+                        showError("NO. PART " + nopart + " Tidak Tersedia di Bengkel", Toast.LENGTH_LONG);
+                    }
                 } else {
-                    //error
                     showError(result.get("message").asString());
                 }
             }
@@ -236,7 +241,6 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_BARCODE) {
             getDataBarcode(data != null ? data.getStringExtra("TEXT").replace("\n", "").trim() : "");
-            showSuccess(data != null ? data.getStringExtra("TEXT").replace("\n", "").trim() : "");
         }
     }
 }

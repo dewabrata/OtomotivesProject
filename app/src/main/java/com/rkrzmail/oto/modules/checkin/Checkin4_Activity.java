@@ -198,7 +198,6 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
 
         long pesanPart = waktuPesan * ONEDAY;
         long totalDate = current + pesanPart;
-        Log.d(TAG, "parseWaktuPesan: " + current);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(totalDate);
 
@@ -567,8 +566,8 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "add");
-                args.put("check", "2");
-                args.put("id", nson.get("id").asString());
+                args.put("jenisCheckin", "4");
+                args.put("id", nson.get("CHECKIN_ID").asString());
                 args.put("status", isHplus ? "TUNGGU DP" : status);
                 args.put("mekanik", namaMekanik);
                 args.put("mekanikId", String.valueOf(idMekanik));
