@@ -176,10 +176,10 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(compoundButton.isChecked()){
+                if (compoundButton.isChecked()) {
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_waktuAmbil, LinearLayout.class), true);
                     find(R.id.tv_disable_waktu_antar).setVisibility(View.GONE);
-                }else{
+                } else {
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_waktuAmbil, LinearLayout.class), false);
                     find(R.id.tv_disable_waktu_antar).setVisibility(View.VISIBLE);
                 }
@@ -187,7 +187,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         });
     }
 
-    private Calendar parseWaktuPesan(){
+    private Calendar parseWaktuPesan() {
         long current = 0;
         try {
             @SuppressLint("SimpleDateFormat") Date now = new SimpleDateFormat("dd/MM/yyyy").parse(currentDateTime("dd/MM/yyyy"));
@@ -225,7 +225,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 updateAntrian(result);
                 isExtra = true;
                 try {
-                    int totalHarga =  Integer.parseInt(formatOnlyNumber(find(R.id.et_totalBiaya_checkin4, EditText.class).getText().toString()));
+                    int totalHarga = Integer.parseInt(formatOnlyNumber(find(R.id.et_totalBiaya_checkin4, EditText.class).getText().toString()));
                     double dp = calculateDp(Double.parseDouble(getSetting("DP_PERSEN")), totalHarga);
                     double sisaDp = totalHarga - dp;
 
@@ -594,9 +594,9 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    if(isHplus){
+                    if (isHplus) {
                         showSuccess("MOHON BAYARKAN UANG MUKA PELAYANAN " + jenisLayanan + ". RINCIAN BIAYA & UANG MUKA");
-                    }else{
+                    } else {
                         if (status.equalsIgnoreCase("BATAL CHECKIN 4")) {
                             showSuccess("Layanan di Batalkan, Data Di masukkan Ke Daftar Kontrol Layanan");
                         } else {
@@ -613,10 +613,11 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         });
     }
 
-    private void setSpBbm(){
+    private void setSpBbm() {
         List<String> lvlBbmList = new ArrayList<>();
+        lvlBbmList.add("--PILIH--");
         for (int i = 10; i <= 100; i++) {
-            if(i % 10 == 0)
+            if (i % 10 == 0)
                 lvlBbmList.add(i + "%");
         }
         setSpinnerOffline(lvlBbmList, find(R.id.sp_bbm, Spinner.class), "");
@@ -693,7 +694,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                     if (isExpressAndStandard) {
                         loadAvailMekanik(parent.getSelectedItem().toString(), find(R.id.tv_jenis_antrian, TextView.class).getText().toString());
                     }
-                    if(idMekanikArray.get(position).get("NAMA").asString().equals(parent.getSelectedItem().toString())){
+                    if (idMekanikArray.get(position).get("NAMA").asString().equals(parent.getSelectedItem().toString())) {
                         idMekanik = idMekanikArray.get(position).get("ID").asInteger();
                     }
                 }
@@ -755,16 +756,15 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             case R.id.btn_simpan:
                 if (!find(R.id.cb_aggrement_checkin4, CheckBox.class).isChecked()) {
                     showWarning("Silahkan Setujui Syarat Dan Ketentuan Bengkel");
-                }
-                /*else if(find(R.id.sp_namaMekanik_checkin4, Spinner.class).getSelectedItem().toString().equals("--PILIH--")){
-                    showWarning("Nama Mekanik Belum Di pilih");
-                    find(R.id.sp_namaMekanik_checkin4, Spinner.class).performClick();
-                }*/
-                else if (!isSign) {
+                } else if (!isSign) {
                     showWarning("Tanda Tangan Wajib di Input");
                 } else {
                     if (!find(R.id.sp_namaMekanik_checkin4, Spinner.class).getSelectedItem().toString().equals("--PILIH--")) {
                         saveData("CHECKIN ANTRIAN PENUGASAN");
+                    } else if (find(R.id.sp_bbm, Spinner.class).getSelectedItem().toString().equals("--PILIH--")) {
+                        find(R.id.sp_bbm, Spinner.class).performClick();
+                        find(R.id.sp_bbm, Spinner.class).requestFocus();
+                        showWarning("Level BBM Belum di Pilih");
                     } else {
                         saveData("CHECKIN ANTRIAN");
                     }

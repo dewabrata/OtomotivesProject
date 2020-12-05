@@ -84,7 +84,7 @@
                 </android.support.design.widget.TextInputLayout>
 
                 <ProgressBar
-                    android:id="@+id/pb_etNopol_booking1a"
+                    android:id="@+id/pb_warna"
                     style="?android:attr/progressBarStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -36,6 +36,8 @@ import java.util.Map;
 import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.ATUR_PEMBAYARAN;
+import static com.rkrzmail.utils.APIUrls.SET_CHECKIN;
+import static com.rkrzmail.utils.APIUrls.VIEW_SUGGESTION;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.ID;
@@ -83,6 +85,8 @@ public class Checkin2_Activity extends AppActivity {
         etKodeTipe = findViewById(R.id.et_kode_tipe);
 
         initListener();
+        initAutoCompleteKodeTipe();
+        initAutoCompleteWarna();
     }
 
     private void initListener() {
@@ -133,67 +137,6 @@ public class Checkin2_Activity extends AppActivity {
             }
         });
 
-        etWarna.setThreshold(3);
-        etWarna.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
-            Nson result;
-
-            @Override
-            public Nson onFindNson(Context context, String bookTitle) {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("warna", bookTitle);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(""), args));
-                return result;
-            }
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                if (convertView == null) {
-                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    convertView = inflater.inflate(R.layout.find_nopol, parent, false);
-                }
-                findView(convertView, R.id.txtNopol, TextView.class).setText(formatNopol(getItem(position).get("").asString()));
-                return convertView;
-            }
-        });
-
-        etWarna.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-            }
-        });
-
-        etKodeTipe.setThreshold(3);
-        etKodeTipe.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
-            Nson result;
-
-            @Override
-            public Nson onFindNson(Context context, String bookTitle) {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("warna", bookTitle);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(""), args));
-                return result;
-            }
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                if (convertView == null) {
-                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    convertView = inflater.inflate(R.layout.find_nopol, parent, false);
-                }
-                findView(convertView, R.id.txtNopol, TextView.class).setText(formatNopol(getItem(position).get("").asString()));
-                return convertView;
-            }
-        });
-
-        etKodeTipe.setLoadingIndicator((android.widget.ProgressBar) findViewById(R.id.pb_kode_tipe));
-        etKodeTipe.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-            }
-        });
-
         find(R.id.btn_lanjut_checkin2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -212,6 +155,77 @@ public class Checkin2_Activity extends AppActivity {
                 } else {
                     setSelanjutnya(readCheckin);
                 }
+            }
+        });
+    }
+
+    private void initAutoCompleteKodeTipe(){
+        etKodeTipe.setThreshold(3);
+        etKodeTipe.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
+            Nson result;
+
+            @Override
+            public Nson onFindNson(Context context, String bookTitle) {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "KODE TIPE");
+                args.put("merk", readCheckin.get("merk").asString());
+                args.put("kodeTipe", bookTitle);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SUGGESTION), args));
+                return result.get("data");
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                if (convertView == null) {
+                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    convertView = inflater.inflate(R.layout.item_suggestion_single, parent, false);
+                }
+                findView(convertView, R.id.tv_text_suggesttion, TextView.class).setText(getItem(position).get("KODE_TIPE").asString());
+                return convertView;
+            }
+        });
+
+        etKodeTipe.setLoadingIndicator((android.widget.ProgressBar) findViewById(R.id.pb_kode_tipe));
+        etKodeTipe.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
+                etKodeTipe.setText(n.get("KODE_TIPE").asString().toUpperCase());
+            }
+        });
+    }
+
+    private void initAutoCompleteWarna(){
+        etWarna.setThreshold(3);
+        etWarna.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
+            Nson result;
+
+            @Override
+            public Nson onFindNson(Context context, String bookTitle) {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "WARNA");
+                args.put("warna", bookTitle);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SUGGESTION), args));
+                return result.get("data");
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                if (convertView == null) {
+                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    convertView = inflater.inflate(R.layout.item_suggestion_single, parent, false);
+                }
+                findView(convertView, R.id.tv_text_suggesttion, TextView.class).setText(formatNopol(getItem(position).get("WARNA").asString()));
+                return convertView;
+            }
+        });
+
+        etWarna.setLoadingIndicator((android.widget.ProgressBar) findViewById(R.id.pb_warna));
+        etWarna.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
+                etWarna.setText(n.get("WARNA").asString().toUpperCase());
             }
         });
     }
@@ -255,8 +269,9 @@ public class Checkin2_Activity extends AppActivity {
                 args.put("norangka", noRangka);
                 args.put("nomesin", noMesin);
                 args.put("checkinId", getIntentStringExtra(ID));
+                args.put("kodeTipe", etKodeTipe.getText().toString());
 
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("checkin"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
             }
 
             @Override
@@ -264,7 +279,7 @@ public class Checkin2_Activity extends AppActivity {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     readCheckin.set("NO_RANGKA", noRangka);
                     readCheckin.set("NO_MESIN", noMesin);
-                    readCheckin.set("CHECKIN_ID", readCheckin.get("id").asString());
+                    readCheckin.set("CHECKIN_ID", readCheckin.get("CHECKIN_ID").asString());
 
                     Intent intent = new Intent();
                     intent.putExtra(DATA, readCheckin.toJson());

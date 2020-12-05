@@ -51,7 +51,7 @@ public class PenjualanPartActivity extends AppActivity {
         initToolbar();
 
 
-        find(R.id.txtNopol).setOnClickListener(new View.OnClickListener() {
+        find(R.id.tv_text_suggesttion).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
@@ -59,7 +59,7 @@ public class PenjualanPartActivity extends AppActivity {
 
                     public void run() {
                         Map<String, String> args = AppApplication.getInstance().getArgsData();
-                        String nopol = find(R.id.txtNopol, EditText.class).getText().toString();
+                        String nopol = find(R.id.tv_text_suggesttion, EditText.class).getText().toString();
                         nopol = nopol.toUpperCase().trim().replace(" ", "");
                         args.put("nopol", nopol);
                         result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV2("carinopol"), args));
@@ -99,7 +99,7 @@ public class PenjualanPartActivity extends AppActivity {
             @Override
             public void onClick(View v) {
 
-                String nopol = find(R.id.txtNopol, EditText.class).getText().toString().replace(" ", "").toUpperCase();
+                String nopol = find(R.id.tv_text_suggesttion, EditText.class).getText().toString().replace(" ", "").toUpperCase();
                 if (nopol.equalsIgnoreCase("")) {
                     showError("No. Polisi Tidak Boleh Kosong");
                     return;
@@ -160,11 +160,11 @@ public class PenjualanPartActivity extends AppActivity {
 
                         if (position == result.size() -1) {
                             find(R.id.txtNamaUsaha).setVisibility(View.VISIBLE);
-                            find(R.id.txtNopol).setVisibility(View.GONE);
+                            find(R.id.tv_text_suggesttion).setVisibility(View.GONE);
                             find(R.id.txtJenisKendaraan).setVisibility(View.GONE);
                         } else {
                             find(R.id.txtNamaUsaha).setVisibility(View.GONE);
-                            find(R.id.txtNopol).setVisibility(View.VISIBLE);
+                            find(R.id.tv_text_suggesttion).setVisibility(View.VISIBLE);
                             find(R.id.txtJenisKendaraan).setVisibility(View.VISIBLE);
                         }
 
@@ -208,7 +208,7 @@ public class PenjualanPartActivity extends AppActivity {
         }));
 
 
-        NikitaAutoComplete bookTitle = (NikitaAutoComplete) findViewById(R.id.txtNopol);
+        NikitaAutoComplete bookTitle = (NikitaAutoComplete) findViewById(R.id.tv_text_suggesttion);
         bookTitle.setThreshold(3);
         bookTitle.setAdapter(new NsonAutoCompleteAdapter(this) {
             @Override
@@ -225,9 +225,9 @@ public class PenjualanPartActivity extends AppActivity {
             public View getView(int position, View convertView, ViewGroup parent) {
                 if (convertView == null) {
                     LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    convertView = inflater.inflate(R.layout.find_nopol, parent, false);
+                    convertView = inflater.inflate(R.layout.item_suggestion_single, parent, false);
                 }
-                findView(convertView, R.id.txtNopol, TextView.class).setText(formatNopol(getItem(position).get("NOPOL").asString()));
+                findView(convertView, R.id.tv_text_suggesttion, TextView.class).setText(formatNopol(getItem(position).get("NOPOL").asString()));
 
                 return convertView;
             }
@@ -242,7 +242,7 @@ public class PenjualanPartActivity extends AppActivity {
                 bookTitle.setText(book.getTitle())*/
                 ;
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
-                find(R.id.txtNopol, NikitaAutoComplete.class).setText(formatNopol(n.get("NOPOL").asString()));
+                find(R.id.tv_text_suggesttion, NikitaAutoComplete.class).setText(formatNopol(n.get("NOPOL").asString()));
                 checkHistory(n.get("NOPOL").asString());
             }
         });
@@ -293,7 +293,7 @@ public class PenjualanPartActivity extends AppActivity {
 
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                String nopol = find(R.id.txtNopol, EditText.class).getText().toString();
+                String nopol = find(R.id.tv_text_suggesttion, EditText.class).getText().toString();
                 nopol = nopol.toUpperCase().trim().replace(" ", "");
                 args.put("nopol", nopol);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrl("checkhistory.php"), args));
@@ -330,7 +330,7 @@ public class PenjualanPartActivity extends AppActivity {
                 String penjualan = getSelectedSpinnerText(R.id.sp_penjualan_part);
                 penjualan = penjualan.toUpperCase().trim().replace(" ", "");
 
-                String nopol = find(R.id.txtNopol, EditText.class).getText().toString();
+                String nopol = find(R.id.tv_text_suggesttion, EditText.class).getText().toString();
                 nopol = nopol.toUpperCase().trim().replace(" ", "");
 
                 String phone = find(R.id.txtPhone, EditText.class).getText().toString();

@@ -1,7 +1,6 @@
 package com.rkrzmail.oto.gmod;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,7 +16,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.data.Utility;
@@ -50,7 +48,7 @@ public class ControlLayanan extends AppActivity {
         Nson data = Nson.readNson(getIntentStringExtra("DATA"));
 
         find(R.id.txtStatus, TextView.class).setText(data.get("STATUS").asString());
-        find(R.id.txtNopol, TextView.class).setText(data.get("NOPOL").asString());
+        find(R.id.tv_text_suggesttion, TextView.class).setText(data.get("NOPOL").asString());
 //        find(R.id.txtMerkModel, TextView.class).setText(data.get("MODEL").asString());
 
 

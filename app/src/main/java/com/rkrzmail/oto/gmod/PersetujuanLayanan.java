@@ -35,7 +35,7 @@ public class PersetujuanLayanan extends AppActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-        find(R.id.txtNopol,EditText.class).setText(getIntentStringExtra("nopol"));
+        find(R.id.tv_text_suggesttion,EditText.class).setText(getIntentStringExtra("nopol"));
         find(R.id.txtNamaPelanggan,EditText.class).setText(getIntentStringExtra("nama"));
         //find(R.id.spnLayanan,EditText.class).setText(getIntentStringExtra("layanan"));
 

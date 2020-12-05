@@ -80,7 +80,7 @@
                         android:layout_height="wrap_content">
 
                         <com.rkrzmail.srv.NikitaAutoComplete
-                            android:id="@+id/txtNopol"
+                            android:id="@+id/tv_text_suggesttion"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="NOPOL"

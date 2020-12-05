@@ -61,7 +61,7 @@
                     android:text="NO. POLISI" />
 
                 <EditText
-                    android:id="@+id/txtNopol"
+                    android:id="@+id/tv_text_suggesttion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"

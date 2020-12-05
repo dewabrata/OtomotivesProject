@@ -75,7 +75,8 @@ public class KontrolLayanan_Activity extends AppActivity {
                         viewHolder.find(R.id.tv_jenis_kendaraan, TextView.class).setText(nListArray.get(position).get("JENIS_KENDARAAN").asString());
                         viewHolder.find(R.id.tv_nama_pelanggan, TextView.class).setText(nListArray.get(position).get("NAMA_PELANGGAN").asString());
                         viewHolder.find(R.id.tv_layanan, TextView.class).setText(nListArray.get(position).get("LAYANAN").asString());
-                        viewHolder.find(R.id.tv_estimasi_selesai, TextView.class).setText("");
+                        viewHolder.find(R.id.tv_estimasi_selesai, TextView.class).setText(nListArray.get(position).get("ESTIMASI_SELESAI").asString());
+                        viewHolder.find(R.id.tv_no_kunci, TextView.class).setText(nListArray.get(position).get("NO_KUNCI").asString());
                         viewHolder.find(R.id.tv_estimasi, TextView.class).setText(estimasi);
                         viewHolder.find(R.id.tv_status, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
 

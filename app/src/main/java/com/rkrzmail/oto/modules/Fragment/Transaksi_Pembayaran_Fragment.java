@@ -101,6 +101,7 @@ public class Transaksi_Pembayaran_Fragment extends Fragment {
                     viewHolder.find(R.id.tv_nopol, TextView.class).setText(pembayaranList.get(position).get("NOPOL").asString());
                     viewHolder.find(R.id.tv_layanan, TextView.class).setText(pembayaranList.get(position).get("LAYANAN").asString());
                     viewHolder.find(R.id.tv_no_ponsel, TextView.class).setText(pembayaranList.get(position).get("NO_PONSEL").asString());
+                    viewHolder.find(R.id.tv_no_kunci, TextView.class).setText(pembayaranList.get(position).get("NO_KUNCI").asString());
                     viewHolder.find(R.id.cv_pembayaran_checkin, CardView.class).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {

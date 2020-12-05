@@ -14,7 +14,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +47,7 @@ import static com.rkrzmail.utils.APIUrls.VIEW_JENIS_KENDARAAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_NOMOR_POLISI;
 import static com.rkrzmail.utils.APIUrls.VIEW_PELANGGAN;
 import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CHECKIN;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_HISTORY;
@@ -68,10 +68,11 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             merkKendaraan = "",
             jenisKendaraan = "",
             modelKendaraan = "",
-            rangka = "",
-            mesin = "",
+            noRangka = "",
+            noMesin = "",
             lokasi = "",
-            jenis = "";
+            jenis = "",
+            tglBeli = "";
     private int kendaraanId = 0;
     private Nson nopolList = Nson.newArray(), keluhanList = Nson.newArray();
     private boolean keyDel = false, isNoHp = false, isNamaValid = false, isRemoved;
@@ -178,10 +179,10 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     result = result.get("data");
                     for (int i = 0; i < result.size(); i++) {
-                        nopolList.add(result.get(i).get("NOPOL").asString());
+                        nopolList.add(result.get(i).get("NO_POLISI").asString());
                     }
                 } else {
-                    showInfo("Gagal memuat Data History");
+                    showInfo(ERROR_INFO);
                 }
             }
         });
@@ -332,8 +333,6 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 if (n.get("PEMILIK").asString().equalsIgnoreCase("Y")) {
                     find(R.id.cb_pemilik_checkin1, CheckBox.class).setChecked(true);
                 }
-
-                Log.d(TAG, "onItemClick: " + noHp);
                 Tools.hideKeyboard(getActivity());
             }
         });
@@ -357,7 +356,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     convertView = inflater.inflate(R.layout.item_suggestion, parent, false);
                 }
-                findView(convertView, R.id.title, TextView.class).setText(formatNopol(getItem(position).get("NOPOL").asString()));
+                findView(convertView, R.id.title, TextView.class).setText(formatNopol(getItem(position).get("NO_POLISI").asString()));
                 return convertView;
             }
         });
@@ -370,6 +369,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
 
                 isNoHp = true;
+
                 merkKendaraan = n.get("MERK").asString();
                 jenisKendaraan = n.get("TYPE").asString();
                 varianKendaraan = n.get("VARIAN").asString();
@@ -377,6 +377,9 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 kendaraanId = n.get("KENDARAAN_ID").asInteger();
                 noHp = n.get("NO_PONSEL").asString();
                 pekerjaan = n.get("PEKERJAAN").asString();
+                noRangka = n.get("NO_RANGKA").asString();
+                noMesin = n.get("NO_MESIN").asString();
+                tglBeli = n.get("TANGGAL_BELI").asString();
 
                 String nomor = n.get("NO_PONSEL").asString();
                 if (nomor.length() > 4) {
@@ -490,8 +493,8 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 args.put("varian", varianKendaraan);//dateKendaraan
                 args.put("kendaraan_id", String.valueOf(kendaraanId));
                 args.put("lokasiLayanan", getSetting("LOKASI_PENUGASAN"));
-                args.put("rangka", "");
-                args.put("mesin", "");
+                args.put("rangka", noRangka);
+                args.put("mesin", noMesin);
                 args.put("jenis", jenis);//dateKendaraan
                 args.put("noStnk", "");//dateKendaraan
                 args.put("kadaluarsa", "");//dateKendaraan
@@ -516,9 +519,12 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     nson.set("tahunProduksi", tahunProduksi);
                     nson.set("km", etKm.getText().toString());
                     nson.set("jenis", jenis.isEmpty() ? jenis : jenisKendaraan);
+                    nson.set("noRangka", noRangka);
+                    nson.set("noMesin", noMesin);
+                    nson.set("tglBeli", tglBeli);
 
                     Intent intent;
-                    if (nopolList.asArray().contains(nopol)) {
+                    if (nopolList.asArray().contains(nopol) && !noRangka.equals("") && !noMesin.equals("") && !tglBeli.equals("")) {
                         intent = new Intent(getActivity(), Checkin3_Activity.class);
                         intent.putExtra(DATA, nson.toJson());
                         startActivityForResult(intent, REQUEST_CHECKIN);

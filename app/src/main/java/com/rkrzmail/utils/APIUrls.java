@@ -3,6 +3,7 @@ package com.rkrzmail.utils;
 public class APIUrls {
 
     //VIEW
+    public static final String VIEW_SUGGESTION = "viewsuggestion";
     public static final String VIEW_COLLECTION = "viewcollection";
     public static final String VIEW_INSPEKSI = "viewinspeksi";
     public static final String VIEW_KELUHAN = "viewkeluhan";

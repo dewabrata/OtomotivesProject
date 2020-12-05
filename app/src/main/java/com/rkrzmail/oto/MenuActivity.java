@@ -138,7 +138,8 @@ public class MenuActivity extends AppActivity {
     private final String KENDARAAN_CUSTOMER = "KENDARAAN CUSTOMER";
     private final String PEMBELIAN_PART = "PEMBELIAN PART";
     private final String ANTAR_JEMPUT = "ANTAR JEMPUT";
-
+    public final String MESSAGE = "MESSAGE";
+    public final String PENUGASAN_MEKANIK = "PENUGASAN MEKANIK";
     private final String PENGATURAN_USER = "USER";
     private final String PENGATURAN_USER_LAYANAN = "LAYANAN";
     private final String PENGATURAN_USER_BIAYA_MEKANIK = "BIAYA MEKANIK";
@@ -234,9 +235,6 @@ public class MenuActivity extends AppActivity {
                     Intent intent = new Intent(MenuActivity.this, CariPart_Activity.class);
                     intent.putExtra("bengkel", "");
                     startActivityForResult(intent, 90);
-                } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_MESSAGE)) {
-                    Intent intent = new Intent(MenuActivity.this, MessageWA.class);
-                    startActivity(intent);
                 } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_PEMBAYARAN)) {
                     Intent intent = new Intent(MenuActivity.this, Pembayaran_MainTab_Activity.class);
                     startActivity(intent);
@@ -249,9 +247,8 @@ public class MenuActivity extends AppActivity {
                 } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_TUGAS_PARTS)) {
                     Intent intent = new Intent(MenuActivity.this, TugasPart_MainTab_Activity.class);
                     startActivity(intent);
-                }else if(nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_PENUGASAN_MEKANIK)){
-                    Intent intent = new Intent(MenuActivity.this, PenugasanActivity.class);
-                    startActivity(intent);
+                }else if(nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_ABSENSI)){
+
                 }else if(nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_COLLECTION)){
                     Intent intent = new Intent(MenuActivity.this, Collection_Activity.class);
                     startActivity(intent);
@@ -301,6 +298,12 @@ public class MenuActivity extends AppActivity {
 
         } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_PAYROLL)) {
 
+        }else if (item.getTitle().toString().equalsIgnoreCase(MESSAGE)) {
+            Intent intent = new Intent(MenuActivity.this, MessageWA.class);
+            startActivity(intent);
+        }else if (item.getTitle().toString().equalsIgnoreCase(PENUGASAN_MEKANIK)) {
+            Intent intent = new Intent(MenuActivity.this, PenugasanActivity.class);
+            startActivity(intent);
         }
         //Pengaturan
         else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER)) {
@@ -479,9 +482,8 @@ public class MenuActivity extends AppActivity {
     public final String M_JURNAL = "JURNAL";
     public final String M_DASHBOARD = "DASHBOARD";
     public final String M_MEKANIK = "MEKANIK";
-    public final String M_PENUGASAN_MEKANIK = "PENUGASAN MEKANIK";
+    public final String M_ABSENSI = "ABSENSI";
     public final String M_MENUNGGU = "MENUNGGU";
-    public final String M_MESSAGE = "MESSAGE";
     public final String M_MY_CODE = "MY CODE";
     public final String M_PART = "PART";
     public final String M_PEMBAYARAN = "PEMBAYARAN";
@@ -511,9 +513,8 @@ public class MenuActivity extends AppActivity {
         nPopulate.add(Nson.newObject().set("id", 12).set("icon", R.drawable.x_part).set("text", M_PART));
         addHome(2, R.drawable.x_booking, M_BOOKING);
         addHome(4, R.drawable.x_collection, M_COLLECTION);
+        nPopulate.add(Nson.newObject().set("id", 12).set("icon", R.drawable.x_penuasan).set("text", M_ABSENSI));
         addHome(5, R.drawable.ic_dashboard, M_DASHBOARD);
-        addHome(10, R.drawable.x_message, M_MESSAGE);
-        addHome(15, R.drawable.x_penuasan, M_PENUGASAN_MEKANIK);
         addHome(8, R.drawable.x_jurnal, M_JURNAL);
 
         ArrayAdapter<Vector<String>> arrayAdapter = new ArrayAdapter<Vector<String>>(MenuActivity.this, R.layout.activity_main_item, nPopulate.asArray()) {
@@ -546,8 +547,8 @@ public class MenuActivity extends AppActivity {
         getMenuInflater().inflate(R.menu.menu, menu);
         SubMenu subMenu;
 
-        //FREE AKSES
-        menu.add(ANTAR_JEMPUT);
+
+        menu.add(ANTAR_JEMPUT);//FREE AKSES
         if (getAccess(CHECK_OUT)) {
             menu.add(CHECK_OUT);
         }
@@ -557,9 +558,12 @@ public class MenuActivity extends AppActivity {
         if (getAccess(KENDARAAN_CUSTOMER)) {
             menu.add(KENDARAAN_CUSTOMER);
         }
-        if (getAccess(M_MENUNGGU)) {
-            menu.add(M_MENUNGGU);
+        if(getAccess(MESSAGE)){
+            menu.add(MESSAGE);
         }
+//        if (getAccess(M_MENUNGGU)) {
+//            menu.add(M_MENUNGGU);
+//        }
 //        if (getAccess(OUTSOURCE)) {
 //            menu.add(OUTSOURCE);
 //        }
@@ -568,6 +572,9 @@ public class MenuActivity extends AppActivity {
         }
         if (getAccess(PEMBELIAN_PART)) {
             menu.add(PEMBELIAN_PART);
+        }
+        if (getAccess(PENUGASAN_MEKANIK)) {
+            menu.add(PENUGASAN_MEKANIK);
         }
         menu.add(REFERAL);
         menu.add(SARAN);

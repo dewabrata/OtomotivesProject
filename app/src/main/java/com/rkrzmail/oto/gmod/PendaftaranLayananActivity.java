@@ -74,7 +74,7 @@ public class PendaftaranLayananActivity extends AppActivity {
                     Nson result;
                     public void run() {
                         Map<String, String> args = AppApplication.getInstance().getArgsData();
-                        String nopol = find(R.id.txtNopol,EditText.class).getText().toString();
+                        String nopol = find(R.id.tv_text_suggesttion,EditText.class).getText().toString();
                         nopol = nopol.toUpperCase().trim().replace(" ", "");
                         args.put("nopol", nopol);
                         result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV2("carinopol"),args)) ;
@@ -100,7 +100,7 @@ public class PendaftaranLayananActivity extends AppActivity {
             }
         });
 
-        final AppCompatAutoCompleteTextView autoCompleteTextView = find(R.id.txtNopol);
+        final AppCompatAutoCompleteTextView autoCompleteTextView = find(R.id.tv_text_suggesttion);
 
         //Setting up the adapter for AutoSuggest
         autoSuggestAdapter = new AutoSuggestAdapter(this,
@@ -148,7 +148,7 @@ public class PendaftaranLayananActivity extends AppActivity {
             public void onClick(View v) {
 
                 Intent intent =  new Intent(getActivity(), PersetujuanLayanan.class);
-                intent.putExtra("nopol",find(R.id.txtNopol,EditText.class).getText().toString());
+                intent.putExtra("nopol",find(R.id.tv_text_suggesttion,EditText.class).getText().toString());
                 intent.putExtra("nama", find(R.id.txtNamaPelanngan,EditText.class).getText().toString());
                 intent.putExtra("layanan", getSelectedSpinnerText(R.id.spnLayanan));
                 intent.putExtra("data", nListArray.toJson());
@@ -192,7 +192,7 @@ public class PendaftaranLayananActivity extends AppActivity {
         Nson result;
         public void run() {
             Map<String, String> args = AppApplication.getInstance().getArgsData();
-            String nopol = find(R.id.txtNopol,EditText.class).getText().toString();
+            String nopol = find(R.id.tv_text_suggesttion,EditText.class).getText().toString();
             nopol = nopol.toUpperCase().trim().replace(" ", "");
             args.put("nopol", nopol);
             result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV2("carinopol"),args)) ;
@@ -272,7 +272,7 @@ public class PendaftaranLayananActivity extends AppActivity {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                String nopol = find(R.id.txtNopol,EditText.class).getText().toString();
+                String nopol = find(R.id.tv_text_suggesttion,EditText.class).getText().toString();
                 nopol = nopol.toUpperCase().trim().replace(" ", "");
                 args.put("nopol", nopol);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV2("layanan"),args)) ;

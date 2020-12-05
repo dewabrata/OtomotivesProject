@@ -84,7 +84,7 @@
                     android:layout_height="wrap_content">
 
                     <android.support.v7.widget.AppCompatAutoCompleteTextView
-                        android:id="@+id/txtNopol"
+                        android:id="@+id/tv_text_suggesttion"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="left|center_vertical"

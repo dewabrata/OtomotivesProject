@@ -12,7 +12,7 @@
         android:padding="15dp">
 
         <TextView
-            android:id="@+id/txtNopol"
+            android:id="@+id/tv_text_suggesttion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="2"

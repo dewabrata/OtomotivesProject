@@ -185,9 +185,9 @@ public class Booking1A_Activity extends AppActivity {
             public View getView(int position, View convertView, ViewGroup parent) {
                 if (convertView == null) {
                     LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    convertView = inflater.inflate(R.layout.find_nopol, parent, false);
+                    convertView = inflater.inflate(R.layout.item_suggestion_single, parent, false);
                 }
-                findView(convertView, R.id.txtNopol, TextView.class).setText(formatNopol(getItem(position).get("NOPOL").asString()));
+                findView(convertView, R.id.tv_text_suggesttion, TextView.class).setText(formatNopol(getItem(position).get("NOPOL").asString()));
                 return convertView;
             }
         });

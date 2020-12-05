@@ -69,6 +69,7 @@ public class InspeksiMekanik_Activity extends AppActivity {
                 viewHolder.find(R.id.tv_nama_mekanik, TextView.class).setText(nListArray.get(position).get("MEKANIK").asString());
                 viewHolder.find(R.id.tv_noAntrian_ins, TextView.class).setText(nListArray.get(position).get("NO_ANTRIAN").asString());
                 viewHolder.find(R.id.tv_jamS_ins, TextView.class).setText(nListArray.get(position).get("JAM_SELESAI").asString());
+                viewHolder.find(R.id.tv_no_kunci, TextView.class).setText(nListArray.get(position).get("NO_KUNCI").asString());
 
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {

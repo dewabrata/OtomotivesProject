@@ -89,7 +89,7 @@ public class PengambilanPartActivity extends AppActivity {
 //                String penjualan = find(R.id.sp_penjualan_part, Spinner.class).getText().toString();
 //                penjualan = penjualan.toUpperCase().trim().replace(" ", "");
 
-                String nopol = find(R.id.txtNopol, EditText.class).getText().toString();
+                String nopol = find(R.id.tv_text_suggesttion, EditText.class).getText().toString();
                 nopol = nopol.toUpperCase().trim().replace(" ", "");
 
                 String no_ponsel = find(R.id.txtPhone, EditText.class).getText().toString();
