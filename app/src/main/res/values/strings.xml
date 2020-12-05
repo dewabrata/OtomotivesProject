@@ -82,6 +82,12 @@
 
     <string name="no_ponsel">No. Ponsel</string>
 
+    <string name="foto_part">FOTO PART</string>
+
+    <string name="foto_ktp">FOTO KTP</string>
+
+    <string name="foto_stnk">FOTO STNK</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="mekanik">Mekanik</string>
     <string name="harga">Harga</string>
