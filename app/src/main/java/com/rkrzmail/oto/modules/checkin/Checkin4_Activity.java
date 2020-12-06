@@ -73,6 +73,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
     private Nson mekanikArray = Nson.newArray(), idMekanikArray = Nson.newArray();
     private Nson getData;
     private Nson penugasanMekanikList = Nson.newArray();
+    private Nson noKunciList = Nson.newArray();
 
     private boolean isSign = false, isBatal = false, isMekanik = false;
     private boolean isExpressAndStandard = false, isExtra = false, isHplus = false, isDp = false;
@@ -594,24 +595,55 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    Log.d(TAG, "runUI: " + result.get("data"));
+                    noKunciList.asArray().addAll(result.get("data").asArray());
                     if (isHplus) {
                         showSuccess("MOHON BAYARKAN UANG MUKA PELAYANAN " + jenisLayanan + ". RINCIAN BIAYA & UANG MUKA");
                     } else {
                         if (status.equalsIgnoreCase("BATAL CHECKIN 4")) {
                             showSuccess("Layanan di Batalkan, Data Di masukkan Ke Daftar Kontrol Layanan");
                         } else {
+                            showDialogNoKunci(result.get("data").asString());
                             showSuccess("Data Pelanggan Berhasil Di masukkan Ke Daftar Kontrol Layanan");
                         }
                     }
-
-                    setResult(RESULT_OK);
-                    finish();
                 } else {
                     showWarning(result.get("message").asString());
                 }
             }
         });
     }
+
+    private void showDialogNoKunci(String noKunci){
+        Messagebox.showDialog(getActivity(), "N0. KUNCI", noKunci, "Ya", "", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                setResult(RESULT_OK);
+                finish();
+            }
+        }, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+    }
+
+    private String generateNoKunci(Nson noList){
+        List<Integer> smallest = new ArrayList<>();
+        String result = "";
+        for (int i = 0; i < noList.size(); i++) {
+            for (int j = 0; j < 20; j++) {
+                if(noList.get(i).asInteger() < j){
+                    smallest.add(j);
+                }
+            }
+        }
+        Log.d(TAG, "generateNoKunci: " + smallest);
+        return result;
+    }
+
 
     private void setSpBbm() {
         List<String> lvlBbmList = new ArrayList<>();
@@ -719,6 +751,26 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 args.put("lokasi", "BENGKEL");
                 args.put("mekanik", mekanik);
                 args.put("antrian", antrian.replace("Jenis Antrian : ", ""));
+
+                data = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MEKANIK), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (data.get("status").asString().equalsIgnoreCase("OK")) {
+                    totalWaktu(data);
+                }
+            }
+        });
+    }
+
+    private void viewAvailNoKunci() {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson data;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 data = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MEKANIK), args));
             }

@@ -380,6 +380,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 noRangka = n.get("NO_RANGKA").asString();
                 noMesin = n.get("NO_MESIN").asString();
                 tglBeli = n.get("TANGGAL_BELI").asString();
+                tahunProduksi =  n.get("TAHUN_PRODUKSI").asString();
 
                 String nomor = n.get("NO_PONSEL").asString();
                 if (nomor.length() > 4) {
@@ -522,9 +523,10 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     nson.set("noRangka", noRangka);
                     nson.set("noMesin", noMesin);
                     nson.set("tglBeli", tglBeli);
+                    nson.set("tahunProduksi", tahunProduksi);
 
                     Intent intent;
-                    if (nopolList.asArray().contains(nopol) && !noRangka.equals("") && !noMesin.equals("") && !tglBeli.equals("")) {
+                    if (!noRangka.isEmpty() && !noMesin.isEmpty()) {
                         intent = new Intent(getActivity(), Checkin3_Activity.class);
                         intent.putExtra(DATA, nson.toJson());
                         startActivityForResult(intent, REQUEST_CHECKIN);

@@ -76,14 +76,19 @@ public class Checkin2_Activity extends AppActivity {
 
     private void initComponent() {
         initToolbar();
-        readCheckin = Nson.readJson(getIntentStringExtra(DATA));
-
         etWarna = findViewById(R.id.et_warna_checkin2);
         tvTgl = findViewById(R.id.tv_tanggal_checkin2);
         etNorangka = findViewById(R.id.et_noRangka_checkin2);
         etNomesin = findViewById(R.id.et_noMesin_checkin2);
         etKodeTipe = findViewById(R.id.et_kode_tipe);
 
+        readCheckin = Nson.readJson(getIntentStringExtra(DATA));
+        if(readCheckin != null && !isKonfirmasi){
+            etNorangka.setText(readCheckin.get("noRangka").asString());
+            etNomesin.setText(readCheckin.get("noMesin").asString());
+            tvTgl.setText(readCheckin.get("tglBeli").asString());
+            find(R.id.tv_tahun_checkin2, TextView.class).setText(readCheckin.get("tahunProduksi").asString());
+        }
         initListener();
         initAutoCompleteKodeTipe();
         initAutoCompleteWarna();

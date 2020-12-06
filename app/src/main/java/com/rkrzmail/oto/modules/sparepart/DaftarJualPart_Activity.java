@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -194,7 +193,7 @@ public class DaftarJualPart_Activity extends AppActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_CARI_PART) {
             Nson nson =  Nson.readJson(getIntentStringExtra(data,PART));
-            Intent i = new Intent(getActivity(), DetailJualPart_Activity.class);
+            Intent i = new Intent(getActivity(), JumlahPart_JualPart_Activity.class);
             i.putExtra(PART, nson.toJson());
             Log.d("partpartpart", "data" + Nson.readJson(getIntentStringExtra(data,"part")));
             startActivityForResult(i, REQUEST_DETAIL);

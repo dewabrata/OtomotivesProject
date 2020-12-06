@@ -393,6 +393,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
     private void setSpAktifitas() {
         List<String> aktifitasList = new ArrayList<>();
         aktifitasList.add("--PILIH--");
+        aktifitasList.add("MESSAGE PELANGGAN");
         if (etStatus.getText().toString().equals("CHECKIN ANTRIAN") ||
                 (etStatus.getText().toString().contains("DP") && !etStatus.getText().toString().equals("TUNGGU DP"))) {
             aktifitasList.add("BATAL BENGKEL");
@@ -403,7 +404,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 || etStatus.getText().toString().equals("PELAYANAN SELESAI")
                 || etStatus.getText().toString().equals("PERINTAH ANTAR")
                 || etStatus.getText().toString().equals("REFUND DP")) {
-            aktifitasList.add("MESSAGE PELANGGAN");
+
         } else if (etStatus.getText().toString().equals("LAYANAN ESTIMASI")) {
             aktifitasList.add("CHECKIN");
         } else if (etStatus.getText().toString().equals("KONFIRMASI BIAYA")) {

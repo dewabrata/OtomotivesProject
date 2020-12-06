@@ -10,7 +10,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -222,7 +221,7 @@ public class AturPenjualanPart_Activity extends AppActivity {
             nson.set("NAMA_USAHA", find(R.id.et_namaUsaha_jualPart, EditText.class).getText().toString());
             nson.set("NO_PONSEL", isNoHp ? noHp : find(R.id.et_noPhone_jualPart, NikitaAutoComplete.class).getText().toString().replaceAll("[^0-9]+", ""));
 
-            Intent i = new Intent(getActivity(), DetailJualPart_Activity.class);
+            Intent i = new Intent(getActivity(), JumlahPart_JualPart_Activity.class);
             i.putExtra(PART, nson.toJson());
             startActivityForResult(i, REQEST_DAFTAR_JUAL);
         } else if (resultCode == RESULT_OK && requestCode == REQEST_DAFTAR_JUAL) {

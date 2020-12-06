@@ -89,7 +89,7 @@
         <activity android:name=".modules.sparepart.JumlahPart_PartKeluar_Activity" />
         <activity android:name=".modules.sparepart.PartKeluar_Activity" />
         <activity android:name=".modules.sparepart.DaftarJualPart_Activity" />
-        <activity android:name=".modules.sparepart.DetailJualPart_Activity" />
+        <activity android:name=".modules.sparepart.JumlahPart_JualPart_Activity" />
         <activity android:name=".modules.sparepart.AturPenjualanPart_Activity" />
         <activity android:name=".modules.sparepart.PenjualanPart_Activity" />
         <activity android:name=".modules.discount.AturFrekwensiDiscount_Acitivity" />

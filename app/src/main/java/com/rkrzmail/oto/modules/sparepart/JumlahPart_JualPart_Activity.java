@@ -30,12 +30,13 @@ import com.rkrzmail.utils.Tools;
 import java.text.DecimalFormat;
 import java.util.Map;
 
+import static com.rkrzmail.srv.PercentFormat.calculatePercentage;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
 import static com.rkrzmail.utils.ConstUtils.PART;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
 import static com.rkrzmail.utils.ConstUtils.RUANG_PART;
 
-public class DetailJualPart_Activity extends AppActivity {
+public class JumlahPart_JualPart_Activity extends AppActivity {
 
     private EditText etHpp, etHargaJual, etDisc, etJumlah;
     private int finalStock, stock, minStock;
@@ -44,7 +45,7 @@ public class DetailJualPart_Activity extends AppActivity {
     private Nson getData;
 
     private String idLokasiPart = "";
-    private boolean isJual, isPartKosong;
+    private boolean isJual, isPartKosong = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +103,7 @@ public class DetailJualPart_Activity extends AppActivity {
                 String text = s.toString();
                 if (!text.equals("")) {
                     int jumlah = Integer.parseInt(text);
-                    if (jumlah > stock) {
+                    if (jumlah > stock && !isPartKosong) {
                         find(R.id.tl_jumlah, TextInputLayout.class).setHelperTextEnabled(true);
                         find(R.id.tl_jumlah, TextInputLayout.class).setError("Jumlah Melebihi Stock tersedia");
                     } else {
@@ -131,12 +132,12 @@ public class DetailJualPart_Activity extends AppActivity {
                 }
                 Log.d("Jual__", "onClick: " + stock);
                 try {
-                    if (Integer.parseInt(etJumlah.getText().toString()) > stock) {
+                    if (Integer.parseInt(etJumlah.getText().toString()) > stock && !isPartKosong) {
                         etJumlah.setError("Jumlah Tidak Valid");
                         etJumlah.requestFocus();
                         return;
                     }
-                    if (Integer.parseInt(etJumlah.getText().toString()) > minStock) {
+                    if (Integer.parseInt(etJumlah.getText().toString()) > minStock && !isPartKosong) {
                         Messagebox.showDialog(getActivity(), "Konfirmasi", "Jumlah Melebihi Stock Mininum, Jual Part ?", "OK", "TIDAK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -202,13 +203,6 @@ public class DetailJualPart_Activity extends AppActivity {
                         @SuppressLint("SetTextI18n")
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            //find(R.id.ly_hpp_jumlah_harga_part, TextInputLayout.class).setVisibility(View.VISIBLE);
-                            if (nson.get("DISCOUNT_PART").asString() != null) {
-                                //find(R.id.ly_disc_part_jumlah_harga_part, TextInputLayout.class).setVisibility(View.VISIBLE);
-                            }
-                            if (nson.get("DISCOUNT_JASA") != null) {
-                                //find(R.id.ly_discJasa_jumlah_harga_part, TextInputLayout.class).setVisibility(View.VISIBLE);
-                            }
                             isPartKosong = true;
                             find(R.id.ly_jumlahHarga_partKosong, LinearLayout.class).setVisibility(View.VISIBLE);
                             find(R.id.et_dp, EditText.class).setText(Tools.convertToDoublePercentage(getSetting("DP_PERSEN")) + "%");
@@ -256,6 +250,15 @@ public class DetailJualPart_Activity extends AppActivity {
         parts.set("LOKASI_PART_ID", idLokasiPart);
         parts.set("TOTAL", total);
         parts.set("NET", net);
+        if (isPartKosong) {
+            parts.set("WAKTU_PESAN", find(R.id.et_waktu_pesan, EditText.class).getText().toString());
+            parts.set("DP", calculatePercentage(Double.parseDouble(formatOnlyNumber(find(R.id.et_dp, EditText.class).getText().toString())),
+                    Integer.parseInt(formatOnlyNumber(etHargaJual.getText().toString())))
+            );
+        } else {
+            parts.set("WAKTU_PESAN", "");
+            parts.set("DP", "");
+        }
 
         Intent intent = new Intent();
         intent.putExtra(PART, parts.toJson());
