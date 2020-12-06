@@ -41,6 +41,7 @@ import com.rkrzmail.oto.modules.mekanik.BiayaMekanik2Activity;
 import com.rkrzmail.oto.modules.LoginActivity;
 import com.rkrzmail.oto.modules.komisi.KomisiPart_Activity;
 import com.rkrzmail.oto.modules.mekanik.InspeksiMekanik_Activity;
+import com.rkrzmail.oto.modules.mekanik.LkkClaimMekanik_Activity;
 import com.rkrzmail.oto.modules.mekanik.PerintahKerjaMekanik_Activity;
 import com.rkrzmail.oto.modules.sparepart.MenungguPart_Activity;
 import com.rkrzmail.oto.modules.bengkel.Pembayaran_MainTab_Activity;

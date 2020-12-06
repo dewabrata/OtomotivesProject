@@ -514,4 +514,17 @@
         <item>Synchronisation</item>
     </string-array>
 
+    <string-array name="tipe_kerusakan">
+        <item>Fungsi Utama/ Safety</item>
+        <item>Fungsi Penunjang</item>
+        <item>Tampilan</item>
+    </string-array>
+
+    <string-array name="kondisi_pelanggan">
+        <item>Tidak Mengetahui Kerusakan</item>
+        <item>Tidak Meminta Perbaikan</item>
+        <item>Sangat Terganggu</item>
+        <item>Kendaraan Tidak Dapat Digunakan</item>
+    </string-array>
+
 </resources>

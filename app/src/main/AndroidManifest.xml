@@ -1,21 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.rkrzmail.oto">
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
 
     <application
         android:name=".AppApplication"
@@ -28,7 +14,8 @@
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,UnusedAttribute"
         tools:replace="android:label">
-        <activity android:name=".modules.bengkel.KonfirmasiData_Pembayaran_Activity"></activity>
+        <activity android:name=".modules.mekanik.LkkClaimMekanik_Activity"></activity>
+        <activity android:name=".modules.bengkel.KonfirmasiData_Pembayaran_Activity" />
         <activity android:name=".modules.sparepart.Status_PartKosong_Activity" />
         <activity android:name=".modules.checkin.TambahPartJasaDanBatal_Activity" />
         <activity android:name=".modules.sparepart.AturPartKeluar_Activity" />
@@ -146,14 +133,14 @@
         <activity android:name=".modules.mekanik.AturBiayaMekanik2" />
         <activity android:name=".modules.mekanik.BiayaMekanik2Activity" />
         <activity android:name=".modules.sparepart.Spareparts_Activity">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable"
                 android:value="com.rkrzmail.oto.modules.lokasi_part.CariPart_Activity" />
-
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
         </activity>
         <activity android:name=".modules.sparepart.AturParts_Activity" />
         <activity android:name=".gmod.PengambilanPartActivity" />
@@ -344,5 +331,19 @@
             </intent-filter>
         </service>
     </application>
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
 
 </manifest>
