@@ -379,6 +379,7 @@ public class AturPembayaran_Activity extends AppActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
+                        saveData();
                     }
                 });
 

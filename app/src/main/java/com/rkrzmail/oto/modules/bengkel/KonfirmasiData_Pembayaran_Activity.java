@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.ATUR_PEMBAYARAN;
+import static com.rkrzmail.utils.APIUrls.VIEW_PELANGGAN;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.ID;
@@ -61,6 +62,35 @@ public class KonfirmasiData_Pembayaran_Activity extends AppActivity {
                 updateDataPelanggan();
             }
         });
+        find(R.id.et_noPonsel, EditText.class).addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int i, int i1, int i2) {
+                if (s.toString().length() == 0) {
+                    find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                find(R.id.et_noPonsel, EditText.class).removeTextChangedListener(this);
+                int counting = (s == null) ? 0 : s.toString().length();
+                if (counting < 4 && ! find(R.id.et_noPonsel, EditText.class).getText().toString().contains("+62 ")) {
+                    find(R.id.et_noPonsel, EditText.class).setText("+62 ");
+                    Selection.setSelection( find(R.id.et_noPonsel, EditText.class).getText(),  find(R.id.et_noPonsel, EditText.class).getText().length());
+                } else if (counting < 12) {
+                    find(R.id.tl_nohp, TextInputLayout.class).setError("No. Hp Min. 6 Karakter");
+                    find(R.id.et_noPonsel, EditText.class).requestFocus();
+                } else {
+                    find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
+                }
+                find(R.id.et_noPonsel, EditText.class).addTextChangedListener(this);
+            }
+        });
     }
 
     private void updateDataPelanggan() {
@@ -75,11 +105,11 @@ public class KonfirmasiData_Pembayaran_Activity extends AppActivity {
                 args.put("checkinId", getIntentStringExtra(ID));
                 args.put("konfirmasi", "DATA PELANGGAN");
                 args.put("noPonsel", find(R.id.et_noPonsel, EditText.class).getText().toString());
-                args.put("pemilik", find(R.id.cb_pemilik, CheckBox.class).isChecked() ? "Y" : "N");
+                args.put("isPemilik", find(R.id.cb_pemilik, CheckBox.class).isChecked() ? "Y" : "N");
                 args.put("namaPelanggan", find(R.id.et_namaPelanggan, NikitaAutoComplete.class).getText().toString());
                 args.put("pekerjaan", find(R.id.sp_pekerjaan, Spinner.class).getSelectedItem().toString());
 
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_PEMBAYARAN), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PELANGGAN), args));
             }
 
             @Override
@@ -107,9 +137,10 @@ public class KonfirmasiData_Pembayaran_Activity extends AppActivity {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "Konfirmasi Data");
+                args.put("action", "KONFIRMASI DATA");
                 args.put("checkinId", getIntentStringExtra(ID));
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_PEMBAYARAN), args));
+                args.put("noPonsel", getIntentStringExtra("NO_PONSEL"));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PELANGGAN), args));
             }
 
             @Override

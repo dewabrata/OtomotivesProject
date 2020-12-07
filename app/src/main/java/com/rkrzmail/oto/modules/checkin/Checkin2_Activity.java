@@ -37,6 +37,7 @@ import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.ATUR_PEMBAYARAN;
 import static com.rkrzmail.utils.APIUrls.SET_CHECKIN;
+import static com.rkrzmail.utils.APIUrls.VIEW_NOMOR_POLISI;
 import static com.rkrzmail.utils.APIUrls.VIEW_SUGGESTION;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
@@ -275,6 +276,10 @@ public class Checkin2_Activity extends AppActivity {
                 args.put("nomesin", noMesin);
                 args.put("checkinId", getIntentStringExtra(ID));
                 args.put("kodeTipe", etKodeTipe.getText().toString());
+                if(isKonfirmasi){
+                    args.put("isKonfirmasi", "Y");
+                }
+
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
             }
@@ -304,9 +309,10 @@ public class Checkin2_Activity extends AppActivity {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "Konfirmasi Data");
+                args.put("action", "KONFIRMASI DATA");
                 args.put("checkinId", getIntentStringExtra(ID));
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_PEMBAYARAN), args));
+                args.put("noPonsel", getIntentStringExtra("NO_PONSEL"));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_NOMOR_POLISI), args));
             }
 
             @Override
@@ -314,10 +320,11 @@ public class Checkin2_Activity extends AppActivity {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     result = result.get("data").get(0);
                     etWarna.setText(result.get("WARNA").asString());
-                    find(R.id.tv_tahun_checkin2, TextView.class).setText(result.get("TAHUN").asString());
+                    find(R.id.tv_tahun_checkin2, TextView.class).setText(result.get("TAHUN_PRODUKSI").asString());
                     tvTgl.setText(result.get("TANGGAL_BELI").asString());
                     etNorangka.setText(result.get("NO_RANGKA").asString());
                     etNomesin.setText(result.get("NO_MESIN").asString());
+                    etKodeTipe.setText(result.get("CODE_TYPE").asString());
                 } else {
                     showWarning(ERROR_INFO);
                 }

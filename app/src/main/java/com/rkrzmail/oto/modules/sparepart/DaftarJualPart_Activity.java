@@ -192,10 +192,10 @@ public class DaftarJualPart_Activity extends AppActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_CARI_PART) {
-            Nson nson =  Nson.readJson(getIntentStringExtra(data,PART));
+            Nson nson =  Nson.readJson(getIntentStringExtra(data, PART));
+
             Intent i = new Intent(getActivity(), JumlahPart_JualPart_Activity.class);
             i.putExtra(PART, nson.toJson());
-            Log.d("partpartpart", "data" + Nson.readJson(getIntentStringExtra(data,"part")));
             startActivityForResult(i, REQUEST_DETAIL);
 
         }else if (resultCode == RESULT_OK && requestCode == REQUEST_DETAIL) {

@@ -42,6 +42,7 @@ import java.util.Map;
 
 import static com.rkrzmail.utils.ConstUtils.ADD;
 import static com.rkrzmail.utils.ConstUtils.EDIT;
+import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 
 public class AturLayanan_Activity extends AppActivity {
 
@@ -419,10 +420,10 @@ public class AturLayanan_Activity extends AppActivity {
                 if (!jenisLayanan.equalsIgnoreCase("PAKET LAYANAN")) {
                     args.put("biaya", jenisLayanan);
                 } else {
-                    args.put("biaya", find(R.id.et_biayaPaket_layanan, EditText.class).getText().toString().replaceAll("[^0-9]+", ""));
+                    args.put("biaya", formatOnlyNumber(find(R.id.et_biayaPaket_layanan, EditText.class).getText().toString()));
                 }
                 args.put("garansi", find(R.id.sp_garansi_atur_layanan, Spinner.class).getSelectedItem().toString());
-                args.put("fgb", find(R.id.et_feeGB_layanan, EditText.class).getText().toString().replaceAll("[^0-9]+", ""));
+                args.put("fgb", formatOnlyNumber(find(R.id.et_feeGB_layanan, EditText.class).getText().toString()));
                 args.put("kendaraan", kendaraan);
                 args.put("merk", merk);
                 args.put("model", model);
@@ -449,7 +450,7 @@ public class AturLayanan_Activity extends AppActivity {
                     setResult(RESULT_OK);
                     finish();
                 } else {
-                    showError("Gagal Menambahkan Layanan");
+                    showError(ERROR_INFO);
                 }
             }
         });

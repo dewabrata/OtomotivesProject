@@ -9,9 +9,12 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 
 import com.naa.data.Nson;
+import com.rkrzmail.oto.modules.Fragment.Absen_Absensi_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Cash_Pembayaran_Fragment;
+import com.rkrzmail.oto.modules.Fragment.Schedule_Absensi_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Setoran_Pembayaran_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Transaksi_Pembayaran_Fragment;
+import com.rkrzmail.oto.modules.bengkel.Absensi_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Pembayaran_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
 import com.rkrzmail.oto.modules.Fragment.TabSchedule_Fragment;
@@ -132,6 +135,18 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
             return fragment;
         }
 
+        if (context instanceof Absensi_MainTab_Activity) {
+            switch (i) {
+                case 0:
+                    fragment = Fragment.instantiate(context, Absen_Absensi_Fragment.class.getName());
+                    break;
+                case 1:
+                    fragment = Fragment.instantiate(context, Schedule_Absensi_Fragment.class.getName());
+                    break;
+            }
+            return fragment;
+        }
+
         return fragment;
     }
 
@@ -185,7 +200,14 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
                     return "Setoran";
             }
         }
-
+        if (context instanceof Absensi_MainTab_Activity) {
+            switch (position) {
+                case 0:
+                    return "Absen";
+                case 1:
+                    return "Schedule";
+            }
+        }
         return null;
     }
 }

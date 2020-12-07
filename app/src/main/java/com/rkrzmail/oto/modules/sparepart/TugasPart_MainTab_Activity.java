@@ -35,7 +35,7 @@ public class TugasPart_MainTab_Activity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_tab_tugas_part);
+        setContentView(R.layout.activity_main_tab_layout);
         initComponent();
     }
 
@@ -49,8 +49,8 @@ public class TugasPart_MainTab_Activity extends AppActivity {
 
     private void initComponent() {
         initToolbar();
-        ViewPager vpTugasParts = findViewById(R.id.vp_tugas_part);
-        TabLayout tabLayoutTugasParts = findViewById(R.id.tablayout_tugas_part);
+        ViewPager vpTugasParts = findViewById(R.id.vp);
+        TabLayout tabLayoutTugasParts = findViewById(R.id.tablayout);
         tabLayoutTugasParts.setTabMode(TabLayout.MODE_SCROLLABLE);
 
         final ArrayList<Fragment> fragments = new ArrayList<>();

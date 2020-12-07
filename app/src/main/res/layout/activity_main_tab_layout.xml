@@ -16,7 +16,27 @@
         app:layout_scrollFlags="scroll|enterAlways"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <include layout="@layout/toolbar"/>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <include layout="@layout/toolbar"/>
+
+            <ImageButton
+                android:id="@+id/img_scan_barcode"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="right|center_vertical"
+                android:padding="5dp"
+                app:srcCompat="@drawable/barcode"
+                android:layout_marginEnd="5dp"
+                android:backgroundTint="@color/transparent"
+                android:visibility="gone"
+                tools:ignore="ContentDescription,RtlHardcoded,UnusedAttribute" />
+
+
+        </FrameLayout>
+
 
     </android.support.design.widget.AppBarLayout>
 

@@ -166,6 +166,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), Checkin2_Activity.class);
                 intent.putExtra(ID, idCheckin);
+                intent.putExtra("NO_PONSEL", noHp);
                 intent.putExtra("KONFIRMASI DATA", "");
                 startActivityForResult(intent, REQUEST_NEW_CS);
             }
@@ -175,6 +176,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             public void onClick(View v) {
                 Intent i = new Intent(getActivity(), KonfirmasiData_Pembayaran_Activity.class);
                 i.putExtra(ID, idCheckin);
+                i.putExtra("NO_PONSEL", noHp);
                 startActivityForResult(i, REQUEST_KONFIRMASI);
             }
         });

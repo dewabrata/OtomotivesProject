@@ -35,13 +35,13 @@ import com.rkrzmail.oto.fragment.pageindicator.CirclePageIndicator;
 import com.rkrzmail.oto.gmod.MessageWA;
 import com.rkrzmail.oto.gmod.MyCode;
 import com.rkrzmail.oto.modules.antar_jemput.AntarJemput_Activity;
+import com.rkrzmail.oto.modules.bengkel.Absensi_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Collection_Activity;
 import com.rkrzmail.oto.modules.checkin.Checkin1_Activity;
 import com.rkrzmail.oto.modules.mekanik.BiayaMekanik2Activity;
 import com.rkrzmail.oto.modules.LoginActivity;
 import com.rkrzmail.oto.modules.komisi.KomisiPart_Activity;
 import com.rkrzmail.oto.modules.mekanik.InspeksiMekanik_Activity;
-import com.rkrzmail.oto.modules.mekanik.LkkClaimMekanik_Activity;
 import com.rkrzmail.oto.modules.mekanik.PerintahKerjaMekanik_Activity;
 import com.rkrzmail.oto.modules.sparepart.MenungguPart_Activity;
 import com.rkrzmail.oto.modules.bengkel.Pembayaran_MainTab_Activity;
@@ -249,7 +249,8 @@ public class MenuActivity extends AppActivity {
                     Intent intent = new Intent(MenuActivity.this, TugasPart_MainTab_Activity.class);
                     startActivity(intent);
                 }else if(nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_ABSENSI)){
-
+                    Intent intent = new Intent(MenuActivity.this, Absensi_MainTab_Activity.class);
+                    startActivity(intent);
                 }else if(nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_COLLECTION)){
                     Intent intent = new Intent(MenuActivity.this, Collection_Activity.class);
                     startActivity(intent);

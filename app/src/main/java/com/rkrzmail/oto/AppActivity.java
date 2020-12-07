@@ -542,12 +542,12 @@ public class AppActivity extends AppCompatActivity {
             @Override
             public Nson onFindNson(Context context, String bookTitle) {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
+
                 args.put("action", "view");
                 args.put(arguments, "Bengkel");
-                if(!flag.equals("")){
-                    args.put("flag", flag);
-                }
+                args.put("flag", flag);
                 args.put("search", bookTitle);
+
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(api), args));
 
                 return result.get("data");
@@ -560,7 +560,7 @@ public class AppActivity extends AppCompatActivity {
                     convertView = inflater.inflate(R.layout.item_suggestion, parent, false);
                 }
                 String search;
-                if (getItem(position).get("NAMA_LAIN").asString().equalsIgnoreCase("")) {
+                if (!getItem(position).containsKey("NAMA_LAIN")) {
                     search = getItem(position).get(jsonObject).asString();
                 } else {
                     search = getItem(position).get(jsonObject).asString() + " ( " + getItem(position).get("NAMA_LAIN").asString() + " ) ";
@@ -593,13 +593,6 @@ public class AppActivity extends AppCompatActivity {
                 args.put("nama", params);
                 args.put("search", bookTitle);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewmst"), args));
-                for (int i = 0; i < result.get("data").size(); i++) {
-                    if (result.get("data").get(i).get(jsonObject[0]).asString().equalsIgnoreCase(bookTitle)) {
-                        return result.get("data").get(i).get(jsonObject[0]);
-                    } else {
-                        return result.get("data");
-                    }
-                }
                 return result.get("data");
             }
 
@@ -915,41 +908,45 @@ public class AppActivity extends AppCompatActivity {
             }
         }
 
-        if (!menit.equals("0")) {
-            int minutes = Integer.parseInt(menit);
-            while (minutes >= 60) {
-                incrementWaktu++;
-                minutes -= 60;
+        try{
+            if (!menit.equals("0")) {
+                int minutes = Integer.parseInt(menit);
+                while (minutes >= 60) {
+                    incrementWaktu++;
+                    minutes -= 60;
+                }
+                if (incrementWaktu > 0) {
+                    calculateJam = incrementWaktu;
+                    result[2] = String.valueOf(minutes);
+                }
+            } else {
+                result[2] = "0";
             }
-            if (incrementWaktu > 0) {
-                calculateJam = incrementWaktu;
-                result[2] = String.valueOf(minutes);
+            if (!jam.equals("0") || calculateJam > 0) {
+                incrementWaktu = 0;
+                int finalJam = Integer.parseInt(jam) + calculateJam;
+                result[1] = String.valueOf(finalJam);
+                while (finalJam >= 24) {
+                    incrementWaktu++;
+                    finalJam -= 24;
+                }
+                if (incrementWaktu > 0) {
+                    calculateHari = incrementWaktu;
+                }
+            } else {
+                result[1] = "0";
             }
-        } else {
-            result[2] = "0";
-        }
-        if (!jam.equals("0") || calculateJam > 0) {
-            incrementWaktu = 0;
-            int finalJam = Integer.parseInt(jam) + calculateJam;
-            result[1] = String.valueOf(finalJam);
-            while (finalJam >= 24) {
-                incrementWaktu++;
-                finalJam -= 24;
+            if (!hari.equals("0") || calculateHari > 0) {
+                int finalJam = Integer.parseInt(hari) + calculateHari;
+                result[0] = String.valueOf(finalJam);
+            } else {
+                result[0] = "0";
             }
-            if (incrementWaktu > 0) {
-                calculateHari = incrementWaktu;
-            }
-        } else {
-            result[1] = "0";
-        }
-        if (!hari.equals("0") || calculateHari > 0) {
-            int finalJam = Integer.parseInt(hari) + calculateHari;
-            result[0] = String.valueOf(finalJam);
-        } else {
-            result[0] = "0";
-        }
 
-        return String.format("%02d:%02d:%02d", Integer.parseInt(result[0]), Integer.parseInt(result[1]), Integer.parseInt(result[2]));
+            return String.format("%02d:%02d:%02d", Integer.parseInt(result[0]), Integer.parseInt(result[1]), Integer.parseInt(result[2]));
+        }catch (Exception e){
+            return String.format("%02d:%02d:%02d", 0, 0 , 0);
+        }
     }
 
     public String generateNoAntrian(String statusAntrian, String noAntrian) {

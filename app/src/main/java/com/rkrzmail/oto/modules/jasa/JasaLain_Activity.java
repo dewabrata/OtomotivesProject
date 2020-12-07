@@ -125,7 +125,11 @@ public class JasaLain_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 args.put("flag", "ALL");
-                args.put("cari", cari);
+                args.put("search", cari);
+                if(isCari){
+                    args.remove("search");
+                    args.put("cari", cari);
+                }
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_JASA_LAIN), args));
             }
 
@@ -136,6 +140,7 @@ public class JasaLain_Activity extends AppActivity {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
                     Objects.requireNonNull(rvJasa.getAdapter()).notifyDataSetChanged();
+                    isCari = false;
                 } else {
                     showError(result.get("message").asString());
                 }

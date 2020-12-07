@@ -64,14 +64,14 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
     }
 
     @SuppressLint("SetTextI18n")
-    private void initData(){
+    private void initData() {
         final Nson n = Nson.readJson(getIntentStringExtra(DATA));
         Log.d("BIAYAJASALAIN", "JASA : " + n);
         if (getIntent().hasExtra(JASA_LAIN)) {
             initAvailJasa(n);
-            if(!n.get("DISCOUNT_JASA").asString().isEmpty() ||
+            if (!n.get("DISCOUNT_JASA").asString().isEmpty() ||
                     !n.get("DISCOUNT_JASA").asString().equals("0") ||
-                    !n.get("DISCOUNT_JASA").asString().equals("0.0")){
+                    !n.get("DISCOUNT_JASA").asString().equals("0.0")) {
                 find(R.id.et_discJasa).setVisibility(View.VISIBLE);
                 find(R.id.et_discJasa, EditText.class).setText(n.get("DISCOUNT_JASA").asString() + " %");
             }
@@ -84,20 +84,24 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
             find(R.id.btn_simpan_biayaJasa).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(etBiaya.getText().toString().isEmpty()){
+                    if (etBiaya.getText().toString().isEmpty()) {
                         etBiaya.setError("Biaya Jasa Harus di Isi");
                         etBiaya.requestFocus();
-                    }else{
+                    } else {
                         Nson nson = Nson.newObject();
                         double discJasa = 0;
                         int net;
-                        if(!find(R.id.et_discJasa, EditText.class).getText().toString().isEmpty()){
-                            discJasa = Double.parseDouble(find(R.id.et_discJasa, EditText.class).getText().toString()
-                                    .replace("%", "")
-                                    .replace(",", ".").trim());
-                            discJasa = calculatePercentage(discJasa, Integer.parseInt(formatOnlyNumber(etBiaya.getText().toString())));
+                        if (find(R.id.et_discJasa, EditText.class).getVisibility() == View.VISIBLE) {
+                            try{
+                                discJasa = Double.parseDouble(find(R.id.et_discJasa, EditText.class).getText().toString()
+                                        .replace("%", "")
+                                        .replace(",", ".").trim());
+                                discJasa = calculatePercentage(discJasa, Integer.parseInt(formatOnlyNumber(etBiaya.getText().toString())));
+                            }catch (NumberFormatException e){
+                                e.printStackTrace();
+                            }
                             net = (int) (Integer.parseInt(formatOnlyNumber(etBiaya.getText().toString())) - discJasa);
-                        }else{
+                        } else {
                             net = Integer.parseInt(formatOnlyNumber(etBiaya.getText().toString()));
                         }
                         nson.set("NAMA_KELOMPOK_PART", etKelompokPart.getText().toString());//dummy push to API
@@ -117,9 +121,9 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
                         inspeksiMenit = find(R.id.et_waktu_set_inspeksi, EditText.class).getText().toString().substring(6, 8);
 
                         String inspeksi;
-                        if(!find(R.id.et_waktu_set_inspeksi, EditText.class).getText().toString().equals(getResources().getString(R.string._00_00_00))){
+                        if (!find(R.id.et_waktu_set_inspeksi, EditText.class).getText().toString().equals(getResources().getString(R.string._00_00_00))) {
                             inspeksi = "Y";
-                        }else{
+                        } else {
                             inspeksi = "N";
                         }
 
@@ -161,10 +165,10 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
         }
     }
 
-    private void initAvailJasa(Nson jasa){
+    private void initAvailJasa(Nson jasa) {
         Nson readAvailJasa = Nson.readJson(getIntentStringExtra(JASA_LAIN));
         for (int i = 0; i < readAvailJasa.size(); i++) {
-            if(readAvailJasa.get(i).get("AKTIVITAS").asString().equals(jasa.get("AKTIVITAS").asString())){
+            if (readAvailJasa.get(i).get("AKTIVITAS").asString().equals(jasa.get("AKTIVITAS").asString())) {
                 showWarning("Jasa Lain Sudah Di tambahkan");
                 Intent intent = new Intent(getActivity(), JasaLain_Activity.class);
                 intent.putExtra("NEW", "");
@@ -175,7 +179,8 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
         }
     }
 
-    private void initListener(){
+    private void initListener() {
+        find(R.id.img_clear, ImageButton.class).setVisibility(View.GONE);
         etBiaya.addTextChangedListener(textWatcher);
         find(R.id.img_clear, ImageButton.class).setOnClickListener(this);
         find(R.id.btn_img_waktu_kerja).setOnClickListener(this);
@@ -218,7 +223,7 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
     @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.img_clear:
                 etBiaya.setText("");
                 break;
@@ -234,7 +239,7 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK && requestCode == REQUEST_JASA_LAIN){
+        if (resultCode == RESULT_OK && requestCode == REQUEST_JASA_LAIN) {
             initData();
         }
     }
