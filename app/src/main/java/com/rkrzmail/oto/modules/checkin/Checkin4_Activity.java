@@ -587,6 +587,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 args.put("estimasiSesudah", estimasiSesudah);
                 args.put("estimasiSelesai", estimasiSelesai);
                 args.put("keterangan", find(R.id.et_ket_checkin4, EditText.class).getText().toString());
+                args.put("lokasiLayanan", "BENGKEL");
                 //args.put("ttd", ttd);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));

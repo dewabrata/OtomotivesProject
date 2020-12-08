@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -70,8 +71,27 @@ public class TerimaPart extends AppActivity {
             }
         });
 
-        viewTerimaPart("");
+        find(R.id.swiperefresh, SwipeRefreshLayout.class).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                viewTerimaPart("");
+            }
+        });
+
         initRecylerview();
+    }
+
+    private void swipeProgress(final boolean show) {
+        if (!show) {
+            find(R.id.swiperefresh, SwipeRefreshLayout.class).setRefreshing(show);
+            return;
+        }
+        find(R.id.swiperefresh, SwipeRefreshLayout.class).post(new Runnable() {
+            @Override
+            public void run() {
+                find(R.id.swiperefresh, SwipeRefreshLayout.class).setRefreshing(show);
+            }
+        });
     }
 
     private void initRecylerview(){
@@ -124,6 +144,7 @@ public class TerimaPart extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
+                swipeProgress(true);
                 args.put("action", "view");
                 args.put("flag", "TERIMA_PART");
                 args.put("search", data);
@@ -133,6 +154,7 @@ public class TerimaPart extends AppActivity {
 
             @Override
             public void runUI() {
+                swipeProgress(false);
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());

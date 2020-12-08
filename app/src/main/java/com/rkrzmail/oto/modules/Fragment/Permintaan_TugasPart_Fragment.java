@@ -158,8 +158,6 @@ public class Permintaan_TugasPart_Fragment extends Fragment {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                   
-                    
                     rvPermintaan.getAdapter().notifyDataSetChanged();
                 } else {
                     ((TugasPart_MainTab_Activity) Objects.requireNonNull(getActivity())).showError(result.get("message").asString());

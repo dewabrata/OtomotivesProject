@@ -113,10 +113,7 @@ public class KontrolLayanan_Activity extends AppActivity {
         find(R.id.swiperefresh, SwipeRefreshLayout.class).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                //ob = 0;
-                //ix = 0;
                 catchData("");
-                //swipeRefreshLayout.setRefreshing(false);
             }
         });
     }
@@ -183,7 +180,7 @@ public class KontrolLayanan_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        //adapterSearchView(mSearchView, "nopol", "viewnopol", "NOPOL");
+        adapterSearchView(mSearchView, "", VIEW_KONTROL_LAYANAN, "NOPOL", "");
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
 

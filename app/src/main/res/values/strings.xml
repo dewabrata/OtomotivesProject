@@ -159,6 +159,7 @@
     <string name="nama_pelanggan_nama_usaha">Nama Pelanggan / Nama Usaha</string>
     <string name="sisa_waktu_uppercase">SISA WAKTU</string>
     <string name="nama_bank_uppercase">NAMA BANK</string>
+    <string name="lkk_claim_uppercase">LKK CLAIM</string>
     <string-array name="pola_harga_jual">
         <item>FLEXIBLE</item>
         <item>BELI + MARGIN</item>

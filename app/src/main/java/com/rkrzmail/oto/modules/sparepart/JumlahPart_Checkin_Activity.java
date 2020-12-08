@@ -36,7 +36,7 @@ import static com.rkrzmail.utils.ConstUtils.RP;
 import static com.rkrzmail.utils.ConstUtils.RUANG_PART;
 import static com.rkrzmail.utils.ConstUtils.TAMBAH_PART;
 
-public class JumlahPart_HargaPart_Activity extends AppActivity implements View.OnClickListener {
+public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnClickListener {
 
     private static final String TAG = "HargaPart____";
     private EditText etHpp, etHargaJual, etDiscPart, etBiayaJasa, etDiscJasa, etDp, etWaktuPesan, etJumlah;
@@ -45,6 +45,7 @@ public class JumlahPart_HargaPart_Activity extends AppActivity implements View.O
 
     private boolean isFlexible = false, isPartKosong = false, isPartWajib = false, isTambahPart = false;
     private String idLokasiPart = "", hpp = "";
+    private String inspeksi = "";
     private int stock = 0;
     private double discPart = 0;
 
@@ -291,6 +292,12 @@ public class JumlahPart_HargaPart_Activity extends AppActivity implements View.O
             initPartKosongValidation(nson,false);
         }
 
+        if(nson.get("FINAL_INS").asString().equals("Y") && !nson.get("FINAL_INS").asString().isEmpty()){
+            inspeksi = "Y";
+        }else{
+            inspeksi = "N";
+        }
+
         if (nson.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE") || nson.get("HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE")) {
             find(R.id.ly_hpp_jumlah_harga_part, TextInputLayout.class).setVisibility(View.VISIBLE);
             try {
@@ -428,15 +435,11 @@ public class JumlahPart_HargaPart_Activity extends AppActivity implements View.O
             sendData.set("PERGANTIAN", getIntentStringExtra("PERGANTIAN"));
             sendData.set("INSPEKSI", "");
         } else {
-            String inspeksi;
+
             if (hargaPart > 0) {
                 sendData.set("HARGA_PART", hargaPart);
             }
-            if(!find(R.id.et_waktu_set_inspeksi, EditText.class).getText().toString().equals(getResources().getString(R.string._00_00_00))){
-                inspeksi = "Y";
-            }else{
-                inspeksi = "N";
-            }
+
             sendData.set("INSPEKSI", inspeksi);
             sendData.set("PERGANTIAN", "0");
         }
@@ -524,7 +527,11 @@ public class JumlahPart_HargaPart_Activity extends AppActivity implements View.O
                 etBiayaJasa.setText("");
                 break;
             case R.id.btn_img_waktu_inspeksi:
-                getTimesDialog(find(R.id.et_waktu_set_inspeksi, EditText.class));
+                if(inspeksi.equals("Y")){
+                    getTimesDialog(find(R.id.et_waktu_set_inspeksi, EditText.class));
+                }else{
+                    showWarning("Part tidak perlu INSPEKSI");
+                }
                 break;
             case R.id.btn_img_waktu_kerja:
                 getTimesDialog(find(R.id.et_waktuSet, EditText.class));

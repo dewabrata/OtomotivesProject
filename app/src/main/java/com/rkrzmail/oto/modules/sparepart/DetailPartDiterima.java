@@ -413,18 +413,10 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
     public void onFocusChange(View v, boolean hasFocus) {
         switch (v.getId()) {
             case R.id.et_discPercent_terimaPart:
-                if (hasFocus) {
-                    etDiscRp.setEnabled(false);
-                } else {
-                    etDiscRp.setEnabled(true);
-                }
+                etDiscRp.setEnabled(!hasFocus);
                 break;
             case R.id.et_discRp_terimaPart:
-                if (hasFocus) {
-                    etDiscPercent.setEnabled(false);
-                } else {
-                    etDiscPercent.setEnabled(true);
-                }
+                etDiscPercent.setEnabled(!hasFocus);
                 break;
         }
     }

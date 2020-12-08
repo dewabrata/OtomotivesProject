@@ -18,7 +18,7 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.jasa.JasaLainBerkala_Activity;
 import com.rkrzmail.oto.modules.jasa.JasaLain_Activity;
 import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
-import com.rkrzmail.oto.modules.sparepart.JumlahPart_HargaPart_Activity;
+import com.rkrzmail.oto.modules.sparepart.JumlahPart_Checkin_Activity;
 import com.rkrzmail.oto.modules.sparepart.PartBerkala_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
@@ -227,7 +227,7 @@ public class Booking3_Activity extends AppActivity implements View.OnClickListen
                     Log.d(TAG, "REQUEST_JASA_BERKALA : " + nListArray);
                     break;
                 case REQUEST_CARI_PART:
-                    i = new Intent(getActivity(), JumlahPart_HargaPart_Activity.class);
+                    i = new Intent(getActivity(), JumlahPart_Checkin_Activity.class);
                     i.putExtra("data", Nson.readJson(getIntentStringExtra(data, "nopart")).toJson());
                     startActivityForResult(i, REQUEST_HARGA_PART);
                     break;
@@ -235,7 +235,7 @@ public class Booking3_Activity extends AppActivity implements View.OnClickListen
                     partList.add(Nson.readJson(getIntentStringExtra(data, "data")));
                     break;
                 case REQUEST_PART_EXTERNAL:
-                    i = new Intent(getActivity(), JumlahPart_HargaPart_Activity.class);
+                    i = new Intent(getActivity(), JumlahPart_Checkin_Activity.class);
                     i.putExtra("data", Nson.readJson(getIntentStringExtra(data, "part")).toJson());
                     startActivityForResult(i, REQUEST_HARGA_PART);
                     break;

@@ -3,6 +3,7 @@ package com.rkrzmail.oto.modules.mekanik;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -125,6 +126,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
         imgNote.setOnClickListener(this);
         find(R.id.btn_keluhan).setOnClickListener(this);
         find(R.id.btn_point_layanan).setOnClickListener(this);
+        find(R.id.btn_lkk).setOnClickListener(this);
         imgStart.setOnClickListener(this);
         imgStop.setOnClickListener(this);
     }
@@ -372,15 +374,6 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PERINTAH_KERJA_MEKANIK), args));
                 partJasaList.asArray().addAll(result.get("data").asArray());
-                /*for (int i = 0; i < result.size(); i++) {
-                    for (int j = 0; j < partJasaList.size(); j++) {
-                        if (!result.get("data").get(i).get("JASA_LAIN_ID").asString().isEmpty()
-                                && !partJasaList.get(j).get("JASA_ID").asString().equals(result.get("data").get(i).get("JASA_LAIN_ID").asString())) {
-                            partJasaList.add(result.get("data").get(i));
-                            break;
-                        }
-                    }
-                }*/
             }
 
             @Override
@@ -390,7 +383,10 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                         waktuHari += partJasaList.get(i).get("WAKTU_KERJA_HARI").asInteger();
                         waktuJam += partJasaList.get(i).get("WAKTU_KERJA_JAM").asInteger();
                         waktuMenit += partJasaList.get(i).get("WAKTU_KERJA_MENIT").asInteger();
-                        if (partJasaList.get(i).get("INSPEKSI_PART").asString().equals("Y") || partJasaList.get(i).get("INSPEKSI_JASA").asString().equals("Y")) {
+                        if (partJasaList.get(i).get("INSPEKSI_PART").asString().equals("Y") ||
+                                partJasaList.get(i).get("INSPEKSI_JASA").asString().equals("Y") ||
+                                partJasaList.get(i).get("INSPEKSI_MST_PART").asString().equals("Y") ||
+                                partJasaList.get(i).get("INSPEKSI_MST_JASA").asString().equals("Y")) {
                             isInspeksi = true;
                         }
                     }
@@ -596,6 +592,9 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 break;
             case R.id.btn_keluhan:
                 initKeluhanDialog();
+                break;
+            case R.id.btn_lkk:
+                setIntent(LkkClaimMekanik_Activity.class, 0);
                 break;
         }
     }

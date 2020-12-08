@@ -35,6 +35,7 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
     private int jasaId = 0;
     private String hari = "", jam = "", menit = "";
     private String inspeksiJam = "", inspeksiMenit = "";
+    private String inspeksi = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +75,12 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
                     !n.get("DISCOUNT_JASA").asString().equals("0.0")) {
                 find(R.id.et_discJasa).setVisibility(View.VISIBLE);
                 find(R.id.et_discJasa, EditText.class).setText(n.get("DISCOUNT_JASA").asString() + " %");
+            }
+
+            if (n.get("INSPEKSI").asString().equals("Y")) {
+                inspeksi = "Y";
+            } else {
+                inspeksi = "N";
             }
 
             etKelompokPart.setText(n.get("KELOMPOK_PART").asString());
@@ -120,13 +127,6 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
                         inspeksiJam = find(R.id.et_waktu_set_inspeksi, EditText.class).getText().toString().substring(3, 5);
                         inspeksiMenit = find(R.id.et_waktu_set_inspeksi, EditText.class).getText().toString().substring(6, 8);
 
-                        String inspeksi;
-                        if (!find(R.id.et_waktu_set_inspeksi, EditText.class).getText().toString().equals(getResources().getString(R.string._00_00_00))) {
-                            inspeksi = "Y";
-                        } else {
-                            inspeksi = "N";
-                        }
-
                         nson.set("INSPEKSI", inspeksi);
                         nson.set("WAKTU_KERJA_HARI", hari);
                         nson.set("WAKTU_KERJA_JAM", jam);
@@ -168,7 +168,8 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
     private void initAvailJasa(Nson jasa) {
         Nson readAvailJasa = Nson.readJson(getIntentStringExtra(JASA_LAIN));
         for (int i = 0; i < readAvailJasa.size(); i++) {
-            if (readAvailJasa.get(i).get("AKTIVITAS").asString().equals(jasa.get("AKTIVITAS").asString())) {
+            if (readAvailJasa.get(i).get("AKTIVITAS").asString().equals(jasa.get("AKTIVITAS").asString()) &&
+                    readAvailJasa.get(i).get("NAMA_KELOMPOK_PART").asString().equals(jasa.get("NAMA_KELOMPOK_PART").asString())) {
                 showWarning("Jasa Lain Sudah Di tambahkan");
                 Intent intent = new Intent(getActivity(), JasaLain_Activity.class);
                 intent.putExtra("NEW", "");
@@ -231,7 +232,11 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
                 getTimesDialog(find(R.id.et_waktuSet, EditText.class));
                 break;
             case R.id.btn_img_waktu_inspeksi:
-                getTimesDialog(find(R.id.et_waktu_set_inspeksi, EditText.class));
+                if(inspeksi.equals("Y")){
+                    getTimesDialog(find(R.id.et_waktu_set_inspeksi, EditText.class));
+                }else{
+                    showWarning("Jasa Lain Tidak Perlu INSPEKSI");
+                }
                 break;
         }
     }

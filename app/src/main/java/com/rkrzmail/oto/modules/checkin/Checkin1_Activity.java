@@ -524,6 +524,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     nson.set("noMesin", noMesin);
                     nson.set("tglBeli", tglBeli);
                     nson.set("tahunProduksi", tahunProduksi);
+                    nson.set("pekerjaan", pekerjaan);
 
                     Intent intent;
                     if (!noRangka.isEmpty() && !noMesin.isEmpty()) {

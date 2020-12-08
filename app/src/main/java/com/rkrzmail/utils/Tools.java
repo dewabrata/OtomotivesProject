@@ -560,6 +560,24 @@ public class Tools {
             return null;
         }
 
+        public TimePart subtraction(TimePart a) {
+            int of = 0;
+            this.minutes -= a.minutes + of;
+            of = 0;
+            while (this.minutes >= 60) {
+                of++;
+                this.minutes -= 60;
+            }
+            this.hours -= a.hours + of;
+            of = 0;
+            while (this.hours >= 24) {
+                of++;
+                this.hours -= 24;
+            }
+            this.days -= a.days + of;
+            return this;
+        }
+
         public TimePart add(TimePart a) {
             int of = 0;
             this.minutes += a.minutes + of;

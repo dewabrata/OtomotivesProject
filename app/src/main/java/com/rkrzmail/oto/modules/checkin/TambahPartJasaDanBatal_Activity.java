@@ -1,20 +1,15 @@
 package com.rkrzmail.oto.modules.checkin;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -36,7 +31,7 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.gmod.Capture;
 import com.rkrzmail.oto.modules.jasa.JasaLain_Activity;
 import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
-import com.rkrzmail.oto.modules.sparepart.JumlahPart_HargaPart_Activity;
+import com.rkrzmail.oto.modules.sparepart.JumlahPart_Checkin_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
@@ -46,18 +41,13 @@ import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static com.rkrzmail.utils.APIUrls.ATUR_KONTROL_LAYANAN;
 import static com.rkrzmail.utils.ConstUtils.BATAL_PART;
-import static com.rkrzmail.utils.ConstUtils.BENGKEL;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
@@ -485,7 +475,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                     }
                     break;
                 case REQUEST_CARI_PART:
-                    i = new Intent(getActivity(), JumlahPart_HargaPart_Activity.class);
+                    i = new Intent(getActivity(), JumlahPart_Checkin_Activity.class);
                     i.putExtra(DATA, Nson.readJson(getIntentStringExtra(data, PART)).toJson());
                     i.putExtra(TAMBAH_PART, "");
                     startActivityForResult(i, REQUEST_HARGA_PART);

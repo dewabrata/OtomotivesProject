@@ -561,7 +561,12 @@ public class AppActivity extends AppCompatActivity {
                 }
                 String search;
                 if (!getItem(position).containsKey("NAMA_LAIN")) {
-                    search = getItem(position).get(jsonObject).asString();
+                    if(getItem(position).containsKey("NOPOL")){
+                        search = formatNopol(getItem(position).get(jsonObject).asString());
+                    }else{
+                        search = getItem(position).get(jsonObject).asString();
+                    }
+
                 } else {
                     search = getItem(position).get(jsonObject).asString() + " ( " + getItem(position).get("NAMA_LAIN").asString() + " ) ";
                 }
@@ -1001,4 +1006,10 @@ public class AppActivity extends AppCompatActivity {
             }
         }
     }
+
+    public void setIntent(Class destination, int reqCode){
+        Intent i = new Intent(getActivity(), destination);
+        startActivityForResult(i, reqCode);
+    }
+
 }
