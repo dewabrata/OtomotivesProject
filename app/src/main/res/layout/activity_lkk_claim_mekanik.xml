@@ -146,7 +146,6 @@
                         android:id="@+id/et_namapart_lkkclaim"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:enabled="false"
                         android:hint="PART_NEW"
                         android:textSize="14sp" />
 
@@ -158,7 +157,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/paddingXXSmall"
-                android:gravity="center"
                 android:orientation="horizontal">
 
                 <TextView
@@ -181,7 +179,6 @@
                         android:id="@+id/et_nopart_lkkclaim"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:enabled="false"
                         android:inputType="numberDecimal"
                         android:textSize="14sp" />
 
@@ -216,7 +213,6 @@
                         android:id="@+id/et_merkpart_lkkclaim"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:enabled="false"
                         android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -250,7 +246,7 @@
                         android:id="@+id/sp_kondisipart_lkkclaim"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:textAlignment="center"/>
+                        android:textAlignment="center" />
 
                 </RelativeLayout>
 
@@ -301,7 +297,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
-                    android:text="TINDAKAN KERUSAKAN"
+                    android:text="TINDAKAN PERBAIKAN"
                     android:textColor="@color/grey_900"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -313,7 +309,7 @@
                     android:background="@drawable/background_edittext">
 
                     <Spinner
-                        android:id="@+id/sp_tindakan_kerusakan"
+                        android:id="@+id/sp_tindakan_perbaikan"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:textAlignment="center"/>
@@ -453,6 +449,7 @@
                     android:layout_width="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/foto_stnk"
+                    android:enabled="false"
                     android:background="@drawable/btn_rounded_accent"
                     android:textColor="@android:color/white" />
 
@@ -462,6 +459,7 @@
                     android:layout_width="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/foto_ktp"
+                    android:enabled="false"
                     android:background="@drawable/btn_rounded_accent"
                     android:textColor="@android:color/white" />
 
@@ -492,9 +490,16 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="?attr/actionBarSize"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-        <include layout="@layout/toolbar"/>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <include layout="@layout/btn_search" />
+
+        </FrameLayout>
 
     </android.support.design.widget.AppBarLayout>
 
