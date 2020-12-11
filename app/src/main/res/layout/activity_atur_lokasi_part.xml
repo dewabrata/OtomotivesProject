@@ -56,7 +56,6 @@
                         android:id="@+id/et_no_part"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:enabled="false"
                         android:hint="NO. PART"
                         android:textSize="14sp" />
 

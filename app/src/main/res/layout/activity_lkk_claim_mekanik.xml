@@ -22,33 +22,25 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/paddingSemiLarge"
-                android:layout_marginBottom="@dimen/paddingMedium"
+                android:layout_marginBottom="@dimen/paddingSmall"
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="0dp"
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:text="DESKRIPSI KERUSAKAN"
-                    android:textColor="@color/grey_900"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
+                    android:textAlignment="center"
+                    android:layout_weight="1">
 
-                <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_height="34dp"
-                    android:layout_weight="6"
-                    android:background="@drawable/background_edittext">
-
-                    <Spinner
-                        android:id="@+id/sp_desc_kerusakan"
+                    <EditText
+                        android:id="@+id/et_desc_kerusakan"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:textAlignment="center"/>
+                        android:hint="DESKRIPSI KERUSAKAN"
+                        android:textSize="14sp" />
 
-                </RelativeLayout>
+                </android.support.design.widget.TextInputLayout>
 
             </LinearLayout>
 
@@ -122,18 +114,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/paddingXXSmall"
+                android:layout_marginBottom="@dimen/paddingSmall"
                 android:gravity="center"
                 android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="NAMA PART"
-                    android:textColor="@color/grey_900"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
 
                 <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -147,6 +130,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:hint="PART_NEW"
+                        android:enabled="false"
                         android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -159,15 +143,6 @@
                 android:layout_marginBottom="@dimen/paddingXXSmall"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="NO PART"
-                    android:textColor="@color/grey_900"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-
                 <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="80dp"
@@ -179,7 +154,8 @@
                         android:id="@+id/et_nopart_lkkclaim"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:inputType="numberDecimal"
+                        android:hint="NO PART"
+                        android:enabled="false"
                         android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -193,15 +169,6 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="MERK PART"
-                    android:textColor="@color/grey_900"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-
                 <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="80dp"
@@ -213,6 +180,8 @@
                         android:id="@+id/et_merkpart_lkkclaim"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:hint="MERK PART"
+                        android:enabled="false"
                         android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -312,6 +281,7 @@
                         android:id="@+id/sp_tindakan_perbaikan"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:entries="@array/tindakan_perbaikan"
                         android:textAlignment="center"/>
 
                 </RelativeLayout>
@@ -331,8 +301,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="5dp"
-                    android:layout_marginRight="110dp"
+                    android:layout_marginRight="106dp"
                     android:gravity="center"
+                    android:enabled="false"
                     android:text="CLAIM GARANSI" />
 
             </LinearLayout>
@@ -344,29 +315,23 @@
                 android:layout_marginBottom="@dimen/paddingMedium"
                 android:gravity="center"
                 android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:text="INFO TAMBAHAN"
-                    android:textColor="@color/grey_900"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
+                    android:textAlignment="center"
+                    android:layout_weight="1">
 
-                <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_height="34dp"
-                    android:layout_weight="6"
-                    android:background="@drawable/background_edittext">
-
-                    <Spinner
-                        android:id="@+id/sp_infotambahan"
+                    <EditText
+                        android:id="@+id/et_info_tambahan"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:textAlignment="center"/>
+                        android:enabled="true"
+                        android:hint="Informasi Tambahan"
+                        android:textSize="14sp" />
 
-                </RelativeLayout>
+                </android.support.design.widget.TextInputLayout>
+
 
             </LinearLayout>
 
@@ -376,15 +341,6 @@
                 android:layout_marginBottom="@dimen/paddingXXSmall"
                 android:gravity="center"
                 android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="NIK PEMILIK"
-                    android:textColor="@color/grey_900"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
 
                 <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -398,7 +354,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:enabled="false"
-                        android:inputType="numberDecimal"
+                        android:hint="Nik Pemilik"
                         android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -410,15 +366,6 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="NO.BUKU GARANSI"
-                    android:textColor="@color/grey_900"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
 
                 <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -432,6 +379,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:enabled="false"
+                        android:hint="No Buku Garansi"
                         android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>

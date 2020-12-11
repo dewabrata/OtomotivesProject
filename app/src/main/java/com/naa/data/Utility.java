@@ -1333,6 +1333,12 @@ public class Utility {
 		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());
 	}
 
+	public static String NowTime() {
+		Calendar calendar = Calendar.getInstance();
+
+		return new SimpleDateFormat("HH:mm:ss").format(calendar.getTime());
+	}
+
 	public static String NowOnlyDate() {
 		Calendar calendar = Calendar.getInstance();
 
