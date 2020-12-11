@@ -51,6 +51,7 @@ public class ConstUtils {
     public static final String CARI_PART_BENGKEL = "bengkel";
     public static final String CARI_PART_OTOMOTIVES = "global";
     public static final String CARI_PART_TERALOKASIKAN = "TERALOKASI";
+    public static final String CARI_PART_CHECKIN = "CHECKIN";
     //REQUEST CODE
     public static final int REQUEST_KONFIRMASI = 4;
     public static final int REQUEST_WA = 5;

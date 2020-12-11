@@ -76,7 +76,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
 
 
     private Spinner sp_tipekerusakan,sp_kondisipelanggan,sp_kondisipart,sp_sebabkerusakan,sp_tindakan;
-    private EditText et_namapart, et_nopart, et_merkpart, et_nikpemilik, et_nobuku;
+    private EditText et_namapart, et_nopart, et_merkpart, et_nikpemilik, et_nobuku, et_desc, et_info;
     private Button btn_fotostnk, btn_fotoktp, btn_simpan;
     private CheckBox cbClaim;
     private Nson dataSebabList = Nson.newArray(), SebabArray = Nson.newArray();
@@ -92,12 +92,14 @@ public class LkkClaimMekanik_Activity extends AppActivity {
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("LKK CLAIM ");
+        getSupportActionBar().setTitle("LKK CLAIM");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initComponent() {
         initToolbar();
+        et_desc = findViewById(R.id.et_desc_kerusakan);
+        et_info = findViewById(R.id.et_info_tambahan);
         et_merkpart = findViewById(R.id.et_merkpart_lkkclaim);
         et_namapart = findViewById(R.id.et_namapart_lkkclaim);
         et_nopart = findViewById(R.id.et_nopart_lkkclaim);
@@ -112,8 +114,6 @@ public class LkkClaimMekanik_Activity extends AppActivity {
         sp_tindakan =  findViewById(R.id.sp_tindakan_perbaikan);
         btn_simpan = findViewById(R.id.btn_simpan_lkkclaim);
         cbClaim = (CheckBox) findViewById(R.id.cb_claimgaransi);
-
-
 
         setSpinnerFromApi(sp_kondisipart, "nama", "KONDISI PART", "viewmst", "KONDISI");
         setSpSebabKerusakan();
@@ -138,7 +138,13 @@ public class LkkClaimMekanik_Activity extends AppActivity {
         findViewById(R.id.btn_simpan_lkkclaim).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SimpanData();
+                if(et_desc.getText().toString().isEmpty()){
+                    showWarning("DESKRIPSI KERUSAKAN TIDAK BOLEH KOSONG");
+                }else if (et_info.getText().toString().isEmpty()){
+                    showWarning("INFO TAMBAHAN TIDAK BOLEH KOSONG");
+                }else {
+                    SimpanData();
+                }
             }
         });
 
@@ -218,7 +224,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
     private void SimpanData(){
         final String namaPart = et_namapart.getText().toString().toUpperCase();
         final String nik = et_nikpemilik.getText().toString().toUpperCase();
-        final String descKerusakan = find(R.id.et_desc_kerusakan,EditText.class).getText().toString().toUpperCase();
+        final String descKerusakan = et_desc.getText().toString().toUpperCase();
         final String infoTambahan = find(R.id.et_info_tambahan,EditText.class).getText().toString().toUpperCase();
         final String tipeKerusakan = sp_tipekerusakan.getSelectedItem().toString().toUpperCase();
         final String kondisiPelanggan = sp_kondisipelanggan.getSelectedItem().toString().toUpperCase();

@@ -32,6 +32,7 @@ import static com.rkrzmail.utils.APIUrls.VIEW_MASTER;
 import static com.rkrzmail.utils.APIUrls.VIEW_SPAREPART;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_BENGKEL;
+import static com.rkrzmail.utils.ConstUtils.CARI_PART_CHECKIN;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_OTOMOTIVES;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_TERALOKASIKAN;
@@ -48,7 +49,8 @@ public class CariPart_Activity extends AppActivity {
             flagBengkel = false,
             flagMasterPart = false,
             isLokasi = false,
-            isTeralokasikan = false;
+            isTeralokasikan = false,
+            isPartCheckin= false;
     private Toolbar toolbar;
     int countForCariPart = 0;
     private String cari;
@@ -93,6 +95,9 @@ public class CariPart_Activity extends AppActivity {
             isTeralokasikan = true;
             getSupportActionBar().setTitle("Cari Part Bengkel");
             flag = true;
+        }else if (getIntent().hasExtra(CARI_PART_CHECKIN)){
+            isPartCheckin = true;
+            getSupportActionBar().setTitle("Cari Part Bengkel");
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -108,6 +113,8 @@ public class CariPart_Activity extends AppActivity {
         }else if(isTeralokasikan){
             initRecylerViewCarPartTeralokasikan();
             cariPartTeralokasikan("");
+        }else if(isPartCheckin){
+
         }else{
             if (countForCariPart == 0) {
                 cariPart("");
@@ -301,6 +308,31 @@ public class CariPart_Activity extends AppActivity {
     }
 
     private void cariPartTeralokasikan(final String cari) {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "view");
+                args.put("search", cari);
+                args.put("flag", "TERALOKASI");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_LOKASI_PART), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    partLokasiPart.asArray().clear();
+                    partLokasiPart.asArray().addAll(result.get("data").asArray());
+                    rvCariPart.getAdapter().notifyDataSetChanged();
+                } else {
+                    showError(result.get("message").asString());
+                }
+            }
+        });
+    }
+
+    private void cariPartCheckin(final String cari) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override

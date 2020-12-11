@@ -738,18 +738,18 @@ public class AppActivity extends AppCompatActivity {
         }
     }
 
-    private EditText getAllEditText(ViewGroup v) {
+    private EditText getAllEditText(ViewGroup v, boolean isEmpty) {
         EditText invalid = null;
         for (int i = 0; i < v.getChildCount(); i++) {
             Object child = v.getChildAt(i);
             if (child instanceof EditText) {
                 EditText e = (EditText) child;
-                if (e.getText().length() == 0) {    // Whatever logic here to determine if valid.
+                if (e.getText().length() == 0 && !isEmpty) {    // Whatever logic here to determine if valid.
                     e.setError("Harus Di isi");
                     return e;   // Stops at first invalid one. But you could add this to a list.
                 }
             } else if (child instanceof ViewGroup) {
-                invalid = getAllEditText((ViewGroup) child);  // Recursive call.
+                invalid = getAllEditText((ViewGroup) child, !isEmpty);  // Recursive call.
                 if (invalid != null) {
                     break;
                 }
@@ -759,10 +759,22 @@ public class AppActivity extends AppCompatActivity {
     }
 
     public boolean validateFields(ViewGroup viewGroup) {
-        EditText emptyText = getAllEditText(viewGroup);
+        EditText emptyText = getAllEditText(viewGroup, false);
         if (emptyText != null) {
             emptyText.setError("Harus di isi");
             emptyText.requestFocus();
+        }
+        return emptyText != null;
+    }
+
+    public boolean validateFields(ViewGroup viewGroup, EditText editText) {
+        boolean ex = editText.getText().toString().isEmpty();
+        EditText emptyText = getAllEditText(viewGroup, ex);
+        if (emptyText != null) {
+            if(!ex){
+                emptyText.setError("test di isi");
+                emptyText.requestFocus();
+            }
         }
         return emptyText != null;
     }
