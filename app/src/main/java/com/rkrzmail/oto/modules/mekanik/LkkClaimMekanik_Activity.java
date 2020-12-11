@@ -63,9 +63,12 @@ import static com.rkrzmail.utils.APIUrls.VIEW_LAYANAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_MST;
 import static com.rkrzmail.utils.APIUrls.VIEW_PERINTAH_KERJA_MEKANIK;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_BENGKEL;
+
+import static com.rkrzmail.utils.ConstUtils.CARI_PART_CLAIM;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_OTOMOTIVES;
 import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.GARANSI_PART;
 import static com.rkrzmail.utils.ConstUtils.PART;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
@@ -142,6 +145,22 @@ public class LkkClaimMekanik_Activity extends AppActivity {
                     showWarning("DESKRIPSI KERUSAKAN TIDAK BOLEH KOSONG");
                 }else if (et_info.getText().toString().isEmpty()){
                     showWarning("INFO TAMBAHAN TIDAK BOLEH KOSONG");
+                }else if (et_namapart.getText().toString().isEmpty()){
+                    showWarning("NAMA PART TIDAK BOLEH KOSONG");
+                }else if (et_nopart.getText().toString().isEmpty()){
+                    showWarning("NO PART TIDAK BOLEH KOSONG");
+                }else if (et_merkpart.getText().toString().isEmpty()){
+                    showWarning("MERK PART TIDAK BOLEH KOSONG");
+                }else if(sp_kondisipart.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")){
+                    showWarning("KONDISI PART TIDAK BOLEH KOSONG");
+                }else if(sp_tipekerusakan.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
+                    showWarning("TIPE KERUSAKAN TIDAK BOLEH KOSONG");
+                }else if(sp_kondisipelanggan.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
+                    showWarning("KONDISI PELANGGAN TIDAK BOLEH KOSONG");
+                }else if(sp_sebabkerusakan.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
+                    showWarning("SEBAB KERUSAKAN TIDAK BOLEH KOSONG");
+                }else if(cbClaim.isChecked() && et_nikpemilik.getText().toString().isEmpty()) {
+                    showWarning("NIK TIDAK BOLEH KOSONG");
                 }else {
                     SimpanData();
                 }
@@ -152,7 +171,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getActivity(), CariPart_Activity.class);
-                i.putExtra(CARI_PART_LOKASI, RUANG_PART);
+                i.putExtra(CARI_PART_CLAIM, GARANSI_PART);
                 startActivityForResult(i, REQUEST_CARI_PART);
             }
         });
@@ -305,7 +324,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
             et_namapart.setText(nson.get("NAMA_PART").asString());
 
             idpart=nson.get("PART_ID").asString();
-            stockBengkel=nson.get("STOCK_BENGKEL").asString();
+            stockBengkel=nson.get("STOCK").asString();
 
         }
     }

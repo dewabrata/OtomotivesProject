@@ -46,12 +46,13 @@ public class ConstUtils {
     public static final String PENYESUAIAN = "PENYESUAIAN";
     public static final String RUANG_PART = "RUANG PART";
     public static final String PART_WAJIB = "PART WAJIB";
+    public static final String GARANSI_PART = "GARANSI PART";
     //FLAG CARI PART
     public static final String CARI_PART_LOKASI = "cari_part_lokasi";
     public static final String CARI_PART_BENGKEL = "bengkel";
     public static final String CARI_PART_OTOMOTIVES = "global";
     public static final String CARI_PART_TERALOKASIKAN = "TERALOKASI";
-    public static final String CARI_PART_CHECKIN = "CHECKIN";
+    public static final String CARI_PART_CLAIM = "CLAIM";
     //REQUEST CODE
     public static final int REQUEST_KONFIRMASI = 4;
     public static final int REQUEST_WA = 5;
