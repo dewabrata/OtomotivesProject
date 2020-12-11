@@ -48,7 +48,7 @@ public class Status_TugasPart_Activity extends AppActivity {
     private boolean isJualPart = false;
     private String mGroup = "";
     private String mekanik = "", tanggal = "", nopol = "", noHp = "";
-    private String idLokasiPart = "", idDetail = "", idTugasPat = "", idCheckin = "";
+    private String idLokasiPart = "", idDetail = "", idTugasPat = "", idCheckin = "", idJualPart = "";
     private int jumlahSerahTerima = 0;
 
     @Override
@@ -114,13 +114,14 @@ public class Status_TugasPart_Activity extends AppActivity {
     private void loadData() {
         Nson n = Nson.readJson(getIntentStringExtra(DATA));
         etPelanggan.setText(n.get("NAMA_PELANGGAN").asString());
-        etMekanik.setText(isJualPart ? n.get("USER_JUAL").asString() : n.get("MEKANIK").asString());
+        etMekanik.setText(n.get("MEKANIK").asString());
 
         noHp = n.get("NO_PONSEL").asString();
         idLokasiPart = n.get("LOKASI_PART_ID").asString();
         idDetail = n.get("DETAIL_ID").asString();
         nopol = n.get("NOPOL").asString();
         idCheckin = n.get("CHECKIN_ID").asString();
+        idJualPart = n.get("JUAL_PART_ID").asString();
         tanggal = isJualPart ? n.get("TANGGAL").asString() : n.get("TANGGAL_CHECKIN").asString();
         viewTugasPart();
     }
@@ -154,6 +155,11 @@ public class Status_TugasPart_Activity extends AppActivity {
                             Intent i = new Intent(getActivity(), JumlahPart_TugasPart_Activity.class);
                             i.putExtra(TUGAS_PART_PERMINTAAN, mGroup);
                             i.putExtra(DATA, nListArray.get(position).toJson());
+                            if(isJualPart){
+                                i.putExtra("JUAL_PART_ID", idJualPart);
+                            }else{
+                                i.putExtra("CHECKIN_ID", idCheckin);
+                            }
                             startActivityForResult(i, REQUEST_TUGAS_PART);
                         }
                         /*if(isTersedia){

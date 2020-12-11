@@ -66,12 +66,12 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             batasanBulan = "",
             pekerjaan = "",
             merkKendaraan = "",
-            jenisKendaraan = "",
+            kendaraan = "",
             modelKendaraan = "",
             noRangka = "",
             noMesin = "",
             lokasi = "",
-            jenis = "",
+            jenisKendaraan = "",
             tglBeli = "";
     private int kendaraanId = 0;
     private Nson nopolList = Nson.newArray(), keluhanList = Nson.newArray();
@@ -371,7 +371,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 isNoHp = true;
 
                 merkKendaraan = n.get("MERK").asString();
-                jenisKendaraan = n.get("TYPE").asString();
+                kendaraan = n.get("TYPE").asString();
                 varianKendaraan = n.get("VARIAN").asString();
                 modelKendaraan = n.get("MODEL").asString();
                 kendaraanId = n.get("KENDARAAN_ID").asInteger();
@@ -381,6 +381,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 noMesin = n.get("NO_MESIN").asString();
                 tglBeli = n.get("TANGGAL_BELI").asString();
                 tahunProduksi =  n.get("TAHUN_PRODUKSI").asString();
+                jenisKendaraan = n.get("JENIS").asString();
 
                 String nomor = n.get("NO_PONSEL").asString();
                 if (nomor.length() > 4) {
@@ -439,9 +440,9 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
-                String jenisKendaraan = getSetting("JENIS_KENDARAAN");
-                if (!jenisKendaraan.equalsIgnoreCase(n.get("TYPE").asString())) {
-                    showWarning("Bengkel Hanya Melayani Kendaraan " + jenisKendaraan, Toast.LENGTH_LONG);
+                String kendaraan = getSetting("JENIS_KENDARAAN");
+                if (!kendaraan.equalsIgnoreCase(n.get("TYPE").asString())) {
+                    showWarning("Bengkel Hanya Melayani Kendaraan " + kendaraan, Toast.LENGTH_LONG);
                     etJenisKendaraan.setText("");
                     etJenisKendaraan.requestFocus();
                     return;
@@ -451,9 +452,10 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 kendaraanId = n.get("ID").asInteger();
                 merkKendaraan = n.get("MERK").asString();
                 varianKendaraan = n.get("VARIAN").asString();
+                Checkin1_Activity.this.kendaraan = n.get("TYPE").asString();
                 modelKendaraan = n.get("MODEL").asString();
                 tahunProduksi = n.get("TAHUN1").asString();
-                jenis = n.get("JENIS").asString();
+                jenisKendaraan = n.get("JENIS").asString();
 
                 String stringBuilder = n.get("MERK").asString() + " " +
                         //stringBuilder.append(n.get("JENIS").asString()).append(" ");
@@ -467,7 +469,6 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
     private void setSelanjutnya() {
         final String nopol = etNopol.getText().toString().replace(" ", "").toUpperCase();
         final String namaPelanggan = etNamaPelanggan.getText().toString().toUpperCase();
-        final String jenisKendaraan = etJenisKendaraan.getText().toString().toUpperCase();
         final String km = etKm.getText().toString();
         final String pekerjaan = spPekerjaan.getSelectedItem().toString().toUpperCase();
         final String pemilik = find(R.id.cb_pemilik_checkin1, CheckBox.class).isChecked() ? "Y" : "N";
@@ -481,8 +482,8 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 args.put("action", "add");
                 args.put("jenisCheckin", "1");
                 args.put("nopol", nopol);
-                args.put("jeniskendaraan", jenisKendaraan);//dateKendaraan
-                args.put("noPonsel", isNoHp ? noHp : etNoPonsel.getText().toString().replaceAll("[^0-9]+", ""));
+                args.put("jeniskendaraan", etJenisKendaraan.getText().toString().toUpperCase());//dateKendaraan
+                args.put("noPonsel", isNoHp ? noHp : formatOnlyNumber(etNoPonsel.getText().toString()));
                 args.put("nama", namaPelanggan);
                 args.put("isPemilik", pemilik);//dateKendaraan
                 args.put("keluhan_list", keluhanList.toJson());
@@ -496,12 +497,12 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 args.put("lokasiLayanan", getSetting("LOKASI_PENUGASAN"));
                 args.put("rangka", noRangka);
                 args.put("mesin", noMesin);
-                args.put("jenis", jenis);//dateKendaraan
+                args.put("jenis", jenisKendaraan);//dateKendaraan
                 args.put("noStnk", "");//dateKendaraan
                 args.put("kadaluarsa", "");//dateKendaraan
                 args.put("idDealer", "");//dateKendaraan
                 args.put("asalData", "");//dateKendaraan
-                args.put("type", jenisKendaraan);//dateKendaraan
+                args.put("type", kendaraan);//dateKendaraan
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
             }
@@ -512,19 +513,29 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     Nson nson = Nson.newObject();
 
                     nson.set("CHECKIN_ID", result.get("data").get("CHECKIN_ID").asString());
-                    nson.set("DATA_KENDARAAN_ID", result.get("data").get("DATA_KENDARAAN_ID").asString());
-                    nson.set("jeniskendaraan", jenisKendaraan);
+                    int idKendaraan;
+                    if(result.get("data").containsKey("DATA_KENDARAAN_ID")){
+                        idKendaraan = result.get("data").get("DATA_KENDARAAN_ID").asInteger();
+                    }else{
+                        idKendaraan = result.get("data").get("DATA_KENDARAAN_ID_UPDATE").asInteger();
+                    }
+
+                    nson.set("DATA_KENDARAAN_ID", idKendaraan);
+                    nson.set("kendaraan", kendaraan);
                     nson.set("model", modelKendaraan);
                     nson.set("merk", merkKendaraan);
                     nson.set("varian", varianKendaraan);
                     nson.set("tahunProduksi", tahunProduksi);
                     nson.set("km", etKm.getText().toString());
-                    nson.set("jenis", jenis.isEmpty() ? jenis : jenisKendaraan);
+                    nson.set("jenisKendaraan", jenisKendaraan);
                     nson.set("noRangka", noRangka);
                     nson.set("noMesin", noMesin);
                     nson.set("tglBeli", tglBeli);
                     nson.set("tahunProduksi", tahunProduksi);
                     nson.set("pekerjaan", pekerjaan);
+                    nson.set("noPonsel", isNoHp ? noHp : formatOnlyNumber(etNoPonsel.getText().toString()));
+                    nson.set("nopol", nopol);
+                    nson.set("kendaraanPelanggan", etJenisKendaraan.getText().toString());
 
                     Intent intent;
                     if (!noRangka.isEmpty() && !noMesin.isEmpty()) {

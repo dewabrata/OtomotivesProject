@@ -43,7 +43,7 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
             nopol = "", noAntrian = "",
             namaPelanggan = "", status = "", layanan = "",
             jamAntrian = "", partId ="", group = "", noHp = "";
-    private String idLokasiPart = "", idTugasPat = "", idDetail = "";
+    private String idLokasiPart = "", idTugasPat = "", idDetail = "", idJualPart = "", idCheckin = "";
     private boolean isJualPart = false;
 
     private int counScanPart = 0;
@@ -88,6 +88,8 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
         jamAntrian = nson.get("ESTIMASI_SEBELUM").asString();//estimasi mulai checkin
         partId = nson.get("PART_ID").asString();
         idLokasiPart = nson.get("LOKASI_PART_ID").asString();
+        idJualPart =  nson.get("JUAL_PART_ID").asString();
+        idCheckin = nson.get("CHECKIN_ID").asString();
 
         if (getIntent().hasExtra(TUGAS_PART_PERMINTAAN)) {
             isPermintaan = true;
@@ -178,6 +180,8 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
                 args.put("tanggal", currentDateTime("yyyy-MM-dd hh:mm"));
                 args.put("group", group);
                 args.put("idTugasPart", idTugasPat);
+                args.put("jualPartId", idJualPart);
+                args.put("checkinId", idCheckin);
 
                 args.put("detailId", idDetail);
                 if (isPermintaan) {

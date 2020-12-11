@@ -23,6 +23,7 @@ public class JasaExternal_Activity extends AppActivity {
 
     private static final String TAG = "JasaEx__";
     private Nson sendData = Nson.newObject();
+    private String inspeksi = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,11 @@ public class JasaExternal_Activity extends AppActivity {
 
     private void initComponent() {
         final Nson nson = Nson.readJson(getIntentStringExtra(DATA));
+        if(nson.get("FINAL_INS").asString().equals("Y") && !nson.get("FINAL_INS").asString().isEmpty()){
+            inspeksi = "Y";
+        }else{
+            inspeksi = "N";
+        }
         watcher(find(R.id.img_clear2, ImageButton.class), find(R.id.et_biayaJasa, EditText.class));
         Log.d(TAG, "Jasa External : " + nson);
 
@@ -70,7 +76,12 @@ public class JasaExternal_Activity extends AppActivity {
         find(R.id.btn_img_waktu_inspeksi).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getTimesDialog(find(R.id.et_waktu_set_inspeksi, EditText.class));
+                if(inspeksi.equals("N")){
+                    showWarning("Part tidak perlu INSPEKSI");
+                }else{
+                    getTimesDialog(find(R.id.et_waktu_set_inspeksi, EditText.class));
+                }
+
             }
         });
     }
@@ -93,28 +104,29 @@ public class JasaExternal_Activity extends AppActivity {
             find(R.id.et_biayaJasa, EditText.class).setError("Biaya Jasa Harus Di isi");
             find(R.id.et_biayaJasa, EditText.class).requestFocus();
         } else {
-            sendData.set("PART_ID", nson.get("ID").asString());
-            sendData.set("JUMLAH", "");
-            sendData.set("NAMA_PART", nson.get("NAMA_MASTER").asString());
-            sendData.set("NO_PART", nson.get("NOMOR_PART_NOMOR").asString());
+            sendData.set("PART_ID", nson.get("PART_ID").asString());
+            sendData.set("JUMLAH", "0");
+            sendData.set("NAMA_PART", nson.get("MASTER_NAME").asString());
+            sendData.set("NO_PART", nson.get("NO_PART").asString());
             sendData.set("MERK", nson.get("MERK").asString());
-            sendData.set("DISCOUNT_JASA", "");
-            sendData.set("DISCOUNT_PART", "");
+            sendData.set("DISCOUNT_JASA", "0");
+            sendData.set("DISCOUNT_PART", "0");
             sendData.set("HARGA_JASA", formatOnlyNumber(find(R.id.et_biayaJasa, EditText.class).getText().toString()));
-            sendData.set("HARGA_PART", "");
+            sendData.set("HARGA_PART", "0");
             sendData.set("WAKTU_KERJA", find(R.id.et_waktuSet, EditText.class).getText().toString());
             sendData.set("WAKTU_INSPEKSI", find(R.id.et_waktu_set_inspeksi, EditText.class).getText().toString());
             sendData.set("NET", formatOnlyNumber(find(R.id.et_biayaJasa, EditText.class).getText().toString()));
-            sendData.set("WAKTU_KERJA_HARI", hari);
-            sendData.set("WAKTU_KERJA_JAM", jam);
-            sendData.set("WAKTU_KERJA_NENIT", menit);
-            sendData.set("WAKTU_INSPEKSI_JAM", inspeksiJam);
-            sendData.set("WAKTU_INSPEKSI_MENIT", inspeksiMenit);
-            sendData.set("LOKASI_PART_ID", "");
+            sendData.set("WAKTU_KERJA_HARI", formatOnlyNumber(hari));
+            sendData.set("WAKTU_KERJA_JAM", formatOnlyNumber(jam));
+            sendData.set("WAKTU_KERJA_MENIT", formatOnlyNumber(menit));
+            sendData.set("WAKTU_INSPEKSI_JAM", formatOnlyNumber(inspeksiJam));
+            sendData.set("WAKTU_INSPEKSI_MENIT", formatOnlyNumber(inspeksiMenit));
+            sendData.set("LOKASI_PART_ID", "0");
             sendData.set("JASA_EXTERNAL", formatOnlyNumber(find(R.id.et_biayaJasa, EditText.class).getText().toString()));
-            sendData.set("HPP", "");
-            sendData.set("WAKTU_PESAN", "");
-            sendData.set("DP", "");
+            sendData.set("HPP", "0");
+            sendData.set("WAKTU_PESAN", "0");
+            sendData.set("DP", "0");
+            sendData.set("PERGANTIAN", "0");
 
             Intent i = new Intent();
             i.putExtra(DATA, sendData.toJson());

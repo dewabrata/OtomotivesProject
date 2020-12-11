@@ -187,6 +187,12 @@ public class JumlahPart_JualPart_Activity extends AppActivity {
                 etHargaJual.setText("Rp. " + formatRp(getData.get("HARGA_JUAL").asString()));
             } else if (getData.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("HET")) {
                 etHargaJual.setText("Rp. " + formatRp(getData.get("HARGA_JUAL").asString()));
+            }else{
+                find(R.id.tl_hpp, TextInputLayout.class).setVisibility(View.VISIBLE);
+                etHpp.setEnabled(false);
+                etHpp.setText("Rp. " + formatRp(getData.get("HPP").asString()));
+                etHargaJual.setEnabled(true);
+                showInfo("Pola Harga Jual Flexible, Silahkan Masukkan Harga Jual", Toast.LENGTH_LONG);
             }
 
             etDisc.setText(getData.get("DISCOUNT").asString());

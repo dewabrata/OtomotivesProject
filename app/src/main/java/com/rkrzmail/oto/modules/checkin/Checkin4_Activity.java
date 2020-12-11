@@ -552,13 +552,13 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         final String hari = find(R.id.et_lamaWaktu_checkin, EditText.class).getText().toString().substring(0, 2);
         final String jam = find(R.id.et_lamaWaktu_checkin, EditText.class).getText().toString().substring(3, 5);
         final String menit = find(R.id.et_lamaWaktu_checkin, EditText.class).getText().toString().substring(6, 8);
-        Log.d(TAG, "hari : " + hari);
-        Log.d(TAG, "jam : " + jam);
-        Log.d(TAG, "menit : " + menit);
         final String estimasiSebelum = find(R.id.et_mulaiWaktu_checkin, TextView.class).getText().toString();
         final String estimasiSesudah = find(R.id.et_selesaiWaktu_checkin, TextView.class).getText().toString();
         final String estimasiSelesai = find(R.id.et_selesaiWaktu_checkin, TextView.class).getText().toString();//currentDateTime("yyyy-MM-dd") + " " +
         //final String ttd = find(R.id.img_tandaTangan_checkin4 , ImageView.class).getText().toString();
+        final String noPonsel = nson.get("noPonsel").asString();
+        final String nopol =  nson.get("nopol").asString();
+
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -588,6 +588,8 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 args.put("estimasiSelesai", estimasiSelesai);
                 args.put("keterangan", find(R.id.et_ket_checkin4, EditText.class).getText().toString());
                 args.put("lokasiLayanan", "BENGKEL");
+                args.put("noPonsel", noPonsel);
+                args.put("nopol", nopol);
                 //args.put("ttd", ttd);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
@@ -812,9 +814,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 } else if (!isSign) {
                     showWarning("Tanda Tangan Wajib di Input");
                 } else {
-                    if (!find(R.id.sp_namaMekanik_checkin4, Spinner.class).getSelectedItem().toString().equals("--PILIH--")) {
-                        saveData("CHECKIN ANTRIAN PENUGASAN");
-                    } else if (find(R.id.sp_bbm, Spinner.class).getSelectedItem().toString().equals("--PILIH--")) {
+                  if (find(R.id.sp_bbm, Spinner.class).getSelectedItem().toString().equals("--PILIH--")) {
                         find(R.id.sp_bbm, Spinner.class).performClick();
                         find(R.id.sp_bbm, Spinner.class).requestFocus();
                         showWarning("Level BBM Belum di Pilih");

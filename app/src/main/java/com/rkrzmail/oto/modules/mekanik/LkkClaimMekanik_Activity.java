@@ -105,7 +105,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
 
 
         setSpinnerFromApi(sp_sebabkerusakan, "nama", "SEBAB KERUSAKAN", "viewmst", "SEBAB_KERUSAKAN");
-        setSpinnerFromApi(sp_kondisipart, "nama", "KONDISI PART", "viewmst", "KONDISI_PART");
+        setSpinnerFromApi(sp_kondisipart, "nama", "KONDISI PART", "viewmst", "KONDISI");
 
 
         cbClaim = (CheckBox) findViewById(R.id.cb_claimgaransi);
@@ -198,6 +198,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
                 args.put("partTerpakaiBulan3",namaPart);
                 args.put("partTerpakaiBulan2",namaPart);
                 args.put("partTerpakaiBulan1 ",namaPart);
+
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
             }
 

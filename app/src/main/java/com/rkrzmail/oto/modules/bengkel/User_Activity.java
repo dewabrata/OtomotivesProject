@@ -30,6 +30,8 @@ import com.rkrzmail.srv.NikitaViewHolder;
 
 import java.util.Map;
 
+import static com.rkrzmail.utils.ConstUtils.DATA;
+
 public class User_Activity extends AppActivity {
 
     private RecyclerView recyclerView;
@@ -82,7 +84,7 @@ public class User_Activity extends AppActivity {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
                 Intent intent = new Intent(getActivity(), AturUser_Activity.class);
-                intent.putExtra("data", nListArray.get(position).toJson());
+                intent.putExtra(DATA, nListArray.get(position).toJson());
                 startActivityForResult(intent, 10);
             }
         }));

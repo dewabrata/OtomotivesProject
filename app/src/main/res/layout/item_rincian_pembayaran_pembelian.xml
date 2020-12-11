@@ -15,8 +15,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/spacing_medium">
+            android:orientation="vertical">
 
             <TableLayout
                 android:layout_width="match_parent"
@@ -29,7 +28,8 @@
                     app:cardCornerRadius="5dp"
                     app:cardElevation="2dp"
                     app:cardPreventCornerOverlap="true"
-                    app:cardUseCompatPadding="true">
+                    app:cardUseCompatPadding="true"
+                    android:layout_marginTop="10dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -51,7 +51,9 @@
                             android:layout_height="wrap_content"
                             android:stretchColumns="*">
 
-                            <TableRow android:layout_marginTop="@dimen/paddingMedium">
+                            <TableRow
+                                android:id="@+id/tr_usaha"
+                                android:layout_marginTop="@dimen/paddingMedium">
 
                                 <TextView
                                     android:id="@+id/tv_nama_usaha_jual_part"
@@ -137,7 +139,9 @@
 
                         </TableRow>
 
-                        <TableRow android:layout_marginTop="5dp">
+                        <TableRow
+                            android:id="@+id/tr_disc_part"
+                            android:layout_marginTop="5dp">
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -180,7 +184,9 @@
 
                         </TableRow>
 
-                        <TableRow android:layout_marginTop="5dp">
+                        <TableRow
+                            android:id="@+id/tl_ppn"
+                            android:layout_marginTop="5dp">
 
                             <TextView
                                 android:layout_width="wrap_content"

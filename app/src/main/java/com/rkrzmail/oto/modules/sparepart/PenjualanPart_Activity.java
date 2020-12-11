@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -59,7 +60,12 @@ public class PenjualanPart_Activity extends AppActivity {
         initRecylerviewUsaha();
         initRecylerviewPelanggan();
         catchData("");
-
+        find(R.id.swiperefresh, SwipeRefreshLayout.class).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                catchData("");
+            }
+        });
         find(R.id.fab_tambah).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -68,7 +74,21 @@ public class PenjualanPart_Activity extends AppActivity {
         });
     }
 
-    private void initRecylerviewPelanggan(){
+    private void swipeProgress(final boolean show) {
+        if (!show) {
+            find(R.id.swiperefresh, SwipeRefreshLayout.class).setRefreshing(show);
+            return;
+        }
+        find(R.id.swiperefresh, SwipeRefreshLayout.class).post(new Runnable() {
+            @Override
+            public void run() {
+                find(R.id.swiperefresh, SwipeRefreshLayout.class).setRefreshing(show);
+            }
+        });
+    }
+
+
+    private void initRecylerviewPelanggan() {
         rvJualPartPelanggan = findViewById(R.id.recyclerView2);
         rvJualPartPelanggan.setVisibility(View.VISIBLE);
         rvJualPartPelanggan.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -79,7 +99,7 @@ public class PenjualanPart_Activity extends AppActivity {
                 super.onBindViewHolder(viewHolder, position);
                 String tgl = Tools.setFormatDayAndMonthFromDb(pelangganList.get(position).get("TANGGAL").asString());
                 String noHp = pelangganList.get(position).get("NO_PONSEL").asString();
-                if(noHp.length() > 4){
+                if (noHp.length() > 4) {
                     noHp = noHp.substring(noHp.length() - 4);
                 }
                 viewHolder.find(R.id.tv_tgl_jualPart, TextView.class).setText(tgl);
@@ -91,8 +111,8 @@ public class PenjualanPart_Activity extends AppActivity {
         });
     }
 
-    private void initRecylerviewUsaha(){
-        rvJualPartUsaha  = findViewById(R.id.recyclerView);
+    private void initRecylerviewUsaha() {
+        rvJualPartUsaha = findViewById(R.id.recyclerView);
         rvJualPartUsaha.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvJualPartUsaha.setAdapter(new NikitaRecyclerAdapter(usahaList, R.layout.item_jual_part_usaha) {
             @SuppressLint("SetTextI18n")
@@ -102,13 +122,13 @@ public class PenjualanPart_Activity extends AppActivity {
                 String tgl = Tools.setFormatDayAndMonthFromDb(usahaList.get(position).get("TANGGAL").asString());
                 String noHp = pelangganList.get(position).get("NO_PONSEL").asString();
 
-                if(noHp.length() > 4){
+                if (noHp.length() > 4) {
                     noHp = noHp.substring(noHp.length() - 4);
                 }
 
-                if(!usahaList.get(position).get("NAMA_PELANGGAN").asString().isEmpty()){
+                if (!usahaList.get(position).get("NAMA_PELANGGAN").asString().isEmpty()) {
                     viewHolder.find(R.id.tv_namaUsaha_jualPart, TextView.class).setText(usahaList.get(position).get("NAMA_USAHA").asString() + " (" + usahaList.get(position).get("NAMA_PELANGGAN").asString() + ")");
-                }else{
+                } else {
                     viewHolder.find(R.id.tv_namaUsaha_jualPart, TextView.class).setText(usahaList.get(position).get("NAMA_USAHA").asString());
                 }
 
@@ -124,11 +144,12 @@ public class PenjualanPart_Activity extends AppActivity {
     }
 
     private void catchData(final String cari) {
-        newProses(new Messagebox.DoubleRunnable() {
+        newTask(new Messagebox.DoubleRunnable() {
             Nson result;
 
             @Override
             public void run() {
+                swipeProgress(true);
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 args.put("search", cari);
@@ -138,13 +159,14 @@ public class PenjualanPart_Activity extends AppActivity {
             @SuppressLint("NewApi")
             @Override
             public void runUI() {
+                swipeProgress(false);
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                   result = result.get("data");
+                    result = result.get("data");
                     for (int i = 0; i < result.size(); i++) {
-                        if(!result.get(i).get("NAMA_PELANGGAN").asString().isEmpty() && result.get(i).get("NAMA_USAHA").asString().isEmpty()){
+                        if (!result.get(i).get("NAMA_PELANGGAN").asString().isEmpty() && result.get(i).get("NAMA_USAHA").asString().isEmpty()) {
                             pelangganList.add(result.get(i));
                         }
-                        if(!result.get(i).get("NAMA_USAHA").asString().isEmpty()){
+                        if (!result.get(i).get("NAMA_USAHA").asString().isEmpty()) {
                             usahaList.add(result.get(i));
                         }
                     }

@@ -170,21 +170,20 @@ public class AturPembayaran_Activity extends AppActivity {
     private void initData() {
         Nson nson = Nson.readJson(getIntentStringExtra(DATA));
         Log.d("test__", "initData: " + nson);
+        idCheckin = nson.get("CHECKIN_ID").asInteger();
+        idJualPart = nson.get("JUAL_PART_ID").asInteger();
         if (nson.get("JENIS").asString().equals("CHECKIN")) {
             isCheckin = true;
-            idCheckin = nson.get("CHECKIN_ID").asInteger();
             jenis = "CHECKIN";
         } else if (nson.get("JENIS").asString().equals("DP")) {
             Tools.setViewAndChildrenEnabled(find(R.id.tl_reminder, TableLayout.class), false);
             isDp = true;
             jenis = "DP";
-            idCheckin = nson.get("CHECKIN_ID").asInteger();
             find(R.id.cb_checkout, CheckBox.class).setChecked(false);
         } else {
             Tools.setViewAndChildrenEnabled(find(R.id.tl_reminder, TableLayout.class), false);
             isJualPart = true;
             jenis = "JUAL PART";
-            idJualPart = nson.get("JUAL_PART_ID").asInteger();
             find(R.id.cb_checkout, CheckBox.class).setChecked(false);
         }
 
@@ -451,7 +450,10 @@ public class AturPembayaran_Activity extends AppActivity {
                 args.put("netJasaPart", data.get("HARGA_JASA_PART_NET").asString());
                 args.put("biayaAntarJemput", data.get("BIAYA_ANTAR_JEMPUT").asString());
                 args.put("biayaDerek", data.get("BIAYA_DEREK").asString());
+                args.put("noPonsel", data.get("NO_PONSEL").asString());
+                args.put("nopol", formatNopol(data.get("NOPOL").asString()));
 
+                args.put("idJualPart", String.valueOf(idJualPart));
                 args.put("idCheckin", String.valueOf(idCheckin));
                 args.put("tipePembayaran", tipePembayaran);
                 args.put("checkOut", find(R.id.cb_checkout, CheckBox.class).isChecked() ? "Y" : "N");

@@ -323,6 +323,8 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
         final String tungguKonfirmasi = find(R.id.cb_konfirmBiaya_checkin3, CheckBox.class).isChecked() ? "Y" : "N";
         final int totalPartJasa = jasaList.size() + partList.size();
         final String waktuLayanan = dummyTime.toString();
+        final String noPonsel = nson.get("noPonsel").asString();
+        final String nopol =  nson.get("nopol").asString();
 
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
@@ -336,29 +338,27 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 args.put("jenisCheckin", "3");
                 args.put("id", nson.get("CHECKIN_ID").asString());
                 args.put("status", status);
-
-                if (isBatal) {
-                    args.put("isBatal", "true");
-                    args.put("alasanBatal", alasanBatal);
-                } else {
-                    args.put("layanan", layanan);
-                    args.put("layananestimasi", layananEstimasi);
-                    args.put("total", total);
-                    args.put("dp", dp);
-                    args.put("sisa", sisa);
-                    args.put("tunggu", tungguKonfirmasi);
-                    args.put("partbook", partList.toJson());
-                    args.put("jasabook", jasaList.toJson());
-                    args.put("antrian", find(R.id.tv_jenis_antrian, TextView.class).getText().toString());
-                    args.put("biayaLayanan", formatOnlyNumber(find(R.id.tv_biayaLayanan_checkin, TextView.class).getText().toString()));
-                    //inserting waktu layanan part
-                }
+                args.put("isBatal", "true");
+                args.put("alasanBatal", alasanBatal);
+                args.put("layanan", layanan);
+                args.put("layananestimasi", layananEstimasi);
+                args.put("total", total);
+                args.put("dp", dp);
+                args.put("sisa", sisa);
+                args.put("tunggu", tungguKonfirmasi);
+                args.put("partbook", partList.toJson());
+                args.put("jasabook", jasaList.toJson());
+                args.put("antrian", find(R.id.tv_jenis_antrian, TextView.class).getText().toString());
+                //args.put("biayaLayanan", formatOnlyNumber(find(R.id.tv_biayaLayanan_checkin, TextView.class).getText().toString()));
+                //inserting waktu layanan part
                 args.put("biayaLayanan", biayaLayanan);
                 args.put("layananId", layananId);
                 args.put("waktuLayananHari", waktuLayanan.substring(0, 2));
                 args.put("waktuLayananJam", waktuLayanan.substring(3, 5));
                 args.put("waktuLayananMenit", waktuLayanan.substring(6, 8));
                 args.put("feeNonPaket", String.valueOf(feeNonPaket));
+                args.put("noPonsel", noPonsel);//for message queue
+                args.put("nopol", formatNopol(nopol));
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
             }
@@ -367,7 +367,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     if (status.equalsIgnoreCase("LAYANAN ESTIMASI")) {
-                        showSuccess("ESTIMASI BIAYA PELAYANAN  KENDARAAN " + nson.get("jeniskendaraan").asString());
+                        showSuccess("ESTIMASI BIAYA PELAYANAN  KENDARAAN " + nson.get("kendaraanPelanggan").asString());
                         setResult(RESULT_OK);
                         finish();
                     } else if (status.equalsIgnoreCase("TUNGGU KONFIRMASI")) {
@@ -388,6 +388,8 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         nson.set("DP", formatOnlyNumber(find(R.id.et_dp_checkin3, EditText.class).getText().toString()));
                         nson.set("SISA", formatOnlyNumber(find(R.id.et_sisa_checkin3, EditText.class).getText().toString()));
                         nson.set("WAKTU_PESAN", waktuPesan);
+                        nson.set("noponsel", noPonsel);
+                        nson.set("nopol", nopol);
 
                         if (layanan.equals("PERAWATAN LAINNYA")) {
                             nson.set("JENIS_LAYANAN", layanan);
@@ -449,8 +451,10 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 args.put("layanan", "CHECKIN");
                 args.put("spec", "Bengkel");
                 args.put("status", "AKTIF");
-                args.put("model", data.get("model").asString());
+                args.put("modelKendaraan", data.get("model").asString());
                 args.put("varian", data.get("varian").asString());
+                args.put("jenisKendaraan", data.get("jenisKendaraan").asString());
+                args.put("kendaraan", data.get("kendaraan").asString());
                 args.put("pekerjaaan", readJson.get("pekerjaan").asString());
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_LAYANAN), args));
@@ -466,6 +470,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                     for (int i = 0; i < result.size(); i++) {
                         layananArray.add(result.get(i).get("NAMA_LAYANAN").asString());
                     }
+                    layananArray.add("GARANSI LAYANAN");
                     layananArray.add("PERAWATAN LAINNYA");
 
                     Log.d(TAG, "List Nama Layanan : " + layananArray);
@@ -493,7 +498,9 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_btnPart_checkin3, LinearLayout.class), true);
                     find(R.id.btn_lanjut_checkin3, Button.class).setEnabled(true);
                 }
+                if(item.equals("GARANSI LAYANAN")){
 
+                }
                 for (int i = 0; i < dataLayananList.size(); i++) {
                     partWajibList.asArray().clear();
                     masterPartList.asArray().clear();
@@ -811,7 +818,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         dataAccept = Nson.readJson(getIntentStringExtra(data, DATA));
                         try {
                             totalHarga += Integer.parseInt(formatOnlyNumber(dataAccept.get("NET").asString()));
-                            if(data.getStringExtra("PART_KOSONG").equals("YA")){
+                            if (data.getStringExtra("PART_KOSONG").equals("YA")) {
                                 totalHargaPartKosong = data.getIntExtra("TOTAL_PART", 0);
                                 Log.d("ok__", "PART : " + totalHargaPartKosong);
                                 sisaDp = totalHargaPartKosong - calculatePercentage(Double.parseDouble(getSetting("DP_PERSEN")), totalHargaPartKosong);
@@ -820,7 +827,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                             totalHarga = 0;
                         }
                         if (flagPartWajib) {
-                            if(data.hasExtra("PART_KOSONG_PART_WAJIB")){
+                            if (data.hasExtra("PART_KOSONG_PART_WAJIB")) {
                                 showWarning("Part Wajib Layanan Tidak Tersedia");
                                 finish();
                                 return;

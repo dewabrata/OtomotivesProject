@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -82,11 +83,11 @@ public class MultiSelectionSpinner extends Spinner implements
         builder.setNegativeButton("Batal", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                try{
+                try {
                     simple_adapter.clear();
                     simple_adapter.add(_itemsAtStart);
                     System.arraycopy(mSelectionAtStartBool, 0, mSelectionBool, 0, mSelectionAtStartBool.length);
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -156,20 +157,12 @@ public class MultiSelectionSpinner extends Spinner implements
         simple_adapter.add(buildSelectedItemString());
     }
 
-    public void setSelection(int index, boolean selected) {
-        for (int i = 0; i < mSelectionBool.length; i++) {
-            mSelectionBool[i] = selected;
-            mSelectionAtStartBool[i] = selected;
+    public void setSelectionMatch(List<String> itemSet, List<String> loadFrom) {
+        for (int i = 0; i < itemSet.size(); i++) {
+            mSelectionBool[i] = loadFrom != null && loadFrom.contains(itemSet.get(i));
+            mSelectionAtStartBool[i] = loadFrom != null && loadFrom.contains(itemSet.get(i));
         }
-        if (index >= 0 && index < mSelectionBool.length) {
-            mSelectionBool[index] = selected;
-            mSelectionAtStartBool[index] = selected;
-        } else {
-            throw new IllegalArgumentException("Index " + index
-                    + " is out of bounds.");
-        }
-        simple_adapter.clear();
-        simple_adapter.add(buildSelectedItemString());
+        //simple_adapter.add(buildSelectedItemString());
     }
 
     public void setSelection(List<Integer> selectedIndices) {

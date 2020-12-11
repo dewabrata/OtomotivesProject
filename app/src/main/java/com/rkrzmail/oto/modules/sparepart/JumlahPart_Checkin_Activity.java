@@ -47,7 +47,7 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
     private String idLokasiPart = "", hpp = "";
     private String inspeksi = "";
     private int stock = 0;
-    private double discPart = 0;
+    private double discPart = 0, discFasilitas = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,9 +121,9 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
             }
 
             if (getIntent().getIntExtra("HARGA_LAYANAN", 0) > 0) {
-                finalTotal = getIntent().getIntExtra("HARGA_LAYANAN", 0) - calculateDiscFasilitas(
-                        Integer.parseInt(isMasterPartOrParts ?
-                                getIntent().getStringExtra(MASTER_PART) : getIntent().getStringExtra(PARTS_UPPERCASE)),
+                discFasilitas = Double.parseDouble(isMasterPartOrParts ?
+                                getIntent().getStringExtra(MASTER_PART) : getIntent().getStringExtra(PARTS_UPPERCASE));
+                finalTotal = getIntent().getIntExtra("HARGA_LAYANAN", 0) - calculateDiscFasilitas(discFasilitas,
                         getIntent().getIntExtra("HARGA_LAYANAN", 0));
                 etHargaJual.setText(RP + finalTotal);
             } else {
@@ -434,6 +434,7 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
             sendData.set("HARGA_PART", hargaPart);
             sendData.set("PERGANTIAN", getIntentStringExtra("PERGANTIAN"));
             sendData.set("INSPEKSI", "");
+            sendData.set("DISCOUNT_PART", discFasilitas);
         } else {
 
             if (hargaPart > 0) {
@@ -442,6 +443,7 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
 
             sendData.set("INSPEKSI", inspeksi);
             sendData.set("PERGANTIAN", "0");
+            sendData.set("DISCOUNT_PART", discPart);
         }
 
         sendData.set("NAMA_PART", nson.get("NAMA_PART").asString());
@@ -449,7 +451,6 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
         sendData.set("PART_ID", nson.get("PART_ID").asString());
         sendData.set("JUMLAH", jumlahPart);
         sendData.set("DISCOUNT_JASA", discJasa);
-        sendData.set("DISCOUNT_PART", discPart);
         sendData.set("MERK", nson.get("MERK").asString());
         sendData.set("HARGA_JASA", hargaJasa);
         sendData.set("HARGA_JASA_NET", totalJasa);

@@ -78,7 +78,7 @@ public class KontrolLayanan_Activity extends AppActivity {
                         viewHolder.find(R.id.tv_estimasi_selesai, TextView.class).setText(nListArray.get(position).get("ESTIMASI_SELESAI").asString());
                         viewHolder.find(R.id.tv_no_kunci, TextView.class).setText(nListArray.get(position).get("NO_KUNCI").asString());
                         viewHolder.find(R.id.tv_estimasi, TextView.class).setText(estimasi);
-                        viewHolder.find(R.id.tv_status, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
+                        viewHolder.find(R.id.tv_status, TextView.class).setText(nListArray.get(position).get("STATUS_KONTROL").asString());
 
                         viewHolder.find(R.id.img_more_booking, ImageButton.class).setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -134,8 +134,14 @@ public class KontrolLayanan_Activity extends AppActivity {
             public void runUI() {
                 swipeProgress(false);
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    result = result.get("data");
                     nListArray.asArray().clear();
-                    nListArray.asArray().addAll(result.get("data").asArray());
+                    for (int i = 0; i < result.size(); i++) {
+                        if(!result.get(i).get("STATUS_KONTROL").asString().isEmpty()){
+                            nListArray.add(result.get(i));
+                        }
+                    }
+
                     rvKontrolLayanan.getAdapter().notifyDataSetChanged();
                     rvKontrolLayanan.scheduleLayoutAnimation();
                 } else {

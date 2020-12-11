@@ -96,6 +96,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             mdrOfUs = 0,
             mdrCreditCard = 0,
             dpPercent = 0;
+    private final double ppn = 0.1;
 
 
     @Override
@@ -207,6 +208,9 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                 sendData.set("IS_OFF_US", isMdrOffUs);
                 sendData.set("PKP", isPkp);
                 sendData.set("JENIS", isLayanan ? "CHECKIN" : (isDp ? "DP" : (isJualPart ? "JUAL PART" : "")));
+                sendData.set("NO_PONSEL", noHp);
+                sendData.set("NOPOL", nopol);
+                sendData.set("JUAL_PART_ID", idJualPart);
 
                 Intent i = new Intent(getActivity(), AturPembayaran_Activity.class);
                 i.putExtra(DATA, sendData.toJson());
@@ -398,7 +402,6 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         find(R.id.et_catatan, EditText.class).setText(catatanMekanik);
 
         sendData.set("TOTAL", isBatal ? 0 : (total2 > 0 ? total2 : (total1 > 0 ? total1 : (isDp ? totalDp : 0))));
-
     }
 
     @SuppressLint("SetTextI18n")
@@ -407,23 +410,45 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         for (int i = 0; i < result.size(); i++) {
             totalPart += result.get(i).get("TOTAL").asInteger();
             discPart += result.get(i).get("DISCOUNT").asDouble();
+            mdrOnUs = result.get(i).get("MDR_ON_US").asDouble();
+            mdrOfUs = result.get(i).get("MDR_OFF_US").asDouble();
+            mdrCreditCard = result.get(i).get("MDR_KREDIT_CARD").asDouble();
+            dpPercent = result.get(i).get("DP_PERSEN").asDouble();
+            isPkp = result.get(i).get("PKP").asString();
 
             find(R.id.tv_nama_pelanggan_jual_part, TextView.class).setText(result.get(i).get("NAMA_PELANGGAN").asString());
             find(R.id.tv_no_ponsel_jual_part, TextView.class).setText(result.get(i).get("NO_PONSEL").asString());
             find(R.id.tv_frek_jual_part, TextView.class).setText(result.get(i).get("FREKWENSI").asString());
-            find(R.id.tv_nama_usaha_jual_part, TextView.class).setText(result.get(i).get("NAMA_USAHA").asString());
-        }
-        if (discPart > 0) {
-            discPart = (discPart / 100) * totalPart;
+            if(result.get(i).get("NAMA_USAHA").asString().isEmpty()){
+                find(R.id.tr_usaha).setVisibility(View.GONE);
+            }else{
+                find(R.id.tv_nama_usaha_jual_part, TextView.class).setText(result.get(i).get("NAMA_USAHA").asString());
+            }
         }
 
-        double totalKeseluruhan = totalPart + discPart;
+        if (discPart > 0) {
+            discPart = (discPart / 100) * totalPart;
+        }else{
+            find(R.id.tr_disc_part).setVisibility(View.GONE);
+        }
+
+        int totalKeseluruhan = (int) (totalPart + discPart);
 
         find(R.id.tv_harga_part_jual_part, TextView.class).setText(RP + formatRp(String.valueOf(totalPart)));
         find(R.id.tv_harga_disc_jual_part, TextView.class).setText(RP + formatRp(String.valueOf(discPart)));
         find(R.id.tv_total_jual_part, TextView.class).setText(RP + formatRp(String.valueOf(totalKeseluruhan)));
-        find(R.id.tv_total_ppn_jual_part, TextView.class).setText(RP + formatRp(result.get("PPN").asString()));
+        find(R.id.tv_total_ppn_jual_part, TextView.class).setText(RP + formatRp(setPPN(totalKeseluruhan)));
         find(R.id.tv_total_penjualan_jual_part, TextView.class).setText(RP + formatRp(String.valueOf(totalKeseluruhan)));
+
+        sendData.set("TOTAL", totalKeseluruhan);
+    }
+
+    private String setPPN(int totalBiaya){
+        if(isPkp.equals("Y")){
+            int totalPPN = (int) (ppn * totalBiaya);
+            return String.valueOf(totalPPN);
+        }
+        return "0";
     }
 
     @SuppressLint({"NewApi", "SetTextI18n"})

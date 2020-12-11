@@ -55,7 +55,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
     private RecyclerView rvPointLayanan, rvKeluhan;
     private ImageButton imgStart, imgStop, imgNote;
 
-    private String timer, cid, idCheckin = "", idAturPerintah, mekanik = "", catatanMekanik, idMekanikKerja = "", statusDone = "";
+    private String idCheckin = "", mekanik = "", catatanMekanik, idMekanikKerja = "", statusDone = "", noHp = "";
     private long MillisecondTime, StartTime, TimeBuff, UpdateTime = 0L;
     private long timerWork = 0;
     private int Seconds, Minutes, MilliSeconds;
@@ -133,6 +133,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
 
     private void loadData() {
         Nson n = Nson.readJson(getIntentStringExtra(DATA));
+        
         if (n.get("JAM_HOME").asString().isEmpty() || n.get("JAM_HOME") == null)
             find(R.id.tl_jam_home).setVisibility(View.GONE);
         if (n.get("ALAMAT").asString().isEmpty() || n.get("ALAMAT") == null)
@@ -146,6 +147,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 n.get("WAKTU_KERJA_HARI").asString(),
                 n.get("WAKTU_KERJA_JAM").asString(),
                 n.get("WAKTU_KERJA_MENIT").asString());
+        noHp = n.get("NO_PONSEL").asString();
         etNoAntrian.setText(n.get("NO_ANTRIAN").asString());
         etNopol.setText(formatNopol(n.get("NOPOL").asString()));
         etNoKunci.setText(n.get("NO_KUNCI").asString());
@@ -483,6 +485,8 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 args.put("iddetail", idMekanikKerja);
                 args.put("sisaWaktu", etSisaWaktu.getText().toString());
                 args.put("catatan", catatanMekanik);
+                args.put("nopol", formatNopol(etNopol.getText().toString()));
+                args.put("noPonsel", noHp);
                 if(isInspeksi){
                     statusDone = "PENUGASAN INSPEKSI";
                     args.put("status", statusDone);

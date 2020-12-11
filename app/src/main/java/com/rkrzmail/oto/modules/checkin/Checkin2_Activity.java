@@ -152,13 +152,11 @@ public class Checkin2_Activity extends AppActivity {
                 } else if (tvTgl.isEnabled() && tvTgl.getText().toString().isEmpty()) {
                     showWarning("Tanggal Berisi Harus Di Isi");
                     tvTgl.performClick();
-                } else if (etNorangka.getText().toString().isEmpty()) {
-                    etNorangka.setError("No. Rangka Harus Di isi");
-                    etNorangka.requestFocus();
-                } else if (etNomesin.getText().toString().isEmpty()) {
-                    etNomesin.setError("No. Mesin Harus Di isi");
-                    etNomesin.requestFocus();
-                } else {
+                }else if(etWarna.getText().toString().isEmpty()){
+                    etWarna.setError("Warna Wajib di Isi");
+                    etWarna.requestFocus();
+                }
+                else {
                     setSelanjutnya(readCheckin);
                 }
             }

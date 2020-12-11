@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -16,6 +18,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.ColorDrawable;
+import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -27,6 +30,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -833,7 +837,7 @@ public class AppActivity extends AppCompatActivity {
     }
 
     public String formatOnlyNumber(String text){
-        if(text == null || text.equals(""))
+        if(text == null || text.equals("") || text.equals("00"))
             return "0";
         else
             return text.replaceAll("[^0-9]+", "");
@@ -1012,6 +1016,45 @@ public class AppActivity extends AppCompatActivity {
     public void setIntent(Class destination, int reqCode){
         Intent i = new Intent(getActivity(), destination);
         startActivityForResult(i, reqCode);
+    }
+
+    public void showNotification(Nson nson) {
+        //Get an instance of NotificationManager//
+        Intent intentAction = new Intent(this, MainActivity.class);
+        intentAction.putExtra("target","notification");
+        intentAction.putExtra("id", nson.get("id").asString());
+        intentAction.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+
+       /* PendingIntent pIntentlogin = PendingIntent.getBroadcast(this,1,intentAction,PendingIntent.FLAG_UPDATE_CURRENT);
+        intentAction = new Intent(this, MainActivity.class);
+        intentAction.putExtra("action","TUNDA");
+        intentAction.putExtra("id",nson.get("id").asString());
+        PendingIntent pIntentlogin3 = PendingIntent.getBroadcast(this,2,intentAction,PendingIntent.FLAG_UPDATE_CURRENT);
+*/
+
+        Intent intent = new Intent( this , MainActivity. class );
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("target","notification");
+        PendingIntent resultIntent = PendingIntent.getActivity( this , 0, intent,  PendingIntent.FLAG_ONE_SHOT);
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.speed)
+                        //.addAction(new NotificationCompat.Action(0, "OK", pIntentlogin))
+                        //.addAction(new NotificationCompat.Action(0, "TUNDA", pIntentlogin3))
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText(nson.get("msg").asString()))
+                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                        .setOngoing(nson.get("outgoing").asBoolean())
+                        .setContentTitle(nson.get("title").asString())
+                        .setContentIntent(resultIntent)
+                        .setAutoCancel( true )
+                        .setContentText(nson.get("msg").asString());
+
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        mNotificationManager.notify(nson.get("id").asInteger(), mBuilder.build());
     }
 
 }

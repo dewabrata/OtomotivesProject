@@ -133,7 +133,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         noPonsel = data.get("NO_PONSEL").asString();
 
         etNoAntrian.setText(data.get("NO_ANTRIAN").asString());
-        etStatus.setText(data.get("STATUS").asString());
+        etStatus.setText(data.get("STATUS_KONTROL").asString());
         etNopol.setText(formatNopol(data.get("NOPOL").asString()));
         etNoKunci.setText(data.get("").asString());
         etNamaPelanggan.setText(data.get("NAMA_PELANGGAN").asString());

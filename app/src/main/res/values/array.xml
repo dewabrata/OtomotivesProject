@@ -108,7 +108,7 @@
 
     <string-array name="akses_app_karyawan">
         <item>--PILIH--</item>
-        <item>ANTARJEMPUT	</item>
+        <item>ANTAR JEMPUT</item>
         <item>BOOKING</item>
         <item>CHECKIN</item>
         <item>CHECKOUT</item>
@@ -116,21 +116,21 @@
         <item>DASHBOARD</item>
         <item>DISCOUNT</item>
         <item>INSPEKSI</item>
-        <item>JUALPARTS</item>
+        <item>JUAL PARTS</item>
         <item>JURNAL</item>
         <item>KOMISI</item>
         <item>MEKANIK</item>
         <item>MENUNGGU</item>
         <item>MESSAGE</item>
-        <item>MYBUSINESS</item>
+        <item>MY BUSINESS</item>
         <item>OUTSOURCE</item>
         <item>PART</item>
-        <item>PARTKELUAR</item>
+        <item>PART KELUAR</item>
         <item>PEMBAYARAN</item>
         <item>PENGATURAN</item>
-        <item>STOCKOPNAME</item>
-        <item>TERIMAPARTS</item>
-        <item>TUGASPARTS</item>
+        <item>STOCK OPNAME</item>
+        <item>TERIMA PARTS</item>
+        <item>TUGAS PARTS</item>
     </string-array>
 
     <string-array name="status_layanan">
