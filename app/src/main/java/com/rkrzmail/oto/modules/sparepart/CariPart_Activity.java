@@ -97,7 +97,7 @@ public class CariPart_Activity extends AppActivity {
             flag = true;
         }else if (getIntent().hasExtra(CARI_PART_CLAIM)){
             isPartCheckin = true;
-            getSupportActionBar().setTitle("Cari Part Bengkel");
+            getSupportActionBar().setTitle("Cari Part Garansi");
 
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
