@@ -515,16 +515,25 @@
     </string-array>
 
     <string-array name="tipe_kerusakan">
+        <item>--PILIH--</item>
+        <item>Fungsi Utama/ Safety</item>
         <item>Fungsi Utama/ Safety</item>
         <item>Fungsi Penunjang</item>
         <item>Tampilan</item>
     </string-array>
 
     <string-array name="kondisi_pelanggan">
+        <item>--PILIH--</item>
         <item>Tidak Mengetahui Kerusakan</item>
         <item>Tidak Meminta Perbaikan</item>
         <item>Sangat Terganggu</item>
         <item>Kendaraan Tidak Dapat Digunakan</item>
+    </string-array>
+
+    <string-array name="tindakan_perbaikan">
+        <item>--PILIH--</item>
+        <item>Penggatian Part</item>
+        <item>Jasa Lain Aktifitas</item>
     </string-array>
 
 </resources>

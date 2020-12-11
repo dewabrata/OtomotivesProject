@@ -92,13 +92,14 @@ public class AppApplication extends Application {
         hashtable.put("FCM", UtilityAndroid.getSetting(getApplicationContext(), "FCMID", ""));
         hashtable.put("date", Utility.NowOnlyDate());
         hashtable.put("dateTime", Utility.NowDateTime());
+        hashtable.put("time", Utility.NowTime());
         hashtable.put("Location", AppApplication.getLastCurrentLocation());
         if (hashtable.containsValue("--PILIH--")) {
             hashtable.values().remove("--PILIH--");
         }
-        if (!hashtable.containsKey("action")) {
-            hashtable.put("action", "view");
-        }
+//        if (!hashtable.containsKey("action")) {
+//            hashtable.put("action", "view");
+//        }
 
         int vi = TimeZone.getDefault().getRawOffset() / 1000;
         hashtable.put("xzona", String.valueOf(vi / 60 / 60));//gmt

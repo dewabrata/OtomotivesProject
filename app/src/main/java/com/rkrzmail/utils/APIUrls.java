@@ -50,4 +50,5 @@ public class APIUrls {
     public static final String ATUR_PART_KOSONG = "aturpartkosong";
     public static final String VIEW_PEMBAYARAN = "viewpembayaran";
     public static final String ATUR_PERINTAH_KERJA_MEKANIK = "aturperintahkerjamekanik";
+    public static final String SET_CLAIM = "setupclaim";
 }

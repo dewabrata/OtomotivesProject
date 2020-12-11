@@ -9,6 +9,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,6 +29,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.checkin.Checkin3_Activity;
 import com.rkrzmail.srv.NikitaMultipleViewAdapter;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
@@ -45,6 +47,8 @@ import static com.rkrzmail.utils.APIUrls.VIEW_PERINTAH_KERJA_MEKANIK;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.ID;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_CHECKIN;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 
 public class AturKerjaMekanik_Activity extends AppActivity implements View.OnClickListener {
 
@@ -63,7 +67,8 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
     private Nson partJasaList = Nson.newArray(),
             keluhanList = Nson.newArray(),
             pointLayananList = Nson.newArray(),
-            inspeksiList = Nson.newArray();
+            inspeksiList = Nson.newArray(),
+            n ;
     private int waktuHari = 0, waktuJam = 0, waktuMenit = 0;
     private String totalWaktuKerja = "", sisaWaktuPaused = "";
     private int countClick = 0;
@@ -132,8 +137,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
     }
 
     private void loadData() {
-        Nson n = Nson.readJson(getIntentStringExtra(DATA));
-        
+        n = Nson.readJson(getIntentStringExtra(DATA));
         if (n.get("JAM_HOME").asString().isEmpty() || n.get("JAM_HOME") == null)
             find(R.id.tl_jam_home).setVisibility(View.GONE);
         if (n.get("ALAMAT").asString().isEmpty() || n.get("ALAMAT") == null)
@@ -598,8 +602,36 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 initKeluhanDialog();
                 break;
             case R.id.btn_lkk:
-                setIntent(LkkClaimMekanik_Activity.class, 0);
+                SetDataForClaim();
                 break;
         }
+    }
+
+    private void SetDataForClaim (){
+        Nson nson = Nson.newObject();
+        nson.set("CID", cid);
+        nson.set("TANGGAL_CHECKIN", n.get("TANGGAL_CHECKIN").asString());
+        nson.set("NAMA_MEKANIK", mekanik);
+        nson.set("NOPOL", n.get("NOPOL").asString());
+        nson.set("KM", n.get("KM").asString());
+        nson.set("MERK", n.get("MERK").asString());
+        nson.set("VARIAN", n.get("VARIAN").asString());
+        nson.set("KODE_TIPE", n.get("KODE_TIPE").asString());
+        nson.set("TAHUN_PRODUKSI", n.get("TAHUN_PRODUKSI").asString());
+        nson.set("TANGGAL_PEMBELIAN", n.get("TANGGAL_PEMBELIAN").asString());
+
+
+        Intent i = new Intent(getActivity(), LkkClaimMekanik_Activity.class);
+        i.putExtra(DATA, nson.toJson());
+        startActivityForResult(i, REQUEST_DETAIL);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode==REQUEST_DETAIL && resultCode==RESULT_OK){
+            showInfo("Sukses Simpan Claim Garansi");
+        }
+
     }
 }
