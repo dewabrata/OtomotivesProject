@@ -45,11 +45,10 @@ public class FileUtility {
         return byteArray;
     }
 
-    public static String encodeToStringBase64(String fileName, String filePath) {
+    public static String encodeToStringBase64(String filePath) {
         String encodedFile = "";
         try {
-            FileInputStream fileInputStream = new FileInputStream(filePath
-                    + fileName);
+            FileInputStream fileInputStream = new FileInputStream(filePath);
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             byte[] buffer = new byte[1024];
             int bytesRead = 0;

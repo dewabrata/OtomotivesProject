@@ -37,6 +37,7 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.gmod.Capture;
 import com.rkrzmail.oto.modules.bengkel.AturUser_Activity;
+import com.rkrzmail.utils.FileUtility;
 import com.rkrzmail.utils.Tools;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
@@ -79,6 +80,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
     private boolean isExpressAndStandard = false, isExtra = false, isHplus = false, isDp = false;
     private String waktuLayananHplusExtra = "", jenisLayanan = "", waktuLayananStandartExpress = "";
     private String tglEstimasi = "", waktuEstimasi = "", antrianSebelumnya = "";
+    private String ttdPath = "";
     private int idMekanik = 0;
     private int idAntrian = 0;
     private int waktuPesan = 0;
@@ -875,6 +877,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             }
             if (imgFile != null && imgFile.exists()) {
                 Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                ttdPath = FileUtility.encodeToStringBase64(imgFile.getAbsolutePath());
                 find(R.id.img_tandaTangan_checkin4, ImageView.class).setImageBitmap(myBitmap);
             }
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_MEKANIK) {
