@@ -218,17 +218,16 @@ public class LkkClaimMekanik_Activity extends AppActivity {
                 String item = parent.getSelectedItem().toString();
                 if (item.equalsIgnoreCase("--PILIH--")) {
                     cbClaim.setChecked(false);
-                    cbClaim.setSelected(false);
                 }
 
                 for (int i = 0; i < dataSebabList.size(); i++) {
                     if (dataSebabList.get(i).get("SEBAB_KERUSAKAN").asString().equalsIgnoreCase(item)) {
                         if (dataSebabList.get(i).get("CLAIM").asString().equals("Y")) {
                             cbClaim.setChecked(true);
-                            cbClaim.setSelected(true);
+                            cbClaim.setEnabled(true);
                         } else {
                             cbClaim.setChecked(false);
-                            cbClaim.setSelected(false);
+                            cbClaim.setEnabled(false);
                         }
                     }
                 }
@@ -315,6 +314,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
             if (nson.get("GARANSI_MASTER_PART_PABRIKAN").asString().equals("Y") && nson.get("GARANSI_PART_KM").asString().equals("Y") && nson.get("GARANSI_PART_BULAN").asString().equals("Y")) {
                 cbClaim.setChecked(true);
                 cbClaim.setSelected(true);
+                cbClaim.setEnabled(true);
             }else {
                 cbClaim.setChecked(false);
                 cbClaim.setSelected(false);

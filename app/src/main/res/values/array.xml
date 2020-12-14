@@ -517,7 +517,6 @@
     <string-array name="tipe_kerusakan">
         <item>--PILIH--</item>
         <item>Fungsi Utama/ Safety</item>
-        <item>Fungsi Utama/ Safety</item>
         <item>Fungsi Penunjang</item>
         <item>Tampilan</item>
     </string-array>
