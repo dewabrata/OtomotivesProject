@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:id="@+id/cardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginLeft="7dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginRight="7dp"
+    android:layout_marginBottom="4dp"
+    android:padding="5dp"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="2dp">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:stretchColumns="*"
+        android:padding="10dp">
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tv_tanggal_kerja"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hari, Tanggal"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textColor="@color/grey_900"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tv_bulan_kerja"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="BULAN (1)"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textColor="@color/grey_900"
+                android:textSize="12sp" />
+
+
+        </TableRow>
+
+        <TableRow android:layout_marginTop="7dp">
+
+            <TextView
+                android:id="@+id/tv_mulai_kerja"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mulai (HH:MM)"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textColor="@color/grey_900"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tv_selesai_kerja"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:text="Selesai (HH:MM)"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textColor="@color/grey_900"
+                android:textSize="12sp" />
+
+        </TableRow>
+
+    </TableLayout>
+
+</android.support.v7.widget.CardView>

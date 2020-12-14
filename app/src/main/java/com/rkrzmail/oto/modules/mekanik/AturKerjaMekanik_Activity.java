@@ -609,7 +609,6 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
 
     private void SetDataForClaim (){
         Nson nson = Nson.newObject();
-        nson.set("CID", cid);
         nson.set("TANGGAL_CHECKIN", n.get("TANGGAL_CHECKIN").asString());
         nson.set("NAMA_MEKANIK", mekanik);
         nson.set("NOPOL", n.get("NOPOL").asString());

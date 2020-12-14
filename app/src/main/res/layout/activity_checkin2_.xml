@@ -77,7 +77,8 @@
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
                         android:inputType="textCapCharacters"
-                        android:maxLength="10"
+                        android:maxLength="20"
+                        android:singleLine="true"
                         android:hint="WARNA"
                         android:padding="15dp"/>
 

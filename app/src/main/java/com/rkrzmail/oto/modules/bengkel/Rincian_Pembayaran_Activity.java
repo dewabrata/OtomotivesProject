@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -97,6 +98,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             mdrCreditCard = 0,
             dpPercent = 0;
     private final double ppn = 0.1;
+    private String kodeTipe = "", noRangka = "", noMesin = "";
 
 
     @Override
@@ -184,40 +186,60 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         find(R.id.btn_lanjut, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendData.set("BIAYA_LAYANAN", biayaLayanan);
-                sendData.set("DISC_LAYANAN", biayaLayanan > 0 ? discLayanan : 0);
-                sendData.set("BIAYA_LAYANAN_NET", biayaLayanan > 0 ? biayaLayanan - discLayanan : biayaLayanan);
-                sendData.set("HARGA_PART", totalPart);
-                sendData.set("DISC_PART", totalPart > 0 ? discPart : 0);
-                sendData.set("HARGA_PART_NET", totalPart > 0 ? totalPart - discPart : totalPart);
-                sendData.set("HARGA_JASA_LAIN", totalJasa);
-                sendData.set("DISC_JASA", totalJasa > 0 ? discJasa : 0);
-                sendData.set("HARGA_JASA_LAIN_NET", totalJasa > 0 ? totalJasa - discJasa : totalJasa);
-                sendData.set("DP", totalDp);
-                sendData.set("SISA_BIAYA", sisaBiaya);
-                sendData.set("BIAYA_SIMPAN", totalBiayaSimpan);
-                sendData.set("DISC_SPOT", discSpot);
-                sendData.set("HARGA_JASA_PART", totalJasaPart);
-                sendData.set("DISC_JASA_PART", totalJasaPart > 0 ? discJasaPart : 0);
-                sendData.set("HARGA_JASA_PART_NET", totalJasaPart > 0 ? totalJasaPart - discJasaPart : totalJasaPart);
-                sendData.set("BIAYA_DEREK", biayaDerek);
-                sendData.set("PEMILIK", pemilik);
-                sendData.set("MDR_ON_US", mdrOnUs);
-                sendData.set("MDR_OFF_US", mdrOfUs);
-                sendData.set("MDR_KREDIT_CARD", mdrCreditCard);
-                sendData.set("IS_OFF_US", isMdrOffUs);
-                sendData.set("PKP", isPkp);
-                sendData.set("JENIS", isLayanan ? "CHECKIN" : (isDp ? "DP" : (isJualPart ? "JUAL PART" : "")));
-                sendData.set("NO_PONSEL", noHp);
-                sendData.set("NOPOL", nopol);
-                sendData.set("JUAL_PART_ID", idJualPart);
+                if (isLayanan || isDp) {
+                    if (noRangka.isEmpty()) {
+                        showError("No. Rangka Belum di Isi", Toast.LENGTH_LONG);
+                        find(R.id.btn_data_kendaraan, Button.class).requestFocus();
+                    } else if (noMesin.isEmpty()) {
+                        showError("No. Mesin Belum di Isi", Toast.LENGTH_LONG);
+                        find(R.id.btn_data_kendaraan, Button.class).requestFocus();
+                    } else if (kodeTipe.isEmpty()) {
+                        showError("Kode Tipe Belum di Iisi", Toast.LENGTH_LONG);
+                        find(R.id.btn_data_kendaraan, Button.class).requestFocus();
+                    } else {
+                        setIntent();
+                    }
+                } else {
+                    setIntent();
+                }
 
-                Intent i = new Intent(getActivity(), AturPembayaran_Activity.class);
-                i.putExtra(DATA, sendData.toJson());
-                i.putExtra("PART_LIST", partList.toJson());
-                startActivityForResult(i, REQUEST_DETAIL);
             }
         });
+    }
+
+    private void setIntent() {
+        sendData.set("BIAYA_LAYANAN", biayaLayanan);
+        sendData.set("DISC_LAYANAN", biayaLayanan > 0 ? discLayanan : 0);
+        sendData.set("BIAYA_LAYANAN_NET", biayaLayanan > 0 ? biayaLayanan - discLayanan : biayaLayanan);
+        sendData.set("HARGA_PART", totalPart);
+        sendData.set("DISC_PART", totalPart > 0 ? discPart : 0);
+        sendData.set("HARGA_PART_NET", totalPart > 0 ? totalPart - discPart : totalPart);
+        sendData.set("HARGA_JASA_LAIN", totalJasa);
+        sendData.set("DISC_JASA", totalJasa > 0 ? discJasa : 0);
+        sendData.set("HARGA_JASA_LAIN_NET", totalJasa > 0 ? totalJasa - discJasa : totalJasa);
+        sendData.set("DP", totalDp);
+        sendData.set("SISA_BIAYA", sisaBiaya);
+        sendData.set("BIAYA_SIMPAN", totalBiayaSimpan);
+        sendData.set("DISC_SPOT", discSpot);
+        sendData.set("HARGA_JASA_PART", totalJasaPart);
+        sendData.set("DISC_JASA_PART", totalJasaPart > 0 ? discJasaPart : 0);
+        sendData.set("HARGA_JASA_PART_NET", totalJasaPart > 0 ? totalJasaPart - discJasaPart : totalJasaPart);
+        sendData.set("BIAYA_DEREK", biayaDerek);
+        sendData.set("PEMILIK", pemilik);
+        sendData.set("MDR_ON_US", mdrOnUs);
+        sendData.set("MDR_OFF_US", mdrOfUs);
+        sendData.set("MDR_KREDIT_CARD", mdrCreditCard);
+        sendData.set("IS_OFF_US", isMdrOffUs);
+        sendData.set("PKP", isPkp);
+        sendData.set("JENIS", isLayanan ? "CHECKIN" : (isDp ? "DP" : (isJualPart ? "JUAL PART" : "")));
+        sendData.set("NO_PONSEL", noHp);
+        sendData.set("NOPOL", nopol);
+        sendData.set("JUAL_PART_ID", idJualPart);
+
+        Intent i = new Intent(getActivity(), AturPembayaran_Activity.class);
+        i.putExtra(DATA, sendData.toJson());
+        i.putExtra("PART_LIST", partList.toJson());
+        startActivityForResult(i, REQUEST_DETAIL);
     }
 
     private void loadData() {
@@ -288,10 +310,10 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
     private void loadDataRincianLayanan(Nson result) {
         result = result.get("data");
         for (int i = 0; i < result.size(); i++) {
-            if(!isBatal){
-                if(isDp && result.get(i).get("DP_DETAIL").asInteger() > 0){
+            if (!isBatal) {
+                if (isDp && result.get(i).get("DP_DETAIL").asInteger() > 0) {
                     totalPart = result.get(i).get("HARGA_PART").asInteger() * result.get(i).get("JUMLAH").asInteger();
-                }else{
+                } else {
                     totalPart += result.get(i).get("HARGA_PART").asInteger();
                 }
 
@@ -317,6 +339,10 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
 
                 namaLayanan = result.get(i).get("LAYANAN").asString();
                 isPkp = result.get(i).get("PKP").asString();
+
+                noMesin = result.get(i).get("NO_MESIN").asString();
+                noRangka = result.get(i).get("NO_RANGKA").asString();
+                kodeTipe = result.get(i).get("CODE_TYPE").asString();
             }
 
 
@@ -368,7 +394,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         find(R.id.row_total_2).setVisibility(total2 == 0 | isDp ? View.GONE : View.VISIBLE);
         find(R.id.row_sisa_biaya).setVisibility(sisaBiaya == 0 | isDp ? View.GONE : View.VISIBLE);
         find(R.id.row_penyimpanan).setVisibility(totalBiayaSimpan == 0 | isDp ? View.GONE : View.VISIBLE);
-        find(R.id.row_disc_layanan).setVisibility(discLayanan == 0 | biayaLayanan == 0 | isDp? View.GONE : View.VISIBLE);
+        find(R.id.row_disc_layanan).setVisibility(discLayanan == 0 | biayaLayanan == 0 | isDp ? View.GONE : View.VISIBLE);
         find(R.id.row_disc_frekwensi).setVisibility(discFrekwensi == 0 | isDp ? View.GONE : View.VISIBLE);
         find(R.id.row_disc_part).setVisibility(discPart == 0 ? View.GONE : View.VISIBLE);
         find(R.id.row_disc_jasa_part).setVisibility(discJasaPart == 0 | isDp ? View.GONE : View.VISIBLE);
@@ -419,16 +445,16 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             find(R.id.tv_nama_pelanggan_jual_part, TextView.class).setText(result.get(i).get("NAMA_PELANGGAN").asString());
             find(R.id.tv_no_ponsel_jual_part, TextView.class).setText(result.get(i).get("NO_PONSEL").asString());
             find(R.id.tv_frek_jual_part, TextView.class).setText(result.get(i).get("FREKWENSI").asString());
-            if(result.get(i).get("NAMA_USAHA").asString().isEmpty()){
+            if (result.get(i).get("NAMA_USAHA").asString().isEmpty()) {
                 find(R.id.tr_usaha).setVisibility(View.GONE);
-            }else{
+            } else {
                 find(R.id.tv_nama_usaha_jual_part, TextView.class).setText(result.get(i).get("NAMA_USAHA").asString());
             }
         }
 
         if (discPart > 0) {
             discPart = (discPart / 100) * totalPart;
-        }else{
+        } else {
             find(R.id.tr_disc_part).setVisibility(View.GONE);
         }
 
@@ -443,8 +469,8 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         sendData.set("TOTAL", totalKeseluruhan);
     }
 
-    private String setPPN(int totalBiaya){
-        if(isPkp.equals("Y")){
+    private String setPPN(int totalBiaya) {
+        if (isPkp.equals("Y")) {
             int totalPPN = (int) (ppn * totalBiaya);
             return String.valueOf(totalPPN);
         }
@@ -572,6 +598,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         if (resultCode == RESULT_OK && requestCode == REQUEST_KONFIRMASI) {
             showSuccess("Sukses Memperharui Data Pelanggan");
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_NEW_CS) {
+            viewRincianPembayaran();
             showSuccess("Sukses Memperharui Data Kendraan");
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_DETAIL) {
             setResult(RESULT_OK);

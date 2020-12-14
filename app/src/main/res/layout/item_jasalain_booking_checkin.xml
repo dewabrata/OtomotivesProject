@@ -48,7 +48,8 @@
                 android:textColor="@color/grey_900"
                 android:textSize="12sp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:visibility="gone" />
+                card_view:ignore="RtlSymmetry"
+                android:visibility="gone"/>
 
             <TableLayout
                 android:layout_width="match_parent"

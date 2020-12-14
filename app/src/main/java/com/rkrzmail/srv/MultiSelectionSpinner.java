@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
@@ -114,16 +115,36 @@ public class MultiSelectionSpinner extends Spinner implements
     }
 
     public void setItems(List<String> items) {
-        _items = items.toArray(new String[items.size()]);
+        _items = items.toArray(new String[0]);
         mSelectionBool = new boolean[_items.length];
-        mSelectionAtStartBool = new boolean[_items.length];
-        simple_adapter.clear();
         simple_adapter.add(_items[0]);
         Arrays.fill(mSelectionBool, false);
-        mSelectionBool[0] = true;
     }
 
-    public void setSelection(String[] selection, boolean isSelect) {
+    public void setItems(List<String> items, List<String> listChecked) {
+        _items = items.toArray(new String[0]);
+        mSelectionBool = new boolean[_items.length];
+        mSelectionAtStartBool = new boolean[_items.length];
+        if(listChecked != null){
+            for (int j = 0; j < _items.length;j++) {
+                for (int i = 0; i < listChecked.size(); i++) {
+                    if (_items[j].equals(listChecked.get(i))) {
+                        mSelectionBool[j] = true;
+                        mSelectionAtStartBool[j] = true;
+                        Log.d("okkk__", "setItems: " + _items[j]);
+                    }
+                }
+            }
+            simple_adapter.add(buildSelectedItemString());
+        }else{
+            Arrays.fill(mSelectionBool, false);
+            mSelectionBool[0] = true;
+            mSelectionAtStartBool[0] = true;
+        }
+
+    }
+
+    public void setSelection(String[] selection) {
         for (int i = 0; i < mSelectionBool.length; i++) {
             mSelectionBool[i] = false;
             mSelectionAtStartBool[i] = false;
@@ -131,8 +152,8 @@ public class MultiSelectionSpinner extends Spinner implements
         for (String cell : selection) {
             for (int j = 0; j < _items.length; ++j) {
                 if (_items[j].equals(cell)) {
-                    mSelectionBool[j] = isSelect;
-                    mSelectionAtStartBool[j] = isSelect;
+                    mSelectionBool[j] = true;
+                    mSelectionAtStartBool[j] = true;
                 }
             }
         }
@@ -140,16 +161,11 @@ public class MultiSelectionSpinner extends Spinner implements
         simple_adapter.add(buildSelectedItemString());
     }
 
-    public void setSelection(List<String> selection, boolean isSelect) {
-        for (int i = 0; i < mSelectionBool.length; i++) {
-            mSelectionBool[i] = false;
-            mSelectionAtStartBool[i] = false;
-        }
+    public void setSelection(List<String> selection) {
         for (String sel : selection) {
             for (int j = 0; j < _items.length; ++j) {
-                if (_items[j].equals(sel)) {
-                    mSelectionBool[j] = isSelect;
-                    mSelectionAtStartBool[j] = isSelect;
+                if (_items[j].contains(sel)) {
+                    mSelectionBool[j] = true;
                 }
             }
         }
@@ -160,27 +176,9 @@ public class MultiSelectionSpinner extends Spinner implements
     public void setSelectionMatch(List<String> itemSet, List<String> loadFrom) {
         for (int i = 0; i < itemSet.size(); i++) {
             mSelectionBool[i] = loadFrom != null && loadFrom.contains(itemSet.get(i));
-            mSelectionAtStartBool[i] = loadFrom != null && loadFrom.contains(itemSet.get(i));
+            //mSelectionAtStartBool[i] = loadFrom != null && loadFrom.contains(itemSet.get(i));
         }
         //simple_adapter.add(buildSelectedItemString());
-    }
-
-    public void setSelection(List<Integer> selectedIndices) {
-        for (int i = 0; i < mSelectionBool.length; i++) {
-            mSelectionBool[i] = false;
-            mSelectionAtStartBool[i] = false;
-        }
-        for (int index : selectedIndices) {
-            if (index >= 0 && index < mSelectionBool.length) {
-                mSelectionBool[index] = true;
-                mSelectionAtStartBool[index] = true;
-            } else {
-                throw new IllegalArgumentException("Index " + index
-                        + " is out of bounds.");
-            }
-        }
-        simple_adapter.clear();
-        simple_adapter.add(buildSelectedItemString());
     }
 
     public void setSelection(int[] selectedIndices) {

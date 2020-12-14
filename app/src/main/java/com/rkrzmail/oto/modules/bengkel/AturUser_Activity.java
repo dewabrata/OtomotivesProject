@@ -145,9 +145,9 @@ public class AturUser_Activity extends AppActivity {
                     return;
                 }
 
-                if(isUpdate){
+                if (isUpdate) {
                     updateData();
-                }else{
+                } else {
                     if (validateFields(find(R.id.ly_user, LinearLayout.class))) {
                         return;
                     }
@@ -243,10 +243,9 @@ public class AturUser_Activity extends AppActivity {
         });
     }
 
-    private void setSpAkses(List<Integer> loadFrom) {
-        spAkses.setItems(aksesArr);
+    private void setSpAkses(List<String> loadFrom) {
+        spAkses.setItems(aksesArr, loadFrom);
         //spAkses.setSelectionMatch(aksesArr, loadFrom);
-        spAkses.setSelection(loadFrom);
         spAkses.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
             @Override
             public void selectedIndices(List<Integer> indices) {
@@ -301,22 +300,17 @@ public class AturUser_Activity extends AppActivity {
             find(R.id.txtGaji, TextView.class).setText(data.get("GAJI").asString());
             find(R.id.tblSimpan, Button.class).setText("Update");
 
-            String[] splitAkses = data.get("AKSES_APP").asString().split(",");
-            List<Integer> dummy = new ArrayList<>();
-            for (int i = 0; i < splitAkses.length; i++) {
-                if(aksesArr.contains(splitAkses[i])){
-                    dummy.add(i);
-                    Log.d("ooo___", "splitakses: " + splitAkses[i]);
-                }
+            String[] splitAkses = data.get("AKSES_APP").asString().trim().split(", ");
+            List<String> dummy = new ArrayList<>();
+            for (String s : splitAkses) {
+                dummy.add(s.trim());
             }
-
-            Log.d("ooo___", "loadData: " + dummy);
             setSpAkses(dummy);
-        }else{
+        } else {
             setSpAkses(null);
         }
 
-        
+
         setSpinnerFromApi(spPosisi, "nama", "POSISI", "viewmst", "NAMA", posisi);
         setSpinnerOffline(listStatus, spStatus, status);
         setSpinnerOffline(listFungsiMekanik, find(R.id.sp_fungsiMekanik, Spinner.class), fungsiMekanik);

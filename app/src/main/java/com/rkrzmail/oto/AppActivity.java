@@ -39,6 +39,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -87,6 +88,11 @@ import static com.rkrzmail.utils.ConstUtils.PERMISSION_REQUEST_CODE;
 
 
 public class AppActivity extends AppCompatActivity {
+
+    public void hideKeyboard(){
+        getActivity().getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    }
 
     public String  getSetting(String key) {
         return UtilityAndroid.getSetting(getActivity(), key, "");
@@ -657,7 +663,6 @@ public class AppActivity extends AppCompatActivity {
                 ArrayList<String> newStr = Tools.removeDuplicates(str);
                 try {
                     spinner.setItems(newStr);
-                    spinner.setSelection(newStr, false);
                     spinner.setListener(listener);
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -388,8 +388,8 @@ public class Tools {
     @SuppressLint("SimpleDateFormat")
     public static String setFormatDateTimeFromDb(String date, String fromPattern, String setPattern, boolean isDefaultPattern) {
         if (!date.equals("")) {
-            SimpleDateFormat sdf = new SimpleDateFormat(isDefaultPattern ? "yyyy-MM-dd hh:mm:ss" : fromPattern);
-            Date tgl = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat(isDefaultPattern ? "yyyy-MM-dd HH:mm:ss" : fromPattern);
+            Date tgl = null;
             try {
                 tgl = sdf.parse(date);
             } catch (ParseException e) {
@@ -404,7 +404,7 @@ public class Tools {
 
     @SuppressLint("SimpleDateFormat")
     public static String setDateTimeToDb(String date) {
-        if(!date.isEmpty()){
+        if (!date.isEmpty()) {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
             Date tgl = new Date();
             try {
@@ -507,7 +507,7 @@ public class Tools {
         Nson nson = Nson.newArray();
         for (Object object : list.asArray()) {
             if (!nson.asArray().contains(object)) {
-               nson.asArray().add(object);
+                nson.asArray().add(object);
             }
         }
         return nson;
@@ -539,6 +539,7 @@ public class Tools {
     }
 
     public static boolean isNumeric(String str) {
+        if(str.isEmpty() || str == null) return false;
         return str.matches("-?\\d+(.\\d+)?");
     }
 
@@ -606,44 +607,69 @@ public class Tools {
     }
 
     public static String getmonth(int month) {
-        switch (month) {
-            case 1:
-                return "January";
+        if (month == 0 || String.valueOf(month) == null || String.valueOf(month).isEmpty()) return "";
+            switch (month) {
+                case 1:
+                    return "January";
 
-            case 2:
-                return "February";
+                case 2:
+                    return "February";
 
-            case 3:
-                return "March";
+                case 3:
+                    return "March";
 
-            case 4:
-                return "April";
+                case 4:
+                    return "April";
 
-            case 5:
-                return "May";
+                case 5:
+                    return "May";
 
-            case 6:
-                return "June";
+                case 6:
+                    return "June";
 
-            case 7:
-                return "July";
+                case 7:
+                    return "July";
 
-            case 8:
-                return "August";
+                case 8:
+                    return "August";
 
-            case 9:
-                return "September";
+                case 9:
+                    return "September";
 
-            case 10:
-                return "October";
+                case 10:
+                    return "October";
 
-            case 11:
-                return "November";
+                case 11:
+                    return "November";
 
-            case 12:
-                return "December";
-        }
+                case 12:
+                    return "December";
+            }
         return "January";
     }
 
+    public static String getDay(int day){
+        try {
+            switch (day) {
+                case 1:
+                    return "Senin";
+                case 2:
+                    return "Selasa";
+                case 3:
+                    return "Rabu";
+                case 4:
+                    return "Kamis";
+                case 5:
+                    return "Jum`at";
+                case 6:
+                    return "Sabtu";
+                case 7:
+                    return "Minggu";
+                default:
+                    return "";
+            }
+        }catch (Exception e){
+            return "";
+        }
+    }
 }

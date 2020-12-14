@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.sparepart;
 
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +23,7 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 
@@ -37,6 +39,7 @@ import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_OTOMOTIVES;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_TERALOKASIKAN;
 import static com.rkrzmail.utils.ConstUtils.PART;
+import static com.rkrzmail.utils.ConstUtils.RP;
 
 public class CariPart_Activity extends AppActivity {
 
@@ -127,6 +130,7 @@ public class CariPart_Activity extends AppActivity {
 
     private void initRecylerviewCariPart() {
         rvCariPart.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_daftar_cari_part) {
+                    @SuppressLint("SetTextI18n")
                     @Override
                     public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                         super.onBindViewHolder(viewHolder, position);
@@ -138,6 +142,8 @@ public class CariPart_Activity extends AppActivity {
                             viewHolder.find(R.id.tv_cari_pending, TextView.class).setVisibility(flag ? View.GONE : View.VISIBLE);
                             viewHolder.find(R.id.tv_cari_stockPart, TextView.class).setText(flag ? "" : nListArray.get(position).get("STOCK").asString());
                             viewHolder.find(R.id.tv_cari_pending, TextView.class).setText(flag ? "" : nListArray.get(position).get("PENDING").asString());
+                            viewHolder.find(R.id.tv_cari_harga_part, TextView.class).setText(Tools.isNumeric(nListArray.get(position).get("HARGA_JUAL").asString()) ? RP + formatRp(nListArray.get(position).get("HARGA_JUAL").asString()) : "");
+                            viewHolder.find(R.id.tv_cari_hpp, TextView.class).setText(RP + formatRp(nListArray.get(position).get("HPP").asString()));
                         } else {
                             viewHolder.find(R.id.tv_cari_stockPart, TextView.class).setVisibility(View.GONE);
                             viewHolder.find(R.id.tv_cari_pending, TextView.class).setVisibility(View.GONE);
@@ -178,6 +184,7 @@ public class CariPart_Activity extends AppActivity {
 
     private void initRecylerViewCarPartLokasi() {
         rvCariPart.setAdapter(new NikitaRecyclerAdapter(partLokasiPart, R.layout.item_daftar_cari_part) {
+                    @SuppressLint("SetTextI18n")
                     @Override
                     public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                         super.onBindViewHolder(viewHolder, position);
@@ -185,6 +192,8 @@ public class CariPart_Activity extends AppActivity {
                         viewHolder.find(R.id.tv_cari_namaPart, TextView.class).setText(partLokasiPart.get(position).get("NAMA_PART").asString());
                         viewHolder.find(R.id.tv_cari_noPart, TextView.class).setText(partLokasiPart.get(position).get("NO_PART").asString());
                         viewHolder.find(R.id.tv_cari_stockPart, TextView.class).setText(partLokasiPart.get(position).get("STOCK_RUANG_PART").asString());
+                        viewHolder.find(R.id.tv_cari_harga_part, TextView.class).setText(Tools.isNumeric(partLokasiPart.get(position).get("HARGA_JUAL").asString()) ? RP + formatRp(partLokasiPart.get(position).get("HARGA_JUAL").asString()) : "");
+                        viewHolder.find(R.id.tv_cari_hpp, TextView.class).setText(RP + formatRp(partLokasiPart.get(position).get("HPP").asString()));
                         if(!partLokasiPart.get(position).get("LOKASI").asString().equals("*")){
                             viewHolder.find(R.id.tv_cari_pending, TextView.class).setText(partLokasiPart.get(position).get("LOKASI").asString());
                         }else{
@@ -232,6 +241,7 @@ public class CariPart_Activity extends AppActivity {
 
     private void initRecylerViewCarPartClaim() {
         rvCariPart.setAdapter(new NikitaRecyclerAdapter(partClaim, R.layout.item_daftar_cari_part) {
+                    @SuppressLint("SetTextI18n")
                     @Override
                     public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                         super.onBindViewHolder(viewHolder, position);
@@ -239,6 +249,8 @@ public class CariPart_Activity extends AppActivity {
                         viewHolder.find(R.id.tv_cari_namaPart, TextView.class).setText(partClaim.get(position).get("NAMA_PART").asString());
                         viewHolder.find(R.id.tv_cari_noPart, TextView.class).setText(partClaim.get(position).get("NO_PART").asString());
                         viewHolder.find(R.id.tv_cari_stockPart, TextView.class).setText(partClaim.get(position).get("STOCK").asString());
+                        viewHolder.find(R.id.tv_cari_harga_part, TextView.class).setText(RP + formatRp(partClaim.get(position).get("HARGA_PART").asString()));
+                        viewHolder.find(R.id.tv_cari_hpp, TextView.class).setText(RP + formatRp(partClaim.get(position).get("HPP").asString()));
                         if(!partClaim.get(position).get("LOKASI").asString().equals("*")){
                             viewHolder.find(R.id.tv_cari_pending, TextView.class).setText(partClaim.get(position).get("LOKASI").asString());
                         }else{

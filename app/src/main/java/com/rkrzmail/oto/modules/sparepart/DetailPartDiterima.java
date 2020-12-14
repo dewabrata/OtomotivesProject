@@ -367,6 +367,7 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SPAREPART), args));
             }
 
+            @SuppressLint("SetTextI18n")
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
@@ -385,9 +386,8 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
                         merkPart = result.get("MERK").asString();
                         setSpinnerLokasiSimpan(lokasiPart);
                     }
-
                 } else {
-                    showError(result.get("message").asString());
+                    showError("Scan Barcode Tidak Valid");
                 }
             }
         });
@@ -461,8 +461,12 @@ public class DetailPartDiterima extends AppActivity implements View.OnFocusChang
             setSpinnerLokasiSimpan(lokasiPart);
             etPenempatan.setText(penempatan);
         } else if (requestCode == REQUEST_BARCODE && resultCode == RESULT_OK) {
-            getDataBarcode(data != null ? data.getStringExtra("TEXT").replace("\n", "").trim() : "");
-            showSuccess(data != null ? data.getStringExtra("TEXT").replace("\n", "").trim() : "");
+            try{
+                getDataBarcode(data != null ? data.getStringExtra("TEXT").replace("\n", "").trim() : "");
+                showSuccess(data != null ? data.getStringExtra("TEXT").replace("\n", "").trim() : "");
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 }

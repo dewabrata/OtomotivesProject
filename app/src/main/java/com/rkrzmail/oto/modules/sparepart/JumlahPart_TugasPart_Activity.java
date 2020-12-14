@@ -27,6 +27,7 @@ import java.util.Objects;
 import static com.rkrzmail.utils.APIUrls.ATUR_TUGAS_PART;
 import static com.rkrzmail.utils.APIUrls.VIEW_SPAREPART;
 import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
 import static com.rkrzmail.utils.ConstUtils.TUGAS_PART_BATAL;
 import static com.rkrzmail.utils.ConstUtils.TUGAS_PART_PERMINTAAN;
@@ -222,19 +223,20 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SPAREPART), args));
             }
 
+            @SuppressLint("SetTextI18n")
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    result = result.get("data").get(0);
-                    if(result.get("NO_PART").asString().equalsIgnoreCase(nopart)){
-                        counScanPart++;
-                        showSuccess(result.get("NO_PART").asString());
-                        etJumlahRequest.setText(""+counScanPart);
-                    }else{
-                        showError("NO. PART " + nopart + " Tidak Tersedia di Bengkel", Toast.LENGTH_LONG);
+                    if(result.get("data").asArray().size() == 0){
+                        showError("Barcode Tidak Valid");
+                        return;
                     }
+                    result = result.get("data").get(0);
+                    counScanPart++;
+                    showSuccess(result.get("NO_PART").asString());
+                    etJumlahRequest.setText("" + counScanPart);
                 } else {
-                    showError(result.get("message").asString());
+                    showError(ERROR_INFO);
                 }
             }
         });

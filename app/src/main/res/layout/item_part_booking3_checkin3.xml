@@ -36,7 +36,6 @@
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:layout_gravity="center"
-            android:padding="@dimen/paddingSemiLarge"
             android:gravity="center">
 
             <TextView
@@ -45,16 +44,17 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="No. "
-                android:paddingStart="@dimen/paddingMedium"
                 android:textColor="@color/grey_900"
                 android:textSize="12sp"
+               android:paddingStart="@dimen/paddingMedium"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:visibility="gone"/>
 
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:stretchColumns="*">
+                android:stretchColumns="*"
+                android:padding="@dimen/paddingSemiLarge">
 
                 <TableRow>
 

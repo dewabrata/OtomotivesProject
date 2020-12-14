@@ -3,7 +3,6 @@ package com.rkrzmail.oto.modules.Fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,6 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.utils.Tools;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,7 +40,7 @@ public class TabTambahan_Fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_tab_tambahan_, container, false);
+        View v = inflater.inflate(R.layout.fragment_tab_tambahan_bengkel, container, false);
         initComponent(v);
         return v;
     }

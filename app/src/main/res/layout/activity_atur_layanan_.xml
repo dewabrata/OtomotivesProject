@@ -47,7 +47,6 @@
                         android:id="@+id/sp_jenis_layanan"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:entries="@array/atur_layanan"
                         android:textAlignment="center" />
 
                 </RelativeLayout>
@@ -167,7 +166,6 @@
                         android:id="@+id/sp_status_layanan"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:entries="@array/status_layanan"
                         android:textAlignment="center" />
 
                 </RelativeLayout>
@@ -255,7 +253,6 @@
                             android:id="@+id/sp_garansi_atur_layanan"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:entries="@array/garansi_bengkel"
                             android:textAlignment="center" />
 
                     </RelativeLayout>

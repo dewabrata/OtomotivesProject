@@ -51,7 +51,7 @@ public class TabSchedule_Fragment extends Fragment implements View.OnClickListen
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_tab_schedule_, container, false);
+        View v = inflater.inflate(R.layout.fragment_tab_schedule_bengkel, container, false);
         initComponent(v);
         return v;
     }

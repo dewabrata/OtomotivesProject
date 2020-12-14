@@ -43,7 +43,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class AturPenugasan_Activity extends AppActivity implements View.OnClickListener {
+public class AturSchedule_Activity extends AppActivity implements View.OnClickListener {
 
     private static final String TAG = "AturPenugasan___";
     private static final int REQUEST_MEKANIK = 99;
@@ -65,7 +65,7 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_atur_penugasan_);
+        setContentView(R.layout.activity_atur_schedule);
         initToolbar();
         initComponent();
     }
@@ -271,7 +271,7 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
     private void setSpTipe_antrian() {
         if (isAntrian) {
             spTipe_antrian.setItems(listAntrian);
-            spTipe_antrian.setSelection(listAntrian, true);
+            //spTipe_antrian.setSelection(listAntrian, true);
         } else {
             tipeAntrian = new String[]{"--PILIH--", "STANDARD", "EXPRESS", "H+"};
             spTipe_antrian.setItems(tipeAntrian);
@@ -433,7 +433,7 @@ public class AturPenugasan_Activity extends AppActivity implements View.OnClickL
             public void runUI() {
                 if (data.get("status").asString().equalsIgnoreCase("OK")) {
                     Log.d(TAG, "success delete data" + data.get("ID").asString());
-                    startActivity(new Intent(AturPenugasan_Activity.this, PenugasanActivity.class));
+                    startActivity(new Intent(AturSchedule_Activity.this, Schedule_Activity.class));
                     finish();
                 } else {
                     showError("Mohon Di Coba Kembali");

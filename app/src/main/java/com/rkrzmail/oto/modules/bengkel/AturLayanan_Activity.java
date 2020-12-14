@@ -37,9 +37,12 @@ import com.rkrzmail.utils.Tools;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static com.rkrzmail.utils.APIUrls.ATUR_LAYANAN;
+import static com.rkrzmail.utils.APIUrls.VIEW_LAYANAN;
 import static com.rkrzmail.utils.ConstUtils.ADD;
 import static com.rkrzmail.utils.ConstUtils.EDIT;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
@@ -119,13 +122,20 @@ public class AturLayanan_Activity extends AppActivity {
     }
 
     @SuppressLint("SetTextI18n")
-    private void initData(){
+    private void initData() {
+        List<String> jenisList = Arrays.asList(getResources().getStringArray(R.array.atur_layanan));
+        List<String> statusList = Arrays.asList(getResources().getStringArray(R.array.status_layanan));
         if (getIntent().hasExtra(ADD)) {
             isAdd = true;
             Nson data = Nson.readJson(getIntentStringExtra(ADD));
             for (int i = 0; i < data.size(); i++) {
                 layananBengkelAvail.add(data.get(i).get("NAMA_LAYANAN").asString());
             }
+
+            setSpinnerOffline(statusList, spStatus, "");
+            setSpinnerOffline(jenisList, spJenisLayanan, "");
+            setSpinnerOffline(statusList, find(R.id.sp_garansi_atur_layanan, Spinner.class), "");
+
             showInfo(layananBengkelAvail.toJson(), Toast.LENGTH_LONG);
             find(R.id.btn_simpan_atur_layanan, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -139,14 +149,14 @@ public class AturLayanan_Activity extends AppActivity {
                         showWarning("Silahkan Pilih Nama Layanan");
                         spNamaLayanan.performClick();
                         return;
-                    }else if(spNamaLayanan.getSelectedItem().toString().equalsIgnoreCase("AFTER SALES SERVICES") || spNamaLayanan.getSelectedItem().toString().equalsIgnoreCase("RECALL")){
-                        if(spNamaPrincipal.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")){
+                    } else if (spNamaLayanan.getSelectedItem().toString().equalsIgnoreCase("AFTER SALES SERVICES") || spNamaLayanan.getSelectedItem().toString().equalsIgnoreCase("RECALL")) {
+                        if (spNamaPrincipal.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
                             spNamaPrincipal.performClick();
                             showWarning("Nama Principal Harus Di Pilih");
                             return;
                         }
-                    }else if(spNamaLayanan.getSelectedItem().toString().equalsIgnoreCase("PAKET LAYANAN")){
-                        if(find(R.id.et_biayaPaket_layanan, EditText.class).getText().toString().isEmpty()){
+                    } else if (spNamaLayanan.getSelectedItem().toString().equalsIgnoreCase("PAKET LAYANAN")) {
+                        if (find(R.id.et_biayaPaket_layanan, EditText.class).getText().toString().isEmpty()) {
                             find(R.id.et_biayaPaket_layanan, EditText.class).setError("Biaya Paket Harus Di Isi");
                             return;
                         }
@@ -171,8 +181,8 @@ public class AturLayanan_Activity extends AppActivity {
             } catch (Exception e) {
                 showError("NumberException: " + e.getMessage());
             }
-            spJenisLayanan.setSelection(Tools.getIndexSpinner(spJenisLayanan, editNson.get("JENIS_LAYANAN").asString()));
-            spStatus.setSelection(Tools.getIndexSpinner(spJenisLayanan, editNson.get("STATUS").asString()));
+
+
             find(R.id.sp_garansi_atur_layanan, Spinner.class).setSelection(Tools.getIndexSpinner(spJenisLayanan, editNson.get("STATUS").asString()));
             find(R.id.et_discBooking_layanan, EditText.class).setText(editNson.get("DISCOUNT_BOOKING").asString());
             find(R.id.btn_simpan_atur_layanan, Button.class).setOnClickListener(new View.OnClickListener() {
@@ -181,7 +191,16 @@ public class AturLayanan_Activity extends AppActivity {
                     updateData(editNson);
                 }
             });
+
+            setSpinnerOffline(statusList, find(R.id.sp_garansi_atur_layanan, Spinner.class), editNson.get("GARANSI_BERSAMA").asString());
+            setSpinnerOffline(statusList, spStatus, editNson.get("STATUS").asString());
+            setSpinnerOffline(jenisList, spJenisLayanan, editNson.get("JENIS_LAYANAN").asString());
+            setSpinnerFromApi(spNamaLayanan, "action", "view", VIEW_LAYANAN, "NAMA_LAYANAN", editNson.get("NAMA_LAYANAN").asString());
+            setSpinnerFromApi(spNamaPrincipal, "action", "principal", "databengkel", "NAMA", editNson.get("PRINCIPAL").asString());
+
         }
+
+
     }
 
     private void updateData(final Nson id) {
@@ -307,14 +326,14 @@ public class AturLayanan_Activity extends AppActivity {
                             model = dataLayananList.get(i).get("MODEL").asString();
                             varian = dataLayananList.get(i).get("VARIAN").asString();
                             keterangan = dataLayananList.get(i).get("KETERANGAN_LAYANAN").asString();
-                            if(!dataLayananList.get(i).get("PRINCIPAL").asString().equals("N")){
+                            if (!dataLayananList.get(i).get("PRINCIPAL").asString().equals("N")) {
                                 namaPrincipal = dataLayananList.get(i).get("PRINCIPAL").asString();
-                            }else{
+                            } else {
                                 namaPrincipal = "--PILIH--";
                             }
                             setSpNamaPrincipal(namaPrincipal);
-                            if(dataLayananList.get(i).get("GARANSI").asString().equals("BERSAMA")){
-                                find(R.id.sp_garansi_atur_layanan, Spinner.class).setSelection(Tools.getIndexSpinner( find(R.id.sp_garansi_atur_layanan, Spinner.class), "YA"));
+                            if (dataLayananList.get(i).get("GARANSI").asString().equals("BERSAMA")) {
+                                find(R.id.sp_garansi_atur_layanan, Spinner.class).setSelection(Tools.getIndexSpinner(find(R.id.sp_garansi_atur_layanan, Spinner.class), "YA"));
                                 find(R.id.et_feeGB_layanan, EditText.class).setText("Rp. " + formatRp(dataLayananList.get(i).get("FEE_NON_PAKET").asString()));
                             }
                             break;
@@ -440,7 +459,7 @@ public class AturLayanan_Activity extends AppActivity {
                     args.put("jasa", "");
                 }
 
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturlayanan"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_LAYANAN), args));
             }
 
             @Override
@@ -464,7 +483,11 @@ public class AturLayanan_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlayanan"), args));
+                if (layananPaketList.size() == 0 ||
+                        layananAfterList.size() == 0 ||
+                        layananRecallList.size() == 0 || layananOtolist.size() == 0) {
+                    result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_LAYANAN), args));
+                }
             }
 
             @Override
@@ -518,12 +541,12 @@ public class AturLayanan_Activity extends AppActivity {
         }
         dataLayananList.asArray().addAll(listItem.asArray());
         final List<String> data = Tools.removeDuplicates(dataList);
-        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, data){
+        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, data) {
             @Override
             public boolean isEnabled(int position) {
-                if(isAdd){
+                if (isAdd) {
                     for (int i = 0; i < layananBengkelAvail.size(); i++) {
-                        if(layananBengkelAvail.get(i).asString().equals(data.get(position))){
+                        if (layananBengkelAvail.get(i).asString().equals(data.get(position))) {
                             return false;
                         }
                     }
@@ -534,15 +557,16 @@ public class AturLayanan_Activity extends AppActivity {
             @SuppressLint("WrongConstant")
             @Override
             public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                View mView = super.getDropDownView(position, convertView, parent);
-                TextView mTextView = (TextView) mView;
-                ((TextView) mView).setGravity(Gravity.CENTER);
-                ((TextView) mView).setTextAlignment(Gravity.CENTER);
-                if (isAdd) {
-                    for (int i = 0; i < layananBengkelAvail.size(); i++) {
-                        if(layananBengkelAvail.get(i).asString().equals(data.get(position))){
-                            mTextView.setVisibility(View.GONE);
-                        }
+                View mView = null;
+                for (int i = 0; i < layananBengkelAvail.size(); i++) {
+                    if (layananBengkelAvail.get(i).asString().equals(data.get(position))) {
+                        TextView mTextView = new TextView(getContext());
+                        mTextView.setVisibility(View.GONE);
+                        mTextView.setHeight(0);
+                        mView = mTextView;
+                        break;
+                    } else {
+                        mView = super.getDropDownView(position, null, parent);
                     }
                 }
                 return mView;

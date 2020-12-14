@@ -60,7 +60,7 @@ public class Collection_Activity extends AppActivity {
             @SuppressLint("SetTextI18n")
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                String tgl = Tools.setFormatDateTimeFromDb(nListArray.get(position).get("TANGGAL").asString());
+                String tgl = Tools.setFormatDateTimeFromDb(nListArray.get(position).get("TANGGAL").asString(), "yyyy-MM-dd HH:mm:ss", "dd/MM-HH:mm", false);
                 viewHolder.find(R.id.tv_nama_collection, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
                 viewHolder.find(R.id.tv_balance, TextView.class).setText(RP + formatRp(nListArray.get(position).get("SALDO_KASIR").asString()));
                 viewHolder.find(R.id.tv_tanggal, TextView.class).setText(tgl);

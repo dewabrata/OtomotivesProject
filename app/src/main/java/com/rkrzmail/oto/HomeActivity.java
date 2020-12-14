@@ -42,7 +42,7 @@ import com.rkrzmail.oto.modules.bengkel.Layanan_Avtivity;
 import com.rkrzmail.oto.modules.sparepart.LokasiPart_Activity;
 import com.rkrzmail.oto.gmod.part.PartActivity;
 import com.rkrzmail.oto.gmod.part.PartSearchActivity;
-import com.rkrzmail.oto.modules.mekanik.PenugasanActivity;
+import com.rkrzmail.oto.modules.mekanik.Schedule_Activity;
 import com.rkrzmail.oto.modules.bengkel.RekeningBank_Activity;
 import com.rkrzmail.oto.modules.bengkel.Tenda_Activity;
 import com.rkrzmail.oto.modules.sparepart.TerimaPart;
@@ -172,7 +172,7 @@ public class HomeActivity extends MenuActivity{
 //
 //                }
                 else if (nPopulate.get(position).get("id").asInteger() == MN_PENUGASAN_MEKANIK) {
-                    Intent intent = new Intent(HomeActivity.this, PenugasanActivity.class);
+                    Intent intent = new Intent(HomeActivity.this, Schedule_Activity.class);
                     startActivity(intent);
 
                 }else if (nPopulate.get(position).get("id").asInteger() == MN_BIAYA_MEKANIK2) {

@@ -53,6 +53,7 @@ public class AturStockOpname_Activity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        hideKeyboard();
         setContentView(R.layout.activity_stock_opname);
         initToolbar();
         initComponent();

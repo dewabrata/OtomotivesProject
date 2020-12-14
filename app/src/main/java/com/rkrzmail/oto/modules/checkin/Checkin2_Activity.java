@@ -88,6 +88,7 @@ public class Checkin2_Activity extends AppActivity {
             etNorangka.setText(readCheckin.get("noRangka").asString());
             etNomesin.setText(readCheckin.get("noMesin").asString());
             tvTgl.setText(readCheckin.get("tglBeli").asString());
+            etKodeTipe.setText(readCheckin.get("KODE_TIPE").asString());
             find(R.id.tv_tahun_checkin2, TextView.class).setText(readCheckin.get("tahunProduksi").asString());
         }
         initListener();
@@ -155,8 +156,7 @@ public class Checkin2_Activity extends AppActivity {
                 }else if(etWarna.getText().toString().isEmpty()){
                     etWarna.setError("Warna Wajib di Isi");
                     etWarna.requestFocus();
-                }
-                else {
+                }else {
                     setSelanjutnya(readCheckin);
                 }
             }

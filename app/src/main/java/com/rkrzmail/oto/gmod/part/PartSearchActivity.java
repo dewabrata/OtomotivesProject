@@ -169,7 +169,7 @@ public class PartSearchActivity extends AppActivity {
         }
     };
 
-    private void hideKeyboard() {
+    private void hideKeyboardll() {
         View view = this.getCurrentFocus();
         if (view != null) {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);

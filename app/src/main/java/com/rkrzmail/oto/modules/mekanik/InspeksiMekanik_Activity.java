@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -81,6 +82,13 @@ public class InspeksiMekanik_Activity extends AppActivity {
             }
         }));
 
+        find(R.id.swiperefresh, SwipeRefreshLayout.class).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                viewInspeksi();
+            }
+        });
+
         viewInspeksi();
     }
 
@@ -90,12 +98,14 @@ public class InspeksiMekanik_Activity extends AppActivity {
 
             @Override
             public void run() {
+                swipeProgress(true);
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_INSPEKSI), args));
             }
             @Override
             public void runUI() {
+                swipeProgress(false);
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
@@ -103,6 +113,19 @@ public class InspeksiMekanik_Activity extends AppActivity {
                 } else {
                     showError("Mohon Di Coba Kembali" + result.get("status").asString());
                 }
+            }
+        });
+    }
+
+    private void swipeProgress(final boolean show) {
+        if (!show) {
+            find(R.id.swiperefresh, SwipeRefreshLayout.class).setRefreshing(show);
+            return;
+        }
+        find(R.id.swiperefresh, SwipeRefreshLayout.class).post(new Runnable() {
+            @Override
+            public void run() {
+                find(R.id.swiperefresh, SwipeRefreshLayout.class).setRefreshing(show);
             }
         });
     }

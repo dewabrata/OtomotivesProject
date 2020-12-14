@@ -165,12 +165,11 @@ public class MyCode extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
-                args.put("userid", UtilityAndroid.getSetting(appActivity, "user", ""));
                 args.put("action", "check");
                 args.put("barcode", barcode);
+                args.put("userid", UtilityAndroid.getSetting(appActivity, "user", ""));
 
                 nson = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MY_CODE), args));
-
             }
 
             public void runUI() {

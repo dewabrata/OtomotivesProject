@@ -160,7 +160,7 @@
         <activity android:name=".gmod.Stock_OpnameActivity" />
         <activity android:name=".gmod.Penampung_Item_DetailActivity" />
         <activity android:name=".gmod.MyCode" />
-        <activity android:name=".modules.mekanik.AturPenugasan_Activity" />
+        <activity android:name=".modules.mekanik.AturSchedule_Activity" />
         <activity android:name=".modules.sparepart.LokasiPart_Activity" />
         <activity android:name=".WebActivity" />
         <activity android:name=".MainActivity">
@@ -171,7 +171,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".modules.mekanik.PenugasanActivity"
+            android:name=".modules.mekanik.Schedule_Activity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />

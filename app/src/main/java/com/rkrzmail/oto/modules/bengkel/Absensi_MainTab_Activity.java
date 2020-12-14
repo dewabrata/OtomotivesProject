@@ -6,31 +6,33 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.naa.data.Nson;
+import com.naa.utils.InternetX;
+import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
+import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.gmod.MyCode;
 import com.rkrzmail.oto.modules.BarcodeActivity;
 import com.rkrzmail.oto.modules.Fragment.Absen_Absensi_Fragment;
-import com.rkrzmail.oto.modules.Fragment.BatalPart_TugasPart_Fragment;
-import com.rkrzmail.oto.modules.Fragment.PartKosong_TugasPart_Fragment;
-import com.rkrzmail.oto.modules.Fragment.Permintaan_TugasPart_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Schedule_Absensi_Fragment;
-import com.rkrzmail.oto.modules.Fragment.Tersedia_TugasPart_Fragment;
-import com.rkrzmail.oto.modules.sparepart.OutSource_Activity;
 import com.rkrzmail.srv.FragmentsAdapter;
+import com.rkrzmail.utils.Tools;
 
+import java.time.DayOfWeek;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Map;
 import java.util.Objects;
 
+import static com.rkrzmail.utils.APIUrls.ABSEN;
+import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
 
 public class Absensi_MainTab_Activity extends AppActivity {
@@ -53,18 +55,17 @@ public class Absensi_MainTab_Activity extends AppActivity {
 
     private void initComponent() {
         initToolbar();
-        ViewPager vpTugasParts = findViewById(R.id.vp);
-        TabLayout tabLayoutTugasParts = findViewById(R.id.tablayout);
-        tabLayoutTugasParts.setTabMode(TabLayout.MODE_SCROLLABLE);
+        ViewPager vpAbsensi = findViewById(R.id.vp);
+        TabLayout tabAbsensi = findViewById(R.id.tablayout);
 
         final ArrayList<Fragment> fragments = new ArrayList<>();
         fragments.add(new Absen_Absensi_Fragment());
         fragments.add(new Schedule_Absensi_Fragment());
 
         FragmentsAdapter pagerAdapter = new FragmentsAdapter(getSupportFragmentManager(), this, fragments);
-        vpTugasParts.setAdapter(pagerAdapter);
-        vpTugasParts.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayoutTugasParts));
-        tabLayoutTugasParts.setupWithViewPager(vpTugasParts);
+        vpAbsensi.setAdapter(pagerAdapter);
+        vpAbsensi.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabAbsensi));
+        tabAbsensi.setupWithViewPager(vpAbsensi);
 
         setScanBarcode();
     }
@@ -80,6 +81,49 @@ public class Absensi_MainTab_Activity extends AppActivity {
         });
     }
 
+    private void absenUser(final String myCodeUser){
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+
+                args.put("action", "ABSEN");
+                args.put("noPonsel", myCodeUser);
+                args.put("hari", Tools.getDay(getDayOfWeek()));
+                args.put("scheduleMulai", currentDateTime("HH:mm:ss"));
+                args.put("absenMulai", currentDateTime("HH:mm:ss"));
+                args.put("lamaTerlambat", "");
+                args.put("absenSelesai", currentDateTime("HH:mm:ss"));
+                args.put("izinTerlambat", "N");
+                args.put("userIzin", "");
+                args.put("lokasi", "BENGKEL");
+
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ABSEN), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    showSuccess("Absen Berhasil");
+//                    Absen_Absensi_Fragment absen_absensi_fragment = new Absen_Absensi_Fragment();
+//                    absen_absensi_fragment.viewAbsensi(Absensi_MainTab_Activity.this);
+                } else {
+                    showError(result.get("message").asString());
+                }
+            }
+        });
+    }
+
+    private int getDayOfWeek(){
+        Calendar c = Calendar.getInstance();
+        c.set(Integer.parseInt(currentDateTime("yyyy")),
+                Integer.parseInt(currentDateTime("MM")),
+                Integer.parseInt(currentDateTime("dd")));
+
+        return c.get(Calendar.DAY_OF_WEEK_IN_MONTH);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -89,17 +133,15 @@ public class Absensi_MainTab_Activity extends AppActivity {
                 @Override
                 public void runWD(Nson nson) {
                     if (nson.get("status").asString().equals("OK")) {
-                        nson = nson.get("data").get(0);
-                        if(nson.asArray().isEmpty()){
-                            showWarning("User Tidak Valid");
+                        if(nson.get("data").asArray().isEmpty()){
+                            showError("Silahkan Refresh Barcode Anda!");
                             return;
-                        }else{
-                            showSuccess("Scan Barcode Berhasil");
                         }
-
+                        nson = nson.get("data").get(0);
+                        absenUser(nson.get("USERID").asString());
                         Log.d("Barcode__", "onActivityResult: " + nson);
                     } else {
-                        showError(nson.get("message").asString());
+                        showError(ERROR_INFO);
                     }
                 }
             });

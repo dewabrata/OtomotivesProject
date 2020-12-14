@@ -38,6 +38,7 @@ import com.rkrzmail.oto.modules.antar_jemput.AntarJemput_Activity;
 import com.rkrzmail.oto.modules.bengkel.Absensi_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Collection_Activity;
 import com.rkrzmail.oto.modules.checkin.Checkin1_Activity;
+import com.rkrzmail.oto.modules.mekanik.AturSchedule_Activity;
 import com.rkrzmail.oto.modules.mekanik.BiayaMekanik2Activity;
 import com.rkrzmail.oto.modules.LoginActivity;
 import com.rkrzmail.oto.modules.komisi.KomisiPart_Activity;
@@ -67,7 +68,7 @@ import com.rkrzmail.oto.modules.komisi.KomisiJasaLain_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiLayanan_Activity;
 import com.rkrzmail.oto.modules.bengkel.Layanan_Avtivity;
 import com.rkrzmail.oto.modules.sparepart.LokasiPart_Activity;
-import com.rkrzmail.oto.modules.mekanik.PenugasanActivity;
+import com.rkrzmail.oto.modules.mekanik.Schedule_Activity;
 import com.rkrzmail.oto.modules.bengkel.RekeningBank_Activity;
 import com.rkrzmail.oto.modules.bengkel.Tenda_Activity;
 import com.rkrzmail.oto.modules.sparepart.TerimaPart;
@@ -76,7 +77,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import static com.rkrzmail.utils.ConstUtils.ALL;
+import static com.rkrzmail.utils.ConstUtils.CARI_PART_BENGKEL;
+import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
 import static com.rkrzmail.utils.ConstUtils.PART;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 
 public class MenuActivity extends AppActivity {
 
@@ -98,7 +103,6 @@ public class MenuActivity extends AppActivity {
     public final int MN_LOYALTI_PROGRAM = 16;
     public final int MN_LOKASI_PERSEDIAAN = 17;
     public final int MN_STOCK_OPNAME = 18;
-    public static final int MN_PENUGASAN_MEKANIK = 19;
     public static final int MN_BIAYA_MEKANIK2 = 20;
     public static final int MN_LOKASI_PART = 21;
     public static final int MN_TERIMA_PART = 22;
@@ -140,7 +144,7 @@ public class MenuActivity extends AppActivity {
     private final String PEMBELIAN_PART = "PEMBELIAN PART";
     private final String ANTAR_JEMPUT = "ANTAR JEMPUT";
     public final String MESSAGE = "MESSAGE";
-    public final String PENUGASAN_MEKANIK = "PENUGASAN MEKANIK";
+    public final String SCHEDULE = "SCHEDULE";
     private final String PENGATURAN_USER = "USER";
     private final String PENGATURAN_USER_LAYANAN = "LAYANAN";
     private final String PENGATURAN_USER_BIAYA_MEKANIK = "BIAYA MEKANIK";
@@ -234,8 +238,8 @@ public class MenuActivity extends AppActivity {
                     startActivity(intent);
                 } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_PART)) {
                     Intent intent = new Intent(MenuActivity.this, CariPart_Activity.class);
-                    intent.putExtra("bengkel", "");
-                    startActivityForResult(intent, 90);
+                    intent.putExtra(CARI_PART_LOKASI, ALL);
+                    startActivityForResult(intent, REQUEST_DETAIL);
                 } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_PEMBAYARAN)) {
                     Intent intent = new Intent(MenuActivity.this, Pembayaran_MainTab_Activity.class);
                     startActivity(intent);
@@ -303,18 +307,15 @@ public class MenuActivity extends AppActivity {
         }else if (item.getTitle().toString().equalsIgnoreCase(MESSAGE)) {
             Intent intent = new Intent(MenuActivity.this, MessageWA.class);
             startActivity(intent);
-        }else if (item.getTitle().toString().equalsIgnoreCase(PENUGASAN_MEKANIK)) {
-            Intent intent = new Intent(MenuActivity.this, PenugasanActivity.class);
+        }else if (item.getTitle().toString().equalsIgnoreCase(SCHEDULE)) {
+            Intent intent = new Intent(MenuActivity.this, AturSchedule_Activity.class);
             startActivity(intent);
         }
         //Pengaturan
         else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER)) {
             Intent intent = new Intent(MenuActivity.this, User_Activity.class);
             startActivity(intent);
-        } else if (item.getTitle().toString().equalsIgnoreCase(M_PENUGASAN)) {
-            Intent intent = new Intent(MenuActivity.this, PenugasanActivity.class);
-            startActivity(intent);
-        } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_LAYANAN)) {
+        }else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_LAYANAN)) {
             Intent intent = new Intent(MenuActivity.this, Layanan_Avtivity.class);
             startActivity(intent);
         } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_BIAYA_MEKANIK)) {
@@ -492,7 +493,6 @@ public class MenuActivity extends AppActivity {
     public final String M_STOCK_OPNAME = "STOCK OPNAME";
     public final String M_TERIMA_PARTS = "TERIMA PARTS";
     public final String M_TUGAS_PARTS = "TUGAS PARTS";
-    public final String M_PENUGASAN = "PENUGASAN MEKANIK";
 
 
     private void addHome(int id, int icon, String text) {
@@ -575,8 +575,8 @@ public class MenuActivity extends AppActivity {
         if (getAccess(PEMBELIAN_PART)) {
             menu.add(PEMBELIAN_PART);
         }
-        if (getAccess(PENUGASAN_MEKANIK)) {
-            menu.add(PENUGASAN_MEKANIK);
+        if (getAccess(SCHEDULE)) {
+            menu.add(SCHEDULE);
         }
         menu.add(REFERAL);
         menu.add(SARAN);
@@ -630,7 +630,7 @@ public class MenuActivity extends AppActivity {
                 i.putExtra(PART, getIntentStringExtra(data, PART));
                 startActivityForResult(i, 112);
             }
-            if (requestCode == 90) {
+            if (requestCode == REQUEST_DETAIL) {
                 Intent i = new Intent(getActivity(), DetailCariPart_Activity.class);
                 i.putExtra(PART, Nson.readJson(getIntentStringExtra(data, PART)).toJson());
                 startActivityForResult(i, 109);

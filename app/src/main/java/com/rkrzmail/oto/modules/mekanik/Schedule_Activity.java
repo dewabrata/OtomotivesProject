@@ -19,13 +19,12 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.mekanik.AturPenugasan_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
 import java.util.Map;
 
-public class PenugasanActivity extends AppActivity {
+public class Schedule_Activity extends AppActivity {
 
     public static final String TAG = "PenugasanActivity";
     private RecyclerView rvPenugasan;
@@ -51,7 +50,7 @@ public class PenugasanActivity extends AppActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(new Intent(getActivity(), AturPenugasan_Activity.class), 10);
+                startActivityForResult(new Intent(getActivity(), AturSchedule_Activity.class), 10);
             }
         });
 
@@ -72,7 +71,7 @@ public class PenugasanActivity extends AppActivity {
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
-                Intent intent = new Intent(getActivity(), AturPenugasan_Activity.class);
+                Intent intent = new Intent(getActivity(), AturSchedule_Activity.class);
                 intent.putExtra("data", nListArray.get(position).toJson());
                 startActivityForResult(intent, REQUEST_PENUGASAN);
             }

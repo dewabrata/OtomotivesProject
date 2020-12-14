@@ -103,6 +103,28 @@
 
             </TableRow>
 
+            <TableRow android:layout_marginTop="5dp">
+
+                <TextView
+                    android:id="@+id/tv_cari_hpp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:text="HPP"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tv_cari_harga_part"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:text="Harga Part"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textSize="12sp" />
+
+            </TableRow>
+
         </TableLayout>
 
     </FrameLayout>

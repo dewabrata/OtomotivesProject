@@ -75,6 +75,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
 
     private boolean isMekanik = false; // true = part, false = jasa
     private boolean isKurangi = false;
+    private boolean isMekanikSelected = false;
 
     private String idCheckinDetail = "", idCheckin = "", idAntrian = "";
     private String status = "";
@@ -359,6 +360,8 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                         for (int in = 0; in < spNamaMekanik.getCount(); in++) {
                             if (spNamaMekanik.getItemAtPosition(in).toString().contains(mekanik)) {
                                 spNamaMekanik.setSelection(in);
+                                spNamaMekanik.setEnabled(false);
+                                isMekanikSelected = true;
                                 break;
                             }
                         }
@@ -423,6 +426,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             aktifitasList.add("KURANGI PART - JASA");
             aktifitasList.add("BATAL PART");
             aktifitasList.add("BATAL BENGKEL");
+            aktifitasList.add("PENUGASAN MEKANIK");
         } else if (etStatus.getText().toString().equals("KURANGI PART")) {
             aktifitasList.add("TAMBAH MEKANIK");
             aktifitasList.add("GANTI MEKANIK");
@@ -451,9 +455,9 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 status = parent.getSelectedItem().toString();
-                if (status.equals("PENUGASAN MEKANIK")
+                if ((status.equals("PENUGASAN MEKANIK")
                         || status.equals("GANTI MEKANIK")
-                        || status.equals("TAMBAH MEKANIK")) {
+                        || status.equals("TAMBAH MEKANIK")) && !isMekanikSelected) {
                     isMekanik = true;
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_mekanik, LinearLayout.class), true);
                 } else {

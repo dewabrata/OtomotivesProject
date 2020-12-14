@@ -29,6 +29,7 @@ import java.util.Map;
 
 import static com.rkrzmail.utils.APIUrls.ATUR_TUGAS_PART;
 import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.PENYESUAIAN;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
 
@@ -168,18 +169,14 @@ public class AturPenyesuain_StockOpname_Activity extends AppActivity {
                 @Override
                 public void runWD(Nson nson) {
                     if (nson.get("status").asString().equals("OK")) {
-                        nson = nson.get("data").get(0);
-                        if(nson.asArray().isEmpty()){
-                            showWarning("User Saksi Tidak Valid");
+                        if(nson.get("data").asArray().isEmpty()){
+                            showWarning("Scan Barcode Tidak Valid");
                             return;
-                        }else{
-                            showSuccess("Scan Barcode Berhasil");
                         }
-
-                        Log.d("Barcode__", "onActivityResult: " + nson);
-                        find(R.id.et_user_saksi_penyesuaian, EditText.class).setText(nson.get("USERID").asString());
+                        nson = nson.get("data").get(0);
+                        find(R.id.et_user_saksi_penyesuaian, EditText.class).setText(nson.get("NAMA").asString());
                     } else {
-                        showError(nson.get("message").asString());
+                        showError(ERROR_INFO);
                     }
                 }
             });

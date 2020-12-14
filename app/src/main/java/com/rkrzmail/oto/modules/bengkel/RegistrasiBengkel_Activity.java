@@ -360,10 +360,10 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                     Log.d(TAG, "runUI: " + allMerkList);
                     if (count > 0) {
                         spMerkKendaraan.setItems(allMerkList);
-                        spMerkKendaraan.setSelection(allMerkList, false);
+                        //spMerkKendaraan.setSelection(allMerkList, false);
                     } else {
                         spMerkKendaraan.setItems(isKategori ? merkMotorList : merkMobilList);
-                        spMerkKendaraan.setSelection(isKategori ? merkMotorList : merkMobilList, false);
+                        //spMerkKendaraan.setSelection(isKategori ? merkMotorList : merkMobilList, false);
                     }
 
                     spMerkKendaraan.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
@@ -411,10 +411,10 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                     Log.d(TAG, "runUI: " + allList);
                     if (count > 0) {
                         spBidangUsaha.setItems(allList);
-                        spBidangUsaha.setSelection(allList, false);
+                      //  spBidangUsaha.setSelection(allList, false);
                     } else {
                         spBidangUsaha.setItems(isKategori ? motorList : mobilList);
-                        spBidangUsaha.setSelection(isKategori ? motorList : mobilList, false);
+                       // spBidangUsaha.setSelection(isKategori ? motorList : mobilList, false);
                     }
 
                     spBidangUsaha.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {

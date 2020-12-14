@@ -72,7 +72,8 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             noMesin = "",
             lokasi = "",
             jenisKendaraan = "",
-            tglBeli = "";
+            tglBeli = "",
+            kodeTipe = "";
     private int kendaraanId = 0;
     private Nson nopolList = Nson.newArray(), keluhanList = Nson.newArray();
     private boolean keyDel = false, isNoHp = false, isNamaValid = false, isRemoved;
@@ -195,9 +196,9 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
 
-                if (keyCode == KeyEvent.KEYCODE_DEL){
+                if (keyCode == KeyEvent.KEYCODE_DEL) {
                     keyDel = true;
-                }else{
+                } else {
                     keyDel = false;
                 }
                 return false;
@@ -237,7 +238,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
         etNoPonsel.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus && !etNoPonsel.getText().toString().contains("+62 ")){
+                if (hasFocus && !etNoPonsel.getText().toString().contains("+62 ")) {
                     etNoPonsel.setText("+62 ");
                 }
             }
@@ -380,8 +381,9 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 noRangka = n.get("NO_RANGKA").asString();
                 noMesin = n.get("NO_MESIN").asString();
                 tglBeli = n.get("TANGGAL_BELI").asString();
-                tahunProduksi =  n.get("TAHUN_PRODUKSI").asString();
+                tahunProduksi = n.get("TAHUN_PRODUKSI").asString();
                 jenisKendaraan = n.get("JENIS").asString();
+                kodeTipe = n.get("CODE_TYPE").asString();
 
                 String nomor = n.get("NO_PONSEL").asString();
                 if (nomor.length() > 4) {
@@ -503,6 +505,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 args.put("idDealer", "");//dateKendaraan
                 args.put("asalData", "");//dateKendaraan
                 args.put("type", kendaraan);//dateKendaraan
+                args.put("kodeTipe", kodeTipe);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
             }
@@ -514,12 +517,13 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
 
                     nson.set("CHECKIN_ID", result.get("data").get("CHECKIN_ID").asString());
                     int idKendaraan;
-                    if(result.get("data").containsKey("DATA_KENDARAAN_ID")){
+                    if (result.get("data").containsKey("DATA_KENDARAAN_ID")) {
                         idKendaraan = result.get("data").get("DATA_KENDARAAN_ID").asInteger();
-                    }else{
+                    } else {
                         idKendaraan = result.get("data").get("DATA_KENDARAAN_ID_UPDATE").asInteger();
                     }
 
+                    nson.set("KODE_TIPE", kodeTipe);
                     nson.set("DATA_KENDARAAN_ID", idKendaraan);
                     nson.set("kendaraan", kendaraan);
                     nson.set("model", modelKendaraan);
