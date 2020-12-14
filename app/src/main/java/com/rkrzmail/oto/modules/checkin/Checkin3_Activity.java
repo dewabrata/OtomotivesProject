@@ -351,8 +351,8 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 args.put("antrian", find(R.id.tv_jenis_antrian, TextView.class).getText().toString());
                 //args.put("biayaLayanan", formatOnlyNumber(find(R.id.tv_biayaLayanan_checkin, TextView.class).getText().toString()));
                 //inserting waktu layanan part
-                args.put("biayaLayanan", biayaLayanan);
-                args.put("layananId", layananId);
+                args.put("biayaLayanan", formatOnlyNumber(biayaLayanan));
+                args.put("layananId", formatOnlyNumber(layananId));
                 args.put("waktuLayananHari", waktuLayanan.substring(0, 2));
                 args.put("waktuLayananJam", waktuLayanan.substring(3, 5));
                 args.put("waktuLayananMenit", waktuLayanan.substring(6, 8));

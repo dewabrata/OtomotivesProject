@@ -153,7 +153,6 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             find(R.id.et_sisa_checkin4, EditText.class).setText(RP + formatRp(getData.get("SISA").asString()));
             Tools.setViewAndChildrenEnabled(find(R.id.ly_estimasi_selesai, LinearLayout.class), true);
             find(R.id.tv_disable_estimasi).setVisibility(View.GONE);
-            find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setEnabled(false);
         } else {
             isExpressAndStandard = true;
             viewAntrianStandartExpress(getData.get("JENIS_ANTRIAN").asString());

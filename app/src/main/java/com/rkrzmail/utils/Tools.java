@@ -389,7 +389,7 @@ public class Tools {
     public static String setFormatDateTimeFromDb(String date, String fromPattern, String setPattern, boolean isDefaultPattern) {
         if (!date.equals("")) {
             SimpleDateFormat sdf = new SimpleDateFormat(isDefaultPattern ? "yyyy-MM-dd HH:mm:ss" : fromPattern);
-            Date tgl = null;
+            Date tgl = new Date();
             try {
                 tgl = sdf.parse(date);
             } catch (ParseException e) {
