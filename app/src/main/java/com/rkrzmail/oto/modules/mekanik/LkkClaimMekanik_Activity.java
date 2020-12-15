@@ -3,8 +3,11 @@ package com.rkrzmail.oto.modules.mekanik;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -27,6 +30,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
@@ -45,6 +49,7 @@ import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
 import com.rkrzmail.oto.modules.sparepart.JumlahPart_JualPart_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.utils.FileUtility;
 import com.rkrzmail.utils.Tools;
 import com.valdesekamdem.library.mdtoast.MDToast;
 
@@ -73,6 +78,9 @@ import static com.rkrzmail.utils.ConstUtils.PART;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 import static com.rkrzmail.utils.ConstUtils.MASTER_PART;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_FOTO_KTP;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_FOTO_PART;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_FOTO_STNK;
 import static com.rkrzmail.utils.ConstUtils.RUANG_PART;
 
 public class LkkClaimMekanik_Activity extends AppActivity {
@@ -83,8 +91,8 @@ public class LkkClaimMekanik_Activity extends AppActivity {
     private Button btn_fotostnk, btn_fotoktp, btn_simpan;
     private CheckBox cbClaim;
     private Nson dataSebabList = Nson.newArray(), SebabArray = Nson.newArray();
-    private String idpart = "", stockBengkel = "";
-
+    private String idpart = "", stockBengkel = "", fotoPart="", fotoStnk="", fotoKtp="";
+    private File fileStnk, fileKtp, filePart;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -175,6 +183,82 @@ public class LkkClaimMekanik_Activity extends AppActivity {
                 startActivityForResult(i, REQUEST_CARI_PART);
             }
         });
+
+        find(R.id.btn_foto_part, Button.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setFotoPart();
+            }
+        });
+        find(R.id.btn_foto_stnk, Button.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setFotoStnk();
+            }
+        });
+        find(R.id.btn_foto_ktp, Button.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setFotoKtp();
+            }
+        });
+    }
+
+    private void setFotoPart(){
+        Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (i.resolveActivity(getPackageManager()) != null) {
+             filePart= null;
+            try {
+                filePart = createImageFile();
+            } catch (IOException ex) {
+
+            }
+            if (filePart != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.rkrzmail.oto.fileprovider",
+                        filePart);
+                i.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(i, REQUEST_FOTO_PART);
+            }
+        }
+    }
+
+    private void setFotoStnk(){
+        Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (i.resolveActivity(getPackageManager()) != null) {
+            fileStnk= null;
+            try {
+                fileStnk = createImageFile();
+            } catch (IOException ex) {
+
+            }
+            if (fileStnk != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.rkrzmail.oto.fileprovider",
+                        fileStnk);
+                i.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(i, REQUEST_FOTO_STNK);
+            }
+        }
+    }
+
+    private void setFotoKtp(){
+        Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (i.resolveActivity(getPackageManager()) != null) {
+            fileKtp= null;
+            try {
+                fileKtp = createImageFile();
+            } catch (IOException ex) {
+
+            }
+            if (fileKtp != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.rkrzmail.oto.fileprovider",
+                        fileKtp);
+                i.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(i, REQUEST_FOTO_KTP);
+            }
+        }
     }
 
     private void setSpSebabKerusakan() {
@@ -239,6 +323,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
             }
         });
     }
+
     private void SimpanData(){
         final String namaPart = et_namapart.getText().toString().toUpperCase();
         final String nik = et_nikpemilik.getText().toString().toUpperCase();
@@ -279,9 +364,9 @@ public class LkkClaimMekanik_Activity extends AppActivity {
                 args.put("claimGaransi",claim);
                 args.put("informasiTambahan",infoTambahan);
                 args.put("nik",nik);
-                args.put("linkFotoPart","");
-                args.put("linkFotoKtp","");
-                args.put("linkFotoStnk","");
+                args.put("linkFotoPart",fotoPart);
+                args.put("linkFotoKtp",fotoKtp);
+                args.put("linkFotoStnk",fotoStnk);
                 args.put("stockPart",stockBengkel);
                 args.put("kerusakanSamaBulan3 ","");
                 args.put("kerusakanSamaBulan2","");
@@ -306,6 +391,21 @@ public class LkkClaimMekanik_Activity extends AppActivity {
         });
     }
 
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+        // Save a file: path for use with ACTION_VIEW intents
+        //currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -322,11 +422,20 @@ public class LkkClaimMekanik_Activity extends AppActivity {
             et_merkpart.setText(nson.get("MERK").asString());
             et_nopart.setText(nson.get("NO_PART").asString());
             et_namapart.setText(nson.get("NAMA_PART").asString());
-
             idpart=nson.get("PART_ID").asString();
             stockBengkel=nson.get("STOCK").asString();
-
+        }else if(resultCode == RESULT_OK && requestCode == REQUEST_FOTO_PART){
+            Bitmap myBitmap = BitmapFactory.decodeFile(filePart.getAbsolutePath());
+            fotoPart = FileUtility.encodeToStringBase64(filePart.getAbsolutePath());
+            //find(R.id.testId, ImageView.class).setImageBitmap(myBitmap);
+        }else if(resultCode == RESULT_OK && requestCode == REQUEST_FOTO_STNK){
+            Bitmap myBitmap = BitmapFactory.decodeFile(fileStnk.getAbsolutePath());
+            fotoStnk = FileUtility.encodeToStringBase64(fileStnk.getAbsolutePath());
+        }else if(resultCode == RESULT_OK && requestCode == REQUEST_FOTO_KTP){
+            Bitmap myBitmap = BitmapFactory.decodeFile(fileKtp.getAbsolutePath());
+            fotoKtp = FileUtility.encodeToStringBase64(fileKtp.getAbsolutePath());
         }
+
     }
 
 
