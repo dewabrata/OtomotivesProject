@@ -142,14 +142,21 @@ public class CariPart_Activity extends AppActivity {
                             viewHolder.find(R.id.tv_cari_pending, TextView.class).setVisibility(flag ? View.GONE : View.VISIBLE);
                             viewHolder.find(R.id.tv_cari_stockPart, TextView.class).setText(flag ? "" : nListArray.get(position).get("STOCK").asString());
                             viewHolder.find(R.id.tv_cari_pending, TextView.class).setText(flag ? "" : nListArray.get(position).get("PENDING").asString());
-
-                            if(nListArray.get(position).get("HARGA_JUAL").asString().equals("FLEXIBLE")){
+                            viewHolder.find(R.id.tv_cari_harga_part, TextView.class).setVisibility(flag ? View.GONE : View.VISIBLE);
+                            viewHolder.find(R.id.tv_cari_hpp, TextView.class).setVisibility(flag ? View.GONE : View.VISIBLE);
+                            if(partLokasiPart.get(position).get("HARGA_JUAL").asString().equals("FLEXIBLE")){
                                 viewHolder.find(R.id.tv_cari_harga_part, TextView.class).setText("");
-                                viewHolder.find(R.id.tv_cari_hpp, TextView.class).setText("");
+                                viewHolder.find(R.id.tv_cari_hpp, TextView.class).setText(RP + formatRp(nListArray.get(position).get("HPP").asString()));
                             }else{
                                 viewHolder.find(R.id.tv_cari_harga_part, TextView.class).setText( RP + formatRp(nListArray.get(position).get("HARGA_JUAL").asString()));
-                                viewHolder.find(R.id.tv_cari_hpp, TextView.class).setText(RP + formatRp(nListArray.get(position).get("HPP").asString()));
+                                viewHolder.find(R.id.tv_cari_hpp, TextView.class).setText("");
                             }
+//                            if(nListArray.get(position).get("HARGA_JUAL").asString().equals("FLEXIBLE")){
+//                                viewHolder.find(R.id.tv_cari_harga_part, TextView.class).setText("");
+//                                viewHolder.find(R.id.tv_cari_hpp, TextView.class).setText("");
+//                            }else{
+//
+//                            }
                         } else {
                             viewHolder.find(R.id.tv_cari_stockPart, TextView.class).setVisibility(View.GONE);
                             viewHolder.find(R.id.tv_cari_pending, TextView.class).setVisibility(View.GONE);
@@ -198,12 +205,12 @@ public class CariPart_Activity extends AppActivity {
                         viewHolder.find(R.id.tv_cari_namaPart, TextView.class).setText(partLokasiPart.get(position).get("NAMA_PART").asString());
                         viewHolder.find(R.id.tv_cari_noPart, TextView.class).setText(partLokasiPart.get(position).get("NO_PART").asString());
                         viewHolder.find(R.id.tv_cari_stockPart, TextView.class).setText(partLokasiPart.get(position).get("STOCK_RUANG_PART").asString());
-                        if(nListArray.get(position).get("HARGA_JUAL").asString().equals("FLEXIBLE")){
+                        if(partLokasiPart.get(position).get("HARGA_JUAL").asString().equals("FLEXIBLE")){
                             viewHolder.find(R.id.tv_cari_harga_part, TextView.class).setText("");
-                            viewHolder.find(R.id.tv_cari_hpp, TextView.class).setText("");
+                            viewHolder.find(R.id.tv_cari_hpp, TextView.class).setText(RP + formatRp(partLokasiPart.get(position).get("HPP").asString()));
                         }else{
-                            viewHolder.find(R.id.tv_cari_harga_part, TextView.class).setText( RP + formatRp(nListArray.get(position).get("HARGA_JUAL").asString()));
-                            viewHolder.find(R.id.tv_cari_hpp, TextView.class).setText(RP + formatRp(nListArray.get(position).get("HPP").asString()));
+                            viewHolder.find(R.id.tv_cari_harga_part, TextView.class).setText( RP + formatRp(partLokasiPart.get(position).get("HARGA_JUAL").asString()));
+                            viewHolder.find(R.id.tv_cari_hpp, TextView.class).setText("");
                         }
                         if(!partLokasiPart.get(position).get("LOKASI").asString().equals("*")){
                             viewHolder.find(R.id.tv_cari_pending, TextView.class).setText(partLokasiPart.get(position).get("LOKASI").asString());
@@ -261,7 +268,7 @@ public class CariPart_Activity extends AppActivity {
                         viewHolder.find(R.id.tv_cari_noPart, TextView.class).setText(partClaim.get(position).get("NO_PART").asString());
                         viewHolder.find(R.id.tv_cari_stockPart, TextView.class).setText(partClaim.get(position).get("STOCK").asString());
                         viewHolder.find(R.id.tv_cari_harga_part, TextView.class).setText(RP + formatRp(partClaim.get(position).get("HARGA_PART").asString()));
-                        viewHolder.find(R.id.tv_cari_hpp, TextView.class).setText(RP + formatRp(partClaim.get(position).get("HPP").asString()));
+                        viewHolder.find(R.id.tv_cari_hpp, TextView.class).setText("");
                         if(!partClaim.get(position).get("LOKASI").asString().equals("*")){
                             viewHolder.find(R.id.tv_cari_pending, TextView.class).setText(partClaim.get(position).get("LOKASI").asString());
                         }else{

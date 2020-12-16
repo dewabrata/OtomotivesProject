@@ -175,16 +175,23 @@ public class AturPembayaran_Activity extends AppActivity {
         if (nson.get("JENIS").asString().equals("CHECKIN")) {
             isCheckin = true;
             jenis = "CHECKIN";
+            find(R.id.ly_dp).setVisibility(View.GONE);
         } else if (nson.get("JENIS").asString().equals("DP")) {
             Tools.setViewAndChildrenEnabled(find(R.id.tl_reminder, TableLayout.class), false);
             isDp = true;
             jenis = "DP";
+
             find(R.id.cb_checkout, CheckBox.class).setChecked(false);
+            find(R.id.et_percent_dp, EditText.class).setText(nson.get("DP_PERCENT").asString() + "%");
+            find(R.id.et_rp_dp, EditText.class).setText(RP + formatRp(nson.get("TOTAL_DP").asString()));
+            find(R.id.et_sisa_dp, EditText.class).setText(RP + formatRp(nson.get("SISA_DP").asString()));
+            find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(nson.get("TOTAL_DP").asString()));
         } else {
             Tools.setViewAndChildrenEnabled(find(R.id.tl_reminder, TableLayout.class), false);
             isJualPart = true;
             jenis = "JUAL PART";
             find(R.id.cb_checkout, CheckBox.class).setChecked(false);
+            find(R.id.ly_dp).setVisibility(View.GONE);
         }
 
         if (nson.get("PEMILIK").asString().equals("Y")) {
@@ -199,12 +206,12 @@ public class AturPembayaran_Activity extends AppActivity {
         if (nson.get("PKP").asString().equals("Y") && !isDp) {
             totalPpn = (int) (ppn * totalBiaya);
             grandTotal = totalPpn + totalBiaya;
-            find(R.id.et_ppn, EditText.class).setText(RP + formatRp(String.valueOf(totalPpn)));
             isPpn = true;
+            find(R.id.et_ppn, EditText.class).setText(RP + formatRp(String.valueOf(totalPpn)));
+            find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));
         }else{
             grandTotal = totalBiaya;
         }
-        find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));
     }
 
     private void initListener() {

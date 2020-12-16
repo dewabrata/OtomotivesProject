@@ -97,7 +97,7 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
             group = "PERMINTAAN " + getIntentStringExtra(TUGAS_PART_PERMINTAAN);
             find(R.id.tl_jumlah, TextInputLayout.class).setHint(getResources().getString(R.string.jumlah_permintaan));
             etJumlahPart.setText(nson.get("JUMLAH_PERMINTAAN").asString());
-            etStock.setText(nson.get("STOCK").asString());
+            etStock.setText(nson.get("STOCK_BENGKEL").asString());
             etNofolder.setText(nson.get("KODE").asString());
         } else if (getIntent().hasExtra(TUGAS_PART_BATAL)) {
             isBatal = true;

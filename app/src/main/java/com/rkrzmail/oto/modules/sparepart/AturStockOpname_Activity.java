@@ -49,6 +49,7 @@ public class AturStockOpname_Activity extends AppActivity {
     private int idLokasiPart = 0;
     private Nson lokasiArray = Nson.newArray();
     private Intent intent;
+    private boolean isPenyesuaian = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,12 +92,14 @@ public class AturStockOpname_Activity extends AppActivity {
                 intent = new Intent(getActivity(), AturPenyesuain_StockOpname_Activity.class);
 
                 if(stockAkhir > stockAwal){
+                    isPenyesuaian = true;
                     stockBeda = stockAkhir - stockAwal;
                     showInfo("Diperlukan Penyesuaian");
                     intent.putExtra(PENYESUAIAN, lokasiArray.toJson());
                     intent.putExtra("STOCK LEBIH", stockBeda);
                     startActivityForResult(intent, REQUEST_PENYESUAIAN);
                 }else if (stockAkhir < stockAwal) {
+                    isPenyesuaian = true;
                     stockBeda = stockAwal - stockAkhir;
                     showInfo("Diperlukan Penyesuaian");
                     intent.putExtra(PENYESUAIAN, lokasiArray.toJson());
@@ -189,10 +192,8 @@ public class AturStockOpname_Activity extends AppActivity {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "view");
-                args.put("spec", "Bengkel");
-                args.put("lokasi", "ALL");
-                args.put("search", nopart);
+                args.put("action", "BARCODE");
+                args.put("nopart", nopart);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SPAREPART), args));
             }
 
@@ -200,11 +201,11 @@ public class AturStockOpname_Activity extends AppActivity {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    result = result.get("data").get(0);
                     if (result.size() == 0) {
                         showError("Part Tidak Tersedia Di Bengkel");
                         return;
                     }
+                    result = result.get("data").get(0);
                     counterBarcode++;
                     etJumlahOpname.setText("" + counterBarcode);
                 } else {

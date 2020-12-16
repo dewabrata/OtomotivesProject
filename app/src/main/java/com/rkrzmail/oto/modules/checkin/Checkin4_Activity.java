@@ -591,7 +591,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 args.put("lokasiLayanan", "BENGKEL");
                 args.put("noPonsel", noPonsel);
                 args.put("nopol", nopol);
-                //args.put("ttd", ttd);
+                args.put("ttd", ttdPath);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
             }

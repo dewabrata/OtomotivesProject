@@ -31,6 +31,7 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.gmod.MessageWA;
 import com.rkrzmail.oto.modules.bengkel.AturUser_Activity;
+import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
 import com.rkrzmail.srv.NikitaMultipleViewAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
@@ -44,16 +45,19 @@ import static com.rkrzmail.utils.APIUrls.ATUR_KONTROL_LAYANAN;
 import static com.rkrzmail.utils.APIUrls.SET_ANTRIAN;
 import static com.rkrzmail.utils.APIUrls.SET_CHECKIN;
 import static com.rkrzmail.utils.APIUrls.VIEW_MEKANIK;
+import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.ESTIMASI_WAKTU;
 import static com.rkrzmail.utils.ConstUtils.ID;
 import static com.rkrzmail.utils.ConstUtils.MENUNGGU;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CHECKIN;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_MEKANIK;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_TAMBAH_PART_JASA_LAIN;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_WA;
 import static com.rkrzmail.utils.ConstUtils.RP;
+import static com.rkrzmail.utils.ConstUtils.RUANG_PART;
 import static com.rkrzmail.utils.ConstUtils.TAMBAH;
 import static com.rkrzmail.utils.ConstUtils.TAMBAH_PART;
 import static com.rkrzmail.utils.ConstUtils.TIDAK_MENUNGGU;
@@ -184,6 +188,12 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                     return;
                 }
 
+                if (spAktifitas.getSelectedItem().toString().equals("--PILIH--")) {
+                    showWarning("Aktivitas Harus di Pilih");
+                    spAktifitas.performClick();
+                    spAktifitas.requestFocus();
+                    return;
+                }
                 updateData(idCheckin);
             }
         });
@@ -242,7 +252,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                                 });
                             }
                         });
-                    }else{
+                    } else {
                         viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.GONE);
                     }
                 } else if (itemType == ITEM_VIEW_2) {
@@ -254,7 +264,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                     viewHolder.find(R.id.tv_aktifitas_booking3_checkin3, TextView.class)
                             .setText(detailCheckinList.get(position).get("AKTIVITAS").asString());
                     viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class).setVisibility(View.GONE);
-                    if(isKurangi){
+                    if (isKurangi) {
                         viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.VISIBLE);
                         viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -439,11 +449,11 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         } else if (etStatus.getText().toString().equals("CHECKIN ANTRIAN PENUGASAN")) {
             aktifitasList.add("BATAL BENGKEL");
             aktifitasList.add("BATAL PELANGGAN");
-        } else if(etStatus.getText().toString().equals("CASH") ||
+        } else if (etStatus.getText().toString().equals("CASH") ||
                 etStatus.getText().toString().equals("DEBIT") ||
                 etStatus.getText().toString().equals("KREDIT") ||
                 etStatus.getText().toString().equals("INVOICE") ||
-                etStatus.getText().toString().equals("EPAY")){
+                etStatus.getText().toString().equals("EPAY")) {
             aktifitasList.add("CHECK OUT");
             aktifitasList.add("MESSAGE PELANGGAN");
         }
@@ -464,7 +474,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_mekanik, LinearLayout.class), false);
                 }
 
-                if(status.equals("TAMBAH PART - JASA")){
+                if (status.equals("TAMBAH PART - JASA")) {
                     //moveWa();//with specific message
                 }
 
@@ -478,7 +488,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                     isKurangi = false;
                     rvDetail.getAdapter().notifyDataSetChanged();
                 }
-                if(status.equals("CHECKIN")){
+                if (status.equals("CHECKIN")) {
                     setNoAntrian(jenisAntrian);
                     status = "CHECKIN ANTRIAN";
                 }
@@ -508,15 +518,27 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         });
     }
 
-    private String mssgTambahPart(){
+    private String mssgTambahPart() {
         String result = "";
         return result;
     }
 
     private void moveWa() {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse("http://api.whatsapp.com/send?phone=" + formatOnlyNumber(noPonsel)));//+ "&text=" + Utility.urlEncode("Konfirmasi"))
-        startActivityForResult(intent, REQUEST_WA);
+        Messagebox.showDialog(getActivity(),
+                "Konfirmasi", "Message Pelanggan ?", "Ya", "Tidak", new DialogInterface.OnClickListener() {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse("http://api.whatsapp.com/send?phone=" + formatOnlyNumber(noPonsel)));//+ "&text=" + Utility.urlEncode("Konfirmasi"))
+                        startActivityForResult(intent, REQUEST_WA);
+                    }
+                }, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
     }
 
     private void updateData(final String id) {
@@ -541,7 +563,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 } else if (status.equals("BATAL DP")) {
                     args.put("aktivitas", "BATAL DP");
                     args.put("partJasaList", dataDetailList.toJson());
-                }else if(status.contains("MESSAGE")){
+                } else if (status.contains("MESSAGE")) {
                     args.put("isMessage", "YA");
                 }
 

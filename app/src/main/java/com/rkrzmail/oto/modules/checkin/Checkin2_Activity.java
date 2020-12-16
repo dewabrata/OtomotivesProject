@@ -52,6 +52,8 @@ public class Checkin2_Activity extends AppActivity {
     private long tahunBeli = 0;
     private long tahunSekarang = 0;
     private boolean isKonfirmasi = false;
+    private String merkKendaraan = "";
+    private String noHp = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +70,8 @@ public class Checkin2_Activity extends AppActivity {
             Objects.requireNonNull(getSupportActionBar()).setTitle("Konfirmasi Data Kendaraan");
             viewDataKendaraan();
             isKonfirmasi = true;
+            merkKendaraan = getIntentStringExtra("MERK");
+            noHp = getIntentStringExtra("NO_PONSEL");
             find(R.id.btn_lanjut_checkin2, Button.class).setText("Simpan");
         } else {
             Objects.requireNonNull(getSupportActionBar()).setTitle("Check-In");
@@ -91,6 +95,7 @@ public class Checkin2_Activity extends AppActivity {
             etKodeTipe.setText(readCheckin.get("KODE_TIPE").asString());
             find(R.id.tv_tahun_checkin2, TextView.class).setText(readCheckin.get("tahunProduksi").asString());
         }
+
         initListener();
         initAutoCompleteKodeTipe();
         initAutoCompleteWarna();
@@ -172,7 +177,7 @@ public class Checkin2_Activity extends AppActivity {
             public Nson onFindNson(Context context, String bookTitle) {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "KODE TIPE");
-                args.put("merk", readCheckin.get("merk").asString());
+                args.put("merk", isKonfirmasi ? merkKendaraan : readCheckin.get("merk").asString());
                 args.put("kodeTipe", bookTitle);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SUGGESTION), args));
                 return result.get("data");
@@ -274,6 +279,7 @@ public class Checkin2_Activity extends AppActivity {
                 args.put("nomesin", noMesin);
                 args.put("checkinId", getIntentStringExtra(ID));
                 args.put("kodeTipe", etKodeTipe.getText().toString());
+                args.put("noPonsel", noHp);
                 if(isKonfirmasi){
                     args.put("isKonfirmasi", "Y");
                 }
@@ -309,7 +315,7 @@ public class Checkin2_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "KONFIRMASI DATA");
                 args.put("checkinId", getIntentStringExtra(ID));
-                args.put("noPonsel", getIntentStringExtra("NO_PONSEL"));
+                args.put("noPonsel", noHp);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_NOMOR_POLISI), args));
             }
 

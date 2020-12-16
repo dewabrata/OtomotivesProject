@@ -98,7 +98,7 @@ public class Transaksi_Pembayaran_Fragment extends Fragment {
                 if (viewType == ITEM_VIEW_1) {
                     viewHolder.find(R.id.tv_jenis_kendaraan, TextView.class).setText(pembayaranList.get(position).get("JENIS_KENDARAAN").asString());
                     viewHolder.find(R.id.tv_nama_pelanggan, TextView.class).setText(pembayaranList.get(position).get("NAMA_PELANGGAN").asString());
-                    viewHolder.find(R.id.tv_nopol, TextView.class).setText(pembayaranList.get(position).get("NOPOL").asString());
+                    viewHolder.find(R.id.tv_nopol, TextView.class).setText(((Pembayaran_MainTab_Activity)getActivity()).formatNopol(pembayaranList.get(position).get("NOPOL").asString()));
                     viewHolder.find(R.id.tv_layanan, TextView.class).setText(pembayaranList.get(position).get("LAYANAN").asString());
                     viewHolder.find(R.id.tv_no_ponsel, TextView.class).setText(pembayaranList.get(position).get("NO_PONSEL").asString());
                     viewHolder.find(R.id.tv_no_kunci, TextView.class).setText(pembayaranList.get(position).get("NO_KUNCI").asString());

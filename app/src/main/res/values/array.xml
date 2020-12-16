@@ -108,29 +108,36 @@
 
     <string-array name="akses_app_karyawan">
         <item>--PILIH--</item>
-        <item>ANTAR JEMPUT</item>
-        <item>BOOKING</item>
-        <item>CHECKIN</item>
-        <item>CHECKOUT</item>
-        <item>COLLECTION</item>
-        <item>DASHBOARD</item>
-        <item>DISCOUNT</item>
-        <item>INSPEKSI</item>
-        <item>JUAL PARTS</item>
-        <item>JURNAL</item>
-        <item>KOMISI</item>
-        <item>MEKANIK</item>
-        <item>MENUNGGU</item>
-        <item>MESSAGE</item>
-        <item>MY BUSINESS</item>
-        <item>OUTSOURCE</item>
-        <item>PART</item>
-        <item>PART KELUAR</item>
+        <item>CHECK IN</item>
         <item>PEMBAYARAN</item>
-        <item>PENGATURAN</item>
-        <item>STOCK OPNAME</item>
-        <item>TERIMA PARTS</item>
+        <item>KONTROL</item>
+        <item>MEKANIK</item>
         <item>TUGAS PARTS</item>
+        <item>INSPEKSI</item>
+        <item>MY CODE</item>
+        <item>JUAL PARTS</item>
+        <item>TERIMA PARTS</item>
+        <item>STOCK OPNAME</item>
+        <item>PARTS</item>
+        <item>BOOKING</item>
+        <item>COLLECTION</item>
+        <item>ABSENSI</item>
+        <item>DASHBOARD</item>
+        <item>JURNAL</item>
+        <item>ANTAR JEMPUT</item>
+        <item>CHECK OUT</item>
+        <item>ENTRY CHECKIN</item>
+        <item>KENDARAAN CUSTOMER</item>
+        <item>MESSAGE</item>
+        <item>PART KELUAR</item>
+        <item>PEMBELIAN PART</item>
+        <item>SCHEDULE</item>
+        <item>REFFERAL</item>
+        <item>SARAN</item>
+        <item>MY BUSINESS</item>
+        <item>PENGATURAN</item>
+        <item>DISCOUNT</item>
+        <item>KOMISI</item>
     </string-array>
 
     <string-array name="status_layanan">

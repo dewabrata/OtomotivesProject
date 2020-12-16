@@ -87,6 +87,7 @@ public class HistoryStockOpname_Activity extends AppActivity {
                 startActivityForResult(intent, REQUEST_OPNAME);*/
             }
         }));
+
         reload("");
     }
 
@@ -98,6 +99,7 @@ public class HistoryStockOpname_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
+                args.put("search", cari);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_STOCK_OPNAME), args));
             }
 
@@ -136,7 +138,7 @@ public class HistoryStockOpname_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        adapterSearchView(mSearchView, "search", "viewterimapart", "NO_DO", "");
+        adapterSearchView(mSearchView, "", SET_STOCK_OPNAME, "NAMA_PART", "");
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
 

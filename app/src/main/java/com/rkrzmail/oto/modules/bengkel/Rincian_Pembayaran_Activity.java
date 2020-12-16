@@ -69,7 +69,9 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             tanggal = "",
             namaLayanan = "",
             pemilik = "",
-            isPkp = "", ket = "", catatanMekanik = "";
+            isPkp = "",
+            ket = "",
+            catatanMekanik = "", merkKendaraan = "";
     private String idCheckin = "", idJualPart = "";
     private String tglLayanan = "";
     private int maxFreePenyimpanan = 0;
@@ -171,6 +173,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                 intent.putExtra(ID, idCheckin);
                 intent.putExtra("NO_PONSEL", noHp);
                 intent.putExtra("KONFIRMASI DATA", "");
+                intent.putExtra("MERK", merkKendaraan);
                 startActivityForResult(intent, REQUEST_NEW_CS);
             }
         });
@@ -187,14 +190,8 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             @Override
             public void onClick(View v) {
                 if (isLayanan || isDp) {
-                    if (noRangka.isEmpty()) {
-                        showError("No. Rangka Belum di Isi", Toast.LENGTH_LONG);
-                        find(R.id.btn_data_kendaraan, Button.class).requestFocus();
-                    } else if (noMesin.isEmpty()) {
-                        showError("No. Mesin Belum di Isi", Toast.LENGTH_LONG);
-                        find(R.id.btn_data_kendaraan, Button.class).requestFocus();
-                    } else if (kodeTipe.isEmpty()) {
-                        showError("Kode Tipe Belum di Iisi", Toast.LENGTH_LONG);
+                    if (noRangka.isEmpty() || noMesin.isEmpty() || kodeTipe.isEmpty()) {
+                        showError("Data Kendaraan Tidak Lengkap", Toast.LENGTH_LONG);
                         find(R.id.btn_data_kendaraan, Button.class).requestFocus();
                     } else {
                         setIntent();
@@ -206,6 +203,21 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             }
         });
     }
+
+    private void loadData() {
+        namaPelanggan = data.get("NAMA_PELANGGAN").asString();
+        nopol = data.get("NOPOL").asString();
+        noHp = data.get("NO_PONSEL").asString();
+        tanggal = data.get("TANGGAL").asString();
+        jenisKendaraan = data.get("JENIS_KENDARAAN").asString();
+        layanan = data.get("LAYANAN").asString();
+        pemilik = data.get("PEMILIK").asString();
+        ket = data.get("KETERANGAN_TAMBAHAN").asString();
+        catatanMekanik = data.get("CATATAN_MEKANIK").asString();
+        tglLayanan = data.get("TANGGAL_CHECKIN").asString();
+        merkKendaraan = data.get("MERK").asString();
+    }
+
 
     private void setIntent() {
         sendData.set("BIAYA_LAYANAN", biayaLayanan);
@@ -235,26 +247,16 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         sendData.set("NO_PONSEL", noHp);
         sendData.set("NOPOL", nopol);
         sendData.set("JUAL_PART_ID", idJualPart);
+        sendData.set("DP_PERCENT", dpPercent);
+        sendData.set("SISA_DP", sisaBiayaDp);
+        sendData.set("TOTAL_DP", totalDp);
+        sendData.set("TOTAL", isBatal ? 0 : (total2 > 0 ? total2 : (total1 > 0 ? total1 : (isDp ? totalDp : 0))));
 
         Intent i = new Intent(getActivity(), AturPembayaran_Activity.class);
         i.putExtra(DATA, sendData.toJson());
         i.putExtra("PART_LIST", partList.toJson());
         startActivityForResult(i, REQUEST_DETAIL);
     }
-
-    private void loadData() {
-        namaPelanggan = data.get("NAMA_PELANGGAN").asString();
-        nopol = data.get("NOPOL").asString();
-        noHp = data.get("NO_PONSEL").asString();
-        tanggal = data.get("TANGGAL").asString();
-        jenisKendaraan = data.get("JENIS_KENDARAAN").asString();
-        layanan = data.get("LAYANAN").asString();
-        pemilik = data.get("PEMILIK").asString();
-        ket = data.get("KETERANGAN_TAMBAHAN").asString();
-        catatanMekanik = data.get("CATATAN_MEKANIK").asString();
-        tglLayanan = data.get("TANGGAL_CHECKIN").asString();
-    }
-
 
     private void viewRincianPembayaran() {
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
@@ -340,9 +342,9 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                 namaLayanan = result.get(i).get("LAYANAN").asString();
                 isPkp = result.get(i).get("PKP").asString();
 
-                noMesin = result.get(i).get("NO_MESIN").asString();
-                noRangka = result.get(i).get("NO_RANGKA").asString();
-                kodeTipe = result.get(i).get("CODE_TYPE").asString();
+                noMesin = result.get(i).get("NO_MESIN_PELANGGAN").asString();
+                noRangka = result.get(i).get("NO_RANGKA_PELANGGAN").asString();
+                kodeTipe = result.get(i).get("KODE_TYPE_PELANGGAN").asString();
             }
 
 
@@ -426,8 +428,6 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         find(R.id.tv_harga_derek_transport, TextView.class).setText(RP + formatRp(String.valueOf(biayaDerek)));
         find(R.id.et_ket_tambahan, EditText.class).setText(ket);
         find(R.id.et_catatan, EditText.class).setText(catatanMekanik);
-
-        sendData.set("TOTAL", isBatal ? 0 : (total2 > 0 ? total2 : (total1 > 0 ? total1 : (isDp ? totalDp : 0))));
     }
 
     @SuppressLint("SetTextI18n")

@@ -11,7 +11,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -74,7 +73,6 @@ public class AturLayanan_Activity extends AppActivity {
             namaLayanan = "",
             idPrincipal = "",
             namaPrincipal = "",
-            jenisKendaraan = "",
             kendaraan = "",
             merk = "",
             model = "",
@@ -87,6 +85,7 @@ public class AturLayanan_Activity extends AppActivity {
             isAfterService = false,
             isRecall = false,
             isOtomotives = false, isAdd = false; //true for discPart, false for discJasa
+    private String jenisKendaraan = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +106,7 @@ public class AturLayanan_Activity extends AppActivity {
     private void initComponent() {
         initToolbar();
         editNson = Nson.readJson(getIntentStringExtra("edit"));
-        jenisKendaraan = getSetting("JENIS_KENDARAAN");
+        kendaraan = getSetting("JENIS_KENDARAAN");
         spJenisLayanan = findViewById(R.id.sp_jenis_layanan);
         spNamaLayanan = findViewById(R.id.sp_nama_layanan);
         spStatus = findViewById(R.id.sp_status_layanan);
@@ -136,7 +135,6 @@ public class AturLayanan_Activity extends AppActivity {
             setSpinnerOffline(jenisList, spJenisLayanan, "");
             setSpinnerOffline(statusList, find(R.id.sp_garansi_atur_layanan, Spinner.class), "");
 
-            showInfo(layananBengkelAvail.toJson(), Toast.LENGTH_LONG);
             find(R.id.btn_simpan_atur_layanan, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -326,6 +324,7 @@ public class AturLayanan_Activity extends AppActivity {
                             model = dataLayananList.get(i).get("MODEL").asString();
                             varian = dataLayananList.get(i).get("VARIAN").asString();
                             keterangan = dataLayananList.get(i).get("KETERANGAN_LAYANAN").asString();
+                            jenisKendaraan = dataLayananList.get(i).get("JENIS_KENDARAAN").asString();
                             if (!dataLayananList.get(i).get("PRINCIPAL").asString().equals("N")) {
                                 namaPrincipal = dataLayananList.get(i).get("PRINCIPAL").asString();
                             } else {
@@ -420,7 +419,7 @@ public class AturLayanan_Activity extends AppActivity {
     private void saveData() {
         final String jenisLayanan = spJenisLayanan.getSelectedItem().toString().toUpperCase();
         final String namaLayanan = spNamaLayanan.getSelectedItem().toString().toUpperCase();
-        final String principal = spNamaPrincipal.getSelectedItem().toString();
+        final String principal = spNamaPrincipal.getSelectedItem().toString().equals("--PILIH--") ? "" : spNamaPrincipal.getSelectedItem().toString();
 
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
@@ -458,6 +457,7 @@ public class AturLayanan_Activity extends AppActivity {
                 } else {
                     args.put("jasa", "");
                 }
+                args.put("jenis_kendaraan", jenisKendaraan);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_LAYANAN), args));
             }
@@ -496,16 +496,16 @@ public class AturLayanan_Activity extends AppActivity {
                     result = result.get("data");
                     for (int i = 0; i < result.size(); i++) {
                         if (result.get(i).get("JENIS").asString().equals("PAKET LAYANAN")
-                                && result.get(i).get("KENDARAAN").asString().contains(jenisKendaraan)) {
+                                && result.get(i).get("KENDARAAN").asString().contains(kendaraan)) {
                             layananPaketList.add(result.get(i));
                         } else if (result.get(i).get("JENIS").asString().equalsIgnoreCase("AFTER SALES SERVIS")
-                                && result.get(i).get("KENDARAAN").asString().contains(jenisKendaraan)) {
+                                && result.get(i).get("KENDARAAN").asString().contains(kendaraan)) {
                             layananAfterList.add(result.get(i));
                         } else if (result.get(i).get("JENIS").asString().equalsIgnoreCase("RECALL")
-                                && result.get(i).get("KENDARAAN").asString().contains(jenisKendaraan)) {
+                                && result.get(i).get("KENDARAAN").asString().contains(kendaraan)) {
                             layananRecallList.add(result.get(i));
                         } else if (result.get(i).get("JENIS").asString().equalsIgnoreCase("OTOMOTIVES") &&
-                                result.get("KENDARAAN").asString().trim().contains(jenisKendaraan)) {
+                                result.get("KENDARAAN").asString().trim().contains(kendaraan)) {
                             layananOtolist.add(result.get(i));
                         }
                     }

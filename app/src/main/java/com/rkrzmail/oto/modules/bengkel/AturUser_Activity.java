@@ -2,10 +2,12 @@ package com.rkrzmail.oto.modules.bengkel;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
@@ -30,8 +32,10 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.srv.RupiahFormat;
+import com.rkrzmail.utils.FileUtility;
 import com.rkrzmail.utils.Tools;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
@@ -39,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.rkrzmail.utils.ConstUtils.DATA;
 
@@ -59,6 +64,7 @@ public class AturUser_Activity extends AppActivity {
 
     private List<String> aksesArr = new ArrayList<>();
     private String noPonsel, posisi = "", status = "", penggajian = "", fungsiMekanik = "";
+    private String fotoUser = "";
     private boolean isClickDrawable = false, isPosisi, isAksesApp;
     boolean isUpdate = false;
     private int idUser = 0;
@@ -442,11 +448,19 @@ public class AturUser_Activity extends AppActivity {
                 InputStream imageStream = getContentResolver().openInputStream(imageUri);
                 Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
                 selectedImage = Tools.getResizedBitmap(selectedImage, 400);
+                fotoUser = getRealPathFromURI(imageUri);
                 find(R.id.imgBtn_upload, ImageView.class).setImageBitmap(selectedImage);
             } catch (FileNotFoundException f) {
                 showError("Fail" + f.getMessage());
             }
         }
+    }
+
+    public String getRealPathFromURI(Uri uri) {
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+        return cursor.getString(idx);
     }
 }
 

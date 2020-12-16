@@ -129,6 +129,10 @@ public class JumlahPart_JualPart_Activity extends AppActivity {
                         showWarning("Harga Jual Harus Di isi");
                         return;
                     }
+                    if(Integer.parseInt(formatOnlyNumber(etHargaJual.getText().toString())) < Integer.parseInt(formatOnlyNumber(etHpp.getText().toString()))){
+                        etHargaJual.setError("Harga Jual Kurang dari HPP Part");
+                        return;
+                    }
                 }
                 Log.d("Jual__", "onClick: " + stock);
                 try {
