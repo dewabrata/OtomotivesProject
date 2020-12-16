@@ -43,7 +43,7 @@ import static com.rkrzmail.utils.ConstUtils.REQUEST_PENYESUAIAN;
 public class AturStockOpname_Activity extends AppActivity {
 
     private EditText noFolder, noPart, etJumlahOpname, namaPart, etPending, etMerk, etStock;
-    private String partId = "";
+    private String partId = "", barcodeResult="";
     private int stockBeda = 0;
     private int counterBarcode = 0;
     private int idLokasiPart = 0;
@@ -85,7 +85,10 @@ public class AturStockOpname_Activity extends AppActivity {
                 if(etJumlahOpname.getText().toString().isEmpty()){
                     etJumlahOpname.setError("Jumlah Opname Harus Di Isi");
                     return;
+                }else if (barcodeResult.isEmpty()) {
+                    showInfo("Barcode Harus Di Isi");
                 }
+
 
                 int stockAwal = Integer.parseInt(etStock.getText().toString());
                 int stockAkhir = Integer.parseInt(etJumlahOpname.getText().toString());
@@ -315,7 +318,7 @@ public class AturStockOpname_Activity extends AppActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_BARCODE && resultCode == RESULT_OK) {
-            String barcodeResult = data != null ? data.getStringExtra("TEXT").replace("\n", "").trim() : "";
+            barcodeResult = data != null ? data.getStringExtra("TEXT").replace("\n", "").trim() : "";
             getDataBarcode(barcodeResult);
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_PENYESUAIAN) {
             saveData(Nson.readJson(getIntentStringExtra(data, DATA)));
