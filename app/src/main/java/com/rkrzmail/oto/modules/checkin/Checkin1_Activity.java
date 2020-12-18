@@ -1,6 +1,10 @@
 package com.rkrzmail.oto.modules.checkin;
 
 import android.annotation.SuppressLint;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -31,6 +36,7 @@ import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
+import com.rkrzmail.oto.MainActivity;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.BarcodeActivity;
 import com.rkrzmail.srv.NikitaAutoComplete;
@@ -91,6 +97,35 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Check-In");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    public void showNotification(Context context, String title, String body, Intent intent) {
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        int notificationId = 1;
+        String channelId = "channel-01";
+        String channelName = "Channel Name";
+        @SuppressLint("InlinedApi") int importance = NotificationManager.IMPORTANCE_HIGH;
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel mChannel = new NotificationChannel(
+                    channelId, channelName, importance);
+            notificationManager.createNotificationChannel(mChannel);
+        }
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, channelId)
+                .setSmallIcon(R.drawable.speed)
+                .setContentTitle(title)
+                .setContentText(body);
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        stackBuilder.addNextIntent(intent);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(
+                0,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
+        mBuilder.setContentIntent(resultPendingIntent);
+        notificationManager.notify(notificationId, mBuilder.build());
     }
 
     private void initComponent() {
@@ -621,6 +656,8 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             Intent i = new Intent(getActivity(), Checkin3_Activity.class);
             i.putExtra(DATA, Nson.readJson(getIntentStringExtra(data, DATA)).toJson());
             startActivityForResult(i, REQUEST_CHECKIN);
+        }else{
+            finish();
         }
     }
 

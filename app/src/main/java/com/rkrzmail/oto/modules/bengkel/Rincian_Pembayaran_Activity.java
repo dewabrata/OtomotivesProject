@@ -266,7 +266,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
-                args.put("action", "view");
+                args.put("action", "TRANSAKSI");
                 if (isLayanan || isDp) {
                     args.put("jenisPembayaran", "CHECKIN");
                     args.put("checkinId", idCheckin);
@@ -306,7 +306,6 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             }
         });
     }
-
 
     @SuppressLint("SetTextI18n")
     private void loadDataRincianLayanan(Nson result) {
@@ -428,6 +427,19 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         find(R.id.tv_harga_derek_transport, TextView.class).setText(RP + formatRp(String.valueOf(biayaDerek)));
         find(R.id.et_ket_tambahan, EditText.class).setText(ket);
         find(R.id.et_catatan, EditText.class).setText(catatanMekanik);
+    }
+
+    private void setDefault(){
+        totalJasaPart = 0;
+        totalJasa = 0;
+        totalPart = 0;
+        discPart = 0;
+        discJasa = 0;
+        total1 = 0;
+        discLayanan = 0;
+        sisaBiaya = 0;
+        total2 = 0;
+        discSpot = 0;
     }
 
     @SuppressLint("SetTextI18n")
@@ -598,6 +610,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         if (resultCode == RESULT_OK && requestCode == REQUEST_KONFIRMASI) {
             showSuccess("Sukses Memperharui Data Pelanggan");
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_NEW_CS) {
+            setDefault();
             viewRincianPembayaran();
             showSuccess("Sukses Memperharui Data Kendraan");
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_DETAIL) {

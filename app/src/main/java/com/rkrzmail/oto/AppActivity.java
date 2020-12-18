@@ -4,8 +4,10 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -32,6 +34,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -89,12 +92,26 @@ import static com.rkrzmail.utils.ConstUtils.PERMISSION_REQUEST_CODE;
 
 public class AppActivity extends AppCompatActivity {
 
-    public void hideKeyboard(){
+    public void swipeProgress(final boolean show) {
+        if (!show) {
+            find(R.id.swiperefresh, SwipeRefreshLayout.class).setRefreshing(show);
+            return;
+        }
+        find(R.id.swiperefresh, SwipeRefreshLayout.class).post(new Runnable() {
+            @Override
+            public void run() {
+                find(R.id.swiperefresh, SwipeRefreshLayout.class).setRefreshing(show);
+            }
+        });
+    }
+
+
+    public void hideKeyboard() {
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
-    public String  getSetting(String key) {
+    public String getSetting(String key) {
         return UtilityAndroid.getSetting(getActivity(), key, "");
     }
 
@@ -573,9 +590,9 @@ public class AppActivity extends AppCompatActivity {
                 }
                 String search;
                 if (!getItem(position).containsKey("NAMA_LAIN")) {
-                    if(getItem(position).containsKey("NOPOL")){
+                    if (getItem(position).containsKey("NOPOL")) {
                         search = formatNopol(getItem(position).get(jsonObject).asString());
-                    }else{
+                    } else {
                         search = getItem(position).get(jsonObject).asString();
                     }
 
@@ -780,7 +797,7 @@ public class AppActivity extends AppCompatActivity {
         boolean ex = editText.getText().toString().isEmpty();
         EditText emptyText = getAllEditText(viewGroup, ex);
         if (emptyText != null) {
-            if(!ex){
+            if (!ex) {
                 emptyText.setError("test di isi");
                 emptyText.requestFocus();
             }
@@ -846,15 +863,15 @@ public class AppActivity extends AppCompatActivity {
     }
 
     public String formatRp(String currency) {
-        if(!currency.equals("")){
+        if (!currency.equals("")) {
             DecimalFormat formatter = new DecimalFormat("###,###,###");
             return formatter.format(Double.parseDouble(currency));
         }
-       return "0";
+        return "0";
     }
 
-    public String formatOnlyNumber(String text){
-        if(text == null || text.equals("") || text.equals("00"))
+    public String formatOnlyNumber(String text) {
+        if (text == null || text.equals("") || text.equals("00"))
             return "0";
         else
             return text.replaceAll("[^0-9]+", "");
@@ -936,7 +953,7 @@ public class AppActivity extends AppCompatActivity {
             }
         }
 
-        try{
+        try {
             if (!menit.equals("0")) {
                 int minutes = Integer.parseInt(menit);
                 while (minutes >= 60) {
@@ -972,8 +989,8 @@ public class AppActivity extends AppCompatActivity {
             }
 
             return String.format("%02d:%02d:%02d", Integer.parseInt(result[0]), Integer.parseInt(result[1]), Integer.parseInt(result[2]));
-        }catch (Exception e){
-            return String.format("%02d:%02d:%02d", 0, 0 , 0);
+        } catch (Exception e) {
+            return String.format("%02d:%02d:%02d", 0, 0, 0);
         }
     }
 
@@ -1030,48 +1047,38 @@ public class AppActivity extends AppCompatActivity {
         }
     }
 
-    public void setIntent(Class destination, int reqCode){
+    public void setIntent(Class destination, int reqCode) {
         Intent i = new Intent(getActivity(), destination);
         startActivityForResult(i, reqCode);
     }
 
-    public void showNotification(Nson nson) {
-        //Get an instance of NotificationManager//
-        Intent intentAction = new Intent(this, MainActivity.class);
-        intentAction.putExtra("target","notification");
-        intentAction.putExtra("id", nson.get("id").asString());
-        intentAction.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+    public void showNotification(Context context, String title, String body, String channelName, Intent intent) {
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
+        int notificationId = 1;
+        String channelId = "channel-01";
+        @SuppressLint("InlinedApi") int importance = NotificationManager.IMPORTANCE_HIGH;
 
-       /* PendingIntent pIntentlogin = PendingIntent.getBroadcast(this,1,intentAction,PendingIntent.FLAG_UPDATE_CURRENT);
-        intentAction = new Intent(this, MainActivity.class);
-        intentAction.putExtra("action","TUNDA");
-        intentAction.putExtra("id",nson.get("id").asString());
-        PendingIntent pIntentlogin3 = PendingIntent.getBroadcast(this,2,intentAction,PendingIntent.FLAG_UPDATE_CURRENT);
-*/
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel mChannel = new NotificationChannel(
+                    channelId, channelName, importance);
+            notificationManager.createNotificationChannel(mChannel);
+        }
 
-        Intent intent = new Intent( this , MainActivity. class );
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("target","notification");
-        PendingIntent resultIntent = PendingIntent.getActivity( this , 0, intent,  PendingIntent.FLAG_ONE_SHOT);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, channelId)
+                .setSmallIcon(R.drawable.speed)
+                .setContentTitle(title)
+                .setContentText(body);
 
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.speed)
-                        //.addAction(new NotificationCompat.Action(0, "OK", pIntentlogin))
-                        //.addAction(new NotificationCompat.Action(0, "TUNDA", pIntentlogin3))
-                        .setStyle(new NotificationCompat.BigTextStyle().bigText(nson.get("msg").asString()))
-                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                        .setOngoing(nson.get("outgoing").asBoolean())
-                        .setContentTitle(nson.get("title").asString())
-                        .setContentIntent(resultIntent)
-                        .setAutoCancel( true )
-                        .setContentText(nson.get("msg").asString());
-
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        mNotificationManager.notify(nson.get("id").asInteger(), mBuilder.build());
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        stackBuilder.addNextIntent(intent);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(
+                0,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
+        mBuilder.setContentIntent(resultPendingIntent);
+        notificationManager.notify(notificationId, mBuilder.build());
     }
+
 
 }

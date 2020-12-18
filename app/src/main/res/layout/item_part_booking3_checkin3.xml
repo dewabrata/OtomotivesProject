@@ -15,6 +15,7 @@
     app:cardCornerRadius="10dp">
 
     <FrameLayout
+        android:id="@+id/ly_parts"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

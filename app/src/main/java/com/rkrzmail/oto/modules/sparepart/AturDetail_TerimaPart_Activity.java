@@ -51,7 +51,7 @@ import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
 
-public class DetailPartDiterima extends AppActivity implements View.OnFocusChangeListener {
+public class AturDetail_TerimaPart_Activity extends AppActivity implements View.OnFocusChangeListener {
 
     private static final String TAG = "DetailPart__";
     private static final String TAMBAH_PART = "TAMBAH";

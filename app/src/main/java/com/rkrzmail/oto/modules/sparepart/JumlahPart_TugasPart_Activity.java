@@ -46,6 +46,7 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
             jamAntrian = "", partId ="", group = "", noHp = "";
     private String idLokasiPart = "", idTugasPat = "", idDetail = "", idJualPart = "", idCheckin = "";
     private boolean isJualPart = false;
+    private String noPart = "";
 
     private int counScanPart = 0;
 
@@ -91,6 +92,7 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
         idLokasiPart = nson.get("LOKASI_PART_ID").asString();
         idJualPart =  nson.get("JUAL_PART_ID").asString();
         idCheckin = nson.get("CHECKIN_ID").asString();
+        noPart = nson.get("NO_PART").asString();
 
         if (getIntent().hasExtra(TUGAS_PART_PERMINTAAN)) {
             isPermintaan = true;
@@ -211,7 +213,11 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
         });
     }
 
-    public void getDataBarcode(final String nopart) {
+    public void getDataBarcode(final String nopartScan) {
+        if(!nopartScan.equals(noPart)){
+            showError("Part Tidak Sesuai");
+            return;
+        }
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -219,7 +225,7 @@ public class JumlahPart_TugasPart_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "BARCODE");
-                args.put("nopart", nopart);
+                args.put("nopart", noPart);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SPAREPART), args));
             }
 

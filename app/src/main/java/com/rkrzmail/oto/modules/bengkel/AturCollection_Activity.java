@@ -1,9 +1,11 @@
 package com.rkrzmail.oto.modules.bengkel;
 
 import android.annotation.SuppressLint;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,19 +19,25 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.srv.RupiahFormat;
 import com.rkrzmail.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.Map;
 
+import static com.rkrzmail.utils.APIUrls.ATUR_COLLECTION;
 import static com.rkrzmail.utils.APIUrls.SET_REKENING_BANK;
 import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.RP;
 
 public class AturCollection_Activity extends AppActivity {
 
     private Nson rekeningList = Nson.newArray();
     private String namaBank = "", noRek = "";
+    private String tipeColl = "";
+    private String kasirId = "";
+    private int sisaTerhutang = 0, setor = 0, terhutang = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +45,7 @@ public class AturCollection_Activity extends AppActivity {
         setContentView(R.layout.activity_cash_collection_);
         initToolbar();
         initComponent();
+        loadData();
     }
 
     private void initToolbar() {
@@ -46,23 +55,49 @@ public class AturCollection_Activity extends AppActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void initComponent(){
-        find(R.id.et_total_cashCollection);
-        find(R.id.et_sisa_cashCollection);
+    private void initComponent() {
+        find(R.id.et_jumlah_setor, EditText.class).addTextChangedListener(new RupiahFormat(find(R.id.et_jumlah_setor, EditText.class)));
+        find(R.id.et_jumlah_setor, EditText.class).addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (!editable.toString().isEmpty() &&
+                        !find(R.id.et_terhutang_cashCollection, EditText.class).getText().toString().isEmpty()) {
+                    try {
+                        setor = Integer.parseInt(formatOnlyNumber(editable.toString()));
+                        terhutang = Integer.parseInt(formatOnlyNumber(find(R.id.et_terhutang_cashCollection, EditText.class).getText().toString()));
+                        sisaTerhutang = terhutang - setor;
+                        find(R.id.et_sisa_cashCollection, EditText.class).setText(RP + formatRp(String.valueOf(sisaTerhutang)));
+                    } catch (Exception e) {
+                        setor = 0;
+                        terhutang = 0;
+                    }
+
+                }
+            }
+        });
+
         find(R.id.et_namaKasir_cashCollection);
         find(R.id.et_terhutang_cashCollection);
-        find(R.id.et_noTrack_cashCollection);
-
-        loadData();
 
         find(R.id.sp_tipe_cashCollection, Spinner.class).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String items = parent.getItemAtPosition(position).toString();
-                if(items.equalsIgnoreCase("CASH")){
+                tipeColl = parent.getItemAtPosition(position).toString();
+                if (tipeColl.equalsIgnoreCase("CASH")) {
                     find(R.id.et_noTrack_cashCollection).setEnabled(false);
                     find(R.id.sp_rek).setEnabled(false);
-                }else{
+                } else {
                     find(R.id.et_noTrack_cashCollection).setEnabled(true);
                     find(R.id.sp_rek).setEnabled(true);
                     setSpRek();
@@ -76,18 +111,37 @@ public class AturCollection_Activity extends AppActivity {
         });
         find(R.id.sp_rek, Spinner.class);
 
-
         find(R.id.btn_simpan_cashCollection, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveData();
+                if (tipeColl.equals("SETOR TUNAI") && find(R.id.sp_rek, Spinner.class).getSelectedItem().toString().equals("--PILIH--")) {
+                    showWarning("No. Rekening Harus di Pilih");
+                    find(R.id.sp_rek, Spinner.class).performClick();
+                    find(R.id.sp_rek, Spinner.class).requestFocus();
+                } else if (tipeColl.equals("SETOR TUNAI") && find(R.id.et_noTrack_cashCollection, EditText.class).getText().toString().isEmpty()) {
+                    find(R.id.et_noTrack_cashCollection, EditText.class).setError("No. Trace Harus di isi");
+                    find(R.id.et_noTrack_cashCollection, EditText.class).requestFocus();
+                } else if (find(R.id.et_jumlah_setor, EditText.class).getText().toString().isEmpty()) {
+                    find(R.id.et_jumlah_setor, EditText.class).setError("Jumlah Setor Harus di Isi");
+                    find(R.id.et_jumlah_setor, EditText.class).requestFocus();
+                } else if (find(R.id.et_penerima, EditText.class).getText().toString().isEmpty()) {
+                    find(R.id.et_penerima, EditText.class).setError("Penerima harus di Isi");
+                    find(R.id.et_penerima, EditText.class).requestFocus();
+                } else if (setor > terhutang) {
+                    find(R.id.et_jumlah_setor, EditText.class).setError("Setoran Tidak Valid");
+                    find(R.id.et_jumlah_setor, EditText.class).requestFocus();
+                } else {
+                    saveData();
+                }
+
             }
         });
     }
 
     @SuppressLint("SetTextI18n")
-    private void loadData(){
+    private void loadData() {
         Nson n = Nson.readJson(getIntentStringExtra(DATA));
+        kasirId = n.get("KASIR_ID").asString();
         find(R.id.et_namaKasir_cashCollection, EditText.class).setText(n.get("NAMA").asString());
         find(R.id.et_terhutang_cashCollection, EditText.class).setText(RP + formatRp(n.get("SALDO_KASIR").asString()));
     }
@@ -99,15 +153,25 @@ public class AturCollection_Activity extends AppActivity {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "view");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(""), args));
+                args.put("action", "add");
+                args.put("namaKasir", find(R.id.et_namaKasir_cashCollection, EditText.class).getText().toString());
+                args.put("totalTerhutang", String.valueOf(terhutang));
+                args.put("totalBayar", String.valueOf(setor));
+                args.put("lebihKurang", String.valueOf(sisaTerhutang));
+                args.put("kasirId", kasirId);
+                args.put("tipeSetoran", tipeColl);
+
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_COLLECTION), args));
             }
 
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    showSuccess("Collection Berhasil");
+                    setResult(RESULT_OK);
+                    finish();
                 } else {
-                    showError("Mohon Di Coba Kembali");
+                    showError(ERROR_INFO);
                 }
             }
         });

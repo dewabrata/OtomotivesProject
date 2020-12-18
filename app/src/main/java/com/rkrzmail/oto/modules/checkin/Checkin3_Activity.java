@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -182,6 +183,12 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
                 super.onBindViewHolder(viewHolder, position);
+                if(partList.get(position).get("HARGA_JASA").asString().equals("0")){
+                    viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.GONE);
+                }else{
+                    viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.VISIBLE);
+                }
+
                 viewHolder.find(R.id.tv_namaPart_booking3_checkin3, TextView.class)
                         .setText(partList.get(position).get("NAMA_PART").asString());
                 viewHolder.find(R.id.tv_noPart_booking3_checkin3, TextView.class)
@@ -203,7 +210,6 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                     showError(e.getMessage());
                 }
                 viewHolder.find(R.id.tv_merk_booking3_checkin3, TextView.class).setText(partList.get(position).get("MERK").asString());
-                viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.VISIBLE);
                 viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -367,7 +373,9 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     if (status.equalsIgnoreCase("LAYANAN ESTIMASI")) {
+                        result = result.get("data").get(0);
                         showSuccess("ESTIMASI BIAYA PELAYANAN  KENDARAAN " + nson.get("kendaraanPelanggan").asString());
+                        showNotification(getActivity(), "Checkin Layanan Estimasi", formatNopol(nopol), "CHECKIN", new Intent(getActivity(), KontrolLayanan_Activity.class));
                         setResult(RESULT_OK);
                         finish();
                     } else if (status.equalsIgnoreCase("TUNGGU KONFIRMASI")) {
@@ -376,6 +384,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         finish();
                     } else if (status.equalsIgnoreCase("BATAL CHECKIN")) {
                         showSuccess("Layanan Di Batalkan Pelanggan, Data Di Masukkan Ke Kontrol Layanan");
+                        showNotification(getActivity(), "Checkin di Batalkan", formatNopol(nopol), "CHECKIN", new Intent(getActivity(), KontrolLayanan_Activity.class));
                         setResult(RESULT_OK);
                         finish();
                     } else {
@@ -845,6 +854,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                                 alertDialog.dismiss();
                             }
                         } else {
+                            flagPartWajib = false;
                             if (!dataAccept.get("WAKTU_PESAN").asString().isEmpty()) {
                                 waktuPesan += dataAccept.get("WAKTU_PESAN").asInteger();
                                 String hariWaktuPesan = dataAccept.get("WAKTU_PESAN").asString() + ":00:" + "00";

@@ -165,7 +165,7 @@ public class Transaksi_Pembayaran_Fragment extends Fragment {
                 swipeProgress(true);
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
-                args.put("action", "view");
+                args.put("action", "TRANSAKSI");
                 args.put("jenisPembayaran", "CHECKIN");
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PEMBAYARAN), args));
                 pembayaranList.asArray().clear();

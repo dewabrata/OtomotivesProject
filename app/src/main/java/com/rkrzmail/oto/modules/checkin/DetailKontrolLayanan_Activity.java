@@ -335,6 +335,8 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "view");
+                args.put("penugasan", "KONTROL LAYANAN");
                 data = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MEKANIK), args));
             }
 
@@ -359,7 +361,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                     mekanikArray.add("--PILIH--");
                     idMekanikArray.add(0);
                     for (int i = 0; i < data.get("data").size(); i++) {
-                        idMekanikArray.add(Nson.newObject().set("ID", data.get("data").get(i).get("ID").asString()).set("NAMA", data.get("data").get(i).get("NAMA").asString()));
+                        idMekanikArray.add(Nson.newObject().set("ID", data.get("data").get(i).get("NO_PONSEL").asString()).set("NAMA", data.get("data").get(i).get("NAMA").asString()));
                         mekanikArray.add(data.get("data").get(i).get("NAMA").asString());
                     }
                     Log.d(TAG, "MEKANIK : " + mekanikArray);

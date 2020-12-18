@@ -603,11 +603,15 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                     noKunciList.asArray().addAll(result.get("data").asArray());
                     if (isHplus) {
                         showSuccess("MOHON BAYARKAN UANG MUKA PELAYANAN " + jenisLayanan + ". RINCIAN BIAYA & UANG MUKA");
+                        showNotification(getActivity(), "Checkin Antrian ", formatNopol(nopol), "CHECKIN", new Intent(getActivity(), KontrolLayanan_Activity.class));
+                        finish();
                     } else {
                         if (status.equalsIgnoreCase("BATAL CHECKIN 4")) {
                             showSuccess("Layanan di Batalkan, Data Di masukkan Ke Daftar Kontrol Layanan");
                         } else {
-                            showDialogNoKunci(result.get("data").asString());
+                            result = result.get("data").get(0);
+                            showDialogNoKunci(result.get("NO_KUNCI").asString());
+                            showNotification(getActivity(), "Checkin Antrian ", formatNopol(nopol), "CHECKIN", new Intent(getActivity(), KontrolLayanan_Activity.class));
                             showSuccess("Data Pelanggan Berhasil Di masukkan Ke Daftar Kontrol Layanan");
                         }
                     }
@@ -666,27 +670,29 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "view");
+                args.put("penugasan", "CHECKIN");
                 data = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MEKANIK), args));
             }
 
             @Override
             public void runUI() {
                 if (data.get("status").asString().equalsIgnoreCase("OK")) {
-                    if (data.get("data").asArray().size() == 0) {
-                        showInfo("Mekanik Belum Tercatatkan, Silahkan Daftarkan Mekanik Di Menu USER");
-                        Messagebox.showDialog(getActivity(), "Mekanik Belum Di Catatkan", "Catatkan Mekanik ?", "Ya", "Tidak", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                startActivityForResult(new Intent(getActivity(), AturUser_Activity.class), REQUEST_MEKANIK);
-                            }
-                        }, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                        return;
-                    }
+//                    if (data.get("data").asArray().size() == 0) {
+//                        showInfo("Mekanik Belum Tercatatkan, Silahkan Daftarkan Mekanik Di Menu USER");
+//                        Messagebox.showDialog(getActivity(), "Mekanik Belum Di Catatkan", "Catatkan Mekanik ?", "Ya", "Tidak", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                startActivityForResult(new Intent(getActivity(), AturUser_Activity.class), REQUEST_MEKANIK);
+//                            }
+//                        }, new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                dialog.dismiss();
+//                            }
+//                        });
+//                        return;
+//                    }
                     mekanikArray.asArray().clear();
                     mekanikArray.add("--PILIH--");
                     idMekanikArray.add(0);

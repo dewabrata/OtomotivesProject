@@ -651,19 +651,19 @@ public class Tools {
     public static String getDay(int day){
         try {
             switch (day) {
-                case 1:
+                case 0:
                     return "Senin";
-                case 2:
+                case 1:
                     return "Selasa";
-                case 3:
+                case 2:
                     return "Rabu";
-                case 4:
+                case 3:
                     return "Kamis";
-                case 5:
+                case 4:
                     return "Jum`at";
-                case 6:
+                case 5:
                     return "Sabtu";
-                case 7:
+                case 6:
                     return "Minggu";
                 default:
                     return "";

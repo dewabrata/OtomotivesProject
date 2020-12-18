@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -62,7 +63,7 @@ public class Collection_Activity extends AppActivity {
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 String tgl = Tools.setFormatDateTimeFromDb(nListArray.get(position).get("TANGGAL").asString(), "yyyy-MM-dd HH:mm:ss", "dd/MM-HH:mm", false);
                 viewHolder.find(R.id.tv_nama_collection, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
-                viewHolder.find(R.id.tv_balance, TextView.class).setText(RP + formatRp(nListArray.get(position).get("SALDO_KASIR").asString()));
+                    viewHolder.find(R.id.tv_balance, TextView.class).setText(RP + formatRp(nListArray.get(position).get("SALDO_KASIR").asString()));
                 viewHolder.find(R.id.tv_tanggal, TextView.class).setText(tgl);
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
@@ -75,6 +76,12 @@ public class Collection_Activity extends AppActivity {
         }));
 
         viewCollection();
+        find(R.id.swiperefresh, SwipeRefreshLayout.class).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                viewCollection();
+            }
+        });
     }
 
     private void viewCollection() {
@@ -83,6 +90,7 @@ public class Collection_Activity extends AppActivity {
 
             @Override
             public void run() {
+                swipeProgress(true);
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_COLLECTION), args));
@@ -90,6 +98,7 @@ public class Collection_Activity extends AppActivity {
 
             @Override
             public void runUI() {
+                swipeProgress(false);
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());

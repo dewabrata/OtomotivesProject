@@ -130,7 +130,7 @@
         <activity android:name=".modules.sparepart.TerimaPart" />
         <activity android:name=".modules.sparepart.AturLokasiPart_Activity" />
         <activity android:name=".modules.sparepart.AturTerimaPart_Activity" />
-        <activity android:name=".modules.sparepart.DetailPartDiterima" />
+        <activity android:name=".modules.sparepart.AturDetail_TerimaPart_Activity" />
         <activity android:name=".modules.mekanik.AturBiayaMekanik2" />
         <activity android:name=".modules.mekanik.BiayaMekanik2Activity" />
         <activity android:name=".modules.sparepart.Spareparts_Activity">

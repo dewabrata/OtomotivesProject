@@ -81,19 +81,6 @@ public class TerimaPart extends AppActivity {
         initRecylerview();
     }
 
-    private void swipeProgress(final boolean show) {
-        if (!show) {
-            find(R.id.swiperefresh, SwipeRefreshLayout.class).setRefreshing(show);
-            return;
-        }
-        find(R.id.swiperefresh, SwipeRefreshLayout.class).post(new Runnable() {
-            @Override
-            public void run() {
-                find(R.id.swiperefresh, SwipeRefreshLayout.class).setRefreshing(show);
-            }
-        });
-    }
-
     private void initRecylerview(){
         recyclerView_terimaPart.setLayoutManager(new LinearLayoutManager(this));
         recyclerView_terimaPart.setHasFixedSize(true);

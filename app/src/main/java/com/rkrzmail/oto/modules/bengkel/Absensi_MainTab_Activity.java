@@ -70,7 +70,7 @@ public class Absensi_MainTab_Activity extends AppActivity {
         setScanBarcode();
     }
 
-    private void setScanBarcode(){
+    private void setScanBarcode() {
         find(R.id.img_scan_barcode, ImageButton.class).setVisibility(View.VISIBLE);
         find(R.id.img_scan_barcode, ImageButton.class).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,22 +81,23 @@ public class Absensi_MainTab_Activity extends AppActivity {
         });
     }
 
-    private void absenUser(final String myCodeUser){
+    private void absenUser(final String myCodeUser) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "ABSEN");
                 args.put("noPonsel", myCodeUser);
-                args.put("hari", Tools.getDay(getDayOfWeek()));
-                args.put("scheduleMulai", currentDateTime("HH:mm:ss"));
+                args.put("hari", getDayOfWeek());
+                //args.put("scheduleMulai", currentDateTime("HH:mm:ss"));
                 args.put("absenMulai", currentDateTime("HH:mm:ss"));
-                args.put("lamaTerlambat", "");
+                //args.put("lamaTerlambat", "");
                 args.put("absenSelesai", currentDateTime("HH:mm:ss"));
-                args.put("izinTerlambat", "N");
-                args.put("userIzin", "");
+                //args.put("izinTerlambat", "N");
+                //args.put("userIzin", "");
                 args.put("lokasi", "BENGKEL");
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ABSEN), args));
@@ -115,25 +116,40 @@ public class Absensi_MainTab_Activity extends AppActivity {
         });
     }
 
-    private int getDayOfWeek(){
+    private String getDayOfWeek() {
         Calendar c = Calendar.getInstance();
-        c.set(Integer.parseInt(currentDateTime("yyyy")),
-                Integer.parseInt(currentDateTime("MM")),
-                Integer.parseInt(currentDateTime("dd")));
+        int day = c.get(Calendar.DAY_OF_WEEK);
 
-        return c.get(Calendar.DAY_OF_WEEK_IN_MONTH);
+        switch (day) {
+            case Calendar.SUNDAY:
+                return "Minggu";
+            case Calendar.MONDAY:
+                return "Senin";
+            case Calendar.TUESDAY:
+                return "Selesa";
+            case Calendar.WEDNESDAY:
+                return "Rabu";
+            case Calendar.THURSDAY:
+                return "Kamis";
+            case Calendar.FRIDAY:
+                return "Jumat";
+            case Calendar.SATURDAY:
+                return "Sabtu";
+            default:
+                return "";
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK && requestCode == REQUEST_BARCODE){
+        if (resultCode == RESULT_OK && requestCode == REQUEST_BARCODE) {
             String barcodeResult = data != null ? data.getStringExtra("TEXT").replace("\n", "").trim() : "";
             MyCode.checkMyCode(this, barcodeResult, new MyCode.RunnableWD() {
                 @Override
                 public void runWD(Nson nson) {
                     if (nson.get("status").asString().equals("OK")) {
-                        if(nson.get("data").asArray().isEmpty()){
+                        if (nson.get("data").asArray().isEmpty()) {
                             showError("Silahkan Refresh Barcode Anda!");
                             return;
                         }

@@ -45,7 +45,7 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
 
     private boolean isFlexible = false, isPartKosong = false, isPartWajib = false, isTambahPart = false;
     private String idLokasiPart = "", hpp = "";
-    private String inspeksi = "";
+    private String inspeksi = "", garansiPart = "";
     private int stock = 0;
     private double discPart = 0, discFasilitas = 0;
 
@@ -94,12 +94,10 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
             isPartWajib = true;
             final Nson nson = Nson.readJson(getIntentStringExtra(PART_WAJIB));
             stock = nson.get("STOCK").asInteger();
-            Log.d(TAG, "data : " + nson);
+            garansiPart = nson.get("GARANSI_PART_BULAN").asString() + " " + nson.get("GARANSI_PART_KM").asString();
             hpp = nson.get("HPP").asString();
             idLokasiPart = nson.get("LOKASI_PART_ID").asString();
 
-            //find(R.id.btn_img_waktu_inspeksi).setEnabled(false);
-            //find(R.id.et_waktu_set_inspeksi, EditText.class).setText(getIntent().getStringExtra("WAKTU_INSPEKSI"));
             initPartKosongValidation(nson,true);
 
             boolean isMasterPartOrParts;
@@ -283,6 +281,7 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
     @SuppressLint("SetTextI18n")
     private void loadData(final String intentExtra, Intent intent) {
         final Nson nson = Nson.readJson(getIntentStringExtra(intent, intentExtra));
+        garansiPart = nson.get("GARANSI_PART_BULAN").asString() + ", " + nson.get("GARANSI_PART_KM").asString();
         hpp = nson.get("HPP").asString();
         stock = nson.get("STOCK_RUANG_PART").asInteger();
         Log.d("parts__", "data : " + nson);
@@ -445,7 +444,7 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
             sendData.set("PERGANTIAN", "0");
             sendData.set("DISCOUNT_PART", discPart);
         }
-
+        sendData.set("GARANSI", garansiPart);
         sendData.set("NAMA_PART", nson.get("NAMA_PART").asString());
         sendData.set("NO_PART", nson.get("NO_PART").asString());
         sendData.set("PART_ID", nson.get("PART_ID").asString());

@@ -267,7 +267,7 @@
     <string-array name="tipe_pembayaran">
         <item>CASH</item>
         <item>TRANSFER</item>
-        <item>DEBIT</item>
+        <item>DEBET</item>
         <item>KREDIT</item>
     </string-array>
 

@@ -98,18 +98,6 @@ public class DiscountLayanan_Activity extends AppActivity {
         catchData("");
     }
 
-    private void swipeProgress(final boolean show) {
-        if (!show) {
-            find(R.id.swiperefresh, SwipeRefreshLayout.class).setRefreshing(show);
-            return;
-        }
-        find(R.id.swiperefresh, SwipeRefreshLayout.class).post(new Runnable() {
-            @Override
-            public void run() {
-                find(R.id.swiperefresh, SwipeRefreshLayout.class).setRefreshing(show);
-            }
-        });
-    }
 
     private void catchData(final String nama) {
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {

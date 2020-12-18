@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -38,7 +37,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.rkrzmail.utils.APIUrls.SET_REKENING_BANK;
-import static com.rkrzmail.utils.ConstUtils.ONEDAY;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CONTACT;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_REKENING;
 
@@ -271,7 +269,7 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
                     return;
                 }
 
-                Intent i = new Intent(AturTerimaPart_Activity.this, DetailPartDiterima.class);
+                Intent i = new Intent(AturTerimaPart_Activity.this, AturDetail_TerimaPart_Activity.class);
                 i.putExtra("detail", sendObject().toJson());
                 startActivityForResult(i, TerimaPart.REQUEST_TERIMA_PART);
             }

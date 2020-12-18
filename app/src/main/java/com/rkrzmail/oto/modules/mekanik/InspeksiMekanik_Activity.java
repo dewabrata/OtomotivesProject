@@ -117,18 +117,6 @@ public class InspeksiMekanik_Activity extends AppActivity {
         });
     }
 
-    private void swipeProgress(final boolean show) {
-        if (!show) {
-            find(R.id.swiperefresh, SwipeRefreshLayout.class).setRefreshing(show);
-            return;
-        }
-        find(R.id.swiperefresh, SwipeRefreshLayout.class).post(new Runnable() {
-            @Override
-            public void run() {
-                find(R.id.swiperefresh, SwipeRefreshLayout.class).setRefreshing(show);
-            }
-        });
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
