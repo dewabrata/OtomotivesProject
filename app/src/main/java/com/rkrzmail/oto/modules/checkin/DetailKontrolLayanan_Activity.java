@@ -335,6 +335,8 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "view");
+                args.put("penugasan", "KONTROL LAYANAN");
                 data = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MEKANIK), args));
             }
 

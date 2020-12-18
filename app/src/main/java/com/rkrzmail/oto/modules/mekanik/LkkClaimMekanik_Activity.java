@@ -1,6 +1,7 @@
 package com.rkrzmail.oto.modules.mekanik;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -21,6 +22,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -425,17 +427,80 @@ public class LkkClaimMekanik_Activity extends AppActivity {
             idpart=nson.get("PART_ID").asString();
             stockBengkel=nson.get("STOCK").asString();
         }else if(resultCode == RESULT_OK && requestCode == REQUEST_FOTO_PART){
-            Bitmap myBitmap = BitmapFactory.decodeFile(filePart.getAbsolutePath());
-            fotoPart = FileUtility.encodeToStringBase64(filePart.getAbsolutePath());
-            //find(R.id.testId, ImageView.class).setImageBitmap(myBitmap);
-        }else if(resultCode == RESULT_OK && requestCode == REQUEST_FOTO_STNK){
-            Bitmap myBitmap = BitmapFactory.decodeFile(fileStnk.getAbsolutePath());
-            fotoStnk = FileUtility.encodeToStringBase64(fileStnk.getAbsolutePath());
-        }else if(resultCode == RESULT_OK && requestCode == REQUEST_FOTO_KTP){
-            Bitmap myBitmap = BitmapFactory.decodeFile(fileKtp.getAbsolutePath());
-            fotoKtp = FileUtility.encodeToStringBase64(fileKtp.getAbsolutePath());
-        }
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            LayoutInflater inflater = getLayoutInflater();
+            View dialogView = inflater.inflate(R.layout.layout_alert_camera, null);
+            builder.setView(dialogView);
 
+            Bitmap bitmap = BitmapFactory.decodeFile(filePart.getAbsolutePath());
+            //fotoPart = FileUtility.encodeToStringBase64(filePart.getAbsolutePath());
+            find(R.id.img_alert_foto,ImageView.class).setImageBitmap(bitmap);
+
+            find(R.id.btn_alert_cancel,Button.class).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(LkkClaimMekanik_Activity.this,null));
+                }
+            });
+            find(R.id.btn_alert_save).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(LkkClaimMekanik_Activity.this,null));
+                }
+            });
+            builder.show();
+            builder.setCancelable(false);
+        }else if(resultCode == RESULT_OK && requestCode == REQUEST_FOTO_STNK){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            LayoutInflater inflater = getLayoutInflater();
+            View dialogView = inflater.inflate(R.layout.layout_alert_camera, null);
+            builder.setView(dialogView);
+
+            Bitmap bitmap = BitmapFactory.decodeFile(fileStnk.getAbsolutePath());
+            //fotoStnk = FileUtility.encodeToStringBase64(filePart.getAbsolutePath());
+            find(R.id.img_alert_foto,ImageView.class).setImageBitmap(bitmap);
+
+            find(R.id.btn_alert_cancel,Button.class).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(LkkClaimMekanik_Activity.this,null));
+                }
+            });
+            find(R.id.btn_alert_save).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(LkkClaimMekanik_Activity.this,null));
+                }
+            });
+            builder.show();
+            builder.setCancelable(false);
+//            Bitmap myBitmap = BitmapFactory.decodeFile(fileStnk.getAbsolutePath());
+//            fotoStnk = FileUtility.encodeToStringBase64(fileStnk.getAbsolutePath());
+        }else if(resultCode == RESULT_OK && requestCode == REQUEST_FOTO_KTP){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            LayoutInflater inflater = getLayoutInflater();
+            View dialogView = inflater.inflate(R.layout.layout_alert_camera, null);
+            builder.setView(dialogView);
+
+            Bitmap bitmap = BitmapFactory.decodeFile(fileKtp.getAbsolutePath());
+            //fotoKtp = FileUtility.encodeToStringBase64(filePart.getAbsolutePath());
+            find(R.id.img_alert_foto,ImageView.class).setImageBitmap(bitmap);
+
+            find(R.id.btn_alert_cancel,Button.class).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(LkkClaimMekanik_Activity.this,null));
+                }
+            });
+            find(R.id.btn_alert_save).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(LkkClaimMekanik_Activity.this,null));
+                }
+            });
+            builder.show();
+            builder.setCancelable(false);
+        }
     }
 
 
