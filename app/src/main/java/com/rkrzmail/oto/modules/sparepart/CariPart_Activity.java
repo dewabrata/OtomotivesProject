@@ -402,7 +402,8 @@ public class CariPart_Activity extends AppActivity {
                 args.put("action", "view");
                 args.put("spec", "Bengkel");
                 args.put("search", cari);
-                args.put("lokasi", getIntentStringExtra(CARI_PART_CLAIM));
+                args.put("idCheckin", getIntentStringExtra(CARI_PART_CLAIM));
+                args.put("lokasi", "Claim");
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SPAREPART), args));
             }
 
