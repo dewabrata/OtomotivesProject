@@ -2,6 +2,8 @@ package com.rkrzmail.oto.modules.mekanik;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -45,6 +47,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.gmod.Capture;
 import com.rkrzmail.oto.modules.checkin.DetailKontrolLayanan_Activity;
 import com.rkrzmail.oto.modules.checkin.HistoryBookingCheckin_Activity;
 import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
@@ -56,6 +59,7 @@ import com.rkrzmail.utils.Tools;
 import com.valdesekamdem.library.mdtoast.MDToast;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -78,6 +82,7 @@ import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.GARANSI_PART;
 import static com.rkrzmail.utils.ConstUtils.PART;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_CODE_SIGN;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 import static com.rkrzmail.utils.ConstUtils.MASTER_PART;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_FOTO_KTP;
@@ -95,6 +100,8 @@ public class LkkClaimMekanik_Activity extends AppActivity {
     private Nson dataSebabList = Nson.newArray(), SebabArray = Nson.newArray();
     private String idpart = "", stockBengkel = "", fotoPart="", fotoStnk="", fotoKtp="";
     private File fileStnk, fileKtp, filePart;
+    private AlertDialog alertDialog;
+    private Bitmap bitmapPart, bitmapKtp, bitmapStnk;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -207,58 +214,43 @@ public class LkkClaimMekanik_Activity extends AppActivity {
     }
 
     private void setFotoPart(){
-        Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (i.resolveActivity(getPackageManager()) != null) {
-             filePart= null;
-            try {
-                filePart = createImageFile();
-            } catch (IOException ex) {
-
-            }
-            if (filePart != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.rkrzmail.oto.fileprovider",
-                        filePart);
-                i.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(i, REQUEST_FOTO_PART);
+        if (!checkPermission()) {
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(intent, REQUEST_FOTO_PART);
+        } else {
+            if (checkPermission()) {
+                requestPermissionAndContinue();
+            } else {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(intent, REQUEST_FOTO_PART);
             }
         }
     }
 
     private void setFotoStnk(){
-        Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (i.resolveActivity(getPackageManager()) != null) {
-            fileStnk= null;
-            try {
-                fileStnk = createImageFile();
-            } catch (IOException ex) {
-
-            }
-            if (fileStnk != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.rkrzmail.oto.fileprovider",
-                        fileStnk);
-                i.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(i, REQUEST_FOTO_STNK);
+        if (!checkPermission()) {
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(intent, REQUEST_FOTO_STNK);
+        } else {
+            if (checkPermission()) {
+                requestPermissionAndContinue();
+            } else {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(intent, REQUEST_FOTO_STNK);
             }
         }
     }
 
     private void setFotoKtp(){
-        Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (i.resolveActivity(getPackageManager()) != null) {
-            fileKtp= null;
-            try {
-                fileKtp = createImageFile();
-            } catch (IOException ex) {
-
-            }
-            if (fileKtp != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.rkrzmail.oto.fileprovider",
-                        fileKtp);
-                i.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(i, REQUEST_FOTO_KTP);
+        if (!checkPermission()) {
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(intent, REQUEST_FOTO_KTP);
+        } else {
+            if (checkPermission()) {
+                requestPermissionAndContinue();
+            } else {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(intent, REQUEST_FOTO_KTP);
             }
         }
     }
@@ -327,7 +319,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
     }
 
     private void SimpanData(){
-        final String namaPart = et_namapart.getText().toString().toUpperCase();
+
         final String nik = et_nikpemilik.getText().toString().toUpperCase();
         final String descKerusakan = et_desc.getText().toString().toUpperCase();
         final String infoTambahan = find(R.id.et_info_tambahan,EditText.class).getText().toString().toUpperCase();
@@ -393,21 +385,6 @@ public class LkkClaimMekanik_Activity extends AppActivity {
         });
     }
 
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-        // Save a file: path for use with ACTION_VIEW intents
-        //currentPhotoPath = image.getAbsolutePath();
-        return image;
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -426,85 +403,123 @@ public class LkkClaimMekanik_Activity extends AppActivity {
             et_namapart.setText(nson.get("NAMA_PART").asString());
             idpart=nson.get("PART_ID").asString();
             stockBengkel=nson.get("STOCK").asString();
-        }else if(resultCode == RESULT_OK && requestCode == REQUEST_FOTO_PART){
+        }
+        else if(resultCode == RESULT_OK && requestCode == REQUEST_FOTO_PART){
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             LayoutInflater inflater = getLayoutInflater();
             View dialogView = inflater.inflate(R.layout.layout_alert_camera, null);
             builder.setView(dialogView);
 
-            Bitmap bitmap = BitmapFactory.decodeFile(filePart.getAbsolutePath());
-            //fotoPart = FileUtility.encodeToStringBase64(filePart.getAbsolutePath());
-            find(R.id.img_alert_foto,ImageView.class).setImageBitmap(bitmap);
+            ImageView img = (ImageView) dialogView.findViewById(R.id.img_alert_foto);
+            Bundle extras = data.getExtras();
+            bitmapPart = (Bitmap) extras.get("data");
+            img.setImageBitmap(bitmapPart);
 
-            find(R.id.btn_alert_cancel,Button.class).setOnClickListener(new View.OnClickListener() {
+            dialogView.findViewById(R.id.btn_alert_cancel).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(LkkClaimMekanik_Activity.this,null));
+                    alertDialog.dismiss();
                 }
             });
-            find(R.id.btn_alert_save).setOnClickListener(new View.OnClickListener() {
+            dialogView.findViewById(R.id.btn_alert_save).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(LkkClaimMekanik_Activity.this,null));
+                    filePart = SaveImage(bitmapPart,"PART");
+//                    Bitmap decodePart = BitmapFactory.decodeFile(filePart.getAbsolutePath());
+//                    find(R.id.testfoto,ImageView.class).setImageBitmap(decodePart);
+//                    fotoPart = FileUtility.encodeToStringBase64(filePart.getAbsolutePath());
+                    showInfo("Sukses");
+                    alertDialog.dismiss();
                 }
             });
-            builder.show();
-            builder.setCancelable(false);
-        }else if(resultCode == RESULT_OK && requestCode == REQUEST_FOTO_STNK){
+            alertDialog = builder.create();
+            alertDialog.show();
+        }
+        else if(resultCode == RESULT_OK && requestCode == REQUEST_FOTO_STNK){
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             LayoutInflater inflater = getLayoutInflater();
             View dialogView = inflater.inflate(R.layout.layout_alert_camera, null);
             builder.setView(dialogView);
 
-            Bitmap bitmap = BitmapFactory.decodeFile(fileStnk.getAbsolutePath());
-            //fotoStnk = FileUtility.encodeToStringBase64(filePart.getAbsolutePath());
-            find(R.id.img_alert_foto,ImageView.class).setImageBitmap(bitmap);
+            ImageView img = (ImageView) dialogView.findViewById(R.id.img_alert_foto);
+            Bundle extras = data.getExtras();
+            bitmapStnk = (Bitmap) extras.get("data");
+            img.setImageBitmap(bitmapStnk);
 
-            find(R.id.btn_alert_cancel,Button.class).setOnClickListener(new View.OnClickListener() {
+            dialogView.findViewById(R.id.btn_alert_cancel).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(LkkClaimMekanik_Activity.this,null));
+                    alertDialog.dismiss();
                 }
             });
-            find(R.id.btn_alert_save).setOnClickListener(new View.OnClickListener() {
+            dialogView.findViewById(R.id.btn_alert_save).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(LkkClaimMekanik_Activity.this,null));
+                    fileStnk = SaveImage(bitmapStnk,"STNK");
+//                    Bitmap decodePart = BitmapFactory.decodeFile(filePart.getAbsolutePath());
+//                    find(R.id.testfoto,ImageView.class).setImageBitmap(decodePart);
+//                    fotoPart = FileUtility.encodeToStringBase64(filePart.getAbsolutePath());
+                    showInfo("Sukses");
+                    alertDialog.dismiss();
                 }
             });
-            builder.show();
-            builder.setCancelable(false);
-//            Bitmap myBitmap = BitmapFactory.decodeFile(fileStnk.getAbsolutePath());
-//            fotoStnk = FileUtility.encodeToStringBase64(fileStnk.getAbsolutePath());
-        }else if(resultCode == RESULT_OK && requestCode == REQUEST_FOTO_KTP){
+            alertDialog = builder.create();
+            alertDialog.show();
+        }
+        else if(resultCode == RESULT_OK && requestCode == REQUEST_FOTO_KTP){
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             LayoutInflater inflater = getLayoutInflater();
             View dialogView = inflater.inflate(R.layout.layout_alert_camera, null);
             builder.setView(dialogView);
 
-            Bitmap bitmap = BitmapFactory.decodeFile(fileKtp.getAbsolutePath());
-            //fotoKtp = FileUtility.encodeToStringBase64(filePart.getAbsolutePath());
-            find(R.id.img_alert_foto,ImageView.class).setImageBitmap(bitmap);
+            ImageView img = (ImageView) dialogView.findViewById(R.id.img_alert_foto);
+            Bundle extras = data.getExtras();
+            bitmapKtp = (Bitmap) extras.get("data");
+            img.setImageBitmap(bitmapKtp);
 
-            find(R.id.btn_alert_cancel,Button.class).setOnClickListener(new View.OnClickListener() {
+            dialogView.findViewById(R.id.btn_alert_cancel).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(LkkClaimMekanik_Activity.this,null));
+                    alertDialog.dismiss();
                 }
             });
-            find(R.id.btn_alert_save).setOnClickListener(new View.OnClickListener() {
+            dialogView.findViewById(R.id.btn_alert_save).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(LkkClaimMekanik_Activity.this,null));
+                    fileKtp = SaveImage(bitmapKtp,"KTP");
+//                    Bitmap decodePart = BitmapFactory.decodeFile(filePart.getAbsolutePath());
+//                    find(R.id.testfoto,ImageView.class).setImageBitmap(decodePart);
+//                    fotoPart = FileUtility.encodeToStringBase64(filePart.getAbsolutePath());
+                    showInfo("Sukses");
+                    alertDialog.dismiss();
                 }
             });
-            builder.show();
-            builder.setCancelable(false);
+            alertDialog = builder.create();
+            alertDialog.show();
         }
     }
 
 
+    private File SaveImage(Bitmap finalBitmap, String foto) {
+        String root = Environment.getExternalStorageDirectory().getAbsolutePath();
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        File myDir = new File(root + "/Otomotives");
+        myDir.mkdirs();
 
+        String fname = foto + "-" + timeStamp +".png";
+        File file = new File (myDir, fname);
+        if (file.exists ()) file.delete ();
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            out.flush();
+            out.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return file;
+    }
 
 
     //    private void takephoto() {
@@ -542,27 +557,5 @@ public class LkkClaimMekanik_Activity extends AppActivity {
 //                return;
 //            }
 //        }
-  }
-//    @SuppressLint("SimpleDateFormat")
-//    private File createImageFile() throws IOException {
-//        // Create an image file name
-//        date = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
-//        Object noAplikasi = null;
-//        Object jenisPhoto = null;
-//        Object noUrut = null;
-//        String imageFileName = noAplikasi + jenisPhoto + noUrut + judul;
-//        File storageDir = Objects.requireNonNull(getContext()).getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-//        File image = File.createTempFile(
-//                imageFileName,  /* prefix */
-//                ".jpg",         /* suffix */
-//                storageDir      /* directory */
-//        );
-//        // Save a file: path for use with ACTION_VIEW intents
-//        mCurrentPhotoPath = image.getAbsolutePath();
-//        imgPath.clear();
-//        imgPath.add(mCurrentPhotoPath);
-//        fileName = imageFileName + ".jpg";
-//        Log.d("currentPath Image", "" + image.getAbsolutePath());
-//        return image;
-//  }
+}
 
