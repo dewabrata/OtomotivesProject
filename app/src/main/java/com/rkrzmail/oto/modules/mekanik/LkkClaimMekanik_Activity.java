@@ -97,8 +97,8 @@ public class LkkClaimMekanik_Activity extends AppActivity {
     private EditText et_namapart, et_nopart, et_merkpart, et_nikpemilik, et_nobuku, et_desc, et_info;
     private Button btn_fotostnk, btn_fotoktp, btn_simpan;
     private CheckBox cbClaim;
-    private Nson dataSebabList = Nson.newArray(), SebabArray = Nson.newArray();
-    private String idpart = "", stockBengkel = "", fotoPart="", fotoStnk="", fotoKtp="";
+    private Nson dataSebabList = Nson.newArray(), SebabArray = Nson.newArray(), data;
+    private String idpart = "", stockBengkel = "", fotoPart="", fotoStnk="", fotoKtp="", idCheckin="";
     private File fileStnk, fileKtp, filePart;
     private AlertDialog alertDialog;
     private Bitmap bitmapPart, bitmapKtp, bitmapStnk;
@@ -137,7 +137,8 @@ public class LkkClaimMekanik_Activity extends AppActivity {
 
         setSpinnerFromApi(sp_kondisipart, "nama", "KONDISI PART", "viewmst", "KONDISI");
         setSpSebabKerusakan();
-
+        data = Nson.readJson(getIntentStringExtra(DATA));
+        idCheckin= data.get("IDCHECKIN").asString();
         cbClaim.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -188,7 +189,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getActivity(), CariPart_Activity.class);
-                i.putExtra(CARI_PART_CLAIM, GARANSI_PART);
+                i.putExtra(CARI_PART_CLAIM, idCheckin);
                 startActivityForResult(i, REQUEST_CARI_PART);
             }
         });
@@ -330,7 +331,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
         final String tindakan = sp_tindakan.getSelectedItem().toString().toUpperCase();
         final String claim = find(R.id.cb_claimgaransi, CheckBox.class).isChecked() ? "Y" : "N";
 
-        final Nson data = Nson.readJson(getIntentStringExtra(DATA));
+
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
@@ -390,7 +391,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_CARI_PART) {
             Nson nson = Nson.readJson(getIntentStringExtra(data, PART));
-            if (nson.get("GARANSI_MASTER_PART_PABRIKAN").asString().equals("Y") && nson.get("GARANSI_PART_KM").asString().equals("Y") && nson.get("GARANSI_PART_BULAN").asString().equals("Y")) {
+            if (nson.get("GARANSI_LAYANAN").asString().equals("Y")){
                 cbClaim.setChecked(true);
                 cbClaim.setSelected(true);
                 cbClaim.setEnabled(true);
