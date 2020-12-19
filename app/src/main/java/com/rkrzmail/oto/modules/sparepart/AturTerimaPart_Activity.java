@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -27,6 +28,7 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.bengkel.AturRekening_Activity;
 import com.rkrzmail.srv.RupiahFormat;
 import com.rkrzmail.utils.Tools;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -54,6 +56,7 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
     private boolean flagValidation = false;
     private DialogInterface dialogInterface;
     private ArrayAdapter<String> spRekAdapter;
+    final long[] tglPesanTimeMilis = {0};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -367,10 +370,35 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tglPesan:
-                getDatePickerDialogTextView(getActivity(), tvTglPesan);
+                final Calendar cldr = Calendar.getInstance();
+                final int day = cldr.get(Calendar.DAY_OF_MONTH);
+                final int month = cldr.get(Calendar.MONTH);
+                final int year = cldr.get(Calendar.YEAR);
+                DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                        String newDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                        Date date = null;
+                        try {
+                            date = sdf.parse(newDate);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        String formattedTime = sdf.format(date);
+                        tglPesanTimeMilis[0] = date != null ? date.getTime() : 0;
+                        tvTglPesan.setText(formattedTime);
+                    }
+                }, year, month, day);
+                datePickerDialog.show(getFragmentManager(), "Datepickerdialog");
                 break;
             case R.id.tglTerima:
-                getDatePickerDialogTextView(getActivity(), tvTglTerima);
+                if(tglPesanTimeMilis[0] > 0){
+                    getDatePickerDialogTextView(getActivity(), tvTglTerima, parseTglPesan(tglPesanTimeMilis[0]));
+                }else{
+                    showWarning("Tanggal Pesan Belum di Input");
+                }
+
                 break;
             case R.id.jatuhTempo:
                 getDatePickerDialogTextView(getActivity(), tvTglJatuhTempo);
@@ -388,6 +416,12 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
                 }
                 break;
         }
+    }
+
+    private Calendar parseTglPesan(long tglPesan){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(tglPesan);
+        return calendar;
     }
 
     @SuppressLint("SetTextI18n")

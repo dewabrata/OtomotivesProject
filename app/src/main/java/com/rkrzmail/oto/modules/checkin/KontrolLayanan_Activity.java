@@ -60,7 +60,12 @@ public class KontrolLayanan_Activity extends AppActivity {
     private void initComponent() {
         initToolbar();
         rvKontrolLayanan = findViewById(R.id.recyclerView);
-        catchData("");
+        if(getIntent().hasExtra("NOPOL")){
+            catchData(getIntentStringExtra("NOPOL"));
+        }else{
+            catchData("");
+        }
+
         rvKontrolLayanan.setLayoutManager(new LinearLayoutManager(this));
         rvKontrolLayanan.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_kontrol_layanan) {
                     @Override

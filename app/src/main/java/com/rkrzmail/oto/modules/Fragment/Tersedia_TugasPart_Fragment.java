@@ -111,7 +111,7 @@ public class Tersedia_TugasPart_Fragment extends Fragment {
                 if (viewType == ITEM_VIEW_1) {
                     viewHolder.find(R.id.tv_nama_mekanik, TextView.class).setText(tersediaList.get(position).get("MEKANIK").asString());
                     viewHolder.find(R.id.tv_nama_pelanggan, TextView.class).setText(tersediaList.get(position).get("NAMA_PELANGGAN").asString());
-                    viewHolder.find(R.id.tv_nopol, TextView.class).setText(tersediaList.get(position).get("NOPOL").asString());
+                    viewHolder.find(R.id.tv_nopol, TextView.class).setText(((TugasPart_MainTab_Activity) Objects.requireNonNull(getActivity())).formatNopol(tersediaList.get(position).get("NOPOL").asString()));
                     viewHolder.find(R.id.tv_tgl_checkin, TextView.class).setText(tersediaList.get(position).get("TANGGAL_CHECKIN").asString());
                     viewHolder.find(R.id.cv_tugas_part_checkin).setOnClickListener(new View.OnClickListener() {
                         @Override

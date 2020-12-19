@@ -599,19 +599,20 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    Intent intent = new Intent(getActivity(), KontrolLayanan_Activity.class);
+                    intent.putExtra("NOPOL", nopol);
                     Log.d(TAG, "runUI: " + result.get("data"));
                     noKunciList.asArray().addAll(result.get("data").asArray());
                     if (isHplus) {
                         showSuccess("MOHON BAYARKAN UANG MUKA PELAYANAN " + jenisLayanan + ". RINCIAN BIAYA & UANG MUKA");
-                        showNotification(getActivity(), "Checkin Antrian ", formatNopol(nopol), "CHECKIN", new Intent(getActivity(), KontrolLayanan_Activity.class));
+                        showNotification(getActivity(), "Checkin Antrian ", formatNopol(nopol), "CHECKIN", intent);
                         finish();
                     } else {
                         if (status.equalsIgnoreCase("BATAL CHECKIN 4")) {
                             showSuccess("Layanan di Batalkan, Data Di masukkan Ke Daftar Kontrol Layanan");
                         } else {
-                            result = result.get("data").get(0);
-                            showDialogNoKunci(result.get("NO_KUNCI").asString());
-                            showNotification(getActivity(), "Checkin Antrian ", formatNopol(nopol), "CHECKIN", new Intent(getActivity(), KontrolLayanan_Activity.class));
+                            showDialogNoKunci(result.get("data").get("NO_KUNCI").asString());
+                            showNotification(getActivity(), "Checkin Antrian ", formatNopol(nopol), "CHECKIN", intent);
                             showSuccess("Data Pelanggan Berhasil Di masukkan Ke Daftar Kontrol Layanan");
                         }
                     }

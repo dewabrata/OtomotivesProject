@@ -124,9 +124,6 @@ public class AturCollection_Activity extends AppActivity {
                 } else if (find(R.id.et_jumlah_setor, EditText.class).getText().toString().isEmpty()) {
                     find(R.id.et_jumlah_setor, EditText.class).setError("Jumlah Setor Harus di Isi");
                     find(R.id.et_jumlah_setor, EditText.class).requestFocus();
-                } else if (find(R.id.et_penerima, EditText.class).getText().toString().isEmpty()) {
-                    find(R.id.et_penerima, EditText.class).setError("Penerima harus di Isi");
-                    find(R.id.et_penerima, EditText.class).requestFocus();
                 } else if (setor > terhutang) {
                     find(R.id.et_jumlah_setor, EditText.class).setError("Setoran Tidak Valid");
                     find(R.id.et_jumlah_setor, EditText.class).requestFocus();

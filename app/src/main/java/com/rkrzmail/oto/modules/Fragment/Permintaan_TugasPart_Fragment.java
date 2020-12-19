@@ -95,7 +95,7 @@ public class Permintaan_TugasPart_Fragment extends Fragment {
                 if(viewType == ITEM_VIEW_1){
                     viewHolder.find(R.id.tv_nama_mekanik, TextView.class).setText(permintaanList.get(position).get("MEKANIK").asString());
                     viewHolder.find(R.id.tv_nama_pelanggan, TextView.class).setText(permintaanList.get(position).get("NAMA_PELANGGAN").asString());
-                    viewHolder.find(R.id.tv_nopol, TextView.class).setText(permintaanList.get(position).get("NOPOL").asString());
+                    viewHolder.find(R.id.tv_nopol, TextView.class).setText(((TugasPart_MainTab_Activity) Objects.requireNonNull(getActivity())).formatNopol(permintaanList.get(position).get("NOPOL").asString()));
                     viewHolder.find(R.id.tv_tgl_checkin, TextView.class).setText(permintaanList.get(position).get("TANGGAL_CHECKIN").asString());
                     viewHolder.find(R.id.cv_tugas_part_checkin, CardView.class).setOnClickListener(new View.OnClickListener() {
                         @Override

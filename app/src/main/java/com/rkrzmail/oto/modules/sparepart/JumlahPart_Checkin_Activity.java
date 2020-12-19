@@ -94,7 +94,7 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
             isPartWajib = true;
             final Nson nson = Nson.readJson(getIntentStringExtra(PART_WAJIB));
             stock = nson.get("STOCK").asInteger();
-            garansiPart = nson.get("GARANSI_PART_BULAN").asString() + " " + nson.get("GARANSI_PART_KM").asString();
+            garansiPart = nson.get("GARANSI_PART_PABRIKAN").asString();
             hpp = nson.get("HPP").asString();
             idLokasiPart = nson.get("LOKASI_PART_ID").asString();
 
@@ -281,7 +281,7 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
     @SuppressLint("SetTextI18n")
     private void loadData(final String intentExtra, Intent intent) {
         final Nson nson = Nson.readJson(getIntentStringExtra(intent, intentExtra));
-        garansiPart = nson.get("GARANSI_PART_BULAN").asString() + ", " + nson.get("GARANSI_PART_KM").asString();
+        garansiPart = nson.get("GARANSI_PART_PABRIKAN").asString();;
         hpp = nson.get("HPP").asString();
         stock = nson.get("STOCK_RUANG_PART").asInteger();
         Log.d("parts__", "data : " + nson);

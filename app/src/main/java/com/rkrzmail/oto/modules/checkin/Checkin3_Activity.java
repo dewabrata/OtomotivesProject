@@ -372,10 +372,12 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    Intent intent = new Intent(getActivity(), KontrolLayanan_Activity.class);
+                    intent.putExtra("NOPOL", nopol);
                     if (status.equalsIgnoreCase("LAYANAN ESTIMASI")) {
                         result = result.get("data").get(0);
                         showSuccess("ESTIMASI BIAYA PELAYANAN  KENDARAAN " + nson.get("kendaraanPelanggan").asString());
-                        showNotification(getActivity(), "Checkin Layanan Estimasi", formatNopol(nopol), "CHECKIN", new Intent(getActivity(), KontrolLayanan_Activity.class));
+                        showNotification(getActivity(), "Checkin Layanan Estimasi", formatNopol(nopol), "CHECKIN", intent);
                         setResult(RESULT_OK);
                         finish();
                     } else if (status.equalsIgnoreCase("TUNGGU KONFIRMASI")) {
@@ -384,7 +386,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         finish();
                     } else if (status.equalsIgnoreCase("BATAL CHECKIN")) {
                         showSuccess("Layanan Di Batalkan Pelanggan, Data Di Masukkan Ke Kontrol Layanan");
-                        showNotification(getActivity(), "Checkin di Batalkan", formatNopol(nopol), "CHECKIN", new Intent(getActivity(), KontrolLayanan_Activity.class));
+                        showNotification(getActivity(), "Checkin di Batalkan", formatNopol(nopol), "CHECKIN", intent);
                         setResult(RESULT_OK);
                         finish();
                     } else {

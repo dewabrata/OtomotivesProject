@@ -110,6 +110,56 @@ public class AturPembayaran_Activity extends AppActivity {
         setSpinnerOffline(new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.tipe_pembayaran))), spTipePembayaran, "");
     }
 
+    @SuppressLint("SetTextI18n")
+    private void initData() {
+        Nson nson = Nson.readJson(getIntentStringExtra(DATA));
+        Log.d("test__", "initData: " + nson);
+        idCheckin = nson.get("CHECKIN_ID").asInteger();
+        idJualPart = nson.get("JUAL_PART_ID").asInteger();
+        if (nson.get("JENIS").asString().equals("CHECKIN")) {
+            isCheckin = true;
+            jenis = "CHECKIN";
+            find(R.id.ly_dp).setVisibility(View.GONE);
+        } else if (nson.get("JENIS").asString().equals("DP")) {
+            Tools.setViewAndChildrenEnabled(find(R.id.tl_reminder, TableLayout.class), false);
+            isDp = true;
+            jenis = "DP";
+
+            find(R.id.cb_checkout, CheckBox.class).setChecked(false);
+            find(R.id.et_percent_dp, EditText.class).setText(nson.get("DP_PERCENT").asString() + "%");
+            find(R.id.et_rp_dp, EditText.class).setText(RP + formatRp(nson.get("TOTAL_DP").asString()));
+            find(R.id.et_sisa_dp, EditText.class).setText(RP + formatRp(nson.get("SISA_DP").asString()));
+            find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(nson.get("TOTAL_DP").asString()));
+        } else {
+            Tools.setViewAndChildrenEnabled(find(R.id.tl_reminder, TableLayout.class), false);
+            isJualPart = true;
+            jenis = "JUAL PART";
+            find(R.id.cb_checkout, CheckBox.class).setChecked(false);
+            find(R.id.ly_dp).setVisibility(View.GONE);
+        }
+
+        if (nson.get("PEMILIK").asString().equals("Y")) {
+            find(R.id.cb_pemilik, CheckBox.class).setChecked(true);
+        }
+
+        mdrOfUs = nson.get("MDR_OFF_US").asDouble();
+        mdrOnUs = nson.get("MDR_ON_US").asDouble();
+        mdrKreditCard = nson.get("MDR_KREDIT_CARD").asDouble();
+        totalBiaya = nson.get("TOTAL").asInteger();
+
+        if (nson.get("PKP").asString().equals("Y") && !isDp) {
+            totalPpn = (int) (ppn * totalBiaya);
+            grandTotal = totalPpn + totalBiaya;
+            isPpn = true;
+            find(R.id.et_ppn, EditText.class).setText(RP + formatRp(String.valueOf(totalPpn)));
+        }else{
+            grandTotal = totalBiaya;
+        }
+
+        find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));
+    }
+
+
     public void setSpRek() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
@@ -164,54 +214,6 @@ public class AturPembayaran_Activity extends AppActivity {
 
             }
         });
-    }
-
-    @SuppressLint("SetTextI18n")
-    private void initData() {
-        Nson nson = Nson.readJson(getIntentStringExtra(DATA));
-        Log.d("test__", "initData: " + nson);
-        idCheckin = nson.get("CHECKIN_ID").asInteger();
-        idJualPart = nson.get("JUAL_PART_ID").asInteger();
-        if (nson.get("JENIS").asString().equals("CHECKIN")) {
-            isCheckin = true;
-            jenis = "CHECKIN";
-            find(R.id.ly_dp).setVisibility(View.GONE);
-        } else if (nson.get("JENIS").asString().equals("DP")) {
-            Tools.setViewAndChildrenEnabled(find(R.id.tl_reminder, TableLayout.class), false);
-            isDp = true;
-            jenis = "DP";
-
-            find(R.id.cb_checkout, CheckBox.class).setChecked(false);
-            find(R.id.et_percent_dp, EditText.class).setText(nson.get("DP_PERCENT").asString() + "%");
-            find(R.id.et_rp_dp, EditText.class).setText(RP + formatRp(nson.get("TOTAL_DP").asString()));
-            find(R.id.et_sisa_dp, EditText.class).setText(RP + formatRp(nson.get("SISA_DP").asString()));
-            find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(nson.get("TOTAL_DP").asString()));
-        } else {
-            Tools.setViewAndChildrenEnabled(find(R.id.tl_reminder, TableLayout.class), false);
-            isJualPart = true;
-            jenis = "JUAL PART";
-            find(R.id.cb_checkout, CheckBox.class).setChecked(false);
-            find(R.id.ly_dp).setVisibility(View.GONE);
-        }
-
-        if (nson.get("PEMILIK").asString().equals("Y")) {
-            find(R.id.cb_pemilik, CheckBox.class).setChecked(true);
-        }
-
-        mdrOfUs = nson.get("MDR_OFF_US").asDouble();
-        mdrOnUs = nson.get("MDR_ON_US").asDouble();
-        mdrKreditCard = nson.get("MDR_KREDIT_CARD").asDouble();
-        totalBiaya = nson.get("TOTAL").asInteger();
-
-        if (nson.get("PKP").asString().equals("Y") && !isDp) {
-            totalPpn = (int) (ppn * totalBiaya);
-            grandTotal = totalPpn + totalBiaya;
-            isPpn = true;
-            find(R.id.et_ppn, EditText.class).setText(RP + formatRp(String.valueOf(totalPpn)));
-            find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));
-        }else{
-            grandTotal = totalBiaya;
-        }
     }
 
     private void initListener() {
