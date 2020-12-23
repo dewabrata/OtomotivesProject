@@ -452,6 +452,35 @@ public class Tools {
         }
     }
 
+    public  static String getDayOfWeek(int dy, Boolean isDefault ) {
+        Calendar c = Calendar.getInstance();
+        int day = 0;
+        if(isDefault){
+            day = c.get(Calendar.DAY_OF_WEEK);
+        }else{
+            day=dy;
+        }
+
+        switch (day) {
+            case Calendar.SUNDAY:
+                return "Minggu";
+            case Calendar.MONDAY:
+                return "Senin";
+            case Calendar.TUESDAY:
+                return "Selesa";
+            case Calendar.WEDNESDAY:
+                return "Rabu";
+            case Calendar.THURSDAY:
+                return "Kamis";
+            case Calendar.FRIDAY:
+                return "Jumat";
+            case Calendar.SATURDAY:
+                return "Sabtu";
+            default:
+                return "";
+        }
+    }
+
     public static String formatPercent(String number) {
         Locale localeID = new Locale("in", "ID");
         NumberFormat formatRupiah = NumberFormat.getPercentInstance(localeID);

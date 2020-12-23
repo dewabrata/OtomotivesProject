@@ -93,6 +93,25 @@
         <item>PEREMPUAN</item>
     </string-array>
 
+    <string-array name="atur_minggu">
+        <item>--PILIH--</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+    <string-array name="atur_status">
+        <item>--PILIH--</item>
+        <item>KERJA</item>
+        <item>LIBUR</item>
+        <item>CUTI</item>
+        <item>SAKIT</item>
+        <item>IZIN</item>
+        <item>IZIN TERLAMBAT</item>
+
+    </string-array>
+
     <string-array name="posisi_karyawan">
         <item>MANAGEMENT</item>
         <item>KEPALA BENGKEL</item>
@@ -185,6 +204,7 @@
     </string-array>
 
     <string-array name="hari_tenda">
+        <item>--PILIH--</item>
         <item>SENIN</item>
         <item>SELASA</item>
         <item>RABU</item>

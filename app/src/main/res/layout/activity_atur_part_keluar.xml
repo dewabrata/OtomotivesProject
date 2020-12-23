@@ -96,7 +96,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="6"
                         android:background="@drawable/background_edittext"
-                        android:checkedButton="@id/rbOn"
+                        android:checkedButton="@id/rb_tenda"
                         android:gravity="center"
                         android:orientation="horizontal"
                         android:padding="@dimen/paddingMedium">
