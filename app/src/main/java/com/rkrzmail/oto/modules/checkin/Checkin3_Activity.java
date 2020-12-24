@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -25,6 +26,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -86,35 +88,40 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
     RecyclerView rvPartWajib;
     View dialogView;
 
-    private Nson layananArray = Nson.newArray();
-    private Nson dataLayananList = Nson.newArray();
-    private Nson partList = Nson.newArray();
-    private Nson jasaList = Nson.newArray();
-    private Nson lokasiLayananList = Nson.newArray();
-    private Nson partWajibList = Nson.newArray();
-    private Nson jasaGaransiList = Nson.newArray();
-    private Nson daftarPartDummy = Nson.newArray();
-    private Nson varianList = Nson.newArray();
-    private Nson masterPartList = Nson.newArray();
-    private Nson partIdList = Nson.newArray();
+    private final Nson layananAFS = Nson.newArray();
+    private final Nson layananArray = Nson.newArray();
+    private final Nson dataLayananList = Nson.newArray();
+    private final Nson partList = Nson.newArray();
+    private final Nson jasaList = Nson.newArray();
+    private final Nson lokasiLayananList = Nson.newArray();
+    private final Nson partWajibList = Nson.newArray();
+    private final Nson jasaGaransiList = Nson.newArray();
+    private final Nson daftarPartDummy = Nson.newArray();
+    private final Nson varianList = Nson.newArray();
+    private final Nson masterPartList = Nson.newArray();
+    private final Nson partIdList = Nson.newArray();
 
     private String namaLayanan, jenisLayanan = "", waktuMekanik = "", waktuInspeksi = "", waktuLayanan = "";
-    private String jenisAntrian = "", isOutsource = "", noAntrian = "", discFasilitas = "", discLayanan = "";
+    private final String jenisAntrian = "";
+    private String isOutsource = "";
+    private final String noAntrian = "";
+    private String discFasilitas = "";
+    private String discLayanan = "";
     private String biayaLayanan = "", biayaPergantian = "";
-    private int totalHarga = 0,
-            totalPartJasa = 0,
-            batasanKm = 0,
-            batasanBulan = 0,
-            jumlahPartWajib = 0,
-            feeNonPaket = 0;
+    private int totalHarga = 0;
+    private final int totalPartJasa = 0;
+    private int batasanKm = 0;
+    private int batasanBulan = 0;
+    private int jumlahPartWajib = 0;
+    private int feeNonPaket = 0;
     private String layananId = "";
-    private int idAntrian = 0;
+    private final int idAntrian = 0;
     private int waktuPesan = 0;
     private int totalHargaPartKosong = 0;
     private int hargaPartLayanan = 0; // afs, recall, otomotives
     private double sisaDp = 0;
-    private List<Integer> jumlahList = new ArrayList<>();
-    private Tools.TimePart dummyTime = Tools.TimePart.parse("00:00:00");
+    private final List<Integer> jumlahList = new ArrayList<>();
+    private final Tools.TimePart dummyTime = Tools.TimePart.parse("00:00:00");
 
     private boolean flagPartWajib = false,
             flagMasterPart = false,
@@ -168,7 +175,6 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
         rvPart = findViewById(R.id.recyclerView_part_checkin3);
         rvJasaLain = findViewById(R.id.recyclerView_jasalain_checkin3);
 
-        viewLayananBengkel();
         setSpNamaLayanan();
         componentValidation();
         initRecylerViewPart();
@@ -439,11 +445,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
         find(R.id.cb_konfirmBiaya_checkin3, CheckBox.class).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (buttonView.isChecked()) {
-                    find(R.id.cb_estimasi_checkin3, CheckBox.class).setEnabled(false);
-                } else {
-                    find(R.id.cb_estimasi_checkin3, CheckBox.class).setEnabled(true);
-                }
+                find(R.id.cb_estimasi_checkin3, CheckBox.class).setEnabled(!buttonView.isChecked());
             }
         });
     }
@@ -456,17 +458,16 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                Nson readJson = Nson.readJson(getIntentStringExtra(DATA));
 
                 args.put("action", "view");
                 args.put("layanan", "CHECKIN");
-                args.put("spec", "Bengkel");
+                args.put("spec", "BENGKEL");
                 args.put("status", "AKTIF");
                 args.put("modelKendaraan", data.get("model").asString());
-                args.put("varian", data.get("varian").asString());
+                args.put("varianKendaraan", data.get("varian").asString());
                 args.put("jenisKendaraan", data.get("jenisKendaraan").asString());
                 args.put("kendaraan", data.get("kendaraan").asString());
-                args.put("pekerjaaan", readJson.get("pekerjaan").asString());
+                args.put("pekerjaaan", data.get("pekerjaan").asString());
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_LAYANAN), args));
             }
@@ -478,10 +479,13 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                     dataLayananList.asArray().addAll(result.asArray());
                     Log.d(TAG, "List Layanan Data : " + dataLayananList);
                     layananArray.add("--PILIH--");
-                    for (int i = 0; i < result.size(); i++) {
+                    for (int i = 0; i < dataLayananList.size(); i++) {
                         layananArray.add(result.get(i).get("NAMA_LAYANAN").asString());
                     }
-                    layananArray.add("GARANSI LAYANAN");
+
+                    if(data.get("availHistory").asBoolean()){
+                        layananArray.add("GARANSI LAYANAN");
+                    }
                     layananArray.add("PERAWATAN LAINNYA");
 
                     Log.d(TAG, "List Nama Layanan : " + layananArray);
@@ -500,6 +504,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String item = parent.getSelectedItem().toString();
+
                 if (item.equalsIgnoreCase("--PILIH--")) {
                     find(R.id.cardView_namaLayanan, CardView.class).setVisibility(View.GONE);
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_btnPart_checkin3, LinearLayout.class), false);
@@ -510,8 +515,13 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                     find(R.id.btn_lanjut_checkin3, Button.class).setEnabled(true);
                 }
                 if(item.equals("GARANSI LAYANAN")){
-
+                    if(data.get("isExpiredKm").asBoolean() || data.get("isExpiredHari").asBoolean()){
+                        showWarning("GARANSI LAYANAN EXPIRED, MAX KM : "
+                                + data.get("expiredKmVal").asString() + ", MAX BULAN : " + data.get("expiredHariVal").asString(), Toast.LENGTH_LONG);
+                        spLayanan.setSelection(0);
+                    }
                 }
+
                 for (int i = 0; i < dataLayananList.size(); i++) {
                     partWajibList.asArray().clear();
                     masterPartList.asArray().clear();
@@ -570,6 +580,9 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         batasanKm = dataLayananList.get(i).get("BATASAN_NON_PAKET_KM").asInteger();
                         batasanBulan = dataLayananList.get(i).get("BATASAN_NON_PAKET_BULAN").asInteger();
                         break;
+                    }else{
+                        find(R.id.tv_waktu_layanan, TextView.class).setText("Total Waktu Layanan : " + "00:00:00");
+                        find(R.id.tv_namaLayanan_checkin, TextView.class).setText(item);
                     }
                 }
 
@@ -607,30 +620,28 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
         });
     }
 
-    private void viewLayananBengkel() {
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
+    private boolean parseTanggalBeliKendaraan(Nson tanggalBeli){
+        if(tanggalBeli.asString().isEmpty())
+            return false;
 
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "view");
-                args.put("spec", "Bengkel");
-                args.put("layanan", "NAMA LAYANAN");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_LAYANAN), args));
-            }
+        long current = 0;
+        long tanggalBeliTimeMilis = 0;
 
-            @Override
-            public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    result = result.get("data");
-                    for (int i = 0; i < result.size(); i++) {
-                        varianList.add(result.get(i).get("VARIAN").asString());
-                    }
-                    Log.d(TAG, "VARIANLIST : " + varianList);
-                }
+        try {
+            int minAFS = Integer.parseInt(currentDateTime("yyyy"));
+            @SuppressLint("SimpleDateFormat") Date now = new SimpleDateFormat("yyyy").parse(String.valueOf(minAFS));
+            current = now.getTime();
+            String subsTahun = tanggalBeli.asString().substring(0, 4);
+            @SuppressLint("SimpleDateFormat") Date tglBeli = new SimpleDateFormat("yyyy").parse(subsTahun);
+            tanggalBeliTimeMilis = tglBeli.getTime();
+
+            if(tanggalBeliTimeMilis >= current || tanggalBeliTimeMilis == current){
+                return true;
             }
-        });
+        } catch (ParseException e) {
+            Log.d(TAG, "Exception waktu pesan : " + e.getMessage());
+        }
+        return false;
     }
 
     @SuppressLint("InflateParams")

@@ -1,10 +1,6 @@
 package com.rkrzmail.oto.modules.checkin;
 
 import android.annotation.SuppressLint;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -36,7 +31,6 @@ import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
-import com.rkrzmail.oto.MainActivity;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.BarcodeActivity;
 import com.rkrzmail.srv.NikitaAutoComplete;
@@ -52,6 +46,7 @@ import static com.rkrzmail.utils.APIUrls.SET_CHECKIN;
 import static com.rkrzmail.utils.APIUrls.VIEW_JENIS_KENDARAAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_NOMOR_POLISI;
 import static com.rkrzmail.utils.APIUrls.VIEW_PELANGGAN;
+import static com.rkrzmail.utils.APIUrls.VIEW_SUGGESTION;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
@@ -62,8 +57,8 @@ import static com.rkrzmail.utils.ConstUtils.REQUEST_NEW_CS;
 public class Checkin1_Activity extends AppActivity implements View.OnClickListener {
 
     private static final String TAG = "CHECKIN1___";
-    private NikitaAutoComplete etJenisKendaraan, etNopol, etNoPonsel, etNamaPelanggan;
-    private EditText etKeluhan, etKm;
+    private NikitaAutoComplete etJenisKendaraan, etNopol, etNoPonsel, etNamaPelanggan, etKeluhan;
+    private EditText etKm;
     private Spinner spPekerjaan;
     private String noHp = "",
             tahunProduksi = "",
@@ -80,9 +75,13 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             jenisKendaraan = "",
             tglBeli = "",
             kodeTipe = "";
+    private int expiredGaransiHari = 0, expiredGaransiKm = 0;
+    private String isGaransiHari = "";
     private int kendaraanId = 0;
-    private Nson nopolList = Nson.newArray(), keluhanList = Nson.newArray();
+    private Nson keluhanList = Nson.newArray(), historyList = Nson.newArray();
     private boolean keyDel = false, isNoHp = false, isNamaValid = false, isRemoved;
+    private boolean availHistory = false;
+    private String tanggalBeliKendaraan = "";
     private RecyclerView rvKeluhan;
 
     @Override
@@ -97,35 +96,6 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Check-In");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
-    public void showNotification(Context context, String title, String body, Intent intent) {
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        int notificationId = 1;
-        String channelId = "channel-01";
-        String channelName = "Channel Name";
-        @SuppressLint("InlinedApi") int importance = NotificationManager.IMPORTANCE_HIGH;
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationChannel mChannel = new NotificationChannel(
-                    channelId, channelName, importance);
-            notificationManager.createNotificationChannel(mChannel);
-        }
-
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, channelId)
-                .setSmallIcon(R.drawable.speed)
-                .setContentTitle(title)
-                .setContentText(body);
-
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        stackBuilder.addNextIntent(intent);
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(
-                0,
-                PendingIntent.FLAG_UPDATE_CURRENT
-        );
-        mBuilder.setContentIntent(resultPendingIntent);
-        notificationManager.notify(notificationId, mBuilder.build());
     }
 
     private void initComponent() {
@@ -148,11 +118,12 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             }
         });
 
-        getHistoryNopol();
+
         setSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN");
         initAutoCompleteNopol();
         initAutoCompleteNamaPelanggan();
         initAutoCompleteKendaraan();
+        initAutoCompleteKeluhan();
         initOnTextChange();
 
         find(R.id.btn_lanjut_checkin1).setOnClickListener(this);
@@ -199,23 +170,34 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
         }
     }
 
-    private void getHistoryNopol() {
+    private void getHistoryCheckin(final String nopol) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("nopol", etNopol.getText().toString().replace(" ", "").toUpperCase());
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_NOMOR_POLISI), args));
+                args.put("action", "HISTORY");
+                args.put("nopol", nopol);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
             }
 
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     result = result.get("data");
-                    for (int i = 0; i < result.size(); i++) {
-                        nopolList.add(result.get(i).get("NO_POLISI").asString());
+                    if (result.asArray().size() > 0) {
+                        find(R.id.btn_history_checkin1).setEnabled(true);
+                        historyList.asArray().addAll(result.asArray());
+                        for (int i = 0; i < result.size(); i++) {
+                            if (result.get(i).get("GARANSI_LAYANAN_BULAN").asString().equals("VALID")) {
+                                isGaransiHari = result.get(i).get("GARANSI_LAYANAN_HARI").asString();
+                                expiredGaransiHari = !result.get(i).get("EXPIRATION_GARANSI_HARI").asString().isEmpty() ? result.get(i).get("EXPIRATION_GARANSI_HARI").asInteger() : 0;
+                                expiredGaransiKm = !result.get(i).get("EXPIRATION_GARANSI_HARI").asString().isEmpty() ? result.get(i).get("EXPIRATION_GARANSI_KM").asInteger() : 0;
+                                availHistory = true;
+                                break;
+                            }
+                        }
                     }
                 } else {
                     showInfo(ERROR_INFO);
@@ -351,7 +333,6 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
 
                 noHp = n.get("NO_PONSEL").asString();
                 pekerjaan = n.get("PEKERJAAN").asString();
-                isNoHp = true;
 
                 String nomor = n.get("NO_PONSEL").asString();
                 if (nomor.length() > 4) {
@@ -404,14 +385,16 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
 
-                isNoHp = true;
-
+                tanggalBeliKendaraan = n.get("TANGGAL_BELI").asString();
                 merkKendaraan = n.get("MERK").asString();
                 kendaraan = n.get("TYPE").asString();
                 varianKendaraan = n.get("VARIAN").asString();
                 modelKendaraan = n.get("MODEL").asString();
                 kendaraanId = n.get("KENDARAAN_ID").asInteger();
                 noHp = n.get("NO_PONSEL").asString();
+                if (!noHp.isEmpty()) {
+                    isNoHp = true;
+                }
                 pekerjaan = n.get("PEKERJAAN").asString();
                 noRangka = n.get("NO_RANGKA").asString();
                 noMesin = n.get("NO_MESIN").asString();
@@ -429,7 +412,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 etNoPonsel.setText("XXXXXXXX" + nomor);
                 etNamaPelanggan.setText(n.get("NAMA_PELANGGAN").asString());
                 etJenisKendaraan.setText(n.get("JENIS_KENDARAAN").asString());
-                //etKm.setText(n.get("KM").asString());
+                getHistoryCheckin(n.get("NO_POLISI").asString());
 
                 setSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN", pekerjaan);
                 if (n.get("PEMILIK").asString().equalsIgnoreCase("Y")) {
@@ -438,10 +421,10 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
 
                 etJenisKendaraan.setEnabled(false);
                 find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
-                find(R.id.btn_history_checkin1).setEnabled(true);
                 find(R.id.img_clear, ImageButton.class).setVisibility(View.GONE);
             }
         });
+
     }
 
     private void initAutoCompleteKendaraan() {
@@ -501,6 +484,44 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 etJenisKendaraan.setTag(String.valueOf(adapterView.getItemAtPosition(position)));
             }
         });
+    }
+
+    private void initAutoCompleteKeluhan() {
+        etKeluhan.setThreshold(0);
+        etKeluhan.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
+            @Override
+            public Nson onFindNson(Context context, String bookTitle) {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "KELUHAN");
+                args.put("keluhan", bookTitle);
+                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SUGGESTION), args));
+                return result.get("data");
+            }
+
+            @SuppressLint("SetTextI18n")
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                if (convertView == null) {
+                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    convertView = inflater.inflate(R.layout.item_suggestion, parent, false);
+                }
+
+                findView(convertView, R.id.title, TextView.class).setText(getItem(position).get("KELUHAN").asString());
+                return convertView;
+            }
+        });
+
+        etKeluhan.setLoadingIndicator((android.widget.ProgressBar) findViewById(R.id.pb_keluhan));
+        etKeluhan.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
+                etKeluhan.setText(n.get("KELUHAN").asString());
+                Tools.hideKeyboard(getActivity());
+            }
+        });
+
     }
 
     private void setSelanjutnya() {
@@ -566,6 +587,15 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     nson.set("varian", varianKendaraan);
                     nson.set("tahunProduksi", tahunProduksi);
                     nson.set("km", etKm.getText().toString());
+
+                    if (Integer.parseInt(etKm.getText().toString()) < expiredGaransiKm) {
+                        nson.set("isExpiredKm", true);
+                        nson.set("expiredKmVal", expiredGaransiKm);
+                    }
+                    if (isGaransiHari.equals("VALID")) {
+                        nson.set("isExpiredHari", true);
+                        nson.set("expiredHariVal", expiredGaransiHari);
+                    }
                     nson.set("jenisKendaraan", jenisKendaraan);
                     nson.set("noRangka", noRangka);
                     nson.set("noMesin", noMesin);
@@ -575,6 +605,10 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     nson.set("noPonsel", isNoHp ? noHp : formatOnlyNumber(etNoPonsel.getText().toString()));
                     nson.set("nopol", nopol);
                     nson.set("kendaraanPelanggan", etJenisKendaraan.getText().toString());
+                    nson.set("availHistory", availHistory);
+                    if (!tanggalBeliKendaraan.isEmpty()) {
+                        nson.set("tanggalBeli", tanggalBeliKendaraan);
+                    }
 
                     Intent intent;
                     if (!noRangka.isEmpty() && !noMesin.isEmpty()) {
@@ -656,7 +690,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             Intent i = new Intent(getActivity(), Checkin3_Activity.class);
             i.putExtra(DATA, Nson.readJson(getIntentStringExtra(data, DATA)).toJson());
             startActivityForResult(i, REQUEST_CHECKIN);
-        }else{
+        } else {
             finish();
         }
     }
@@ -691,7 +725,9 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 }
                 break;
             case R.id.btn_history_checkin1:
-                startActivityForResult(new Intent(getActivity(), HistoryBookingCheckin_Activity.class), REQUEST_HISTORY);
+                Intent i = new Intent(getActivity(), HistoryBookingCheckin_Activity.class);
+                i.putExtra(DATA, historyList.toJson());
+                startActivityForResult(i, REQUEST_HISTORY);
                 break;
         }
     }

@@ -44,6 +44,7 @@ import java.util.Objects;
 import static com.rkrzmail.utils.APIUrls.ATUR_KONTROL_LAYANAN;
 import static com.rkrzmail.utils.APIUrls.SET_ANTRIAN;
 import static com.rkrzmail.utils.APIUrls.SET_CHECKIN;
+import static com.rkrzmail.utils.APIUrls.VIEW_KONTROL_LAYANAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_MEKANIK;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
 import static com.rkrzmail.utils.ConstUtils.DATA;
@@ -225,8 +226,14 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                     viewHolder.find(R.id.tv_no, TextView.class).setText(detailCheckinList.get(position).get("NO").asString() + ". ");
                     viewHolder.find(R.id.tv_hargaNet_booking3_checkin3, TextView.class).setText(
                             RP + formatRp(detailCheckinList.get(position).get("HARGA_PART").asString()));
-                    viewHolder.find(R.id.tv_jasaNet_booking3_checkin3, TextView.class).setText(
-                            RP + formatRp(detailCheckinList.get(position).get("HARGA_JASA").asString()));
+                    if(!detailCheckinList.get(position).get("JASA_EXTERNAL").asString().isEmpty()){
+                        viewHolder.find(R.id.tv_jasaNet_booking3_checkin3, TextView.class).setText(
+                                RP + formatRp(detailCheckinList.get(position).get("JASA_EXTERNAL").asString()));
+                    }else{
+                        viewHolder.find(R.id.tv_jasaNet_booking3_checkin3, TextView.class).setText(
+                                RP + formatRp(detailCheckinList.get(position).get("HARGA_JASA").asString()));
+                    }
+
                     if (isKurangi) {
                         viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.VISIBLE);
                         viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
@@ -305,7 +312,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 args.put("action", "view");
                 args.put("detail", "TRUE");
                 args.put("id", id.get(ID).asString());
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_KONTROL_LAYANAN), args));
             }
 
             @Override

@@ -185,6 +185,7 @@ public class Status_TugasPart_Activity extends AppActivity {
                 if (isTersedia) {
                     args.put("detail", "TERSEDIA");
                 }
+                args.put("checkinId", idCheckin);
                 args.put("mekanik", etMekanik.getText().toString());
                 args.put("nopol", nopol);
                 args.put("namaPelanggan", etPelanggan.getText().toString());

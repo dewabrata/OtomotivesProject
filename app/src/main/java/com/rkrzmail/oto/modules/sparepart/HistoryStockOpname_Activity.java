@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -89,6 +90,12 @@ public class HistoryStockOpname_Activity extends AppActivity {
         }));
 
         reload("");
+        find(R.id.swiperefresh, SwipeRefreshLayout.class).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                reload("");
+            }
+        });
     }
 
     private void reload(final String cari) {
@@ -97,6 +104,7 @@ public class HistoryStockOpname_Activity extends AppActivity {
 
             @Override
             public void run() {
+                swipeProgress(true);
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 args.put("search", cari);
@@ -105,6 +113,7 @@ public class HistoryStockOpname_Activity extends AppActivity {
 
             @Override
             public void runUI() {
+                swipeProgress(false);
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());

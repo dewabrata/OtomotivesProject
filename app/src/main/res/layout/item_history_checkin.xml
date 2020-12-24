@@ -27,16 +27,37 @@
                 android:id="@+id/tv_tgl_historyCheckin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="DD/MM/YYYY"
+                android:text="TANGGAL"
                 android:layout_gravity="start"
                 android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Menu"/>
 
+            <TextView
+                android:id="@+id/tv_namaLayanan_historyCheckin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nama Layanan"
+                android:layout_gravity="end"
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+        </TableRow>
+
+        <TableRow android:layout_marginTop="5dp">
 
             <TextView
                 android:id="@+id/tv_km_historyCheckin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="KM"
+                android:textSize="12sp"
+                android:layout_gravity="start"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+            <TextView
+                android:id="@+id/tv_total_biaya"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total Biaya"
                 android:textSize="12sp"
                 android:layout_gravity="end"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
@@ -47,25 +68,11 @@
         <TableRow android:layout_marginTop="5dp">
 
             <TextView
-                android:id="@+id/tv_namaLayanan_historyCheckin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="NAMA LAYANAN"
-                android:layout_gravity="start"
-                android:textSize="12sp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
-
-
-        </TableRow>
-
-        <TableRow android:layout_marginTop="5dp">
-
-            <TextView
-                android:id="@+id/tv_namaBengkel_historyCheckin"
+                android:id="@+id/tv_pelanggan"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="NAMA BENGKEL / BENGKEL LAIN"
+                android:text="Pelanggan"
                 android:textSize="12sp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 

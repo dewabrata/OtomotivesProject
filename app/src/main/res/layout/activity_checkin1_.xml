@@ -25,7 +25,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="10dp"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -35,25 +35,43 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp">
 
-                <android.support.design.widget.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                <FrameLayout
                     android:layout_width="0dp"
-                    android:layout_weight="2"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp">
+                    android:layout_weight="2">
 
-                    <EditText
-                        android:id="@+id/et_keluhan_checkin1"
+                    <android.support.design.widget.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="top|left"
-                        android:hint="KELUHAN"
-                        android:inputType="textCapCharacters"
-                        android:maxLines="1"
-                        android:singleLine="true"
-                        android:textSize="14sp" />
+                        android:layout_marginEnd="5dp">
 
-                </android.support.design.widget.TextInputLayout>
+                        <com.rkrzmail.srv.NikitaAutoComplete
+                            android:id="@+id/et_keluhan_checkin1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="top|left"
+                            android:hint="KELUHAN"
+                            android:inputType="textCapCharacters"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:padding="15dp"
+                            android:textSize="14sp" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <ProgressBar
+                        android:id="@+id/pb_keluhan"
+                        style="?android:attr/progressBarStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|end"
+                        android:layout_marginEnd="12dp"
+                        tools:ignore="RtlHardcoded"
+                        android:visibility="gone"/>
+
+                </FrameLayout>
+
 
                 <ImageButton
                     android:id="@+id/fab_tambah_keluhan"
@@ -87,7 +105,7 @@
                         android:maxLength="10"
                         android:textSize="14sp"
                         android:padding="15dp"
-                        android:singleLine="true"/>
+                        android:singleLine="true" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -113,7 +131,7 @@
                 android:background="@drawable/btn_rounded_accent"
                 android:enabled="false"
                 android:text="History"
-                android:textColor="@color/white_transparency" />
+                android:textColor="@android:color/white" />
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -136,7 +154,7 @@
                         android:singleLine="true"
                         android:maxLength="35"
                         android:textSize="14sp"
-                        android:padding="15dp"/>
+                        android:padding="15dp" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -171,7 +189,7 @@
                         android:inputType="textCapCharacters|textPersonName"
                         android:maxLength="30"
                         android:textSize="14sp"
-                        android:padding="15dp"/>
+                        android:padding="15dp" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -190,7 +208,7 @@
                         android:background="@android:color/transparent"
                         android:tint="@color/grey_80"
                         app:srcCompat="@drawable/ic_close"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
 
                     <ProgressBar
                         android:id="@+id/pb_namaPelanggan"
@@ -199,7 +217,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical|right"
                         tools:ignore="RtlHardcoded"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
 
                 </LinearLayout>
 
@@ -232,7 +250,7 @@
                             android:inputType="phone"
                             android:maxLength="19"
                             android:textSize="14sp"
-                            android:padding="15dp"/>
+                            android:padding="15dp" />
 
                     </android.support.design.widget.TextInputLayout>
 
@@ -313,7 +331,7 @@
                     android:inputType="number"
                     android:maxLength="10"
                     android:textSize="14sp"
-                    android:padding="15dp"/>
+                    android:padding="15dp" />
 
 
             </android.support.design.widget.TextInputLayout>

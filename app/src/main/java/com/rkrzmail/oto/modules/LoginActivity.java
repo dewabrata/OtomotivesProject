@@ -125,14 +125,10 @@ public class LoginActivity extends AppActivity {
                     // find(R.id.password, EditText.class).setText("123456");
 
                     Intent intent = new Intent(getActivity(), Otp_Activity.class);
-                    intent.putExtra("user",  formatPhone(  find(R.id.user, EditText.class).getText().toString().replaceAll("[^0-9]+", "")));
+                    intent.putExtra("user",  formatPhone(find(R.id.user, EditText.class).getText().toString()));
                     startActivity(intent);
                 } else {
-                    if(result.get("message").asString().contains("Gagal")){
-                        showError(result.get("message").asString());
-                        return;
-                    }
-                    showError("Gagal Request OTP");
+                    showError(result.get("message").asString());
                 }
             }
         });

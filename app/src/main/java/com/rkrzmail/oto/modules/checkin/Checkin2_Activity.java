@@ -54,6 +54,7 @@ public class Checkin2_Activity extends AppActivity {
     private boolean isKonfirmasi = false;
     private String merkKendaraan = "";
     private String noHp = "";
+    private String tanggalBeliKendaraam = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -294,6 +295,9 @@ public class Checkin2_Activity extends AppActivity {
                     readCheckin.set("NO_RANGKA", noRangka);
                     readCheckin.set("NO_MESIN", noMesin);
                     readCheckin.set("CHECKIN_ID", readCheckin.get("CHECKIN_ID").asString());
+                    if(!readCheckin.containsKey("tanggalBeli")){
+                        readCheckin.set("tanggalBeli", tvTgl.getText().toString());
+                    }
 
                     Intent intent = new Intent();
                     intent.putExtra(DATA, readCheckin.toJson());

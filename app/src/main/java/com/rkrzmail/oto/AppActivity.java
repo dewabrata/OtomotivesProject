@@ -87,6 +87,7 @@ import java.util.Objects;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static com.rkrzmail.utils.APIUrls.VIEW_LAYANAN;
 import static com.rkrzmail.utils.ConstUtils.PERMISSION_REQUEST_CODE;
 
 
@@ -750,6 +751,10 @@ public class AppActivity extends AppCompatActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put(params, arguments);
+                if(api.equals(VIEW_LAYANAN)){
+                    args.put("spec", "OTOMOTIVES");
+                    args.put("layanan", "BENGKEL");
+                }
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(api), args));
             }
 

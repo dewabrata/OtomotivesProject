@@ -363,7 +363,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             find(R.id.tv_nama_pelanggan, TextView.class).setText(result.get(i).get("NAMA_PELANGGAN").asString());
             find(R.id.tv_no_ponsel, TextView.class).setText((result.get(i).get("NO_PONSEL").asString()));
             find(R.id.tv_layanan, TextView.class).setText((result.get(i).get("LAYANAN").asString()));
-            find(R.id.tv_nopol, TextView.class).setText((result.get(i).get("NOPOL").asString()));
+            find(R.id.tv_nopol, TextView.class).setText(formatNopol(result.get(i).get("NOPOL").asString()));
             find(R.id.tv_frek, TextView.class).setText((result.get(i).get("FREKWENSI").asString()));
         }
 
@@ -470,15 +470,13 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             find(R.id.tr_disc_part).setVisibility(View.GONE);
         }
 
-        int totalKeseluruhan = (int) (totalPart + discPart);
+        total1 = (int) (totalPart + discPart);
 
         find(R.id.tv_harga_part_jual_part, TextView.class).setText(RP + formatRp(String.valueOf(totalPart)));
         find(R.id.tv_harga_disc_jual_part, TextView.class).setText(RP + formatRp(String.valueOf(discPart)));
-        find(R.id.tv_total_jual_part, TextView.class).setText(RP + formatRp(String.valueOf(totalKeseluruhan)));
-        find(R.id.tv_total_ppn_jual_part, TextView.class).setText(RP + formatRp(setPPN(totalKeseluruhan)));
-        find(R.id.tv_total_penjualan_jual_part, TextView.class).setText(RP + formatRp(String.valueOf(totalKeseluruhan)));
-
-        sendData.set("TOTAL", totalKeseluruhan);
+        find(R.id.tv_total_jual_part, TextView.class).setText(RP + formatRp(String.valueOf(total1)));
+        find(R.id.tv_total_ppn_jual_part, TextView.class).setText(RP + formatRp(setPPN(total1)));
+        find(R.id.tv_total_penjualan_jual_part, TextView.class).setText(RP + formatRp(String.valueOf(total1)));
     }
 
     private String setPPN(int totalBiaya) {

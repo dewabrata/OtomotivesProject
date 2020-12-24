@@ -149,6 +149,8 @@ public class PenjualanPart_Activity extends AppActivity {
             public void runUI() {
                 swipeProgress(false);
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    pelangganList.asArray().clear();
+                    usahaList.asArray().clear();
                     result = result.get("data");
                     for (int i = 0; i < result.size(); i++) {
                         if (!result.get(i).get("NAMA_PELANGGAN").asString().isEmpty() && result.get(i).get("NAMA_USAHA").asString().isEmpty()) {

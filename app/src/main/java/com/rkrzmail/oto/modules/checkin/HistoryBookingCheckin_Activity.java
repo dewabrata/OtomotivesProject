@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.checkin;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,12 +22,12 @@ import com.rkrzmail.utils.Tools;
 import java.util.Map;
 
 import static com.rkrzmail.utils.APIUrls.SET_CHECKIN;
+import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.RP;
 
 public class HistoryBookingCheckin_Activity extends AppActivity {
 
     private RecyclerView rvHistory;
-    private String nopol = "";
-    private boolean isCheckin = false, isBooking = false, flag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,71 +39,46 @@ public class HistoryBookingCheckin_Activity extends AppActivity {
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        if(getIntent().hasExtra(SET_CHECKIN)){
-            isCheckin = true;
-            flag = true;
-            getSupportActionBar().setTitle("History Checkin");
-        }else if(getIntent().hasExtra("booking")){
-            isBooking = true;
-            flag = false;
-            getSupportActionBar().setTitle("History Booking");
-        }
+        getSupportActionBar().setTitle("History Kendaraan");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initComponent() {
-        nopol = getIntentStringExtra("NOPOL");
         initToolbar();
         initRecylerview();
-        loadData();
+        Nson data = Nson.readJson(getIntentStringExtra(DATA));
+        if (data != null) {
+            nListArray.asArray().clear();
+            nListArray.asArray().addAll(data.asArray());
+            rvHistory.getAdapter().notifyDataSetChanged();
+        }
     }
 
-    private void loadData(){
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("history", nopol);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturbooking"), args));
-            }
-            @Override
-            public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    nListArray.asArray().clear();
-                    nListArray.asArray().addAll(result.get("data").asArray());
-                    rvHistory.getAdapter().notifyDataSetChanged();
-                    Log.d("Booking2List", "" +  result.get("data"));
-                } else {
-                    showError("Mohon Di Coba Kembali");
-                }
-            }
-        });
-    }
 
-    private void initRecylerview(){
+    private void initRecylerview() {
         rvHistory = findViewById(R.id.recyclerView);
         rvHistory.setLayoutManager(new LinearLayoutManager(this));
         rvHistory.setHasFixedSize(true);
-        rvHistory.setAdapter(new NikitaRecyclerAdapter(nListArray, flag ? R.layout.item_history_checkin : R.layout.item_history_booking) {
+        rvHistory.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_history_checkin) {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                String date = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("TANGGAL_IN").asString());
+                String date = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("CREATED_DATE").asString());
 
-                if(flag){
-                    viewHolder.find(R.id.tv_tgl_historyCheckin, TextView.class).setText(nListArray.get(position).get("").asString());
-                    viewHolder.find(R.id.tv_km_historyCheckin, TextView.class).setText(nListArray.get(position).get("").asString());
-                    viewHolder.find(R.id.tv_namaLayanan_historyCheckin, TextView.class).setText(nListArray.get(position).get("").asString());
-                    viewHolder.find(R.id.tv_namaBengkel_historyCheckin, TextView.class).setText(nListArray.get(position).get("").asString());
-                }else{
-                    viewHolder.find(R.id.tv_status_historyBooking, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
-                    viewHolder.find(R.id.tv_ket_historyBooking, TextView.class).setText(nListArray.get(position).get("KELUHAN").asString());
-                    viewHolder.find(R.id.tv_jam_historyBooking, TextView.class).setText(nListArray.get(position).get("JAM_BOOKING").asString());
-                    viewHolder.find(R.id.tv_user_historyBooking, TextView.class).setText(nListArray.get(position).get("CREATED_USER").asString());
-                    viewHolder.find(R.id.tv_tgl_historyBooking, TextView.class).setText(date);
-                }
+                viewHolder.find(R.id.tv_tgl_historyCheckin, TextView.class).setText(nListArray.get(position).get("CREATED_DATE").asString());
+                viewHolder.find(R.id.tv_km_historyCheckin, TextView.class).setText(nListArray.get(position).get("KM").asString());
+                viewHolder.find(R.id.tv_namaLayanan_historyCheckin, TextView.class).setText(nListArray.get(position).get("LAYANAN").asString());
+                viewHolder.find(R.id.tv_pelanggan, TextView.class).setText(nListArray.get(position).get("NAMA_PELANGGAN").asString());
+                viewHolder.find(R.id.tv_total_biaya, TextView.class).setText(RP + formatRp(nListArray.get(position).get("TOTAL_BIAYA").asString()));
+
             }
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_OK);
+        finish();
+        super.onBackPressed();
+    }
 }

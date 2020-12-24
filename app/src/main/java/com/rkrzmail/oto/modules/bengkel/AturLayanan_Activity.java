@@ -483,6 +483,8 @@ public class AturLayanan_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
+                args.put("spec", "OTOMOTIVES");
+                args.put("layanan", "BENGKEL");
                 if (layananPaketList.size() == 0 ||
                         layananAfterList.size() == 0 ||
                         layananRecallList.size() == 0 || layananOtolist.size() == 0) {

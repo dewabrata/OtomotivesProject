@@ -448,7 +448,7 @@ public class CariPart_Activity extends AppActivity {
         }else if(flagBengkel && countForCariPart == 5){
             adapterSearchView(mSearchView,"spec", VIEW_SPAREPART, "NAMA_PART", "");
         }else if(isTeralokasikan){
-            adapterSearchView(mSearchView,"", VIEW_CARI_PART_SUGGESTION, "NAMA_PART", CARI_PART_TERALOKASIKAN);
+            adapterSearchView(mSearchView,"", VIEW_LOKASI_PART, "NAMA_PART", CARI_PART_TERALOKASIKAN);
         }
 
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {

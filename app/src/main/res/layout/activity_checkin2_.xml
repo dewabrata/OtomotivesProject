@@ -113,7 +113,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
                         android:inputType="textCapCharacters"
-                        android:maxLength="10"
+                        android:maxLength="20"
                         android:hint="KODE TIPE"
                         android:padding="15dp"/>
 

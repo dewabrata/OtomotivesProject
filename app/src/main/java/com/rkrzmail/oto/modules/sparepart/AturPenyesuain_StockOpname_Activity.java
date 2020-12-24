@@ -71,6 +71,7 @@ public class AturPenyesuain_StockOpname_Activity extends AppActivity {
 
         Intent i = new Intent();
         i.putExtra(DATA, penyesuaian.toJson());
+        i.putExtra("FINISH", true);
         setResult(RESULT_OK, i);
         finish();
     }
@@ -147,6 +148,11 @@ public class AturPenyesuain_StockOpname_Activity extends AppActivity {
                     }
                 }
 
+                if(find(R.id.et_user_saksi_penyesuaian, EditText.class).getText().toString().isEmpty()){
+                    find(R.id.et_user_saksi_penyesuaian, EditText.class).requestFocus();
+                    showWarning("User Saksi Belum di Scan");
+                    return;
+                }
                 setPenyesuaian();
             }
         });
