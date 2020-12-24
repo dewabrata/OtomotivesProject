@@ -7,6 +7,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -18,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -34,6 +39,8 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.bengkel.AturTenda_Activity;
 import com.rkrzmail.oto.modules.bengkel.AturUser_Activity;
 import com.rkrzmail.srv.MultiSelectionSpinner;
+import com.rkrzmail.srv.NikitaRecyclerAdapter;
+import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
@@ -58,8 +65,8 @@ public class AturSchedule_Activity extends AppActivity implements View.OnClickLi
 
     private TextView tvMulai_Kerja, tvSelesai_Kerja, tv_tanggal;
     private Spinner sp_status,spLokasi, spUser;
-    private RecyclerView recyclerView;
-    private String izin = "", tanggalString= "", hari="";
+    private RecyclerView rcSchedule;
+    private String izin = "", tanggalString= "", hari="", namauser;
     private CheckBox cbCopy ;
     private boolean isIzin = false, isSakit=false, isTrue=false, isIzinlamabat=false;
     private Nson userList = Nson.newArray(), lokasiArray = Nson.newArray() ,scheduleArray = Nson.newArray();
@@ -88,8 +95,10 @@ public class AturSchedule_Activity extends AppActivity implements View.OnClickLi
         spLokasi = findViewById(R.id.sp_lokasi);
         spUser = findViewById(R.id.sp_userSchedule);
         cbCopy = findViewById(R.id.cb_copydata);
+        rcSchedule = findViewById(R.id.recyclerViewSchedule);
         setSpUser();
         setSpLokasi();
+
 
         sp_status.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -176,10 +185,7 @@ public class AturSchedule_Activity extends AppActivity implements View.OnClickLi
         tv_tanggal.setOnClickListener(this);
     }
 
-
-
     private void insertData() {
-        final String user = spUser.getSelectedItem().toString().toUpperCase();
         final String masuk = tvMulai_Kerja.getText().toString().trim();
         final String selesai = tvSelesai_Kerja.getText().toString().trim();
         final String tanggal = tv_tanggal.getText().toString().trim();
@@ -198,6 +204,7 @@ public class AturSchedule_Activity extends AppActivity implements View.OnClickLi
 
                 args.put("action", "add");
                 args.put("kategori", "TEST");
+                args.put("nama", namauser);
                 args.put("tanggal", setFormatDayAndMonthToDb(tanggal));
                 args.put("hari", hari);
                 args.put("status", status);
@@ -212,8 +219,7 @@ public class AturSchedule_Activity extends AppActivity implements View.OnClickLi
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     showSuccess("Berhasil Menambahkan Schedule");
-                    //setResult(RESULT_OK);
-                    finish();
+                    viewSchedule(namauser);
                 } else {
                     showError("Menambahkan data gagal!");
                 }
@@ -221,7 +227,7 @@ public class AturSchedule_Activity extends AppActivity implements View.OnClickLi
         });
     }
 
-    private void viewSchedule(){
+    private void viewSchedule(final String item){
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -231,27 +237,19 @@ public class AturSchedule_Activity extends AppActivity implements View.OnClickLi
 
                 args.put("action", "view");
                 args.put("kategori", "SCHEDULE");
+                args.put("nama", item);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ABSEN), args));
-                scheduleArray.asArray().clear();
-                scheduleArray.asArray().addAll(result.get("data").asArray());
-
-                args.remove("detail");
-                args.put("detail", "JASA LAYANAN");
-
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PERINTAH_KERJA_MEKANIK), args));
-                scheduleArray.asArray().addAll(result.get("data").asArray());
             }
 
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    result = result.get("data");
-                    for (int i = 0; i < result.size(); i++) {
-                        scheduleArray.add(result.get(i).get("NO_POLISI").asString());
-                    }
+                    scheduleArray.asArray().clear();
+                    scheduleArray.asArray().addAll(result.get("data").asArray());
+                    initRecylerview();
                 } else {
-                    showInfo(result.get("message").asString());
+                    //showInfo(result.get("message").asString());
                 }
             }
         });
@@ -303,6 +301,7 @@ public class AturSchedule_Activity extends AppActivity implements View.OnClickLi
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     userList.asArray().clear();
+                    userList.add("--PILIH--");
                     for (int i = 0; i < result.get("data").size(); i++) {
                         userList.add(result.get("data").get(i).get("NAMA").asString());
                     }
@@ -314,7 +313,45 @@ public class AturSchedule_Activity extends AppActivity implements View.OnClickLi
                 }
             }
         });
+
+        spUser.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                namauser = parent.getSelectedItem().toString();
+                viewSchedule(namauser);
+
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
+
+    private void initRecylerview() {
+        rcSchedule.setHasFixedSize(true);
+        rcSchedule.setLayoutManager(new LinearLayoutManager(this));
+        rcSchedule.setAdapter(new NikitaRecyclerAdapter(scheduleArray, R.layout.item_schedule_user) {
+                    @Override
+                    public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+                        super.onBindViewHolder(viewHolder, position);
+                        viewHolder.find(R.id.tv_schedule_tanggal, TextView.class).setText(scheduleArray.get(position).get("TANGGAL").asString());
+                        viewHolder.find(R.id.tv_schedule_hari, TextView.class).setText(scheduleArray.get(position).get("HARI").asString());
+                        viewHolder.find(R.id.tv_schedule_jammulai, TextView.class).setText(scheduleArray.get(position).get("SCHEDULE_MULAI").asString());
+                        viewHolder.find(R.id.tv_schedule_jampulang, TextView.class).setText(scheduleArray.get(position).get("SCHEDULE_SELESAI").asString());
+                        viewHolder.find(R.id.tv_schedule_lokasi, TextView.class).setText(scheduleArray.get(position).get("LOKASI").asString());
+                    }
+                }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Nson parent, View view, int position) {
+
+                    }
+                })
+        );
+    }
+
+
+
 
     private Calendar parseWaktuNow() {
         long current = 0;
@@ -455,4 +492,6 @@ public class AturSchedule_Activity extends AppActivity implements View.OnClickLi
                 break;
         }
     }
+
+
 }
