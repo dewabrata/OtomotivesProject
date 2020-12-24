@@ -137,6 +137,8 @@ public class LkkClaimMekanik_Activity extends AppActivity {
 
         setSpinnerFromApi(sp_kondisipart, "nama", "KONDISI PART", "viewmst", "KONDISI");
         setSpSebabKerusakan();
+        Tools.setViewAndChildrenEnabled(find(R.id.ly_lkk_claim, LinearLayout.class), false);
+
         data = Nson.readJson(getIntentStringExtra(DATA));
         idCheckin= data.get("IDCHECKIN").asString();
         cbClaim.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -392,18 +394,27 @@ public class LkkClaimMekanik_Activity extends AppActivity {
         if (resultCode == RESULT_OK && requestCode == REQUEST_CARI_PART) {
             Nson nson = Nson.readJson(getIntentStringExtra(data, PART));
             if (nson.get("GARANSI_LAYANAN").asString().equals("Y")){
-                cbClaim.setChecked(true);
-                cbClaim.setSelected(true);
-                cbClaim.setEnabled(true);
-            }else {
+                Tools.setViewAndChildrenEnabled(find(R.id.ly_lkk_claim, LinearLayout.class), true);
+                et_merkpart.setEnabled(false);
+                et_nopart.setEnabled(false);
+                et_namapart.setEnabled(false);
+                et_nikpemilik.setEnabled(false);
+                et_nobuku.setEnabled(false);
                 cbClaim.setChecked(false);
-                cbClaim.setSelected(false);
+                cbClaim.setEnabled(false);
+                btn_fotoktp.setEnabled(false);
+                btn_fotostnk.setEnabled(false);
+                et_merkpart.setText(nson.get("MERK").asString());
+                et_nopart.setText(nson.get("NO_PART").asString());
+                et_namapart.setText(nson.get("NAMA_PART").asString());
+                idpart=nson.get("PART_ID").asString();
+                stockBengkel=nson.get("STOCK").asString();
+            }else {
+                Tools.setViewAndChildrenEnabled(find(R.id.ly_lkk_claim, LinearLayout.class), false);
+                cbClaim.setChecked(false);
+                cbClaim.setEnabled(false);
+                showInfo("Bukan Part Garansi Layanan");
             }
-            et_merkpart.setText(nson.get("MERK").asString());
-            et_nopart.setText(nson.get("NO_PART").asString());
-            et_namapart.setText(nson.get("NAMA_PART").asString());
-            idpart=nson.get("PART_ID").asString();
-            stockBengkel=nson.get("STOCK").asString();
         }
         else if(resultCode == RESULT_OK && requestCode == REQUEST_FOTO_PART){
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
