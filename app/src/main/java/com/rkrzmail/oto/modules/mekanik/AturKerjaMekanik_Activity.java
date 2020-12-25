@@ -30,6 +30,7 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.checkin.Checkin3_Activity;
+import com.rkrzmail.oto.modules.checkin.TambahPartJasaDanBatal_Activity;
 import com.rkrzmail.srv.NikitaMultipleViewAdapter;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
@@ -46,9 +47,15 @@ import static com.rkrzmail.utils.APIUrls.VIEW_KELUHAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_PERINTAH_KERJA_MEKANIK;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
+import static com.rkrzmail.utils.ConstUtils.ESTIMASI_WAKTU;
 import static com.rkrzmail.utils.ConstUtils.ID;
+import static com.rkrzmail.utils.ConstUtils.MENUNGGU;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CHECKIN;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_TAMBAH_PART_JASA_LAIN;
+import static com.rkrzmail.utils.ConstUtils.TAMBAH_PART;
+import static com.rkrzmail.utils.ConstUtils.TIDAK_MENUNGGU;
+import static com.rkrzmail.utils.ConstUtils.TOTAL_BIAYA;
 
 public class AturKerjaMekanik_Activity extends AppActivity implements View.OnClickListener {
 
@@ -68,7 +75,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
             keluhanList = Nson.newArray(),
             pointLayananList = Nson.newArray(),
             inspeksiList = Nson.newArray(),
-            n ;
+            n;
     private int waktuHari = 0, waktuJam = 0, waktuMenit = 0;
     private String totalWaktuKerja = "", sisaWaktuPaused = "";
     private int countClick = 0;
@@ -76,6 +83,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
     private boolean isNote = false;
     private boolean isHplus = false;
     private boolean isInspeksi = false;
+    private boolean isNotWait = false;
 
     private Handler handler;
     private AlertDialog alertDialog;
@@ -134,6 +142,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
         find(R.id.btn_lkk).setOnClickListener(this);
         imgStart.setOnClickListener(this);
         imgStop.setOnClickListener(this);
+        find(R.id.btn_tambah_part).setOnClickListener(this);
     }
 
     private void loadData() {
@@ -147,6 +156,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
         if (n.get("PENGAMBILAN").asString().isEmpty() || n.get("PENGAMBILAN") == null)
             find(R.id.tl_pengambilan).setVisibility(View.GONE);
 
+        isNotWait = n.get("PELANGGAN_TIDAK_MENUNGGU").asString().equals("Y") & !n.get("PELANGGAN_TIDAK_MENUNGGU").asString().isEmpty();
         String lamaLayanan = totalWaktuKerja(
                 n.get("WAKTU_KERJA_HARI").asString(),
                 n.get("WAKTU_KERJA_JAM").asString(),
@@ -244,7 +254,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                     viewHolder.find(R.id.tv_hargaNet_booking3_checkin3, TextView.class).setText("");
                     viewHolder.find(R.id.tv_no, TextView.class).setVisibility(View.VISIBLE);
                     viewHolder.find(R.id.tv_no, TextView.class).setText(no + ". ");
-                } else  {
+                } else {
                     viewHolder.find(R.id.tv_no, TextView.class).setVisibility(View.VISIBLE);
                     viewHolder.find(R.id.tv_no, TextView.class).setText(no + ". ");
                     viewHolder.find(R.id.tv_kelompokPart_booking3_checkin3, TextView.class)
@@ -307,7 +317,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
 
         initToolbarKeluhan(dialogView);
         initRecylerviewKeluhan(dialogView);
-        if(partJasaList.size() > 0){
+        if (partJasaList.size() > 0) {
             Objects.requireNonNull(rvKeluhan.getAdapter()).notifyDataSetChanged();
         }
 
@@ -491,10 +501,10 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 args.put("catatan", catatanMekanik);
                 args.put("nopol", formatNopol(etNopol.getText().toString()));
                 args.put("noPonsel", noHp);
-                if(isInspeksi){
+                if (isInspeksi) {
                     statusDone = "PENUGASAN INSPEKSI";
                     args.put("status", statusDone);
-                }else{
+                } else {
                     statusDone = "PELAYANAN SELESAI";
                     args.put("status", statusDone);
                 }
@@ -550,11 +560,11 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
     public void onBackPressed() {
         if (isStart) {
             Messagebox.showDialog(getActivity(),
-                    "Konfirmasi", "Pekerjaan sedang berlangsung, Stop Pekerjaan?", "Ya", "Tidak", new DialogInterface.OnClickListener() {
+                    "Konfirmasi", "Pekerjaan sedang berlangsung, Pause Pekerjaan?", "Ya", "Tidak", new DialogInterface.OnClickListener() {
                         @SuppressLint("SetTextI18n")
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            stopWork();
+                            pauseWork();
                         }
                     }, new DialogInterface.OnClickListener() {
                         @Override
@@ -604,10 +614,22 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
             case R.id.btn_lkk:
                 SetDataForClaim();
                 break;
+            case R.id.btn_tambah_part:
+                Intent intent = new Intent(getActivity(), TambahPartJasaDanBatal_Activity.class);
+                intent.putExtra("CHECKIN_ID", idCheckin);
+                //intent.putExtra(TOTAL_BIAYA, formatOnlyNumber(etTotal.getText().toString()));
+                intent.putExtra(TAMBAH_PART, "");
+                if (isNotWait) {
+                    intent.putExtra(TIDAK_MENUNGGU, TIDAK_MENUNGGU);
+                } else {
+                    intent.putExtra(MENUNGGU, MENUNGGU);
+                }
+                startActivityForResult(intent, REQUEST_TAMBAH_PART_JASA_LAIN);
+                break;
         }
     }
 
-    private void SetDataForClaim (){
+    private void SetDataForClaim() {
         Nson nson = Nson.newObject();
         nson.set("IDCHECKIN", idCheckin);
         nson.set("TANGGAL_CHECKIN", n.get("TANGGAL_CHECKIN").asString());
@@ -629,8 +651,10 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode==REQUEST_DETAIL && resultCode==RESULT_OK){
+        if (requestCode == REQUEST_DETAIL && resultCode == RESULT_OK) {
             showInfo("Sukses Simpan Claim Garansi");
+        } else if (requestCode == REQUEST_TAMBAH_PART_JASA_LAIN && resultCode == RESULT_OK) {
+            viewLayananPartJasa();
         }
 
     }

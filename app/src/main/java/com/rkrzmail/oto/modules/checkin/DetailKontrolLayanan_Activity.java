@@ -452,9 +452,11 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             aktifitasList.add("TAMBAH PART - JASA");
             aktifitasList.add("BATAL PART");
             aktifitasList.add("BATAL BENGKEL");
-        } else if (etStatus.getText().toString().equals("MEKANIK PAUSE")) {
+        } else if (etStatus.getText().toString().equals("MEKANIK PAUSE") ||
+                etStatus.getText().toString().equals("MEKANIK MULAI")) {
             aktifitasList.add("TAMBAH MEKANIK");
             aktifitasList.add("GANTI MEKANIK");
+            aktifitasList.add("TAMBAH PART - JASA");
         } else if (etStatus.getText().toString().equals("CHECKIN ANTRIAN PENUGASAN")) {
             aktifitasList.add("BATAL BENGKEL");
             aktifitasList.add("BATAL PELANGGAN");

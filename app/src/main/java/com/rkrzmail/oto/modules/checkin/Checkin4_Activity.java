@@ -77,7 +77,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
     private Nson noKunciList = Nson.newArray();
 
     private boolean isSign = false, isBatal = false, isMekanik = false;
-    private boolean isExpressAndStandard = false, isExtra = false, isHplus = false, isDp = false;
+    private boolean isExpressAndStandard = false, isExtra = false, isHplusPartKosong = false, isDp = false;
     private String waktuLayananHplusExtra = "", jenisLayanan = "", waktuLayananStandartExpress = "";
     private String tglEstimasi = "", waktuEstimasi = "", antrianSebelumnya = "";
     private String ttdPath = "";
@@ -150,7 +150,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             Tools.setViewAndChildrenEnabled(find(R.id.ly_estimasi_selesai, LinearLayout.class), true);
             find(R.id.tv_disable_estimasi).setVisibility(View.GONE);
         } else if (getData.get("JENIS_ANTRIAN").asString().equals("H+")) {
-            isHplus = true;
+            isHplusPartKosong = getData.get("PART_KOSONG").asBoolean();
             find(R.id.et_dp_checkin4, EditText.class).setText(RP + formatRp(getData.get("DP").asString()));
             find(R.id.et_sisa_checkin4, EditText.class).setText(RP + formatRp(getData.get("SISA").asString()));
             Tools.setViewAndChildrenEnabled(find(R.id.ly_estimasi_selesai, LinearLayout.class), true);
@@ -570,7 +570,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 args.put("action", "add");
                 args.put("jenisCheckin", "4");
                 args.put("id", nson.get("CHECKIN_ID").asString());
-                args.put("status", isHplus ? "TUNGGU DP" : status);
+                args.put("status", isHplusPartKosong ? "TUNGGU DP" : status);
                 args.put("mekanik", namaMekanik);
                 args.put("mekanikId", String.valueOf(idMekanik));
                 args.put("antrian", antrian);
@@ -603,7 +603,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                     intent.putExtra("NOPOL", nopol);
                     Log.d(TAG, "runUI: " + result.get("data"));
                     noKunciList.asArray().addAll(result.get("data").asArray());
-                    if (isHplus) {
+                    if (isHplusPartKosong) {
                         showSuccess("MOHON BAYARKAN UANG MUKA PELAYANAN " + jenisLayanan + ". RINCIAN BIAYA & UANG MUKA");
                         showNotification(getActivity(), "Checkin Antrian ", formatNopol(nopol), "CHECKIN", intent);
                         finish();

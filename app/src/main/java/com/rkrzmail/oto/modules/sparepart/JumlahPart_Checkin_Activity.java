@@ -81,24 +81,25 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
 
     @SuppressLint("SetTextI18n")
     private void initData() {
-        if(getIntent().hasExtra(TAMBAH_PART)){
+        if (getIntent().hasExtra(TAMBAH_PART)) {
             isTambahPart = true;
         }
 
         if (getIntent().hasExtra(DATA)) {
             loadData(DATA, getIntent());
         } else {
+            final Nson nson = Nson.readJson(getIntentStringExtra(PART_WAJIB));
+
             find(R.id.ly_waktu_inspeksi).setVisibility(View.GONE);
             find(R.id.ly_waktu_kerja).setVisibility(View.GONE);
             etBiayaJasa.setVisibility(View.GONE);
             isPartWajib = true;
-            final Nson nson = Nson.readJson(getIntentStringExtra(PART_WAJIB));
             stock = nson.get("STOCK").asInteger();
             garansiPart = nson.get("GARANSI_PART_PABRIKAN").asString();
             hpp = nson.get("HPP").asString();
             idLokasiPart = nson.get("LOKASI_PART_ID").asString();
 
-            initPartKosongValidation(nson,true);
+            initPartKosongValidation(nson, true);
 
             boolean isMasterPartOrParts;
             boolean isDiskon = false;
@@ -120,7 +121,7 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
 
             if (getIntent().getIntExtra("HARGA_LAYANAN", 0) > 0) {
                 discFasilitas = Double.parseDouble(isMasterPartOrParts ?
-                                getIntent().getStringExtra(MASTER_PART) : getIntent().getStringExtra(PARTS_UPPERCASE));
+                        getIntent().getStringExtra(MASTER_PART) : getIntent().getStringExtra(PARTS_UPPERCASE));
                 finalTotal = getIntent().getIntExtra("HARGA_LAYANAN", 0) - calculateDiscFasilitas(discFasilitas,
                         getIntent().getIntExtra("HARGA_LAYANAN", 0));
                 etHargaJual.setText(RP + finalTotal);
@@ -187,7 +188,7 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
                                 etHargaJual.setError("Harga Jual Flexible, Harus Di isi");
                             }
                         }
-                    } else {
+                    }else {
                         nextForm(nson);
                     }
                 }
@@ -209,6 +210,35 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
         find(R.id.img_clear2).setOnClickListener(this);
         find(R.id.btn_img_waktu_inspeksi).setOnClickListener(this);
         find(R.id.btn_img_waktu_kerja).setOnClickListener(this);
+        etJumlah.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int i, int i1, int i2) {
+                if (s.toString().length() == 0) {
+                    find(R.id.tl_jumlah_part, TextInputLayout.class).setHelperTextEnabled(false);
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (!isPartWajib && !isPartKosong) {
+                    String text = editable.toString();
+                    if (!text.isEmpty()) {
+                        int jumlah = Integer.parseInt(text);
+                        if (jumlah > stock) {
+                            find(R.id.tl_jumlah_part, TextInputLayout.class).setErrorEnabled(true);
+                            find(R.id.tl_jumlah_part, TextInputLayout.class).setError("Jumlah Melebihi Stock Tersedia");
+                        } else {
+                            find(R.id.tl_jumlah_part, TextInputLayout.class).setErrorEnabled(false);
+                        }
+                    }
+                }
+            }
+        });
     }
 
     @SuppressLint("DefaultLocale")
@@ -229,7 +259,7 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
 
     private void initPartKosongValidation(final Nson nson, final boolean isPartWajib) {
         if (stock == 0) {
-            if(isPartWajib){
+            if (isPartWajib) {
                 showWarning("Part Wajib Layanan Stock Kosong!");
                 Intent i = new Intent();
                 i.putExtra("PART_KOSONG_PART_WAJIB", "OK");
@@ -281,19 +311,20 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
     @SuppressLint("SetTextI18n")
     private void loadData(final String intentExtra, Intent intent) {
         final Nson nson = Nson.readJson(getIntentStringExtra(intent, intentExtra));
-        garansiPart = nson.get("GARANSI_PART_PABRIKAN").asString();;
+        garansiPart = nson.get("GARANSI_PART_PABRIKAN").asString();
+
         hpp = nson.get("HPP").asString();
         stock = nson.get("STOCK_RUANG_PART").asInteger();
         Log.d("parts__", "data : " + nson);
         idLokasiPart = nson.get("LOKASI_PART_ID").asString();
         if (stock == 0) {
             isPartKosong = true;
-            initPartKosongValidation(nson,false);
+            initPartKosongValidation(nson, false);
         }
 
-        if(nson.get("FINAL_INS").asString().equals("Y") && !nson.get("FINAL_INS").asString().isEmpty()){
+        if (nson.get("FINAL_INS").asString().equals("Y") && !nson.get("FINAL_INS").asString().isEmpty()) {
             inspeksi = "Y";
-        }else{
+        } else {
             inspeksi = "N";
         }
 
@@ -316,7 +347,7 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
 
         if (!nson.get("DISCOUNT_PART").asString().isEmpty()) {
             find(R.id.ly_disc_part_jumlah_harga_part).setVisibility(View.VISIBLE);
-            if(!nson.get("HARGA_JUAL").asString().isEmpty()){
+            if (!nson.get("HARGA_JUAL").asString().isEmpty()) {
                 discPart = calculateDiscFasilitas(nson.get("DISCOUNT_PART").asDouble(), nson.get("HARGA_JUAL").asInteger());
             }
             etDiscPart.setText(RP + formatRp(String.valueOf(discPart)));
@@ -342,7 +373,7 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
                     return;
                 }
 
-                if(!isPartKosong && (!etJumlah.getText().toString().isEmpty() && Integer.parseInt(etJumlah.getText().toString()) > stock)){
+                if (!isPartKosong && find(R.id.tl_jumlah_part, TextInputLayout.class).isHelperTextEnabled()) {
                     etJumlah.setError("Jumlah Part Melebihi Stock");
                     etJumlah.requestFocus();
                     return;
@@ -400,30 +431,30 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
             jumlahPart = Integer.parseInt(etJumlah.getText().toString());
         }
 
-        if(!etDiscJasa.getText().toString().isEmpty()){
+        if (!etDiscJasa.getText().toString().isEmpty()) {
             discJasa = Double.parseDouble(etDiscJasa.getText().toString()
                     .replace("%", "")
                     .replace(",", "."));
             discJasa = calculatePercentage(discJasa, hargaJasa);
         }
 
-        if(discJasa > 0) {
+        if (discJasa > 0) {
             totalJasa = (int) (hargaJasa - discJasa);
         }
-        if(discPart > 0) {
+        if (discPart > 0) {
             totalPart = (int) (hargaPart - discPart) * jumlahPart;
-        }else{
+        } else {
             totalPart = hargaPart * jumlahPart;
         }
 
-        totalHarga =  totalPart + hargaJasa;
+        totalHarga = totalPart + hargaJasa;
 
-        if(isPartKosong){
+        if (isPartKosong) {
             partKosong = "YA";
             sendData.set("WAKTU_KERJA", "");
             sendData.set("WAKTU_INSPEKSI", "");
             sendData.set("DP", formatOnlyNumber(formatRp(String.valueOf(calculateDp(Double.parseDouble(getSetting("DP_PERSEN")), totalPart)))));
-        }else{
+        } else {
             sendData.set("WAKTU_KERJA", find(R.id.et_waktuSet, EditText.class).getText().toString());
             sendData.set("WAKTU_INSPEKSI", find(R.id.et_waktu_set_inspeksi, EditText.class).getText().toString());
             sendData.set("DP", "");
@@ -527,9 +558,9 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
                 etBiayaJasa.setText("");
                 break;
             case R.id.btn_img_waktu_inspeksi:
-                if(inspeksi.equals("Y")){
+                if (inspeksi.equals("Y")) {
                     getTimesDialog(find(R.id.et_waktu_set_inspeksi, EditText.class));
-                }else{
+                } else {
                     showWarning("Part tidak perlu INSPEKSI");
                 }
                 break;

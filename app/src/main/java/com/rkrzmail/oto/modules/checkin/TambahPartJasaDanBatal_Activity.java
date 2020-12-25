@@ -140,7 +140,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
             find(R.id.et_estimasi_lama, EditText.class).setText(estimasiLama);
             if (getIntent().hasExtra(TIDAK_MENUNGGU)) {
                 isNotWait = true;
-                find(R.id.ly_tidak_menunggu).setVisibility(View.VISIBLE);
+                find(R.id.ly_tidak_menunggu).setVisibility(View.GONE);
                 find(R.id.tl_total_setelah_tambah, TextInputLayout.class).setHint("TAMBAH / BATAL");
             } else {
                 isWait = true;

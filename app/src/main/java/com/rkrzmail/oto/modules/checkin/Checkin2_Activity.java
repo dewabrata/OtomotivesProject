@@ -131,10 +131,10 @@ public class Checkin2_Activity extends AppActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                int year = Calendar.getInstance().get(Calendar.YEAR);
+                int year = Calendar.getInstance().get(Calendar.YEAR) - 4;
                 try {
                     @SuppressLint("SimpleDateFormat") Date inputYear = new SimpleDateFormat("yyyy").parse(find(R.id.tv_tahun_checkin2, TextView.class).getText().toString());
-                    @SuppressLint("SimpleDateFormat") Date validationYear = new SimpleDateFormat("yyyy").parse(String.valueOf(year - 4));
+                    @SuppressLint("SimpleDateFormat") Date validationYear = new SimpleDateFormat("yyyy").parse(String.valueOf(year));
                     tahunBeli = inputYear.getTime();
                     tahunSekarang = validationYear.getTime();
                     if (tahunBeli <= tahunSekarang) {

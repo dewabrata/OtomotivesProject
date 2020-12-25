@@ -102,7 +102,7 @@
                         android:layout_height="wrap_content"
                         android:hint="NO. POLISI"
                         android:inputType="textCapCharacters"
-                        android:maxLength="10"
+                        android:maxLength="12"
                         android:textSize="14sp"
                         android:padding="15dp"
                         android:singleLine="true" />

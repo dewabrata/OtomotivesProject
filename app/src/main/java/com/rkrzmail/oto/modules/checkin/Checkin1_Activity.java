@@ -199,8 +199,6 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                             }
                         }
                     }
-                } else {
-                    showInfo(ERROR_INFO);
                 }
             }
         });
@@ -587,6 +585,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     nson.set("varian", varianKendaraan);
                     nson.set("tahunProduksi", tahunProduksi);
                     nson.set("km", etKm.getText().toString());
+                    nson.set("NOPOL", nopol);
 
                     if (Integer.parseInt(etKm.getText().toString()) < expiredGaransiKm) {
                         nson.set("isExpiredKm", true);
