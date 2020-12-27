@@ -63,10 +63,10 @@ import static com.rkrzmail.utils.Tools.setFormatDayAndMonthToDb;
 
 public class AturSchedule_Activity extends AppActivity implements View.OnClickListener {
 
-    private TextView tvMulai_Kerja, tvSelesai_Kerja, tv_tanggal;
+    private TextView tvMulai_Kerja, tvSelesai_Kerja, tv_tanggal,tv_tanggal2;
     private Spinner sp_status,spLokasi, spUser;
     private RecyclerView rcSchedule;
-    private String izin = "", tanggalString= "", hari="", namauser;
+    private String izin = "", tanggalString= "", hari="", namauser, hari2="";
     private CheckBox cbCopy ;
     private boolean isIzin = false, isSakit=false, isTrue=false, isIzinlamabat=false;
     private Nson userList = Nson.newArray(), lokasiArray = Nson.newArray() ,scheduleArray = Nson.newArray();
@@ -89,6 +89,7 @@ public class AturSchedule_Activity extends AppActivity implements View.OnClickLi
     @SuppressLint("SetTextI18n")
     private void initComponent() {
         tv_tanggal = findViewById(R.id.tv_tanggal);
+        tv_tanggal2 = findViewById(R.id.tv_tanggal2);
         tvMulai_Kerja = findViewById(R.id.tv_mulaiKerja);
         tvSelesai_Kerja = findViewById(R.id.tv_selesaiKerja);
         sp_status = findViewById(R.id.sp_statusSchedule);
@@ -106,6 +107,7 @@ public class AturSchedule_Activity extends AppActivity implements View.OnClickLi
                 String item = parent.getSelectedItem().toString();
                 if (item.equalsIgnoreCase("KERJA")) {
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_mulaiselesai, LinearLayout.class), true);
+                    cbCopy.setEnabled(true);
                     tvMulai_Kerja.setTextColor(getColor(R.color.grey_900));
                     tvSelesai_Kerja.setTextColor(getColor(R.color.grey_900));
                     isTrue=true;
@@ -183,17 +185,20 @@ public class AturSchedule_Activity extends AppActivity implements View.OnClickLi
         tvMulai_Kerja.setOnClickListener(this);
         tvSelesai_Kerja.setOnClickListener(this);
         tv_tanggal.setOnClickListener(this);
+        tv_tanggal2.setOnClickListener(this);
     }
 
     private void insertData() {
         final String masuk = tvMulai_Kerja.getText().toString().trim();
         final String selesai = tvSelesai_Kerja.getText().toString().trim();
         final String tanggal = tv_tanggal.getText().toString().trim();
+        final String tanggal2 = tv_tanggal2.getText().toString().trim();
         final String status = sp_status.getSelectedItem().toString().toUpperCase();
         if(status.contains("IZIN TERLAMBAT")){
             izin = "Y";
         }
         final String lokasi = spLokasi.getSelectedItem().toString().toUpperCase();
+        final String copy = find(R.id.cb_copydata, CheckBox.class).isChecked() ? "Y" : "N";
 
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result;
@@ -206,12 +211,14 @@ public class AturSchedule_Activity extends AppActivity implements View.OnClickLi
                 args.put("kategori", "TEST");
                 args.put("nama", namauser);
                 args.put("tanggal", setFormatDayAndMonthToDb(tanggal));
+                args.put("tanggal2", setFormatDayAndMonthToDb(tanggal2));
                 args.put("hari", hari);
                 args.put("status", status);
                 args.put("scheduleMulai", masuk);
                 args.put("scheduleSelesai", selesai);
                 args.put("lokasi", lokasi);
                 args.put("izinTerlambat", izin);
+                args.put("copyData", copy);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ABSEN), args));
             }
 
@@ -220,11 +227,23 @@ public class AturSchedule_Activity extends AppActivity implements View.OnClickLi
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     showSuccess("Berhasil Menambahkan Schedule");
                     viewSchedule(namauser);
+                    setDefault();
                 } else {
                     showError("Menambahkan data gagal!");
                 }
             }
         });
+    }
+
+    private void setDefault(){
+        tv_tanggal.setText("");
+        tv_tanggal2.setText("");
+        sp_status.setSelection(0);
+        spLokasi.setSelection(0);
+        tvMulai_Kerja.setText("");
+        tvSelesai_Kerja.setText("");
+        cbCopy.setChecked(false);
+        cbCopy.setEnabled(false);
     }
 
     private void viewSchedule(final String item){
@@ -350,9 +369,6 @@ public class AturSchedule_Activity extends AppActivity implements View.OnClickLi
         );
     }
 
-
-
-
     private Calendar parseWaktuNow() {
         long current = 0;
         try {
@@ -437,6 +453,54 @@ public class AturSchedule_Activity extends AppActivity implements View.OnClickLi
                 String formattedTime = sdf.format(date);
                 tanggalString += formattedTime;
                 find(R.id.tv_tanggal, TextView.class).setText(formattedTime);
+
+            }
+        }, year, month, day);
+
+//        datePickerDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//            @Override
+//            public void onDismiss(DialogInterface dialog) {
+//                find(R.id.tv_tanggal2, TextView.class).setEnabled(false);
+//            }
+//        });
+        if(isSakit){
+            datePickerDialog.setMinDate(parseWaktu3harilalu());
+        } else if(isTrue){
+            datePickerDialog.setMinDate(parseWaktuNow());
+        }else if (isIzinlamabat){
+            datePickerDialog.setMinDate(parseWaktu1blnlalu());
+        }
+
+        if(isIzin || isSakit){
+            datePickerDialog.setMaxDate(parseWaktuNow());
+        }else {
+            datePickerDialog.setMaxDate(parseWaktu1Bulan());
+        }
+        datePickerDialog.show(getFragmentManager(), "Datepickerdialog");
+    }
+
+    public void getDatePickerStatus2() {
+        final Calendar cldr = Calendar.getInstance();
+        final int day = cldr.get(Calendar.DAY_OF_WEEK);
+        final int month = cldr.get(Calendar.MONTH);
+        final int year = cldr.get(Calendar.YEAR);
+        DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                String newDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                hari2 = ParseDateofWeek(dayOfMonth,monthOfYear,year);
+
+                Date date = null;
+                try {
+                    date = sdf.parse(newDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                String formattedTime = sdf.format(date);
+                tanggalString += formattedTime;
+                find(R.id.tv_tanggal2, TextView.class).setText(formattedTime);
+
             }
         }, year, month, day);
 
@@ -464,12 +528,34 @@ public class AturSchedule_Activity extends AppActivity implements View.OnClickLi
 
     private String ParseDateofWeek (int date, int month, int year){
         if(date>0 && month>0 && year>0){
+            int day = 0;
             SimpleDateFormat inFormat = new SimpleDateFormat("dd/MM/yyyy");
             try {
                 String newDate = date + "/" + (month + 1) + "/" + year;
                 Date myDate = inFormat.parse(newDate);
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE");
-                return simpleDateFormat.format(myDate);
+                //SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE");
+                Calendar c = Calendar.getInstance();
+                c.setTime(myDate);
+                day = c.get(Calendar.DAY_OF_WEEK);
+                switch (day) {
+                    case Calendar.SUNDAY:
+                        return "Minggu";
+                    case Calendar.MONDAY:
+                        return "Senin";
+                    case Calendar.TUESDAY:
+                        return "Selesa";
+                    case Calendar.WEDNESDAY:
+                        return "Rabu";
+                    case Calendar.THURSDAY:
+                        return "Kamis";
+                    case Calendar.FRIDAY:
+                        return "Jumat";
+                    case Calendar.SATURDAY:
+                        return "Sabtu";
+                    default:
+                        return "";
+                }
+                //return simpleDateFormat.format(myDate);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -479,7 +565,6 @@ public class AturSchedule_Activity extends AppActivity implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-
         switch (v.getId()) {
             case R.id.tv_mulaiKerja:
                 getTimePickerDialogTextView(getActivity(), tvMulai_Kerja);
@@ -488,7 +573,11 @@ public class AturSchedule_Activity extends AppActivity implements View.OnClickLi
                 getTimePickerDialogTextView(getActivity(), tvSelesai_Kerja);
                 break;
             case R.id.tv_tanggal:
+                find(R.id.tv_tanggal2, TextView.class).setEnabled(true);
                 getDatePickerStatus();
+                break;
+            case R.id.tv_tanggal2:
+                getDatePickerStatus2();
                 break;
         }
     }
