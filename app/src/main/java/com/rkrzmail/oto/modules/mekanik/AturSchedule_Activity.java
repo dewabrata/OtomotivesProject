@@ -186,6 +186,8 @@ public class AturSchedule_Activity extends AppActivity implements View.OnClickLi
         tvSelesai_Kerja.setOnClickListener(this);
         tv_tanggal.setOnClickListener(this);
         tv_tanggal2.setOnClickListener(this);
+        find(R.id.ic_tanggal).setOnClickListener(this);
+        find(R.id.ic_tanggal2).setOnClickListener(this);
     }
 
     private void insertData() {
@@ -572,11 +574,18 @@ public class AturSchedule_Activity extends AppActivity implements View.OnClickLi
             case R.id.tv_selesaiKerja:
                 getTimePickerDialogTextView(getActivity(), tvSelesai_Kerja);
                 break;
-            case R.id.tv_tanggal:
-                find(R.id.tv_tanggal2, TextView.class).setEnabled(true);
+//            case R.id.tv_tanggal:
+//                find(R.id.tv_tanggal2, TextView.class).setEnabled(true);
+//                getDatePickerStatus();
+//                break;
+//            case R.id.tv_tanggal2:
+//                getDatePickerStatus2();
+//                break;
+            case R.id.ic_tanggal:
+                find(R.id.ic_tanggal2, TextView.class).setEnabled(true);
                 getDatePickerStatus();
                 break;
-            case R.id.tv_tanggal2:
+            case R.id.ic_tanggal2:
                 getDatePickerStatus2();
                 break;
         }

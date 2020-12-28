@@ -398,7 +398,14 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                     }else{
                         updateTambahOrBatal();
                     }
-                }else {
+               } else if (isKonfirmasiTambah){
+                   if (find(R.id.et_tgl_estimasi, EditText.class).getText().toString().isEmpty() &&
+                   find(R.id.et_jam_estimasi,EditText.class).getText().toString().isEmpty()){
+                       showWarning("Estimasi Selsai belum terisi");
+                   }else {
+                       updateTambahOrBatal();
+                   }
+               } else {
                     updateTambahOrBatal();
                 }
                 break;
