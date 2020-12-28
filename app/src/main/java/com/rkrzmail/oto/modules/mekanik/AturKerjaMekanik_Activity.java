@@ -83,7 +83,8 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
     private boolean isNote = false;
     private boolean isHplus = false;
     private boolean isInspeksi = false;
-    private boolean isNotWait = false;
+    private boolean isNotWait = false, isKonfirmasiTambahan = false;
+    private int totalBiaya = 0;
 
     private Handler handler;
     private AlertDialog alertDialog;
@@ -156,7 +157,8 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
         if (n.get("PENGAMBILAN").asString().isEmpty() || n.get("PENGAMBILAN") == null)
             find(R.id.tl_pengambilan).setVisibility(View.GONE);
 
-        isNotWait = n.get("PELANGGAN_TIDAK_MENUNGGU").asString().equals("Y") & !n.get("PELANGGAN_TIDAK_MENUNGGU").asString().isEmpty();
+        isNotWait = n.get("TIDAK_MENUNGGU").asString().equals("Y") & !n.get("TIDAK_MENUNGGU").asString().isEmpty();
+        isKonfirmasiTambahan = n.get("KONFIRMASI_TAMBAHAN").asString().equals("Y") & !n.get("KONFIRMASI_TAMBAHAN").asString().isEmpty();
         String lamaLayanan = totalWaktuKerja(
                 n.get("WAKTU_KERJA_HARI").asString(),
                 n.get("WAKTU_KERJA_JAM").asString(),
@@ -384,7 +386,12 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PERINTAH_KERJA_MEKANIK), args));
                 partJasaList.asArray().clear();
                 partJasaList.asArray().addAll(result.get("data").asArray());
-
+                for (int i = 0; i < partJasaList.size(); i++) {
+                    if (partJasaList.get(i).get("TOTAL_BIAYA").asInteger() > 0) {
+                        totalBiaya = partJasaList.get(i).get("TOTAL_BIAYA").asInteger();
+                        break;
+                    }
+                }
                 args.remove("detail");
                 args.put("detail", "JASA LAYANAN");
 
@@ -617,13 +624,14 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
             case R.id.btn_tambah_part:
                 Intent intent = new Intent(getActivity(), TambahPartJasaDanBatal_Activity.class);
                 intent.putExtra("CHECKIN_ID", idCheckin);
-                //intent.putExtra(TOTAL_BIAYA, formatOnlyNumber(etTotal.getText().toString()));
+                intent.putExtra(TOTAL_BIAYA, totalBiaya);
                 intent.putExtra(TAMBAH_PART, "");
                 if (isNotWait) {
                     intent.putExtra(TIDAK_MENUNGGU, TIDAK_MENUNGGU);
                 } else {
                     intent.putExtra(MENUNGGU, MENUNGGU);
                 }
+                intent.putExtra("KONFIRMASI_TAMBAH", isKonfirmasiTambahan);
                 startActivityForResult(intent, REQUEST_TAMBAH_PART_JASA_LAIN);
                 break;
         }

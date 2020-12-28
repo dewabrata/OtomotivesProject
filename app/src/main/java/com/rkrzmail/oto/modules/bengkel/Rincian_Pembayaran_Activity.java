@@ -57,6 +57,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
     AlertDialog alertDialog;
 
     private Nson partList = Nson.newArray();
+    private Nson partIdList = Nson.newArray();
     private boolean isLayanan = false, isDp = false, isJualPart = false, isMdrOffUs = false, isBatal = false;
     private Nson data;
     private Nson sendData = Nson.newObject();
@@ -75,6 +76,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
     private String idCheckin = "", idJualPart = "";
     private String tglLayanan = "";
     private int maxFreePenyimpanan = 0;
+    private int partId = 0;
     int
             total1 = 0,
             total2 = 0,
@@ -255,6 +257,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         Intent i = new Intent(getActivity(), AturPembayaran_Activity.class);
         i.putExtra(DATA, sendData.toJson());
         i.putExtra("PART_LIST", partList.toJson());
+        i.putExtra("PART_ID_LIST", partIdList.toJson());
         startActivityForResult(i, REQUEST_DETAIL);
     }
 
@@ -312,12 +315,10 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         result = result.get("data");
         for (int i = 0; i < result.size(); i++) {
             if (!isBatal) {
-                if (isDp && result.get(i).get("DP_DETAIL").asInteger() > 0) {
-                    totalPart = result.get(i).get("HARGA_PART").asInteger() * result.get(i).get("JUMLAH").asInteger();
-                } else {
-                    totalPart += result.get(i).get("HARGA_PART").asInteger();
-                }
+                partIdList.add(isDp & result.get(i).get("DP_PART").asInteger() > 0 ?
+                        Nson.newObject().set("PART_ID", result.get(i).get("PART_ID").asInteger()) : 0);
 
+                totalPart += result.get(i).get("HARGA_PART").asInteger();
                 totalJasaPart += result.get(i).get("HARGA_JASA_PART").asInteger();
                 totalJasa += result.get(i).get("HARGA_JASA_LAIN").asInteger();
                 totalDp = result.get(i).get("DP").asInteger();
@@ -375,12 +376,9 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
 
         total1 = (int) (
                 biayaLayanan +
-                        totalJasa +
-                        totalJasaPart +
-                        totalPart +
-                        discPart +
-                        discJasaPart +
-                        discJasa +
+                        (totalJasa - discJasa ) +
+                        (totalJasaPart - discJasaPart) +
+                        (totalPart - discPart) +
                         biayaDerek + totalBiayaSimpan
         );
 
@@ -389,8 +387,9 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         }
         if (discSpot > 0) {
             discSpot = calculatePercentage(discSpot, sisaBiaya > 0 ? sisaBiaya : total1);
-            total2 = (int) ((sisaBiaya > 0 ? sisaBiaya : total1) - discSpot);
         }
+
+        total2 = (int) (sisaBiaya == 0 ? 0 : (sisaBiaya > 0 ? sisaBiaya : total1) - (discSpot > 0 ? discSpot : 0));
 
         find(R.id.row_total_2).setVisibility(total2 == 0 | isDp ? View.GONE : View.VISIBLE);
         find(R.id.row_sisa_biaya).setVisibility(sisaBiaya == 0 | isDp ? View.GONE : View.VISIBLE);

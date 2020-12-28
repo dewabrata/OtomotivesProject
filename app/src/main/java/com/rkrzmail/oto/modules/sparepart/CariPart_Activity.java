@@ -53,7 +53,8 @@ public class CariPart_Activity extends AppActivity {
             flagMasterPart = false,
             isLokasi = false,
             isTeralokasikan = false,
-            isPartCheckin= false;
+            isPartCheckin = false;
+    private boolean isCheckin = false;
     private Toolbar toolbar;
     int countForCariPart = 0;
     private String cari;
@@ -92,13 +93,15 @@ public class CariPart_Activity extends AppActivity {
             flag = false;
         } else if (getIntent().hasExtra(CARI_PART_LOKASI)) {
             isLokasi = true;
+            if (getIntent().hasExtra("CHECKIN"))
+                isCheckin = true;
             getSupportActionBar().setTitle("Cari Part Bengkel");
             flag = true;
-        }else if(getIntent().hasExtra(CARI_PART_TERALOKASIKAN)){
+        } else if (getIntent().hasExtra(CARI_PART_TERALOKASIKAN)) {
             isTeralokasikan = true;
             getSupportActionBar().setTitle("Cari Part Bengkel");
             flag = true;
-        }else if (getIntent().hasExtra(CARI_PART_CLAIM)){
+        } else if (getIntent().hasExtra(CARI_PART_CLAIM)) {
             isPartCheckin = true;
             getSupportActionBar().setTitle("Cari Part Garansi");
 
@@ -111,16 +114,16 @@ public class CariPart_Activity extends AppActivity {
         rvCariPart = (RecyclerView) findViewById(R.id.recyclerView);
         rvCariPart.setLayoutManager(new LinearLayoutManager(this));
         rvCariPart.setHasFixedSize(true);
-        if(isLokasi){
+        if (isLokasi) {
             initRecylerViewCarPartLokasi();
             cariPartWithLokasi("");
-        }else if(isTeralokasikan){
+        } else if (isTeralokasikan) {
             initRecylerViewCarPartTeralokasikan();
             cariPartTeralokasikan("");
-        }else if(isPartCheckin){
+        } else if (isPartCheckin) {
             initRecylerViewCarPartClaim();
             cariPartCheckin("");
-        }else{
+        } else {
             if (countForCariPart == 0) {
                 cariPart("");
             }
@@ -144,11 +147,11 @@ public class CariPart_Activity extends AppActivity {
                             viewHolder.find(R.id.tv_cari_pending, TextView.class).setText(flag ? "" : nListArray.get(position).get("PENDING").asString());
                             viewHolder.find(R.id.tv_cari_harga_part, TextView.class).setVisibility(flag ? View.GONE : View.VISIBLE);
                             viewHolder.find(R.id.tv_cari_hpp, TextView.class).setVisibility(flag ? View.GONE : View.VISIBLE);
-                            if(partLokasiPart.get(position).get("HARGA_JUAL").asString().equals("FLEXIBLE")){
+                            if (partLokasiPart.get(position).get("HARGA_JUAL").asString().equals("FLEXIBLE")) {
                                 viewHolder.find(R.id.tv_cari_harga_part, TextView.class).setText("");
                                 viewHolder.find(R.id.tv_cari_hpp, TextView.class).setText(RP + formatRp(nListArray.get(position).get("HPP").asString()));
-                            }else{
-                                viewHolder.find(R.id.tv_cari_harga_part, TextView.class).setText( RP + formatRp(nListArray.get(position).get("HARGA_JUAL").asString()));
+                            } else {
+                                viewHolder.find(R.id.tv_cari_harga_part, TextView.class).setText(RP + formatRp(nListArray.get(position).get("HARGA_JUAL").asString()));
                                 viewHolder.find(R.id.tv_cari_hpp, TextView.class).setText("");
                             }
 //                            if(nListArray.get(position).get("HARGA_JUAL").asString().equals("FLEXIBLE")){
@@ -196,6 +199,14 @@ public class CariPart_Activity extends AppActivity {
     }
 
     private void initRecylerViewCarPartLokasi() {
+        int partId = 0, jumlahPart = 0;
+        if (isCheckin) {
+            partId = getIntentIntegerExtra("PART_ID");
+            jumlahPart = getIntentIntegerExtra("JUMLAH");
+        }
+
+        final int finalPartId = partId;
+        final int finalJumlahPart = jumlahPart;
         rvCariPart.setAdapter(new NikitaRecyclerAdapter(partLokasiPart, R.layout.item_daftar_cari_part) {
                     @SuppressLint("SetTextI18n")
                     @Override
@@ -205,16 +216,17 @@ public class CariPart_Activity extends AppActivity {
                         viewHolder.find(R.id.tv_cari_namaPart, TextView.class).setText(partLokasiPart.get(position).get("NAMA_PART").asString());
                         viewHolder.find(R.id.tv_cari_noPart, TextView.class).setText(partLokasiPart.get(position).get("NO_PART").asString());
                         viewHolder.find(R.id.tv_cari_stockPart, TextView.class).setText(partLokasiPart.get(position).get("STOCK_RUANG_PART").asString());
-                        if(partLokasiPart.get(position).get("HARGA_JUAL").asString().equals("FLEXIBLE")){
+
+                        if (partLokasiPart.get(position).get("HARGA_JUAL").asString().equals("FLEXIBLE")) {
                             viewHolder.find(R.id.tv_cari_harga_part, TextView.class).setText("");
                             viewHolder.find(R.id.tv_cari_hpp, TextView.class).setText(RP + formatRp(partLokasiPart.get(position).get("HPP").asString()));
-                        }else{
-                            viewHolder.find(R.id.tv_cari_harga_part, TextView.class).setText( RP + formatRp(partLokasiPart.get(position).get("HARGA_JUAL").asString()));
+                        } else {
+                            viewHolder.find(R.id.tv_cari_harga_part, TextView.class).setText(RP + formatRp(partLokasiPart.get(position).get("HARGA_JUAL").asString()));
                             viewHolder.find(R.id.tv_cari_hpp, TextView.class).setText("");
                         }
-                        if(!partLokasiPart.get(position).get("LOKASI").asString().equals("*")){
+                        if (!partLokasiPart.get(position).get("LOKASI").asString().equals("*")) {
                             viewHolder.find(R.id.tv_cari_pending, TextView.class).setText(partLokasiPart.get(position).get("LOKASI").asString());
-                        }else{
+                        } else {
                             viewHolder.find(R.id.tv_cari_pending, TextView.class).setText("");
                         }
                     }
@@ -238,7 +250,7 @@ public class CariPart_Activity extends AppActivity {
                         super.onBindViewHolder(viewHolder, position);
                         viewHolder.find(R.id.tv_noFolder, TextView.class).setText(partLokasiPart.get(position).get("KODE").asString());
                         viewHolder.find(R.id.tv_lokasiPart, TextView.class).setText(partLokasiPart.get(position).get("LOKASI").asString());
-                        viewHolder.find(R.id.tv_namaPart, TextView.class).setText( partLokasiPart.get(position).get("NAMA_PART").asString());
+                        viewHolder.find(R.id.tv_namaPart, TextView.class).setText(partLokasiPart.get(position).get("NAMA_PART").asString());
                         viewHolder.find(R.id.tv_nomor_part, TextView.class).setText(partLokasiPart.get(position).get("NOMOR_PART_NOMOR").asString());
                         viewHolder.find(R.id.tv_merk, TextView.class).setText(partLokasiPart.get(position).get("MERK").asString());
                         viewHolder.find(R.id.tv_stock, TextView.class).setText(partLokasiPart.get(position).get("STOCK").asString());
@@ -269,9 +281,9 @@ public class CariPart_Activity extends AppActivity {
                         viewHolder.find(R.id.tv_cari_stockPart, TextView.class).setText(partClaim.get(position).get("STOCK").asString());
                         viewHolder.find(R.id.tv_cari_harga_part, TextView.class).setText(RP + formatRp(partClaim.get(position).get("HARGA_PART").asString()));
                         viewHolder.find(R.id.tv_cari_hpp, TextView.class).setText("");
-                        if(!partClaim.get(position).get("LOKASI").asString().equals("*")){
+                        if (!partClaim.get(position).get("LOKASI").asString().equals("*")) {
                             viewHolder.find(R.id.tv_cari_pending, TextView.class).setText(partClaim.get(position).get("LOKASI").asString());
-                        }else{
+                        } else {
                             viewHolder.find(R.id.tv_cari_pending, TextView.class).setText("");
                         }
                     }
@@ -292,6 +304,7 @@ public class CariPart_Activity extends AppActivity {
     private void cariPart(final String cari) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -345,6 +358,7 @@ public class CariPart_Activity extends AppActivity {
     private void cariPartWithLokasi(final String cari) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -358,8 +372,9 @@ public class CariPart_Activity extends AppActivity {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    result = result.get("data");
                     partLokasiPart.asArray().clear();
-                    partLokasiPart.asArray().addAll(result.get("data").asArray());
+                    partLokasiPart.asArray().addAll(result.asArray());
                     rvCariPart.getAdapter().notifyDataSetChanged();
                 } else {
                     showError("Gagal Mencari Part");
@@ -371,6 +386,7 @@ public class CariPart_Activity extends AppActivity {
     private void cariPartTeralokasikan(final String cari) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -396,6 +412,7 @@ public class CariPart_Activity extends AppActivity {
     private void cariPartCheckin(final String cari) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -441,14 +458,14 @@ public class CariPart_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        if(isLokasi){
+        if (isLokasi) {
             adapterSearchView(mSearchView, "spec", VIEW_SPAREPART, "NAMA_PART", "");
-        }else if(flagGlobal && countForCariPart == 2){
-            adapterSearchView(mSearchView,"", VIEW_CARI_PART_SUGGESTION, "NAMA_PART", CARI_PART);
-        }else if(flagBengkel && countForCariPart == 5){
-            adapterSearchView(mSearchView,"spec", VIEW_SPAREPART, "NAMA_PART", "");
-        }else if(isTeralokasikan){
-            adapterSearchView(mSearchView,"", VIEW_LOKASI_PART, "NAMA_PART", CARI_PART_TERALOKASIKAN);
+        } else if (flagGlobal && countForCariPart == 2) {
+            adapterSearchView(mSearchView, "", VIEW_CARI_PART_SUGGESTION, "NAMA_PART", CARI_PART);
+        } else if (flagBengkel && countForCariPart == 5) {
+            adapterSearchView(mSearchView, "spec", VIEW_SPAREPART, "NAMA_PART", "");
+        } else if (isTeralokasikan) {
+            adapterSearchView(mSearchView, "", VIEW_LOKASI_PART, "NAMA_PART", CARI_PART_TERALOKASIKAN);
         }
 
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
@@ -460,12 +477,12 @@ public class CariPart_Activity extends AppActivity {
             public boolean onQueryTextSubmit(String query) {
                 cari = query;
                 if (flag) {
-                    if(isLokasi){
+                    if (isLokasi) {
                         cariPartWithLokasi(query);
                     }
-                   if(isTeralokasikan){
-                       cariPartTeralokasikan(query);
-                   }
+                    if (isTeralokasikan) {
+                        cariPartTeralokasikan(query);
+                    }
                     if (flagGlobal) {
                         countForCariPart = 2;
                         cariPart(query);

@@ -28,6 +28,7 @@ import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
+import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.ABSEN;
 import static com.rkrzmail.utils.APIUrls.VIEW_PEMBAYARAN;
@@ -78,7 +79,7 @@ public class Absen_Absensi_Fragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (isVisible()) {
-            viewAbsensi((Absensi_MainTab_Activity)getActivity());
+            viewAbsensi((Absensi_MainTab_Activity) Objects.requireNonNull(getActivity()));
         }
     }
 
@@ -157,7 +158,7 @@ public class Absen_Absensi_Fragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == Activity.RESULT_OK){
-
+            //viewAbsensi();
         }
     }
 }

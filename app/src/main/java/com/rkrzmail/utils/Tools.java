@@ -701,4 +701,19 @@ public class Tools {
             return "";
         }
     }
+
+
+    public static String isSingleQuote(String text){
+        if(text.isEmpty()) return "";
+
+        StringBuilder textBuilder = new StringBuilder(text);
+        for (int i = 0; i < textBuilder.length(); i++) {
+            if(textBuilder.charAt(i) == '\''){
+                textBuilder.insert(i, '\'');
+                break;
+            }
+        }
+
+        return textBuilder.toString();
+    }
 }

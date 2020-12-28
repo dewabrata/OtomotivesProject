@@ -203,6 +203,10 @@ public class AppActivity extends AppCompatActivity {
         return getIntentStringExtra(getIntent(), key);
     }
 
+    public int getIntentIntegerExtra(String key) {
+        return getIntentIntExtra(getIntent(), key);
+    }
+
     public String editTextToString(EditText editText) {
         return editText.getText().toString();
     }
@@ -212,6 +216,13 @@ public class AppActivity extends AppCompatActivity {
             return intent.getStringExtra(key);
         }
         return "";
+    }
+
+    public int getIntentIntExtra(Intent intent, String key) {
+        if (intent != null) {
+            intent.getIntExtra(key, 0);
+        }
+        return intent.getIntExtra(key, 0);
     }
 
     public void showInfoDialog(String message, DialogInterface.OnClickListener onClickListener) {

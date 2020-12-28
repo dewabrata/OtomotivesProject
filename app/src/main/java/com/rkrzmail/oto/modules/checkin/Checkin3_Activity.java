@@ -120,6 +120,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
     private int waktuPesan = 0;
     private int totalHargaPartKosong = 0;
     private int hargaPartLayanan = 0; // afs, recall, otomotives
+    private int partId = 0, jumlahPart = 0;
     private double sisaDp = 0;
     private final List<Integer> jumlahList = new ArrayList<>();
     private final Tools.TimePart dummyTime = Tools.TimePart.parse("00:00:00");
@@ -131,7 +132,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
     private boolean isBatal = false;
     private boolean isJasaExternal = false;
     private boolean isHplusLayanan = false;
-
+    private boolean isAFService = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -455,7 +456,6 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
         final Nson data = Nson.readJson(getIntentStringExtra(DATA));
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -485,7 +485,6 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                     layananArray.add("GARANSI LAYANAN");
                 }
                 layananArray.add("PERAWATAN LAINNYA");
-                Log.d(TAG, "List Nama Layanan : " + layananArray);
 
                 //get AFS HISTORY
                 args.remove("layanan");
@@ -512,7 +511,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                             if (layananAFS.size() > 0) {
                                 for (int i = 0; i < layananAFS.size(); i++) {
                                     if (layananAFS.get(i).asString().equals(layananArray.get(position).asString())) {
-                                        if(parseTanggalBeliKendaraan(data.get("tanggalBeli"), false)){
+                                        if(!parseTanggalBeliKendaraan(data.get("tanggalBeli"), false)){
                                             TextView mTextView = new TextView(getContext());
                                             mTextView.setVisibility(View.GONE);
                                             mTextView.setHeight(0);
@@ -579,19 +578,21 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 }
 
                 for (int i = 0; i < dataLayananList.size(); i++) {
-                    int batasanNonPaketKm = 0, batasanNonPaketBulan = 0;
                     partWajibList.asArray().clear();
                     masterPartList.asArray().clear();
 
                     if (dataLayananList.get(i).get("NAMA_LAYANAN").asString().equalsIgnoreCase(item)) {
-                        batasanNonPaketKm = dataLayananList.get(i).get("BATASAN_NON_PAKET_KM").asInteger();
-                        batasanNonPaketBulan = dataLayananList.get(i).get("BATASAN_NON_PAKET_BULAN").asInteger();
-                        if(data.get("km").asInteger() > batasanNonPaketKm){
+                        int batasanNonPaketKm = dataLayananList.get(i).get("BATASAN_NON_PAKET_KM").asInteger();
+                        int batasanNonPaketBulan = dataLayananList.get(i).get("BATASAN_NON_PAKET_BULAN").asInteger();
+
+                        if(dataLayananList.get(i).get("JENIS_LAYANAN").asString().equals("AFTER SALES SERVIS") &&
+                                data.get("km").asInteger() > batasanNonPaketKm){
                             showWarning(dataLayananList.get(i).get("NAMA_LAYANAN").asString() +
                                     " EXPIRED, MAX KM :" + batasanNonPaketKm + ", MAX BULAN : " + batasanNonPaketBulan);
                             spLayanan.setSelection(0);
                             return;
-                        }else if(parseTanggalBeliKendaraan(data.get("tanggalBeli"), true)){
+                        }else if(dataLayananList.get(i).get("JENIS_LAYANAN").asString().equals("AFTER SALES SERVIS") &&
+                                parseTanggalBeliKendaraan(data.get("tanggalBeli"), true)){
                             showWarning(dataLayananList.get(i).get("NAMA_LAYANAN").asString() +
                                     " EXPIRED, MAX KM :" + batasanNonPaketKm + ", MAX BULAN : " + batasanNonPaketBulan);
                             spLayanan.setSelection(0);
@@ -712,7 +713,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 Date bulanBeli = sdfMonth.parse(subsBulan);
                 bulanBeliTimeMilis = bulanBeli.getTime();
 
-                if(nowMonthTimeMilies > bulanBeliTimeMilis){
+                if(nowMonthTimeMilies <= bulanBeliTimeMilis){
                     return true;
                 }
             }else{
@@ -723,7 +724,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 Date tglBeli =  sdfYear.parse(subsTahun);
                 tanggalBeliTimeMilis = tglBeli.getTime();
 
-                if (nowYearTimeMilis >= tanggalBeliTimeMilis) {
+                if (nowYearTimeMilis <= tanggalBeliTimeMilis) {
                     return true;
                 }
             }
@@ -829,6 +830,9 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
 
                 i = new Intent(getActivity(), CariPart_Activity.class);
                 i.putExtra(CARI_PART_LOKASI, RUANG_PART);
+                i.putExtra("PART_ID", partId);
+                i.putExtra("JUMLAH", jumlahPart);
+                i.putExtra("CHECKIN", true);
                 startActivityForResult(i, REQUEST_CARI_PART);
                 break;
             case R.id.btn_jasaLainBerkala_checkin3:
@@ -929,6 +933,9 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         break;
                     case REQUEST_HARGA_PART:
                         dataAccept = Nson.readJson(getIntentStringExtra(data, DATA));
+                        partId = dataAccept.get("PART_ID").asInteger();
+                        jumlahPart = dataAccept.get("JUMLAH").asInteger();
+
                         try {
                             totalHarga += Integer.parseInt(formatOnlyNumber(dataAccept.get("NET").asString()));
                             if (data != null && data.getStringExtra("PART_KOSONG").equals("YA")) {

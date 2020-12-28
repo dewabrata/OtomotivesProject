@@ -47,6 +47,7 @@ public class AturPembayaran_Activity extends AppActivity {
     private Spinner spTipePembayaran, spNoRek;
 
     private Nson rekeningList = Nson.newArray();
+    private Nson partIdList;
     private String nominalDonasi = "";
     private String jenis = "";
     private String
@@ -72,7 +73,9 @@ public class AturPembayaran_Activity extends AppActivity {
             totalMdrKreditCard = 0,
             grandTotal = 0,
             totalBiaya = 0,
-            totalDue = 0;
+            totalDue = 0,
+            totalDp = 0,
+            sisaBiayaDp = 0;
     private boolean
             isCheckin = false,
             isJualPart = false,
@@ -124,12 +127,16 @@ public class AturPembayaran_Activity extends AppActivity {
             Tools.setViewAndChildrenEnabled(find(R.id.tl_reminder, TableLayout.class), false);
             isDp = true;
             jenis = "DP";
+            totalDp = nson.get("TOTAL_DP").asInteger();
+            sisaBiayaDp = nson.get("SISA_DP").asInteger();
+            partIdList = Nson.readJson(getIntentStringExtra("PART_ID_LIST"));
 
             find(R.id.cb_checkout, CheckBox.class).setChecked(false);
             find(R.id.et_percent_dp, EditText.class).setText(nson.get("DP_PERCENT").asString() + "%");
-            find(R.id.et_rp_dp, EditText.class).setText(RP + formatRp(nson.get("TOTAL_DP").asString()));
-            find(R.id.et_sisa_dp, EditText.class).setText(RP + formatRp(nson.get("SISA_DP").asString()));
-            find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(nson.get("TOTAL_DP").asString()));
+            find(R.id.et_rp_dp, EditText.class).setText(RP + formatRp(String.valueOf(totalDp)));
+            find(R.id.et_sisa_dp, EditText.class).setText(RP + formatRp(String.valueOf(sisaBiayaDp)));
+            find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(totalDp)));
+            find(R.id.et_grandTotal, EditText.class).setText(RP + formatRp(String.valueOf(totalDp)));
         } else {
             Tools.setViewAndChildrenEnabled(find(R.id.tl_reminder, TableLayout.class), false);
             isJualPart = true;
@@ -145,14 +152,14 @@ public class AturPembayaran_Activity extends AppActivity {
         mdrOfUs = nson.get("MDR_OFF_US").asDouble();
         mdrOnUs = nson.get("MDR_ON_US").asDouble();
         mdrKreditCard = nson.get("MDR_KREDIT_CARD").asDouble();
-        totalBiaya = nson.get("TOTAL").asInteger();
+        totalBiaya = isDp ? totalDp : nson.get("TOTAL").asInteger();
 
         if (nson.get("PKP").asString().equals("Y") && !isDp) {
             totalPpn = (int) (ppn * totalBiaya);
             grandTotal = totalPpn + totalBiaya;
             isPpn = true;
             find(R.id.et_ppn, EditText.class).setText(RP + formatRp(String.valueOf(totalPpn)));
-        }else{
+        } else {
             grandTotal = totalBiaya;
         }
 
@@ -224,7 +231,9 @@ public class AturPembayaran_Activity extends AppActivity {
                 tipePembayaran = parent.getItemAtPosition(position).toString();
 
                 if (tipePembayaran.equals("CASH") || tipePembayaran.equals("INVOICE")) {
-                    find(R.id.et_grandTotal, EditText.class).setText(RP + formatRp(String.valueOf(grandTotal)));
+                    if (!isDp) {
+                        find(R.id.et_grandTotal, EditText.class).setText(RP + formatRp(String.valueOf(grandTotal)));
+                    }
                     spNoRek.setEnabled(false);
                     find(R.id.et_noTrack, EditText.class).setEnabled(false);
                     find(R.id.et_namaBankEpay).setEnabled(false);
@@ -239,8 +248,10 @@ public class AturPembayaran_Activity extends AppActivity {
                         spNoRek.setEnabled(true);
                         find(R.id.et_namaBankEpay).setEnabled(false);
                         totalDue += grandTotal;
-                        find(R.id.et_grandTotal, EditText.class).setText(RP + formatRp(String.valueOf(grandTotal)));
-                        find(R.id.et_totalBayar, EditText.class).setText(RP + formatRp(String.valueOf(grandTotal)));
+                        if (!isDp) {
+                            find(R.id.et_grandTotal, EditText.class).setText(RP + formatRp(String.valueOf(grandTotal)));
+                            find(R.id.et_totalBayar, EditText.class).setText(RP + formatRp(String.valueOf(grandTotal)));
+                        }
                     } else {
                         isMdrKreditCard = tipePembayaran.equals("KREDIT");
 
@@ -319,7 +330,7 @@ public class AturPembayaran_Activity extends AppActivity {
                         find(R.id.et_totalBayar, EditText.class).setError("Total Bayar Belum di Isi");
                         return;
                     }
-                    if (Integer.parseInt(formatOnlyNumber(find(R.id.et_totalBayar, EditText.class).getText().toString())) < grandTotal) {
+                    if (Integer.parseInt(formatOnlyNumber(find(R.id.et_totalBayar, EditText.class).getText().toString())) < Integer.parseInt(formatOnlyNumber(find(R.id.et_grandTotal, EditText.class).getText().toString()))) {
                         find(R.id.et_totalBayar, EditText.class).setError("Total Bayar Tidak Valid");
                         return;
                     }
@@ -450,7 +461,7 @@ public class AturPembayaran_Activity extends AppActivity {
                 args.put("discountJasaLain", data.get("DISC_JASA").asString());
                 args.put("biayaJasaLainNet", data.get("HARGA_JASA_LAIN_NET").asString());
                 args.put("dp", data.get("DP").asString());
-                args.put("sisaBiaya", data.get("SISA_BIAYA").asString());
+                args.put("sisaBiaya", isDp ? String.valueOf(sisaBiayaDp) : data.get("SISA_BIAYA").asString());
                 args.put("biayaSimpan", data.get("BIAYA_SIMPAN").asString());
                 args.put("discountSpot", data.get("DISC_SPOT").asString());
                 args.put("noBuktiBayar", currentDateTime());
@@ -461,6 +472,7 @@ public class AturPembayaran_Activity extends AppActivity {
                 args.put("biayaDerek", data.get("BIAYA_DEREK").asString());
                 args.put("noPonsel", data.get("NO_PONSEL").asString());
                 args.put("nopol", formatNopol(data.get("NOPOL").asString()));
+                args.put("partIdList", partIdList == null ? "" : partIdList.toJson());
 
                 args.put("idJualPart", String.valueOf(idJualPart));
                 args.put("idCheckin", String.valueOf(idCheckin));
@@ -557,7 +569,7 @@ public class AturPembayaran_Activity extends AppActivity {
                     args.put("balancePpn", String.valueOf(totalDue));
                 }
 
-                if(isDp){
+                if (isDp) {
                     args.put("isDp", "YA");
                     args.put("status", tipePembayaran + " DP," + " ANTRIAN");
                 }
@@ -611,7 +623,7 @@ public class AturPembayaran_Activity extends AppActivity {
                             notMdr = true;
                         }
                     }
-                    if(!notMdr){
+                    if (!notMdr) {
                         int finalMdrRp = 0;
                         double finalMdrPercent = 0;
                         if (isMdrKreditCard) {
@@ -630,13 +642,13 @@ public class AturPembayaran_Activity extends AppActivity {
                             }
                         }
                         isMdrBank = true;
-                        totalDue = finalMdrRp + grandTotal;
+                        totalDue = isDp ? finalMdrRp + totalDp : finalMdrRp + grandTotal;
                         find(R.id.et_percent_disc_merc, EditText.class).setText(finalMdrPercent + "%");
                         find(R.id.et_rp_disc_merc, EditText.class).setText(RP + formatRp(String.valueOf(finalMdrRp)));
                         find(R.id.et_grandTotal, EditText.class).setText(RP + formatRp(String.valueOf(totalDue)));
                         find(R.id.et_totalBayar, EditText.class).setText(RP + formatRp(String.valueOf(totalDue)));
                     }
-                }else{
+                } else {
                     showError("Gagal Memuat Data MDR");
                 }
             }

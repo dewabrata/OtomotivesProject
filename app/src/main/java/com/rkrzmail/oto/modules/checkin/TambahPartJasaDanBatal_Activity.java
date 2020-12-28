@@ -85,6 +85,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
 
     private boolean isWait = false, isPartKosong = false, isBatal = false, isTambah = false, isNotWait = false;
     private boolean isSign = false;
+    private boolean isKonfirmasiTambah = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,8 +116,10 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
         find(R.id.btn_jasa_lain).setOnClickListener(this);
         find(R.id.btn_part).setOnClickListener(this);
         find(R.id.btn_simpan).setOnClickListener(this);
-        find(R.id.tv_max_tgl_konfirmasi).setOnClickListener(this);
-        find(R.id.tv_max_jam_konfirmasi).setOnClickListener(this);
+        find(R.id.img_btn_kalender_konfirmasi).setOnClickListener(this);
+        find(R.id.img_btn_jam_konfirmasi).setOnClickListener(this);
+        find(R.id.img_btn_kalender_estimasi).setOnClickListener(this);
+        find(R.id.img_btn_jam_estimasi).setOnClickListener(this);
         find(R.id.btn_ttd).setOnClickListener(this);
     }
 
@@ -124,7 +127,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
     private void initData() {
         idCheckin = getIntentStringExtra("CHECKIN_ID");
         Log.d(TAG, "initData: " + idCheckin);
-        totalBiaya += Integer.parseInt(getIntentStringExtra(TOTAL_BIAYA));
+        totalBiaya = getIntentIntegerExtra(TOTAL_BIAYA);
         find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));
         layanan = getIntentStringExtra("LAYANAN");
 
@@ -140,13 +143,19 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
             find(R.id.et_estimasi_lama, EditText.class).setText(estimasiLama);
             if (getIntent().hasExtra(TIDAK_MENUNGGU)) {
                 isNotWait = true;
-                find(R.id.ly_tidak_menunggu).setVisibility(View.GONE);
+                find(R.id.ly_menunggu).setVisibility(View.GONE);
                 find(R.id.tl_total_setelah_tambah, TextInputLayout.class).setHint("TAMBAH / BATAL");
             } else {
                 isWait = true;
                 find(R.id.ly_menunggu).setVisibility(View.VISIBLE);
+                //find(R.id.ly_tidak_menunggu).setVisibility(View.VISIBLE);
                 find(R.id.tl_total_setelah_tambah, TextInputLayout.class).setHint("TOTAL TAMBAH");
             }
+
+            isKonfirmasiTambah = getIntent().getBooleanExtra("KONFIRMASI_TAMBAH", false);
+            find(R.id.ly_not_konfirmasi_tambah).setVisibility(isKonfirmasiTambah ? View.VISIBLE :  View.GONE);
+            find(R.id.ly_waktu_estimasi).setVisibility(isKonfirmasiTambah ? View.GONE : View.VISIBLE);
+
         } else if (getIntent().hasExtra(BATAL_PART)) {
             isBatal = true;
             find(R.id.ly_btn_part_jasa).setVisibility(View.GONE);
@@ -165,7 +174,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
         }
     }
 
-    public void getTimePickerDialogEstimasiSelesai() {
+    public void getTimePicker(final EditText editText) {
         Calendar calendar = Calendar.getInstance();
         int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
         int currentMinute = calendar.get(Calendar.MINUTE);
@@ -181,7 +190,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                     e.printStackTrace();
                 }
 
-                find(R.id.tv_max_jam_konfirmasi, TextView.class).setText(sdf.format(date));
+               editText.setText(sdf.format(date));
             }
         }, currentHour, currentMinute, true);
 
@@ -189,7 +198,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
         timePickerDialog.show(getFragmentManager(), "Timepickerdialog");
     }
 
-    public void getDatePickerMaxConfirm() {
+    public void getDatePicker(final EditText editText) {
         final Calendar cldr = Calendar.getInstance();
         final int day = cldr.get(Calendar.DAY_OF_MONTH);
         final int month = cldr.get(Calendar.MONTH);
@@ -197,8 +206,8 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
         DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-                @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                String newDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM");
+                String newDate = dayOfMonth + "/" + (monthOfYear + 1);
                 Date date = null;
                 try {
                     date = sdf.parse(newDate);
@@ -206,7 +215,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                     e.printStackTrace();
                 }
 
-                find(R.id.tv_max_tgl_konfirmasi, TextView.class).setText(sdf.format(date));
+                editText.setText(sdf.format(date));
             }
         }, year, month, day);
 
@@ -335,6 +344,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                     args.put("parts", partList.toJson());
                     args.put("jasaLain", jasaList.toJson());
                     args.put("idDetail", getIntentStringExtra(ID));
+                    args.put("isKonfirmasiTambah", isKonfirmasiTambah ? "Y" : "N");
                 }
                 if (isBatal) {
                     args.put("aktivitas", "BATAL PART");
@@ -392,11 +402,17 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                     updateTambahOrBatal();
                 }
                 break;
-            case R.id.tv_max_tgl_konfirmasi:
-                getDatePickerMaxConfirm();
+            case R.id.img_btn_kalender_konfirmasi:
+                getDatePicker(find(R.id.et_tgl_konfirmasi, EditText.class));
                 break;
-            case R.id.tv_max_jam_konfirmasi:
-                getTimePickerDialogEstimasiSelesai();
+            case R.id.img_btn_kalender_estimasi:
+                getDatePicker(find(R.id.et_tgl_estimasi, EditText.class));
+                break;
+            case R.id.img_btn_jam_konfirmasi:
+                getTimePicker(find(R.id.et_jam_konfirmasi, EditText.class));
+                break;
+            case R.id.img_btn_jam_estimasi:
+                getTimePicker(find(R.id.et_jam_estimasi, EditText.class));
                 break;
             case R.id.btn_ttd:
                 if (!checkPermission()) {

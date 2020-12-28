@@ -107,8 +107,8 @@ public class Absensi_MainTab_Activity extends AppActivity {
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     showSuccess("Absen Berhasil");
-//                    Absen_Absensi_Fragment absen_absensi_fragment = new Absen_Absensi_Fragment();
-//                    absen_absensi_fragment.viewAbsensi(Absensi_MainTab_Activity.this);
+                    Absen_Absensi_Fragment absen_absensi_fragment = new Absen_Absensi_Fragment();
+                    absen_absensi_fragment.viewAbsensi(Absensi_MainTab_Activity.this);
                 } else {
                     showError(result.get("message").asString());
                 }

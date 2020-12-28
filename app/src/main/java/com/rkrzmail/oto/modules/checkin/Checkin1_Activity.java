@@ -331,6 +331,9 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
 
                 noHp = n.get("NO_PONSEL").asString();
                 pekerjaan = n.get("PEKERJAAN").asString();
+                if (!noHp.isEmpty()) {
+                    isNoHp = true;
+                }
 
                 String nomor = n.get("NO_PONSEL").asString();
                 if (nomor.length() > 4) {
@@ -540,7 +543,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 args.put("nopol", nopol);
                 args.put("jeniskendaraan", etJenisKendaraan.getText().toString().toUpperCase());//dateKendaraan
                 args.put("noPonsel", isNoHp ? noHp : formatOnlyNumber(etNoPonsel.getText().toString()));
-                args.put("nama", namaPelanggan);
+                args.put("nama", Tools.isSingleQuote(namaPelanggan));
                 args.put("isPemilik", pemilik);//dateKendaraan
                 args.put("keluhan_list", keluhanList.toJson());
                 args.put("km", km);

@@ -81,6 +81,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
     private boolean isMekanik = false; // true = part, false = jasa
     private boolean isKurangi = false;
     private boolean isMekanikSelected = false;
+    private boolean isEstimasi = false, isKonfirmasiTambahan = false, isTambahPartOK = false;
 
     private String idCheckinDetail = "", idCheckin = "", idAntrian = "";
     private String status = "";
@@ -137,6 +138,8 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         idCheckin = data.get(ID).asString();
         jenisAntrian = data.get("ANTRIAN").asString();
         noPonsel = data.get("NO_PONSEL").asString();
+        isEstimasi = data.get("STATUS").asString().equals("LAYANAN ESTIMASI") & !data.get("STATUS").asString().isEmpty();
+        isKonfirmasiTambahan = data.get("KONFIRMASI_TAMBAHAN").asString().equals("Y") & !data.get("KONFIRMASI_TAMBAHAN").asString().isEmpty();
 
         etNoAntrian.setText(data.get("NO_ANTRIAN").asString());
         etStatus.setText(data.get("STATUS_KONTROL").asString());
@@ -201,7 +204,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
 
         setSpAktifitas();
         setSpMekanik(data.get("MEKANIK").asString());
-        getDetailCheckin(data);
+        getDetailCheckin(idCheckin);
 
     }
 
@@ -302,7 +305,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         });
     }
 
-    private void getDetailCheckin(final Nson id) {
+    private void getDetailCheckin(final String id) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -311,7 +314,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 args.put("detail", "TRUE");
-                args.put("id", id.get(ID).asString());
+                args.put("id", id);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_KONTROL_LAYANAN), args));
             }
 
@@ -438,7 +441,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         } else if (etStatus.getText().toString().equals("TUNGGU DP")) {
             aktifitasList.add("BATAL PELANGGAN");
             aktifitasList.add("MESSAGE PELANGGAN");
-        } else if (etStatus.getText().toString().equals("PENUGASAN MEKANIK") || etStatus.getText().toString().equals("TAMBAH PART - JASA")) {
+        } else if (etStatus.getText().toString().equals("PENUGASAN MEKANIK")) {
             aktifitasList.add("TAMBAH MEKANIK");
             aktifitasList.add("GANTI MEKANIK");
             aktifitasList.add("TAMBAH PART - JASA");
@@ -467,6 +470,9 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 etStatus.getText().toString().equals("EPAY")) {
             aktifitasList.add("CHECK OUT");
             aktifitasList.add("MESSAGE PELANGGAN");
+        }else if(etStatus.getText().toString().equals("TAMBAH PART - JASA")){
+            aktifitasList.add("TAMBAH PART - JASA MESSAGE OKAY");
+            aktifitasList.add("TAMBAH PART - JASA MESSAGE BATAL");
         }
 
         ArrayAdapter<String> aktifitasAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, aktifitasList);
@@ -485,8 +491,10 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_mekanik, LinearLayout.class), false);
                 }
 
-                if (status.equals("TAMBAH PART - JASA")) {
-                    //moveWa();//with specific message
+                if (status.equals("TAMBAH PART - JASA MESSAGE OKAY")) {
+                    isTambahPartOK = true;
+                }else{
+                    isTambahPartOK = false;
                 }
 
                 if (status.equals("MESSAGE PELANGGAN")) {
@@ -511,6 +519,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                     intent.putExtra("CHECKIN_ID", idCheckin);
                     intent.putExtra(TOTAL_BIAYA, formatOnlyNumber(etTotal.getText().toString()));
                     intent.putExtra(TAMBAH_PART, "");
+                    intent.putExtra("KONFIRMASI_TAMBAH", isKonfirmasiTambahan);
                     intent.putExtra("LAYANAN", etNamaLayanan.getText().toString());
                     intent.putExtra(ESTIMASI_WAKTU, etEstimasiSebelum.getText().toString());
                     if (find(R.id.cb_tidak_menunggu, CheckBox.class).isChecked()) {
@@ -563,11 +572,21 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 args.put("action", "update");
                 args.put("status", status);
                 args.put("id", id);
+
+                if(isEstimasi){
+                    args.put("isEstimasi", "Y");
+                }
+
+                if(isTambahPartOK){
+                    args.put("isTambahPart", "Y");
+                }
+
                 if (isMekanik) {
                     args.put("aktivitas", "MEKANIK");
                     args.put("mekanik", namaMekanik);
                     args.put("mekanikId", idMekanik);
                 }
+
                 if (status.equals("KURANGI PART - JASA")) {
                     args.put("aktivitas", "KURANGI PART - JASA");
                     args.put("partJasaList", batalPartJasaList.toJson());
@@ -575,7 +594,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                     args.put("aktivitas", "BATAL DP");
                     args.put("partJasaList", dataDetailList.toJson());
                 } else if (status.contains("MESSAGE")) {
-                    args.put("isMessage", "YA");
+                    args.put("isMessage", "Y");
                 }
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_KONTROL_LAYANAN), args));
@@ -652,8 +671,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         if (resultCode == RESULT_OK && requestCode == REQUEST_MEKANIK) {
             setSpMekanik("");
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_TAMBAH_PART_JASA_LAIN) {
-            Nson nson = Nson.readJson(getIntentStringExtra(data, TAMBAH));
-            getDetailCheckin(nson.get(ID));
+            getDetailCheckin(getIntentStringExtra(data, DATA));
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_CHECKIN) {
             loadData();
         }

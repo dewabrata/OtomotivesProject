@@ -95,7 +95,7 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
             etBiayaJasa.setVisibility(View.GONE);
             isPartWajib = true;
             stock = nson.get("STOCK").asInteger();
-            garansiPart = nson.get("GARANSI_PART_PABRIKAN").asString();
+            garansiPart = nson.get("GARANSI_PART_PABRIKAN").asString().equals("Y") ? "Y" : "N";
             hpp = nson.get("HPP").asString();
             idLokasiPart = nson.get("LOKASI_PART_ID").asString();
 

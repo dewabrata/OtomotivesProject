@@ -330,9 +330,9 @@
                     android:hint="KM"
                     android:inputType="number"
                     android:maxLength="10"
+                    android:singleLine="true"
                     android:textSize="14sp"
                     android:padding="15dp" />
-
 
             </android.support.design.widget.TextInputLayout>
 

@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:theme="@style/AppTheme.AppBarOverlay">
 
-             <include layout="@layout/toolbar"/>
+            <include layout="@layout/toolbar" />
 
         </android.support.design.widget.AppBarLayout>
 
@@ -48,7 +48,7 @@
                         android:background="@drawable/btn_rounded_accent"
                         android:text="JASA LAIN"
                         android:textColor="@android:color/white"
-                        android:layout_marginEnd="10dp"/>
+                        android:layout_marginEnd="10dp" />
 
                     <Button
                         android:id="@+id/btn_part"
@@ -169,13 +169,96 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/ly_not_konfirmasi_tambah"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="@dimen/spacing_large">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ESTIMASI SELESAI"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/background_edittext"
+                        android:layout_marginTop="@dimen/paddingMedium"
+                        android:padding="@dimen/paddingMedium"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp"
+                        android:textStyle="bold"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/paddingMedium"
+                        android:layout_marginBottom="@dimen/paddingMedium"
+                        android:gravity="center">
+
+                        <ImageButton
+                            android:id="@+id/img_btn_kalender_estimasi"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:textColor="@android:color/black"
+                            android:src="@drawable/icon_tanggal"
+                            android:backgroundTint="@android:color/white" />
+
+                        <android.support.design.widget.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                            <EditText
+                                android:id="@+id/et_tgl_estimasi"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="DD/MM"
+                                android:enabled="false"
+                                android:textSize="14sp"
+                                android:layout_weight="1"
+                                tools:ignore="Autofill,TextFields" />
+
+                        </android.support.design.widget.TextInputLayout>
+
+                        <ImageButton
+                            android:id="@+id/img_btn_jam_estimasi"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:textColor="@android:color/black"
+                            android:src="@drawable/icon_jam"
+                            android:backgroundTint="@android:color/transparent"/>
+
+                        <android.support.design.widget.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                            <EditText
+                                android:id="@+id/et_jam_estimasi"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="HH:MM"
+                                android:enabled="false"
+                                android:textSize="14sp"
+                                android:layout_weight="1"
+                                tools:ignore="Autofill,TextFields" />
+
+                        </android.support.design.widget.TextInputLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/ly_menunggu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone">
+                    android:orientation="vertical">
 
                     <CheckBox
                         android:id="@+id/cb_aggrement_checkin4"
@@ -206,88 +289,93 @@
 
                 </LinearLayout>
 
+<!--                default 15 menit <TIDAK TERPAKAI>-->
                 <LinearLayout
                     android:id="@+id/ly_tidak_menunggu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/spacing_large"
                     android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="MAX KONFIRMASI"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:background="@drawable/background_edittext"
+                        android:padding="10dp"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:gravity="center"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/paddingMedium"
+                        android:layout_marginBottom="@dimen/paddingMedium"
+                        android:gravity="center">
 
-                        <TextView
+                        <ImageButton
+                            android:id="@+id/img_btn_kalender_konfirmasi"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="3"
-                            android:text="MAX KONFIRMASI"
-                            android:textColor="@color/grey_900"
-                            android:textSize="12sp"
-                            android:textStyle="bold" />
+                            android:layout_weight="0.5"
+                            android:textColor="@android:color/black"
+                            android:src="@drawable/icon_tanggal"
+                            android:backgroundTint="@android:color/white" />
 
-                        <RelativeLayout
+                        <android.support.design.widget.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             android:layout_width="0dp"
-                            android:layout_height="34dp"
-                            android:layout_weight="6"
-                            android:background="@drawable/background_edittext">
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
 
-                            <TextView
-                                android:id="@+id/tv_max_tgl_konfirmasi"
-                                android:layout_width="wrap_content"
+                            <EditText
+                                android:id="@+id/et_tgl_konfirmasi"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:layout_alignParentTop="true"
-                                android:layout_alignParentBottom="true"
-                                android:layout_marginStart="5dp"
-                                android:layout_marginTop="3dp"
-                                android:gravity="center"
-                                android:textAlignment="center"
-                                android:drawablePadding="10dp"
-                                android:layout_marginBottom="3dp"
-                                android:textColor="@color/grey_900"
-                                android:drawableStart="@drawable/icon_tanggal" />
+                                android:hint="DD/MM"
+                                android:enabled="false"
+                                android:textSize="14sp"
+                                android:layout_weight="1"
+                                tools:ignore="Autofill,TextFields" />
 
-                            <TextView
-                                android:layout_width="wrap_content"
+                        </android.support.design.widget.TextInputLayout>
+
+                        <ImageButton
+                            android:id="@+id/img_btn_jam_konfirmasi"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:textColor="@android:color/black"
+                            android:src="@drawable/icon_jam"
+                            android:backgroundTint="@android:color/transparent"/>
+
+                        <android.support.design.widget.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                            <EditText
+                                android:id="@+id/et_jam_konfirmasi"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:layout_alignParentTop="true"
-                                android:drawablePadding="5dp"
-                                android:layout_alignParentEnd="true"
-                                android:layout_alignParentBottom="true"
-                                android:layout_marginStart="10dp"
-                                android:textColor="@color/grey_900"
-                                android:layout_marginEnd="10dp"
-                                android:text="-" />
+                                android:hint="HH:MM"
+                                android:enabled="false"
+                                android:textSize="14sp"
+                                android:layout_weight="1"
+                                tools:ignore="Autofill,TextFields" />
 
-                            <TextView
-                                android:id="@+id/tv_max_jam_konfirmasi"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentTop="true"
-                                android:layout_alignParentEnd="true"
-                                android:drawablePadding="10dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_marginTop="3dp"
-                                android:gravity="center"
-                                android:layout_marginEnd="5dp"
-                                android:textAlignment="center"
-                                android:textColor="@color/grey_900"
-                                android:layout_marginBottom="3dp"
-                                android:drawableEnd="@drawable/icon_jam"
-                                tools:ignore="RelativeOverlap" />
-
-                        </RelativeLayout>
+                        </android.support.design.widget.TextInputLayout>
 
                     </LinearLayout>
 
                 </LinearLayout>
 
-                <include layout="@layout/layout_btn_simpan_hapus"/>
+                <include layout="@layout/layout_btn_simpan_hapus" />
 
             </LinearLayout>
 

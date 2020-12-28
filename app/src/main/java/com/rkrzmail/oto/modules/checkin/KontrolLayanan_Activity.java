@@ -71,7 +71,7 @@ public class KontrolLayanan_Activity extends AppActivity {
                     @Override
                     public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
                         super.onBindViewHolder(viewHolder, position);
-                        //String estimasi = Tools.setFormatDateTimeFromDb(nListArray.get(position).get("ESTIMASI_SELESAI").asString(), "yyyy-MM-dd hh:mm", "dd/MM-hh:mm", false);
+                        String estimasi = Tools.setFormatDateTimeFromDb(nListArray.get(position).get("ESTIMASI_SELESAI").asString(), "yyyy-MM-dd hh:mm", "dd/MM-hh:mm", false);
                         String waktu =  Tools.setFormatDateTimeFromDb(nListArray.get(position).get("CREATED_DATE").asString(), "", "dd/MM hh:mm", true);
 
                         viewHolder.find(R.id.tv_waktu_checkin, TextView.class).setText(waktu);
@@ -80,9 +80,9 @@ public class KontrolLayanan_Activity extends AppActivity {
                         viewHolder.find(R.id.tv_jenis_kendaraan, TextView.class).setText(nListArray.get(position).get("JENIS_KENDARAAN").asString());
                         viewHolder.find(R.id.tv_nama_pelanggan, TextView.class).setText(nListArray.get(position).get("NAMA_PELANGGAN").asString());
                         viewHolder.find(R.id.tv_layanan, TextView.class).setText(nListArray.get(position).get("LAYANAN").asString());
-                        viewHolder.find(R.id.tv_estimasi_selesai, TextView.class).setText(nListArray.get(position).get("ESTIMASI_SELESAI").asString());
+                        viewHolder.find(R.id.tv_estimasi_selesai, TextView.class).setText(estimasi);
                         viewHolder.find(R.id.tv_no_kunci, TextView.class).setText(nListArray.get(position).get("NO_KUNCI").asString());
-                        viewHolder.find(R.id.tv_estimasi, TextView.class).setText(nListArray.get(position).get("ESTIMASI_SELESAI").asString());
+                        viewHolder.find(R.id.tv_estimasi, TextView.class).setText(estimasi);
                         viewHolder.find(R.id.tv_status, TextView.class).setText(nListArray.get(position).get("STATUS_KONTROL").asString());
 
                         viewHolder.find(R.id.img_more_booking, ImageButton.class).setOnClickListener(new View.OnClickListener() {
