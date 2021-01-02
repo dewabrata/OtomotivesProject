@@ -33,7 +33,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Nama Pelanggan"
-                    android:textStyle="bold" />
+                    android:layout_gravity="start"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
             </TableRow>
 
@@ -44,14 +46,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="No. Polisi"
-                    android:textStyle="bold" />
+                    android:layout_gravity="start"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
                 <TextView
                     android:id="@+id/tv_jenis_checkout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Jenis"
-                    android:textStyle="bold" />
+                    android:layout_gravity="end"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
             </TableRow>
 
@@ -62,7 +68,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="No. Kunci"
-                    android:textStyle="bold" />
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="start"/>
 
             </TableRow>
 
