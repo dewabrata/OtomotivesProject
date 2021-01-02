@@ -31,7 +31,7 @@
                     android:layout_weight="1"
                     android:text="@string/keluhan_uppercase"
                     android:background="@drawable/btn_rounded_accent"
-                    android:textColor="@android:color/white"/>
+                    android:textColor="@android:color/white" />
 
                 <Button
                     android:id="@+id/btn_point_layanan"
@@ -40,7 +40,7 @@
                     android:layout_weight="1"
                     android:text="@string/point_layanan_uppercase"
                     android:background="@drawable/btn_rounded_accent"
-                    android:textColor="@android:color/white"/>
+                    android:textColor="@android:color/white" />
 
 
             </LinearLayout>
@@ -58,7 +58,7 @@
                     android:layout_weight="1"
                     android:text="@string/lkk_claim_uppercase"
                     android:background="@drawable/btn_rounded_accent"
-                    android:textColor="@android:color/white"/>
+                    android:textColor="@android:color/white" />
 
                 <Button
                     android:id="@+id/btn_tambah_part"
@@ -67,7 +67,7 @@
                     android:layout_weight="1"
                     android:text="@string/tambah_part_uppercase"
                     android:background="@drawable/btn_rounded_accent"
-                    android:textColor="@android:color/white"/>
+                    android:textColor="@android:color/white" />
 
 
             </LinearLayout>
@@ -215,7 +215,7 @@
                 android:gravity="center"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/background_edittext"
-                android:padding="10dp"/>
+                android:padding="10dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -301,21 +301,29 @@
                 android:layout_marginTop="@dimen/paddingSemiLarge"
                 android:layout_marginBottom="@dimen/paddingSemiLarge">
 
-            <CheckBox
-                android:id="@+id/cb_tambahPartJasa"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:enabled="false"
-                android:text="KONFIRMASI PENAMBAHAN PART DAN JASA" />
+                <CheckBox
+                    android:id="@+id/cb_tidak_menunggu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:text="TIDAK MENUNGGU" />
 
-            <CheckBox
-                android:id="@+id/cb_buangPart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:enabled="false"
-                android:text="BUANG PART BEKAS" />
 
-        </LinearLayout>
+                <CheckBox
+                    android:id="@+id/cb_tambahPartJasa"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:text="KONFIRMASI PENAMBAHAN PART DAN JASA" />
+
+                <CheckBox
+                    android:id="@+id/cb_buangPart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:text="BUANG PART BEKAS" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -329,7 +337,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     app:srcCompat="@drawable/icon_location"
-                    android:backgroundTint="@color/transparent"/>
+                    android:backgroundTint="@color/transparent" />
 
                 <ImageButton
                     android:id="@+id/imgBtn_note"
@@ -367,7 +375,7 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <include layout="@layout/toolbar"/>
+        <include layout="@layout/toolbar" />
 
     </android.support.design.widget.AppBarLayout>
 

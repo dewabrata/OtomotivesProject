@@ -23,15 +23,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
-import com.naa.data.Utility;
 import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.gmod.MessageWA;
 import com.rkrzmail.oto.modules.bengkel.AturUser_Activity;
-import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
 import com.rkrzmail.srv.NikitaMultipleViewAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
@@ -43,23 +40,19 @@ import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.ATUR_KONTROL_LAYANAN;
 import static com.rkrzmail.utils.APIUrls.SET_ANTRIAN;
-import static com.rkrzmail.utils.APIUrls.SET_CHECKIN;
 import static com.rkrzmail.utils.APIUrls.VIEW_KONTROL_LAYANAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_MEKANIK;
-import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.ESTIMASI_WAKTU;
 import static com.rkrzmail.utils.ConstUtils.ID;
 import static com.rkrzmail.utils.ConstUtils.MENUNGGU;
-import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CHECKIN;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_MEKANIK;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_NEW_CS;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_TAMBAH_PART_JASA_LAIN;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_WA;
 import static com.rkrzmail.utils.ConstUtils.RP;
-import static com.rkrzmail.utils.ConstUtils.RUANG_PART;
-import static com.rkrzmail.utils.ConstUtils.TAMBAH;
 import static com.rkrzmail.utils.ConstUtils.TAMBAH_PART;
 import static com.rkrzmail.utils.ConstUtils.TIDAK_MENUNGGU;
 import static com.rkrzmail.utils.ConstUtils.TOTAL_BIAYA;
@@ -69,7 +62,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
     private static final String TAG = "DetailKontrol__";
 
     private EditText etNoAntrian, etStatus, etNopol, etNoKunci, etNamaPelanggan, etTotal,
-            etDp, etSisa, etEstimasiSebelum, etEstimasiLama, etEstimasiSelesai, etPengambilan, etAlasanBatal, etNamaLayanan;
+            etDp, etSisa, etEstimasiSebelum, etEstimasiLama, etEstimasiSelesai, etPengambilan, etKeteranganTambahan, etNamaLayanan;
     private RecyclerView rvDetail;
     private Spinner spAktifitas, spNamaMekanik;
     private TextView tvNamaLayanan, tvBiayaLayanan;
@@ -81,12 +74,15 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
     private boolean isMekanik = false; // true = part, false = jasa
     private boolean isKurangi = false;
     private boolean isMekanikSelected = false;
-    private boolean isEstimasi = false, isKonfirmasiTambahan = false, isTambahPartOK = false;
+    private boolean isEstimasi = false, isKonfirmasiTambahan = false;
 
-    private String idCheckinDetail = "", idCheckin = "", idAntrian = "";
+    private String idCheckin = "", idAntrian = "";
     private String status = "";
     private String namaMekanik = "", idMekanik = "";
     private String jenisAntrian = "", noPonsel = "";
+    private String merkKendaraan = "";
+
+    private int totalTambahPart = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,7 +113,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         etEstimasiSebelum = findViewById(R.id.et_estimasi_sebelum);
         etEstimasiLama = findViewById(R.id.et_estimasi_lama);
         etEstimasiSelesai = findViewById(R.id.et_estimasi_selesai);
-        etAlasanBatal = findViewById(R.id.et_ket_batal);
+        etKeteranganTambahan = findViewById(R.id.et_keterangan_tambahan);
         etPengambilan = findViewById(R.id.et_pengambilan);
         spAktifitas = findViewById(R.id.sp_aktifitas);
         spNamaMekanik = findViewById(R.id.sp_nama_mekanik);
@@ -138,6 +134,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         idCheckin = data.get(ID).asString();
         jenisAntrian = data.get("ANTRIAN").asString();
         noPonsel = data.get("NO_PONSEL").asString();
+        merkKendaraan = data.get("NO_PONSEL").asString();
         isEstimasi = data.get("STATUS").asString().equals("LAYANAN ESTIMASI") & !data.get("STATUS").asString().isEmpty();
         isKonfirmasiTambahan = data.get("KONFIRMASI_TAMBAHAN").asString().equals("Y") & !data.get("KONFIRMASI_TAMBAHAN").asString().isEmpty();
 
@@ -146,7 +143,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         etNopol.setText(formatNopol(data.get("NOPOL").asString()));
         etNoKunci.setText(data.get("").asString());
         etNamaPelanggan.setText(data.get("NAMA_PELANGGAN").asString());
-        etTotal.setText(RP + formatRp(data.get("TOTAL_BIAYA").asString()));
+        //etTotal.setText(RP + formatRp(data.get("TOTAL_BIAYA").asString()));
         etDp.setText(RP + formatRp(data.get("DP").asString()));
         etSisa.setText(RP + formatRp(data.get("SISA").asString()));
         etEstimasiSebelum.setText(data.get("ESTIMASI_SEBELUM").asString());
@@ -156,7 +153,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 data.get("WAKTU_KERJA_MENIT").asString()));
         etEstimasiSelesai.setText(Tools.setFormatDateTimeFromDb(data.get("ESTIMASI_SELESAI").asString(), "yyyy-MM-dd hh:mm", "dd/MM-hh:mm", false));
         etPengambilan.setText(data.get("JAM_PENGAMBILAN").asString());
-        etAlasanBatal.setText(data.get("ALASAN_BATAL").asString());
+        etKeteranganTambahan.setText(data.get("KETERANGAN_TAMBAHAN").asString());
         etNamaLayanan.setText(data.get("LAYANAN").asString());
         tvNamaLayanan.setText(data.get("LAYANAN").asString());
         tvBiayaLayanan.setText(RP + formatRp(formatOnlyNumber(data.get("BIAYA_LAYANAN").asString())));
@@ -164,9 +161,9 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         if (data.get("TUNGGU_KONFIRMASI_BIAYA").asString().equals("Y")) {
             find(R.id.cb_tungguConfirm_biaya, CheckBox.class).setChecked(true);
         }
-        if (data.get("PELANGGAN_TIDAK_MENUNGGU").asString().equals("Y")) {
-            find(R.id.cb_tidak_menunggu, CheckBox.class).setChecked(true);
-        }
+
+        find(R.id.cb_tidak_menunggu, CheckBox.class).setChecked(data.get("PELANGGAN_TIDAK_MENUNGGU").asString().equals("Y"));
+
         if (data.get("KONFIRMASI_TAMBAHAN").asString().equals("Y")) {
             find(R.id.cb_konfirm_tambah, CheckBox.class).setChecked(true);
         }
@@ -181,8 +178,8 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             @Override
             public void onClick(View v) {
                 if (!status.isEmpty() && status.equals("BATAL PELANGGAN")) {
-                    if (etAlasanBatal.getText().toString().isEmpty()) {
-                        etAlasanBatal.setError("Keterangan Batal Harus di Isi");
+                    if (etKeteranganTambahan.getText().toString().isEmpty()) {
+                        etKeteranganTambahan.setError("Keterangan Batal Harus di Isi");
                         return;
                     }
                 }
@@ -305,6 +302,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         });
     }
 
+    @SuppressLint("SetTextI18n")
     private void getDetailCheckin(final String id) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
@@ -321,6 +319,8 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    etTotal.setText(RP + formatRp(result.get("data").get(0).get("TOTAL_BIAYA").asString()));
+
                     detailCheckinList.asArray().clear();
                     detailCheckinList.asArray().addAll(result.get("data").asArray());
                     for (int i = 0; i < detailCheckinList.size(); i++) {
@@ -419,6 +419,8 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         List<String> aktifitasList = new ArrayList<>();
         aktifitasList.add("--PILIH--");
         aktifitasList.add("MESSAGE PELANGGAN");
+        aktifitasList.add("DATA KENDARAAN");
+        aktifitasList.add("TAMBAH PART - JASA");
         if (etStatus.getText().toString().equals("CHECKIN ANTRIAN") ||
                 (etStatus.getText().toString().contains("DP") && !etStatus.getText().toString().equals("TUNGGU DP"))) {
             aktifitasList.add("BATAL BENGKEL");
@@ -470,7 +472,9 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 etStatus.getText().toString().equals("EPAY")) {
             aktifitasList.add("CHECK OUT");
             aktifitasList.add("MESSAGE PELANGGAN");
-        }else if(etStatus.getText().toString().equals("TAMBAH PART - JASA")){
+        }else if(etStatus.getText().toString().equals("TAMBAH PART - JASA") &&
+                (isKonfirmasiTambahan &&
+                find(R.id.cb_tidak_menunggu, CheckBox.class).isChecked())){
             aktifitasList.add("TAMBAH PART - JASA MESSAGE OKAY");
             aktifitasList.add("TAMBAH PART - JASA MESSAGE BATAL");
         }
@@ -491,10 +495,13 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_mekanik, LinearLayout.class), false);
                 }
 
-                if (status.equals("TAMBAH PART - JASA MESSAGE OKAY")) {
-                    isTambahPartOK = true;
-                }else{
-                    isTambahPartOK = false;
+                if(status.equals("DATA KENDARAAN")){
+                    Intent intent = new Intent(getActivity(), Checkin2_Activity.class);
+                    intent.putExtra(ID, idCheckin);
+                    intent.putExtra("NO_PONSEL", noPonsel);
+                    intent.putExtra("KONFIRMASI DATA", "Data Kendaraan");
+                    intent.putExtra("MERK", merkKendaraan);
+                    startActivityForResult(intent, REQUEST_NEW_CS);
                 }
 
                 if (status.equals("MESSAGE PELANGGAN")) {
@@ -512,7 +519,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                     status = "CHECKIN ANTRIAN";
                 }
 
-                etAlasanBatal.setEnabled(status.equals("MESSAGE PELANGGAN") || status.equals("BATAL BENGKEL") || status.equals("BATAL PELANGGAN"));
+                etKeteranganTambahan.setEnabled(status.equals("MESSAGE PELANGGAN") || status.equals("BATAL BENGKEL") || status.equals("BATAL PELANGGAN"));
                 if (status.equals("TAMBAH PART - JASA")) { //|| status.equals("TAMBAH PART - JASA MSG") || status.equals("TAMBAH PART - JASA OK")
                     Intent intent = new Intent(getActivity(), TambahPartJasaDanBatal_Activity.class);
                     intent.putExtra(ID, dataDetailList.toJson());
@@ -577,10 +584,6 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                     args.put("isEstimasi", "Y");
                 }
 
-                if(isTambahPartOK){
-                    args.put("isTambahPart", "Y");
-                }
-
                 if (isMekanik) {
                     args.put("aktivitas", "MEKANIK");
                     args.put("mekanik", namaMekanik);
@@ -595,6 +598,10 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                     args.put("partJasaList", dataDetailList.toJson());
                 } else if (status.contains("MESSAGE")) {
                     args.put("isMessage", "Y");
+                }else if(status.equals("TAMBAH PART - JASA MESSAGE OKAY")){
+                    args.put("aktivitas", "TAMBAH PART - JASA MESSAGE OKAY");
+                    args.put("isTambahPart", "Y");
+                    args.put("totalTambah", String.valueOf(totalTambahPart));
                 }
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_KONTROL_LAYANAN), args));
@@ -671,8 +678,11 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         if (resultCode == RESULT_OK && requestCode == REQUEST_MEKANIK) {
             setSpMekanik("");
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_TAMBAH_PART_JASA_LAIN) {
-            getDetailCheckin(getIntentStringExtra(data, DATA));
+            totalTambahPart = Integer.parseInt(getIntentStringExtra(data, "TOTAL_TAMBAH"));
+            getDetailCheckin(getIntentStringExtra(data, ID));
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_CHECKIN) {
+            loadData();
+        }else if (resultCode == RESULT_OK && requestCode == REQUEST_NEW_CS) {
             loadData();
         }
     }

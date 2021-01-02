@@ -14,6 +14,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -66,7 +68,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
     private RecyclerView rvPointLayanan, rvKeluhan;
     private ImageButton imgStart, imgStop, imgNote;
 
-    private String idCheckin = "", mekanik = "", catatanMekanik, idMekanikKerja = "", statusDone = "", noHp = "";
+    private String idCheckin = "", mekanik = "", catatanMekanik = "", idMekanikKerja = "", statusDone = "", noHp = "";
     private long MillisecondTime, StartTime, TimeBuff, UpdateTime = 0L;
     private long timerWork = 0;
     private int Seconds, Minutes, MilliSeconds;
@@ -79,12 +81,13 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
     private int waktuHari = 0, waktuJam = 0, waktuMenit = 0;
     private String totalWaktuKerja = "", sisaWaktuPaused = "";
     private int countClick = 0;
+    private int kmKendaraan = 0;
     private boolean isPaused = false, isRework = false, isStart = false, isStop = false;
     private boolean isNote = false;
     private boolean isHplus = false;
     private boolean isInspeksi = false;
     private boolean isNotWait = false, isKonfirmasiTambahan = false;
-    private int totalBiaya = 0;
+    private String totalBiaya = "";
 
     private Handler handler;
     private AlertDialog alertDialog;
@@ -148,15 +151,15 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
 
     private void loadData() {
         n = Nson.readJson(getIntentStringExtra(DATA));
-        if (n.get("JAM_HOME").asString().isEmpty() || n.get("JAM_HOME") == null)
-            find(R.id.tl_jam_home).setVisibility(View.GONE);
-        if (n.get("ALAMAT").asString().isEmpty() || n.get("ALAMAT") == null)
-            find(R.id.tl_alamat).setVisibility(View.GONE);
-        if (n.get("NO_KUNCI").asString().isEmpty() || n.get("NO_KUNCI") == null)
-            find(R.id.tl_no_kunci).setVisibility(View.GONE);
-        if (n.get("PENGAMBILAN").asString().isEmpty() || n.get("PENGAMBILAN") == null)
-            find(R.id.tl_pengambilan).setVisibility(View.GONE);
 
+        find(R.id.tl_jam_home).setVisibility(n.get("JAM_HOME").asString().isEmpty() | n.get("JAM_HOME") == null ? View.GONE : View.VISIBLE);
+        find(R.id.tl_alamat).setVisibility(n.get("ALAMAT").asString().isEmpty() | n.get("ALAMAT") == null ? View.GONE : View.VISIBLE);
+        find(R.id.tl_no_kunci).setVisibility(n.get("NO_KUNCI").asString().isEmpty() | n.get("NO_KUNCI") == null ? View.GONE : View.VISIBLE);
+        find(R.id.tl_pengambilan).setVisibility(n.get("PENGAMBILAN").asString().isEmpty() | n.get("PENGAMBILAN") == null ? View.GONE : View.VISIBLE);
+        isHplus = n.get("ANTRIAN").asString().equals("H+");
+        isRework = n.get("STATUS_SELESAI").asString().equals("MEKANIK PAUSE");
+
+        kmKendaraan = n.get("KM").asInteger();
         isNotWait = n.get("TIDAK_MENUNGGU").asString().equals("Y") & !n.get("TIDAK_MENUNGGU").asString().isEmpty();
         isKonfirmasiTambahan = n.get("KONFIRMASI_TAMBAHAN").asString().equals("Y") & !n.get("KONFIRMASI_TAMBAHAN").asString().isEmpty();
         String lamaLayanan = totalWaktuKerja(
@@ -179,18 +182,9 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
         idMekanikKerja = n.get("MEKANIK_KERJA_ID").asString();
         sisaWaktuPaused = n.get("SISA_WAKTU").asString();
 
-        if (n.get("KONFIRMASI_TAMBAHAN").asString().equals("Y")) {
-            find(R.id.cb_tambahPartJasa, CheckBox.class).setChecked(true);
-        }
-        if (n.get("BUANG_PART").asString().equals("Y")) {
-            find(R.id.cb_buangPart, CheckBox.class).setChecked(true);
-        }
-        if (n.get("ANTRIAN").asString().equals("H+")) {
-            isHplus = true;
-        }
-        if (n.get("STATUS_SELESAI").asString().equals("MEKANIK PAUSE")) {
-            isRework = true;
-        }
+        find(R.id.cb_tidak_menunggu, CheckBox.class).setChecked(isNotWait);
+        find(R.id.cb_tambahPartJasa, CheckBox.class).setChecked(n.get("KONFIRMASI_TAMBAHAN").asString().equals("Y"));
+        find(R.id.cb_buangPart, CheckBox.class).setChecked(n.get("BUANG_PART").asString().equals("Y"));
 
         viewLayananPartJasa();
         viewKeluhan();
@@ -298,6 +292,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
 
         final EditText etCatatan = dialogView.findViewById(R.id.et_catatan_mekanik);
         Button btnSimpan = dialogView.findViewById(R.id.btn_simpan);
+        etCatatan.setText(catatanMekanik.isEmpty() ? "" : catatanMekanik);
         btnSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -388,7 +383,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 partJasaList.asArray().addAll(result.get("data").asArray());
                 for (int i = 0; i < partJasaList.size(); i++) {
                     if (partJasaList.get(i).get("TOTAL_BIAYA").asInteger() > 0) {
-                        totalBiaya = partJasaList.get(i).get("TOTAL_BIAYA").asInteger();
+                        totalBiaya = partJasaList.get(i).get("TOTAL_BIAYA").asString();
                         break;
                     }
                 }
@@ -420,7 +415,25 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
         });
     }
 
-    private void startWork() {
+    private void fillKmAndStart() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Isi KM Kendaraan");
+
+        final EditText etKm = new EditText(this);
+        etKm.setInputType(InputType.TYPE_CLASS_NUMBER);
+        builder.setView(etKm);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                startWork(etKm.getText().toString());
+            }
+        });
+
+        builder.setCancelable(false);
+        builder.show();
+    }
+
+    private void startWork(final String km) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -434,6 +447,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 } else {
                     args.put("aktivitas", "START");
                 }
+                args.put("km", km);
                 args.put("idKerja", idMekanikKerja);
                 args.put("id", idCheckin);
                 args.put("mekanik", mekanik);
@@ -594,7 +608,11 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 break;
             case R.id.imgBtn_stop:
                 if (isStop) {
-                    stopWork();
+                    if (catatanMekanik.isEmpty()) {
+                        showWarning("Catatan Harus di Isi", Toast.LENGTH_LONG);
+                    } else {
+                        stopWork();
+                    }
                 } else {
                     showWarning("Pekerjaan Belum di Mulai");
                 }
@@ -605,7 +623,12 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                     isStart = true;
                     isStop = true;
                     imgStart.setImageDrawable(getResources().getDrawable(R.drawable.icon_paused));
-                    startWork();
+                    if (kmKendaraan == 0) {
+                        fillKmAndStart();
+                    } else {
+                        startWork(String.valueOf(kmKendaraan));
+                    }
+
                 } else if (countClick > 1) {
                     isPaused = true;
                     imgStart.setImageDrawable(getResources().getDrawable(R.drawable.icon_start));

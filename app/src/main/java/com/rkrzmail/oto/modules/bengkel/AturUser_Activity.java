@@ -31,19 +31,15 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.MultiSelectionSpinner;
-import com.rkrzmail.srv.RupiahFormat;
-import com.rkrzmail.utils.FileUtility;
+import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static com.rkrzmail.utils.ConstUtils.DATA;
 
@@ -183,7 +179,7 @@ public class AturUser_Activity extends AppActivity {
     }
 
     private void initTextWatcher() {
-        find(R.id.txtGaji, TextView.class).addTextChangedListener(new RupiahFormat(find(R.id.txtGaji, EditText.class)));
+        find(R.id.txtGaji, TextView.class).addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(find(R.id.txtGaji, EditText.class)));
         minEntryEditText(find(R.id.txtNamaKaryawan, EditText.class), 8, find(R.id.tl_nama_user, TextInputLayout.class), "Nama Min. 5 Karakter");
         minEntryEditText(find(R.id.txtAlamat, EditText.class), 20, find(R.id.tl_alamat_user, TextInputLayout.class), "Entry Alamat Min. 20 Karakter");
 

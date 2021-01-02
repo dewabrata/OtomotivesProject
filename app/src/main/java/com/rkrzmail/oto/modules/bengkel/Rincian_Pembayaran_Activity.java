@@ -174,7 +174,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                 Intent intent = new Intent(getActivity(), Checkin2_Activity.class);
                 intent.putExtra(ID, idCheckin);
                 intent.putExtra("NO_PONSEL", noHp);
-                intent.putExtra("KONFIRMASI DATA", "");
+                intent.putExtra("KONFIRMASI DATA", "Konfirmasi Data Kendaraan");
                 intent.putExtra("MERK", merkKendaraan);
                 startActivityForResult(intent, REQUEST_NEW_CS);
             }

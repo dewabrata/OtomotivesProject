@@ -1,12 +1,10 @@
 package com.rkrzmail.oto.modules.sparepart;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -15,26 +13,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.naa.data.Nson;
-import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
-import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.srv.RupiahFormat;
+import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
-import java.text.DecimalFormat;
-import java.util.Map;
-
 import static com.rkrzmail.srv.PercentFormat.calculatePercentage;
-import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
 import static com.rkrzmail.utils.ConstUtils.PART;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
-import static com.rkrzmail.utils.ConstUtils.RUANG_PART;
 
 public class JumlahPart_JualPart_Activity extends AppActivity {
 
@@ -73,7 +63,7 @@ public class JumlahPart_JualPart_Activity extends AppActivity {
     }
 
     private void initListener() {
-        etHargaJual.addTextChangedListener(new RupiahFormat(etHargaJual));
+        etHargaJual.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etHargaJual));
         etJumlah.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {

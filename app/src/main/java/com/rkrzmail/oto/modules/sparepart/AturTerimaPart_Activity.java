@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -26,7 +25,7 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.bengkel.AturRekening_Activity;
-import com.rkrzmail.srv.RupiahFormat;
+import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
@@ -144,7 +143,7 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
             }
         });
 
-        txtOngkosKirim.addTextChangedListener(new RupiahFormat(txtOngkosKirim));
+        txtOngkosKirim.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(txtOngkosKirim));
 
         find(R.id.btnSelanjutnya, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override

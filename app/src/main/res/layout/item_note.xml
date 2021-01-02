@@ -28,7 +28,7 @@
             android:id="@+id/et_catatan_mekanik"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textMultiLine"
+            android:inputType="textCapCharacters|textMultiLine"
             android:singleLine="false"
             android:layout_gravity="top|left"
             android:textSize="14sp"

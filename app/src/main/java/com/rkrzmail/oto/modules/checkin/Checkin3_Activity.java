@@ -227,6 +227,9 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                                 totalKurangWaktuLayanan(Tools.TimePart.parse(partList.get(position).get("WAKTU_KERJA").asString()));
                                 totalKurangWaktuLayanan(Tools.TimePart.parse(partList.get(position).get("WAKTU_INSPEKSI").asString()));
 
+                                totalHarga -= partList.get(position).get("NET").asInteger();
+                                find(R.id.et_totalBiaya_checkin3, EditText.class).setText(RP + formatRp(String.valueOf(totalHarga)));
+
                                 partList.asArray().remove(position);
                                 notifyItemRemoved(position);
                             }
@@ -265,6 +268,9 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                             public void onClick(DialogInterface dialog, int which) {
                                 totalKurangWaktuLayanan(Tools.TimePart.parse(jasaList.get(position).get("WAKTU_KERJA").asString()));
                                 totalKurangWaktuLayanan(Tools.TimePart.parse(jasaList.get(position).get("WAKTU_INSPEKSI").asString()));
+
+                                totalHarga -= jasaList.get(position).get("NET").asInteger();
+                                find(R.id.et_totalBiaya_checkin3, EditText.class).setText(RP + formatRp(String.valueOf(totalHarga)));
 
                                 jasaList.asArray().remove(position);
                                 notifyItemRemoved(position);
@@ -461,7 +467,6 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "view");
-                args.put("layanan", "CHECKIN");
                 args.put("spec", "BENGKEL");
                 args.put("status", "AKTIF");
                 args.put("modelKendaraan", data.get("model").asString());
@@ -469,6 +474,21 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 args.put("jenisKendaraan", data.get("jenisKendaraan").asString());
                 args.put("kendaraan", data.get("kendaraan").asString());
                 args.put("pekerjaaan", data.get("pekerjaan").asString());
+
+                //get AFS HISTORY
+                args.put("layanan", "AFS HISTORY");
+                args.put("nopol", data.get("NOPOL").asString());
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_LAYANAN), args));
+                result = result.get("data");
+
+                if (result.asArray().size() > 0) {
+                    for (int i = 0; i < result.size(); i++) {
+                        layananAFSHistory.add(result.get(i).get("NAMA_LAYANAN").asString());
+                    }
+                }
+
+                args.remove("layanan");
+                args.put("layanan", "CHECKIN");
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_LAYANAN), args));
                 dataLayananList.asArray().addAll(result.get("data").asArray());
@@ -485,24 +505,11 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                     layananArray.add("GARANSI LAYANAN");
                 }
                 layananArray.add("PERAWATAN LAINNYA");
-
-                //get AFS HISTORY
-                args.remove("layanan");
-                args.put("layanan", "AFS HISTORY");
-                args.put("nopol", data.get("NOPOL").asString());
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_LAYANAN), args));
             }
 
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    result = result.get("data");
-                    if (result.asArray().size() > 0) {
-                        for (int i = 0; i < result.size(); i++) {
-                            layananAFSHistory.add(result.get(i).get("NAMA_LAYANAN").asString());
-                        }
-                    }
-
                     ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, layananArray.asArray()) {
                         @Override
                         public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -511,7 +518,8 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                             if (layananAFS.size() > 0) {
                                 for (int i = 0; i < layananAFS.size(); i++) {
                                     if (layananAFS.get(i).asString().equals(layananArray.get(position).asString())) {
-                                        if(!parseTanggalBeliKendaraan(data.get("tanggalBeli"), false)){
+                                        if(!parseTanggalBeliKendaraan(data.get("tahunProduksi"), false) ||
+                                                data.get("km").asString().isEmpty()){
                                             TextView mTextView = new TextView(getContext());
                                             mTextView.setVisibility(View.GONE);
                                             mTextView.setHeight(0);
@@ -586,15 +594,15 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         int batasanNonPaketBulan = dataLayananList.get(i).get("BATASAN_NON_PAKET_BULAN").asInteger();
 
                         if(dataLayananList.get(i).get("JENIS_LAYANAN").asString().equals("AFTER SALES SERVIS") &&
-                                data.get("km").asInteger() > batasanNonPaketKm){
+                                (data.get("km").asInteger() > batasanNonPaketKm && data.get("km").asInteger() > 0)){
                             showWarning(dataLayananList.get(i).get("NAMA_LAYANAN").asString() +
-                                    " EXPIRED, MAX KM :" + batasanNonPaketKm + ", MAX BULAN : " + batasanNonPaketBulan);
+                                    " EXPIRED, MAX KM :" + batasanNonPaketKm + ", MAX BULAN : " + batasanNonPaketBulan, Toast.LENGTH_LONG);
                             spLayanan.setSelection(0);
                             return;
                         }else if(dataLayananList.get(i).get("JENIS_LAYANAN").asString().equals("AFTER SALES SERVIS") &&
                                 parseTanggalBeliKendaraan(data.get("tanggalBeli"), true)){
                             showWarning(dataLayananList.get(i).get("NAMA_LAYANAN").asString() +
-                                    " EXPIRED, MAX KM :" + batasanNonPaketKm + ", MAX BULAN : " + batasanNonPaketBulan);
+                                    " EXPIRED, MAX KM :" + batasanNonPaketKm + ", MAX BULAN : " + batasanNonPaketBulan, Toast.LENGTH_LONG);
                             spLayanan.setSelection(0);
                             return;
                         }
@@ -604,7 +612,8 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         } else {
                             biayaLayanan = dataLayananList.get(i).get("BIAYA_NON_PAKET").asString();
                         }
-
+                        totalHarga += Integer.parseInt(formatOnlyNumber(biayaLayanan));
+                        find(R.id.et_totalBiaya_checkin3, EditText.class).setText(RP + formatRp(String.valueOf(totalHarga)));
                         feeNonPaket = dataLayananList.get(i).get("FEE_NON_PAKET").asInteger();
                         discLayanan = dataLayananList.get(i).get("DISCOUNT_LAYANAN").asString();
                         layananId = dataLayananList.get(i).get("LAYANAN_ID").asString();
@@ -720,8 +729,8 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
                 Date now = sdfYear.parse(String.valueOf(minYearAFS));
                 nowYearTimeMilis = now.getTime();
-                String subsTahun = data.asString().substring(0, 4);
-                Date tglBeli =  sdfYear.parse(subsTahun);
+                //String subsTahun = data.asString().substring(0, 4);
+                Date tglBeli =  sdfYear.parse(data.asString());
                 tanggalBeliTimeMilis = tglBeli.getTime();
 
                 if (nowYearTimeMilis <= tanggalBeliTimeMilis) {
@@ -941,8 +950,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                             if (data != null && data.getStringExtra("PART_KOSONG").equals("YA")) {
                                 isPartKosong = true;
                                 totalHargaPartKosong = data.getIntExtra("TOTAL_PART", 0);
-                                Log.d("ok__", "PART : " + totalHargaPartKosong);
-                                sisaDp = totalHargaPartKosong - calculatePercentage(Double.parseDouble(getSetting("DP_PERSEN")), totalHargaPartKosong);
+                                sisaDp = totalHarga - calculatePercentage(Double.parseDouble(getSetting("DP_PERSEN")), totalHargaPartKosong);
                                 setDpAndSisa();
                             }
                         } catch (Exception e) {

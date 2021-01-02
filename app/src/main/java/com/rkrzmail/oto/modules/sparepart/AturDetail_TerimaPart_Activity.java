@@ -1,7 +1,6 @@
 package com.rkrzmail.oto.modules.sparepart;
 
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -32,13 +31,11 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.BarcodeActivity;
-import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
-import com.rkrzmail.srv.RupiahFormat;
+import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -136,7 +133,7 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
     }
 
     private void componentValidation() {
-        etHargaBersih.addTextChangedListener(new RupiahFormat(etHargaBersih));
+        etHargaBersih.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etHargaBersih));
         txtHargaBeliUnit.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -246,7 +243,7 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
                 if (etDiscPercent == null) return;
                 etDiscPercent.removeTextChangedListener(this);
 
-                NumberFormat format = NumberFormat.getPercentInstance(new Locale("in", "ID"));
+                java.text.NumberFormat format = java.text.NumberFormat.getPercentInstance(new Locale("in", "ID"));
                 format.setMinimumFractionDigits(1);
                 String percentNumber = format.format(Tools.convertToDoublePercentage(etDiscPercent.getText().toString()) / 1000);
 

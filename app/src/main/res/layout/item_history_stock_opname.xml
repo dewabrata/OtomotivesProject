@@ -30,6 +30,15 @@
                 android:text="Nama Part"
                 android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Menu" />
 
+            <TextView
+                android:id="@+id/tv_tgl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="DD/MM"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp" />
+
         </TableRow>
 
         <TableRow android:layout_marginTop="5dp">
@@ -87,6 +96,15 @@
                 android:text="Opname"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:textSize="12sp"/>
+
+            <TextView
+                android:id="@+id/tv_user"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="User"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp" />
 
         </TableRow>
 

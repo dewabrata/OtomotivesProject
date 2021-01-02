@@ -5,6 +5,9 @@ import com.rkrzmail.oto.AppActivity;
 
 public class ConstUtils {
 
+    public static String PRINT_BUKTI_BAYAR(String noBuktiBayar){
+        return "https://otomotives.com/internalapp/report/bukti_bayar/" + noBuktiBayar;
+    }
     public static final long ONEDAY = 86400000;
     public static int DAYS(long milliseconds) {
         return  (int) (milliseconds / (1000*60*60*24));

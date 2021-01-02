@@ -437,8 +437,7 @@ public class Tools {
     public static String formatRupiah(String number) {
         Locale localeID = new Locale("in", "ID");
         NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(localeID);
-        double formatDouble = Tools.parseDouble(number);
-        return formatRupiah.format(formatDouble);
+        return formatRupiah.format(parseDouble(number));
     }
 
     public static void clearForm(ViewGroup group) {

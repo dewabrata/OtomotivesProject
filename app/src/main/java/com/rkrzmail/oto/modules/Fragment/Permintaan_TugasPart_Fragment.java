@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -40,6 +41,7 @@ public class Permintaan_TugasPart_Fragment extends Fragment {
     public RecyclerView rvPermintaan;
     public Nson permintaanList = Nson.newArray();
     boolean isVisited = false;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public Permintaan_TugasPart_Fragment() {
 
@@ -61,6 +63,8 @@ public class Permintaan_TugasPart_Fragment extends Fragment {
         View view = inflater.inflate(R.layout.activity_list_basic, container, false);
         initHideToolbar(view);
         rvPermintaan = view.findViewById(R.id.recyclerView);
+        swipeRefreshLayout = view.findViewById(R.id.swiperefresh);
+
         initRecylerviewPermintaan();
         return view;
     }
@@ -129,14 +133,36 @@ public class Permintaan_TugasPart_Fragment extends Fragment {
                 }
             }
         });
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                viewPartPermintaan();
+            }
+        });
     }
-    
+
+    private void swipeProgress(final boolean show) {
+        if (!show) {
+            swipeRefreshLayout.setRefreshing(show);
+            return;
+        }
+        swipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeRefreshLayout.setRefreshing(show);
+            }
+        });
+    }
+
+
     @SuppressLint("NewApi")
     public void viewPartPermintaan() {
         ((TugasPart_MainTab_Activity) Objects.requireNonNull(getActivity())).newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
             public void run() {
+                swipeProgress(true);
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "view");
@@ -157,6 +183,7 @@ public class Permintaan_TugasPart_Fragment extends Fragment {
             @SuppressLint("NewApi")
             @Override
             public void runUI() {
+                swipeProgress(false);
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     rvPermintaan.getAdapter().notifyDataSetChanged();
                 } else {

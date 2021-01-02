@@ -176,7 +176,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:scrollbars="vertical"
-                android:scrollingCache="true"/>
+                android:scrollingCache="true" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -251,7 +251,7 @@
                 android:hint="@string/keterangan_message">
 
                 <EditText
-                    android:id="@+id/et_ket_batal"
+                    android:id="@+id/et_keterangan_tambahan"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"
@@ -345,7 +345,7 @@
                 android:gravity="center"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/background_edittext"
-                android:padding="10dp"/>
+                android:padding="10dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -476,8 +476,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:background="@drawable/btn_rounded_accent"
-                android:text="Lanjut"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/white"
+                android:text="Lanjut" />
 
         </LinearLayout>
 

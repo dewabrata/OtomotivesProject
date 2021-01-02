@@ -37,6 +37,10 @@ import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
 
 public class Absensi_MainTab_Activity extends AppActivity {
 
+    ViewPager vpAbsensi;
+    TabLayout tabAbsensi;
+    FragmentsAdapter pagerAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,14 +59,14 @@ public class Absensi_MainTab_Activity extends AppActivity {
 
     private void initComponent() {
         initToolbar();
-        ViewPager vpAbsensi = findViewById(R.id.vp);
-        TabLayout tabAbsensi = findViewById(R.id.tablayout);
+        vpAbsensi = findViewById(R.id.vp);
+        tabAbsensi = findViewById(R.id.tablayout);
 
         final ArrayList<Fragment> fragments = new ArrayList<>();
         fragments.add(new Absen_Absensi_Fragment());
         fragments.add(new Schedule_Absensi_Fragment());
 
-        FragmentsAdapter pagerAdapter = new FragmentsAdapter(getSupportFragmentManager(), this, fragments);
+        pagerAdapter = new FragmentsAdapter(getSupportFragmentManager(), this, fragments);
         vpAbsensi.setAdapter(pagerAdapter);
         vpAbsensi.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabAbsensi));
         tabAbsensi.setupWithViewPager(vpAbsensi);
@@ -106,9 +110,11 @@ public class Absensi_MainTab_Activity extends AppActivity {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    if(vpAbsensi.getCurrentItem() == 0){
+                        Absen_Absensi_Fragment absen = (Absen_Absensi_Fragment) Objects.requireNonNull(vpAbsensi.getAdapter()).instantiateItem(vpAbsensi, vpAbsensi.getCurrentItem());
+                        absen.viewAbsensi(Absensi_MainTab_Activity.this);
+                    }
                     showSuccess("Absen Berhasil");
-                    Absen_Absensi_Fragment absen_absensi_fragment = new Absen_Absensi_Fragment();
-                    absen_absensi_fragment.viewAbsensi(Absensi_MainTab_Activity.this);
                 } else {
                     showError(result.get("message").asString());
                 }

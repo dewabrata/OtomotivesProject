@@ -21,14 +21,11 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.srv.RupiahFormat;
+import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -364,7 +361,7 @@ public class AturParts_Activity extends AppActivity {
     }
 
     private void setTextListener() {
-        find(R.id.et_hpp_part, EditText.class).addTextChangedListener(new RupiahFormat(find(R.id.et_hpp_part, EditText.class)));
+        find(R.id.et_hpp_part, EditText.class).addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(find(R.id.et_hpp_part, EditText.class)));
         find(R.id.et_hargaJual_part, EditText.class).addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -393,7 +390,7 @@ public class AturParts_Activity extends AppActivity {
                             e.printStackTrace();
                         }
                     } else if (find(R.id.sp_polaHarga_part, Spinner.class).getSelectedItem().toString().equalsIgnoreCase("BELI + MARGIN")) {
-                        NumberFormat format = NumberFormat.getPercentInstance(new Locale("in", "ID"));
+                        java.text.NumberFormat format = java.text.NumberFormat.getPercentInstance(new Locale("in", "ID"));
                         format.setMinimumFractionDigits(1);
                         format.setMaximumFractionDigits(1);
                         String percentNumber = format.format(Tools.convertToDoublePercentage(find(R.id.et_hargaJual_part, EditText.class).getText().toString()) / 1000);
@@ -401,7 +398,7 @@ public class AturParts_Activity extends AppActivity {
                         find(R.id.et_hargaJual_part, EditText.class).setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
                         find(R.id.et_hargaJual_part, EditText.class).setSelection(percentNumber.length() - 1);
                     } else if (find(R.id.sp_polaHarga_part, Spinner.class).getSelectedItem().toString().equalsIgnoreCase("RATA - RATA + MARGIN")) {
-                        NumberFormat format = NumberFormat.getPercentInstance(new Locale("in", "ID"));
+                        java.text.NumberFormat format = java.text.NumberFormat.getPercentInstance(new Locale("in", "ID"));
                         format.setMinimumFractionDigits(1);
                         format.setMaximumFractionDigits(1);
                         String percentNumber = format.format(Tools.convertToDoublePercentage(find(R.id.et_hargaJual_part, EditText.class).getText().toString()) / 1000);

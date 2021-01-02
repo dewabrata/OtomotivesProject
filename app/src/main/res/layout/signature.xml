@@ -72,6 +72,8 @@
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight=".30"
+                android:background="@drawable/btn_rounded_accent"
+                android:textColor="@android:color/white"
                 android:text="Cancel" />
 
             <Button
@@ -79,6 +81,8 @@
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight=".35"
+                android:background="@drawable/btn_rounded_accent"
+                android:textColor="@android:color/white"
                 android:text="Clear" />
 
             <Button
@@ -86,6 +90,8 @@
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight=".35"
+                android:background="@drawable/btn_rounded_accent"
+                android:textColor="@android:color/white"
                 android:text="Done" />
         </LinearLayout>
 

@@ -17,6 +17,7 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.Fragment.BatalPart_TugasPart_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Cash_Pembayaran_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Permintaan_TugasPart_Fragment;
+import com.rkrzmail.oto.modules.Fragment.Print_Pembayaran_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Setoran_Pembayaran_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Tersedia_TugasPart_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Transaksi_Pembayaran_Fragment;
@@ -44,18 +45,19 @@ public class Pembayaran_MainTab_Activity extends AppActivity {
     }
 
     private void initComponent(){
-        ViewPager vpTugasParts = findViewById(R.id.vp);
-        TabLayout tabLayoutTugasParts = findViewById(R.id.tablayout);
+        ViewPager vpPembayaran = findViewById(R.id.vp);
+        TabLayout tabLayoutPembayaran = findViewById(R.id.tablayout);
 
         final ArrayList<Fragment> fragments = new ArrayList<>();
         fragments.add(new Transaksi_Pembayaran_Fragment());
+        fragments.add(new Print_Pembayaran_Fragment());
         fragments.add(new Cash_Pembayaran_Fragment());
         fragments.add(new Setoran_Pembayaran_Fragment());
 
         FragmentsAdapter pagerAdapter = new FragmentsAdapter(getSupportFragmentManager(), this, fragments);
-        vpTugasParts.setAdapter(pagerAdapter);
-        vpTugasParts.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayoutTugasParts));
-        tabLayoutTugasParts.setupWithViewPager(vpTugasParts);
+        vpPembayaran.setAdapter(pagerAdapter);
+        vpPembayaran.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayoutPembayaran));
+        tabLayoutPembayaran.setupWithViewPager(vpPembayaran);
     }
 
 

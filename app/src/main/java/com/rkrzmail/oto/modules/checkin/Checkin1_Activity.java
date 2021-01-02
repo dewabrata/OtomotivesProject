@@ -393,9 +393,10 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 modelKendaraan = n.get("MODEL").asString();
                 kendaraanId = n.get("KENDARAAN_ID").asInteger();
                 noHp = n.get("NO_PONSEL").asString();
-                if (!noHp.isEmpty()) {
+
+                if (!noHp.isEmpty())
                     isNoHp = true;
-                }
+
                 pekerjaan = n.get("PEKERJAAN").asString();
                 noRangka = n.get("NO_RANGKA").asString();
                 noMesin = n.get("NO_MESIN").asString();
@@ -420,7 +421,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     find(R.id.cb_pemilik_checkin1, CheckBox.class).setChecked(true);
                 }
 
-                etJenisKendaraan.setEnabled(false);
+                etJenisKendaraan.setEnabled(merkKendaraan.isEmpty() || varianKendaraan.isEmpty());
                 find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
                 find(R.id.img_clear, ImageButton.class).setVisibility(View.GONE);
             }
@@ -526,7 +527,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
     }
 
     private void setSelanjutnya() {
-        final String nopol = etNopol.getText().toString().replace(" ", "").toUpperCase();
+        final String nopol = etNopol.getText().toString().replaceAll(" ", "").toUpperCase();
         final String namaPelanggan = etNamaPelanggan.getText().toString().toUpperCase();
         final String km = etKm.getText().toString();
         final String pekerjaan = spPekerjaan.getSelectedItem().toString().toUpperCase();
@@ -589,15 +590,10 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     nson.set("tahunProduksi", tahunProduksi);
                     nson.set("km", etKm.getText().toString());
                     nson.set("NOPOL", nopol);
-
-                    if (Integer.parseInt(etKm.getText().toString()) < expiredGaransiKm) {
-                        nson.set("isExpiredKm", true);
-                        nson.set("expiredKmVal", expiredGaransiKm);
-                    }
-                    if (isGaransiHari.equals("VALID")) {
-                        nson.set("isExpiredHari", true);
-                        nson.set("expiredHariVal", expiredGaransiHari);
-                    }
+                    nson.set("isExpiredKm", Integer.parseInt(formatOnlyNumber(etKm.getText().toString())) < expiredGaransiKm);
+                    nson.set("isExpiredHari", isGaransiHari.equals("VALID"));
+                    nson.set("expiredKmVal", Integer.parseInt(formatOnlyNumber(etKm.getText().toString())) < expiredGaransiKm ? expiredGaransiKm : 0);
+                    nson.set("expiredHariVal", isGaransiHari.equals("VALID") ? expiredGaransiHari : 0);
                     nson.set("jenisKendaraan", jenisKendaraan);
                     nson.set("noRangka", noRangka);
                     nson.set("noMesin", noMesin);
@@ -608,9 +604,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     nson.set("nopol", nopol);
                     nson.set("kendaraanPelanggan", etJenisKendaraan.getText().toString());
                     nson.set("availHistory", availHistory);
-                    if (!tanggalBeliKendaraan.isEmpty()) {
-                        nson.set("tanggalBeli", tanggalBeliKendaraan);
-                    }
+                    nson.set("tanggalBeli", tanggalBeliKendaraan);
 
                     Intent intent;
                     if (!noRangka.isEmpty() && !noMesin.isEmpty()) {
@@ -704,7 +698,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 if (etNopol.getText().toString().isEmpty()) {
                     etNopol.setError("Harus Di Isi");
                     etNopol.requestFocus();
-                } else if (etJenisKendaraan.getText().toString().isEmpty()) {
+                } else if (etJenisKendaraan.getText().toString().isEmpty() || etJenisKendaraan.getText().toString().equals(" ")) {
                     etJenisKendaraan.setError("Harus Di Isi");
                     etJenisKendaraan.requestFocus();
                 } else if (etNoPonsel.getText().toString().isEmpty() || etNoPonsel.getText().toString().length() < 6) {
@@ -716,9 +710,6 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 } else if (spPekerjaan.getSelectedItem().toString().equalsIgnoreCase("Belum Di Pilih")) {
                     showWarning("Silahkan Pilih Pekerjaan");
                     spPekerjaan.performClick();
-                } else if (etKm.getText().toString().isEmpty()) {
-                    etKm.setError("Harus Di Isi");
-                    etKm.requestFocus();
                 } else if (spPekerjaan.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
                     spPekerjaan.performClick();
                     showWarning("Pekerjaan Harus Di Pilih");

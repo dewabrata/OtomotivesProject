@@ -127,7 +127,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
     private void initData() {
         idCheckin = getIntentStringExtra("CHECKIN_ID");
         Log.d(TAG, "initData: " + idCheckin);
-        totalBiaya = getIntentIntegerExtra(TOTAL_BIAYA);
+        totalBiaya = Integer.parseInt(getIntentStringExtra(TOTAL_BIAYA));
         find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));
         layanan = getIntentStringExtra("LAYANAN");
 
@@ -344,7 +344,14 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                     args.put("parts", partList.toJson());
                     args.put("jasaLain", jasaList.toJson());
                     args.put("idDetail", getIntentStringExtra(ID));
-                    args.put("isKonfirmasiTambah", isKonfirmasiTambah ? "Y" : "N");
+
+                    String konfirmasiTambah = "";
+                    if(isWait || (isNotWait && !isKonfirmasiTambah)){
+                        konfirmasiTambah = "N";
+                    }else{
+                        konfirmasiTambah = "Y";
+                    }
+                    args.put("isKonfirmasiTambah", konfirmasiTambah);
                 }
                 if (isBatal) {
                     args.put("aktivitas", "BATAL PART");
@@ -360,7 +367,8 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     showSuccess("Menambahkan Part Berhasil");
                     Intent i = new Intent();
-                    i.putExtra(DATA, idCheckin);
+                    i.putExtra(ID, idCheckin);
+                    i.putExtra("TOTAL_TAMBAH",  formatOnlyNumber(find(R.id.et_total_tambah_or_batal, EditText.class).getText().toString()));
                     setResult(RESULT_OK, i);
                     finish();
                 } else {
@@ -510,10 +518,8 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                         partList.add(dataAccept);
                         Objects.requireNonNull(rvPart.getAdapter()).notifyDataSetChanged();
 
-                        totalBiaya += Integer.parseInt(formatOnlyNumber(dataAccept.get("HARGA_PART").asString()));
-                        totalBiaya += Integer.parseInt(formatOnlyNumber(dataAccept.get("HARGA_JASA").asString()));
-                        totalTambah += Integer.parseInt(formatOnlyNumber(dataAccept.get("HARGA_PART").asString()));
-                        totalTambah += Integer.parseInt(formatOnlyNumber(dataAccept.get("HARGA_JASA").asString()));
+                        totalBiaya += Integer.parseInt(formatOnlyNumber(dataAccept.get("NET").asString()));
+                        totalTambah += Integer.parseInt(formatOnlyNumber(dataAccept.get("NET").asString()));
 
                         totalWaktuLayanan(Tools.TimePart.parse(dataAccept.get("WAKTU_KERJA").asString()));
                         totalWaktuLayanan(Tools.TimePart.parse(dataAccept.get("WAKTU_INSPEKSI").asString()));
@@ -524,7 +530,8 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
             }
 
             find(R.id.et_total_tambah_or_batal, EditText.class).setText(RP + formatRp(String.valueOf(totalTambah)));
-            find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));
+            //find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));
+            find(R.id.et_total_akhir, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));
         }
     }
 }

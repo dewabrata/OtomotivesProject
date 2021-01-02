@@ -36,8 +36,7 @@
                     android:id="@+id/ly_btn_part_jasa"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/paddingMedium">
+                    android:orientation="horizontal">
 
                     <Button
                         android:id="@+id/btn_jasa_lain"
@@ -106,6 +105,23 @@
                         android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/paddingSemiLarge">
+
+                    <EditText
+                        android:id="@+id/et_total_akhir"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="TOTAL AKHIR"
+                        android:enabled="false"
+                        android:textSize="14sp" />
+
+                </android.support.design.widget.TextInputLayout>
+
 
                 <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"

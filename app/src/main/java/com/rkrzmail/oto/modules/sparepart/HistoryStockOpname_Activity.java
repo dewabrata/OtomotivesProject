@@ -25,6 +25,7 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 
@@ -79,6 +80,12 @@ public class HistoryStockOpname_Activity extends AppActivity {
                 viewHolder.find(R.id.tv_merk_historyStock, TextView.class).setText(nListArray.get(position).get("MERK").asString());
                 viewHolder.find(R.id.tv_pending_historyStock, TextView.class).setText(nListArray.get(position).get("PENDING_STOCK").asString());
                 viewHolder.find(R.id.tv_opname_historyStock, TextView.class).setText(nListArray.get(position).get("OPNAME").asString());
+
+                String tgl =  Tools.setFormatDateTimeFromDb(nListArray.get(position).get("CREATED_DATE").asString(), "", "dd/MM hh:mm", true);
+
+                viewHolder.find(R.id.tv_tgl, TextView.class).setText(tgl);
+                viewHolder.find(R.id.tv_user, TextView.class).setText(nListArray.get(position).get("USER").asString());
+
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override

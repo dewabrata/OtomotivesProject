@@ -42,6 +42,8 @@ public class Absen_Absensi_Fragment extends Fragment {
 
     private Nson absenList = Nson.newArray();
 
+    private String argsRefresh = "";
+
     public Absen_Absensi_Fragment() {
 
     }
@@ -56,7 +58,7 @@ public class Absen_Absensi_Fragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-
+            argsRefresh = getArguments().toString();
         }
     }
 
@@ -158,7 +160,7 @@ public class Absen_Absensi_Fragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == Activity.RESULT_OK){
-            //viewAbsensi();
+            //viewAbsensi((Absensi_MainTab_Activity) Objects.requireNonNull(getActivity()));
         }
     }
 }

@@ -81,7 +81,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
     private String waktuLayananHplusExtra = "", jenisLayanan = "", waktuLayananStandartExpress = "";
     private String tglEstimasi = "", waktuEstimasi = "", antrianSebelumnya = "";
     private String ttdPath = "";
-    private int idMekanik = 0;
+    private String idMekanik = "";
     private int idAntrian = 0;
     private int waktuPesan = 0;
 
@@ -572,7 +572,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 args.put("id", nson.get("CHECKIN_ID").asString());
                 args.put("status", isHplusPartKosong ? "TUNGGU DP" : status);
                 args.put("mekanik", namaMekanik);
-                args.put("mekanikId", String.valueOf(idMekanik));
+                args.put("mekanikId", idMekanik);
                 args.put("antrian", antrian);
                 args.put("noAntrian", find(R.id.et_no_antrian_checkin4, EditText.class).getText().toString());
                 args.put("levelBbm", levelBbm);
@@ -703,10 +703,12 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                     mekanikArray.add("--PILIH--");
                     idMekanikArray.add(0);
                     for (int i = 0; i < data.get("data").size(); i++) {
-                        idMekanikArray.add(Nson.newObject().set("ID", data.get("data").get(i).get("ID").asString()).set("NAMA", data.get("data").get(i).get("NAMA").asString()));
+                        idMekanikArray.add(Nson.newObject()
+                                .set("ID", data.get("data").get(i).get("ID").asString())
+                                .set("NAMA", data.get("data").get(i).get("NAMA").asString()));
                         mekanikArray.add(data.get("data").get(i).get("NAMA").asString());
                     }
-
+                    Log.d("id__", "array: " + idMekanikArray);
                     ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, mekanikArray.asArray());
                     spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     find(R.id.sp_namaMekanik_checkin4, Spinner.class).setAdapter(spinnerAdapter);
@@ -743,7 +745,8 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                         loadAvailMekanik(parent.getSelectedItem().toString(), find(R.id.tv_jenis_antrian, TextView.class).getText().toString());
                     }
                     if (idMekanikArray.get(position).get("NAMA").asString().equals(parent.getSelectedItem().toString())) {
-                        idMekanik = idMekanikArray.get(position).get("ID").asInteger();
+                        idMekanik = idMekanikArray.get(position).get("ID").asString();
+                        Log.d("id__", "onItemSelected: " + idMekanik);
                     }
                 }
             }
@@ -826,8 +829,12 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                     showWarning("Silahkan Setujui Syarat Dan Ketentuan Bengkel");
                 } else if (!isSign) {
                     showWarning("Tanda Tangan Wajib di Input");
+                }else if( find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).isChecked() &&
+                        find(R.id.tv_waktu_checkin4, TextView.class).getText().toString().isEmpty()){
+                    showWarning("Waktu Ambil harus di Isi");
                 } else {
-                  if (find(R.id.sp_bbm, Spinner.class).getSelectedItem().toString().equals("--PILIH--")) {
+                  if (find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).isChecked() &&
+                          find(R.id.sp_bbm, Spinner.class).getSelectedItem().toString().equals("--PILIH--")) {
                         find(R.id.sp_bbm, Spinner.class).performClick();
                         find(R.id.sp_bbm, Spinner.class).requestFocus();
                         showWarning("Level BBM Belum di Pilih");

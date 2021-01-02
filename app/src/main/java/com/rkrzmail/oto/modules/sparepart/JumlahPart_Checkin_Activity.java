@@ -81,6 +81,7 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
 
     @SuppressLint("SetTextI18n")
     private void initData() {
+        find(R.id.ly_waktu_inspeksi).setVisibility(View.GONE);
         if (getIntent().hasExtra(TAMBAH_PART)) {
             isTambahPart = true;
         }
@@ -90,7 +91,6 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
         } else {
             final Nson nson = Nson.readJson(getIntentStringExtra(PART_WAJIB));
 
-            find(R.id.ly_waktu_inspeksi).setVisibility(View.GONE);
             find(R.id.ly_waktu_kerja).setVisibility(View.GONE);
             etBiayaJasa.setVisibility(View.GONE);
             isPartWajib = true;
@@ -534,7 +534,7 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
                 editText.removeTextChangedListener(this);
                 try {
                     String cleanString = formatOnlyNumber(str);
-                    String formatted = Tools.formatRupiah(cleanString);
+                    String formatted = RP + formatRp(cleanString);
                     editText.setText(formatted);
                     editText.setSelection(formatted.length());
                 } catch (Exception e) {

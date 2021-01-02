@@ -20,7 +20,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -31,7 +30,7 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.srv.PercentFormat;
-import com.rkrzmail.srv.RupiahFormat;
+import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
 import java.text.DecimalFormat;
@@ -230,7 +229,7 @@ public class AturLayanan_Activity extends AppActivity {
     }
 
     private void initListener() {
-        find(R.id.et_biayaPaket_layanan, EditText.class).addTextChangedListener(new RupiahFormat(find(R.id.et_biayaPaket_layanan, EditText.class)));
+        find(R.id.et_biayaPaket_layanan, EditText.class).addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(find(R.id.et_biayaPaket_layanan, EditText.class)));
         find(R.id.et_discBooking_layanan, EditText.class).addTextChangedListener(new PercentFormat(find(R.id.et_discBooking_layanan, EditText.class)));
         find(R.id.sp_garansi_atur_layanan, Spinner.class).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

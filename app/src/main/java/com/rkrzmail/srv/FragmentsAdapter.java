@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentTransaction;
 import com.naa.data.Nson;
 import com.rkrzmail.oto.modules.Fragment.Absen_Absensi_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Cash_Pembayaran_Fragment;
+import com.rkrzmail.oto.modules.Fragment.Print_Pembayaran_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Schedule_Absensi_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Setoran_Pembayaran_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Transaksi_Pembayaran_Fragment;
@@ -125,9 +126,12 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
                     fragment = Fragment.instantiate(context, Transaksi_Pembayaran_Fragment.class.getName());
                     break;
                 case 1:
-                    fragment = Fragment.instantiate(context, Cash_Pembayaran_Fragment.class.getName());
+                    fragment = Fragment.instantiate(context, Print_Pembayaran_Fragment.class.getName());
                     break;
                 case 2:
+                    fragment = Fragment.instantiate(context, Cash_Pembayaran_Fragment.class.getName());
+                    break;
+                case 3:
                     fragment = Fragment.instantiate(context, Setoran_Pembayaran_Fragment.class.getName());
                     break;
 
@@ -195,8 +199,10 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
                 case 0:
                     return "Transaksi";
                 case 1:
-                    return "Cash";
+                    return "Print";
                 case 2:
+                    return "Cash";
+                case 3:
                     return "Setoran";
             }
         }

@@ -2,7 +2,6 @@ package com.rkrzmail.oto.modules.bengkel;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,7 +18,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.srv.RupiahFormat;
+import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
 import java.util.ArrayList;
@@ -56,7 +55,7 @@ public class AturCollection_Activity extends AppActivity {
     }
 
     private void initComponent() {
-        find(R.id.et_jumlah_setor, EditText.class).addTextChangedListener(new RupiahFormat(find(R.id.et_jumlah_setor, EditText.class)));
+        find(R.id.et_jumlah_setor, EditText.class).addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(find(R.id.et_jumlah_setor, EditText.class)));
         find(R.id.et_jumlah_setor, EditText.class).addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

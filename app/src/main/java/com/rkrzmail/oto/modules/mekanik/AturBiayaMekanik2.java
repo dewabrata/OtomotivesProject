@@ -12,7 +12,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.srv.RupiahFormat;
+import com.rkrzmail.srv.NumberFormatUtils;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -53,9 +53,9 @@ public class AturBiayaMekanik2 extends AppActivity {
             Log.d("BIAYA_MEKANIK.CLASS", "Data : " + perJam);
         }
 
-        find(R.id.et_mekanik1_biayaMekanik, EditText.class).addTextChangedListener(new RupiahFormat(find(R.id.et_mekanik1_biayaMekanik, EditText.class)));
-        find(R.id.et_mekanik2_biayaMekanik, EditText.class).addTextChangedListener(new RupiahFormat(find(R.id.et_mekanik2_biayaMekanik, EditText.class)));
-        find(R.id.et_mekanik3_biayaMekanik, EditText.class).addTextChangedListener(new RupiahFormat(find(R.id.et_mekanik3_biayaMekanik, EditText.class)));
+        find(R.id.et_mekanik1_biayaMekanik, EditText.class).addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(find(R.id.et_mekanik1_biayaMekanik, EditText.class)));
+        find(R.id.et_mekanik2_biayaMekanik, EditText.class).addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(find(R.id.et_mekanik2_biayaMekanik, EditText.class)));
+        find(R.id.et_mekanik3_biayaMekanik, EditText.class).addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(find(R.id.et_mekanik3_biayaMekanik, EditText.class)));
 
         find(R.id.btn_simpan_biayaMekanik).setOnClickListener(new View.OnClickListener() {
             @Override
