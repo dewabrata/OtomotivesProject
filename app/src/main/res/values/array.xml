@@ -112,6 +112,14 @@
 
     </string-array>
 
+    <string-array name="laporan">
+        <item>--PILIH--</item>
+        <item>UNIT ENTRY</item>
+        <item>UNIT DETAIL</item>
+        <item>LKK CLAIM</item>
+
+    </string-array>
+
     <string-array name="posisi_karyawan">
         <item>MANAGEMENT</item>
         <item>KEPALA BENGKEL</item>
