@@ -1,4 +1,4 @@
-package com.rkrzmail.oto.gmod;
+package com.rkrzmail.oto.modules.bengkel;
 
 import android.inputmethodservice.Keyboard;
 import android.os.Bundle;
@@ -28,7 +28,7 @@ import static com.rkrzmail.utils.APIUrls.ABSEN;
 import static com.rkrzmail.utils.APIUrls.VIEW_MST;
 
 
-public class Laporan extends AppActivity {
+public class Laporan_Activity extends AppActivity {
 
     private TextView tglMulai, tglSelesai;
     private Nson testList = Nson.newArray();

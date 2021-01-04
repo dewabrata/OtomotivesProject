@@ -32,11 +32,11 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.fragment.PageAdapter;
 import com.rkrzmail.oto.fragment.SlideFragment;
 import com.rkrzmail.oto.fragment.pageindicator.CirclePageIndicator;
-import com.rkrzmail.oto.gmod.MessageWA;
 import com.rkrzmail.oto.gmod.MyCode;
 import com.rkrzmail.oto.modules.antar_jemput.AntarJemput_Activity;
 import com.rkrzmail.oto.modules.bengkel.Absensi_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Collection_Activity;
+import com.rkrzmail.oto.modules.bengkel.Laporan_Activity;
 import com.rkrzmail.oto.modules.checkin.Checkin1_Activity;
 import com.rkrzmail.oto.modules.mekanik.AturSchedule_Activity;
 import com.rkrzmail.oto.modules.mekanik.BiayaMekanik2Activity;
@@ -68,7 +68,6 @@ import com.rkrzmail.oto.modules.komisi.KomisiJasaLain_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiLayanan_Activity;
 import com.rkrzmail.oto.modules.bengkel.Layanan_Avtivity;
 import com.rkrzmail.oto.modules.sparepart.LokasiPart_Activity;
-import com.rkrzmail.oto.modules.mekanik.Schedule_Activity;
 import com.rkrzmail.oto.modules.bengkel.RekeningBank_Activity;
 import com.rkrzmail.oto.modules.bengkel.Tenda_Activity;
 import com.rkrzmail.oto.modules.sparepart.TerimaPart;
@@ -78,7 +77,6 @@ import java.util.List;
 import java.util.Vector;
 
 import static com.rkrzmail.utils.ConstUtils.ALL;
-import static com.rkrzmail.utils.ConstUtils.CARI_PART_BENGKEL;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
 import static com.rkrzmail.utils.ConstUtils.PART;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
@@ -135,7 +133,7 @@ public class MenuActivity extends AppActivity {
     private final String PART_KELUAR = "PART KELUAR";
     private final String OUTSOURCE = "OUTSOURCE";
     private final String ANTAR_JEMPUT = "ANTAR JEMPUT";
-    public final String KINERJA = "KINERJA";
+    public final String LAPORAN = "LAPORAN";
     public final String SCHEDULE = "SCHEDULE";
     private final String PENGATURAN_USER = "USER";
     private final String PENGATURAN_USER_LAYANAN = "LAYANAN";
@@ -296,9 +294,9 @@ public class MenuActivity extends AppActivity {
 
         } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_PAYROLL)) {
 
-        }else if (item.getTitle().toString().equalsIgnoreCase(KINERJA)) {
-//            Intent intent = new Intent(MenuActivity.this, MessageWA.class);
-//            startActivity(intent);
+        }else if (item.getTitle().toString().equalsIgnoreCase(LAPORAN)) {
+            Intent intent = new Intent(MenuActivity.this, Laporan_Activity.class);
+            startActivity(intent);
         }else if (item.getTitle().toString().equalsIgnoreCase(SCHEDULE)) {
             Intent intent = new Intent(MenuActivity.this, AturSchedule_Activity.class);
             startActivity(intent);
@@ -554,8 +552,8 @@ public class MenuActivity extends AppActivity {
         if (getAccess(KENDARAAN_CUSTOMER)) {
             menu.add(KENDARAAN_CUSTOMER);
         }
-        if(getAccess(KINERJA)){
-            menu.add(KINERJA);
+        if(getAccess(LAPORAN)){
+            menu.add(LAPORAN);
         }
 //        if (getAccess(M_MENUNGGU)) {
 //            menu.add(M_MENUNGGU);

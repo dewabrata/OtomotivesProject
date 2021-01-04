@@ -14,7 +14,7 @@
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,UnusedAttribute"
         tools:replace="android:label">
-        <activity android:name=".gmod.Laporan"></activity>
+        <activity android:name=".modules.bengkel.Laporan_Activity"></activity>
         <activity android:name=".modules.bengkel.Absensi_MainTab_Activity" />
         <activity android:name=".modules.mekanik.LkkClaimMekanik_Activity" />
         <activity android:name=".modules.bengkel.KonfirmasiData_Pembayaran_Activity" />
