@@ -36,6 +36,8 @@ import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import static com.rkrzmail.utils.ConstUtils.EXTERNAL_DIR_OTO;
+
 public class Capture extends Activity {
 
     public LinearLayout mContent;
@@ -292,20 +294,16 @@ public class Capture extends Activity {
 
         @SuppressLint("SdCardPath")
         private void createDirectoryAndSaveFile(Bitmap imageToSave) {
-            File direct = new File(Environment.getExternalStorageDirectory() + "/Otomotives");
+            File direct = new File(EXTERNAL_DIR_OTO);
             if (!direct.exists()) {
-                File wallpaperDirectory = new File("/sdcard/Otomotives/");
-                wallpaperDirectory.mkdirs();
-                Log.i("finish", "SAVETTD: " + wallpaperDirectory.getAbsolutePath());
+                File ttdDir = new File("/sdcard/Otomotives/");
+                ttdDir.mkdirs();
+                Log.i("finish", "SAVETTD: " + ttdDir.getAbsolutePath());
             }
 
-            File file = new File("/sdcard/Otomotives/", "TandaTangan" + ".png");
+            File file = new File("/sdcard/Otomotives/", "TandaTangan" + getIntent().getStringExtra("NOPOL") + ".png");
             mypath = file.getAbsoluteFile();
-            Log.i("finish", "AVAIL: " +mypath.getAbsolutePath());
-            if (file.exists()) {
-                file.delete();
-                Log.i("finish", "DELETE: " + file.getAbsolutePath());
-            }
+            Log.i("finish", "AVAIL: " + mypath.getAbsolutePath());
             try {
                 FileOutputStream out = new FileOutputStream(file);
                 imageToSave.compress(Bitmap.CompressFormat.PNG, 100, out);
@@ -319,7 +317,6 @@ public class Capture extends Activity {
 
         public void clear() {
             path.reset();
-
             invalidate();
         }
 

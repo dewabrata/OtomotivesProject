@@ -361,9 +361,9 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
         find(R.id.btn_simpan_jumlah_harga_part, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (find(R.id.et_waktuSet, EditText.class).getText().toString().isEmpty()) {
+                if (find(R.id.et_waktuSet, EditText.class).getText().toString().equals(getResources().getString(R.string._00_00_00))) {
                     find(R.id.et_waktuSet, EditText.class).requestFocus();
-                    find(R.id.et_waktuSet, EditText.class).setError("Masukkan Waktu Kerja");
+                    showWarning("Waktu Kerja Harus di Isi");
                     return;
                 }
 

@@ -3,7 +3,9 @@ package com.rkrzmail.srv;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 import com.rkrzmail.utils.Tools;
 
@@ -48,6 +50,42 @@ public class NumberFormatUtils {
         };
     }
 
+    public TextWatcher rupiahTextWatcher(final EditText editText, final ImageButton imgDelete) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int i, int i1, int i2) {
+                if (s.toString().length() == 0) {
+                    imgDelete.setVisibility(View.GONE);
+                } else {
+                    imgDelete.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String s = editable.toString();
+                if (s.isEmpty()) return;
+                editText.removeTextChangedListener(this);
+                try {
+                    String cleanString = formatOnlyNumber(s);
+                    String formatted = RP + formatRp(cleanString);
+                    editText.setText(formatted);
+                    editText.setSelection(formatted.length());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                editText.addTextChangedListener(this);
+            }
+        };
+    }
+
+
     public TextWatcher percentTextWatcher(final EditText editText) {
         return new TextWatcher() {
             @Override
@@ -90,5 +128,4 @@ public class NumberFormatUtils {
         else
             return text.replaceAll("[^0-9]+", "");
     }
-
 }

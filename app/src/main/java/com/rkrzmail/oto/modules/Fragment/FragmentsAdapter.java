@@ -1,4 +1,4 @@
-package com.rkrzmail.srv;
+package com.rkrzmail.oto.modules.Fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -199,7 +199,7 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
                 case 0:
                     return "Transaksi";
                 case 1:
-                    return "Print";
+                    return "Bukti";
                 case 2:
                     return "Cash";
                 case 3:

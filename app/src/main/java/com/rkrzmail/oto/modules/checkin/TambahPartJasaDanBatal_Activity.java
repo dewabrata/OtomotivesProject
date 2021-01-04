@@ -219,7 +219,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
             }
         }, year, month, day);
 
-        datePickerDialog.setMaxDate(cldr);
+        datePickerDialog.setMinDate(cldr);
         datePickerDialog.show(getFragmentManager(), "Datepickerdialog");
     }
 

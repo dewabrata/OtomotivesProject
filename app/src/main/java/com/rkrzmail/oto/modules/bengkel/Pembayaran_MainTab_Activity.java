@@ -14,14 +14,11 @@ import android.view.MenuItem;
 
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.Fragment.BatalPart_TugasPart_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Cash_Pembayaran_Fragment;
-import com.rkrzmail.oto.modules.Fragment.Permintaan_TugasPart_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Print_Pembayaran_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Setoran_Pembayaran_Fragment;
-import com.rkrzmail.oto.modules.Fragment.Tersedia_TugasPart_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Transaksi_Pembayaran_Fragment;
-import com.rkrzmail.srv.FragmentsAdapter;
+import com.rkrzmail.oto.modules.Fragment.FragmentsAdapter;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -97,5 +94,6 @@ public class Pembayaran_MainTab_Activity extends AppActivity {
         mSearchView.setOnQueryTextListener(queryTextListener);
         return true;
     }
+
 }
 

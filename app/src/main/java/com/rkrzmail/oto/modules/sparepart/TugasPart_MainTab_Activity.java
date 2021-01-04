@@ -21,7 +21,7 @@ import com.rkrzmail.oto.modules.Fragment.BatalPart_TugasPart_Fragment;
 import com.rkrzmail.oto.modules.Fragment.PartKosong_TugasPart_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Permintaan_TugasPart_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Tersedia_TugasPart_Fragment;
-import com.rkrzmail.srv.FragmentsAdapter;
+import com.rkrzmail.oto.modules.Fragment.FragmentsAdapter;
 
 import java.util.ArrayList;
 import java.util.Objects;

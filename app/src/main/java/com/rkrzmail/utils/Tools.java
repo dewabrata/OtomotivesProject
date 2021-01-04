@@ -388,7 +388,7 @@ public class Tools {
     @SuppressLint("SimpleDateFormat")
     public static String setFormatDateTimeFromDb(String date, String fromPattern, String setPattern, boolean isDefaultPattern) {
         if (!date.equals("")) {
-            SimpleDateFormat sdf = new SimpleDateFormat(isDefaultPattern ? "yyyy-MM-dd HH:mm:ss" : fromPattern);
+            SimpleDateFormat sdf = new SimpleDateFormat(isDefaultPattern ? "yyyy-MM-dd hh:mm:ss" : fromPattern);
             Date tgl = new Date();
             try {
                 tgl = sdf.parse(date);

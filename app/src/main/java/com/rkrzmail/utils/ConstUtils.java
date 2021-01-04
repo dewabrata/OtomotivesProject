@@ -1,17 +1,22 @@
 package com.rkrzmail.utils;
 
+import android.os.Environment;
+
 import com.naa.data.UtilityAndroid;
 import com.rkrzmail.oto.AppActivity;
 
 public class ConstUtils {
 
-    public static String PRINT_BUKTI_BAYAR(String noBuktiBayar){
+    public static String PRINT_BUKTI_BAYAR(String noBuktiBayar) {
         return "https://otomotives.com/internalapp/report/bukti_bayar/" + noBuktiBayar;
     }
-    public static final long ONEDAY = 86400000;
+
     public static int DAYS(long milliseconds) {
-        return  (int) (milliseconds / (1000*60*60*24));
+        return (int) (milliseconds / (1000 * 60 * 60 * 24));
     }
+
+    public static final long ONEDAY = 86400000;
+    public static final String EXTERNAL_DIR_OTO = Environment.getExternalStorageDirectory() + "/Otomotives";
     //ARGUMENTS PARENT
     public static final String ERROR_INFO = "Terjadi Kesalahan Silahkan Coba Kembali";
     public static final String TUGAS_PART_TERSEDIA = "TUGAS_PART_TERSEDIA";

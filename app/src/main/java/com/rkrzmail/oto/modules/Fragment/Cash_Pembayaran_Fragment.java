@@ -3,6 +3,7 @@ package com.rkrzmail.oto.modules.Fragment;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -176,6 +177,12 @@ public class Cash_Pembayaran_Fragment extends Fragment {
 
         builder.create();
         alertDialog = builder.show();
+        alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                isDialog = false;
+            }
+        });
     }
 
     private void viewCashColl(final String tglPembayaran) {

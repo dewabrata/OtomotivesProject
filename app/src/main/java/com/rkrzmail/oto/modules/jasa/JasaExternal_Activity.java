@@ -10,11 +10,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.checkin.Checkin3_Activity;
+import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
 import static com.rkrzmail.utils.ConstUtils.DATA;
@@ -47,15 +49,20 @@ public class JasaExternal_Activity extends AppActivity {
         }else{
             inspeksi = "N";
         }
-        watcher(find(R.id.img_clear2, ImageButton.class), find(R.id.et_biayaJasa, EditText.class));
-        Log.d(TAG, "Jasa External : " + nson);
+        find(R.id.ly_waktu_inspeksi).setVisibility(View.GONE);
+        find(R.id.et_biayaJasa, EditText.class).addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(find(R.id.et_biayaJasa, EditText.class), find(R.id.img_clear2, ImageButton.class)));
 
         String waktuDefault =totalWaktuKerja("00", nson.get("WAKTU_KERJA_JAM").asString(), nson.get("WAKTU_KERJA_MENIT").asString());
         find(R.id.et_waktuDefault, EditText.class).setText(waktuDefault);
         find(R.id.btn_lanjut, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setSelanjutnya(nson);
+                if(find(R.id.et_waktuSet, EditText.class).getText().toString().equals(getResources().getString(R.string._00_00_00))){
+                    showWarning("Waktu Kerja Harus di Isi", Toast.LENGTH_LONG);
+                }else{
+                    setSelanjutnya(nson);
+                }
+
             }
         });
 
@@ -134,42 +141,5 @@ public class JasaExternal_Activity extends AppActivity {
             setResult(RESULT_OK, i);
             finish();
         }
-    }
-
-    public void watcher(final ImageButton imageButton, final EditText editText) {
-        TextWatcher textWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                if (s.toString().length() == 0) {
-                    imageButton.setVisibility(View.GONE);
-                } else {
-                    imageButton.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (editText == null) return;
-                String str = s.toString();
-                if (str.isEmpty()) return;
-                editText.removeTextChangedListener(this);
-                try {
-                    String cleanString = str.replaceAll("[^0-9]", "");
-                    String formatted = Tools.formatRupiah(cleanString);
-                    editText.setText(formatted);
-                    editText.setSelection(formatted.length());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                editText.addTextChangedListener(this);
-            }
-        };
-        editText.addTextChangedListener(textWatcher);
     }
 }

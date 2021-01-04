@@ -170,22 +170,38 @@
                     android:text="KONFIRMASI PENAMBAHAN"
                     android:checked="true" />
 
-                <android.support.design.widget.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp">
 
-                    <EditText
-                        android:id="@+id/et_no_antrian_checkin4"
+                    <android.support.design.widget.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:enabled="false"
-                        android:hint="NO. ANTRIAN"
-                        android:inputType="numberDecimal"
-                        android:textSize="14sp" />
+                        android:layout_gravity="center">
 
-                </android.support.design.widget.TextInputLayout>
+                        <EditText
+                            android:id="@+id/et_no_antrian_checkin4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:enabled="false"
+                            android:hint="NO. ANTRIAN"
+                            android:inputType="numberDecimal"
+                            android:textSize="14sp" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <ImageButton
+                        android:id="@+id/btn_refresh_antrian"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/icon_rework"
+                        android:layout_gravity="end|center_vertical"
+                        android:layout_marginEnd="@dimen/paddingMedium"
+                        android:backgroundTint="@color/transparent"/>
+
+                </FrameLayout>
 
                 <TextView
                     android:layout_width="wrap_content"

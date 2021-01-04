@@ -28,6 +28,7 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NsonAutoCompleteAdapter;
+import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
 import java.util.ArrayList;
@@ -278,6 +279,7 @@ public class AturPembayaran_Activity extends AppActivity {
             }
         });
 
+        find(R.id.et_totalBayar, EditText.class).addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(find(R.id.et_totalBayar, EditText.class)));
         find(R.id.et_totalBayar, EditText.class).addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -286,21 +288,8 @@ public class AturPembayaran_Activity extends AppActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void afterTextChanged(Editable editable) {
-                find(R.id.et_totalBayar, EditText.class).removeTextChangedListener(this);
-
                 try {
                     if (tipePembayaran.equals("CASH")) {
-                        String cleanString = editable.toString().replaceAll("[^0-9]", "");
-                        String formatted = Tools.formatRupiah(cleanString);
-                        find(R.id.et_totalBayar, EditText.class).setText(formatted);
-                        find(R.id.et_totalBayar, EditText.class).setSelection(formatted.length());
-
                         if (!find(R.id.et_totalBayar, EditText.class).getText().toString().isEmpty()) {
                             int bayar = Integer.parseInt(formatOnlyNumber(find(R.id.et_totalBayar, EditText.class).getText().toString()));
                             int totalKembalian = bayar - grandTotal;
@@ -317,8 +306,12 @@ public class AturPembayaran_Activity extends AppActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
 
-                find(R.id.et_totalBayar, EditText.class).addTextChangedListener(this);
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
 

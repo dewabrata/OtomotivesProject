@@ -191,12 +191,6 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
                 super.onBindViewHolder(viewHolder, position);
-                if (partList.get(position).get("HARGA_JASA").asString().equals("0")) {
-                    viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.GONE);
-                } else {
-                    viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.VISIBLE);
-                }
-
                 viewHolder.find(R.id.tv_namaPart_booking3_checkin3, TextView.class)
                         .setText(partList.get(position).get("NAMA_PART").asString());
                 viewHolder.find(R.id.tv_noPart_booking3_checkin3, TextView.class)
@@ -218,6 +212,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                     showError(e.getMessage());
                 }
                 viewHolder.find(R.id.tv_merk_booking3_checkin3, TextView.class).setText(partList.get(position).get("MERK").asString());
+                viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.VISIBLE);
                 viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -612,8 +607,15 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         } else {
                             biayaLayanan = dataLayananList.get(i).get("BIAYA_NON_PAKET").asString();
                         }
-                        totalHarga += Integer.parseInt(formatOnlyNumber(biayaLayanan));
+
+                        if(totalHarga > 0){
+                            totalHarga = totalHarga - Integer.parseInt(formatOnlyNumber(find(R.id.et_totalBiaya_checkin3, EditText.class).getText().toString()));
+                        }
+
+                        totalHarga = Math.max(totalHarga, 0) + Integer.parseInt(formatOnlyNumber(biayaLayanan));
                         find(R.id.et_totalBiaya_checkin3, EditText.class).setText(RP + formatRp(String.valueOf(totalHarga)));
+                        find(R.id.tv_biayaLayanan_checkin, TextView.class).setText("Rp." + formatRp(biayaLayanan));
+
                         feeNonPaket = dataLayananList.get(i).get("FEE_NON_PAKET").asInteger();
                         discLayanan = dataLayananList.get(i).get("DISCOUNT_LAYANAN").asString();
                         layananId = dataLayananList.get(i).get("LAYANAN_ID").asString();
@@ -644,10 +646,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         }
                         find(R.id.cardView_namaLayanan, CardView.class).setVisibility(View.VISIBLE);
                         try {
-                            if (Tools.isNumeric(dataLayananList.get(i).get("BIAYA_PAKET").asString())) {
-                                totalHarga += dataLayananList.get(i).get("BIAYA_PAKET").asInteger();
-                                find(R.id.tv_biayaLayanan_checkin, TextView.class).setText("Rp." + formatRp(dataLayananList.get(i).get("BIAYA_PAKET").asString()));
-                            } else {
+                            if (!Tools.isNumeric(dataLayananList.get(i).get("BIAYA_PAKET").asString())) {
                                 find(R.id.tv_biayaLayanan_checkin, TextView.class).setText("");
                             }
                         } catch (Exception e) {
@@ -666,6 +665,8 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         find(R.id.tv_waktu_layanan, TextView.class).setText("Total Waktu Layanan : " + "00:00:00");
                         find(R.id.tv_namaLayanan_checkin, TextView.class).setText(item);
                         find(R.id.tv_biayaLayanan_checkin, TextView.class).setText("");
+                        totalHarga = 0;
+                        find(R.id.et_totalBiaya_checkin3, EditText.class).setText(RP + formatRp(String.valueOf(totalHarga)));
                     }
                 }
 

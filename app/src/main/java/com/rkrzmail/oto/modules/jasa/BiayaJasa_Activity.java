@@ -17,6 +17,7 @@ import com.naa.data.Nson;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaAutoComplete;
+import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
 import java.util.Objects;
@@ -181,45 +182,13 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
     }
 
     private void initListener() {
+        find(R.id.ly_waktu_inspeksi).setVisibility(View.GONE);
         find(R.id.img_clear, ImageButton.class).setVisibility(View.GONE);
-        etBiaya.addTextChangedListener(textWatcher);
+        etBiaya.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etBiaya,  find(R.id.img_clear, ImageButton.class)));
         find(R.id.img_clear, ImageButton.class).setOnClickListener(this);
         find(R.id.btn_img_waktu_kerja).setOnClickListener(this);
         find(R.id.btn_img_waktu_inspeksi).setOnClickListener(this);
     }
-
-    TextWatcher textWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            if (s.toString().trim().length() == 0) {
-                find(R.id.img_clear, ImageButton.class).setVisibility(View.GONE);
-            } else {
-                find(R.id.img_clear, ImageButton.class).setVisibility(View.VISIBLE);
-            }
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            if (etBiaya == null) return;
-            etBiaya.removeTextChangedListener(this);
-            String editable = s.toString();
-            try {
-                String cleanString = editable.replaceAll("[^0-9]", "");
-                String formatted = Tools.formatRupiah(cleanString);
-                etBiaya.setText(formatted);
-                etBiaya.setSelection(formatted.length());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            etBiaya.addTextChangedListener(this);
-        }
-    };
 
     @SuppressLint("NonConstantResourceId")
     @Override

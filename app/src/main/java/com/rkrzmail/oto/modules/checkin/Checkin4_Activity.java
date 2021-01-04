@@ -23,11 +23,13 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -404,6 +406,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
     }
 
     private void setNoAntrian(final String jenisAntrian) {
+        find(R.id.btn_refresh_antrian, ImageButton.class).setVisibility(View.GONE);
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -424,6 +427,15 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                     idAntrian = result.asInteger();
                     find(R.id.et_no_antrian_checkin4, EditText.class).setText(generateNoAntrian(jenisAntrian, result.asString()));
                     Log.d(TAG, "NO_ANTRIAN: " + generateNoAntrian(jenisAntrian, result.asString()));
+                }else{
+                    showError("Nomor Antrian Gagal di Muat, Harap Refresh!", Toast.LENGTH_LONG);
+                    find(R.id.btn_refresh_antrian, ImageButton.class).setVisibility(View.VISIBLE);
+                    find(R.id.btn_refresh_antrian, ImageButton.class).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            setNoAntrian(jenisAntrian);
+                        }
+                    });
                 }
             }
         });
@@ -541,7 +553,6 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
     }
 
     private void saveData(final String status) {
-        final Nson nson = Nson.readJson(getIntentStringExtra(DATA));
         final String namaMekanik = find(R.id.sp_namaMekanik_checkin4, Spinner.class).getSelectedItem().toString().contains("--PILIH--") ? "" : find(R.id.sp_namaMekanik_checkin4, Spinner.class).getSelectedItem().toString();
         final String antrian = find(R.id.tv_jenis_antrian, TextView.class).getText().toString().replace("Jenis Antrian : ", "").trim();
         final String levelBbm = find(R.id.sp_bbm, Spinner.class).getSelectedItem().toString();
@@ -557,8 +568,8 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         final String estimasiSesudah = find(R.id.et_selesaiWaktu_checkin, TextView.class).getText().toString();
         final String estimasiSelesai = find(R.id.et_selesaiWaktu_checkin, TextView.class).getText().toString();//currentDateTime("yyyy-MM-dd") + " " +
         //final String ttd = find(R.id.img_tandaTangan_checkin4 , ImageView.class).getText().toString();
-        final String noPonsel = nson.get("noPonsel").asString();
-        final String nopol =  nson.get("nopol").asString();
+        final String noPonsel = getData.get("noPonsel").asString();
+        final String nopol =  getData.get("nopol").asString();
 
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
@@ -569,7 +580,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
 
                 args.put("action", "add");
                 args.put("jenisCheckin", "4");
-                args.put("id", nson.get("CHECKIN_ID").asString());
+                args.put("id", getData.get("CHECKIN_ID").asString());
                 args.put("status", isHplusPartKosong ? "TUNGGU DP" : status);
                 args.put("mekanik", namaMekanik);
                 args.put("mekanikId", idMekanik);
@@ -617,8 +628,6 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                             showDialogNoKunci(result.get("data").get("NO_KUNCI").asString());
                             showNotification(getActivity(), "Checkin Antrian ", formatNopol(nopol), "CHECKIN", intent);
                             showSuccess("Data Pelanggan Berhasil Di masukkan Ke Daftar Kontrol Layanan");
-                            setResult(RESULT_OK);
-                            finish();
                         }
                     }
                 } else {
@@ -846,6 +855,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             case R.id.btn_ttd_checkin4:
                 if (!checkPermission()) {
                     Intent intent = new Intent(getActivity(), Capture.class);
+                    intent.putExtra("NOPOL", getData.get("nopol").asString());
                     startActivityForResult(intent, REQUEST_CODE_SIGN);
                 } else {
                     if (checkPermission()) {

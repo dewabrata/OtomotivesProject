@@ -22,10 +22,8 @@ import com.rkrzmail.oto.gmod.MyCode;
 import com.rkrzmail.oto.modules.BarcodeActivity;
 import com.rkrzmail.oto.modules.Fragment.Absen_Absensi_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Schedule_Absensi_Fragment;
-import com.rkrzmail.srv.FragmentsAdapter;
-import com.rkrzmail.utils.Tools;
+import com.rkrzmail.oto.modules.Fragment.FragmentsAdapter;
 
-import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Map;

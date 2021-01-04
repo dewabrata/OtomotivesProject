@@ -114,6 +114,7 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
         getSupportActionBar().setTitle("Catatan Mekanik");
 
         final EditText etCatatan = dialogView.findViewById(R.id.et_catatan_mekanik);
+        etCatatan.setText(catatan.isEmpty() ? "" : catatan);
         Button btnSimpan = dialogView.findViewById(R.id.btn_simpan);
         btnSimpan.setOnClickListener(new View.OnClickListener() {
             @Override

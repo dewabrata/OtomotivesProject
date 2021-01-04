@@ -11,7 +11,7 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.Fragment.TabTambahan_Fragment;
 import com.rkrzmail.oto.modules.Fragment.TabUsaha_Fragment;
-import com.rkrzmail.srv.FragmentsAdapter;
+import com.rkrzmail.oto.modules.Fragment.FragmentsAdapter;
 
 import java.util.ArrayList;
 

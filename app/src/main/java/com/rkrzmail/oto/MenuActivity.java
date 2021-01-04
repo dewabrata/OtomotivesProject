@@ -134,16 +134,8 @@ public class MenuActivity extends AppActivity {
     private final String COLLECTION = "COLLECTION";
     private final String PART_KELUAR = "PART KELUAR";
     private final String OUTSOURCE = "OUTSOURCE";
-    private final String MY_BUSINESS = "MY BUSINESS";
-    private final String PENGATURAN = "PENGATURAN";
-    private final String DISCOUNT = "DISCOUNT";
-    private final String KOMISI = "KOMISI";
-    private final String SARAN = "SARAN";
-    private final String ENTRY_CHECKIN = "ENTRY CHECKIN";
-    private final String KENDARAAN_CUSTOMER = "KENDARAAN CUSTOMER";
-    private final String PEMBELIAN_PART = "PEMBELIAN PART";
     private final String ANTAR_JEMPUT = "ANTAR JEMPUT";
-    public final String MESSAGE = "MESSAGE";
+    public final String KINERJA = "KINERJA";
     public final String SCHEDULE = "SCHEDULE";
     private final String PENGATURAN_USER = "USER";
     private final String PENGATURAN_USER_LAYANAN = "LAYANAN";
@@ -304,9 +296,9 @@ public class MenuActivity extends AppActivity {
 
         } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_PAYROLL)) {
 
-        }else if (item.getTitle().toString().equalsIgnoreCase(MESSAGE)) {
-            Intent intent = new Intent(MenuActivity.this, MessageWA.class);
-            startActivity(intent);
+        }else if (item.getTitle().toString().equalsIgnoreCase(KINERJA)) {
+//            Intent intent = new Intent(MenuActivity.this, MessageWA.class);
+//            startActivity(intent);
         }else if (item.getTitle().toString().equalsIgnoreCase(SCHEDULE)) {
             Intent intent = new Intent(MenuActivity.this, AturSchedule_Activity.class);
             startActivity(intent);
@@ -555,13 +547,15 @@ public class MenuActivity extends AppActivity {
             menu.add(CHECK_OUT);
         }
         if (getAccess(M_CHECK_IN)) {
+            String ENTRY_CHECKIN = "ENTRY CHECKIN";
             menu.add(ENTRY_CHECKIN);
         }
+        String KENDARAAN_CUSTOMER = "KENDARAAN CUSTOMER";
         if (getAccess(KENDARAAN_CUSTOMER)) {
             menu.add(KENDARAAN_CUSTOMER);
         }
-        if(getAccess(MESSAGE)){
-            menu.add(MESSAGE);
+        if(getAccess(KINERJA)){
+            menu.add(KINERJA);
         }
 //        if (getAccess(M_MENUNGGU)) {
 //            menu.add(M_MENUNGGU);
@@ -572,6 +566,7 @@ public class MenuActivity extends AppActivity {
         if (getAccess(PART_KELUAR)) {
             menu.add(PART_KELUAR);
         }
+        String PEMBELIAN_PART = "PEMBELIAN PART";
         if (getAccess(PEMBELIAN_PART)) {
             menu.add(PEMBELIAN_PART);
         }
@@ -579,8 +574,10 @@ public class MenuActivity extends AppActivity {
             menu.add(SCHEDULE);
         }
         menu.add(REFERAL);
+        String SARAN = "SARAN";
         menu.add(SARAN);
 
+        String MY_BUSINESS = "MY BUSINESS";
         if (getAccess(MY_BUSINESS)) {
             subMenu = menu.addSubMenu(MY_BUSINESS);
             subMenu.add(MY_BUSINESS_BILLING);
@@ -591,6 +588,8 @@ public class MenuActivity extends AppActivity {
             subMenu.add(MY_BUSINESS_CUSTOMER);
             subMenu.add(MY_BUSINESS_PAYROLL);
         }
+
+        String PENGATURAN = "PENGATURAN";
         if (getAccess(PENGATURAN)) {
             subMenu = menu.addSubMenu(PENGATURAN);
             subMenu.add(PENGATURAN_USER);
@@ -601,6 +600,7 @@ public class MenuActivity extends AppActivity {
             subMenu.add(PENGATURAN_USER_LOKASI_PARTS);
             subMenu.add(PENGATURAN_USER_TENDA);
         }
+        String DISCOUNT = "DISCOUNT";
         if (getAccess(DISCOUNT)) {
             subMenu = menu.addSubMenu(DISCOUNT);
             subMenu.add(DISCOUNT_JASA_LAIN);
@@ -609,6 +609,7 @@ public class MenuActivity extends AppActivity {
             subMenu.add(DISCOUNT_SPOT);
             subMenu.add(DISCOUNT_FREKWENSI);
         }
+        String KOMISI = "KOMISI";
         if (getAccess(KOMISI)) {
             subMenu = menu.addSubMenu(KOMISI);
             subMenu.add(KOMISI_JASA_LAIN);

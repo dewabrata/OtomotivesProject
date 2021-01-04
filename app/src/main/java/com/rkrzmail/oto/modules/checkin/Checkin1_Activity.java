@@ -701,6 +701,9 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 } else if (etJenisKendaraan.getText().toString().isEmpty() || etJenisKendaraan.getText().toString().equals(" ")) {
                     etJenisKendaraan.setError("Harus Di Isi");
                     etJenisKendaraan.requestFocus();
+                }else if(kendaraanId == 0){
+                    showWarning("Kendaraan Harus di isi dari Suggestion", Toast.LENGTH_LONG);
+                    etJenisKendaraan.requestFocus();
                 } else if (etNoPonsel.getText().toString().isEmpty() || etNoPonsel.getText().toString().length() < 6) {
                     etNoPonsel.setError("Harus Di Isi");
                     etNoPonsel.requestFocus();

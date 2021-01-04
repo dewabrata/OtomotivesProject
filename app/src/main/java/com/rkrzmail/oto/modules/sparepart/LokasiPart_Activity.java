@@ -18,7 +18,7 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.Fragment.PartNonLokasi_Fragment;
 import com.rkrzmail.oto.modules.Fragment.PartTeralokasikan_Fragment;
-import com.rkrzmail.srv.FragmentsAdapter;
+import com.rkrzmail.oto.modules.Fragment.FragmentsAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
