@@ -434,11 +434,11 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (buttonView.isChecked()) {
                     find(R.id.cb_konfirmBiaya_checkin3, CheckBox.class).setEnabled(false);
-                    if (totalHarga > 0) {
+                    /*if (totalHarga > 0) {
                         find(R.id.et_totalBiaya_checkin3, EditText.class).setText("Rp." + formatRp(String.valueOf(totalHarga)));
                     } else {
                         showWarning("Tambahkan Part & Jasa Terlebih Dahulu");
-                    }
+                    }*/
                 } else {
                     find(R.id.cb_konfirmBiaya_checkin3, CheckBox.class).setEnabled(true);
                 }
@@ -955,7 +955,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                                 setDpAndSisa();
                             }
                         } catch (Exception e) {
-                            totalHarga = 0;
+                           showError(e.getMessage());
                         }
 
                         if (flagPartWajib) {

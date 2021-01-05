@@ -84,6 +84,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
     private String merkKendaraan = "";
 
     private int totalTambahPart = 0;
+    private int totalBiaya = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,6 +133,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         final Nson data = Nson.readJson(getIntentStringExtra(DATA));
         Log.d(TAG, "loadData: " + data);
 
+        totalBiaya = data.get("TOTAL_BIAYA").asInteger();
         idCheckin = data.get(ID).asString();
         jenisAntrian = data.get("ANTRIAN").asString();
         noPonsel = data.get("NO_PONSEL").asString();
@@ -311,7 +313,10 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    etTotal.setText(RP + formatRp(result.get("data").get(0).get("TOTAL_BIAYA").asString()));
+                    if(totalBiaya == 0){
+                        totalBiaya = result.get("data").get(0).get("TOTAL_BIAYA").asInteger();
+                    }
+                    etTotal.setText(RP + formatRp(String.valueOf(totalBiaya)));
 
                     detailCheckinList.asArray().clear();
                     detailCheckinList.asArray().addAll(result.get("data").asArray());

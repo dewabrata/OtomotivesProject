@@ -82,7 +82,6 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
         txtNamaPart = findViewById(R.id.et_namaPart_terimaPart);
         txtJumlah = findViewById(R.id.et_jumlah_terimaPart);
         txtHargaBeliUnit = findViewById(R.id.et_hargaBeli_detailTerimaPart);
-        txtHargaBeliUnit = findViewById(R.id.et_hargaBeli_detailTerimaPart);
         spinnerLokasiSimpan = findViewById(R.id.sp_lokasiSimpan_terimaPart);
         rvTerimaPart = findViewById(R.id.recyclerView_terimaPart);
         etDiscRp = findViewById(R.id.et_discRp_terimaPart);
@@ -133,7 +132,7 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
     }
 
     private void componentValidation() {
-        etHargaBersih.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etHargaBersih));
+        txtHargaBeliUnit.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(txtHargaBeliUnit));
         txtHargaBeliUnit.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -156,21 +155,11 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (txtHargaBeliUnit == null) return;
-                String strings = s.toString();
-                if (strings.isEmpty()) return;
-                txtHargaBeliUnit.removeTextChangedListener(this);
-                try {
-                    String cleanString = strings.replaceAll("[^0-9]", "");
-                    String formatted = Tools.formatRupiah(cleanString);
-                    txtHargaBeliUnit.setText(formatted);
-                    txtHargaBeliUnit.setSelection(formatted.length());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                txtHargaBeliUnit.addTextChangedListener(this);
+
             }
         });
+
+        etDiscRp.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etDiscRp));
         etDiscRp.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -197,19 +186,7 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (etDiscRp == null) return;
-                String s = editable.toString();
-                if (s.isEmpty()) return;
-                etDiscRp.removeTextChangedListener(this);
-                try {
-                    String cleanString = s.replaceAll("[^0-9]", "");
-                    String formatted = Tools.formatRupiah(cleanString);
-                    etDiscRp.setText(formatted);
-                    etDiscRp.setSelection(formatted.length());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                etDiscRp.addTextChangedListener(this);
+
             }
         });
 
