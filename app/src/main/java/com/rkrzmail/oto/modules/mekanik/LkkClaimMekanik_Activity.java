@@ -184,6 +184,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
                 }else {
                     SimpanData();
                 }
+
             }
         });
 
@@ -322,7 +323,6 @@ public class LkkClaimMekanik_Activity extends AppActivity {
     }
 
     private void SimpanData(){
-
         final String nik = et_nikpemilik.getText().toString().toUpperCase();
         final String descKerusakan = et_desc.getText().toString().toUpperCase();
         final String infoTambahan = find(R.id.et_info_tambahan,EditText.class).getText().toString().toUpperCase();
@@ -378,7 +378,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    showInfo("Sukses Menyimpan Data");
+                    //showInfo("Sukses Menyimpan Data");
                     setResult(RESULT_OK);
                     finish();
                 } else {
@@ -437,9 +437,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
                 @Override
                 public void onClick(View v) {
                     filePart = SaveImage(bitmapPart,"PART");
-//                    Bitmap decodePart = BitmapFactory.decodeFile(filePart.getAbsolutePath());
-//                    find(R.id.testfoto,ImageView.class).setImageBitmap(decodePart);
-//                    fotoPart = FileUtility.encodeToStringBase64(filePart.getAbsolutePath());
+                    fotoPart = FileUtility.encodeToStringBase64(filePart.getAbsolutePath());
                     showInfo("Sukses");
                     alertDialog.dismiss();
                 }
@@ -468,9 +466,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
                 @Override
                 public void onClick(View v) {
                     fileStnk = SaveImage(bitmapStnk,"STNK");
-//                    Bitmap decodePart = BitmapFactory.decodeFile(filePart.getAbsolutePath());
-//                    find(R.id.testfoto,ImageView.class).setImageBitmap(decodePart);
-//                    fotoPart = FileUtility.encodeToStringBase64(filePart.getAbsolutePath());
+                    fotoStnk = FileUtility.encodeToStringBase64(fileStnk.getAbsolutePath());
                     showInfo("Sukses");
                     alertDialog.dismiss();
                 }
@@ -500,8 +496,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
                 public void onClick(View v) {
                     fileKtp = SaveImage(bitmapKtp,"KTP");
 //                    Bitmap decodePart = BitmapFactory.decodeFile(filePart.getAbsolutePath());
-//                    find(R.id.testfoto,ImageView.class).setImageBitmap(decodePart);
-//                    fotoPart = FileUtility.encodeToStringBase64(filePart.getAbsolutePath());
+                    fotoKtp = FileUtility.encodeToStringBase64(fileKtp.getAbsolutePath());
                     showInfo("Sukses");
                     alertDialog.dismiss();
                 }
@@ -510,7 +505,6 @@ public class LkkClaimMekanik_Activity extends AppActivity {
             alertDialog.show();
         }
     }
-
 
     private File SaveImage(Bitmap finalBitmap, String foto) {
         String root = Environment.getExternalStorageDirectory().getAbsolutePath();
@@ -533,41 +527,5 @@ public class LkkClaimMekanik_Activity extends AppActivity {
         return file;
     }
 
-
-    //    private void takephoto() {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            if (ContextCompat.checkSelfPermission(Objects.requireNonNull(getContext()), android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-//                ActivityCompat.requestPermissions(Objects.requireNonNull(getActivity()), new String[]{android.Manifest.permission.CAMERA}, 4);
-//            } else {
-//                dispatchTakePictureIntent();
-//            }
-//        } else {
-//            dispatchTakePictureIntent();
-//        }
-//    }
-//
-//    private void dispatchTakePictureIntent() {
-//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        if (takePictureIntent.resolveActivity(Objects.requireNonNull(getContext()).getPackageManager()) != null) {
-//            File photoFile = null;
-//
-//            try {
-//                photoFile = createImageFile();
-//            } catch (IOException ex) {
-//                MDToast.makeText(Objects.requireNonNull(getContext()), "Kesalahan saat membuat foto", Toast.LENGTH_SHORT, MDToast.TYPE_ERROR).show();
-//                return;
-//            }
-//
-//            Uri photoURI;
-//            if (photoFile != null) {
-//                photoURI = FileProvider.getUriForFile(getContext(),"com.dms.mobileappraisal.fileprovider",
-//                        photoFile);
-//                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-//                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-//            }else{
-//                MDToast.makeText(Objects.requireNonNull(getContext()), "Kesalahan saat membuat foto", Toast.LENGTH_SHORT, MDToast.TYPE_ERROR).show();
-//                return;
-//            }
-//        }
 }
 
