@@ -616,6 +616,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                     noKunciList.asArray().addAll(result.get("data").asArray());
                     if (isHplusPartKosong) {
                         showSuccess("MOHON BAYARKAN UANG MUKA PELAYANAN " + jenisLayanan + ". RINCIAN BIAYA & UANG MUKA");
+                        //showMessageInvalidNotif(getActivity(), result.get("data").get("MESSAGE_INFO").asString(), intent);
                         showNotification(getActivity(), "Checkin Antrian ", formatNopol(nopol), "CHECKIN", intent);
                         setResult(RESULT_OK);
                         finish();
@@ -626,6 +627,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                             finish();
                         } else {
                             showDialogNoKunci(result.get("data").get("NO_KUNCI").asString());
+                            //showMessageInvalidNotif(getActivity(), result.get("data").get("MESSAGE_INFO").asString(), intent);
                             showNotification(getActivity(), "Checkin Antrian ", formatNopol(nopol), "CHECKIN", intent);
                             showSuccess("Data Pelanggan Berhasil Di masukkan Ke Daftar Kontrol Layanan");
                         }
@@ -908,6 +910,9 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                 ttdPath = FileUtility.encodeToStringBase64(imgFile.getAbsolutePath());
                 find(R.id.img_tandaTangan_checkin4, ImageView.class).setImageBitmap(myBitmap);
+                if(imgFile.exists()){
+                    imgFile.delete();
+                }
             }
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_MEKANIK) {
             setSpMekanik("");

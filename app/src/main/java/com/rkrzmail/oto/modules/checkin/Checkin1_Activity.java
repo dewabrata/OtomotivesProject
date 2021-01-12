@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,7 +75,9 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             lokasi = "",
             jenisKendaraan = "",
             tglBeli = "",
-            kodeTipe = "";
+            kodeTipe = "",
+            alamat = "",
+            kotaKab = "";
     private int expiredGaransiHari = 0, expiredGaransiKm = 0;
     private String isGaransiHari = "";
     private int kendaraanId = 0;
@@ -260,8 +263,11 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
         });
 
         etNoPonsel.addTextChangedListener(new TextWatcher() {
+            int prevLength = 0;
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                prevLength = s.length();
+                Log.d("length__", "beforeTextChanged: " + prevLength);
                 if (s.toString().length() == 0) {
                     find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
                 }
@@ -278,6 +284,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 etNoPonsel.removeTextChangedListener(this);
                 int counting = (s == null) ? 0 : s.toString().length();
                 if (counting < 4 && !etNoPonsel.getText().toString().contains("+62 ")) {
+                    etNoPonsel.setTag(null);
                     etNoPonsel.setText("+62 ");
                     Selection.setSelection(etNoPonsel.getText(), etNoPonsel.getText().length());
                 } else if (counting < 12) {
@@ -286,6 +293,11 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 } else {
                     find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
                 }
+
+                if(prevLength > s.length()){
+                    isNoHp = false;
+                }
+
                 etNoPonsel.addTextChangedListener(this);
             }
         });
@@ -340,6 +352,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     nomor = nomor.substring(nomor.length() - 4);
                 }
 
+                etNoPonsel.setTag(nomor);
                 etNoPonsel.setText("XXXXXXXX" + nomor);
                 etNamaPelanggan.setText(n.get("NAMA_PELANGGAN").asString());
 
@@ -393,6 +406,8 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 modelKendaraan = n.get("MODEL").asString();
                 kendaraanId = n.get("KENDARAAN_ID").asInteger();
                 noHp = n.get("NO_PONSEL").asString();
+                alamat = n.get("ALAMAT").asString();
+                kotaKab = n.get("KOTA_KAB").asString();
 
                 if (!noHp.isEmpty())
                     isNoHp = true;
@@ -411,6 +426,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 }
 
                 etNopol.setText(formatNopol(n.get("NO_POLISI").asString()));
+                etNoPonsel.setTag(nomor);
                 etNoPonsel.setText("XXXXXXXX" + nomor);
                 etNamaPelanggan.setText(n.get("NAMA_PELANGGAN").asString());
                 etJenisKendaraan.setText(n.get("JENIS_KENDARAAN").asString());
@@ -543,7 +559,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 args.put("jenisCheckin", "1");
                 args.put("nopol", nopol);
                 args.put("jeniskendaraan", etJenisKendaraan.getText().toString().toUpperCase());//dateKendaraan
-                args.put("noPonsel", isNoHp ? noHp : formatOnlyNumber(etNoPonsel.getText().toString()));
+                args.put("noPonsel", isNoHp & etNoPonsel.getTag() != null ? noHp : formatOnlyNumber(etNoPonsel.getText().toString()));
                 args.put("nama", Tools.isSingleQuote(namaPelanggan));
                 args.put("isPemilik", pemilik);//dateKendaraan
                 args.put("keluhan_list", keluhanList.toJson());
@@ -607,7 +623,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     nson.set("tanggalBeli", tanggalBeliKendaraan);
 
                     Intent intent;
-                    if (!noRangka.isEmpty() && !noMesin.isEmpty()) {
+                    if (!noRangka.isEmpty() || !noMesin.isEmpty() || !alamat.isEmpty() || !kotaKab.isEmpty() || !kodeTipe.isEmpty()) {
                         intent = new Intent(getActivity(), Checkin3_Activity.class);
                         intent.putExtra(DATA, nson.toJson());
                         startActivityForResult(intent, REQUEST_CHECKIN);
@@ -701,7 +717,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 } else if (etJenisKendaraan.getText().toString().isEmpty() || etJenisKendaraan.getText().toString().equals(" ")) {
                     etJenisKendaraan.setError("Harus Di Isi");
                     etJenisKendaraan.requestFocus();
-                }else if(kendaraanId == 0){
+                } else if (kendaraanId == 0) {
                     showWarning("Kendaraan Harus di isi dari Suggestion", Toast.LENGTH_LONG);
                     etJenisKendaraan.requestFocus();
                 } else if (etNoPonsel.getText().toString().isEmpty() || etNoPonsel.getText().toString().length() < 6) {

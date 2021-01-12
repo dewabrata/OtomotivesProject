@@ -186,6 +186,7 @@ public class Status_TugasPart_Activity extends AppActivity {
                     args.put("detail", "TERSEDIA");
                 }
                 args.put("checkinId", idCheckin);
+                args.put("jualPartId", idJualPart);
                 args.put("mekanik", etMekanik.getText().toString());
                 args.put("nopol", nopol);
                 args.put("namaPelanggan", etPelanggan.getText().toString());
@@ -269,10 +270,9 @@ public class Status_TugasPart_Activity extends AppActivity {
                 }
             });
         }else if(resultCode == RESULT_OK && requestCode == REQUEST_TUGAS_PART){
+            viewTugasPart();
             if(nListArray.size() == 0){
                 finish();
-            }else{
-                viewTugasPart();
             }
         }
     }

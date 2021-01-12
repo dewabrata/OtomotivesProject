@@ -161,6 +161,7 @@
     <string name="nama_bank_uppercase">NAMA BANK</string>
     <string name="lkk_claim_uppercase">LKK CLAIM</string>
     <string name="tambah_part_uppercase">TAMBAH PART</string>
+    <string name="catatan_mekanik_uppercase">CATATAN MEKANIK</string>
     <string-array name="pola_harga_jual">
         <item>FLEXIBLE</item>
         <item>BELI + MARGIN</item>

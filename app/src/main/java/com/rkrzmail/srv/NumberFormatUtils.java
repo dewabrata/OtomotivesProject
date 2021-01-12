@@ -2,7 +2,9 @@ package com.rkrzmail.srv;
 
 
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -100,15 +102,29 @@ public class NumberFormatUtils {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (editable.toString().isEmpty()) return;
+                String text = editable.toString();
+                if (text.isEmpty()) return;
                 editText.removeTextChangedListener(this);
 
-                NumberFormat format = NumberFormat.getPercentInstance(new Locale("in", "ID"));
-                format.setMinimumFractionDigits(1);
-                String percentNumber = format.format(Tools.convertToDoublePercentage(editText.getText().toString()) / 1000);
+                try {
+                    text = new NumberFormatUtils().formatOnlyNumber(text);
+                    double percentValue = Double.parseDouble(text.isEmpty() ? "0" : text) / 1000;
 
-                editText.setText(percentNumber);
-                editText.setSelection(percentNumber.length() - 1);
+                    NumberFormat percentageFormat = NumberFormat.getPercentInstance();
+                    percentageFormat.setMinimumFractionDigits(1);
+                    String percent = percentageFormat.format(percentValue);
+
+                    InputFilter[] filterArray = new InputFilter[1];
+                    filterArray[0] = new InputFilter.LengthFilter(6);
+
+                    editText.setFilters(filterArray);
+                    editText.setText(percent);
+                    editText.setSelection(percent.length() - 1);
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
                 editText.addTextChangedListener(this);
             }
         };

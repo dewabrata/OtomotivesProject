@@ -64,7 +64,7 @@ public class Checkin2_Activity extends AppActivity {
         initComponent();
     }
 
-    @SuppressLint("NewApi")
+    @SuppressLint({"NewApi", "SetTextI18n"})
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_checkin2);
         setSupportActionBar(toolbar);
@@ -74,8 +74,9 @@ public class Checkin2_Activity extends AppActivity {
             isKonfirmasi = true;
             merkKendaraan = getIntentStringExtra("MERK");
             noHp = getIntentStringExtra("NO_PONSEL");
-            find(R.id.btn_lanjut_checkin2, Button.class).setText("Simpan");
+            find(R.id.btn_lanjut_checkin2, Button.class).setText("SIMPAN");
         } else {
+            find(R.id.btn_lanjut_checkin2, Button.class).setText("LEWATI");
             Objects.requireNonNull(getSupportActionBar()).setTitle("Check-In");
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -91,7 +92,7 @@ public class Checkin2_Activity extends AppActivity {
         etKotaKab = findViewById(R.id.et_kota_kab);
 
         readCheckin = Nson.readJson(getIntentStringExtra(DATA));
-        if (readCheckin != null && !isKonfirmasi) {
+        if (!isKonfirmasi) {
             etNorangka.setText(readCheckin.get("noRangka").asString());
             etNomesin.setText(readCheckin.get("noMesin").asString());
             tvTgl.setText(readCheckin.get("tglBeli").asString());

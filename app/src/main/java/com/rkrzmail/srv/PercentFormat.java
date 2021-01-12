@@ -1,6 +1,7 @@
 package com.rkrzmail.srv;
 
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.widget.EditText;
 
@@ -30,14 +31,21 @@ public class PercentFormat implements TextWatcher {
     public void afterTextChanged(Editable editable) {
         EditText editText = editTextWeakReference.get();
 
-        editText.removeTextChangedListener(this);
-        if (editText == null) return;
+        String text = editable.toString();
+        if (text == null || text.isEmpty()) return;
         editText.removeTextChangedListener(this);
 
-        NumberFormat format = NumberFormat.getPercentInstance(new Locale("in", "ID"));
+        text = new NumberFormatUtils().formatOnlyNumber(text);
+        double percentValue = Double.parseDouble(text.isEmpty() ? "0" : text) / 1000;
+
+        NumberFormat format = NumberFormat.getPercentInstance();
         format.setMinimumFractionDigits(1);
-        String percentNumber = format.format(Tools.convertToDoublePercentage(editText.getText().toString())/1000);
+        String percentNumber = format.format(percentValue);
 
+        InputFilter[] filterArray = new InputFilter[1];
+        filterArray[0] = new InputFilter.LengthFilter(6);
+
+        editText.setFilters(filterArray);
         editText.setText(percentNumber);
         editText.setSelection(percentNumber.length() -1);
         editText.addTextChangedListener(this);

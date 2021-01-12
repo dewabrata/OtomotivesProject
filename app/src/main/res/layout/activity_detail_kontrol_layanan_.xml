@@ -84,8 +84,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:hint="NO. KUNCI"
-                android:visibility="gone">
+                android:hint="NO. KUNCI">
 
                 <EditText
                     android:id="@+id/et_noKunci"
@@ -258,6 +257,22 @@
                     android:inputType="textMultiLine"
                     android:textSize="14sp"
                     tools:ignore="Autofill,LabelFor" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:hint="@string/catatan_mekanik_uppercase">
+
+                <EditText
+                    android:id="@+id/et_catatan_mekanik"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:enabled="false" />
 
             </android.support.design.widget.TextInputLayout>
 

@@ -141,10 +141,11 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         isEstimasi = data.get("STATUS").asString().equals("LAYANAN ESTIMASI") & !data.get("STATUS").asString().isEmpty();
         isKonfirmasiTambahan = data.get("KONFIRMASI_TAMBAHAN").asString().equals("Y") & !data.get("KONFIRMASI_TAMBAHAN").asString().isEmpty();
 
+        find(R.id.et_catatan_mekanik, EditText.class).setText(data.get("CATATAN_MEKANIK").asString());
         etNoAntrian.setText(data.get("NO_ANTRIAN").asString());
         etStatus.setText(data.get("STATUS_KONTROL").asString());
         etNopol.setText(formatNopol(data.get("NOPOL").asString()));
-        etNoKunci.setText(data.get("").asString());
+        etNoKunci.setText(data.get("NO_KUNCI").asString());
         etNamaPelanggan.setText(data.get("NAMA_PELANGGAN").asString());
         //etTotal.setText(RP + formatRp(data.get("TOTAL_BIAYA").asString()));
         etDp.setText(RP + formatRp(data.get("DP").asString()));
@@ -196,7 +197,6 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         setSpAktifitas();
         setSpMekanik(data.get("MEKANIK").asString());
         getDetailCheckin(idCheckin);
-
     }
 
     private void initRecyclerviewDetail() {
@@ -264,7 +264,8 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                             .setText(detailCheckinList.get(position).get("KELOMPOK_PART").asString());
                     viewHolder.find(R.id.tv_aktifitas_booking3_checkin3, TextView.class)
                             .setText(detailCheckinList.get(position).get("AKTIVITAS").asString());
-                    viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class).setVisibility(View.GONE);
+                    viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class).
+                            setText(RP + formatRp(detailCheckinList.get(position).get("HARGA_JASA_LAIN").asString()));
                     if (isKurangi) {
                         viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.VISIBLE);
                         viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
@@ -450,7 +451,6 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         } else if (etStatus.getText().toString().equals("TUNGGU DP")) {
             aktifitasList.add("BATAL PELANGGAN");
         }  else if (etStatus.getText().toString().equals("KURANGI PART")) {
-            aktifitasList.add("TAMBAH MEKANIK");
             aktifitasList.add("GANTI MEKANIK");
             aktifitasList.add("TAMBAH PART - JASA");
             aktifitasList.add("BATAL PART");
@@ -469,19 +469,16 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             aktifitasList.add("TAMBAH PART - JASA OKAY");
             aktifitasList.add("TAMBAH PART - JASA DI TOLAK");
             aktifitasList.add("KURANGI PART - JASA");
-            aktifitasList.add("TAMBAH MEKANIK");
             aktifitasList.add("GANTI MEKANIK");
         }else if(etStatus.getText().toString().equals("PART MEKANIK")){
             aktifitasList.add("BATAL BENGKEL");
             aktifitasList.add("BATAL PELANGGAN");
             aktifitasList.add("KURANGI PART - JASA");
             aktifitasList.add("TAMBAH PART - JASA");
-            aktifitasList.add("TAMBAH MEKANIK");
             aktifitasList.add("GANTI MEKANIK");
         }else if(etStatus.getText().toString().equals("TAMBAH PART - JASA OKAY") ||
                         etStatus.getText().toString().equals("TAMBAH PART - JASA DI TOLAK") ||
                         etStatus.getText().toString().equals("TAMBAH PART - JASA") ||
-                        etStatus.getText().toString().equals("TAMBAH MEKANIK") ||
                         etStatus.getText().toString().equals("PENUGASAN MEKANIK") ||
                         etStatus.getText().toString().equals("MEKANIK PAUSE") ||
                         etStatus.getText().toString().equals("MEKANIK MULAI") ||
@@ -490,7 +487,6 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             aktifitasList.add("BATAL BENGKEL");
             aktifitasList.add("BATAL PELANGGAN");
             aktifitasList.add("KURANGI PART - JASA");
-            aktifitasList.add("TAMBAH MEKANIK");
             aktifitasList.add("GANTI MEKANIK");
         }
 
@@ -501,16 +497,15 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 status = parent.getSelectedItem().toString();
-                if ((status.equals("PENUGASAN MEKANIK")
-                        || status.equals("GANTI MEKANIK")
-                        || status.equals("TAMBAH MEKANIK")) && !isMekanikSelected) {
+                if (status.equals("PENUGASAN MEKANIK") && !isMekanikSelected) {
+                    isMekanik = true;
+                    Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_mekanik, LinearLayout.class), true);
+                }else if(status.equals("GANTI MEKANIK")){
                     isMekanik = true;
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_mekanik, LinearLayout.class), true);
                 } else {
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_mekanik, LinearLayout.class), false);
                 }
-
-                //spNamaMekanik.setEnabled(!isMekanikFromCheckin && status.equals("GANTI MEKANIK"));
 
                 if(status.equals("DATA KENDARAAN")){
                     Intent intent = new Intent(getActivity(), Checkin2_Activity.class);
@@ -586,9 +581,10 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
     }
 
     private void updateData(final String id) {
-        if (status.contains("MESSAGE") || status.equals("DATA KENDARAAN") || status.equals(etStatus.getText().toString())) {
+        if (status.contains("MESSAGE") || status.equals("DATA KENDARAAN")) {
             setResult(RESULT_OK);
             finish();
+            return;
         }
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;

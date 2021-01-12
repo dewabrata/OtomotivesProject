@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -74,7 +75,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             ket = "",
             catatanMekanik = "", merkKendaraan = "";
     private String idCheckin = "", idJualPart = "";
-    private String tglLayanan = "";
+    private String tglLayanan = "", noKunci = "";
     private int maxFreePenyimpanan = 0;
     private int partId = 0;
     int
@@ -218,6 +219,8 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         catatanMekanik = data.get("CATATAN_MEKANIK").asString();
         tglLayanan = data.get("TANGGAL_CHECKIN").asString();
         merkKendaraan = data.get("MERK").asString();
+        noKunci = data.get("NO_KUNCI").asString();
+        Log.d("no__", "loadData: " + noKunci);
     }
 
 
@@ -252,6 +255,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         sendData.set("DP_PERCENT", dpPercent);
         sendData.set("SISA_DP", sisaBiayaDp);
         sendData.set("TOTAL_DP", totalDp);
+        sendData.set("NO_KUNCI", noKunci);
         sendData.set("TOTAL", isBatal ? 0 : (total2 > 0 ? total2 : (total1 > 0 ? total1 : (isDp ? totalDp : 0))));
 
         Intent i = new Intent(getActivity(), AturPembayaran_Activity.class);
@@ -470,6 +474,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         }
 
         total1 = (int) (totalPart + discPart);
+        find(R.id.tl_ppn).setVisibility(View.GONE);
 
         find(R.id.tv_harga_part_jual_part, TextView.class).setText(RP + formatRp(String.valueOf(totalPart)));
         find(R.id.tv_harga_disc_jual_part, TextView.class).setText(RP + formatRp(String.valueOf(discPart)));

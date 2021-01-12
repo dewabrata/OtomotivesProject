@@ -10,11 +10,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,6 +38,9 @@ import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -47,6 +52,7 @@ import static com.rkrzmail.utils.ConstUtils.ALL;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
+import static com.rkrzmail.utils.ConstUtils.RP;
 
 public class AturDetail_TerimaPart_Activity extends AppActivity implements View.OnFocusChangeListener {
 
@@ -90,7 +96,7 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
         etPenempatan = findViewById(R.id.et_penempatan_detailTerimaPart);
 
         Tools.setViewAndChildrenEnabled(find(R.id.ly_lokasi, LinearLayout.class), false);
-        componentValidation();
+        initListener();
 
         find(R.id.img_scan_terimaPart, ImageButton.class).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,7 +137,49 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
         });
     }
 
-    private void componentValidation() {
+    @SuppressLint("SetTextI18n")
+    private void initListener() {
+        txtJumlah.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                txtJumlah.removeTextChangedListener(this);
+                String jumlahBeli = editable.toString();
+                if (jumlahBeli.isEmpty()) return;
+
+                String hargaBeli = formatOnlyNumber(txtHargaBeliUnit.getText().toString());
+                String discPercent = etDiscPercent.getText().toString();
+                String discRp = formatOnlyNumber(etDiscRp.getText().toString());
+
+                int hargaBersih = 0;
+                int allDiskon = 0;
+
+                if (!hargaBeli.isEmpty()) {
+                    hargaBersih = Integer.parseInt(jumlahBeli) * Integer.parseInt(hargaBeli);
+                    if(!discPercent.isEmpty()){
+                        allDiskon = (int) ((Double.parseDouble(discPercent) * hargaBersih) / 10);
+                        hargaBersih = hargaBersih - allDiskon;
+                    }else if(!discRp.isEmpty()){
+                        allDiskon = Integer.parseInt(jumlahBeli) * Integer.parseInt(discRp);
+                        hargaBersih = hargaBersih - allDiskon;
+                    }
+
+                    etHargaBersih.setText(RP + new NumberFormatUtils().formatRp(String.valueOf(hargaBersih)));
+                }
+
+                txtJumlah.addTextChangedListener(this);
+            }
+        });
+
         txtHargaBeliUnit.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(txtHargaBeliUnit));
         txtHargaBeliUnit.addTextChangedListener(new TextWatcher() {
             @Override
@@ -146,7 +194,7 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
                 try {
                     if (!hargaBeli.equals("")) {
                         int totalHargaBeli = Integer.parseInt(txtJumlah.getText().toString()) * Integer.parseInt(hargaBeli);
-                        etHargaBersih.setText(String.valueOf(totalHargaBeli));
+                        etHargaBersih.setText(RP + new NumberFormatUtils().formatRp(String.valueOf(totalHargaBeli)));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -177,7 +225,7 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
                         int disc = Integer.parseInt(txtJumlah.getText().toString()) * Integer.parseInt(diskon);
                         int totalHargaBeli = Integer.parseInt(txtJumlah.getText().toString()) * Integer.parseInt(hargaBeli);
                         int finall = totalHargaBeli - disc;
-                        etHargaBersih.setText(String.valueOf(finall));
+                        etHargaBersih.setText(RP + new NumberFormatUtils().formatRp(String.valueOf(finall)));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -190,6 +238,7 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
             }
         });
 
+        etDiscPercent.addTextChangedListener(new NumberFormatUtils().percentTextWatcher(etDiscPercent));
         etDiscPercent.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -205,9 +254,9 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
                 try {
                     if (!hargaBeli.equals("") && !diskon.equals("")) {
                         int totalHargaBeli = Integer.parseInt(txtJumlah.getText().toString()) * Integer.parseInt(hargaBeli);
-                        int disc = (int) ((Double.parseDouble(diskon) * totalHargaBeli) / 10);
+                        int disc = (int) ((Double.parseDouble(diskon) * totalHargaBeli) / 100);
                         int finall = totalHargaBeli - disc;
-                        etHargaBersih.setText(String.valueOf(finall));
+                        etHargaBersih.setText(RP + new NumberFormatUtils().formatRp(String.valueOf(finall)));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -216,19 +265,10 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
 
             @Override
             public void afterTextChanged(Editable s) {
-                etDiscPercent.removeTextChangedListener(this);
-                if (etDiscPercent == null) return;
-                etDiscPercent.removeTextChangedListener(this);
 
-                java.text.NumberFormat format = java.text.NumberFormat.getPercentInstance(new Locale("in", "ID"));
-                format.setMinimumFractionDigits(1);
-                String percentNumber = format.format(Tools.convertToDoublePercentage(etDiscPercent.getText().toString()) / 1000);
-
-                etDiscPercent.setText(percentNumber);
-                etDiscPercent.setSelection(percentNumber.length() - 1);
-                etDiscPercent.addTextChangedListener(this);
             }
         });
+
         etDiscRp.setOnFocusChangeListener(this);
         etDiscPercent.setOnFocusChangeListener(this);
     }
@@ -279,6 +319,8 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
     }
 
     private void addData() {
+        getActivity().getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         Nson dataAdd = Nson.newObject();
         dataAdd.set("NO_PART", txtNoPart.getText().toString());
         dataAdd.set("NAMA_PART", txtNamaPart.getText().toString());
@@ -333,6 +375,7 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             int jumlahScan = 0;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -348,7 +391,7 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
                     result = result.get("data").get(0);
                     if (result.size() == 0) {
                         showError("Part Tidak Tersedia Di Bengkel", Toast.LENGTH_LONG);
-                    }else{
+                    } else {
                         jumlahScan++;
                         txtJumlah.setText("" + jumlahScan);
                         txtNoPart.setText(result.get("NO_PART").asString());
@@ -387,9 +430,11 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
     public void onFocusChange(View v, boolean hasFocus) {
         switch (v.getId()) {
             case R.id.et_discPercent_terimaPart:
+                //etDiscRp.setText("");
                 etDiscRp.setEnabled(!hasFocus);
                 break;
             case R.id.et_discRp_terimaPart:
+                //etDiscPercent.setText("");
                 etDiscPercent.setEnabled(!hasFocus);
                 break;
         }
@@ -435,10 +480,10 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
             setSpinnerLokasiSimpan(lokasiPart);
             etPenempatan.setText(penempatan);
         } else if (requestCode == REQUEST_BARCODE && resultCode == RESULT_OK) {
-            try{
+            try {
                 getDataBarcode(data != null ? data.getStringExtra("TEXT").replace("\n", "").trim() : "");
                 showSuccess(data != null ? data.getStringExtra("TEXT").replace("\n", "").trim() : "");
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

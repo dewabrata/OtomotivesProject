@@ -381,11 +381,13 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    Log.d("message__", "runUI: " +  result);
                     Intent intent = new Intent(getActivity(), KontrolLayanan_Activity.class);
                     intent.putExtra("NOPOL", nopol);
                     if (status.equalsIgnoreCase("LAYANAN ESTIMASI")) {
                         result = result.get("data").get(0);
                         showSuccess("ESTIMASI BIAYA PELAYANAN  KENDARAAN " + nson.get("kendaraanPelanggan").asString());
+                        //showMessageInvalidNotif(getActivity(), result.get("data").get("MESSAGE_INFO").asString(), null);
                         showNotification(getActivity(), "Checkin Layanan Estimasi", formatNopol(nopol), "CHECKIN", intent);
                         setResult(RESULT_OK);
                         finish();

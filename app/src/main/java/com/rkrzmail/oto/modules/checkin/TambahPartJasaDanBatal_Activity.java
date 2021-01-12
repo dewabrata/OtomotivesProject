@@ -78,7 +78,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
 
     private String idCheckin = "";
     private String layanan = "";
-   // private Nson idCheckinDetailList = Nson.newArray();
+    // private Nson idCheckinDetailList = Nson.newArray();
     private int totalBiaya = 0;
     private int totalTambah = 0;
     private int totalBatal = 0, countBatal = 0;
@@ -134,9 +134,9 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
         if (getIntent().hasExtra(TAMBAH_PART)) {
             isTambah = true;
             String estimasiLama;
-            if(!getIntentStringExtra(ESTIMASI_WAKTU).contains(":")){
+            if (!getIntentStringExtra(ESTIMASI_WAKTU).contains(":")) {
                 estimasiLama = "00:00";
-            }else{
+            } else {
                 estimasiLama = getIntentStringExtra(ESTIMASI_WAKTU);
             }
             dummyTime.add(Tools.TimePart.parse("00:" + estimasiLama));
@@ -153,7 +153,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
             }
 
             isKonfirmasiTambah = getIntent().getBooleanExtra("KONFIRMASI_TAMBAH", false);
-            find(R.id.ly_not_konfirmasi_tambah).setVisibility(isKonfirmasiTambah ? View.VISIBLE :  View.GONE);
+            find(R.id.ly_not_konfirmasi_tambah).setVisibility(isKonfirmasiTambah ? View.VISIBLE : View.GONE);
             find(R.id.ly_waktu_estimasi).setVisibility(isKonfirmasiTambah ? View.GONE : View.VISIBLE);
 
         } else if (getIntent().hasExtra(BATAL_PART)) {
@@ -190,7 +190,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                     e.printStackTrace();
                 }
 
-               editText.setText(sdf.format(date));
+                editText.setText(sdf.format(date));
             }
         }, currentHour, currentMinute, true);
 
@@ -244,33 +244,31 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                         RP + formatRp(partList.get(position).get("HARGA_JASA").asString()));
 
                 viewHolder.find(R.id.tv_merk_booking3_checkin3, TextView.class).setText(partList.get(position).get("MERK").asString());
-                if (isBatal) {
-                    viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.VISIBLE);
-                    viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Messagebox.showDialog(getActivity(), "Konfirmasi", "Hapus Part / Jasa ? ", "Ya", "Tidak", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    totalBatal += Integer.parseInt(formatOnlyNumber(partList.get(position).get("HARGA_PART").asString()));
-                                    totalBatal += Integer.parseInt(formatOnlyNumber(partList.get(position).get("HARGA_JASA").asString()));
-                                    find(R.id.et_total_tambah_or_batal, EditText.class).setText(RP + formatRp(String.valueOf(totalBatal)));
-                                    int subtraction = totalBiaya - totalBatal;
-                                    find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(subtraction)));
-                                    showInfo(partList.get(position).get("NAMA_PART").asString() + " di Batalkan");
-                                    partList.asArray().remove(position);
-                                    notifyItemRemoved(position);
-                                    countBatal++;
-                                }
-                            }, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                        }
-                    });
-                }
+                viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.VISIBLE);
+                viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Messagebox.showDialog(getActivity(), "Konfirmasi", "Hapus Part / Jasa ? ", "Ya", "Tidak", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                totalBatal += Integer.parseInt(formatOnlyNumber(partList.get(position).get("HARGA_PART").asString()));
+                                totalBatal += Integer.parseInt(formatOnlyNumber(partList.get(position).get("HARGA_JASA").asString()));
+                                find(R.id.et_total_tambah_or_batal, EditText.class).setText(RP + formatRp(String.valueOf(totalBatal)));
+                                int subtraction = totalBiaya - totalBatal;
+                                find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(subtraction)));
+
+                                partList.asArray().remove(position);
+                                notifyItemRemoved(position);
+                                countBatal++;
+                            }
+                        }, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                    }
+                });
             }
         });
     }
@@ -289,33 +287,32 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                         .setText(jasaList.get(position).get("AKTIVITAS").asString());
                 viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class)
                         .setText(RP + formatRp(jasaList.get(position).get("HARGA_JASA").asString()));
+                viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.VISIBLE);
+                viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Messagebox.showDialog(getActivity(), "Konfirmasi", "Hapus Part / Jasa ? ", "Ya", "Tidak", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                totalBatal += Integer.parseInt(formatOnlyNumber(jasaList.get(position).get("HARGA_JASA").asString()));
+                                find(R.id.et_total_tambah_or_batal, EditText.class).setText(RP + formatRp(String.valueOf(totalBatal)));
 
-                if (isBatal) {
-                    viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.VISIBLE);
-                    viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Messagebox.showDialog(getActivity(), "Konfirmasi", "Hapus Part / Jasa ? ", "Ya", "Tidak", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    totalBatal += Integer.parseInt(formatOnlyNumber(jasaList.get(position).get("HARGA_JASA").asString()));
-                                    find(R.id.et_total_tambah_or_batal, EditText.class).setText(RP + formatRp(String.valueOf(totalBatal)));
-                                    int subtraction = totalBiaya - totalBatal;
-                                    find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(subtraction)));
-                                    showInfo(jasaList.get(position).get("KELOMPOK_PART").asString() + " di Batalkan");
-                                    jasaList.asArray().remove(position);
-                                    notifyItemRemoved(position);
-                                    countBatal++;
-                                }
-                            }, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                        }
-                    });
-                }
+                                int subtraction = totalBiaya - totalBatal;
+                                find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(subtraction)));
+
+                                jasaList.asArray().remove(position);
+                                notifyItemRemoved(position);
+                                countBatal++;
+                            }
+                        }, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                    }
+                });
+
             }
         });
     }
@@ -346,9 +343,9 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                     args.put("idDetail", getIntentStringExtra(ID));
 
                     String konfirmasiTambah = "";
-                    if(isWait || (isNotWait && !isKonfirmasiTambah)){
+                    if (isWait || (isNotWait && !isKonfirmasiTambah)) {
                         konfirmasiTambah = "N";
-                    }else{
+                    } else {
                         konfirmasiTambah = "Y";
                     }
                     args.put("isKonfirmasiTambah", konfirmasiTambah);
@@ -368,7 +365,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                     showSuccess("Menambahkan Part Berhasil");
                     Intent i = new Intent();
                     i.putExtra(ID, idCheckin);
-                    i.putExtra("TOTAL_TAMBAH",  formatOnlyNumber(find(R.id.et_total_tambah_or_batal, EditText.class).getText().toString()));
+                    i.putExtra("TOTAL_TAMBAH", formatOnlyNumber(find(R.id.et_total_tambah_or_batal, EditText.class).getText().toString()));
                     setResult(RESULT_OK, i);
                     finish();
                 } else {
@@ -400,20 +397,20 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                 startActivityForResult(i, REQUEST_CARI_PART);
                 break;
             case R.id.btn_simpan:
-               if(isWait){
-                    if(!isSign){
+                if (isWait) {
+                    if (!isSign) {
                         showWarning("Tanda Tangan belum terisi");
-                    }else{
+                    } else {
                         updateTambahOrBatal();
                     }
-               } else if (isKonfirmasiTambah){
-                   if (find(R.id.et_tgl_estimasi, EditText.class).getText().toString().isEmpty() &&
-                   find(R.id.et_jam_estimasi,EditText.class).getText().toString().isEmpty()){
-                       showWarning("Estimasi Selsai belum terisi");
-                   }else {
-                       updateTambahOrBatal();
-                   }
-               } else {
+                } else if (isKonfirmasiTambah) {
+                    if (find(R.id.et_tgl_estimasi, EditText.class).getText().toString().isEmpty() &&
+                            find(R.id.et_jam_estimasi, EditText.class).getText().toString().isEmpty()) {
+                        showWarning("Estimasi Selsai belum terisi");
+                    } else {
+                        updateTambahOrBatal();
+                    }
+                } else {
                     updateTambahOrBatal();
                 }
                 break;

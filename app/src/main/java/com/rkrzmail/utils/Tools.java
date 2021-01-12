@@ -445,6 +445,7 @@ public class Tools {
             View view = group.getChildAt(i);
             if (view instanceof EditText) {
                 ((EditText) view).setText("");
+                ((EditText) view).clearFocus();
             }
             if (view instanceof ViewGroup && (((ViewGroup) view).getChildCount() > 0))
                 clearForm((ViewGroup) view);

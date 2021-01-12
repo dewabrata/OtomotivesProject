@@ -49,11 +49,12 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
     private RecyclerView rvPointLayanan, rvKeluhan;
     private AlertDialog alertDialog;
 
-    private String idCheckin = "";
     private Nson keluhanList = Nson.newArray();
     private int countClick = 0;
-    private String idMekanikKerja = "";
-    private String mekanik = "", catatan = "";
+
+    private String idMekanikKerja = "", idCheckin = "";
+    private String mekanik = "", catatan = "", noPonsel = "";
+
     private boolean isRework = false, isStart = false, isStop = false;
 
 
@@ -94,9 +95,11 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
     private void loadData() {
         Nson nson = Nson.readJson(getIntentStringExtra(DATA));
 
+        find(R.id.et_catatan_mekanik, EditText.class).setText(nson.get("CATATAN_MEKANIK").asString());
         idCheckin = nson.get(ID).asString();
         idMekanikKerja = nson.get("MEKANIK_KERJA_ID").asString();
         mekanik = nson.get("MEKANIK").asString();
+        noPonsel = nson.get("NO_PONSEL").asString();
 
         viewLayananPartJasa();
         viewKeluhan();
@@ -111,15 +114,21 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
 
         Toolbar toolbar = dialogView.findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Catatan Mekanik");
+        getSupportActionBar().setTitle("Catatan Inspeksi");
 
         final EditText etCatatan = dialogView.findViewById(R.id.et_catatan_mekanik);
         etCatatan.setText(catatan.isEmpty() ? "" : catatan);
         Button btnSimpan = dialogView.findViewById(R.id.btn_simpan);
         btnSimpan.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View view) {
                 catatan = etCatatan.getText().toString();
+                find(R.id.et_catatan_mekanik, EditText.class).setText(
+                        find(R.id.et_catatan_mekanik, EditText.class).getText().toString()
+                                + ", \n"
+                                + catatan
+                );
                 alertDialog.dismiss();
             }
         });
@@ -217,7 +226,7 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_INSPEKSI), args));
                 result = result.get("data");
                 for (int i = 0; i < result.size(); i++) {
-                    if(nListArray.size() > 0){
+                    if (nListArray.size() > 0) {
                         for (int j = 0; j < nListArray.size(); j++) {
                             if (!result.get(i).get("JASA_LAIN_ID").asString().isEmpty()
                                     && !nListArray.get(j).get("JASA_ID").asString().equals(result.get(i).get("JASA_LAIN_ID").asString())) {
@@ -226,7 +235,7 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
                             }
                         }
 
-                    }else{
+                    } else {
                         nListArray.add(result.get(i));
                     }
                 }
@@ -252,6 +261,7 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
                 args.put("id", idCheckin);
                 args.put("idKerja", idMekanikKerja);
                 args.put("catatan", catatan);
+                args.put("noPonsel", noPonsel);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_INSPEKSI), args));
             }
@@ -259,6 +269,7 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    //showMessageInvalidNotif(getActivity(), result.get("data").get("MESSAGE_INFO").asString(), null);
                     showSuccess("Pekerjaan Selesai");
                     setResult(RESULT_OK);
                     finish();

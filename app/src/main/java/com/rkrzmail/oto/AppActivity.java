@@ -84,6 +84,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -1097,7 +1098,7 @@ public class AppActivity extends AppCompatActivity {
     public void showNotification(Context context, String title, String body, String channelName, Intent intent) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        int notificationId = 1;
+        int notificationId = new Random().nextInt();
         String channelId = "channel-01";
         @SuppressLint("InlinedApi") int importance = NotificationManager.IMPORTANCE_HIGH;
 
@@ -1122,5 +1123,14 @@ public class AppActivity extends AppCompatActivity {
         notificationManager.notify(notificationId, mBuilder.build());
     }
 
+    public void showMessageInvalidNotif(Context context, String messageInfo, Intent intent){
+        if(
+                Utility.isNumeric(messageInfo) ||
+                messageInfo.equalsIgnoreCase("Mysql") ||
+                messageInfo.isEmpty()
+        )
+            return;
+        showNotification(context, "Info", messageInfo, "NOMOR PONSEL", intent);
+    }
 
 }

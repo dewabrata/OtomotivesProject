@@ -55,6 +55,7 @@ import static com.rkrzmail.utils.ConstUtils.MENUNGGU;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CHECKIN;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_TAMBAH_PART_JASA_LAIN;
+import static com.rkrzmail.utils.ConstUtils.RP;
 import static com.rkrzmail.utils.ConstUtils.TAMBAH_PART;
 import static com.rkrzmail.utils.ConstUtils.TIDAK_MENUNGGU;
 import static com.rkrzmail.utils.ConstUtils.TOTAL_BIAYA;
@@ -159,6 +160,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
         isHplus = n.get("ANTRIAN").asString().equals("H+");
         isRework = n.get("STATUS_SELESAI").asString().equals("MEKANIK PAUSE");
 
+        totalBiaya = n.get("TOTAL_BIAYA").asString();
         kmKendaraan = n.get("KM").asInteger();
         isNotWait = n.get("TIDAK_MENUNGGU").asString().equals("Y") & !n.get("TIDAK_MENUNGGU").asString().isEmpty();
         isKonfirmasiTambahan = n.get("KONFIRMASI_TAMBAHAN").asString().equals("Y") & !n.get("KONFIRMASI_TAMBAHAN").asString().isEmpty();
@@ -246,8 +248,9 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                     viewHolder.find(R.id.tv_merk_booking3_checkin3, TextView.class)
                             .setText(partJasaList.get(position).get("MERK").asString());
                     viewHolder.find(R.id.tv_jasaNet_booking3_checkin3, TextView.class)
-                            .setText(partJasaList.get(position).get("JUMLAH").asString());
-                    viewHolder.find(R.id.tv_hargaNet_booking3_checkin3, TextView.class).setText("");
+                            .setText(RP + formatRp(partJasaList.get(position).get("HARGA_JASA_PART").asString()));
+                    viewHolder.find(R.id.tv_hargaNet_booking3_checkin3, TextView.class)
+                            .setText(RP + formatRp(partJasaList.get(position).get("HARGA_PART").asString()));
                     viewHolder.find(R.id.tv_no, TextView.class).setVisibility(View.VISIBLE);
                     viewHolder.find(R.id.tv_no, TextView.class).setText(no + ". ");
                 } else {
@@ -257,7 +260,13 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                             .setText(partJasaList.get(position).get("KELOMPOK_PART").asString());
                     viewHolder.find(R.id.tv_aktifitas_booking3_checkin3, TextView.class)
                             .setText(partJasaList.get(position).get("AKTIVITAS").asString());
-                    viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class).setVisibility(View.GONE);
+                    if(partJasaList.get(position).get("HARGA_JASA_LAIN") == null){
+                        viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class).setVisibility(View.GONE);
+                    }else{
+                        viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class)
+                                .setText(RP + formatRp(partJasaList.get(position).get("HARGA_JASA_LAIN").asString()));
+                    }
+
                 }
             }
         });
@@ -381,12 +390,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PERINTAH_KERJA_MEKANIK), args));
                 partJasaList.asArray().clear();
                 partJasaList.asArray().addAll(result.get("data").asArray());
-                for (int i = 0; i < partJasaList.size(); i++) {
-                    if (partJasaList.get(i).get("TOTAL_BIAYA").asInteger() > 0) {
-                        totalBiaya = partJasaList.get(i).get("TOTAL_BIAYA").asString();
-                        break;
-                    }
-                }
+
                 args.remove("detail");
                 args.put("detail", "JASA LAYANAN");
 
@@ -530,13 +534,13 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                     args.put("status", statusDone);
                 }
 
-
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_PERINTAH_KERJA_MEKANIK), args));
             }
 
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    //showMessageInvalidNotif(getActivity(), result.get("data").get("MESSAGE_INFO").asString(), null);
                     stopTimer();
                     showSuccess("Pekerjaan Selesai");
                     setResult(RESULT_OK);
@@ -647,7 +651,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
             case R.id.btn_tambah_part:
                 Intent intent = new Intent(getActivity(), TambahPartJasaDanBatal_Activity.class);
                 intent.putExtra("CHECKIN_ID", idCheckin);
-                intent.putExtra(TOTAL_BIAYA, totalBiaya);
+                intent.putExtra(TOTAL_BIAYA, formatOnlyNumber(totalBiaya));
                 intent.putExtra(TAMBAH_PART, "");
                 if (isNotWait) {
                     intent.putExtra(TIDAK_MENUNGGU, TIDAK_MENUNGGU);

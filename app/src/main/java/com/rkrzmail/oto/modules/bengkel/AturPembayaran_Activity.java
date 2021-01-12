@@ -235,14 +235,11 @@ public class AturPembayaran_Activity extends AppActivity {
                     if (!isDp) {
                         find(R.id.et_grandTotal, EditText.class).setText(RP + formatRp(String.valueOf(grandTotal)));
                     }
+                    setBlankCash();
                     spNoRek.setEnabled(false);
                     find(R.id.et_noTrack, EditText.class).setEnabled(false);
                     find(R.id.et_namaBankEpay).setEnabled(false);
                     find(R.id.et_totalBayar, EditText.class).setEnabled(true);
-                    find(R.id.et_totalBayar, EditText.class).setText("");
-                    if (spNoRek.getCount() > 0) {
-                        spNoRek.setSelection(0);
-                    }
                 } else {
                     if (tipePembayaran.equals("TRANSFER")) {
                         setSpRek();
@@ -376,6 +373,17 @@ public class AturPembayaran_Activity extends AppActivity {
         });
     }
 
+    private void setBlankCash(){
+        find(R.id.et_namaBankEpay, NikitaAutoComplete.class).setText("");
+        find(R.id.et_percent_disc_merc, EditText.class).setText("");
+        find(R.id.et_rp_disc_merc, EditText.class).setText("");
+        find(R.id.et_noTrack, EditText.class).setText("");
+        find(R.id.et_totalBayar, EditText.class).setText("");
+        if (spNoRek.getCount() > 0) {
+            spNoRek.setSelection(0);
+        }
+    }
+
     private void initMssgDonasi(String message, final int kembalianDonasi) {
         Messagebox.showDialog(getActivity(),
                 "Konfirmasi", "Pelanggan Setuju Untuk Mendonasikan Kembalian " + message, "Ya", "Tidak", new DialogInterface.OnClickListener() {
@@ -464,6 +472,7 @@ public class AturPembayaran_Activity extends AppActivity {
                 args.put("biayaAntarJemput", data.get("BIAYA_ANTAR_JEMPUT").asString());
                 args.put("biayaDerek", data.get("BIAYA_DEREK").asString());
                 args.put("noPonsel", data.get("NO_PONSEL").asString());
+                args.put("noKunci", data.get("NO_KUNCI").asString());
                 args.put("nopol", formatNopol(data.get("NOPOL").asString()));
                 args.put("partIdList", partIdList == null ? "" : partIdList.toJson());
 
@@ -572,6 +581,7 @@ public class AturPembayaran_Activity extends AppActivity {
 
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    showMessageInvalidNotif(getActivity(), result.get("data").get("MESSAGE_INFO").asString(), null);
                     showSuccess("Sukses Menyimpan Aktifitas");
                     setResult(RESULT_OK);
                     finish();
