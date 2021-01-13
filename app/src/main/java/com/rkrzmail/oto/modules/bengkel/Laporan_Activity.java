@@ -8,8 +8,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +42,7 @@ import java.util.Map;
 
 import static com.rkrzmail.utils.APIUrls.ABSEN;
 import static com.rkrzmail.utils.APIUrls.VIEW_MST;
+import static com.rkrzmail.utils.ConstUtils.CETAK_EXCEL;
 import static com.rkrzmail.utils.ConstUtils.EXTERNAL_DIR_OTO;
 import static com.rkrzmail.utils.ConstUtils.ONEDAY;
 
@@ -47,6 +50,8 @@ import static com.rkrzmail.utils.ConstUtils.ONEDAY;
 public class Laporan_Activity extends AppActivity {
 
     private TextView tglMulai, tglSelesai, txtProgress;
+    private String jenisLaporan;
+    private Spinner spJenisLap;
     private Nson testList = Nson.newArray();
     private ProgressBar progressBar;
     private File file;
@@ -70,8 +75,9 @@ public class Laporan_Activity extends AppActivity {
         initProgressbar();
         tglMulai = findViewById(R.id.tv_tglMulai_lap);
         tglSelesai = findViewById(R.id.tv_tglSelesai_lap);
+        spJenisLap = findViewById(R.id.sp_nama_laporan);
         Button btnUnduh = findViewById(R.id.btn_unduh);
-        viewTest();
+
 
        find(R.id.ic_tglMulai_lap).setOnClickListener(new View.OnClickListener() {
            @Override
@@ -90,10 +96,29 @@ public class Laporan_Activity extends AppActivity {
         btnUnduh.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
-               //GenereteExcel();
+               new DownloadExcel().execute(CETAK_EXCEL("628123456789", jenisLaporan));
                progressBar.setVisibility(View.VISIBLE);
            }
        });
+
+        spJenisLap.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String item = parent.getSelectedItem().toString();
+                if(item.equalsIgnoreCase("UNIT ENTRY")){
+                    jenisLaporan = "entry";
+                }else if (item.equalsIgnoreCase("UNIT DETAIL")){
+                    jenisLaporan = "detail";
+                }else {
+                    jenisLaporan = "lkk";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     private void initProgressbar(){
@@ -101,37 +126,10 @@ public class Laporan_Activity extends AppActivity {
         txtProgress = findViewById(R.id.txtProgress);
     }
 
-    private void viewTest(){
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
-
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-
-                args.put("action", "view");
-                args.put("nama", "SEBAB KERUSAKAN");
-
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MST), args));
-            }
-
-            @Override
-            public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    testList.asArray().clear();
-                    testList.asArray().addAll(result.get("data").asArray());
-
-                } else {
-                    //showInfo(result.get("message").asString());
-                }
-            }
-        });
-
-    }
 
     @SuppressLint("StaticFieldLeak")
-    private class DownloadBuktiBayar extends AsyncTask<String, Integer, String> {
-
+    private class DownloadExcel extends AsyncTask<String, Integer, String> {
+        int length = 0;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -155,23 +153,26 @@ public class Laporan_Activity extends AppActivity {
         protected String doInBackground(String... urls) {
             int count = 0;
             try {
-                URL url = new URL(urls[0]);
-                URLConnection connection = url.openConnection();
-                connection.connect();
-                InputStream input = new BufferedInputStream(url.openStream(), 8192);
-
-                int fileLength = connection.getContentLength();
-                String fileName = "/Laporan - " + "" + ".xls";
+                String fileName = "/report - " +jenisLaporan+ ".xls";
 
                 file = new File(EXTERNAL_DIR_OTO + fileName);
-                if(!file.exists()){
+                if (!file.exists()) {
+
+                    URL url = new URL(urls[0]);
+                    URLConnection connection = url.openConnection();
+                    connection.connect();
+                    InputStream input = new BufferedInputStream(url.openStream(), 8192);
+
+                    int fileLength = connection.getContentLength();
+
                     OutputStream output = new FileOutputStream(file);
                     byte[] data = new byte[1024];
                     long total = 0;
 
                     while ((count = input.read(data)) != -1) {
                         total += count;
-                        publishProgress(Integer.valueOf("" + (int) ((total * 100) / fileLength)));
+                        length = (int) ((total * 100) / fileLength);
+                        publishProgress(length);
                         output.write(data, 0, count);
                     }
 
@@ -277,49 +278,5 @@ public class Laporan_Activity extends AppActivity {
 
         return calendar;
     }
-
-//    private void GenereteExcel (){
-//        Workbook workbook = new HSSFWorkbook();
-//        Sheet sheet = workbook.createSheet("Users"); //Creating a sheet
-//
-//        for(int i=0; i<testList.size(); i++){
-//            Nson result = testList.get(i);
-//            Row row = sheet.createRow((short)i);
-//            for(int x=0; x<result.size(); x++){
-//                Cell cell = row.createCell((short)x);
-//                String data = result.get(x).get("data").toString();
-//                cell.setCellValue("VALUE_1");
-//
-//            }
-//
-//
-//        }
-//        sheet.setColumnWidth(0,(10*200));
-//        sheet.setColumnWidth(1,(10*200));
-//
-//        String fileName = "FileName.xlsx"; //Name of the file
-//
-//        String extStorageDirectory = Environment.getExternalStorageDirectory().toString();
-//        File folder = new File(extStorageDirectory, "FolderName");// Name of the folder you want to keep your file in the local storage.
-//        folder.mkdir(); //creating the folder
-//        File file = new File(folder, fileName);
-//        try {
-//            file.createNewFile(); // creating the file inside the folder
-//        } catch (IOException e1) {
-//            e1.printStackTrace();
-//        }
-//
-//        try {
-//            FileOutputStream fileOut = new FileOutputStream(file); //Opening the file
-//            workbook.write(fileOut); //Writing all your row column inside the file
-//            fileOut.close(); //closing the file and done
-//
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
 
 }
