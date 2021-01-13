@@ -22,7 +22,7 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
-import static com.rkrzmail.srv.PercentFormat.calculatePercentage;
+import static com.rkrzmail.srv.NumberFormatUtils.calculatePercentage;
 import static com.rkrzmail.utils.ConstUtils.PART;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
 

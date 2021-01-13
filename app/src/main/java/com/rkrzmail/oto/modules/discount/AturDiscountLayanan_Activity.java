@@ -14,9 +14,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -24,9 +22,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.srv.MultiSelectionSpinner;
-import com.rkrzmail.srv.PercentFormat;
-import com.rkrzmail.utils.Tools;
+import com.rkrzmail.srv.NumberFormatUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,8 +64,7 @@ public class AturDiscountLayanan_Activity extends AppActivity {
         spPekerjaan = findViewById(R.id.sp_pekerjaan_discLayanan);
         spLayanan = findViewById(R.id.sp_paketLayanan_discLayanan);
 
-        find(R.id.et_discPart_discLayanan, EditText.class).addTextChangedListener(new PercentFormat
-                (find(R.id.et_discPart_discLayanan, EditText.class)));
+        find(R.id.et_discPart_discLayanan, EditText.class).addTextChangedListener(new NumberFormatUtils().percentTextWatcher(find(R.id.et_discPart_discLayanan, EditText.class)));
 
         try {
             setSpLayanan();

@@ -1,7 +1,6 @@
 package com.rkrzmail.oto.modules.komisi;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -18,14 +17,11 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.MultiSelectionSpinner;
-import com.rkrzmail.srv.PercentFormat;
-import com.rkrzmail.utils.Tools;
+import com.rkrzmail.srv.NumberFormatUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class AturKomisiLayanan_Activity extends AppActivity {
 
@@ -71,7 +67,7 @@ public class AturKomisiLayanan_Activity extends AppActivity {
         }catch (Exception e){
             Log.d("Exception__", "initComponent: " + e.getMessage());
         }
-        find(R.id.et_komisi_komisiLayanan, EditText.class).addTextChangedListener(new PercentFormat(find(R.id.et_komisi_komisiLayanan, EditText.class)));
+        find(R.id.et_komisi_komisiLayanan, EditText.class).addTextChangedListener(new NumberFormatUtils().percentTextWatcher(find(R.id.et_komisi_komisiLayanan, EditText.class)));
     }
 
     private void loadData() {

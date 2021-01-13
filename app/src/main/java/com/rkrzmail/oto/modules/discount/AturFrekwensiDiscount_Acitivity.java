@@ -17,7 +17,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.srv.PercentFormat;
+import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
 import java.text.ParseException;
@@ -57,7 +57,7 @@ public class AturFrekwensiDiscount_Acitivity extends AppActivity implements View
         spFrekwensi = findViewById(R.id.sp_frekwensi);
         spLayanan = findViewById(R.id.sp_paketLayanan_freDisc);
 
-        etDisc.addTextChangedListener(new PercentFormat(etDisc));
+        etDisc.addTextChangedListener(new NumberFormatUtils().percentTextWatcher(etDisc));
         tvTgl.setOnClickListener(this);
         try{
             loadData();

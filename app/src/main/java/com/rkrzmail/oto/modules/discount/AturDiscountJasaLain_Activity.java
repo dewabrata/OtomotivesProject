@@ -8,14 +8,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -25,7 +23,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.srv.PercentFormat;
+import com.rkrzmail.srv.NumberFormatUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +61,7 @@ public class AturDiscountJasaLain_Activity extends AppActivity {
         etDiscPart = findViewById(R.id.et_discPart_discJasa);
         spPekerjaan = findViewById(R.id.sp_pekerjaan_discJasa);
         spKelompokPart = findViewById(R.id.sp_kelompokPart_discJasa);
-        etDiscPart.addTextChangedListener(new PercentFormat(etDiscPart));
+        etDiscPart.addTextChangedListener(new NumberFormatUtils().percentTextWatcher(etDiscPart));
 
         loadData();
     }

@@ -3,6 +3,7 @@ package com.rkrzmail.oto.modules.bengkel;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -444,12 +445,12 @@ public class AturPembayaran_Activity extends AppActivity {
     }
 
     private void saveData() {
+        final Nson data = Nson.readJson(getIntentStringExtra(DATA));
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                Nson data = Nson.readJson(getIntentStringExtra(DATA));
 
                 args.put("action", "add");
                 args.put("biayaLayanan", data.get("BIAYA_LAYANAN").asString());
@@ -581,7 +582,15 @@ public class AturPembayaran_Activity extends AppActivity {
 
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    showMessageInvalidNotif(getActivity(), result.get("data").get("MESSAGE_INFO").asString(), null);
+                    if(data.get("NO_PONSEL").asString().length() > 13){
+                        showNotification(
+                                getActivity(),
+                                "PEMBAYARAN",
+                                "MESSAGE TIDAK AKTIVE, PRINT BUKTI BAYAR MANDIRI",
+                                "PEMBAYARAN",
+                                new Intent(getActivity(), Pembayaran_MainTab_Activity.class)
+                        );
+                    }
                     showSuccess("Sukses Menyimpan Aktifitas");
                     setResult(RESULT_OK);
                     finish();

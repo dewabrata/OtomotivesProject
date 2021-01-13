@@ -13,7 +13,6 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -22,21 +21,15 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
-import com.rkrzmail.srv.MultiSelectionSpinner;
-import com.rkrzmail.srv.PercentFormat;
-import com.rkrzmail.utils.Tools;
+import com.rkrzmail.srv.NumberFormatUtils;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.ATUR_DISKON_PART;
-import static com.rkrzmail.utils.ConstUtils.BENGKEL;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_BENGKEL;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
@@ -79,8 +72,8 @@ public class AturDiscountPart_Activity extends AppActivity{
         find(R.id.cb_bengkel_discPart, CheckBox.class).setOnCheckedChangeListener(listener);
         find(R.id.cb_tenda_discPart, CheckBox.class).setOnCheckedChangeListener(listener);
 
-        etDiscJasa.addTextChangedListener(new PercentFormat(etDiscJasa));
-        etDiscPart.addTextChangedListener(new PercentFormat(etDiscPart));
+        etDiscJasa.addTextChangedListener(new NumberFormatUtils().percentTextWatcher(etDiscJasa));
+        etDiscPart.addTextChangedListener(new NumberFormatUtils().percentTextWatcher(etDiscPart));
 
         find(R.id.btn_search, ImageButton.class).setOnClickListener(new View.OnClickListener() {
             @Override

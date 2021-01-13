@@ -24,7 +24,7 @@ import com.rkrzmail.utils.Tools;
 
 import java.util.Objects;
 
-import static com.rkrzmail.srv.PercentFormat.calculatePercentage;
+import static com.rkrzmail.srv.NumberFormatUtils.calculatePercentage;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.MASTER_PART;

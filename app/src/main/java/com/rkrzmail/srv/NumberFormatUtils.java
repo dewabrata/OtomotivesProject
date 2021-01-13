@@ -144,4 +144,12 @@ public class NumberFormatUtils {
         else
             return text.replaceAll("[^0-9]+", "");
     }
+
+    public static double calculatePercentage(double percent, int value) {
+        if (percent > 0 && value > 0) {
+            return (percent / 100) * value;
+        }
+        return 0;
+    }
+
 }

@@ -37,7 +37,8 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.rkrzmail.srv.PercentFormat.calculatePercentage;
+
+import static com.rkrzmail.srv.NumberFormatUtils.calculatePercentage;
 import static com.rkrzmail.utils.APIUrls.VIEW_PEMBAYARAN;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.DAYS;

@@ -22,7 +22,7 @@ import com.rkrzmail.utils.Tools;
 
 import java.util.Objects;
 
-import static com.rkrzmail.srv.PercentFormat.calculatePercentage;
+import static com.rkrzmail.srv.NumberFormatUtils.calculatePercentage;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.ID;
 import static com.rkrzmail.utils.ConstUtils.JASA_LAIN;

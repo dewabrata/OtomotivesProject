@@ -20,7 +20,7 @@ import com.naa.data.Nson;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
-import com.rkrzmail.srv.PercentFormat;
+import com.rkrzmail.srv.NumberFormatUtils;
 
 public class TambahLayanan extends AppActivity {
 
@@ -55,8 +55,8 @@ public class TambahLayanan extends AppActivity {
         spAktivitas = findViewById(R.id.sp_aktivitas_layanan);
         etWaktu = findViewById(R.id.et_waktu_layanan);
 
-        etDiscJasa.addTextChangedListener(new PercentFormat(etDiscJasa));
-        etDiscPart.addTextChangedListener(new PercentFormat(etDiscPart));
+        etDiscJasa.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etDiscJasa));
+        etDiscPart.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etDiscPart));
         etWaktu.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

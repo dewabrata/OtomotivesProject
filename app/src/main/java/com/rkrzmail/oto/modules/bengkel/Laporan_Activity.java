@@ -2,11 +2,15 @@ package com.rkrzmail.oto.modules.bengkel;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.inputmethodservice.Keyboard;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -16,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.naa.data.Nson;
+import com.naa.data.UtilityAndroid;
 import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
@@ -43,6 +48,7 @@ import java.util.Map;
 import static com.rkrzmail.utils.APIUrls.ABSEN;
 import static com.rkrzmail.utils.APIUrls.VIEW_MST;
 import static com.rkrzmail.utils.ConstUtils.CETAK_EXCEL;
+import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.EXTERNAL_DIR_OTO;
 import static com.rkrzmail.utils.ConstUtils.ONEDAY;
 
@@ -79,37 +85,36 @@ public class Laporan_Activity extends AppActivity {
         Button btnUnduh = findViewById(R.id.btn_unduh);
 
 
-       find(R.id.ic_tglMulai_lap).setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               getDatePickerDari();
+        find(R.id.ic_tglMulai_lap).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getDatePickerDari();
 
-           }
-       });
-       find(R.id.ic_tglSelesai_lap).setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               getDatePickerSampai();
-           }
-       });
+            }
+        });
+        find(R.id.ic_tglSelesai_lap).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getDatePickerSampai();
+            }
+        });
 
         btnUnduh.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               new DownloadExcel().execute(CETAK_EXCEL("628123456789", jenisLaporan));
-               progressBar.setVisibility(View.VISIBLE);
-           }
-       });
+            @Override
+            public void onClick(View v) {
+                new DownloadExcel().execute(CETAK_EXCEL(UtilityAndroid.getSetting(getApplicationContext(), "CID", "").trim(), jenisLaporan));
+            }
+        });
 
         spJenisLap.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String item = parent.getSelectedItem().toString();
-                if(item.equalsIgnoreCase("UNIT ENTRY")){
+                if (item.equalsIgnoreCase("UNIT ENTRY")) {
                     jenisLaporan = "entry";
-                }else if (item.equalsIgnoreCase("UNIT DETAIL")){
+                } else if (item.equalsIgnoreCase("UNIT DETAIL")) {
                     jenisLaporan = "detail";
-                }else {
+                } else {
                     jenisLaporan = "lkk";
                 }
             }
@@ -121,43 +126,73 @@ public class Laporan_Activity extends AppActivity {
         });
     }
 
-    private void initProgressbar(){
-        progressBar = (ProgressBar) findViewById(R.id.progressBarHorizontal);
+    private void initProgressbar() {
+        progressBar = findViewById(R.id.progressBarHorizontal);
         txtProgress = findViewById(R.id.txtProgress);
+        progressBar.setVisibility(View.GONE);
+    }
+
+    private void showDialogComplete(){
+        Messagebox.showDialog(getActivity(), "KONFIRMASI", "BUKA LAPORAN ?", "YA", "TIDAK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                setIntentExcel();
+            }
+        }, null);
+    }
+
+    private void setIntentExcel() {
+        Uri excelURI = Uri.parse(file.getAbsolutePath());
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(excelURI, "application/vnd.ms-excel");
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(intent);
     }
 
 
-    @SuppressLint("StaticFieldLeak")
+    @SuppressLint("StaticFieldLeak, SetTextI18n")
     private class DownloadExcel extends AsyncTask<String, Integer, String> {
         int length = 0;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressBar.setProgress(0);
+            progressBar.setVisibility(View.VISIBLE);
         }
 
         @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
+        protected void onPostExecute(String result) {
             progressBar.setVisibility(View.GONE);
-            txtProgress.setText(s);
+            if (result.equals("SUCCESS")) {
+                showDialogComplete();
+            } else{
+                showError(ERROR_INFO);
+            }
+            txtProgress.setVisibility(View.GONE);
+            super.onPostExecute(result);
         }
 
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
             progressBar.setProgress((values[0]));
+            txtProgress.setText(values[0] + " %");
         }
 
         @Override
         protected String doInBackground(String... urls) {
             int count = 0;
             try {
+                /*String fileName = "/report - " +
+                        jenisLaporan +
+                        " " +
+                        tglMulai.getText().toString() +
+                        " - "
+                        + tglSelesai.getText().toString()
+                        + ".xls";*/
                 String fileName = "/report - " +jenisLaporan+ ".xls";
-
                 file = new File(EXTERNAL_DIR_OTO + fileName);
                 if (!file.exists()) {
-
                     URL url = new URL(urls[0]);
                     URLConnection connection = url.openConnection();
                     connection.connect();
@@ -169,11 +204,23 @@ public class Laporan_Activity extends AppActivity {
                     byte[] data = new byte[1024];
                     long total = 0;
 
-                    while ((count = input.read(data)) != -1) {
-                        total += count;
-                        length = (int) ((total * 100) / fileLength);
-                        publishProgress(length);
-                        output.write(data, 0, count);
+                    try{
+                        while ((count = input.read(data)) != -1) {
+                            total += count;
+                            length = (int) ((total * 100) / fileLength);
+                            publishProgress(length);
+                            output.write(data, 0, count);
+                        }
+
+                    }catch (final Exception e){
+                        Log.e("fail__", "doInBackground: " + e.getMessage());
+                        Laporan_Activity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                showInfo(e.getMessage());
+                            }
+                        });
+                        return "FAILED";
                     }
 
                     output.flush();
@@ -181,14 +228,20 @@ public class Laporan_Activity extends AppActivity {
                     input.close();
                 }
 
-            } catch (Exception e) {
-                e.printStackTrace();
-                showError(e.getMessage());
+                return "SUCCESS";
+            } catch (final Exception e) {
+                Log.e("fail__", "doInBackground: " + e.getMessage());
+                Laporan_Activity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        showInfo(e.getMessage());
+                    }
+                });
+
+                return "FAILED";
             }
-            return null;
         }
     }
-
 
 
     public void getDatePickerDari() {

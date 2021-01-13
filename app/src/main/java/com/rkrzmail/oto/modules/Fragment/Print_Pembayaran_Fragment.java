@@ -301,12 +301,23 @@ public class Print_Pembayaran_Fragment extends Fragment {
                     byte[] data = new byte[1024];
                     long total = 0;
 
-                    while ((count = input.read(data)) != -1) {
-                        total += count;
-                        length = (int) ((total * 100) / fileLengths);
-                        Log.d("prog__", "file: " + length);
-                        publishProgress(length);
-                        output.write(data, 0, count);
+                    try{
+                        while ((count = input.read(data)) != -1) {
+                            total += count;
+                            length = (int) ((total * 100) / fileLengths);
+                            Log.d("prog__", "file: " + length);
+                            publishProgress(length);
+                            output.write(data, 0, count);
+                        }
+
+                    }catch (final Exception e){
+                        Log.e("fail__", "doInBackground: " + e.getMessage());
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                activity.showInfo(e.getMessage());
+                            }
+                        });
                     }
 
                     output.flush();
@@ -314,9 +325,14 @@ public class Print_Pembayaran_Fragment extends Fragment {
                     input.close();
                 }
 
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 e.printStackTrace();
-                activity.showError(e.getMessage());
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        activity.showError(e.getMessage());
+                    }
+                });
             }
             return null;
         }

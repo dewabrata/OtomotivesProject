@@ -1,13 +1,11 @@
 package com.rkrzmail.oto.modules.komisi;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -17,8 +15,7 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.srv.NikitaAutoComplete;
-import com.rkrzmail.srv.PercentFormat;
-import com.rkrzmail.utils.Tools;
+import com.rkrzmail.srv.NumberFormatUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -48,8 +45,8 @@ public class AturKomisiPart_Activity extends AppActivity {
         etKomisiJasa = findViewById(R.id.et_komisiJasa_komisiPart);
         etMasterPart = findViewById(R.id.et_masterPart_komisiPart);
 
-        etKomisiJasa.addTextChangedListener(new PercentFormat(etKomisiJasa));
-        etKomisiPart.addTextChangedListener(new PercentFormat(etKomisiPart));
+        etKomisiJasa.addTextChangedListener(new NumberFormatUtils().percentTextWatcher(etKomisiJasa));
+        etKomisiPart.addTextChangedListener(new NumberFormatUtils().percentTextWatcher(etKomisiPart));
 
         setMultiSelectionSpinnerFromApi(find(R.id.sp_namaPosisi_komisiPart, MultiSelectionSpinner.class), "nama", "POSISI", "viewmst", new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
             @Override

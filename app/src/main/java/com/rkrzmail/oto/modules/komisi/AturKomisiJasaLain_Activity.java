@@ -17,8 +17,7 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.MultiSelectionSpinner;
-import com.rkrzmail.srv.PercentFormat;
-import com.rkrzmail.utils.Tools;
+import com.rkrzmail.srv.NumberFormatUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +53,7 @@ public class AturKomisiJasaLain_Activity extends AppActivity {
         spKategori = findViewById(R.id.sp_kategori_komisiJasaLain);
         etKomisi = findViewById(R.id.et_komisi_komisiJasaLain);
 
-        etKomisi.addTextChangedListener(new PercentFormat(etKomisi));
+        etKomisi.addTextChangedListener(new NumberFormatUtils().percentTextWatcher(etKomisi));
         setMultiSelectionSpinnerFromApi(spPosisi, "nama", "POSISI", "viewmst", new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
             @Override
             public void selectedIndices(List<Integer> indices) {
