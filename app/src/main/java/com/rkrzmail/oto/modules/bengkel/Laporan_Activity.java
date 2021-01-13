@@ -8,6 +8,7 @@ import android.inputmethodservice.Keyboard;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -61,6 +62,9 @@ public class Laporan_Activity extends AppActivity {
     private Nson testList = Nson.newArray();
     private ProgressBar progressBar;
     private File file;
+
+    private CountDownTimer countDownTimer;
+    int totalLoop = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,6 +153,27 @@ public class Laporan_Activity extends AppActivity {
         startActivity(intent);
     }
 
+    @SuppressLint("SetTextI18n")
+    private CountDownTimer setTime(){
+        long time = 1000 * 2;
+        final int[] countProgress = {0};
+        countDownTimer = new CountDownTimer(time, 1000) {
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+                countProgress[0]++;
+                progressBar.setProgress((int)countProgress[0]*100/(5000/1000));
+                txtProgress.setText(((int)countProgress[0]*100/(5000/1000)) + " %");
+            }
+            @Override
+            public void onFinish() {
+                progressBar.setProgress(100);
+                txtProgress.setText(100 + " %");
+            }
+        };
+
+        return countDownTimer;
+    }
 
     @SuppressLint("StaticFieldLeak, SetTextI18n")
     private class DownloadExcel extends AsyncTask<String, Integer, String> {
@@ -156,12 +181,14 @@ public class Laporan_Activity extends AppActivity {
 
         @Override
         protected void onPreExecute() {
-            super.onPreExecute();
             progressBar.setVisibility(View.VISIBLE);
+            setTime().start();
+            super.onPreExecute();
         }
 
         @Override
         protected void onPostExecute(String result) {
+            setTime().cancel();
             progressBar.setVisibility(View.GONE);
             if (result.equals("SUCCESS")) {
                 showDialogComplete();
@@ -175,8 +202,9 @@ public class Laporan_Activity extends AppActivity {
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
-            progressBar.setProgress((values[0]));
-            txtProgress.setText(values[0] + " %");
+            //setTime(totalLoop);
+//            progressBar.setProgress((values[0]));
+//            txtProgress.setText(values[0] + " %");
         }
 
         @Override
@@ -206,12 +234,13 @@ public class Laporan_Activity extends AppActivity {
 
                     try{
                         while ((count = input.read(data)) != -1) {
+                            totalLoop++;
                             total += count;
                             length = (int) ((total * 100) / fileLength);
-                            publishProgress(length);
+                            publishProgress(totalLoop);
                             output.write(data, 0, count);
                         }
-
+                        Log.e("fail__", "total: " + total);
                     }catch (final Exception e){
                         Log.e("fail__", "doInBackground: " + e.getMessage());
                         Laporan_Activity.this.runOnUiThread(new Runnable() {
