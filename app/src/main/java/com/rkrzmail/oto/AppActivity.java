@@ -20,14 +20,12 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.ColorDrawable;
-import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -37,7 +35,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.SpannableString;
 import android.text.TextWatcher;
+import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -65,7 +65,6 @@ import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.modules.TimePicker_Dialog;
 import com.rkrzmail.oto.modules.YearPicker_Dialog;
-import com.rkrzmail.oto.modules.checkin.TambahPartJasaDanBatal_Activity;
 import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NsonAutoCompleteAdapter;
@@ -83,7 +82,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
@@ -911,6 +909,12 @@ public class AppActivity extends AppCompatActivity {
             return formatter.format(Double.parseDouble(currency));
         }
         return "0";
+    }
+
+    public SpannableString setUnderline(String text){
+        SpannableString content = new SpannableString(text);
+        content.setSpan(new UnderlineSpan(), 0, text.length(), 0);
+        return content;
     }
 
     public String formatOnlyNumber(String text) {

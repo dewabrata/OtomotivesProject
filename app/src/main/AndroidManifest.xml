@@ -14,7 +14,8 @@
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,UnusedAttribute"
         tools:replace="android:label">
-        <activity android:name=".modules.bengkel.Laporan_Activity"></activity>
+        <activity android:name=".modules.bengkel.Dashboard_Activity"></activity>
+        <activity android:name=".modules.bengkel.Laporan_Activity" />
         <activity android:name=".modules.bengkel.Absensi_MainTab_Activity" />
         <activity android:name=".modules.mekanik.LkkClaimMekanik_Activity" />
         <activity android:name=".modules.bengkel.KonfirmasiData_Pembayaran_Activity" />
@@ -327,6 +328,7 @@
                 <action android:name="com.nikita.generator.service" />
             </intent-filter>
         </receiver>
+
         <service
             android:name="com.rkrzmail.fcm.FCMMessagingService"
             tools:ignore="ExportedService">
@@ -334,7 +336,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
         <service
             android:name="com.rkrzmail.fcm.FCMInstanceIDService"
             tools:ignore="ExportedService">
