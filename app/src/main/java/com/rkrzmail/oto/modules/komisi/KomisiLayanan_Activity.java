@@ -24,8 +24,13 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.srv.NumberFormatUtils;
 
 import java.util.Map;
+
+import static com.rkrzmail.utils.ConstUtils.ADD;
+import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 
 public class KomisiLayanan_Activity extends AppActivity {
 
@@ -51,7 +56,9 @@ public class KomisiLayanan_Activity extends AppActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(new Intent(getActivity(), AturKomisiLayanan_Activity.class), 10);
+                Intent i = new Intent(getActivity(), AturKomisiLayanan_Activity.class);
+                i.putExtra(ADD, "");
+                startActivityForResult(i, REQUEST_DETAIL);
             }
         });
 
@@ -61,18 +68,18 @@ public class KomisiLayanan_Activity extends AppActivity {
                     @Override
                     public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                         super.onBindViewHolder(viewHolder, position);
-
-                        viewHolder.find(R.id.tv_layanan_komisiLayanan, TextView.class).setText(nListArray.get(position).get("NAMA_LAYANAN").asString());
-                        viewHolder.find(R.id.tv_posisi_komisiLayanan, TextView.class).setText(nListArray.get(position).get("POSISI").asString());
-                        viewHolder.find(R.id.tv_komisi_komisiLayanan, TextView.class).setText(nListArray.get(position).get("KOMISI").asString());
+                        viewHolder.find(R.id.tv_layanan_komisiLayanan, TextView.class).setText(nListArray.get(position).get("AKTIVITAS").asString());
+                        viewHolder.find(R.id.tv_nama_komisiLayanan, TextView.class).setText(nListArray.get(position).get("NAMA_LAYANAN").asString());
+                        viewHolder.find(R.id.tv_komisi_komisiLayanan, TextView.class).setText(NumberFormatUtils.formatPercent(nListArray.get(position).get("KOMISI_PERCENT").asDouble()));
+                        viewHolder.find(R.id.tv_status_komisiLayanan, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
                     }
 
                 }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(Nson parent, View view, int position) {
                         Intent i = new Intent(getActivity(), AturKomisiLayanan_Activity.class);
-                        i.putExtra("data", nListArray.get(position).toJson());
-                        startActivityForResult(i, 10);
+                        i.putExtra(DATA, nListArray.get(position).toJson());
+                        startActivityForResult(i, REQUEST_DETAIL);
                     }
                 })
         );
@@ -108,7 +115,7 @@ public class KomisiLayanan_Activity extends AppActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            if (requestCode == 10) {
+            if (requestCode == REQUEST_DETAIL) {
                 catchData("");
             }
         }
