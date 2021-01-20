@@ -5,6 +5,7 @@ public class APIUrls {
     //VIEW
     public static final String KOMISI_PART = "komisipart";
     public static final String KOMISI_JASA_LAIN = "komisijasalain";
+    public static final String KOMISI_LAYANAN = "komisilayanan";
     public static final String CHECKOUT = "checkout";
     public static final String VIEW_SUGGESTION = "viewsuggestion";
     public static final String VIEW_COLLECTION = "viewcollection";
