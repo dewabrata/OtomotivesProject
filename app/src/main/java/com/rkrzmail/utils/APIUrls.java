@@ -30,6 +30,7 @@ public class APIUrls {
     public static final String VIEW_TUGAS_PART = "viewtugaspart";
     public static final String VIEW_MY_CODE = "mycode";
     public static final String VIEW_MST = "viewmst";
+    public static final String VIEW_DASHBOARD = "viewdashboard";
     //INSERT, UPDATE, DELETE
     public static final String ATUR_COLLECTION = "aturcollection";
     public static final String DISCOUNT_LAYANAN = "aturdiskonlayanan";
