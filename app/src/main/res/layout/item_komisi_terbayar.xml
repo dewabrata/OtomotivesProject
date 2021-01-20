@@ -11,8 +11,8 @@
     android:layout_marginBottom="4dp"
     android:layout_weight="5"
     android:padding="10dp"
-    app:cardElevation="2dp"
-    app:cardCornerRadius="5dp">
+    app:cardCornerRadius="5dp"
+    app:cardElevation="2dp">
 
     <TableLayout
         android:layout_width="match_parent"
@@ -23,55 +23,54 @@
         <TableRow>
 
             <TextView
-                android:id="@+id/tv_aktivitas_layanan"
-                android:layout_width="wrap_content"
+                android:id="@+id/tv_tanggal"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:text="@string/aktivitas_layanan"
-                android:textStyle="bold"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:text="@string/tanggal"
                 android:layout_gravity="start"
-                android:textSize="12sp"/>
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
         </TableRow>
 
-        <TableRow android:layout_marginTop="7dp">
+        <TableRow android:layout_marginTop="10dp">
 
             <TextView
-                android:id="@+id/tv_tipe_jasa"
-                android:layout_width="wrap_content"
+                android:id="@+id/tv_nama_user"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
+                android:text="@string/nama_user"
+                android:textSize="13sp"
                 android:textStyle="bold"
-                android:text="@string/tipe_jasa"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:textSize="12sp"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
+
+        </TableRow>
+
+        <TableRow android:layout_marginTop="10dp">
 
             <TextView
-                android:id="@+id/tv_komisi_percent"
+                android:id="@+id/tv_total_bayar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/komisi"
+                android:text="@string/total_bayar"
+                android:layout_gravity="start"
+                android:textSize="12sp"
                 android:textStyle="bold"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
+
+            <TextView
+                android:id="@+id/tv_balance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/balance"
                 android:layout_gravity="end"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:textSize="12sp"/>
-
-        </TableRow>
-
-        <TableRow android:layout_marginTop="7dp">
-
-            <TextView
-                android:id="@+id/tv_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
+                android:textSize="12sp"
                 android:textStyle="bold"
-                android:text="@string/status"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:textSize="12sp"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
         </TableRow>
-
 
     </TableLayout>
 

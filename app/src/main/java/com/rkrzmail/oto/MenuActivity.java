@@ -39,6 +39,7 @@ import com.rkrzmail.oto.modules.bengkel.Collection_Activity;
 import com.rkrzmail.oto.modules.bengkel.Dashboard_Activity;
 import com.rkrzmail.oto.modules.bengkel.Laporan_Activity;
 import com.rkrzmail.oto.modules.checkin.Checkin1_Activity;
+import com.rkrzmail.oto.modules.komisi.KomisiTerbayar_Activity;
 import com.rkrzmail.oto.modules.mekanik.AturSchedule_Activity;
 import com.rkrzmail.oto.modules.mekanik.BiayaMekanik2Activity;
 import com.rkrzmail.oto.modules.LoginActivity;
@@ -358,7 +359,7 @@ public class MenuActivity extends AppActivity {
             Intent intent = new Intent(MenuActivity.this, KomisiPart_Activity.class);
             startActivity(intent);
         } else if (item.getTitle().toString().equalsIgnoreCase(KOMISI_PEMBAYARAN)) {
-            Intent intent = new Intent(MenuActivity.this, KomisiPart_Activity.class);
+            Intent intent = new Intent(MenuActivity.this, KomisiTerbayar_Activity.class);
             startActivity(intent);
         } else if (item.getItemId() == R.id.action_logout) {
             Messagebox.showDialog(getActivity(), "Logout", "Yakin Logout ?", "Ya", "Tidak", new DialogInterface.OnClickListener() {

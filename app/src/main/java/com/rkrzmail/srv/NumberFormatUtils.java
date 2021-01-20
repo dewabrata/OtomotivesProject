@@ -132,7 +132,7 @@ public class NumberFormatUtils {
         };
     }
 
-    public String formatRp(String currency) {
+    public static String formatRp(String currency) {
         if (!currency.equals("")) {
             DecimalFormat formatter = new DecimalFormat("###,###,###");
             return formatter.format(Double.parseDouble(currency));
@@ -149,6 +149,14 @@ public class NumberFormatUtils {
 
         return percentageFormat.format(result);
     }
+
+    public static String clearPercent(String value){
+        if(value.isEmpty() || value == null)
+            return "0";
+        else
+            return value.trim().replace("%", "").replace(",", ".");
+    }
+
 
     public String formatOnlyNumber(String text) {
         if (text == null || text.equals("") || text.equals("00"))

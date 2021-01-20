@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:descendantFocusability="beforeDescendants"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:background="@android:color/white">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -15,20 +16,86 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="5dp">
+            android:padding="@dimen/paddingSemiLarge">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:layout_height="wrap_content"
+                    android:text="@string/aktivitas_uppercase" />
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
+
+                    <Spinner
+                        android:id="@+id/sp_aktifitas"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textAlignment="center" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:layout_height="wrap_content"
+                    android:text="NAMA GROUP PART" />
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
+
+                    <Spinner
+                        android:id="@+id/sp_grup_part"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textAlignment="center" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/tl_komisi_percent"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="5dp">
 
-                <com.rkrzmail.srv.NikitaAutoComplete
-                    android:id="@+id/et_masterPart_komisiPart"
+                <EditText
+                    android:id="@+id/et_komisi_percent"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:hint="NAMA MASTER PART"
-                    android:inputType="textCapWords"
+                    android:layout_height="wrap_content"
+                    android:hint="KOMISI % x MARGIN"
+                    android:inputType="numberDecimal"
+                    android:maxLength="5"
                     android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
@@ -37,22 +104,32 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/border_solid"
                 android:gravity="center"
-                android:orientation="horizontal"
-                android:padding="10dp">
+                android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:text="NAMA POSISI" />
-
-                <com.rkrzmail.srv.MultiSelectionSpinner
-                    android:id="@+id/sp_namaPosisi_komisiPart"
                     android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAlignment="center" />
+                    android:text="@string/status_uppercase" />
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
+
+                    <Spinner
+                        android:id="@+id/sp_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textAlignment="center" />
+
+                </RelativeLayout>
+
 
             </LinearLayout>
 
@@ -60,52 +137,36 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="@dimen/spacing_large">
 
-                <android.support.design.widget.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/tv_total_komisi"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:helperTextEnabled="true"
-                    app:helperText="Harga Jual Part*"
-                    app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText."
-                    android:layout_weight="1">
+                    android:layout_weight="1.5"
+                    android:background="@drawable/background_edittext"
+                    android:padding="@dimen/paddingSemiLarge"
+                    android:textAlignment="center"
+                    android:textColor="@color/grey_900"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:text="@string/total_komisi_percent" />
 
-                    <EditText
-                        android:id="@+id/et_komisiPart_komisiPart"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="KOMISI JUAL PART "
-                        android:inputType="numberDecimal"
-                        android:maxLength="5"
-                        android:textSize="14sp" />
-
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="wrap_content"
+                <View
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:id="@+id/btn_simpan"
+                    android:layout_width="0dp"
                     android:layout_weight="1"
-                    app:helperTextEnabled="true"
-                    app:helperText="Jasa Pasang Part"
-                    app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText."
-                    android:layout_marginStart="10dp">
-
-                    <EditText
-                        android:id="@+id/et_komisiJasa_komisiPart"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="KOMISI JASA PASANG"
-                        android:inputType="numberDecimal"
-                        android:maxLength="5"
-                        android:textSize="14sp" />
-
-                </android.support.design.widget.TextInputLayout>
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/btn_rounded_accent"
+                    android:textColor="@android:color/white"
+                    android:text="@string/simpan_uppercase" />
 
             </LinearLayout>
-
-            <include layout="@layout/layout_btn_simpan_hapus"/>
 
         </LinearLayout>
 

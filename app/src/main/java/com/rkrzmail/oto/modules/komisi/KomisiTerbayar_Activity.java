@@ -3,9 +3,9 @@ package com.rkrzmail.oto.modules.komisi;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -32,12 +32,12 @@ import static com.rkrzmail.utils.ConstUtils.ADD;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 
-public class KomisiPart_Activity extends AppActivity {
+public class KomisiTerbayar_Activity extends AppActivity {
 
     private RecyclerView recyclerView;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_basic_with_fab);
         initToolbar();
@@ -47,7 +47,7 @@ public class KomisiPart_Activity extends AppActivity {
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Komisi Part");
+        getSupportActionBar().setTitle("Komisi Terbayar");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -57,7 +57,6 @@ public class KomisiPart_Activity extends AppActivity {
             public void onClick(View view) {
                 Intent i = new Intent(getActivity(), AturKomisiPart_Activity.class);
                 i.putExtra(ADD, "");
-                i.putExtra("AVAIL", nListArray.toJson());
                 startActivityForResult(i, REQUEST_DETAIL);
             }
         });
@@ -69,10 +68,10 @@ public class KomisiPart_Activity extends AppActivity {
                     public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                         super.onBindViewHolder(viewHolder, position);
 
-                        viewHolder.find(R.id.tv_nama_group_part, TextView.class).setText(nListArray.get(position).get("NAMA_GROUP_PART").asString());
-                        viewHolder.find(R.id.tv_aktivitas_layanan, TextView.class).setText(nListArray.get(position).get("AKTIVITAS").asString());
-                        viewHolder.find(R.id.tv_komisi_percent, TextView.class).setText(NumberFormatUtils.formatPercent(nListArray.get(position).get("KOMISI_PERCENT").asDouble()));
-                        viewHolder.find(R.id.tv_status, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
+                        viewHolder.find(R.id.tv_tanggal, TextView.class).setText(nListArray.get(position).get("TANGGAL").asString());
+                        viewHolder.find(R.id.tv_nama_user, TextView.class).setText(nListArray.get(position).get("NAMA_USER").asString());
+                        viewHolder.find(R.id.tv_total_bayar, TextView.class).setText(NumberFormatUtils.formatRp(nListArray.get(position).get("TOTAL_BAYAR").asString()));
+                        viewHolder.find(R.id.tv_balance, TextView.class).setText(NumberFormatUtils.formatRp(nListArray.get(position).get("BALANCE").asString()));
                     }
                 }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                     @Override

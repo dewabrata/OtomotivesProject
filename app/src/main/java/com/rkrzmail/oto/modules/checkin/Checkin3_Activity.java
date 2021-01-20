@@ -293,7 +293,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
 
                                 totalHarga -= partList.get(position).get("NET").asInteger();
                                 find(R.id.et_totalBiaya_checkin3, EditText.class).setText(RP + formatRp(String.valueOf(totalHarga)));
-                                if(!jasaList.get(position).get("DP").asString().isEmpty()){
+                                if (!jasaList.get(position).get("DP").asString().isEmpty()) {
                                     totalDp -= jasaList.get(position).get("DP").asInteger();
                                     find(R.id.et_dp_checkin3, EditText.class).setText(RP + formatRp(String.valueOf(totalDp)));
                                 }
@@ -479,7 +479,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    Log.d("message__", "runUI: " +  result);
+                    Log.d("message__", "runUI: " + result);
                     Intent intent = new Intent(getActivity(), KontrolLayanan_Activity.class);
                     intent.putExtra("NOPOL", nopol);
                     if (status.equalsIgnoreCase("LAYANAN ESTIMASI")) {
@@ -557,6 +557,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
         final Nson data = Nson.readJson(getIntentStringExtra(DATA));
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -613,17 +614,17 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                             if (layananAFS.size() > 0) {
                                 for (int i = 0; i < layananAFS.size(); i++) {
                                     if (layananAFS.get(i).asString().equals(layananArray.get(position).asString())) {
-                                        if(!parseTanggalBeliKendaraan(data.get("tahunProduksi"), false) ||
-                                                data.get("km").asString().isEmpty()){
+                                        if (!parseTanggalBeliKendaraan(data.get("tahunProduksi"), false) ||
+                                                data.get("km").asString().isEmpty()) {
                                             TextView mTextView = new TextView(getContext());
                                             mTextView.setVisibility(View.GONE);
                                             mTextView.setHeight(0);
                                             view = mTextView;
                                             break;
-                                        }else{
+                                        } else {
                                             view = super.getDropDownView(position, null, parent);
                                         }
-                                    }else{
+                                    } else {
                                         view = super.getDropDownView(position, null, parent);
                                     }
                                 }
@@ -688,14 +689,14 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         int batasanNonPaketKm = dataLayananList.get(i).get("BATASAN_NON_PAKET_KM").asInteger();
                         int batasanNonPaketBulan = dataLayananList.get(i).get("BATASAN_NON_PAKET_BULAN").asInteger();
 
-                        if(dataLayananList.get(i).get("JENIS_LAYANAN").asString().equals("AFTER SALES SERVIS") &&
-                                (data.get("km").asInteger() > batasanNonPaketKm && data.get("km").asInteger() > 0)){
+                        if (dataLayananList.get(i).get("JENIS_LAYANAN").asString().equals("AFTER SALES SERVIS") &&
+                                (data.get("km").asInteger() > batasanNonPaketKm && data.get("km").asInteger() > 0)) {
                             showWarning(dataLayananList.get(i).get("NAMA_LAYANAN").asString() +
                                     " EXPIRED, MAX KM :" + batasanNonPaketKm + ", MAX BULAN : " + batasanNonPaketBulan, Toast.LENGTH_LONG);
                             spLayanan.setSelection(0);
                             return;
-                        }else if(dataLayananList.get(i).get("JENIS_LAYANAN").asString().equals("AFTER SALES SERVIS") &&
-                                parseTanggalBeliKendaraan(data.get("tanggalBeli"), true)){
+                        } else if (dataLayananList.get(i).get("JENIS_LAYANAN").asString().equals("AFTER SALES SERVIS") &&
+                                parseTanggalBeliKendaraan(data.get("tanggalBeli"), true)) {
                             showWarning(dataLayananList.get(i).get("NAMA_LAYANAN").asString() +
                                     " EXPIRED, MAX KM :" + batasanNonPaketKm + ", MAX BULAN : " + batasanNonPaketBulan, Toast.LENGTH_LONG);
                             spLayanan.setSelection(0);
@@ -708,7 +709,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                             biayaLayanan = dataLayananList.get(i).get("BIAYA_NON_PAKET").asString();
                         }
 
-                        if(totalHarga > 0){
+                        if (totalHarga > 0) {
                             totalHarga = totalHarga - Integer.parseInt(formatOnlyNumber(find(R.id.et_totalBiaya_checkin3, EditText.class).getText().toString()));
                         }
 
@@ -805,7 +806,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
     }
 
     private boolean parseTanggalBeliKendaraan(Nson data, boolean isBatasan) {
-        if(data.asString().isEmpty())
+        if (data.asString().isEmpty())
             return false;
 
         long nowYearTimeMilis = 0;
@@ -815,7 +816,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
         int minYearAFS = Calendar.getInstance().get(Calendar.YEAR) - 4;
 
         try {
-            if(isBatasan){
+            if (isBatasan) {
                 @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfMonth = new SimpleDateFormat("yyyy-MM");
                 Date now = sdfMonth.parse(currentDateTime("yyyy-MM"));
                 nowMonthTimeMilies = now.getTime();
@@ -823,15 +824,15 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 Date bulanBeli = sdfMonth.parse(subsBulan);
                 bulanBeliTimeMilis = bulanBeli.getTime();
 
-                if(nowMonthTimeMilies <= bulanBeliTimeMilis){
+                if (nowMonthTimeMilies <= bulanBeliTimeMilis) {
                     return true;
                 }
-            }else{
+            } else {
                 @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
                 Date now = sdfYear.parse(String.valueOf(minYearAFS));
                 nowYearTimeMilis = now.getTime();
                 //String subsTahun = data.asString().substring(0, 4);
-                Date tglBeli =  sdfYear.parse(data.asString());
+                Date tglBeli = sdfYear.parse(data.asString());
                 tanggalBeliTimeMilis = tglBeli.getTime();
 
                 if (nowYearTimeMilis <= tanggalBeliTimeMilis) {
@@ -961,9 +962,9 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 startActivityForResult(i, REQUEST_PART_EXTERNAL);
                 break;
             case R.id.btn_lanjut_checkin3:
-                if(jasaList.asArray().isEmpty() && partList.asArray().isEmpty() && spLayanan.getSelectedItem().toString().equals("PERAWATAN LAINNYA")){
+                if (jasaList.asArray().isEmpty() && partList.asArray().isEmpty() && spLayanan.getSelectedItem().toString().equals("PERAWATAN LAINNYA")) {
                     showWarning("PART - JASA HARUS DI MASUKKAN", Toast.LENGTH_LONG);
-                }else{
+                } else {
                     // Check in Antrian (CHECKIN 4), layanan estimasi status (LAYANAN ESTIMASI ISCHECKED()), TUNGGU KONFIRMASI (TUNGGU KONFIRMASI ISCHECKED())
                     if (find(R.id.cb_estimasi_checkin3, CheckBox.class).isChecked()) {
                         setSelanjutnya("LAYANAN ESTIMASI", "");
@@ -1062,7 +1063,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                                 setDpAndSisa();
                             }
                         } catch (Exception e) {
-                           showError(e.getMessage());
+                            showError(e.getMessage());
                         }
 
                         if (flagPartWajib) {

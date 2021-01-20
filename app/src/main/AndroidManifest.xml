@@ -14,131 +14,184 @@
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,UnusedAttribute"
         tools:replace="android:label">
-        <activity android:name=".modules.bengkel.Laporan_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.bengkel.Absensi_MainTab_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.mekanik.LkkClaimMekanik_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.bengkel.KonfirmasiData_Pembayaran_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.sparepart.Status_PartKosong_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.checkin.TambahPartJasaDanBatal_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.sparepart.AturPartKeluar_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.sparepart.DetailPartKeluar_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.Otp_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.checkin.DetailKontrolBooking_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.bengkel.TambahLayanan"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.komisi.AturKomisiPart_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.komisi.KomisiPart_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.bengkel.AturPembayaranElektronik_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.bengkel.PembayaranElektronik_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.sparepart.HistoryStockOpname_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.sparepart.DetailCariPart_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.hutang.PembayaranHutang_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.hutang.Hutang_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.hutang.PembayaranPiutang_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.hutang.DetailPiutang_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.hutang.Piutang_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.LocationPicker_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.sparepart.Status_TugasPart_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.bengkel.ManualMessage_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.bengkel.Message_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.antar_jemput.SerahTerima_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.antar_jemput.ChecklistAntarJemput_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.antar_jemput.InformasiAntarJemput_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.antar_jemput.AntarJemput_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.sparepart.AturOutSource_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.mekanik.InspeksiMekanik_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.bengkel.AturCollection_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.bengkel.Collection_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.sparepart.UpdatePartKosong_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.sparepart.MenungguPart_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.sparepart.DetailTerimaPart_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.checkin.AturCheckout_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.checkin.CheckOut_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.mekanik.AturInspeksi_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.sparepart.JumlahPart_TugasPart_Activity"
+        <activity android:name=".modules.komisi.AturKomisiTerbayar_Activity"></activity>
+        <activity
+            android:name=".modules.bengkel.Laporan_Activity"
             android:screenOrientation="portrait" />
-        <activity android:name=".modules.mekanik.AturKerjaMekanik_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.mekanik.PerintahKerjaMekanik_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.bengkel.AturPembayaran_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.bengkel.Rincian_Pembayaran_Activity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.bengkel.Absensi_MainTab_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.mekanik.LkkClaimMekanik_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.bengkel.KonfirmasiData_Pembayaran_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.sparepart.Status_PartKosong_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.checkin.TambahPartJasaDanBatal_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.sparepart.AturPartKeluar_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.sparepart.DetailPartKeluar_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.Otp_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.checkin.DetailKontrolBooking_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.bengkel.TambahLayanan"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.komisi.AturKomisiPart_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.komisi.KomisiPart_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.bengkel.AturPembayaranElektronik_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.bengkel.PembayaranElektronik_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.sparepart.HistoryStockOpname_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.sparepart.DetailCariPart_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.hutang.PembayaranHutang_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.hutang.Hutang_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.hutang.PembayaranPiutang_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.hutang.DetailPiutang_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.hutang.Piutang_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.LocationPicker_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.sparepart.Status_TugasPart_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.bengkel.ManualMessage_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.bengkel.Message_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.antar_jemput.SerahTerima_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.antar_jemput.ChecklistAntarJemput_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.antar_jemput.InformasiAntarJemput_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.antar_jemput.AntarJemput_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.sparepart.AturOutSource_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.mekanik.InspeksiMekanik_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.bengkel.AturCollection_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.bengkel.Collection_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.sparepart.UpdatePartKosong_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.sparepart.MenungguPart_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.sparepart.DetailTerimaPart_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.checkin.AturCheckout_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.checkin.CheckOut_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.mekanik.AturInspeksi_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.sparepart.JumlahPart_TugasPart_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.mekanik.AturKerjaMekanik_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.mekanik.PerintahKerjaMekanik_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.bengkel.AturPembayaran_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.bengkel.Rincian_Pembayaran_Activity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".modules.bengkel.Pembayaran_MainTab_Activity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".modules.checkin.DetailKontrolLayanan_Activity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".modules.checkin.KontrolLayanan_Activity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".modules.checkin.Checkin4_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.checkin.HistoryBookingCheckin_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.jasa.BiayaJasa_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.jasa.JasaLainBerkala_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.jasa.JasaLain_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.sparepart.JumlahPart_Checkin_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.sparepart.Part_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.sparepart.PartBerkala_Activity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.checkin.HistoryBookingCheckin_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.jasa.BiayaJasa_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.jasa.JasaLainBerkala_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.jasa.JasaLain_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.sparepart.JumlahPart_Checkin_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.sparepart.Part_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.sparepart.PartBerkala_Activity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".modules.checkin.Checkin3_Activity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".modules.checkin.Checkin2_Activity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".modules.checkin.Checkin1_Activity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity android:name=".modules.sparepart.TugasPart_MainTab_Activity" />
         <activity android:name=".modules.bengkel.ProfileBengkel_Activity" />
         <activity android:name=".modules.sparepart.JumlahPart_PartKeluar_Activity" />
@@ -190,26 +243,36 @@
         <activity android:name=".modules.bengkel.AturLayanan_Activity" />
         <activity android:name=".modules.bengkel.Layanan_Avtivity" />
         <activity android:name=".modules.bengkel.PembayaranJurnal_Activity" />
-        <activity android:name=".modules.bengkel.AturJurnal_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.bengkel.DaftarJurnal_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.sparepart.AturPenyesuain_StockOpname_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.sparepart.AturStockOpname_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.sparepart.TerimaPart"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.sparepart.AturLokasiPart_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.sparepart.AturTerimaPart_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.sparepart.AturDetail_TerimaPart_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.mekanik.AturBiayaMekanik2"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.mekanik.BiayaMekanik2Activity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.bengkel.AturJurnal_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.bengkel.DaftarJurnal_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.sparepart.AturPenyesuain_StockOpname_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.sparepart.AturStockOpname_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.sparepart.TerimaPart"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.sparepart.AturLokasiPart_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.sparepart.AturTerimaPart_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.sparepart.AturDetail_TerimaPart_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.mekanik.AturBiayaMekanik2"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.mekanik.BiayaMekanik2Activity"
+            android:screenOrientation="portrait" />
         <activity android:name=".modules.sparepart.Spareparts_Activity">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -220,18 +283,24 @@
                 android:resource="@xml/searchable"
                 android:value="com.rkrzmail.oto.modules.lokasi_part.CariPart_Activity" />
         </activity>
-        <activity android:name=".modules.sparepart.AturParts_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".gmod.PengambilanPartActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".gmod.DaftarTugasPartActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".gmod.JumlahPartActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.jasa.JasaExternal_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".gmod.JasaLainDetail"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.sparepart.AturParts_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".gmod.PengambilanPartActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".gmod.DaftarTugasPartActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".gmod.JumlahPartActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.jasa.JasaExternal_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".gmod.JasaLainDetail"
+            android:screenOrientation="portrait" />
         <activity android:name=".gmod.JasaLainBerkalaActivity" />
         <activity android:name=".gmod.PartBerkalaActivity" />
         <activity android:name=".gmod.AturSparepartActivity" />
@@ -243,10 +312,12 @@
         <activity android:name=".gmod.Stock_OpnameActivity" />
         <activity android:name=".gmod.Penampung_Item_DetailActivity" />
         <activity android:name=".gmod.MyCode" />
-        <activity android:name=".modules.mekanik.AturSchedule_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.sparepart.LokasiPart_Activity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.mekanik.AturSchedule_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.sparepart.LokasiPart_Activity"
+            android:screenOrientation="portrait" />
         <activity android:name=".WebActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -411,6 +482,7 @@
                 <action android:name="com.nikita.generator.service" />
             </intent-filter>
         </receiver>
+
         <service
             android:name="com.rkrzmail.fcm.FCMMessagingService"
             tools:ignore="ExportedService">
@@ -418,7 +490,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
         <service
             android:name="com.rkrzmail.fcm.FCMInstanceIDService"
             tools:ignore="ExportedService">

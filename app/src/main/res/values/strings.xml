@@ -165,6 +165,18 @@
     <string name="tipe_jasa_uppercase">TIPE JASA</string>
     <string name="komisi_percent_uppercase">KOMISI %</string>
     <string name="total_komisi_percent">TOTAL KOMISI %</string>
+    <string name="nama_group_part">Nama Group Part</string>
+    <string name="aktivitas_layanan">Aktivitas Layanan</string>
+    <string name="komisi">% Komisi</string>
+    <string name="tipe_jasa">Tipe Jasa</string>
+    <string name="nama_user">Nama User</string>
+    <string name="total_bayar">Total Bayar</string>
+    <string name="balance">Balance</string>
+    <string name="nama_user_uppercase">NAMA USER</string>
+    <string name="balance_uppercase">BALANCE</string>
+    <string name="jumlah_bayar_uppercase">JUMLAH BAYAR</string>
+    <string name="balance_akhir_uppercase">BALANCE AKHIR</string>
+    <string name="nama_penerima_uppercase">NAMA PENERIMA</string>
     <string-array name="pola_harga_jual">
         <item>FLEXIBLE</item>
         <item>BELI + MARGIN</item>
