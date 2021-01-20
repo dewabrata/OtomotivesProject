@@ -1,14 +1,24 @@
 package com.rkrzmail.oto.modules.komisi;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -18,17 +28,36 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.srv.NumberFormatUtils;
+import com.rkrzmail.utils.Tools;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static com.rkrzmail.utils.APIUrls.KOMISI_LAYANAN;
+import static com.rkrzmail.utils.APIUrls.VIEW_LAYANAN;
+import static com.rkrzmail.utils.ConstUtils.ADD;
+import static com.rkrzmail.utils.ConstUtils.DATA;
+
 public class AturKomisiLayanan_Activity extends AppActivity {
 
-    private MultiSelectionSpinner spPosisi;
-    private Spinner spLayanan;
-    private List<String> layananList = new ArrayList<>();
-    private String layanan = "";
+    private Spinner spLayanan, spAktivitas, spStatus;
+    private EditText etKomisi;
+    private Nson layananList = Nson.newArray(), dataList = Nson.newArray();
+
+    private final List<String> aktivitasList = Arrays.asList(
+            "--PILIH--",
+            "BOOKING",
+            "CHECK IN ANTRIAN",
+            "PENUGASAN",
+            "MEKANIK SELESAI",
+            "INSPEKSI SELESAI",
+            "CASH, DEBET, KREDIT, INVOICE"
+    );
+    private double komisiPercent = 0;
+    private String layananId="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,59 +75,116 @@ public class AturKomisiLayanan_Activity extends AppActivity {
     }
 
     private void initComponent() {
-        spPosisi = findViewById(R.id.sp_namaPosisi_komisiLayanan);
-        spLayanan = findViewById(R.id.sp_namaLayanan_komisiLayanan);
+        spAktivitas = findViewById(R.id.sp_layanan_aktivitas);
+        spLayanan = findViewById(R.id.sp_komisi_layanan);
+        spStatus = findViewById(R.id.sp_layanan_status);
+        etKomisi = findViewById(R.id.et_komisi_layanan_percent);
+        setSpLayanan();
+        loadData();
 
-        setMultiSelectionSpinnerFromApi(spPosisi, "nama", "POSISI", "viewmst", new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
+        spLayanan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void selectedIndices(List<Integer> indices) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String item = parent.getItemAtPosition(position).toString();
+                if(dataList.size() > 0){
+                    for (int i = 0; i < dataList.size(); i++) {
+                        if (dataList.get(i).get("NAMA_LAYANAN").asString().contains(item)) {
+                            layananId = dataList.get(i).get("ID").asString();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        etKomisi.addTextChangedListener(new TextWatcher() {
+            int prevLength = 0; // detected keyEvent action delete
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                prevLength = s.length();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
 
             }
 
             @Override
-            public void selectedStrings(List<String> strings) {
+            public void afterTextChanged(Editable editable) {
+                String text = editable.toString();
+                if (text.isEmpty()) return;
+                etKomisi.removeTextChangedListener(this);
+                try {
+                    text = new NumberFormatUtils().formatOnlyNumber(text);
+                    double percentValue = Double.parseDouble(text.isEmpty() ? "0" : text) / 1000;
 
+                    NumberFormat percentageFormat = NumberFormat.getPercentInstance();
+                    percentageFormat.setMinimumFractionDigits(1);
+                    String percent = percentageFormat.format(percentValue);
+
+                    InputFilter[] filterArray = new InputFilter[1];
+                    filterArray[0] = new InputFilter.LengthFilter(6);
+
+                    etKomisi.setFilters(filterArray);
+                    etKomisi.setText(percent);
+                    etKomisi.setSelection(percent.length() - 1);
+
+                    if (!find(R.id.tv_total_komisi_layanan, TextView.class).getText().toString().isEmpty()) {
+                        double komisiAvail = Double.parseDouble(find(R.id.tv_total_komisi_layanan, TextView.class).getText().toString()
+                                .replace("TOTAL : ", "")
+                                .replace("%", "")
+                                .replace(",", "."));
+                        double komisiInput = Double.parseDouble(etKomisi.getText().toString()
+                                .replace("%", "")
+                                .replace(",", "."));
+                        double result = prevLength > editable.length() ?  komisiPercent - komisiInput : komisiAvail - komisiInput;
+
+                        find(R.id.tv_total_komisi_layanan, TextView.class).setText("TOTAL : " + NumberFormatUtils.formatPercent(result) + " %");
+                    }
+                } catch (NumberFormatException e) {
+                    Log.e("percent_", "onTextChanged: ", e);
+                }
+
+                etKomisi.addTextChangedListener(this);
             }
-        }, "NAMA", "");
+        });
 
-        try{
-            setSpLayanan();
-            loadData();
-        }catch (Exception e){
-            Log.d("Exception__", "initComponent: " + e.getMessage());
-        }
-        find(R.id.et_komisi_komisiLayanan, EditText.class).addTextChangedListener(new NumberFormatUtils().percentTextWatcher(find(R.id.et_komisi_komisiLayanan, EditText.class)));
     }
 
     private void loadData() {
-        Intent i = getIntent();
-        final Nson nson = Nson.readJson(getIntentStringExtra("data"));
-        if (i.hasExtra("data")) {
-            layanan =  nson.get("NAMA_LAYANAN").asString();
-            find(R.id.et_komisi_komisiLayanan, EditText.class).setText(nson.get("KOMISI").asString());
+        final Nson data = Nson.readJson(getIntentStringExtra(DATA));
 
-            find(R.id.btn_hapus, Button.class).setVisibility(View.VISIBLE);
-            find(R.id.btn_hapus, Button.class).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    deleteData(nson);
+        etKomisi.setText(data.get("KOMISI").asString());
+        komisiPercent = getIntent().getDoubleExtra("AVAIL KOMISI", 0);
+        find(R.id.tv_total_komisi_layanan, TextView.class).setText("TOTAL : " + komisiPercent + " %");
+        setSpinnerOffline(aktivitasList, spAktivitas, getIntent().hasExtra(ADD) ? "" : data.get("").asString());
+        setSpinnerOffline(Arrays.asList("--PILIH--", "AKTIF", "NON AKTIF"), spStatus, getIntent().hasExtra(ADD) ? "" : data.get("").asString());
+
+        find(R.id.btn_simpan_komisiLayanan, Button.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (find(R.id.btn_simpan_komisiLayanan, Button.class).getText().toString().equals("SIMPAN")) {
+                    if (spAktivitas.getSelectedItem().toString().equals("--PILIH--")) {
+                        showWarning("STATUS HARUS DI PILIH", Toast.LENGTH_LONG);
+                    } else if (spLayanan.getSelectedItem().toString().equals("--PILIH--")) {
+                        showWarning("TIPE JASA HARUS DI PILIH", Toast.LENGTH_LONG);
+                    } else if (spStatus.getSelectedItem().toString().equals("--PILIH--")) {
+                        showWarning("AKTIVITAS HARUS DI PILIH", Toast.LENGTH_LONG);
+                    } else if (formatOnlyNumber(find(R.id.tv_total_komisi_layanan, TextView.class).getText().toString()).equals("0")) {
+                        showWarning("KOMISI TIDAK VALID", Toast.LENGTH_LONG);
+                        etKomisi.requestFocus();
+                    } else {
+                        saveData();
+                    }
+                } else {
+                    updateData(data);
                 }
-            });
-            find(R.id.btn_simpan, Button.class).setText("UPDATE");
-            find(R.id.btn_simpan).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    updateData(nson);
-                }
-            });
-        }else{
-            find(R.id.btn_simpan).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    saveData();
-                }
-            });
-        }
+            }
+        });
     }
 
     private void saveData() {
@@ -109,10 +195,12 @@ public class AturKomisiLayanan_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "add");
-                args.put("posisi", spPosisi.getSelectedItemsAsString());
+                args.put("aktivitas", spAktivitas.getSelectedItem().toString());
                 args.put("nama", spLayanan.getSelectedItem().toString());
-                args.put("komisi", find(R.id.et_komisi_komisiLayanan, EditText.class).getText().toString());
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("komisilayanan"), args));
+                args.put("idlayanan", layananId);
+                args.put("komisi", etKomisi.getText().toString());
+                args.put("status", spStatus.getSelectedItem().toString());
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(KOMISI_LAYANAN), args));
             }
 
             @Override
@@ -136,11 +224,12 @@ public class AturKomisiLayanan_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "update");
-                args.put("id", nson.get("ID").asString());
-                args.put("posisi", spPosisi.getSelectedItemsAsString());
+                args.put("aktivitas", spAktivitas.getSelectedItem().toString());
                 args.put("nama", spLayanan.getSelectedItem().toString());
-                args.put("komisi", find(R.id.et_komisi_komisiLayanan, EditText.class).getText().toString());
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("komisilayanan"), args));
+                args.put("idlayanan", nson.get("id").asString());
+                args.put("komisi", etKomisi.getText().toString());
+                args.put("status", spStatus.getSelectedItem().toString());
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(KOMISI_LAYANAN), args));
             }
 
             @Override
@@ -155,32 +244,7 @@ public class AturKomisiLayanan_Activity extends AppActivity {
             }
         });
     }
-
-    private void deleteData(final Nson nson) {
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
-
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "delete");
-                args.put("id", nson.get("ID").asString());
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("komisilayanan"), args));
-            }
-
-            @Override
-            public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    showSuccess("Sukses Menghapus Aktifitas");
-                    setResult(RESULT_OK);
-                    finish();
-                } else {
-                    showError("Gagal memuat Aktifitas");
-                }
-            }
-        });
-    }
-
+    
     private void setSpLayanan() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
@@ -189,26 +253,23 @@ public class AturKomisiLayanan_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlayanan"), args));
+                args.put("spec", "OTOMOTIVES");
+                args.put("layanan", "BENGKEL");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_LAYANAN), args));
             }
 
             @Override
             public void runUI() {
-                layananList.add("Belum Di Pilih");
+                layananList.add("--PILIH--");
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     for (int i = 0; i < result.get("data").size(); i++) {
                         layananList.add(result.get("data").get(i).get("NAMA_LAYANAN").asString());
+                        dataList.add(result.get("data").get(i));
                     }
-                    ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, layananList);
+                    ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, layananList.asArray());
                     spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spLayanan.setAdapter(spinnerAdapter);
-                    if (!layanan.isEmpty()) {
-                        for (int in = 0; in < spLayanan.getCount(); in++) {
-                            if (spLayanan.getItemAtPosition(in).toString().contains(layanan)) {
-                                spLayanan.setSelection(in);
-                            }
-                        }
-                    }
+
                 }
             }
         });
