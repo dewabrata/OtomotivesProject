@@ -7,11 +7,14 @@ import com.rkrzmail.oto.AppActivity;
 
 public class ConstUtils {
 
-    public static String PRINT_BUKTI_BAYAR(String noBuktiBayar) {
-        return "https://otomotives.com/internalapp/report/bukti_bayar/" + noBuktiBayar;
+    public static String PRINT_BUKTI_BAYAR(String params, boolean isCheckin) {
+        return isCheckin ?
+                "https://otomotives.com/internalapp/report/bukti_bayar/" + params :
+                "https://otomotives.com/internaldev/report/bukti_beli_part/" + params;
     }
+
     public static String CETAK_EXCEL(String CID, String Entry) {
-        return "http://otomotives.com/api/v3/lap?cid="+CID+"&report="+Entry;
+        return "http://otomotives.com/api/v3/lap?cid=" + CID + "&report=" + Entry;
     }
 
     public static int DAYS(long milliseconds) {

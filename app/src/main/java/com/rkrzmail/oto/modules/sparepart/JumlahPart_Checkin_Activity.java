@@ -47,6 +47,7 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
     private String idLokasiPart = "", hpp = "";
     private String inspeksi = "", garansiPart = "";
     private int stock = 0;
+    private int berkalaKm = 0, berkalaBulan = 0;
     private double discPart = 0, discFasilitas = 0;
 
     @Override
@@ -94,6 +95,8 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
             find(R.id.ly_waktu_kerja).setVisibility(View.GONE);
             etBiayaJasa.setVisibility(View.GONE);
             isPartWajib = true;
+            berkalaBulan = Integer.parseInt(formatOnlyNumber(nson.get("BERKALA_BULAN").asString()));
+            berkalaKm = Integer.parseInt(formatOnlyNumber(nson.get("BERKALA_KM").asString()));
             stock = nson.get("STOCK").asInteger();
             garansiPart = nson.get("GARANSI_PART_PABRIKAN").asString().equals("Y") ? "Y" : "N";
             hpp = nson.get("HPP").asString();
@@ -154,7 +157,6 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
                 }
             }
 
-            Log.d(TAG, "initComponent: " + nson);
             etJumlah.setEnabled(false);
             etBiayaJasa.setEnabled(false);
             etBiayaJasa.setText("0");
@@ -311,11 +313,13 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
     @SuppressLint("SetTextI18n")
     private void loadData(final String intentExtra, Intent intent) {
         final Nson nson = Nson.readJson(getIntentStringExtra(intent, intentExtra));
-        garansiPart = nson.get("GARANSI_PART_PABRIKAN").asString();
+        Log.d("parts__", "data : " + nson);
 
+        garansiPart = nson.get("GARANSI_PART_PABRIKAN").asString();
+        berkalaBulan = Integer.parseInt(formatOnlyNumber(nson.get("BERKALA_BULAN").asString()));
+        berkalaKm = Integer.parseInt(formatOnlyNumber(nson.get("BERKALA_KM").asString()));
         hpp = nson.get("HPP").asString();
         stock = nson.get("STOCK_RUANG_PART").asInteger();
-        Log.d("parts__", "data : " + nson);
         idLokasiPart = nson.get("LOKASI_PART_ID").asString();
         if (stock == 0) {
             isPartKosong = true;
@@ -450,13 +454,10 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
         totalHarga = totalPart + hargaJasa;
 
         if (isPartKosong) {
-            partKosong = "YA";
-            sendData.set("WAKTU_KERJA", "");
-            sendData.set("WAKTU_INSPEKSI", "");
+            partKosong = "Y";
             sendData.set("DP", formatOnlyNumber(formatRp(String.valueOf(calculateDp(Double.parseDouble(getSetting("DP_PERSEN")), totalPart)))));
         } else {
-            sendData.set("WAKTU_KERJA", find(R.id.et_waktuSet, EditText.class).getText().toString());
-            sendData.set("WAKTU_INSPEKSI", find(R.id.et_waktu_set_inspeksi, EditText.class).getText().toString());
+            partKosong = "N";
             sendData.set("DP", "");
         }
 
@@ -475,6 +476,10 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
             sendData.set("PERGANTIAN", "0");
             sendData.set("DISCOUNT_PART", discPart);
         }
+        sendData.set("BERKALA_KM", berkalaKm);
+        sendData.set("BERKALA_BULAN", berkalaBulan);
+        sendData.set("WAKTU_INSPEKSI", find(R.id.et_waktu_set_inspeksi, EditText.class).getText().toString());
+        sendData.set("WAKTU_KERJA", find(R.id.et_waktuSet, EditText.class).getText().toString());
         sendData.set("GARANSI", garansiPart);
         sendData.set("NAMA_PART", nson.get("NAMA_PART").asString());
         sendData.set("NO_PART", nson.get("NO_PART").asString());

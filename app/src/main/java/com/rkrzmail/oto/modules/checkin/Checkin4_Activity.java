@@ -427,7 +427,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                     idAntrian = result.asInteger();
                     find(R.id.et_no_antrian_checkin4, EditText.class).setText(generateNoAntrian(jenisAntrian, result.asString()));
                     Log.d(TAG, "NO_ANTRIAN: " + generateNoAntrian(jenisAntrian, result.asString()));
-                }else{
+                } else {
                     showError("Nomor Antrian Gagal di Muat, Harap Refresh!", Toast.LENGTH_LONG);
                     find(R.id.btn_refresh_antrian, ImageButton.class).setVisibility(View.VISIBLE);
                     find(R.id.btn_refresh_antrian, ImageButton.class).setOnClickListener(new View.OnClickListener() {
@@ -565,11 +565,10 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         final String jam = find(R.id.et_lamaWaktu_checkin, EditText.class).getText().toString().substring(3, 5);
         final String menit = find(R.id.et_lamaWaktu_checkin, EditText.class).getText().toString().substring(6, 8);
         final String estimasiSebelum = find(R.id.et_mulaiWaktu_checkin, TextView.class).getText().toString();
-        final String estimasiSesudah = find(R.id.et_selesaiWaktu_checkin, TextView.class).getText().toString();
         final String estimasiSelesai = find(R.id.et_selesaiWaktu_checkin, TextView.class).getText().toString();//currentDateTime("yyyy-MM-dd") + " " +
         //final String ttd = find(R.id.img_tandaTangan_checkin4 , ImageView.class).getText().toString();
         final String noPonsel = getData.get("noPonsel").asString();
-        final String nopol =  getData.get("nopol").asString();
+        final String nopol = getData.get("nopol").asString();
 
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
@@ -596,7 +595,6 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 args.put("waktuLayananJam", jam);
                 args.put("waktuLayananHMenit", menit);
                 args.put("estimasiSebelum", estimasiSebelum);
-                args.put("estimasiSesudah", estimasiSesudah);
                 args.put("estimasiSelesai", estimasiSelesai);
                 args.put("keterangan", find(R.id.et_ket_checkin4, EditText.class).getText().toString());
                 args.put("lokasiLayanan", "BENGKEL");
@@ -615,31 +613,28 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                     Log.d(TAG, "runUI: " + result.get("data"));
                     noKunciList.asArray().addAll(result.get("data").asArray());
                     if (isHplusPartKosong) {
-                        showSuccess("MOHON BAYARKAN UANG MUKA PELAYANAN " + jenisLayanan + ". RINCIAN BIAYA & UANG MUKA");
-                        //showMessageInvalidNotif(getActivity(), result.get("data").get("MESSAGE_INFO").asString(), intent);
+                        showSuccess("MOHON BAYARKAN UANG MUKA PELAYANAN " + jenisLayanan + ". RINCIAN BIAYA & UANG MUKA", Toast.LENGTH_LONG);
+                        showDialogNoKunci(result.get("data").get("NO_KUNCI").asString());
                         showNotification(getActivity(), "Checkin Antrian ", formatNopol(nopol), "CHECKIN", intent);
-                        setResult(RESULT_OK);
-                        finish();
                     } else {
                         if (status.equalsIgnoreCase("BATAL CHECKIN 4")) {
-                            showSuccess("Layanan di Batalkan, Data Di masukkan Ke Daftar Kontrol Layanan");
+                            showSuccess("LAYANAN DI BATALKAN, DATA DI MASUKKAN KE DAFTAR KONTROL LAYANAN", Toast.LENGTH_LONG);
                             setResult(RESULT_OK);
                             finish();
                         } else {
                             showDialogNoKunci(result.get("data").get("NO_KUNCI").asString());
-                            //showMessageInvalidNotif(getActivity(), result.get("data").get("MESSAGE_INFO").asString(), intent);
                             showNotification(getActivity(), "Checkin Antrian ", formatNopol(nopol), "CHECKIN", intent);
-                            showSuccess("Data Pelanggan Berhasil Di masukkan Ke Daftar Kontrol Layanan");
+                            showSuccess("DATA PELANGGAN BERHASIL DI MASUKKAN KE DAFTAR KONTROL LAYANAN", Toast.LENGTH_LONG);
                         }
                     }
                 } else {
-                    showWarning(result.get("message").asString());
+                    showWarning(result.get("message").asString(), Toast.LENGTH_LONG);
                 }
             }
         });
     }
 
-    private void showDialogNoKunci(String noKunci){
+    private void showDialogNoKunci(String noKunci) {
         Messagebox.showDialog(getActivity(), "N0. KUNCI", noKunci, "Ya", "", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -655,12 +650,12 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
 
     }
 
-    private String generateNoKunci(Nson noList){
+    private String generateNoKunci(Nson noList) {
         List<Integer> smallest = new ArrayList<>();
         String result = "";
         for (int i = 0; i < noList.size(); i++) {
             for (int j = 0; j < 20; j++) {
-                if(noList.get(i).asInteger() < j){
+                if (noList.get(i).asInteger() < j) {
                     smallest.add(j);
                 }
             }
@@ -839,18 +834,27 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 if (!find(R.id.cb_aggrement_checkin4, CheckBox.class).isChecked()) {
                     showWarning("Silahkan Setujui Syarat Dan Ketentuan Bengkel");
                 } else if (!isSign) {
-                    showWarning("Tanda Tangan Wajib di Input");
-                }else if( find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).isChecked() &&
-                        find(R.id.tv_waktu_checkin4, TextView.class).getText().toString().isEmpty()){
-                    showWarning("Waktu Ambil harus di Isi");
+                    showWarning("TANDA TANGAN WAJIB DI INPUT", Toast.LENGTH_LONG);
+                } else if (find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).isChecked() &&
+                        find(R.id.tv_waktu_checkin4, TextView.class).getText().toString().isEmpty()) {
+                    showWarning("WAKTU AMBIL HARUS DI ISI", Toast.LENGTH_LONG);
                 } else {
-                  if (find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).isChecked() &&
-                          find(R.id.sp_bbm, Spinner.class).getSelectedItem().toString().equals("--PILIH--")) {
+                    if (find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).isChecked() &&
+                            find(R.id.sp_bbm, Spinner.class).getSelectedItem().toString().equals("--PILIH--")) {
                         find(R.id.sp_bbm, Spinner.class).performClick();
                         find(R.id.sp_bbm, Spinner.class).requestFocus();
-                        showWarning("Level BBM Belum di Pilih");
+                        showWarning("LEVEL BBM BELUM DI PILIH", Toast.LENGTH_LONG);
                     } else {
-                        saveData("CHECKIN ANTRIAN");
+                        if ((isExtra || isHplusPartKosong) &&
+                                find(R.id.tv_jam_estimasi_checkin4, TextView.class).getText().toString().isEmpty()) {
+                            showWarning("JAM ESTIMASI HARUS DI ISI", Toast.LENGTH_LONG);
+                            find(R.id.tv_jam_estimasi_checkin4, TextView.class).requestFocus();
+                        } else if ((isExtra || isHplusPartKosong) && find(R.id.tv_tgl_estimasi_checkin4, TextView.class).getText().toString().isEmpty()) {
+                            showWarning("TANGGAL ESTIMASI HARUS DI ISI", Toast.LENGTH_LONG);
+                            find(R.id.tv_tgl_estimasi_checkin4, TextView.class).requestFocus();
+                        } else {
+                            saveData("CHECKIN ANTRIAN");
+                        }
                     }
                 }
                 break;
@@ -910,7 +914,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                 ttdPath = FileUtility.encodeToStringBase64(imgFile.getAbsolutePath());
                 find(R.id.img_tandaTangan_checkin4, ImageView.class).setImageBitmap(myBitmap);
-                if(imgFile.exists()){
+                if (imgFile.exists()) {
                     imgFile.delete();
                 }
             }

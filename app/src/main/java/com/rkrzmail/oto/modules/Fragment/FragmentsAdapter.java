@@ -147,6 +147,9 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
                 case 1:
                     fragment = Fragment.instantiate(context, Schedule_Absensi_Fragment.class.getName());
                     break;
+                case 2:
+                    fragment = Fragment.instantiate(context, Komisi_Absensi_Fragment.class.getName());
+                    break;
             }
             return fragment;
         }
@@ -212,6 +215,8 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
                     return "Absen";
                 case 1:
                     return "Schedule";
+                case 2:
+                    return "Komisi";
             }
         }
         return null;

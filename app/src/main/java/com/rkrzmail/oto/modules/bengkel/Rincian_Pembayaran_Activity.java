@@ -58,8 +58,8 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
     RecyclerView rvDetail, rvPartJualPart;
     AlertDialog alertDialog;
 
-    private Nson partList = Nson.newArray();
-    private Nson partIdList = Nson.newArray();
+    private final Nson partList = Nson.newArray();
+    private final Nson partIdList = Nson.newArray();
     private boolean isLayanan = false, isDp = false, isJualPart = false, isMdrOffUs = false, isBatal = false;
     private Nson data;
     private Nson sendData = Nson.newObject();
@@ -76,9 +76,10 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             ket = "",
             catatanMekanik = "", merkKendaraan = "";
     private String idCheckin = "", idJualPart = "";
+    private String noBuktiBayar = "";
     private String tglLayanan = "", noKunci = "";
     private int maxFreePenyimpanan = 0;
-    private int partId = 0;
+    private int partId = 0, dataKendaraanId = 0;
     int
             total1 = 0,
             total2 = 0,
@@ -91,13 +92,13 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             biayaLayanan = 0,
             biayaDerek = 0,
             totalBiayaSimpan = 0,
-            sisaBiayaDp = 0;
+            sisaBiayaDp = 0,
+            discSpot = 0,
+            discPart = 0;
     double
-            discPart = 0,
             discJasaPart = 0,
             discJasa = 0,
             discLayanan = 0,
-            discSpot = 0,
             discFrekwensi = 0,
             mdrOnUs = 0,
             mdrOfUs = 0,
@@ -175,6 +176,8 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), Checkin2_Activity.class);
                 intent.putExtra(ID, idCheckin);
+                intent.putExtra("DATA_KENDARAAN_ID", dataKendaraanId);
+                intent.putExtra("NOPOL", nopol);
                 intent.putExtra("NO_PONSEL", noHp);
                 intent.putExtra("KONFIRMASI DATA", "Konfirmasi Data Kendaraan");
                 intent.putExtra("MERK", merkKendaraan);
@@ -221,7 +224,11 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         tglLayanan = data.get("TANGGAL_CHECKIN").asString();
         merkKendaraan = data.get("MERK").asString();
         noKunci = data.get("NO_KUNCI").asString();
-        Log.d("no__", "loadData: " + noKunci);
+        noBuktiBayar = data.get("NO_BUKTI_BAYAR").asString();
+        if(noBuktiBayar.length() > 1){
+            String[] split = noBuktiBayar.split("-");
+            noBuktiBayar = split[split.length - 1];
+        }
     }
 
 
@@ -257,6 +264,8 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         sendData.set("SISA_DP", sisaBiayaDp);
         sendData.set("TOTAL_DP", totalDp);
         sendData.set("NO_KUNCI", noKunci);
+        sendData.set("NO_BUKTI_BAYAR", Integer.parseInt(noBuktiBayar) + 1);
+        sendData.set("PELUNASAN_SISA_BIAYA", !isDp & totalDp > 0 ? "Y" : "N");
         sendData.set("TOTAL", isBatal ? 0 : (total2 > 0 ? total2 : (total1 > 0 ? total1 : (isDp ? totalDp : 0))));
 
         Intent i = new Intent(getActivity(), AturPembayaran_Activity.class);
@@ -294,13 +303,18 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
+                    partList.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
                     for (int i = 0; i < nListArray.size(); i++) {
                         partList.add(Nson.newObject()
                                 .set("PART_ID", nListArray.get(i).get("PART_ID").asString())
                                 .set("JUMLAH", nListArray.get(i).get("JUMLAH").asString())
+
+                                .set("CHECKIN_DETAIL_ID", nListArray.get(i).get("CHECKIN_DETAIL_ID").asString())
+                                .set("JUAL_PART_DETAIL_ID", nListArray.get(i).get("DETAIL_ID").asString())
                         );
                     }
+                    Log.d("partList__", "runUI: " + partList);
                     if (isLayanan || isDp) {
                         loadDataRincianLayanan(result);
                     }
@@ -318,6 +332,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
     @SuppressLint("SetTextI18n")
     private void loadDataRincianLayanan(Nson result) {
         result = result.get("data");
+        partIdList.asArray().clear();
         for (int i = 0; i < result.size(); i++) {
             if (!isBatal) {
                 partIdList.add(isDp & result.get(i).get("DP_PART").asInteger() > 0 ?
@@ -347,24 +362,16 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                 namaLayanan = result.get(i).get("LAYANAN").asString();
                 isPkp = result.get(i).get("PKP").asString();
 
+                dataKendaraanId = result.get(i).get("DATA_KENDARAAN_ID").asInteger();
                 noMesin = result.get(i).get("NO_MESIN_PELANGGAN").asString();
                 noRangka = result.get(i).get("NO_RANGKA_PELANGGAN").asString();
                 kodeTipe = result.get(i).get("KODE_TYPE_PELANGGAN").asString();
             }
 
-
-            if (result.get(i).get("OFF_US").asString().equals("Y")) {
-                isMdrOffUs = true;
-            }
-            if (result.get(i).get("DEREK").asString().equals("Y")) {
-                find(R.id.cb_derek, CheckBox.class).setChecked(true);
-            }
-            if (result.get(i).get("BUANG_PART").asString().equals("Y")) {
-                find(R.id.cb_buangPart, CheckBox.class).setChecked(true);
-            }
-            if (result.get(i).get("ANTAR_JEMPUT").asString().equals("Y")) {
-                find(R.id.cb_antar_jemput, CheckBox.class).setChecked(true);
-            }
+            isMdrOffUs = result.get(i).get("OFF_US").asString().equals("Y");
+            find(R.id.cb_derek, CheckBox.class).setChecked(result.get(i).get("DEREK").asString().equals("Y"));
+            find(R.id.cb_buangPart, CheckBox.class).setChecked(result.get(i).get("BUANG_PART").asString().equals("Y"));
+            find(R.id.cb_antar_jemput, CheckBox.class).setChecked(result.get(i).get("ANTAR_JEMPUT").asString().equals("Y"));
 
             find(R.id.tv_nama_pelanggan, TextView.class).setText(result.get(i).get("NAMA_PELANGGAN").asString());
             find(R.id.tv_no_ponsel, TextView.class).setText((result.get(i).get("NO_PONSEL").asString()));
@@ -389,12 +396,12 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
 
         if (!isDp && totalDp > 0) {
             sisaBiaya = total1 - totalDp;
-        }
-        if (discSpot > 0) {
-            discSpot = calculatePercentage(discSpot, sisaBiaya > 0 ? sisaBiaya : total1);
+            total2 = sisaBiaya;
         }
 
-        total2 = (int) (sisaBiaya == 0 ? 0 : (sisaBiaya > 0 ? sisaBiaya : total1) - (discSpot > 0 ? discSpot : 0));
+        if(discSpot > 0){
+            total2 = total2 == 0 ? total1 - discSpot : total2 - discSpot;
+        }
 
         find(R.id.row_total_2).setVisibility(total2 == 0 | isDp ? View.GONE : View.VISIBLE);
         find(R.id.row_sisa_biaya).setVisibility(sisaBiaya == 0 | isDp ? View.GONE : View.VISIBLE);
@@ -457,6 +464,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             mdrCreditCard = result.get(i).get("MDR_KREDIT_CARD").asDouble();
             dpPercent = result.get(i).get("DP_PERSEN").asDouble();
             isPkp = result.get(i).get("PKP").asString();
+            discSpot = result.get(i).get("DISCOUNT_SPOT").asInteger();
 
             find(R.id.tv_nama_pelanggan_jual_part, TextView.class).setText(result.get(i).get("NAMA_PELANGGAN").asString());
             find(R.id.tv_no_ponsel_jual_part, TextView.class).setText(result.get(i).get("NO_PONSEL").asString());
@@ -468,18 +476,16 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             }
         }
 
-        if (discPart > 0) {
-            discPart = (discPart / 100) * totalPart;
-        } else {
-            find(R.id.tr_disc_part).setVisibility(View.GONE);
-        }
+        total1 = totalPart - discPart - discSpot;
 
-        total1 = (int) (totalPart + discPart);
         find(R.id.tl_ppn).setVisibility(View.GONE);
+        find(R.id.tr_disc_part).setVisibility(discPart == 0 ? View.GONE : View.VISIBLE);
+        find(R.id.tr_disc_spot).setVisibility(discSpot == 0 ? View.GONE : View.VISIBLE);
 
+        find(R.id.tv_disc_spot_jual_part, TextView.class).setText(RP + formatRp(String.valueOf(discSpot)));
         find(R.id.tv_harga_part_jual_part, TextView.class).setText(RP + formatRp(String.valueOf(totalPart)));
         find(R.id.tv_harga_disc_jual_part, TextView.class).setText(RP + formatRp(String.valueOf(discPart)));
-        find(R.id.tv_total_jual_part, TextView.class).setText(RP + formatRp(String.valueOf(total1)));
+        find(R.id.tv_total_jual_part, TextView.class).setText(RP + formatRp(String.valueOf(totalPart)));
         find(R.id.tv_total_ppn_jual_part, TextView.class).setText(RP + formatRp(setPPN(total1)));
         find(R.id.tv_total_penjualan_jual_part, TextView.class).setText(RP + formatRp(String.valueOf(total1)));
     }
@@ -557,18 +563,31 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                 final int itemType = getItemViewType(position);
 
                 if (itemType == ITEM_VIEW_1) {
-                    viewHolder.find(R.id.tv_namaPart_booking3_checkin3, TextView.class)
-                            .setText(nListArray.get(position).get("NAMA_PART").asString());
-                    viewHolder.find(R.id.tv_noPart_booking3_checkin3, TextView.class)
-                            .setText(nListArray.get(position).get("NO_PART").asString());
-                    viewHolder.find(R.id.tv_merk_booking3_checkin3, TextView.class)
-                            .setText(nListArray.get(position).get("MERK").asString());
-                    viewHolder.find(R.id.tv_no, TextView.class).setVisibility(View.VISIBLE);
-                    viewHolder.find(R.id.tv_no, TextView.class).setText(nListArray.get(position).get("NO").asString() + ". ");
-                    viewHolder.find(R.id.tv_hargaNet_booking3_checkin3, TextView.class).setText(
-                            RP + formatRp(nListArray.get(position).get("HARGA_PART").asString()));
-                    viewHolder.find(R.id.tv_jasaNet_booking3_checkin3, TextView.class).setText(
-                            RP + formatRp(nListArray.get(position).get("HARGA_JASA_PART").asString()));
+                    if(nListArray.get(position).get("PART_ID").asString().isEmpty()){
+                        viewHolder.find(R.id.tv_namaPart_booking3_checkin3, TextView.class)
+                                .setText("");
+                        viewHolder.find(R.id.tv_noPart_booking3_checkin3, TextView.class)
+                                .setText("");
+                        viewHolder.find(R.id.tv_merk_booking3_checkin3, TextView.class)
+                                .setText("");
+                        viewHolder.find(R.id.tv_no, TextView.class).setText("");
+                        viewHolder.find(R.id.tv_hargaNet_booking3_checkin3, TextView.class).setText("");
+                        viewHolder.find(R.id.tv_jasaNet_booking3_checkin3, TextView.class).setText("");
+                    }else{
+                        viewHolder.find(R.id.tv_namaPart_booking3_checkin3, TextView.class)
+                                .setText(nListArray.get(position).get("NAMA_PART").asString());
+                        viewHolder.find(R.id.tv_noPart_booking3_checkin3, TextView.class)
+                                .setText(nListArray.get(position).get("NO_PART").asString());
+                        viewHolder.find(R.id.tv_merk_booking3_checkin3, TextView.class)
+                                .setText(nListArray.get(position).get("MERK").asString());
+                        viewHolder.find(R.id.tv_no, TextView.class).setVisibility(View.VISIBLE);
+                        viewHolder.find(R.id.tv_no, TextView.class).setText(nListArray.get(position).get("NO").asString() + ". ");
+                        viewHolder.find(R.id.tv_hargaNet_booking3_checkin3, TextView.class).setText(
+                                RP + formatRp(nListArray.get(position).get("HARGA_PART").asString()));
+                        viewHolder.find(R.id.tv_jasaNet_booking3_checkin3, TextView.class).setText(
+                                RP + formatRp(nListArray.get(position).get("HARGA_JASA_PART").asString()));
+                    }
+
                 } else if (itemType == ITEM_VIEW_2) {
                     viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class)
                             .setText(RP + formatRp(nListArray.get(position).get("HARGA_JASA_LAIN").asString()));

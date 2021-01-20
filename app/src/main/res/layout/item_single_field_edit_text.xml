@@ -16,19 +16,18 @@
     </android.support.design.widget.AppBarLayout>
 
     <android.support.design.widget.TextInputLayout
+        android:id="@+id/tl_edit_text"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:hint="CATATAN"
         android:layout_marginStart="@dimen/paddingSemiLarge"
         android:layout_marginEnd="@dimen/paddingSemiLarge">
 
         <EditText
-            android:id="@+id/et_catatan_mekanik"
+            android:id="@+id/et_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textCapCharacters|textMultiLine"
             android:singleLine="false"
             android:layout_gravity="top|left"
             android:textSize="14sp"

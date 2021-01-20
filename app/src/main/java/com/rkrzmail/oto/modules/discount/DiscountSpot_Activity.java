@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -26,6 +27,7 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
@@ -39,12 +41,14 @@ import static com.rkrzmail.utils.ConstUtils.EDIT;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DISC_SPOT;
 import static com.rkrzmail.utils.ConstUtils.RP;
 
-public class SpotDiscount_Activity extends AppActivity {
+public class DiscountSpot_Activity extends AppActivity {
 
     private RecyclerView rvDisc, rvPelanggan;
     private SearchView mSearchView;
     private AlertDialog alertDialog;
+    AlertDialog.Builder builder;
     private View dialogView;
+
     private Nson pelangganList = Nson.newArray();
 
     @Override
@@ -78,6 +82,12 @@ public class SpotDiscount_Activity extends AppActivity {
         });
         initRecylerviewDisc();
         viewDiscSpot("");
+        find(R.id.swiperefresh, SwipeRefreshLayout.class).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                viewDiscSpot("");
+            }
+        });
     }
 
     private void initRecylerviewDisc(){
@@ -93,8 +103,8 @@ public class SpotDiscount_Activity extends AppActivity {
                 viewHolder.find(R.id.tv_tanggal_spotDisc, TextView.class).setText(tglSet);
                 viewHolder.find(R.id.tv_user_spotDisc, TextView.class).setText(nListArray.get(position).get("USER").asString());
                 viewHolder.find(R.id.tv_namaPelanggan_spotDisc, TextView.class).setText(nListArray.get(position).get("NAMA_PELANGGAN").asString());
-                viewHolder.find(R.id.tv_transaksi_spotDisc, TextView.class).setText(RP + formatRp(nListArray.get(position).get("TRANSAKSI").asString()));
-                viewHolder.find(R.id.tv_disc_spotDisc, TextView.class).setText(nListArray.get(position).get("SPOT_DISCOUNT").asString());
+                viewHolder.find(R.id.tv_transaksi_spotDisc, TextView.class).setText(RP + new NumberFormatUtils().formatRp(nListArray.get(position).get("TRANSAKSI").asString()));
+                viewHolder.find(R.id.tv_disc_spotDisc, TextView.class).setText(RP + new NumberFormatUtils().formatRp(nListArray.get(position).get("DISCOUNT_SPOT").asString()));
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
@@ -107,7 +117,7 @@ public class SpotDiscount_Activity extends AppActivity {
         }));
     }
 
-    private void initRecylerviewPelanggan(View dialogView){
+    private void initRecylerviewPelanggan(){
         rvPelanggan = dialogView.findViewById(R.id.recyclerView);
         rvPelanggan.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvPelanggan.setHasFixedSize(true);
@@ -116,7 +126,7 @@ public class SpotDiscount_Activity extends AppActivity {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
-                viewHolder.find(R.id.tv_nama_pelanggan, TextView.class).setText(pelangganList.get(position).get("NAMA_PELANGGAN").asString());
+                viewHolder.find(R.id.tv_nama_pelanggan, TextView.class).setText(pelangganList.get(position).get("PELANGGAN").asString());
                 String nomor =  pelangganList.get(position).get("NO_PONSEL").asString();
                 if(pelangganList.get(position).get("NO_PONSEL").asString().length() > 4){
                     nomor = "XXXXXXXXX" + nomor.substring(nomor.length() - 4);
@@ -141,6 +151,7 @@ public class SpotDiscount_Activity extends AppActivity {
             Nson result;
             @Override
             public void run() {
+                swipeProgress(true);
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 args.put("search", cari);
@@ -150,6 +161,7 @@ public class SpotDiscount_Activity extends AppActivity {
             @SuppressLint("NewApi")
             @Override
             public void runUI() {
+                swipeProgress(false);
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
@@ -161,13 +173,14 @@ public class SpotDiscount_Activity extends AppActivity {
         });
     }
 
-    private void viewPelanggan(final AlertDialog.Builder builder){
+    private void viewPelanggan(final String namaPelanggan){
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "DISC_SPOT");
+                args.put("search", namaPelanggan);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PELANGGAN), args));
             }
 
@@ -187,15 +200,15 @@ public class SpotDiscount_Activity extends AppActivity {
     }
 
     private void initDialogPelanggan(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
         dialogView = inflater.inflate(R.layout.activity_list_basic, null);
         builder.setView(dialogView);
         builder.create();
 
         initToolbarDialog();
-        initRecylerviewPelanggan(dialogView);
-        viewPelanggan(builder);
+        initRecylerviewPelanggan();
+        viewPelanggan("");
     }
 
     @Override
@@ -217,7 +230,7 @@ public class SpotDiscount_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        adapterSearchView(mSearchView, "search", "aturdiskonspot", "NAMA", "");
+        adapterSearchView(mSearchView, "search", "aturdiskonspot", "NAMA_PELANGGAN", "");
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
 

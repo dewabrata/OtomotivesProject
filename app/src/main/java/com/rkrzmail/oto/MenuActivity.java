@@ -55,7 +55,7 @@ import com.rkrzmail.oto.modules.sparepart.AturParts_Activity;
 import com.rkrzmail.oto.modules.sparepart.DetailCariPart_Activity;
 import com.rkrzmail.oto.modules.discount.DiscountPart_Activity;
 import com.rkrzmail.oto.modules.discount.FrekwensiDiscount_Activity;
-import com.rkrzmail.oto.modules.discount.SpotDiscount_Activity;
+import com.rkrzmail.oto.modules.discount.DiscountSpot_Activity;
 import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
 import com.rkrzmail.oto.modules.bengkel.Referal_Activity;
 import com.rkrzmail.oto.modules.sparepart.PenjualanPart_Activity;
@@ -343,7 +343,7 @@ public class MenuActivity extends AppActivity {
             Intent intent = new Intent(MenuActivity.this, DiscountPart_Activity.class);
             startActivity(intent);
         } else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_SPOT)) {
-            Intent intent = new Intent(MenuActivity.this, SpotDiscount_Activity.class);
+            Intent intent = new Intent(MenuActivity.this, DiscountSpot_Activity.class);
             startActivity(intent);
         }
         //Komisi

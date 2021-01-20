@@ -149,7 +149,9 @@ public class Print_Pembayaran_Fragment extends Fragment {
             public void onItemClick(final Nson parent, View view, final int position) {
                 noBuktiBayar = parent.get(position).get("NO_BUKTI_BAYAR").asString();
                 noPonsel = parent.get(position).get("NO_PONSEL").asString();
-                new DownloadBuktiBayar().execute(PRINT_BUKTI_BAYAR(parent.get(position).get("NO_BUKTI_BAYAR").asString()));
+
+                boolean isCheckin = parent.get(position).get("JENIS").asString().equals("CHECKIN");
+                new DownloadBuktiBayar().execute(PRINT_BUKTI_BAYAR(parent.get(position).get("NO_BUKTI_BAYAR").asString(), isCheckin));
             }
         }));
 

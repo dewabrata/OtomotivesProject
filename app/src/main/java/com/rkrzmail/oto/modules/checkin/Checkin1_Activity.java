@@ -58,7 +58,7 @@ import static com.rkrzmail.utils.ConstUtils.REQUEST_NEW_CS;
 public class Checkin1_Activity extends AppActivity implements View.OnClickListener {
 
     private static final String TAG = "CHECKIN1___";
-    private NikitaAutoComplete etJenisKendaraan, etNopol, etNoPonsel, etNamaPelanggan, etKeluhan;
+    private NikitaAutoComplete etJenisKendaraan, etNopol, etNoPonsel, etNamaPelanggan;
     private EditText etKm;
     private Spinner spPekerjaan;
     private String noHp = "",
@@ -81,11 +81,10 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
     private int expiredGaransiHari = 0, expiredGaransiKm = 0;
     private String isGaransiHari = "";
     private int kendaraanId = 0;
-    private Nson keluhanList = Nson.newArray(), historyList = Nson.newArray();
-    private boolean keyDel = false, isNoHp = false, isNamaValid = false, isRemoved;
+    private Nson historyList = Nson.newArray();
+    private boolean keyDel = false, isNoHp = false, isNamaValid = false;
     private boolean availHistory = false;
     private String tanggalBeliKendaraan = "";
-    private RecyclerView rvKeluhan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,10 +107,9 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
         etJenisKendaraan = findViewById(R.id.et_jenisKendaraan_checkin1);
         etNoPonsel = findViewById(R.id.et_noPonsel_checkin1);
         etNamaPelanggan = findViewById(R.id.et_namaPelanggan_checkin1);
-        etKeluhan = findViewById(R.id.et_keluhan_checkin1);
         etKm = findViewById(R.id.et_km_checkin1);
         spPekerjaan = findViewById(R.id.sp_pekerjaan_checkin1);
-        rvKeluhan = findViewById(R.id.recyclerView_keluhan);
+
 
         find(R.id.imgBarcode_checkin1, ImageButton.class).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,26 +124,10 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
         initAutoCompleteNopol();
         initAutoCompleteNamaPelanggan();
         initAutoCompleteKendaraan();
-        initAutoCompleteKeluhan();
         initOnTextChange();
 
         find(R.id.btn_lanjut_checkin1).setOnClickListener(this);
         find(R.id.btn_history_checkin1).setOnClickListener(this);
-        find(R.id.fab_tambah_keluhan, ImageButton.class).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (etKeluhan.getText().toString().isEmpty() || etKeluhan.getText().toString().length() < 5) {
-                    etKeluhan.setError("Keluhan Min 5 Karakter");
-                } else {
-                    rvKeluhan.setVisibility(View.VISIBLE);
-                    isRemoved = true;
-                    keluhanList.add(Nson.newObject().set("KELUHAN", etKeluhan.getText().toString()));
-                    initRecylerViewKeluhan();
-                    rvKeluhan.getAdapter().notifyDataSetChanged();
-                    etKeluhan.setText("");
-                }
-            }
-        });
         find(R.id.img_clear, ImageButton.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -264,6 +246,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
 
         etNoPonsel.addTextChangedListener(new TextWatcher() {
             int prevLength = 0;
+
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 prevLength = s.length();
@@ -294,7 +277,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
                 }
 
-                if(prevLength > s.length()){
+                if (prevLength > s.length()) {
                     isNoHp = false;
                 }
 
@@ -504,44 +487,6 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
         });
     }
 
-    private void initAutoCompleteKeluhan() {
-        etKeluhan.setThreshold(0);
-        etKeluhan.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
-            @Override
-            public Nson onFindNson(Context context, String bookTitle) {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "KELUHAN");
-                args.put("keluhan", bookTitle);
-                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SUGGESTION), args));
-                return result.get("data");
-            }
-
-            @SuppressLint("SetTextI18n")
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                if (convertView == null) {
-                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    convertView = inflater.inflate(R.layout.item_suggestion, parent, false);
-                }
-
-                findView(convertView, R.id.title, TextView.class).setText(getItem(position).get("KELUHAN").asString());
-                return convertView;
-            }
-        });
-
-        etKeluhan.setLoadingIndicator((android.widget.ProgressBar) findViewById(R.id.pb_keluhan));
-        etKeluhan.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
-                etKeluhan.setText(n.get("KELUHAN").asString());
-                Tools.hideKeyboard(getActivity());
-            }
-        });
-
-    }
-
     private void setSelanjutnya() {
         final String nopol = etNopol.getText().toString().replaceAll(" ", "").toUpperCase();
         final String namaPelanggan = etNamaPelanggan.getText().toString().toUpperCase();
@@ -562,7 +507,6 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 args.put("noPonsel", isNoHp & etNoPonsel.getTag() != null ? noHp : formatOnlyNumber(etNoPonsel.getText().toString()));
                 args.put("nama", Tools.isSingleQuote(namaPelanggan));
                 args.put("isPemilik", pemilik);//dateKendaraan
-                args.put("keluhan_list", keluhanList.toJson());
                 args.put("km", km);
                 args.put("pekerjaan", pekerjaan);
                 args.put("kendaraan", getSetting("JENIS_KENDARAAN"));
@@ -622,21 +566,42 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     nson.set("availHistory", availHistory);
                     nson.set("tanggalBeli", tanggalBeliKendaraan);
 
-                    Intent intent;
-                    if (!noRangka.isEmpty() || !noMesin.isEmpty() || !alamat.isEmpty() || !kotaKab.isEmpty() || !kodeTipe.isEmpty()) {
-                        intent = new Intent(getActivity(), Checkin3_Activity.class);
-                        intent.putExtra(DATA, nson.toJson());
-                        startActivityForResult(intent, REQUEST_CHECKIN);
+                    if (noRangka.isEmpty()) {
+                        setIntentCheckin2(nson);
+                    } else if (noMesin.isEmpty()) {
+                        setIntentCheckin2(nson);
+                    } else if (alamat.isEmpty()) {
+                        setIntentCheckin2(nson);
+                    } else if (kotaKab.isEmpty()) {
+                        setIntentCheckin2(nson);
+                    } else if (kodeTipe.isEmpty()) {
+                        setIntentCheckin2(nson);
+                    } else if (tahunProduksi.isEmpty()) {
+                        setIntentCheckin2(nson);
+                    } else if (tglBeli.isEmpty()) {
+                        setIntentCheckin2(nson);
                     } else {
-                        intent = new Intent(getActivity(), Checkin2_Activity.class);
-                        intent.putExtra(DATA, nson.toJson());
-                        startActivityForResult(intent, REQUEST_NEW_CS);
+                        setIntentCheckin3(nson);
                     }
+
                 } else {
                     showWarning(result.get("message").asString());
                 }
             }
         });
+    }
+
+
+    private void setIntentCheckin2(Nson nson) {
+        Intent intent = new Intent(getActivity(), Checkin2_Activity.class);
+        intent.putExtra(DATA, nson.toJson());
+        startActivityForResult(intent, REQUEST_NEW_CS);
+    }
+
+    private void setIntentCheckin3(Nson nson) {
+        Intent intent = new Intent(getActivity(), Checkin3_Activity.class);
+        intent.putExtra(DATA, nson.toJson());
+        startActivityForResult(intent, REQUEST_CHECKIN);
     }
 
     private void getDataBarcode(final String antrian) {
@@ -660,28 +625,6 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 } else {
                     showWarning(result.get("status").asString());
                 }
-            }
-        });
-    }
-
-    private void initRecylerViewKeluhan() {
-        rvKeluhan.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rvKeluhan.setHasFixedSize(false);
-        rvKeluhan.setAdapter(new NikitaRecyclerAdapter(keluhanList, R.layout.item_keluhan) {
-            @Override
-            public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
-                super.onBindViewHolder(viewHolder, position);
-                viewHolder.find(R.id.tv_keluhan, TextView.class).setText(keluhanList.get(position).get("KELUHAN").asString());
-                viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
-                    @SuppressLint("NewApi")
-                    @Override
-                    public void onClick(View v) {
-                        isRemoved = false;
-                        keluhanList.asArray().remove(position);
-                        notifyItemRemoved(position);
-                        Objects.requireNonNull(rvKeluhan.getAdapter()).notifyDataSetChanged();
-                    }
-                });
             }
         });
     }

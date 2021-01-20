@@ -116,7 +116,7 @@ public class Nson implements Serializable {
         Object dataObject = internalObject;
         try {
             if (dataObject == null) {
-                //nothing                
+                return;
             } else if (dataObject instanceof List) {
                 OutJsonArray(jsonWriter, (List) dataObject);
             } else if (dataObject instanceof Map) {
@@ -124,6 +124,7 @@ public class Nson implements Serializable {
             }
             jsonWriter.flush();
         } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

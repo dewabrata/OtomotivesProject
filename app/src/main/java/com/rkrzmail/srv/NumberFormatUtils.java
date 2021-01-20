@@ -13,6 +13,7 @@ import com.rkrzmail.utils.Tools;
 
 import java.lang.ref.WeakReference;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -137,6 +138,14 @@ public class NumberFormatUtils {
         }
         return "0";
     }
+
+    public String formatOnlyNumber(String text, String... symbol) {
+        if (text == null || text.equals("") || text.equals("00"))
+            return "0";
+        else
+            return text.replace(symbol[0], "").replace(symbol[1], "");
+    }
+
 
     public String formatOnlyNumber(String text) {
         if (text == null || text.equals("") || text.equals("00"))

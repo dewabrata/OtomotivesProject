@@ -16,7 +16,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.discount.SpotDiscount_Activity;
+import com.rkrzmail.oto.modules.discount.DiscountSpot_Activity;
 import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
@@ -110,7 +110,7 @@ public class PembayaranJurnal_Activity extends AppActivity {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    startActivity(new Intent(getActivity(), SpotDiscount_Activity.class));
+                    startActivity(new Intent(getActivity(), DiscountSpot_Activity.class));
                 } else {
                     showInfo("GAGAL");
                 }

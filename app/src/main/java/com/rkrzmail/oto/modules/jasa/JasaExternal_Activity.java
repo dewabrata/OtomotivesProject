@@ -44,6 +44,7 @@ public class JasaExternal_Activity extends AppActivity {
 
     private void initComponent() {
         final Nson nson = Nson.readJson(getIntentStringExtra(DATA));
+        Log.d("part__", "initComponent: " + nson);
         if(nson.get("FINAL_INS").asString().equals("Y") && !nson.get("FINAL_INS").asString().isEmpty()){
             inspeksi = "Y";
         }else{
@@ -113,7 +114,7 @@ public class JasaExternal_Activity extends AppActivity {
         } else {
             sendData.set("PART_ID", nson.get("PART_ID").asString());
             sendData.set("JUMLAH", "0");
-            sendData.set("NAMA_PART", nson.get("MASTER_NAME").asString());
+            sendData.set("NAMA_PART", nson.get("NAMA_PART").asString());
             sendData.set("NO_PART", nson.get("NO_PART").asString());
             sendData.set("MERK", nson.get("MERK").asString());
             sendData.set("DISCOUNT_JASA", "0");

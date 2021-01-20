@@ -2,11 +2,13 @@ package com.rkrzmail.oto.modules.checkin;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -39,8 +41,10 @@ import com.rkrzmail.oto.modules.jasa.JasaLain_Activity;
 import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
 import com.rkrzmail.oto.modules.sparepart.JumlahPart_Checkin_Activity;
 import com.rkrzmail.oto.modules.sparepart.PartBerkala_Activity;
+import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.srv.NsonAutoCompleteAdapter;
 import com.rkrzmail.utils.Tools;
 
 import java.text.ParseException;
@@ -55,6 +59,7 @@ import java.util.Objects;
 import static com.rkrzmail.srv.NumberFormatUtils.calculatePercentage;
 import static com.rkrzmail.utils.APIUrls.SET_CHECKIN;
 import static com.rkrzmail.utils.APIUrls.VIEW_LAYANAN;
+import static com.rkrzmail.utils.APIUrls.VIEW_SUGGESTION;
 import static com.rkrzmail.utils.ConstUtils.BATAL;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_OTOMOTIVES;
@@ -80,9 +85,10 @@ import static com.rkrzmail.utils.ConstUtils.RUANG_PART;
 
 public class Checkin3_Activity extends AppActivity implements View.OnClickListener {
 
-    private RecyclerView rvPart;
-    private RecyclerView rvJasaLain;
     public static final String TAG = "Checkin3___";
+
+    private RecyclerView rvPart, rvJasaLain, rvKeluhan;
+    private NikitaAutoComplete etKeluhan;
     private Spinner spLayanan;
     private AlertDialog alertDialog;
     RecyclerView rvPartWajib;
@@ -101,6 +107,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
     private final Nson varianList = Nson.newArray();
     private final Nson masterPartList = Nson.newArray();
     private final Nson partIdList = Nson.newArray();
+    private final Nson keluhanList = Nson.newArray();
 
     private String namaLayanan, jenisLayanan = "", waktuMekanik = "", waktuInspeksi = "", waktuLayanan = "";
     private final String jenisAntrian = "";
@@ -122,6 +129,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
     private int hargaPartLayanan = 0; // afs, recall, otomotives
     private int partId = 0, jumlahPart = 0;
     private double sisaDp = 0;
+    private int totalDp = 0;
     private final List<Integer> jumlahList = new ArrayList<>();
     private final Tools.TimePart dummyTime = Tools.TimePart.parse("00:00:00");
 
@@ -133,6 +141,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
     private boolean isJasaExternal = false;
     private boolean isHplusLayanan = false;
     private boolean isAFService = false;
+    private boolean isRemoved = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,15 +182,74 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
         find(R.id.btn_lanjut_checkin3, Button.class).setOnClickListener(this);
         find(R.id.btn_batal_checkin3, Button.class).setOnClickListener(this);
 
+        etKeluhan = findViewById(R.id.et_keluhan_checkin1);
         spLayanan = findViewById(R.id.sp_layanan_checkin3);
         rvPart = findViewById(R.id.recyclerView_part_checkin3);
         rvJasaLain = findViewById(R.id.recyclerView_jasalain_checkin3);
+        rvKeluhan = findViewById(R.id.recyclerView_keluhan);
 
         setSpNamaLayanan();
         componentValidation();
         initRecylerViewPart();
         initRecylerviewJasaLain();
+        initRecylerViewKeluhan();
+        initAutoCompleteKeluhan();
+
+        find(R.id.fab_tambah_keluhan, ImageButton.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (etKeluhan.getText().toString().isEmpty() || etKeluhan.getText().toString().length() < 5) {
+                    etKeluhan.setError("Keluhan Min 5 Karakter");
+                } else {
+                    isRemoved = true;
+                    keluhanList.add(Nson.newObject().set("KELUHAN", etKeluhan.getText().toString()));
+                    initRecylerViewKeluhan();
+                    rvKeluhan.getAdapter().notifyDataSetChanged();
+                    etKeluhan.setText("");
+                }
+            }
+        });
+
     }
+
+    private void initAutoCompleteKeluhan() {
+        etKeluhan.setThreshold(0);
+        etKeluhan.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
+            @Override
+            public Nson onFindNson(Context context, String bookTitle) {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "KELUHAN");
+                args.put("keluhan", bookTitle);
+                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SUGGESTION), args));
+                return result.get("data");
+            }
+
+            @SuppressLint("SetTextI18n")
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                if (convertView == null) {
+                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    convertView = inflater.inflate(R.layout.item_suggestion, parent, false);
+                }
+
+                findView(convertView, R.id.title, TextView.class).setText(getItem(position).get("KELUHAN").asString());
+                return convertView;
+            }
+        });
+
+        etKeluhan.setLoadingIndicator((android.widget.ProgressBar) findViewById(R.id.pb_keluhan));
+        etKeluhan.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
+                etKeluhan.setText(n.get("KELUHAN").asString());
+                Tools.hideKeyboard(getActivity());
+            }
+        });
+
+    }
+
 
     private void initRecylerViewPart() {
         rvPart.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -221,9 +289,14 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                             public void onClick(DialogInterface dialog, int which) {
                                 totalKurangWaktuLayanan(Tools.TimePart.parse(partList.get(position).get("WAKTU_KERJA").asString()));
                                 totalKurangWaktuLayanan(Tools.TimePart.parse(partList.get(position).get("WAKTU_INSPEKSI").asString()));
+                                totalKurangWaktuLayanan(Tools.TimePart.parse(formatOnlyNumber(partList.get(position).get("WAKTU_PESAN").asString())));
 
                                 totalHarga -= partList.get(position).get("NET").asInteger();
                                 find(R.id.et_totalBiaya_checkin3, EditText.class).setText(RP + formatRp(String.valueOf(totalHarga)));
+                                if(!jasaList.get(position).get("DP").asString().isEmpty()){
+                                    totalDp -= jasaList.get(position).get("DP").asInteger();
+                                    find(R.id.et_dp_checkin3, EditText.class).setText(RP + formatRp(String.valueOf(totalDp)));
+                                }
 
                                 partList.asArray().remove(position);
                                 notifyItemRemoved(position);
@@ -328,6 +401,29 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
         }));
     }
 
+    private void initRecylerViewKeluhan() {
+        rvKeluhan.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvKeluhan.setHasFixedSize(false);
+        rvKeluhan.setAdapter(new NikitaRecyclerAdapter(keluhanList, R.layout.item_keluhan) {
+            @Override
+            public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
+                super.onBindViewHolder(viewHolder, position);
+                viewHolder.find(R.id.tv_keluhan, TextView.class).setText(keluhanList.get(position).get("KELUHAN").asString());
+                viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
+                    @SuppressLint("NewApi")
+                    @Override
+                    public void onClick(View v) {
+                        isRemoved = false;
+                        keluhanList.asArray().remove(position);
+                        notifyItemRemoved(position);
+                        Objects.requireNonNull(rvKeluhan.getAdapter()).notifyDataSetChanged();
+                    }
+                });
+            }
+        });
+    }
+
+
     private void setSelanjutnya(final String status, final String alasanBatal) {
         final Nson nson = Nson.readJson(getIntentStringExtra(DATA));
         final String layanan = spLayanan.getSelectedItem().toString();
@@ -337,7 +433,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
         final String sisa = formatOnlyNumber(find(R.id.et_sisa_checkin3, EditText.class).getText().toString());
         final String tungguKonfirmasi = find(R.id.cb_konfirmBiaya_checkin3, CheckBox.class).isChecked() ? "Y" : "N";
         final int totalPartJasa = jasaList.size() + partList.size();
-        final String waktuLayanan = dummyTime.toString();
+        final String waktuLayanan = find(R.id.tv_waktu_layanan, TextView.class).getText().toString().replace("Total Waktu Layanan : ", "");
         final String noPonsel = nson.get("noPonsel").asString();
         final String nopol = nson.get("nopol").asString();
 
@@ -350,6 +446,8 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "add");
+                args.put("jenisKendaraan", nson.get("jenisKendaraan").asString());
+                args.put("keluhanList", keluhanList.toJson());
                 args.put("jenisCheckin", "3");
                 args.put("id", nson.get("CHECKIN_ID").asString());
                 args.put("status", status);
@@ -758,6 +856,8 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             dialogView = inflater.inflate(R.layout.activity_list_basic, null);
             builder.setView(dialogView);
 
+            SwipeRefreshLayout swipeRefreshLayout = dialogView.findViewById(R.id.swiperefresh);
+            swipeRefreshLayout.setEnabled(false);
             initToolbarPartWajib(dialogView);
             initRecylerviewPartWajib();
 
@@ -861,14 +961,19 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 startActivityForResult(i, REQUEST_PART_EXTERNAL);
                 break;
             case R.id.btn_lanjut_checkin3:
-                // Check in Antrian (CHECKIN 4), layanan estimasi status (LAYANAN ESTIMASI ISCHECKED()), TUNGGU KONFIRMASI (TUNGGU KONFIRMASI ISCHECKED())
-                if (find(R.id.cb_estimasi_checkin3, CheckBox.class).isChecked()) {
-                    setSelanjutnya("LAYANAN ESTIMASI", "");
-                } else if (find(R.id.cb_konfirmBiaya_checkin3, CheckBox.class).isChecked()) {
-                    setSelanjutnya("TUNGGU KONFIRMASI", "");
-                } else {
-                    setSelanjutnya("CHECKIN 3", "");
+                if(jasaList.asArray().isEmpty() && partList.asArray().isEmpty() && spLayanan.getSelectedItem().toString().equals("PERAWATAN LAINNYA")){
+                    showWarning("PART - JASA HARUS DI MASUKKAN", Toast.LENGTH_LONG);
+                }else{
+                    // Check in Antrian (CHECKIN 4), layanan estimasi status (LAYANAN ESTIMASI ISCHECKED()), TUNGGU KONFIRMASI (TUNGGU KONFIRMASI ISCHECKED())
+                    if (find(R.id.cb_estimasi_checkin3, CheckBox.class).isChecked()) {
+                        setSelanjutnya("LAYANAN ESTIMASI", "");
+                    } else if (find(R.id.cb_konfirmBiaya_checkin3, CheckBox.class).isChecked()) {
+                        setSelanjutnya("TUNGGU KONFIRMASI", "");
+                    } else {
+                        setSelanjutnya("CHECKIN 3", "");
+                    }
                 }
+
                 break;
             case R.id.btn_batal_checkin3:
                 //batal
@@ -950,10 +1055,10 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
 
                         try {
                             totalHarga += Integer.parseInt(formatOnlyNumber(dataAccept.get("NET").asString()));
-                            if (data != null && data.getStringExtra("PART_KOSONG").equals("YA")) {
+                            if (data != null && data.getStringExtra("PART_KOSONG").equals("Y")) {
                                 isPartKosong = true;
-                                totalHargaPartKosong = data.getIntExtra("TOTAL_PART", 0);
-                                sisaDp = totalHarga - calculatePercentage(Double.parseDouble(getSetting("DP_PERSEN")), totalHargaPartKosong);
+                                totalDp += Integer.parseInt(formatOnlyNumber(dataAccept.get("DP").asString()));
+                                sisaDp = totalHarga - totalDp;
                                 setDpAndSisa();
                             }
                         } catch (Exception e) {
@@ -983,11 +1088,10 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                                 waktuPesan += dataAccept.get("WAKTU_PESAN").asInteger();
                                 String hariWaktuPesan = dataAccept.get("WAKTU_PESAN").asString() + ":00:" + "00";
                                 totalTambahWaktuLayanan(Tools.TimePart.parse(hariWaktuPesan));
-                            } else {
-                                totalTambahWaktuLayanan(Tools.TimePart.parse(dataAccept.get("WAKTU_KERJA").asString()));
-                                totalTambahWaktuLayanan(Tools.TimePart.parse(dataAccept.get("WAKTU_INSPEKSI").asString()));
                             }
                         }
+                        totalTambahWaktuLayanan(Tools.TimePart.parse(dataAccept.get("WAKTU_KERJA").asString()));
+                        totalTambahWaktuLayanan(Tools.TimePart.parse(dataAccept.get("WAKTU_INSPEKSI").asString()));
                         partList.add(dataAccept);
                         Objects.requireNonNull(rvPart.getAdapter()).notifyDataSetChanged();
                         break;
@@ -1033,6 +1137,6 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
         find(R.id.tv_dp_bengkel, TextView.class).setVisibility(View.VISIBLE);
         find(R.id.tv_dp_bengkel, TextView.class).setText("DP Bengkel : " + getSetting("DP_PERSEN") + " %");
         find(R.id.et_sisa_checkin3, EditText.class).setText(RP + formatRp(String.valueOf(sisaDp)));
-        find(R.id.et_dp_checkin3, EditText.class).setText(RP + formatRp(String.valueOf(calculatePercentage(Double.parseDouble(getSetting("DP_PERSEN")), totalHargaPartKosong))));
+        find(R.id.et_dp_checkin3, EditText.class).setText(RP + formatRp(String.valueOf(totalDp)));
     }
 }

@@ -78,6 +78,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
 
     private String idCheckin = "";
     private String layanan = "";
+    private String nopol = "";
     // private Nson idCheckinDetailList = Nson.newArray();
     private int totalBiaya = 0;
     private int totalTambah = 0;
@@ -126,6 +127,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
     @SuppressLint("SetTextI18n")
     private void initData() {
         idCheckin = getIntentStringExtra("CHECKIN_ID");
+        nopol = getIntentStringExtra("NOPOL");
         Log.d(TAG, "initData: " + idCheckin);
         totalBiaya = Integer.parseInt(getIntentStringExtra(TOTAL_BIAYA));
         find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));
@@ -332,7 +334,8 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-
+                String estimasiSesudah = find(R.id.et_tgl_estimasi, EditText.class).getText().toString() + " " +
+                        find(R.id.et_jam_estimasi, EditText.class).getText().toString();
                 args.put("action", "update");
                 if (isTambah) {
                     args.put("aktivitas", "TAMBAH PART - JASA");
@@ -341,7 +344,8 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                     args.put("parts", partList.toJson());
                     args.put("jasaLain", jasaList.toJson());
                     args.put("idDetail", getIntentStringExtra(ID));
-
+                    args.put("idCheckin", idCheckin);
+                    args.put("estimasiSesudah", estimasiSesudah);
                     String konfirmasiTambah = "";
                     if (isWait || (isNotWait && !isKonfirmasiTambah)) {
                         konfirmasiTambah = "N";
@@ -397,20 +401,15 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                 startActivityForResult(i, REQUEST_CARI_PART);
                 break;
             case R.id.btn_simpan:
-                if (isWait) {
-                    if (!isSign) {
-                        showWarning("Tanda Tangan belum terisi");
-                    } else {
-                        updateTambahOrBatal();
-                    }
-                } else if (isKonfirmasiTambah) {
-                    if (find(R.id.et_tgl_estimasi, EditText.class).getText().toString().isEmpty() &&
-                            find(R.id.et_jam_estimasi, EditText.class).getText().toString().isEmpty()) {
-                        showWarning("Estimasi Selsai belum terisi");
-                    } else {
-                        updateTambahOrBatal();
-                    }
-                } else {
+                if (isWait && !isSign) {
+                    showWarning("Tanda Tangan belum terisi");
+                } else if (find(R.id.ly_not_konfirmasi_tambah).getVisibility() == View.VISIBLE &&
+                        find(R.id.et_tgl_estimasi, EditText.class).getText().toString().isEmpty() &&
+                        find(R.id.et_jam_estimasi, EditText.class).getText().toString().isEmpty()) {
+                    showWarning("Estimasi Selsai belum terisi");
+                }else if(partList.asArray().isEmpty() && jasaList.asArray().isEmpty()){
+                    showWarning("PART DAN JASA BELUM DI TAMBAHKAN");
+                }else {
                     updateTambahOrBatal();
                 }
                 break;
@@ -429,6 +428,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
             case R.id.btn_ttd:
                 if (!checkPermission()) {
                     Intent intent = new Intent(getActivity(), Capture.class);
+                    intent.putExtra("NOPOL", nopol);
                     startActivityForResult(intent, REQUEST_CODE_SIGN);
                 } else {
                     if (checkPermission()) {

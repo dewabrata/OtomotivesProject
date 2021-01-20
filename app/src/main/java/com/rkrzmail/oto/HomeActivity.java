@@ -36,7 +36,7 @@ import com.rkrzmail.oto.gmod.Penerimaan_PartAcitivity;
 import com.rkrzmail.oto.modules.LoginActivity;
 import com.rkrzmail.oto.modules.mekanik.BiayaMekanik2Activity;
 import com.rkrzmail.oto.modules.discount.DiscountPart_Activity;
-import com.rkrzmail.oto.modules.discount.SpotDiscount_Activity;
+import com.rkrzmail.oto.modules.discount.DiscountSpot_Activity;
 import com.rkrzmail.oto.modules.bengkel.DaftarJurnal_Activity;
 import com.rkrzmail.oto.modules.bengkel.Layanan_Avtivity;
 import com.rkrzmail.oto.modules.sparepart.LokasiPart_Activity;
@@ -200,7 +200,7 @@ public class HomeActivity extends MenuActivity{
                     startActivity(intent);
 
                 } else if ((nPopulate.get(position).get("id").asInteger() == MN_SPOT_DISKON)) {
-                    Intent intent = new Intent(HomeActivity.this, SpotDiscount_Activity.class);
+                    Intent intent = new Intent(HomeActivity.this, DiscountSpot_Activity.class);
                     startActivity(intent);
                 } else if ((nPopulate.get(position).get("id").asInteger() == MN_DISCOUNT_PART)) {
                     Intent intent = new Intent(HomeActivity.this, DiscountPart_Activity.class);

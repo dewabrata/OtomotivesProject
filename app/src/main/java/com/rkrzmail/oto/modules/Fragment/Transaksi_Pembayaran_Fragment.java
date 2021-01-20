@@ -46,6 +46,8 @@ public class Transaksi_Pembayaran_Fragment extends Fragment {
     private Nson pembayaranList = Nson.newArray();
     private String idCheckin = "";
 
+    private AppActivity activity;
+
     public Transaksi_Pembayaran_Fragment() {
         // Required empty public constructor
     }
@@ -62,6 +64,7 @@ public class Transaksi_Pembayaran_Fragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.activity_list_basic, container, false);
+        activity = ((Pembayaran_MainTab_Activity) getActivity());
         initHideToolbar(view);
         initRecylerviewPembayaran(view);
         return view;
@@ -98,7 +101,7 @@ public class Transaksi_Pembayaran_Fragment extends Fragment {
                 if (viewType == ITEM_VIEW_1) {
                     viewHolder.find(R.id.tv_jenis_kendaraan, TextView.class).setText(pembayaranList.get(position).get("JENIS_KENDARAAN").asString());
                     viewHolder.find(R.id.tv_nama_pelanggan, TextView.class).setText(pembayaranList.get(position).get("NAMA_PELANGGAN").asString());
-                    viewHolder.find(R.id.tv_nopol, TextView.class).setText(((Pembayaran_MainTab_Activity)getActivity()).formatNopol(pembayaranList.get(position).get("NOPOL").asString()));
+                    viewHolder.find(R.id.tv_nopol, TextView.class).setText(activity.formatNopol(pembayaranList.get(position).get("NOPOL").asString()));
                     viewHolder.find(R.id.tv_layanan, TextView.class).setText(pembayaranList.get(position).get("LAYANAN").asString());
                     viewHolder.find(R.id.tv_no_ponsel, TextView.class).setText(pembayaranList.get(position).get("NO_PONSEL").asString());
                     viewHolder.find(R.id.tv_no_kunci, TextView.class).setText(pembayaranList.get(position).get("NO_KUNCI").asString());
@@ -135,7 +138,7 @@ public class Transaksi_Pembayaran_Fragment extends Fragment {
             }
         });
 
-       swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 viewPembayaran();
@@ -157,7 +160,7 @@ public class Transaksi_Pembayaran_Fragment extends Fragment {
     }
 
     private void viewPembayaran() {
-        ((Pembayaran_MainTab_Activity) getActivity()).newTask(new Messagebox.DoubleRunnable() {
+        activity.newTask(new Messagebox.DoubleRunnable() {
             Nson result;
 
             @Override
@@ -184,7 +187,7 @@ public class Transaksi_Pembayaran_Fragment extends Fragment {
                     rvPembayaranCheckin.getAdapter().notifyDataSetChanged();
                     rvPembayaranCheckin.scheduleLayoutAnimation();
                 } else {
-                    ((Pembayaran_MainTab_Activity) getActivity()).showError(ERROR_INFO);
+                    activity.showError(ERROR_INFO);
                 }
             }
         });
@@ -193,7 +196,7 @@ public class Transaksi_Pembayaran_Fragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_DETAIL)
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_DETAIL)
             viewPembayaran();
     }
 }

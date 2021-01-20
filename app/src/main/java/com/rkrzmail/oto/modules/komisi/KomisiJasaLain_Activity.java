@@ -27,15 +27,23 @@ import com.rkrzmail.srv.NikitaViewHolder;
 
 import java.util.Map;
 
+import static com.rkrzmail.utils.APIUrls.KOMISI_JASA_LAIN;
+import static com.rkrzmail.utils.ConstUtils.ADD;
+import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
+
 public class KomisiJasaLain_Activity extends AppActivity {
 
     private RecyclerView recyclerView;
+
+    private double komisiAvail = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_basic_with_fab);
-
+        initToolbar();
         initComponent();
     }
 
@@ -47,12 +55,13 @@ public class KomisiJasaLain_Activity extends AppActivity {
     }
 
     private void initComponent() {
-        initToolbar();
-        FloatingActionButton fab = findViewById(R.id.fab_tambah);
-        fab.setOnClickListener(new View.OnClickListener() {
+        find(R.id.fab_tambah).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(new Intent(getActivity(), AturKomisiJasaLain_Activity.class), 10);
+                Intent i = new Intent(getActivity(), AturKomisiJasaLain_Activity.class);
+                i.putExtra(ADD, "");
+                i.putExtra("AVAIL KOMISI", komisiAvail);
+                startActivityForResult(i, REQUEST_DETAIL);
             }
         });
 
@@ -73,11 +82,13 @@ public class KomisiJasaLain_Activity extends AppActivity {
                     @Override
                     public void onItemClick(Nson parent, View view, int position) {
                         Intent i = new Intent(getActivity(), AturKomisiJasaLain_Activity.class);
-                        i.putExtra("data", nListArray.get(position).toJson());
-                        startActivityForResult(i, 10);
+                        i.putExtra("AVAIL KOMISI", komisiAvail);
+                        i.putExtra(DATA, nListArray.get(position).toJson());
+                        startActivityForResult(i, REQUEST_DETAIL);
                     }
                 })
         );
+
         catchData("");
     }
 
@@ -90,7 +101,7 @@ public class KomisiJasaLain_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 args.put("search", cari);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("komisijasalain"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(KOMISI_JASA_LAIN), args));
             }
 
             @Override
@@ -98,9 +109,15 @@ public class KomisiJasaLain_Activity extends AppActivity {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
+                    for (int i = 0; i < nListArray.size(); i++) {
+                        if(!nListArray.get(i).get("KOMISI_PERCENT").asString().isEmpty()){
+                            komisiAvail += nListArray.get(i).get("KOMISI_PERCENT").asDouble();
+                        }
+                    }
+                    komisiAvail = 100 - komisiAvail;
                     recyclerView.getAdapter().notifyDataSetChanged();
                 } else {
-                    showInfo("Gagal memuat Aktifitas");
+                    showInfo(ERROR_INFO);
                 }
             }
         });
@@ -110,7 +127,7 @@ public class KomisiJasaLain_Activity extends AppActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            if (requestCode == 10) {
+            if (requestCode == REQUEST_DETAIL) {
                 catchData("");
             }
         }

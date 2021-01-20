@@ -38,11 +38,11 @@ import static com.rkrzmail.utils.ConstUtils.RP;
 
 public class AturSpotDiscount_Activity extends AppActivity {
 
-    private EditText etTotalBiaya, etDisc, etNet, etSpot, etTotalFinal;
+    private EditText etTotalBiaya, etDisc, etNet, etDiscSpot, etTotalFinal;
     private SearchView mSearchView;
     private TextView tvNamaPelanggan;
 
-    private String idCheckin = "", idDiscSpot = "";
+    private String idCheckin = "", idDiscSpot = "", idJualPart = "";
     private boolean isAdd = false, isEdit = false;
 
     @Override
@@ -66,7 +66,7 @@ public class AturSpotDiscount_Activity extends AppActivity {
         etNet = findViewById(R.id.et_netTransaksi_disc);
         etTotalFinal = findViewById(R.id.et_total_disc);
         etTotalBiaya = findViewById(R.id.et_total_biaya);
-        etSpot = findViewById(R.id.et_spotDiscount_disc);
+        etDiscSpot = findViewById(R.id.et_spotDiscount_disc);
         tvNamaPelanggan = findViewById(R.id.tv_nama_pelanggan);
         initData();
         initListener();
@@ -76,20 +76,26 @@ public class AturSpotDiscount_Activity extends AppActivity {
     private void initData() {
         Nson data = Nson.readJson(getIntentStringExtra(DATA));
         if (getIntent().hasExtra(ADD)) {
-            idCheckin = data.get(ID).asString();
+            if(data.get("JENIS").asString().equals("CHECKIN")){
+                idCheckin = data.get(ID).asString();
+            }else{
+                idJualPart = data.get(ID).asString();
+            }
+
             isAdd = true;
         } else if (getIntent().hasExtra(EDIT)) {
             isEdit = true;
             idDiscSpot = data.get(ID).asString();
         }
-        tvNamaPelanggan.setText(data.get("NAMA_PELANGGAN").asString());
+        tvNamaPelanggan.setText(data.get("PELANGGAN").asString());
         etTotalBiaya.setText(RP + formatRp(data.get("TOTAL_BIAYA").asString()));
         etDisc.setText(data.get("").asString());
         etNet.setText(data.get("").asString());
     }
 
     private void initListener() {
-        etSpot.addTextChangedListener(new TextWatcher() {
+        etDiscSpot.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etDiscSpot));
+        etDiscSpot.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -99,13 +105,12 @@ public class AturSpotDiscount_Activity extends AppActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String hargaBeli = etTotalBiaya.getText().toString();
-                hargaBeli = hargaBeli.replace("Rp", "").replaceAll("\\W", "");
+                hargaBeli = formatOnlyNumber(hargaBeli);
                 String diskon = s.toString();
-                diskon = diskon.replace("%", "").replaceAll(",", ".");
+                diskon = formatOnlyNumber(diskon);
                 try {
-                    if (!hargaBeli.equals("") && !diskon.equals("")) {
-                        int disc = (int) ((Double.parseDouble(diskon) * Integer.parseInt(hargaBeli)) / 10);
-                        int finall = Integer.parseInt(hargaBeli) - disc;
+                    if (!hargaBeli.isEmpty() && !diskon.isEmpty()) {
+                        int finall = Integer.parseInt(hargaBeli) - Integer.parseInt(diskon);
                         etTotalFinal.setText(RP + formatRp(String.valueOf(finall)));
                     }
                 } catch (Exception e) {
@@ -115,17 +120,7 @@ public class AturSpotDiscount_Activity extends AppActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                etSpot.removeTextChangedListener(this);
-                if (etSpot == null) return;
-                etSpot.removeTextChangedListener(this);
 
-                NumberFormat format = NumberFormat.getPercentInstance(new Locale("in", "ID"));
-                format.setMinimumFractionDigits(1);
-                String percentNumber = format.format(Tools.convertToDoublePercentage(etSpot.getText().toString()) / 1000);
-
-                etSpot.setText(percentNumber);
-                etSpot.setSelection(percentNumber.length() - 1);
-                etSpot.addTextChangedListener(this);
             }
         });
 
@@ -152,14 +147,15 @@ public class AturSpotDiscount_Activity extends AppActivity {
                 //diskonlain, diskonspot, user
 
                 args.put("action", "add");
-                args.put("idCheckin", idCheckin);
+                args.put("idCheckin", formatOnlyNumber(idCheckin));
+                args.put("idJualPart", formatOnlyNumber(idJualPart));
                 args.put("tanggal", currentDateTime());
                 args.put("nama", tvNamaPelanggan.getText().toString());
                 args.put("transaksi", formatOnlyNumber(etTotalBiaya.getText().toString()));
                 args.put("totaltransaksi", formatOnlyNumber(etTotalFinal.getText().toString()));
                 args.put("nettransaksi", formatOnlyNumber(etTotalBiaya.getText().toString()));
-                args.put("diskonlain", etDisc.getText().toString().length() >= 4 ? etDisc.getText().toString().substring(0, 4) : formatOnlyNumber(etDisc.getText().toString()));
-                args.put("diskonspot", etSpot.getText().toString().substring(0, 2));
+                args.put("diskonlain", formatOnlyNumber(etDisc.getText().toString()));
+                args.put("diskonspot", formatOnlyNumber(etDiscSpot.getText().toString()));
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_DISC_SPOT), args));
             }
@@ -212,7 +208,7 @@ public class AturSpotDiscount_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "update");
                 args.put("id", idDiscSpot);
-                args.put("diskonspot", etSpot.getText().toString().substring(0, 2));
+                args.put("diskonspot", etDiscSpot.getText().toString().substring(0, 2));
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_DISC_SPOT), args));
             }
 

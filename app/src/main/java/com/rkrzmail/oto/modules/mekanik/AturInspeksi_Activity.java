@@ -6,13 +6,12 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -29,16 +28,13 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaMultipleViewAdapter;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
-import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.ATUR_INSPEKSI;
-import static com.rkrzmail.utils.APIUrls.ATUR_PERINTAH_KERJA_MEKANIK;
 import static com.rkrzmail.utils.APIUrls.VIEW_INSPEKSI;
 import static com.rkrzmail.utils.APIUrls.VIEW_KELUHAN;
-import static com.rkrzmail.utils.APIUrls.VIEW_PERINTAH_KERJA_MEKANIK;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.ID;
@@ -109,15 +105,17 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
     private void initNoteDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.item_note, null);
+        View dialogView = inflater.inflate(R.layout.item_single_field_edit_text, null);
         builder.setView(dialogView);
 
         Toolbar toolbar = dialogView.findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Catatan Inspeksi");
 
-        final EditText etCatatan = dialogView.findViewById(R.id.et_catatan_mekanik);
+        final EditText etCatatan = dialogView.findViewById(R.id.et_edit_text);
         etCatatan.setText(catatan.isEmpty() ? "" : catatan);
+        etCatatan.setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+
         Button btnSimpan = dialogView.findViewById(R.id.btn_simpan);
         btnSimpan.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("SetTextI18n")

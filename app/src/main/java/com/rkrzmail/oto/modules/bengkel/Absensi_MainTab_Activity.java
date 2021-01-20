@@ -63,6 +63,7 @@ public class Absensi_MainTab_Activity extends AppActivity {
         final ArrayList<Fragment> fragments = new ArrayList<>();
         fragments.add(new Absen_Absensi_Fragment());
         fragments.add(new Schedule_Absensi_Fragment());
+        fragments.add(new Schedule_Absensi_Fragment());
 
         pagerAdapter = new FragmentsAdapter(getSupportFragmentManager(), this, fragments);
         vpAbsensi.setAdapter(pagerAdapter);

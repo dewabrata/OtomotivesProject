@@ -18,7 +18,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
@@ -136,7 +136,8 @@
                 app:cardCornerRadius="5dp"
                 app:cardElevation="2dp"
                 app:cardPreventCornerOverlap="true"
-                app:cardUseCompatPadding="true">
+                app:cardUseCompatPadding="true"
+                android:layout_marginBottom="@dimen/paddingSemiLarge">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -170,12 +171,14 @@
 
             </android.support.v7.widget.CardView>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerView"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="vertical"
-                android:scrollingCache="true" />
+                android:orientation="vertical">
+
+               <include layout="@layout/item_recyeler_view"/>
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -187,8 +190,8 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
                     android:text="AKTIVITAS"
+                    android:layout_weight="3"
                     android:textColor="@color/grey_900"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -496,6 +499,6 @@
 
         </LinearLayout>
 
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

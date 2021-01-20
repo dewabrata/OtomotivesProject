@@ -277,6 +277,7 @@ public class Checkin2_Activity extends AppActivity {
         final String tanggalBeli = tvTgl.getText().toString();
         final String noRangka = etNorangka.getText().toString();
         final String noMesin = etNomesin.getText().toString();
+
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -286,8 +287,8 @@ public class Checkin2_Activity extends AppActivity {
 
                 args.put("action", "add");
                 args.put("jenisCheckin", "2");
-                args.put("id", readCheckin.get("CHECKIN_ID").asString());
-                args.put("idDataKendaraan", readCheckin.get("DATA_KENDARAAN_ID").asString());
+                args.put("id", isKonfirmasi ? getIntentStringExtra(ID) : readCheckin.get("CHECKIN_ID").asString());
+                args.put("idDataKendaraan", isKonfirmasi ? getIntentStringExtra("DATA_KENDARAAN_ID") : readCheckin.get("DATA_KENDARAAN_ID").asString());
                 args.put("warna", warna);
                 args.put("tahun", tahun);
                 args.put("tanggalbeli", tanggalBeli);
@@ -298,6 +299,7 @@ public class Checkin2_Activity extends AppActivity {
                 args.put("noPonsel", noHp);
                 args.put("alamat", find(R.id.et_alamat, EditText.class).getText().toString());
                 args.put("kota", etKotaKab.getText().toString());
+                args.put("nopol", getIntentStringExtra("NOPOL"));
                 if (isKonfirmasi) {
                     args.put("isKonfirmasi", "Y");
                 }

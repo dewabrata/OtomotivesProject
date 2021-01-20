@@ -6,11 +6,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -31,7 +31,6 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.checkin.Checkin3_Activity;
 import com.rkrzmail.oto.modules.checkin.TambahPartJasaDanBatal_Activity;
 import com.rkrzmail.srv.NikitaMultipleViewAdapter;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
@@ -49,10 +48,8 @@ import static com.rkrzmail.utils.APIUrls.VIEW_KELUHAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_PERINTAH_KERJA_MEKANIK;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
-import static com.rkrzmail.utils.ConstUtils.ESTIMASI_WAKTU;
 import static com.rkrzmail.utils.ConstUtils.ID;
 import static com.rkrzmail.utils.ConstUtils.MENUNGGU;
-import static com.rkrzmail.utils.ConstUtils.REQUEST_CHECKIN;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_TAMBAH_PART_JASA_LAIN;
 import static com.rkrzmail.utils.ConstUtils.RP;
@@ -62,35 +59,42 @@ import static com.rkrzmail.utils.ConstUtils.TOTAL_BIAYA;
 
 public class AturKerjaMekanik_Activity extends AppActivity implements View.OnClickListener {
 
-    private EditText etNoAntrian, etJenis, etLayanan,
-            etNopol, etNoKunci, etNamaPelanggan,
-            etMulai, etSelesai, etCatatanMekanik,
-            etSisaWaktu, etPengambilan;
+    private EditText etNoAntrian;
+    private EditText etJenis;
+    private EditText etLayanan;
+    private EditText etNopol;
+    private EditText etNoKunci;
+    private EditText etNamaPelanggan;
+    private EditText etMulai;
+    private EditText etSelesai;
+    private EditText etSisaWaktu;
+    private EditText etPengambilan;
     private RecyclerView rvPointLayanan, rvKeluhan;
-    private ImageButton imgStart, imgStop, imgNote;
+    private ImageButton imgStart;
 
-    private String idCheckin = "", mekanik = "", catatanMekanik = "", idMekanikKerja = "", statusDone = "", noHp = "";
-    private long MillisecondTime, StartTime, TimeBuff, UpdateTime = 0L;
     private long timerWork = 0;
-    private int Seconds, Minutes, MilliSeconds;
-    private long oneSeconds = 1000;
-    private Nson partJasaList = Nson.newArray(),
-            keluhanList = Nson.newArray(),
-            pointLayananList = Nson.newArray(),
-            inspeksiList = Nson.newArray(),
-            n;
-    private int waktuHari = 0, waktuJam = 0, waktuMenit = 0;
-    private String totalWaktuKerja = "", sisaWaktuPaused = "";
+    private final long oneSeconds = 1000;
+
+    private final Nson partJasaList = Nson.newArray();
+    private final Nson keluhanList = Nson.newArray();
+    private Nson n;
+
+    private String sisaWaktuPaused = "";
+    private String idCheckin = "", mekanik = "", catatanMekanik = "", idMekanikKerja = "", statusDone = "", noHp = "";
+    private String totalBiaya = "";
+
     private int countClick = 0;
     private int kmKendaraan = 0;
-    private boolean isPaused = false, isRework = false, isStart = false, isStop = false;
-    private boolean isNote = false;
+    private int waktuHari = 0, waktuJam = 0, waktuMenit = 0;
+
+    private boolean isRework = false;
+    private boolean isStart = false;
+    private boolean isStop = false;
     private boolean isHplus = false;
     private boolean isInspeksi = false;
     private boolean isNotWait = false, isKonfirmasiTambahan = false;
-    private String totalBiaya = "";
+    private boolean isDissmissAndStop = false;
 
-    private Handler handler;
     private AlertDialog alertDialog;
     private CountDownTimer cTimer = null;
 
@@ -103,23 +107,23 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Perintah Kerja Mekanik");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Perintah Kerja Mekanik");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initToolbarKeluhan(View dialogView) {
         Toolbar toolbar = dialogView.findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Keluhan");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Keluhan");
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
     private void initToolbarPointLayanan(View dialogView) {
         Toolbar toolbar = dialogView.findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Point Layanan");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Point Layanan");
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
@@ -133,9 +137,9 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
         etMulai = findViewById(R.id.et_Ewaktu_kerjaMekanik);
         etSelesai = findViewById(R.id.et_Eselesai_kerjaMekanik);
         imgStart = findViewById(R.id.imgBtn_start);
-        imgNote = findViewById(R.id.imgBtn_note);
-        imgStop = findViewById(R.id.imgBtn_stop);
-        etCatatanMekanik = findViewById(R.id.et_catatan_mekanik);
+        ImageButton imgNote = findViewById(R.id.imgBtn_note);
+        ImageButton imgStop = findViewById(R.id.imgBtn_stop);
+        //EditText etCatatanMekanik = findViewById(R.id.et_catatan_mekanik);
         etSisaWaktu = findViewById(R.id.et_sisa_waktu);
         etPengambilan = findViewById(R.id.et_pengambilan);
 
@@ -260,9 +264,9 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                             .setText(partJasaList.get(position).get("KELOMPOK_PART").asString());
                     viewHolder.find(R.id.tv_aktifitas_booking3_checkin3, TextView.class)
                             .setText(partJasaList.get(position).get("AKTIVITAS").asString());
-                    if(partJasaList.get(position).get("HARGA_JASA_LAIN") == null){
+                    if (partJasaList.get(position).get("HARGA_JASA_LAIN") == null) {
                         viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class).setVisibility(View.GONE);
-                    }else{
+                    } else {
                         viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class)
                                 .setText(RP + formatRp(partJasaList.get(position).get("HARGA_JASA_LAIN").asString()));
                     }
@@ -272,6 +276,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
         });
     }
 
+    @SuppressLint("SetTextI18n")
     private void initRecylerviewKeluhan(View dialogView) {
         rvKeluhan = dialogView.findViewById(R.id.recyclerView);
         rvKeluhan.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -289,24 +294,55 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
 
     }
 
-    private void initNoteDialog() {
+    private void initEditTextDialog(final boolean isKm) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.item_note, null);
+        View dialogView = inflater.inflate(R.layout.item_single_field_edit_text, null);
         builder.setView(dialogView);
 
         Toolbar toolbar = dialogView.findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Catatan Mekanik");
+        Objects.requireNonNull(getSupportActionBar()).setTitle(isKm ? "KM Kendaraan" : "Catatan Mekanik");
 
-        final EditText etCatatan = dialogView.findViewById(R.id.et_catatan_mekanik);
+        TextInputLayout tlEt = dialogView.findViewById(R.id.tl_edit_text);
+        final EditText etEditText = dialogView.findViewById(R.id.et_edit_text);
         Button btnSimpan = dialogView.findViewById(R.id.btn_simpan);
-        etCatatan.setText(catatanMekanik.isEmpty() ? "" : catatanMekanik);
+
+        if(isKm){
+            tlEt.setHint("KM");
+            etEditText.setText("");
+            etEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
+            builder.setCancelable(false);
+        }else{
+            tlEt.setHint("CATATAN MEKANIK");
+            etEditText.setText(catatanMekanik);
+            etEditText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+            if(isDissmissAndStop){
+                builder.setCancelable(false);
+            }else{
+                builder.setCancelable(true);
+            }
+
+        }
+
         btnSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                catatanMekanik = etCatatan.getText().toString();
-                alertDialog.dismiss();
+                if (isKm) {
+                    if (etEditText.getText().toString().isEmpty()) {
+                        showWarning("KM HARUS DI ISI");
+                    } else {
+                        kmKendaraan = Integer.parseInt(formatOnlyNumber(etEditText.getText().toString()));
+                        startWork();
+                        alertDialog.dismiss();
+                    }
+                } else {
+                    catatanMekanik = etEditText.getText().toString();
+                    alertDialog.dismiss();
+                    if(isDissmissAndStop){
+                        stopWork();
+                    }
+                }
             }
         });
 
@@ -405,12 +441,14 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                         waktuHari += partJasaList.get(i).get("WAKTU_KERJA_HARI").asInteger();
                         waktuJam += partJasaList.get(i).get("WAKTU_KERJA_JAM").asInteger();
                         waktuMenit += partJasaList.get(i).get("WAKTU_KERJA_MENIT").asInteger();
+
                         if (partJasaList.get(i).get("INSPEKSI_PART").asString().equals("Y") ||
                                 partJasaList.get(i).get("INSPEKSI_JASA").asString().equals("Y") ||
                                 partJasaList.get(i).get("INSPEKSI_MST_PART").asString().equals("Y") ||
                                 partJasaList.get(i).get("INSPEKSI_MST_JASA").asString().equals("Y")) {
                             isInspeksi = true;
                         }
+
                     }
                 } else {
                     showInfo(result.get("message").asString());
@@ -419,25 +457,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
         });
     }
 
-    private void fillKmAndStart() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Isi KM Kendaraan");
-
-        final EditText etKm = new EditText(this);
-        etKm.setInputType(InputType.TYPE_CLASS_NUMBER);
-        builder.setView(etKm);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                startWork(etKm.getText().toString());
-            }
-        });
-
-        builder.setCancelable(false);
-        builder.show();
-    }
-
-    private void startWork(final String km) {
+    private void startWork() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -451,7 +471,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 } else {
                     args.put("aktivitas", "START");
                 }
-                args.put("km", km);
+                args.put("km", String.valueOf(kmKendaraan));
                 args.put("idKerja", idMekanikKerja);
                 args.put("id", idCheckin);
                 args.put("mekanik", mekanik);
@@ -490,7 +510,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 args.put("iddetail", idMekanikKerja);
                 args.put("sisaWaktu", etSisaWaktu.getText().toString());
                 args.put("catatan", catatanMekanik);
-
+                args.put("km", String.valueOf(kmKendaraan));
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_PERINTAH_KERJA_MEKANIK), args));
             }
@@ -519,6 +539,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "add");
+                args.put("km", String.valueOf(kmKendaraan));
                 args.put("aktivitas", "DONE");
                 args.put("id", idCheckin);
                 args.put("iddetail", idMekanikKerja);
@@ -608,12 +629,15 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.imgBtn_note:
-                initNoteDialog();
+                isDissmissAndStop = false;
+                initEditTextDialog(false);
                 break;
             case R.id.imgBtn_stop:
                 if (isStop) {
                     if (catatanMekanik.isEmpty()) {
+                        isDissmissAndStop = true;
                         showWarning("Catatan Harus di Isi", Toast.LENGTH_LONG);
+                        initEditTextDialog(false);
                     } else {
                         stopWork();
                     }
@@ -628,13 +652,13 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                     isStop = true;
                     imgStart.setImageDrawable(getResources().getDrawable(R.drawable.icon_paused));
                     if (kmKendaraan == 0) {
-                        fillKmAndStart();
+                        initEditTextDialog(true);
                     } else {
-                        startWork(String.valueOf(kmKendaraan));
+                        startWork();
                     }
 
                 } else if (countClick > 1) {
-                    isPaused = true;
+                    boolean isPaused = true;
                     imgStart.setImageDrawable(getResources().getDrawable(R.drawable.icon_start));
                     pauseWork();
                 }
@@ -653,6 +677,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 intent.putExtra("CHECKIN_ID", idCheckin);
                 intent.putExtra(TOTAL_BIAYA, formatOnlyNumber(totalBiaya));
                 intent.putExtra(TAMBAH_PART, "");
+                intent.putExtra("NOPOL", etNopol.getText().toString());
                 if (isNotWait) {
                     intent.putExtra(TIDAK_MENUNGGU, TIDAK_MENUNGGU);
                 } else {
