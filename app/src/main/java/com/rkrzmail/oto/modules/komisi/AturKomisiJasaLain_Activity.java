@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -24,6 +26,7 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.srv.NumberFormatUtils;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -53,6 +56,7 @@ public class AturKomisiJasaLain_Activity extends AppActivity {
             "INSPEKSI SELESAI",
             "CASH, DEBET, KREDIT, INVOICE"
     );
+    private double komisiPercent = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,38 +79,58 @@ public class AturKomisiJasaLain_Activity extends AppActivity {
         spStatus = findViewById(R.id.sp_status);
         etKomisi = findViewById(R.id.et_komisi_percent);
 
-        etKomisi.addTextChangedListener(new NumberFormatUtils().percentTextWatcher(etKomisi));
         etKomisi.addTextChangedListener(new TextWatcher() {
+            int prevLength = 0; // detected keyEvent action delete
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                prevLength = charSequence.length();
+            }
+
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
 
             }
 
             @SuppressLint("SetTextI18n")
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String text = charSequence.toString();
+            public void afterTextChanged(Editable editable) {
+                String text = editable.toString();
                 if (text.isEmpty()) return;
-                try{
-                    text = text.replace("%", "").replace(",", ".");
+                etKomisi.removeTextChangedListener(this);
+                try {
+                    text = new NumberFormatUtils().formatOnlyNumber(text);
+                    double percentValue = Double.parseDouble(text.isEmpty() ? "0" : text) / 1000;
+
+                    NumberFormat percentageFormat = NumberFormat.getPercentInstance();
+                    percentageFormat.setMinimumFractionDigits(1);
+                    String percent = percentageFormat.format(percentValue);
+
+                    InputFilter[] filterArray = new InputFilter[1];
+                    filterArray[0] = new InputFilter.LengthFilter(6);
+
+                    etKomisi.setFilters(filterArray);
+                    etKomisi.setText(percent);
+                    etKomisi.setSelection(percent.length() - 1);
+
                     if (!find(R.id.tv_total_komisi, TextView.class).getText().toString().isEmpty()) {
                         double komisiAvail = Double.parseDouble(find(R.id.tv_total_komisi, TextView.class).getText().toString()
                                 .replace("TOTAL : ", "")
                                 .replace("%", "")
                                 .replace(",", "."));
-                        double komisiInput = Double.parseDouble(text);
+                        double komisiInput = Double.parseDouble(etKomisi.getText().toString()
+                                .replace("%", "")
+                                .replace(",", "."));
+                        double result = prevLength > editable.length() ?  komisiPercent - komisiInput : komisiAvail - komisiInput;
 
-                        find(R.id.tv_total_komisi, TextView.class).setText("TOTAL : " + (komisiAvail - komisiInput) + " %");
+                        find(R.id.tv_total_komisi, TextView.class).setText("TOTAL : " + NumberFormatUtils.formatPercent(result) + " %");
                     }
-                }catch (NumberFormatException e){
+                } catch (NumberFormatException e) {
                     Log.e("percent_", "onTextChanged: ", e);
                 }
 
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
+                etKomisi.addTextChangedListener(this);
             }
         });
 
@@ -118,7 +142,8 @@ public class AturKomisiJasaLain_Activity extends AppActivity {
         final Nson data = Nson.readJson(getIntentStringExtra(DATA));
 
         etKomisi.setText(data.get("KOMISI").asString());
-        find(R.id.tv_total_komisi, TextView.class).setText("TOTAL : " + getIntent().getDoubleExtra("AVAIL KOMISI", 0) + " %");
+        komisiPercent = getIntent().getDoubleExtra("AVAIL KOMISI", 0);
+        find(R.id.tv_total_komisi, TextView.class).setText("TOTAL : " + komisiPercent + " %");
         setSpinnerOffline(tipeJasaList, spTipeJasa, getIntent().hasExtra(ADD) ? "" : data.get("").asString());
         setSpinnerOffline(aktivitasList, spAktifitas, getIntent().hasExtra(ADD) ? "" : data.get("").asString());
         setSpinnerOffline(Arrays.asList("--PILIH--", "AKTIF", "NON AKTIF"), spStatus, getIntent().hasExtra(ADD) ? "" : data.get("").asString());

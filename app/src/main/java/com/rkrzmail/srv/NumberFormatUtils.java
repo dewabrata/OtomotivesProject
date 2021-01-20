@@ -114,6 +114,7 @@ public class NumberFormatUtils {
                     NumberFormat percentageFormat = NumberFormat.getPercentInstance();
                     percentageFormat.setMinimumFractionDigits(1);
                     String percent = percentageFormat.format(percentValue);
+                    Log.e("percent_", "afterTextChange: " + percent);
 
                     InputFilter[] filterArray = new InputFilter[1];
                     filterArray[0] = new InputFilter.LengthFilter(6);
@@ -122,7 +123,7 @@ public class NumberFormatUtils {
                     editText.setText(percent);
                     editText.setSelection(percent.length() - 1);
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -139,13 +140,15 @@ public class NumberFormatUtils {
         return "0";
     }
 
-    public String formatOnlyNumber(String text, String... symbol) {
-        if (text == null || text.equals("") || text.equals("00"))
-            return "0";
-        else
-            return text.replace(symbol[0], "").replace(symbol[1], "");
-    }
+    public static String formatPercent(double percentValue) {
+        if(percentValue == 0) return "0.0";
 
+        double result = percentValue / 100;
+        NumberFormat percentageFormat = NumberFormat.getPercentInstance();
+        percentageFormat.setMinimumFractionDigits(1);
+
+        return percentageFormat.format(result);
+    }
 
     public String formatOnlyNumber(String text) {
         if (text == null || text.equals("") || text.equals("00"))
