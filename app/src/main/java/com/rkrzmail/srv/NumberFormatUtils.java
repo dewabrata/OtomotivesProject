@@ -108,20 +108,10 @@ public class NumberFormatUtils {
                 editText.removeTextChangedListener(this);
 
                 try {
-                    text = new NumberFormatUtils().formatOnlyNumber(text);
-                    double percentValue = Double.parseDouble(text.isEmpty() ? "0" : text) / 1000;
-
-                    NumberFormat percentageFormat = NumberFormat.getPercentInstance();
-                    percentageFormat.setMinimumFractionDigits(1);
-                    String percent = percentageFormat.format(percentValue);
-                    Log.e("percent_", "afterTextChange: " + percent);
-
-                    InputFilter[] filterArray = new InputFilter[1];
-                    filterArray[0] = new InputFilter.LengthFilter(6);
-
-                    editText.setFilters(filterArray);
-                    editText.setText(percent);
-                    editText.setSelection(percent.length() - 1);
+                    text = setPercentage(text);
+                    editText.setFilters(getPercentFilter());
+                    editText.setText(text);
+                    editText.setSelection(text.length() - 1);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -130,6 +120,26 @@ public class NumberFormatUtils {
                 editText.addTextChangedListener(this);
             }
         };
+    }
+
+    public static String setPercentage(String values) {
+        if (values.isEmpty()) return "0";
+
+        values = formatOnlyNumber(values);
+        double percentValue = Double.parseDouble(values) / 1000;
+
+        NumberFormat percentageFormat = NumberFormat.getPercentInstance();
+        percentageFormat.setMinimumFractionDigits(1);
+        String percent = percentageFormat.format(percentValue);
+        Log.e("percent_", "afterTextChange: " + percent);
+
+        return percent;
+    }
+
+    public static InputFilter[] getPercentFilter() {
+        InputFilter[] filterArray = new InputFilter[1];
+        filterArray[0] = new InputFilter.LengthFilter(6);
+        return filterArray;
     }
 
     public static String formatRp(String currency) {
@@ -141,7 +151,7 @@ public class NumberFormatUtils {
     }
 
     public static String formatPercent(double percentValue) {
-        if(percentValue == 0) return "0.0";
+        if (percentValue == 0) return "0.0";
 
         double result = percentValue / 100;
         NumberFormat percentageFormat = NumberFormat.getPercentInstance();
@@ -150,15 +160,15 @@ public class NumberFormatUtils {
         return percentageFormat.format(result);
     }
 
-    public static String clearPercent(String value){
-        if(value.isEmpty() || value == null)
+    public static String clearPercent(String value) {
+        if (value.isEmpty() || value == null)
             return "0";
         else
             return value.trim().replace("%", "").replace(",", ".");
     }
 
 
-    public String formatOnlyNumber(String text) {
+    public static String formatOnlyNumber(String text) {
         if (text == null || text.equals("") || text.equals("00"))
             return "0";
         else

@@ -266,7 +266,8 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         sendData.set("NO_KUNCI", noKunci);
         sendData.set("NO_BUKTI_BAYAR", Integer.parseInt(noBuktiBayar) + 1);
         sendData.set("PELUNASAN_SISA_BIAYA", !isDp & totalDp > 0 ? "Y" : "N");
-        sendData.set("TOTAL", isBatal ? 0 : (total2 > 0 ? total2 : (total1 > 0 ? total1 : (isDp ? totalDp : 0))));
+        sendData.set("TOTAL", isBatal ? 0 : isDp ? totalDp : total1);
+        sendData.set("GRAND_TOTAL", total2);
 
         Intent i = new Intent(getActivity(), AturPembayaran_Activity.class);
         i.putExtra(DATA, sendData.toJson());
@@ -400,10 +401,14 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         }
 
         if(discSpot > 0){
-            total2 = total2 == 0 ? total1 - discSpot : total2 - discSpot;
+            total2 = total1 - discSpot;
         }
 
-        find(R.id.row_total_2).setVisibility(total2 == 0 | isDp ? View.GONE : View.VISIBLE);
+        if(total2 == 0){
+            total2 = total1;
+        }
+
+        find(R.id.row_total_2).setVisibility(total2 == 0 | isDp | total2 == total1 ? View.GONE : View.VISIBLE);
         find(R.id.row_sisa_biaya).setVisibility(sisaBiaya == 0 | isDp ? View.GONE : View.VISIBLE);
         find(R.id.row_penyimpanan).setVisibility(totalBiayaSimpan == 0 | isDp ? View.GONE : View.VISIBLE);
         find(R.id.row_disc_layanan).setVisibility(discLayanan == 0 | biayaLayanan == 0 | isDp ? View.GONE : View.VISIBLE);
@@ -476,7 +481,8 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             }
         }
 
-        total1 = totalPart - discPart - discSpot;
+        total1 = totalPart - discPart;
+        total2 = total1 - discSpot;
 
         find(R.id.tl_ppn).setVisibility(View.GONE);
         find(R.id.tr_disc_part).setVisibility(discPart == 0 ? View.GONE : View.VISIBLE);
@@ -487,7 +493,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         find(R.id.tv_harga_disc_jual_part, TextView.class).setText(RP + formatRp(String.valueOf(discPart)));
         find(R.id.tv_total_jual_part, TextView.class).setText(RP + formatRp(String.valueOf(totalPart)));
         find(R.id.tv_total_ppn_jual_part, TextView.class).setText(RP + formatRp(setPPN(total1)));
-        find(R.id.tv_total_penjualan_jual_part, TextView.class).setText(RP + formatRp(String.valueOf(total1)));
+        find(R.id.tv_total_penjualan_jual_part, TextView.class).setText(RP + formatRp(String.valueOf(total2)));
     }
 
     private String setPPN(int totalBiaya) {

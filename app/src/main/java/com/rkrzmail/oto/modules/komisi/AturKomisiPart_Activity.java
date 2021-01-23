@@ -11,12 +11,14 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,14 +57,15 @@ public class AturKomisiPart_Activity extends AppActivity {
     private final List<String> aktivitasList = Arrays.asList(
             "--PILIH--",
             "BOOKING",
-            "CHECK IN, TAMBAH PART-JASA",
-            "PENUGASAN MEKANIK",
+            "CHECK IN, TAMBAH PART-JASA, JUAL PART, SERAH TERIMA PART",
             "PENUGASAN MEKANIK",
             "MEKANIK SELESAI",
             "INSPEKSI SELESAI",
             "CASH, DEBET, KREDIT, INVOICE"
     );
+
     private double komisiPercent = 0;
+    private String groupPartId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +91,7 @@ public class AturKomisiPart_Activity extends AppActivity {
         etKomisi = findViewById(R.id.et_komisi_percent);
     }
 
-    private void initListener(){
+    private void initListener() {
         etKomisi.addTextChangedListener(new TextWatcher() {
             int prevLength = 0; // detected keyEvent action delete
 
@@ -135,10 +138,10 @@ public class AturKomisiPart_Activity extends AppActivity {
                                 .replace("%", "")
                                 .replace(",", "."));
 
-                        if(komisiInput > komisiPercent){
+                        if (komisiInput > komisiPercent) {
                             find(R.id.tl_komisi_percent, TextInputLayout.class).setErrorEnabled(true);
                             find(R.id.tl_komisi_percent, TextInputLayout.class).setError("KOMISI TIDAK VALID");
-                        }else{
+                        } else {
                             find(R.id.tl_komisi_percent, TextInputLayout.class).setErrorEnabled(false);
                         }
 
@@ -168,7 +171,10 @@ public class AturKomisiPart_Activity extends AppActivity {
         spGroupPart.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
+                String item = adapterView.getItemAtPosition(i).toString();
+                if (item.equalsIgnoreCase(grupPartData.get(i).get("NAMA_GROUP_PART").asString())) {
+                    groupPartId = grupPartData.get(i).get("ID").asString();
+                }
             }
 
             @Override
@@ -187,10 +193,12 @@ public class AturKomisiPart_Activity extends AppActivity {
         spAktivitas.setEnabled(getIntent().hasExtra(ADD));
         spGroupPart.setEnabled(getIntent().hasExtra(ADD));
         etKomisi.setText(data.get("KOMISI_PERCENT").asString());
+
         setSpGroupPart(getIntent().hasExtra(ADD) ? "" : data.get("NAMA_GROUP_PART").asString());
-        setSpinnerOffline(aktivitasList, spAktivitas, getIntent().hasExtra(ADD) ? "" : data.get("AKTIVITAS").asString());
+        setSpAktivitas(getIntent().hasExtra(ADD) ? "" : data.get("AKTIVITAS").asString());
         setSpinnerOffline(Arrays.asList("--PILIH--", "AKTIF", "NON AKTIF"), spStatus, getIntent().hasExtra(ADD) ? "" : data.get("STATUS").asString());
 
+        find(R.id.btn_simpan, Button.class).setText(getIntent().hasExtra(ADD) ? "SIMPAN" : "UPDATE");
         find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -220,6 +228,35 @@ public class AturKomisiPart_Activity extends AppActivity {
         });
     }
 
+    private void setSpAktivitas(String selection) {
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, aktivitasList) {
+            @Override
+            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                final View v = super.getDropDownView(position, convertView, parent);
+                v.post(new Runnable() {
+                    @SuppressLint("WrongConstant")
+                    @Override
+                    public void run() {
+                        ((TextView) v.findViewById(android.R.id.text1)).setSingleLine(false);
+                        ((TextView) v.findViewById(android.R.id.text1)).setGravity(Gravity.CENTER);
+                        ((TextView) v.findViewById(android.R.id.text1)).setTextAlignment(Gravity.CENTER);
+                    }
+                });
+                return v;
+            }
+        };
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spAktivitas.setAdapter(spinnerAdapter);
+        if (!selection.isEmpty()) {
+            for (int in = 0; in < spAktivitas.getCount(); in++) {
+                if (spAktivitas.getItemAtPosition(in).toString().contains(selection)) {
+                    spAktivitas.setSelection(in);
+                    break;
+                }
+            }
+        }
+    }
+
     private void setSpGroupPart(final String selection) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
@@ -227,7 +264,7 @@ public class AturKomisiPart_Activity extends AppActivity {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("nama", "GRUP PART");
+                args.put("nama", "GROUP PART");
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MASTER), args));
             }
 
@@ -236,20 +273,21 @@ public class AturKomisiPart_Activity extends AppActivity {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     final List<String> grupPartList = new ArrayList<>();
                     grupPartList.add("--PILIH--");
+                    grupPartData.add("--PILIH--");
                     result = result.get("data");
                     for (int i = 0; i < result.size(); i++) {
                         grupPartData.add(Nson.newObject()
-                                .set("GROUP_PART", result.get(i).get("GROUP_PART").asString())
                                 .set("ID", result.get(i).get("ID").asString())
+                                .set("NAMA_GROUP_PART", result.get(i).get("NAMA_GROUP_PART").asString())
                         );
-                        grupPartList.add(result.get(i).get("GROUP_PART").asString());
+                        grupPartList.add(result.get(i).get("NAMA_GROUP_PART").asString());
                     }
-                    ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, grupPartList){
+                    ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, grupPartList)/*{
                         @NonNull
                         @Override
                         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
                             View view = null;
-                            /*if(availKomisi.size() > 0){
+                            if(availKomisi.size() > 0){
                                 for (int i = 0; i < availKomisi.size(); i++) {
                                     if(availKomisi.get(i).get("NAMA_GROUP_PART").asString().equals(grupPartList.get(position))){
                                         TextView mTextView = new TextView(getContext());
@@ -263,11 +301,11 @@ public class AturKomisiPart_Activity extends AppActivity {
                                 }
                             }else{
                                 view = super.getDropDownView(position, null, parent);
-                            }*/
+                            }
                             view = super.getDropDownView(position, null, parent);
                             return view;
                         }
-                    };
+                    }*/;
                     spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spGroupPart.setAdapter(spinnerAdapter);
                     if (!selection.isEmpty()) {
@@ -295,6 +333,7 @@ public class AturKomisiPart_Activity extends AppActivity {
 
                 args.put("action", "add");
                 args.put("aktivitas", spAktivitas.getSelectedItem().toString());
+                args.put("idGroupPart", groupPartId);
                 args.put("groupPart", spGroupPart.getSelectedItem().toString());
                 args.put("komisiPercent", NumberFormatUtils.clearPercent(etKomisi.getText().toString()));
                 args.put("status", spStatus.getSelectedItem().toString());

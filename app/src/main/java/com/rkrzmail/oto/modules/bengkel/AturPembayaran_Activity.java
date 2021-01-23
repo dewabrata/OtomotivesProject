@@ -150,15 +150,14 @@ public class AturPembayaran_Activity extends AppActivity {
         mdrOfUs = nson.get("MDR_OFF_US").asDouble();
         mdrOnUs = nson.get("MDR_ON_US").asDouble();
         mdrKreditCard = nson.get("MDR_KREDIT_CARD").asDouble();
+        grandTotal =  nson.get("GRAND_TOTAL").asInteger();
         totalBiaya = isDp ? totalDp : nson.get("TOTAL").asInteger();
 
         if (nson.get("PKP").asString().equals("Y") && !isDp) {
             totalPpn = (int) (ppn * totalBiaya);
-            grandTotal = totalPpn + totalBiaya;
+            grandTotal += totalPpn;
             isPpn = true;
             find(R.id.et_ppn, EditText.class).setText(RP + formatRp(String.valueOf(totalPpn)));
-        } else {
-            grandTotal = totalBiaya;
         }
 
         find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));

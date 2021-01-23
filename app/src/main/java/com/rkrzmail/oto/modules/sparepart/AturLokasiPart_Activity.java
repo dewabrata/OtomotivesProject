@@ -251,7 +251,7 @@ public class AturLokasiPart_Activity extends AppActivity {
 
     private void setSpLokasiPart() {
         final List<String> lokasiList = Arrays.asList(getResources().getStringArray(R.array.lokasi_simpan));
-        ArrayAdapter lokasiAdapter = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, lokasiList) {
+        ArrayAdapter lokasiAdapter = new ArrayAdapter<String>(this, R.layout.simple_spinner_item, lokasiList) {
             @Override
             public boolean isEnabled(int position) {
                 if (isLokasi) {

@@ -171,12 +171,14 @@ public class MenuActivity extends AppActivity {
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         Drawable iconOto = getResources().getDrawable(R.drawable.icon_oto);
         iconOto.setTint(getResources().getColor(R.color.colorWhite));
         toolbar.setOverflowIcon(iconOto);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(getSetting("NAMA_BENGKEL"));
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

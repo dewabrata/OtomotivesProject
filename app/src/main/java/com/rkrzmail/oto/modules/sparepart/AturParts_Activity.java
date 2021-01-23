@@ -127,7 +127,8 @@ public class AturParts_Activity extends AppActivity {
                             return;
                         }
                     }
-                    if (find(R.id.sp_polaHarga_part, Spinner.class).getSelectedItem().toString().equalsIgnoreCase("BELI + MARGIN")) {
+                    if (find(R.id.sp_polaHarga_part, Spinner.class).getSelectedItem().toString().equalsIgnoreCase("BELI + MARGIN") ||
+                            find(R.id.sp_polaHarga_part, Spinner.class).getSelectedItem().toString().equalsIgnoreCase("FLEXIBLE")) {
                         if (find(R.id.et_hpp_part, EditText.class).getText().toString().isEmpty()) {
                             find(R.id.et_hpp_part, EditText.class).setError("Masukkan HPP");
                             find(R.id.et_hpp_part, EditText.class).requestFocus();
@@ -153,9 +154,9 @@ public class AturParts_Activity extends AppActivity {
             find(R.id.et_het_part, EditText.class).setText(isParts ?
                     "Rp. " + formatter.format(Double.parseDouble(aturParts.get("HET").asString())) :
                     "Rp. " + formatter.format(Double.parseDouble(addParts.get("HET").asString())));
-            if(!aturParts.get("MARGIN").asString().equals("")){
+            if (!aturParts.get("MARGIN").asString().equals("")) {
                 find(R.id.et_hargaJual_part, EditText.class).setText(aturParts.get("MARGIN").asString());
-            }else{
+            } else {
                 find(R.id.et_hargaJual_part, EditText.class).setText("Rp. " + formatter.format(Double.parseDouble(aturParts.get("HARGA_JUAL").asString())));
             }
         } catch (Exception e) {
@@ -163,13 +164,12 @@ public class AturParts_Activity extends AppActivity {
         }
         Log.d(TAG, "Nson : " + aturParts + "\n" + "Atur : " + addParts);
         setTextListener();
+
         find(R.id.sp_polaHarga_part, Spinner.class).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String item = adapterView.getItemAtPosition(i).toString();
-                if (item.equalsIgnoreCase("FLEXIBLE")) {
-                    find(R.id.tl_margin, TextInputLayout.class).setVisibility(View.GONE);
-                } else if (item.equalsIgnoreCase("NOMINAL")) {
+                 if (item.equalsIgnoreCase("NOMINAL")) {
                     find(R.id.tl_margin, TextInputLayout.class).setVisibility(View.VISIBLE);
                     find(R.id.et_hargaJual_part, EditText.class).setHint("HARGA");
                 } else if (item.equalsIgnoreCase("HET")) {
@@ -267,11 +267,11 @@ public class AturParts_Activity extends AppActivity {
                 args.put("partid", id.get("PART_ID").asString());
                 args.put("waktupesan", waktuPesan);
                 args.put("stokminim", stockMin);
-                if (polaHarga.equalsIgnoreCase("FLEXIBLE")) {
-                    args.put("hargajual", "FLEXIBLE");
-                } else if (polaHarga.equalsIgnoreCase("HET")) {
+               if (polaHarga.equalsIgnoreCase("HET")) {
                     args.put("hargajual", het.replaceAll("[^0-9]+", ""));
-                } else if (polaHarga.equalsIgnoreCase("BELI + MARGIN") || polaHarga.equalsIgnoreCase("RATA - RATA + MARGIN")) {
+                } else if (polaHarga.equalsIgnoreCase("BELI + MARGIN") ||
+                       polaHarga.equalsIgnoreCase("RATA - RATA + MARGIN") ||
+                       polaHarga.equalsIgnoreCase("FLEXIBLE")) {
                     args.put("hargajual", hargaJual);
                 } else {
                     args.put("hargajual", hargaJual.replaceAll("[^0-9]+", ""));
@@ -325,11 +325,11 @@ public class AturParts_Activity extends AppActivity {
                 args.put("nopart", noPart);
                 args.put("partid", id.get("NO").asString());
                 args.put("merk", merkPart);
-                if (polaHarga.equalsIgnoreCase("FLEXIBLE")) {
-                    args.put("hargajual", "FLEXIBLE");
-                } else if (polaHarga.equalsIgnoreCase("HET")) {
+                if (polaHarga.equalsIgnoreCase("HET")) {
                     args.put("hargajual", het.replaceAll("[^0-9]+", ""));
-                } else if (polaHarga.equalsIgnoreCase("BELI + MARGIN") || polaHarga.equalsIgnoreCase("RATA - RATA + MARGIN")) {
+                } else if (polaHarga.equalsIgnoreCase("BELI + MARGIN") ||
+                        polaHarga.equalsIgnoreCase("RATA - RATA + MARGIN") ||
+                        polaHarga.equalsIgnoreCase("FLEXIBLE")) {
                     args.put("hargajual", String.valueOf(total));
                     args.put("margin", hargaJual);
                 } else {
@@ -376,27 +376,27 @@ public class AturParts_Activity extends AppActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 find(R.id.et_hargaJual_part, EditText.class).removeTextChangedListener(this);
-                String s = editable.toString();
+                String text = editable.toString();
                 if (!find(R.id.sp_polaHarga_part, Spinner.class).getSelectedItem().equals("")) {
                     find(R.id.et_hargaJual_part, EditText.class).setHint("HARGA JUAL");
                     if (find(R.id.sp_polaHarga_part, Spinner.class).getSelectedItem().toString().equalsIgnoreCase("NOMINAL")) {
                         try {
-                            String cleanString = s.replaceAll("[^0-9]", "");
-                            String formatted = Tools.formatRupiah(cleanString);
-                            find(R.id.et_hargaJual_part, EditText.class).setText(formatted);
+                            text = NumberFormatUtils.formatOnlyNumber(text);
+                            text = NumberFormatUtils.formatRp(text);
+
+                            find(R.id.et_hargaJual_part, EditText.class).setText(text);
                             find(R.id.et_hargaJual_part, EditText.class).setFilters(new InputFilter[]{new InputFilter.LengthFilter(12)});
-                            find(R.id.et_hargaJual_part, EditText.class).setSelection(formatted.length());
+                            find(R.id.et_hargaJual_part, EditText.class).setSelection(text.length());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    } else if (find(R.id.sp_polaHarga_part, Spinner.class).getSelectedItem().toString().equalsIgnoreCase("BELI + MARGIN")) {
-                        java.text.NumberFormat format = java.text.NumberFormat.getPercentInstance(new Locale("in", "ID"));
-                        format.setMinimumFractionDigits(1);
-                        format.setMaximumFractionDigits(1);
-                        String percentNumber = format.format(Tools.convertToDoublePercentage(find(R.id.et_hargaJual_part, EditText.class).getText().toString()) / 1000);
-                        find(R.id.et_hargaJual_part, EditText.class).setText(percentNumber);
-                        find(R.id.et_hargaJual_part, EditText.class).setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
-                        find(R.id.et_hargaJual_part, EditText.class).setSelection(percentNumber.length() - 1);
+                    } else if (find(R.id.sp_polaHarga_part, Spinner.class).getSelectedItem().toString().equalsIgnoreCase("BELI + MARGIN") ||
+                            find(R.id.sp_polaHarga_part, Spinner.class).getSelectedItem().toString().equalsIgnoreCase("FLEXIBLE")) {
+                        text = NumberFormatUtils.setPercentage(text);
+
+                        find(R.id.et_hargaJual_part, EditText.class).setText(text);
+                        find(R.id.et_hargaJual_part, EditText.class).setFilters(NumberFormatUtils.getPercentFilter());
+                        find(R.id.et_hargaJual_part, EditText.class).setSelection(text.length() - 1);
                     } else if (find(R.id.sp_polaHarga_part, Spinner.class).getSelectedItem().toString().equalsIgnoreCase("RATA - RATA + MARGIN")) {
                         java.text.NumberFormat format = java.text.NumberFormat.getPercentInstance(new Locale("in", "ID"));
                         format.setMinimumFractionDigits(1);

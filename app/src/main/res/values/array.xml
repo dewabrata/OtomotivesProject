@@ -165,6 +165,7 @@
         <item>PENGATURAN</item>
         <item>DISCOUNT</item>
         <item>KOMISI</item>
+        <item>LAPORAN</item>
     </string-array>
 
     <string-array name="status_layanan">

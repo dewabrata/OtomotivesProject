@@ -3,6 +3,7 @@ package com.rkrzmail.utils;
 public class APIUrls {
 
     //VIEW
+    public static final String PEMBAYARAN_KOMISI = "pembayarankomisi";
     public static final String KOMISI_PART = "komisipart";
     public static final String KOMISI_JASA_LAIN = "komisijasalain";
     public static final String KOMISI_LAYANAN = "komisilayanan";

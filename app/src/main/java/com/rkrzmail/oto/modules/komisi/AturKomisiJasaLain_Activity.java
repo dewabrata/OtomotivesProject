@@ -55,7 +55,6 @@ public class AturKomisiJasaLain_Activity extends AppActivity {
             "BOOKING",
             "CHECK IN, TAMBAH PART-JASA",
             "PENUGASAN MEKANIK",
-            "PENUGASAN MEKANIK",
             "MEKANIK SELESAI",
             "INSPEKSI SELESAI",
             "CASH, DEBET, KREDIT, INVOICE"
