@@ -9,6 +9,7 @@ import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -17,6 +18,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.utils.Tools;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.text.ParseException;
@@ -52,6 +54,7 @@ public class Dashboard_Activity extends AppActivity {
 
     private void initComponent(){
         initToolbar();
+        find(R.id.ly_dashboard, LinearLayout.class).setVisibility(View.GONE);
         find(R.id.ic_mulaitgl, TextView.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,6 +112,7 @@ public class Dashboard_Activity extends AppActivity {
                         totHutang = result.get(i).get("TOTAL_HUTANG").asString();
                     }
                     setValuedashboard();
+                    find(R.id.ly_dashboard, LinearLayout.class).setVisibility(View.VISIBLE);
                 } else {
                     showInfo(result.get("message").asString());
                 }
