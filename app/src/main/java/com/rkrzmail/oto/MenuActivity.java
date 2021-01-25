@@ -38,6 +38,7 @@ import com.rkrzmail.oto.modules.bengkel.Absensi_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Collection_Activity;
 import com.rkrzmail.oto.modules.bengkel.Dashboard_Activity;
 import com.rkrzmail.oto.modules.bengkel.Laporan_Activity;
+import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
 import com.rkrzmail.oto.modules.checkin.Checkin1_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiTerbayar_Activity;
 import com.rkrzmail.oto.modules.mekanik.AturSchedule_Activity;
@@ -58,8 +59,8 @@ import com.rkrzmail.oto.modules.sparepart.DetailCariPart_Activity;
 import com.rkrzmail.oto.modules.discount.DiscountPart_Activity;
 import com.rkrzmail.oto.modules.discount.FrekwensiDiscount_Activity;
 import com.rkrzmail.oto.modules.discount.DiscountSpot_Activity;
-import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
 import com.rkrzmail.oto.modules.bengkel.Referal_Activity;
+import com.rkrzmail.oto.modules.sparepart.PartHome_MainTab_Activity;
 import com.rkrzmail.oto.modules.sparepart.PenjualanPart_Activity;
 import com.rkrzmail.oto.modules.sparepart.Spareparts_Activity;
 import com.rkrzmail.oto.modules.sparepart.PartKeluar_Activity;
@@ -69,7 +70,7 @@ import com.rkrzmail.oto.modules.bengkel.User_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiJasaLain_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiLayanan_Activity;
 import com.rkrzmail.oto.modules.bengkel.Layanan_Avtivity;
-import com.rkrzmail.oto.modules.sparepart.LokasiPart_Activity;
+import com.rkrzmail.oto.modules.sparepart.LokasiPart_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.RekeningBank_Activity;
 import com.rkrzmail.oto.modules.bengkel.Tenda_Activity;
 import com.rkrzmail.oto.modules.sparepart.TerimaPart;
@@ -78,8 +79,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import static com.rkrzmail.utils.ConstUtils.ALL;
-import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
 import static com.rkrzmail.utils.ConstUtils.PART;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 
@@ -137,13 +136,15 @@ public class MenuActivity extends AppActivity {
     private final String ANTAR_JEMPUT = "ANTAR JEMPUT";
     public final String LAPORAN = "LAPORAN";
     public final String SCHEDULE = "SCHEDULE";
+
     private final String PENGATURAN_USER = "USER";
     private final String PENGATURAN_USER_LAYANAN = "LAYANAN";
     private final String PENGATURAN_USER_BIAYA_MEKANIK = "BIAYA MEKANIK";
     private final String PENGATURAN_USER_SPAREPARTS = "SPAREPARTS";
     private final String PENGATURAN_USER_REKENING_BANK = "REKENING BANK";
-    private final String PENGATURAN_USER_LOKASI_PARTS = "LOKASI PARTS";
     private final String PENGATURAN_USER_TENDA = "TENDA";
+    private final String PENGATURAN_PROFILE = "PROFILE BENGKEL";
+
     private final String KOMISI_JASA_LAIN = "KOMISI JASA LAIN";
     private final String KOMISI_LAYANAN = "KOMISI LAYANAN";
     private final String KOMISI_PART = "KOMISI PART";
@@ -155,12 +156,12 @@ public class MenuActivity extends AppActivity {
     private final String DISCOUNT_FREKWENSI = "DISCOUNT FREKWENSI";
 
     private final String MY_BUSINESS_BILLING = "BILLING";
-    private final String MY_BUSINESS_INFO_USAHA = "PROFILE BENGKEL";//gant nama
     private final String MY_BUSINESS_HUTANG = "HUTANG";
     private final String MY_BUSINESS_PIUTANG = "PIUTANG";
     private final String MY_BUSINESS_ASET = "ASET";
     private final String MY_BUSINESS_CUSTOMER = "CUSTOMER";//tambahan
     private final String MY_BUSINESS_PAYROLL = "PAYROLL";//tambahan
+    private final String MY_BUSINESS_LOKASI_PART = "LOKASI PARTS";
 
     private final String LOKASI_PART = "LOKASI PART";
 
@@ -231,9 +232,8 @@ public class MenuActivity extends AppActivity {
                     Intent intent = new Intent(MenuActivity.this, MyCode.class);
                     startActivity(intent);
                 } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_PART)) {
-                    Intent intent = new Intent(MenuActivity.this, CariPart_Activity.class);
-                    intent.putExtra(CARI_PART_LOKASI, ALL);
-                    startActivityForResult(intent, REQUEST_DETAIL);
+                    Intent intent = new Intent(MenuActivity.this, PartHome_MainTab_Activity.class);
+                    startActivity(intent);
                 } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_PEMBAYARAN)) {
                     Intent intent = new Intent(MenuActivity.this, Pembayaran_MainTab_Activity.class);
                     startActivity(intent);
@@ -287,8 +287,9 @@ public class MenuActivity extends AppActivity {
             startActivity(intent);
         } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_BILLING)) {
 
-        } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_INFO_USAHA)) {
-
+        } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_PROFILE)) {
+            Intent intent = new Intent(MenuActivity.this, ProfileBengkel_Activity.class);
+            startActivity(intent);
         } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_ASET)) {
             Intent intent = new Intent(MenuActivity.this, WebActivity.class);
             intent.putExtra("title", "Dashboard");
@@ -323,8 +324,8 @@ public class MenuActivity extends AppActivity {
         } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_REKENING_BANK)) {
             Intent intent = new Intent(MenuActivity.this, RekeningBank_Activity.class);
             startActivity(intent);
-        } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_LOKASI_PARTS)) {
-            Intent intent = new Intent(MenuActivity.this, LokasiPart_Activity.class);
+        } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_LOKASI_PART)) {
+            Intent intent = new Intent(MenuActivity.this, LokasiPart_MainTab_Activity.class);
             startActivity(intent);
         } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_TENDA)) {
             Intent intent = new Intent(MenuActivity.this, Tenda_Activity.class);
@@ -583,12 +584,12 @@ public class MenuActivity extends AppActivity {
         if (getAccess(MY_BUSINESS)) {
             subMenu = menu.addSubMenu(MY_BUSINESS);
             subMenu.add(MY_BUSINESS_BILLING);
-            subMenu.add(MY_BUSINESS_INFO_USAHA);
             subMenu.add(MY_BUSINESS_HUTANG);
             subMenu.add(MY_BUSINESS_PIUTANG);
             subMenu.add(MY_BUSINESS_ASET);
             subMenu.add(MY_BUSINESS_CUSTOMER);
             subMenu.add(MY_BUSINESS_PAYROLL);
+            subMenu.add(MY_BUSINESS_LOKASI_PART);
         }
 
         String PENGATURAN = "PENGATURAN";
@@ -599,8 +600,8 @@ public class MenuActivity extends AppActivity {
             subMenu.add(PENGATURAN_USER_BIAYA_MEKANIK);
             subMenu.add(PENGATURAN_USER_SPAREPARTS);
             subMenu.add(PENGATURAN_USER_REKENING_BANK);
-            subMenu.add(PENGATURAN_USER_LOKASI_PARTS);
             subMenu.add(PENGATURAN_USER_TENDA);
+            subMenu.add(PENGATURAN_PROFILE);
         }
         String DISCOUNT = "DISCOUNT";
         if (getAccess(DISCOUNT)) {

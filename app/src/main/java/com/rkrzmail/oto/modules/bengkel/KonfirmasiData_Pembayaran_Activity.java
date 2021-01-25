@@ -37,6 +37,8 @@ import static com.rkrzmail.utils.ConstUtils.REQUEST_NEW_CS;
 
 public class KonfirmasiData_Pembayaran_Activity extends AppActivity {
 
+    private int idPelanggan = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,9 +104,10 @@ public class KonfirmasiData_Pembayaran_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "update");
+                args.put("idPelanggan", String.valueOf(idPelanggan));
                 args.put("checkinId", getIntentStringExtra(ID));
                 args.put("konfirmasi", "DATA PELANGGAN");
-                args.put("noPonsel", find(R.id.et_noPonsel, EditText.class).getText().toString());
+                args.put("noPonsel", formatOnlyNumber(find(R.id.et_noPonsel, EditText.class).getText().toString()));
                 args.put("isPemilik", find(R.id.cb_pemilik, CheckBox.class).isChecked() ? "Y" : "N");
                 args.put("namaPelanggan", find(R.id.et_namaPelanggan, NikitaAutoComplete.class).getText().toString());
                 args.put("pekerjaan", find(R.id.sp_pekerjaan, Spinner.class).getSelectedItem().toString());
@@ -116,11 +119,12 @@ public class KonfirmasiData_Pembayaran_Activity extends AppActivity {
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     Nson readData = Nson.readJson(getIntentStringExtra(DATA));
-                    readData.set("NO_PONSEL", find(R.id.et_noPonsel, NikitaAutoComplete.class).getText().toString());
+                    readData.set("NO_PONSEL", formatOnlyNumber(find(R.id.et_noPonsel, NikitaAutoComplete.class).getText().toString()));
                     readData.set("NAMA_PELANGGAN", find(R.id.et_namaPelanggan, NikitaAutoComplete.class).getText().toString());
                     readData.set("PEMILIK", find(R.id.cb_pemilik, CheckBox.class).isChecked() ? "Y" : "N");
                     Intent i = new Intent();
                     i.putExtra(DATA, readData.toJson());
+                    i.putExtra("NO_PONSEL", formatOnlyNumber(find(R.id.et_noPonsel, NikitaAutoComplete.class).getText().toString()));
                     setResult(RESULT_OK, i);
                     finish();
                 } else {
@@ -147,6 +151,7 @@ public class KonfirmasiData_Pembayaran_Activity extends AppActivity {
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     result = result.get("data").get(0);
+                    idPelanggan = result.get("ID").asInteger();
                     setSpinnerFromApi(find(R.id.sp_pekerjaan, Spinner.class),
                             "nama",
                             "PEKERJAAN",

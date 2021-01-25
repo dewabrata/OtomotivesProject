@@ -210,6 +210,12 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 final int itemType = getItemViewType(position);
 
                 if (itemType == ITEM_VIEW_1) {
+                    if(detailCheckinList.get(position).get("STATUS_DETAIL").asString().equals("TAMBAH PART - JASA")){
+                        viewHolder.find(R.id.tv_mark_tambah_jasa).setVisibility(View.VISIBLE);
+                    }else{
+                        viewHolder.find(R.id.tv_mark_tambah_jasa).setVisibility(View.GONE);
+                    }
+
                     viewHolder.find(R.id.tv_namaPart_booking3_checkin3, TextView.class)
                             .setText(detailCheckinList.get(position).get("NAMA_PART").asString());
                     viewHolder.find(R.id.tv_noPart_booking3_checkin3, TextView.class)
@@ -259,6 +265,11 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                         viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.GONE);
                     }
                 } else if (itemType == ITEM_VIEW_2) {
+                    if(detailCheckinList.get(position).get("STATUS_DETAIL").asString().equals("TAMBAH PART - JASA")){
+                        viewHolder.find(R.id.tv_mark_tambah_jasa).setVisibility(View.VISIBLE);
+                    }else{
+                        viewHolder.find(R.id.tv_mark_tambah_jasa).setVisibility(View.GONE);
+                    }
                     viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class)
                             .setText(RP + formatRp(detailCheckinList.get(position).get("HARGA_JASA").asString()));
                     viewHolder.find(R.id.tv_no, TextView.class).setText(detailCheckinList.get(position).get("NO").asString() + ". ");

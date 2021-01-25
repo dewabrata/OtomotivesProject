@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class LokasiPart_Activity extends AppActivity {
+public class LokasiPart_MainTab_Activity extends AppActivity {
 
     private static final String TAG = "LokasiPart_Activity";
     public static final int REQUEST_ATUR = 90;

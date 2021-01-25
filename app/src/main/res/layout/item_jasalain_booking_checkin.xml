@@ -14,9 +14,20 @@
     app:cardCornerRadius="10dp"
     app:cardElevation="2dp">
 
+    <View
+        android:id="@+id/tv_mark_tambah_jasa"
+        android:layout_width="70dp"
+        android:layout_height="20dp"
+        android:layout_gravity="start"
+        android:background="@drawable/arrows_left"
+        android:textStyle="bold"
+        android:textColor="@color/red_900"
+        android:textSize="17sp"/>
+
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="10dp">
 
         <ImageButton
             android:id="@+id/img_delete"
@@ -27,7 +38,6 @@
             android:paddingEnd="5dp"
             android:background="@android:color/transparent"
             android:tint="@color/grey_80"
-            android:visibility="gone"
             app:srcCompat="@drawable/ic_close"
             card_view:ignore="ContentDescription,RtlSymmetry" />
 

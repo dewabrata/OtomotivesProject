@@ -23,6 +23,7 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
@@ -53,7 +54,8 @@ public class CariPart_Activity extends AppActivity {
             flagMasterPart = false,
             isLokasi = false,
             isTeralokasikan = false,
-            isPartCheckin = false;
+            isPartCheckin = false,
+            isPartOto = false;
     private boolean isCheckin = false;
     private Toolbar toolbar;
     int countForCariPart = 0;
@@ -87,6 +89,7 @@ public class CariPart_Activity extends AppActivity {
             getSupportActionBar().setTitle("Cari Part Otomotives");
             flagGlobal = true;
             flag = true;
+            isPartOto = true;
         } else if (getIntent().hasExtra(CARI_PART_BENGKEL)) {
             getSupportActionBar().setTitle("Cari Part Bengkel");
             flagBengkel = true;
@@ -114,6 +117,7 @@ public class CariPart_Activity extends AppActivity {
         rvCariPart = (RecyclerView) findViewById(R.id.recyclerView);
         rvCariPart.setLayoutManager(new LinearLayoutManager(this));
         rvCariPart.setHasFixedSize(true);
+
         if (isLokasi) {
             initRecylerViewCarPartLokasi();
             cariPartWithLokasi("");
@@ -123,6 +127,9 @@ public class CariPart_Activity extends AppActivity {
         } else if (isPartCheckin) {
             initRecylerViewCarPartClaim();
             cariPartCheckin("");
+        }else if(isPartOto){
+            initRecylerViewCariPartOto();
+            cariPart("");
         } else {
             if (countForCariPart == 0) {
                 cariPart("");
@@ -147,13 +154,10 @@ public class CariPart_Activity extends AppActivity {
                             viewHolder.find(R.id.tv_cari_pending, TextView.class).setText(flag ? "" : nListArray.get(position).get("PENDING").asString());
                             viewHolder.find(R.id.tv_cari_harga_part, TextView.class).setVisibility(flag ? View.GONE : View.VISIBLE);
                             viewHolder.find(R.id.tv_cari_hpp, TextView.class).setVisibility(flag ? View.GONE : View.VISIBLE);
-                            if (partLokasiPart.get(position).get("HARGA_JUAL").asString().equals("FLEXIBLE")) {
-                                viewHolder.find(R.id.tv_cari_harga_part, TextView.class).setText("");
-                                viewHolder.find(R.id.tv_cari_hpp, TextView.class).setText(RP + formatRp(nListArray.get(position).get("HPP").asString()));
-                            } else {
-                                viewHolder.find(R.id.tv_cari_harga_part, TextView.class).setText(RP + formatRp(nListArray.get(position).get("HARGA_JUAL").asString()));
-                                viewHolder.find(R.id.tv_cari_hpp, TextView.class).setText("");
-                            }
+
+                            viewHolder.find(R.id.tv_cari_harga_part, TextView.class).setText(RP + formatRp(nListArray.get(position).get("HARGA_JUAL").asString()));
+                            viewHolder.find(R.id.tv_cari_hpp, TextView.class).setText(RP + formatRp(nListArray.get(position).get("HPP").asString()));
+
 //                            if(nListArray.get(position).get("HARGA_JUAL").asString().equals("FLEXIBLE")){
 //                                viewHolder.find(R.id.tv_cari_harga_part, TextView.class).setText("");
 //                                viewHolder.find(R.id.tv_cari_hpp, TextView.class).setText("");
@@ -196,6 +200,31 @@ public class CariPart_Activity extends AppActivity {
                     }
                 })
         );
+    }
+
+
+    private void initRecylerViewCariPartOto() {
+        rvCariPart.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_cari_part_oto) {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+                        super.onBindViewHolder(viewHolder, position);
+                        viewHolder.find(R.id.tv_cari_merkPart, TextView.class).setText(nListArray.get(position).get("MERK").asString());
+                        viewHolder.find(R.id.tv_cari_namaPart, TextView.class).setText(nListArray.get(position).get("NAMA_PART").asString());
+                        viewHolder.find(R.id.tv_cari_noPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
+                        viewHolder.find(R.id.tv_cari_het, TextView.class).setText(RP +  NumberFormatUtils.formatRp(nListArray.get(position).get("HET").asString()));
+                    }
+                }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Nson parent, View view, int position) {
+                        Intent intent = new Intent();
+                        intent.putExtra(PART, nListArray.get(position).toJson());
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+                })
+        );
+
     }
 
     private void initRecylerViewCarPartLokasi() {

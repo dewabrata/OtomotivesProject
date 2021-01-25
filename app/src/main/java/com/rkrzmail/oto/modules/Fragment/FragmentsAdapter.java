@@ -6,29 +6,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 
 import com.naa.data.Nson;
-import com.rkrzmail.oto.modules.Fragment.Absen_Absensi_Fragment;
-import com.rkrzmail.oto.modules.Fragment.Cash_Pembayaran_Fragment;
-import com.rkrzmail.oto.modules.Fragment.Print_Pembayaran_Fragment;
-import com.rkrzmail.oto.modules.Fragment.Schedule_Absensi_Fragment;
-import com.rkrzmail.oto.modules.Fragment.Setoran_Pembayaran_Fragment;
-import com.rkrzmail.oto.modules.Fragment.Transaksi_Pembayaran_Fragment;
 import com.rkrzmail.oto.modules.bengkel.Absensi_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Pembayaran_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
-import com.rkrzmail.oto.modules.Fragment.TabSchedule_Fragment;
-import com.rkrzmail.oto.modules.Fragment.TabTambahan_Fragment;
-import com.rkrzmail.oto.modules.Fragment.TabUsaha_Fragment;
-import com.rkrzmail.oto.modules.sparepart.LokasiPart_Activity;
-import com.rkrzmail.oto.modules.Fragment.PartNonLokasi_Fragment;
-import com.rkrzmail.oto.modules.Fragment.PartTeralokasikan_Fragment;
-import com.rkrzmail.oto.modules.Fragment.BatalPart_TugasPart_Fragment;
-import com.rkrzmail.oto.modules.Fragment.PartKosong_TugasPart_Fragment;
-import com.rkrzmail.oto.modules.Fragment.Permintaan_TugasPart_Fragment;
-import com.rkrzmail.oto.modules.Fragment.Tersedia_TugasPart_Fragment;
+import com.rkrzmail.oto.modules.sparepart.LokasiPart_MainTab_Activity;
 import com.rkrzmail.oto.modules.sparepart.OutSource_Activity;
+import com.rkrzmail.oto.modules.sparepart.PartHome_MainTab_Activity;
 import com.rkrzmail.oto.modules.sparepart.TugasPart_MainTab_Activity;
 
 import java.util.ArrayList;
@@ -85,7 +70,7 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
             return fragment;
         }
 
-        if (context instanceof LokasiPart_Activity) {
+        if (context instanceof LokasiPart_MainTab_Activity) {
             switch (i) {
                 case 0:
                     PartTeralokasikan_Fragment teralokasikanFragment = new PartTeralokasikan_Fragment();
@@ -154,6 +139,18 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
             return fragment;
         }
 
+        if (context instanceof PartHome_MainTab_Activity) {
+            switch (i) {
+                case 0:
+                    fragment = Fragment.instantiate(context, PartBengkel_PartHome_Fragment.class.getName());
+                    break;
+                case 1:
+                    fragment = Fragment.instantiate(context, PartOto_PartHome_Activity.class.getName());
+                    break;
+            }
+            return fragment;
+        }
+
         return fragment;
     }
 
@@ -165,7 +162,7 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
-        if (context instanceof LokasiPart_Activity) {
+        if (context instanceof LokasiPart_MainTab_Activity) {
             switch (position) {
                 case 0:
                     return "Lokasi";
@@ -217,6 +214,15 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
                     return "Schedule";
                 case 2:
                     return "Komisi";
+            }
+        }
+
+        if (context instanceof PartHome_MainTab_Activity) {
+            switch (position) {
+                case 0:
+                    return "Bengkel";
+                case 1:
+                    return "Otomotives";
             }
         }
         return null;

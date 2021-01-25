@@ -18,7 +18,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.sparepart.AturLokasiPart_Activity;
-import com.rkrzmail.oto.modules.sparepart.LokasiPart_Activity;
+import com.rkrzmail.oto.modules.sparepart.LokasiPart_MainTab_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
@@ -75,14 +75,14 @@ public class PartNonLokasi_Fragment extends Fragment {
                     public void onItemClick(Nson parent, View view, int position) {
                         Intent i = new Intent(getActivity(), AturLokasiPart_Activity.class);
                         i.putExtra("NON_ALOKASI", nListArray.get(position).toJson());
-                        startActivityForResult(i, LokasiPart_Activity.REQUEST_ATUR);
+                        startActivityForResult(i, LokasiPart_MainTab_Activity.REQUEST_ATUR);
                     }
                 })
         );
     }
 
     public void getNonTeralokasikan(final String cari){
-        ((LokasiPart_Activity) getActivity()).newProses(new Messagebox.DoubleRunnable() {
+        ((LokasiPart_MainTab_Activity) getActivity()).newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
             public void run() {
@@ -98,7 +98,7 @@ public class PartNonLokasi_Fragment extends Fragment {
                     nListArray.asArray().addAll(result.get("data").asArray());
                     rvNonAlokasi.getAdapter().notifyDataSetChanged();
                 } else {
-                    ((LokasiPart_Activity) getActivity()).showError("Mohon Di Coba Kembali");
+                    ((LokasiPart_MainTab_Activity) getActivity()).showError("Mohon Di Coba Kembali");
                 }
             }
         });
@@ -113,7 +113,7 @@ public class PartNonLokasi_Fragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == getActivity().RESULT_OK && requestCode == LokasiPart_Activity.REQUEST_ATUR){
+        if(resultCode == getActivity().RESULT_OK && requestCode == LokasiPart_MainTab_Activity.REQUEST_ATUR){
             getNonTeralokasikan("");
         }
     }

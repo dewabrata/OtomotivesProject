@@ -15,14 +15,17 @@
         tools:ignore="AllowBackup,UnusedAttribute"
         tools:replace="android:label">
         <activity
-            android:name=".modules.bengkel.Dashboard_Activity"
+            android:name=".modules.sparepart.PartHome_MainTab_Activity"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.bengkel.Dashboard_Activity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".modules.komisi.KomisiTerbayar_Activity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".modules.komisi.AturKomisiTerbayar_Activity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".modules.bengkel.Laporan_Activity"
             android:screenOrientation="portrait" />
@@ -327,7 +330,7 @@
             android:name=".modules.mekanik.AturSchedule_Activity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".modules.sparepart.LokasiPart_Activity"
+            android:name=".modules.sparepart.LokasiPart_MainTab_Activity"
             android:screenOrientation="portrait" />
         <activity android:name=".WebActivity" />
         <activity android:name=".MainActivity">

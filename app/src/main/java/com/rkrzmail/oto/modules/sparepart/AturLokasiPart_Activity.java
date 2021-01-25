@@ -85,23 +85,10 @@ public class AturLokasiPart_Activity extends AppActivity {
         if (getIntent().hasExtra("NON_ALOKASI")) {
             isLokasi = false;
             lokasiPart = "RUANG PART";
-            find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    updateData(nonLokasi);
-                }
-            });
         } else {
             isLokasi = true;
             viewLokasiPart(teralokasi);
             Tools.setViewAndChildrenEnabled(find(R.id.ly_lokasiPart, LinearLayout.class), true);
-            find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    updateData(teralokasi);
-                }
-            });
-
             noRak = teralokasi.get("RAK").asString();
             tinggkatRak = teralokasi.get("").asString();
             noFolder = teralokasi.get("NO_FOLDER").asString();
@@ -114,6 +101,16 @@ public class AturLokasiPart_Activity extends AppActivity {
         merk_part.setText(isLokasi ? teralokasi.get("MERK").asString() : nonLokasi.get("MERK").asString());
         Log.d(TAG, "initComponent: " + nonLokasi);
         spinnerView();
+        find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isLokasi) {
+                    updateData(teralokasi);
+                } else {
+                    updateData(nonLokasi);
+                }
+            }
+        });
     }
 
     private void updateData(final Nson data) {
@@ -221,21 +218,21 @@ public class AturLokasiPart_Activity extends AppActivity {
                 tinggiRakList.add(String.valueOf(i));
             }
         }
-        //setSpinnerOffline(lokasiList, sp_lokasi_part, lokasiPart);
+//        final List<String> lokasiList = Arrays.asList(getResources().getStringArray(R.array.lokasi_simpan));
+//        setSpinnerOffline(lokasiList, sp_lokasi_part, lokasiPart);
         setSpinnerOffline(penempatanList, sp_penempatan_part, penempatanPart);
         setSpinnerOffline(noRakList, sp_noRakPalet_part, noRak);
         setSpinnerOffline(tinggiRakList, sp_tinggiRak_part, tinggkatRak);
         setSpinnerOffline(noFolderList, sp_noFolder_part, noFolder);
         setSpLokasiPart();
+
         sp_penempatan_part.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
-                String item = parent.getItemAtPosition(position).toString();
-                if (item.equalsIgnoreCase("PALET")) {
-                    tempatPart = item;
+                tempatPart = parent.getItemAtPosition(position).toString();
+                if (tempatPart.equalsIgnoreCase("PALET")) {
                     sp_tinggiRak_part.setEnabled(false);
-                } else if (item.equalsIgnoreCase("RAK")) {
-                    tempatPart = item;
+                } else if (tempatPart.equalsIgnoreCase("RAK")) {
                     sp_tinggiRak_part.setEnabled(true);
                 } else {
                     sp_tinggiRak_part.setEnabled(false);
@@ -251,38 +248,26 @@ public class AturLokasiPart_Activity extends AppActivity {
 
     private void setSpLokasiPart() {
         final List<String> lokasiList = Arrays.asList(getResources().getStringArray(R.array.lokasi_simpan));
-        ArrayAdapter lokasiAdapter = new ArrayAdapter<String>(this, R.layout.simple_spinner_item, lokasiList) {
-            @Override
-            public boolean isEnabled(int position) {
-                if (isLokasi) {
-                    for (int i = 0; i < lokasiArray.size(); i++) {
-                        if (lokasiArray.get(i).asString().equals(lokasiList.get(position))) {
-                            return false;
-                        }
-                    }
-                }
-                return true;
-            }
-
+        ArrayAdapter<String> lokasiAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, lokasiList) {
             @SuppressLint("WrongConstant")
             @Override
             public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                View mView = super.getDropDownView(position, convertView, parent);
-                TextView mTextView = (TextView) mView;
-                ((TextView) mView).setGravity(Gravity.CENTER);
-                ((TextView) mView).setTextAlignment(Gravity.CENTER);
-
+                View view = null;
                 if (isLokasi) {
                     for (int i = 0; i < lokasiArray.size(); i++) {
                         if (lokasiArray.get(i).asString().equals(lokasiList.get(position))) {
+                            TextView mTextView = new TextView(getContext());
                             mTextView.setVisibility(View.GONE);
+                            mTextView.setHeight(0);
+                            view = mTextView;
                         } else {
-                            mTextView.setVisibility(View.VISIBLE);
-                            break;
+                            view = super.getDropDownView(position, convertView, parent);
                         }
                     }
+                }else{
+                    view = super.getDropDownView(position, convertView, parent);
                 }
-                return mView;
+                return view;
             }
         };
 
@@ -303,9 +288,9 @@ public class AturLokasiPart_Activity extends AppActivity {
         if (!lokasiPart.isEmpty()) {
             for (int i = 0; i < lokasiList.size(); i++) {
                 if (sp_lokasi_part.getItemAtPosition(i).toString().equals(lokasiPart)) {
-                    if(isLokasi){
+                    if (isLokasi) {
                         sp_lokasi_part.setSelection(i + 1);
-                    }else{
+                    } else {
                         sp_lokasi_part.setSelection(i);
                     }
                 }

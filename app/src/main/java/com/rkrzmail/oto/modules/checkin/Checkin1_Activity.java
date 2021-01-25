@@ -38,6 +38,7 @@ import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.srv.NsonAutoCompleteAdapter;
+import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
@@ -266,6 +267,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             public void afterTextChanged(Editable s) {
                 etNoPonsel.removeTextChangedListener(this);
                 int counting = (s == null) ? 0 : s.toString().length();
+                if(counting == 0) return;
                 if (counting < 4 && !etNoPonsel.getText().toString().contains("+62 ")) {
                     etNoPonsel.setTag(null);
                     etNoPonsel.setText("+62 ");
@@ -281,7 +283,43 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     isNoHp = false;
                 }
 
+                validateNoPonsel(formatOnlyNumber(etNoPonsel.getText().toString()));
+
                 etNoPonsel.addTextChangedListener(this);
+            }
+        });
+    }
+
+    private void validateNoPonsel(@NonNull final String noPonsel){
+        if(noPonsel.length() > 10){
+            find(R.id.pb_etNoPonsel_checkin).setVisibility(View.VISIBLE);
+        }else{
+            return;
+        }
+        newTask(new Messagebox.DoubleRunnable() {
+            Nson result;
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "ALL PELANGGAN");
+                args.put("search", noPonsel);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PELANGGAN), args));
+            }
+
+            @Override
+            public void runUI() {
+                find(R.id.pb_etNoPonsel_checkin).setVisibility(View.GONE);
+                if(!etNamaPelanggan.getText().toString().isEmpty()){
+                    result = result.get("data").get(0);
+                    String dataNama = result.get("NAMA_PELANGGAN").asString();
+                    String dataNoponsel = result.get("NO_PONSEL").asString();
+                    if(!etNamaPelanggan.getText().toString().equals(dataNama)
+                            && noPonsel.equals(dataNoponsel)){
+                        find(R.id.tl_nohp, TextInputLayout.class).setError("NO PONSEL TIDAK VALID DENGAN NAMA PELANGGAN");
+                    }else{
+                        find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
+                    }
+                }
             }
         });
     }

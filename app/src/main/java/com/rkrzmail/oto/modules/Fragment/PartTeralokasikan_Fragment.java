@@ -19,7 +19,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.sparepart.AturLokasiPart_Activity;
-import com.rkrzmail.oto.modules.sparepart.LokasiPart_Activity;
+import com.rkrzmail.oto.modules.sparepart.LokasiPart_MainTab_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
@@ -75,7 +75,7 @@ public class PartTeralokasikan_Fragment extends Fragment {
     }
 
     public void getTeralokasikan(final String cari){
-        ((LokasiPart_Activity) getActivity()).newProses(new Messagebox.DoubleRunnable() {
+        ((LokasiPart_MainTab_Activity) getActivity()).newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
             public void run() {
@@ -92,7 +92,7 @@ public class PartTeralokasikan_Fragment extends Fragment {
                     nListArray.asArray().addAll(result.get("data").asArray());
                     Objects.requireNonNull(rvLokasi_part.getAdapter()).notifyDataSetChanged();
                 }else{
-                    ((LokasiPart_Activity) Objects.requireNonNull(getActivity())).showError(result.get("message").asString());
+                    ((LokasiPart_MainTab_Activity) Objects.requireNonNull(getActivity())).showError(result.get("message").asString());
                 }
             }
         });
@@ -113,7 +113,7 @@ public class PartTeralokasikan_Fragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == getActivity().RESULT_OK && requestCode == LokasiPart_Activity.REQUEST_ATUR){
+        if(resultCode == getActivity().RESULT_OK && requestCode == LokasiPart_MainTab_Activity.REQUEST_ATUR){
             getTeralokasikan("");
         }else if(resultCode == getActivity().RESULT_OK && requestCode == REQUEST_ATUR_LOKASI){
             getTeralokasikan("");

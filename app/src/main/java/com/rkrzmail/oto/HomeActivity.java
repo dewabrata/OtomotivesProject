@@ -39,7 +39,7 @@ import com.rkrzmail.oto.modules.discount.DiscountPart_Activity;
 import com.rkrzmail.oto.modules.discount.DiscountSpot_Activity;
 import com.rkrzmail.oto.modules.bengkel.DaftarJurnal_Activity;
 import com.rkrzmail.oto.modules.bengkel.Layanan_Avtivity;
-import com.rkrzmail.oto.modules.sparepart.LokasiPart_Activity;
+import com.rkrzmail.oto.modules.sparepart.LokasiPart_MainTab_Activity;
 import com.rkrzmail.oto.gmod.part.PartActivity;
 import com.rkrzmail.oto.gmod.part.PartSearchActivity;
 import com.rkrzmail.oto.modules.mekanik.Schedule_Activity;
@@ -180,7 +180,7 @@ public class HomeActivity extends MenuActivity{
                     startActivity(intent);
 
                 }else if(nPopulate.get(position).get("id").asInteger() == MN_LOKASI_PART){
-                    Intent intent = new Intent(HomeActivity.this, LokasiPart_Activity.class);
+                    Intent intent = new Intent(HomeActivity.this, LokasiPart_MainTab_Activity.class);
                     startActivity(intent);
 
                 }else if(nPopulate.get(position).get("id").asInteger() == MN_TERIMA_PART){

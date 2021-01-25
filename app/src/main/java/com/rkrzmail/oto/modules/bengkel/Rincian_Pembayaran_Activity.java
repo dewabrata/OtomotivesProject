@@ -636,6 +636,9 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_KONFIRMASI) {
+            noHp = data.getStringExtra("NO_PONSEL");
+            setDefault();
+            viewRincianPembayaran();
             showSuccess("Sukses Memperharui Data Pelanggan");
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_NEW_CS) {
             setDefault();
