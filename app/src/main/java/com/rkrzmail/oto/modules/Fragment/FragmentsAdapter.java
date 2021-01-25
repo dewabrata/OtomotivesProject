@@ -9,6 +9,8 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.naa.data.Nson;
 import com.rkrzmail.oto.modules.bengkel.Absensi_MainTab_Activity;
+import com.rkrzmail.oto.modules.bengkel.Dashboard_Activity;
+import com.rkrzmail.oto.modules.bengkel.Dashboard_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Pembayaran_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
 import com.rkrzmail.oto.modules.sparepart.LokasiPart_MainTab_Activity;
@@ -138,6 +140,17 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
             }
             return fragment;
         }
+        if (context instanceof Dashboard_MainTab_Activity) {
+            switch (i) {
+                case 0:
+                    fragment = Fragment.instantiate(context, Dashboard_Angka_Fragment.class.getName());
+                    break;
+                case 1:
+                    fragment = Fragment.instantiate(context, Dashboard_Keuangan_Fragment.class.getName());
+                    break;
+            }
+            return fragment;
+        }
 
         if (context instanceof PartHome_MainTab_Activity) {
             switch (i) {
@@ -214,6 +227,15 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
                     return "Schedule";
                 case 2:
                     return "Komisi";
+            }
+        }
+        if (context instanceof Dashboard_MainTab_Activity) {
+            switch (position) {
+                case 0:
+                    return "Angka";
+                case 1:
+                    return "Keuangan";
+
             }
         }
 
