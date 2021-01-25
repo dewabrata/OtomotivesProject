@@ -37,6 +37,7 @@ import com.rkrzmail.oto.modules.antar_jemput.AntarJemput_Activity;
 import com.rkrzmail.oto.modules.bengkel.Absensi_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Collection_Activity;
 import com.rkrzmail.oto.modules.bengkel.Dashboard_Activity;
+import com.rkrzmail.oto.modules.bengkel.Dashboard_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Laporan_Activity;
 import com.rkrzmail.oto.modules.checkin.Checkin1_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiTerbayar_Activity;
@@ -206,7 +207,7 @@ public class MenuActivity extends AppActivity {
                     Intent intent = new Intent(MenuActivity.this, KontrolLayanan_Activity.class);
                     startActivity(intent);
                 }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_DASHBOARD)) {
-                    Intent intent = new Intent(MenuActivity.this, Dashboard_Activity.class);
+                    Intent intent = new Intent(MenuActivity.this, Dashboard_MainTab_Activity.class);
                     intent.putExtra("title", "Dashboard");
                     intent.putExtra("url", "https://m.otomotives.com/#/?" + getWebUrl());
                     startActivity(intent);

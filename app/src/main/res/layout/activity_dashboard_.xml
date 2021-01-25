@@ -12,6 +12,7 @@
         android:layout_height="match_parent">
 
         <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="@style/AppTheme.AppBarOverlay">
@@ -26,28 +27,6 @@
             </android.support.v7.widget.Toolbar>
 
         </android.support.design.widget.AppBarLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp">
-
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="ANGKA"
-                android:layout_weight="1"/>
-
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="KEUANGAN"
-                android:enabled="false"
-                android:layout_weight="1"/>
-
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -195,15 +174,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="NNM"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12dp"
+                        android:textColor="@color/grey_900"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="BOOKING"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold" />
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12dp"
+                        android:textColor="@color/grey_900"/>
 
                 </LinearLayout>
 
@@ -219,15 +200,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="NNM"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="LAYANAN"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12dp"/>
 
                 </LinearLayout>
 
@@ -243,15 +224,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="NNM"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="JUAL PART"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12dp"/>
 
                 </LinearLayout>
 
@@ -267,19 +248,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="NNM"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="BATAL"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12dp"/>
 
                 </LinearLayout>
-
-
 
             </LinearLayout>
 
@@ -310,17 +289,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp. NN.NNN.NNN"
-                        android:textSize="10dp"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
-
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="10dp" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:text="LAYANAN"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textSize="12dp"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
                 </LinearLayout>
 
@@ -336,17 +313,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp. NN.NNN.NNN"
-                        android:textSize="10dp"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="10dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:text="PART"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12dp"/>
 
                 </LinearLayout>
 
@@ -363,16 +339,16 @@
                         android:layout_height="wrap_content"
                         android:text="Rp. NN.NNN.NNN"
                         android:textSize="10dp"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:text="JASA PART"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12dp"/>
 
                 </LinearLayout>
 
@@ -398,16 +374,16 @@
                         android:layout_height="wrap_content"
                         android:text="Rp. NN.NNN.NNN"
                         android:textSize="10dp"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:text="JASA LAINNYA"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12dp"/>
 
                 </LinearLayout>
 
@@ -423,17 +399,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp. NN.NNN.NNN"
-                        android:textSize="10dp"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="10dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:text="LAINNYA"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12dp"/>
 
                 </LinearLayout>
 
@@ -449,17 +424,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp. NN.NNN.NNN"
-                        android:textSize="10dp"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="10dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:text="DISCOUNT"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12dp"/>
 
                 </LinearLayout>
 
@@ -492,17 +466,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp. NN.NNN.NNN"
-                        android:textSize="10dp"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="10dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:text="PENDAPATAN"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12dp"/>
 
                 </LinearLayout>
 
@@ -518,17 +491,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp. NN.NNN.NNN"
-                        android:textSize="10dp"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="10dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:text="DOWNPAYMENT"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12dp"/>
 
                 </LinearLayout>
 
@@ -544,17 +516,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp. NN.NNN.NNN"
-                        android:textSize="10dp"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="10dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:text="INCOME"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12dp"/>
 
                 </LinearLayout>
 
@@ -579,17 +550,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp. NN.NNN.NNN"
-                        android:textSize="10dp"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="10dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:text="BIAYA"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12dp"/>
 
                 </LinearLayout>
 
@@ -605,17 +575,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp. NN.NNN.NNN"
-                        android:textSize="10dp"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="10dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:text="HPP PART"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12dp"/>
 
                 </LinearLayout>
 
@@ -631,17 +600,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp. NN.NNN.NNN"
-                        android:textSize="10dp"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="10dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:text="MARGIN"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12dp"/>
 
                 </LinearLayout>
 
@@ -674,17 +642,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp. NN.NNN.NNN"
-                        android:textSize="10dp"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="10dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:text="KAS"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12dp"/>
 
                 </LinearLayout>
 
@@ -700,17 +667,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp. NN.NNN.NNN"
-                        android:textSize="10dp"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="10dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:text="BANK"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12dp"/>
 
                 </LinearLayout>
 
@@ -726,17 +692,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp. NN.NNN.NNN"
-                        android:textSize="10dp"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="10dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:text="PIUTANG"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12dp"/>
 
                 </LinearLayout>
 
@@ -761,17 +726,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp. NN.NNN.NNN"
-                        android:textSize="10dp"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="10dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:text="COLLECTION"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12dp"/>
 
                 </LinearLayout>
 
@@ -787,17 +751,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp. NN.NNN.NNN"
-                        android:textSize="10dp"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="10dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:text="STOCK PART"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12dp"/>
 
                 </LinearLayout>
 
@@ -813,17 +776,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp. NN.NNN.NNN"
-                        android:textSize="10dp"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="10dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:text="HUTANG"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12dp"/>
 
                 </LinearLayout>
 

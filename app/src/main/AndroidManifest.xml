@@ -14,15 +14,18 @@
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,UnusedAttribute"
         tools:replace="android:label">
+        <activity android:name=".modules.bengkel.Dashboard_MainTab_Activity"></activity>
+        <activity android:name=".modules.Fragment.Dashboard_Keuangan_Fragment" />
+        <activity android:name=".modules.Fragment.Dashboard_Angka_Fragment" />
         <activity
             android:name=".modules.bengkel.Dashboard_Activity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".modules.komisi.KomisiTerbayar_Activity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".modules.komisi.AturKomisiTerbayar_Activity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".modules.bengkel.Laporan_Activity"
             android:screenOrientation="portrait" />
