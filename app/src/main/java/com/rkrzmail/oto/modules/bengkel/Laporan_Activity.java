@@ -52,12 +52,14 @@ import static com.rkrzmail.utils.ConstUtils.CETAK_EXCEL;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.EXTERNAL_DIR_OTO;
 import static com.rkrzmail.utils.ConstUtils.ONEDAY;
+import static com.rkrzmail.utils.Tools.setFormatDayAndMonthFromDb;
+import static com.rkrzmail.utils.Tools.setFormatDayAndMonthToDb;
 
 
 public class Laporan_Activity extends AppActivity {
 
-    private TextView tglMulai, tglSelesai, txtProgress;
-    private String jenisLaporan;
+    private TextView tvAwal, tvAkhir, txtProgress;
+    private String jenisLaporan="", tglAwal="",tglAkhir="";
     private Spinner spJenisLap;
     private Nson testList = Nson.newArray();
     private ProgressBar progressBar;
@@ -71,6 +73,8 @@ public class Laporan_Activity extends AppActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_laporan);
         initComponent();
+        setDefaultTgl();
+
     }
 
     private void initToolbar() {
@@ -83,30 +87,29 @@ public class Laporan_Activity extends AppActivity {
     private void initComponent() {
         initToolbar();
         initProgressbar();
-        tglMulai = findViewById(R.id.tv_tglMulai_lap);
-        tglSelesai = findViewById(R.id.tv_tglSelesai_lap);
+        tvAwal = findViewById(R.id.tv_tglMulai_lap);
+        tvAkhir = findViewById(R.id.tv_tglSelesai_lap);
         spJenisLap = findViewById(R.id.sp_nama_laporan);
         Button btnUnduh = findViewById(R.id.btn_unduh);
-
 
         find(R.id.ic_tglMulai_lap).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getDatePickerDari();
+                getDatePickerAwal();
 
             }
         });
         find(R.id.ic_tglSelesai_lap).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getDatePickerSampai();
+                getDatePickerAkhir();
             }
         });
 
         btnUnduh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DownloadExcel().execute(CETAK_EXCEL(UtilityAndroid.getSetting(getApplicationContext(), "CID", "").trim(), jenisLaporan));
+                new DownloadExcel().execute(CETAK_EXCEL(UtilityAndroid.getSetting(getApplicationContext(), "CID", "").trim(), jenisLaporan,tglAwal,tglAkhir));
             }
         });
 
@@ -115,11 +118,11 @@ public class Laporan_Activity extends AppActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String item = parent.getSelectedItem().toString();
                 if (item.equalsIgnoreCase("UNIT ENTRY")) {
-                    jenisLaporan = "entry";
+                    jenisLaporan = "UNIT ENTRY";
                 } else if (item.equalsIgnoreCase("UNIT DETAIL")) {
-                    jenisLaporan = "detail";
-                } else {
-                    jenisLaporan = "lkk";
+                    jenisLaporan = "UNIT DETAIL";
+                } else if (item.equalsIgnoreCase("UNIT ENTRY AHAS")) {
+                    jenisLaporan = "UNIT ENTRY AHASS";
                 }
             }
 
@@ -128,6 +131,13 @@ public class Laporan_Activity extends AppActivity {
 
             }
         });
+    }
+
+    private void setDefaultTgl(){
+        if(tvAwal.getText().toString().isEmpty() && tvAkhir.getText().toString().isEmpty()){
+            tvAwal.setText(currentDateTime("dd/MM/yyyy"));
+            tvAkhir.setText(currentDateTime("dd/MM/yyyy"));
+        }
     }
 
     private void initProgressbar() {
@@ -211,13 +221,8 @@ public class Laporan_Activity extends AppActivity {
         protected String doInBackground(String... urls) {
             int count = 0;
             try {
-                /*String fileName = "/report - " +
-                        jenisLaporan +
-                        " " +
-                        tglMulai.getText().toString() +
-                        " - "
-                        + tglSelesai.getText().toString()
-                        + ".xls";*/
+//                String fileName = "/report - " + jenisLaporan + "-" +tglMulai.getText().toString() + "-"
+//                         + tglSelesai.getText().toString() + ".xls";
                 String fileName = "/report - " +jenisLaporan+ ".xls";
                 file = new File(EXTERNAL_DIR_OTO + fileName);
                 if (!file.exists()) {
@@ -273,7 +278,7 @@ public class Laporan_Activity extends AppActivity {
     }
 
 
-    public void getDatePickerDari() {
+    public void getDatePickerAwal() {
         final Calendar cldr = Calendar.getInstance();
         final int day = cldr.get(Calendar.DAY_OF_WEEK);
         final int month = cldr.get(Calendar.MONTH);
@@ -292,17 +297,25 @@ public class Laporan_Activity extends AppActivity {
                 }
                 String formattedTime = sdf.format(date);
                 //tanggalString += formattedTime;
-                find(R.id.tv_tglMulai_lap, TextView.class).setText(formattedTime);
+               tvAwal.setText(formattedTime);
+               //tglAwal = setFormatDayAndMonthFromDb(formattedTime,"yyyy-MM-dd");
 
             }
         }, year, month, day);
+
+        datePickerDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                tglAwal = setFormatDayAndMonthToDb(tvAwal.getText().toString());
+            }
+        });
 
         datePickerDialog.setMinDate(parseWaktu1blnlalu());
         datePickerDialog.setMaxDate(parseWaktuNow());
         datePickerDialog.show(getFragmentManager(), "Datepickerdialog");
     }
 
-    public void getDatePickerSampai() {
+    public void getDatePickerAkhir() {
         final Calendar cldr = Calendar.getInstance();
         final int day = cldr.get(Calendar.DAY_OF_WEEK);
         final int month = cldr.get(Calendar.MONTH);
@@ -320,11 +333,19 @@ public class Laporan_Activity extends AppActivity {
                     e.printStackTrace();
                 }
                 String formattedTime = sdf.format(date);
-                //tanggalString += formattedTime;
-                find(R.id.tv_tglSelesai_lap, TextView.class).setText(formattedTime);
+
+                tvAkhir.setText(formattedTime);
+                //tglAkhir = setFormatDayAndMonthToDb(formattedTime,"yyyy-MM-dd");
 
             }
         }, year, month, day);
+
+        datePickerDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                tglAkhir = setFormatDayAndMonthToDb(tvAkhir.getText().toString());
+            }
+        });
 
         datePickerDialog.setMinDate(parseWaktu1blnlalu());
         datePickerDialog.show(getFragmentManager(), "Datepickerdialog");

@@ -13,8 +13,8 @@ public class ConstUtils {
                 "https://otomotives.com/internaldev/report/bukti_beli_part/" + params;
     }
 
-    public static String CETAK_EXCEL(String CID, String Entry) {
-        return "http://otomotives.com/api/v3/lap?cid=" + CID + "&report=" + Entry;
+    public static String CETAK_EXCEL(String CID, String Entry, String tglAwal, String tglAkhir) {
+        return "https://otomotives.com/internaldev/laporan_kinerja?cid="+CID+"&nama_laporan="+Entry +"&periode_awal="+tglAwal+"&periode_akhir="+tglAkhir+"";
     }
 
     public static int DAYS(long milliseconds) {

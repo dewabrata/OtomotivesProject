@@ -30,9 +30,6 @@
             android:name=".modules.bengkel.Absensi_MainTab_Activity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".modules.bengkel.Dashboard_Activity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".modules.mekanik.LkkClaimMekanik_Activity"
             android:screenOrientation="portrait" />
         <activity

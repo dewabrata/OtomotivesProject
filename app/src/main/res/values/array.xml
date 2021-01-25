@@ -114,9 +114,10 @@
 
     <string-array name="laporan">
         <item>--PILIH--</item>
+        <item>UNIT ENTRY AHAS</item>
         <item>UNIT ENTRY</item>
         <item>UNIT DETAIL</item>
-        <item>LKK CLAIM</item>
+
 
     </string-array>
 
