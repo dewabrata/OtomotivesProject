@@ -223,7 +223,7 @@ public class Laporan_Activity extends AppActivity {
             try {
 //                String fileName = "/report - " + jenisLaporan + "-" +tglMulai.getText().toString() + "-"
 //                         + tglSelesai.getText().toString() + ".xls";
-                String fileName = "/report - " +jenisLaporan+ ".xls";
+                String fileName = "report - " +jenisLaporan+ ".xls";
                 file = new File(EXTERNAL_DIR_OTO + fileName);
                 if (!file.exists()) {
                     URL url = new URL(urls[0]);
