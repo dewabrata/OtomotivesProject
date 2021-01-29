@@ -73,8 +73,6 @@ public class Laporan_Activity extends AppActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_laporan);
         initComponent();
-        setDefaultTgl();
-
     }
 
     private void initToolbar() {
@@ -109,7 +107,12 @@ public class Laporan_Activity extends AppActivity {
         btnUnduh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DownloadExcel().execute(CETAK_EXCEL(UtilityAndroid.getSetting(getApplicationContext(), "CID", "").trim(), jenisLaporan,tglAwal,tglAkhir));
+                if(tvAwal.getText().toString().isEmpty() || tvAkhir.getText().toString().isEmpty()){
+                    showInfo("Tanngal Periode Tidak Boleh Kosong");
+                } else {
+                    new DownloadExcel().execute(CETAK_EXCEL(UtilityAndroid.getSetting(getApplicationContext(), "CID", "").trim(), jenisLaporan,tglAwal,tglAkhir));
+                }
+
             }
         });
 
@@ -221,9 +224,7 @@ public class Laporan_Activity extends AppActivity {
         protected String doInBackground(String... urls) {
             int count = 0;
             try {
-//                String fileName = "/report - " + jenisLaporan + "-" +tglMulai.getText().toString() + "-"
-//                         + tglSelesai.getText().toString() + ".xls";
-                String fileName = "report - " +jenisLaporan+ ".xls";
+                String fileName = "/REPORT-" +jenisLaporan +"-"+ tglAwal +"-"+ tglAkhir + ".xls";
                 file = new File(EXTERNAL_DIR_OTO + fileName);
                 if (!file.exists()) {
                     URL url = new URL(urls[0]);

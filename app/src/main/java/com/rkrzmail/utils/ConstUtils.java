@@ -14,7 +14,7 @@ public class ConstUtils {
     }
 
     public static String CETAK_EXCEL(String CID, String Entry, String tglAwal, String tglAkhir) {
-        return "https://otomotives.com/internaldev/laporan_kinerja?cid="+CID+"&nama_laporan="+Entry +"&periode_awal="+tglAwal+"&periode_akhir="+tglAkhir+"";
+        return "https://otomotives.com/internaldev/laporan_kinerja?cid="+CID+"&nama_laporan="+Entry+"&periode_awal="+tglAwal+"&periode_akhir="+tglAkhir;
     }
 
     public static int DAYS(long milliseconds) {
