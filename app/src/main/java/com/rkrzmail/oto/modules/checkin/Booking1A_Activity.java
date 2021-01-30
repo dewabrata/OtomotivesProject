@@ -71,7 +71,7 @@ public class Booking1A_Activity extends AppActivity {
         find(R.id.btn_history_booking1a, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getActivity(), HistoryBookingCheckin_Activity.class);
+                Intent i = new Intent(getActivity(), History_Activity.class);
                 i.putExtra("NOPOL", etNopol.getText().toString().trim());
                 startActivityForResult(i, REQUEST_HISTORY);
             }

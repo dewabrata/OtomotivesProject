@@ -12,11 +12,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
+        android:appComponentFactory="android.support.v4.app.CoreComponentFactory"
         tools:ignore="AllowBackup,UnusedAttribute"
-        tools:replace="android:label">
-        <activity android:name=".modules.bengkel.Dashboard_MainTab_Activity"></activity>
-        <activity android:name=".modules.Fragment.Dashboard_Keuangan_Fragment" />
-        <activity android:name=".modules.Fragment.Dashboard_Angka_Fragment" />
+        tools:replace="android:label"
+        >
+        <activity
+            android:name=".modules.bengkel.Dashboard_MainTab_Activity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.sparepart.PartHome_MainTab_Activity"
             android:screenOrientation="portrait"/>
@@ -177,7 +179,7 @@
             android:name=".modules.checkin.Checkin4_Activity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".modules.checkin.HistoryBookingCheckin_Activity"
+            android:name=".modules.checkin.History_Activity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".modules.jasa.BiayaJasa_Activity"

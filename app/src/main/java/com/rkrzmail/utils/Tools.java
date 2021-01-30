@@ -321,6 +321,7 @@ public class Tools {
 
     @SuppressLint("SimpleDateFormat")
     public static String setFormatDayAndMonthToDb(String date) {
+        if(date.isEmpty()) return "";
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         Date tgl = new Date();
         try {
@@ -329,8 +330,7 @@ public class Tools {
             e.printStackTrace();
         }
         sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String fotmatDate = sdf.format(tgl);
-        return fotmatDate;
+        return sdf.format(tgl);
     }
 
     @SuppressLint("SimpleDateFormat")

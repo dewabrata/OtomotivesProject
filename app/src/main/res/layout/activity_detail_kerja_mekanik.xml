@@ -22,53 +22,49 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/btn_keluhan"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/keluhan_uppercase"
-                    android:background="@drawable/btn_rounded_accent"
-                    android:textColor="@android:color/white" />
-
-                <Button
-                    android:id="@+id/btn_point_layanan"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/point_layanan_uppercase"
-                    android:background="@drawable/btn_rounded_accent"
-                    android:textColor="@android:color/white" />
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="@dimen/paddingMedium">
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp">
 
-                <Button
-                    android:id="@+id/btn_lkk"
-                    android:layout_width="wrap_content"
+                <ImageButton
+                    android:id="@+id/img_btn_keluhan"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_keluhan_resize"
+                    android:backgroundTint="@android:color/transparent"
+                    android:layout_weight="1"/>
+
+                <ImageButton
+                    android:id="@+id/img_btn_point_layanan"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/lkk_claim_uppercase"
-                    android:background="@drawable/btn_rounded_accent"
-                    android:textColor="@android:color/white" />
+                    app:srcCompat="@drawable/ic_point_layanan_resize"
+                    android:backgroundTint="@android:color/transparent"/>
 
-                <Button
-                    android:id="@+id/btn_tambah_part"
-                    android:layout_width="wrap_content"
+                <ImageButton
+                    android:id="@+id/img_btn_history"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/tambah_part_uppercase"
-                    android:background="@drawable/btn_rounded_accent"
-                    android:textColor="@android:color/white" />
+                    app:srcCompat="@drawable/ic_history_resize"
+                    android:backgroundTint="@android:color/transparent"/>
 
+                <ImageButton
+                    android:id="@+id/img_btn_katalog"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/ic_katalog_resize"
+                    android:backgroundTint="@android:color/transparent"/>
+
+                <ImageButton
+                    android:id="@+id/img_btn_diagnostic"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/ic_diagnostic_resize"
+                    android:backgroundTint="@android:color/transparent"/>
 
             </LinearLayout>
 
@@ -364,6 +360,49 @@
                     app:srcCompat="@drawable/icon_stop" />
 
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/paddingSemiLarge"
+                android:layout_marginBottom="20dp">
+
+                <ImageButton
+                    android:id="@+id/img_btn_berkala"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    app:srcCompat="@drawable/icon_tanggal"
+                    android:backgroundTint="@color/transparent" />
+
+                <ImageButton
+                    android:id="@+id/img_btn_my_code"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/transparent"
+                    app:srcCompat="@drawable/ic_my_code_resize" />
+
+                <ImageButton
+                    android:id="@+id/img_btn_lkk"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/ic_lkk_resize"
+                    android:backgroundTint="@android:color/transparent"/>
+
+                <ImageButton
+                    android:id="@+id/img_btn_tambah_part"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/ic_tambah_part_resize"
+                    android:backgroundTint="@android:color/transparent"/>
+
+            </LinearLayout>
+
 
         </LinearLayout>
 

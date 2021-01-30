@@ -72,13 +72,14 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
     public static final String TAG = "Tambah___";
 
     private RecyclerView rvPart, rvJasaLain;
-    private Nson partList = Nson.newArray();
-    private Nson jasaList = Nson.newArray();
-    private Tools.TimePart dummyTime = Tools.TimePart.parse("00:00:00");
+    private final Nson partList = Nson.newArray();
+    private final Nson jasaList = Nson.newArray();
+    private final Tools.TimePart dummyTime = Tools.TimePart.parse("00:00:00");
 
     private String idCheckin = "";
     private String layanan = "";
     private String nopol = "";
+    private String noPonsel = "";
     // private Nson idCheckinDetailList = Nson.newArray();
     private int totalBiaya = 0;
     private int totalTambah = 0;
@@ -128,6 +129,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
     private void initData() {
         idCheckin = getIntentStringExtra("CHECKIN_ID");
         nopol = getIntentStringExtra("NOPOL");
+        noPonsel = getIntentStringExtra("NO_PONSEL");
         Log.d(TAG, "initData: " + idCheckin);
         totalBiaya = Integer.parseInt(getIntentStringExtra(TOTAL_BIAYA));
         find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));
@@ -165,8 +167,8 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
             find(R.id.ly_tidak_menunggu).setVisibility(View.GONE);
             find(R.id.ly_menunggu).setVisibility(View.GONE);
             find(R.id.tl_total_setelah_tambah, TextInputLayout.class).setHint("TOTAL BATAL");
-            jasaList.asArray().addAll(Nson.readJson(getIntentStringExtra(JASA_LAIN)).asArray());
-            partList.asArray().addAll(Nson.readJson(getIntentStringExtra(PARTS_UPPERCASE)).asArray());
+            //jasaList.asArray().addAll(Nson.readJson(getIntentStringExtra(JASA_LAIN)).asArray());
+            //partList.asArray().addAll(Nson.readJson(getIntentStringExtra(PARTS_UPPERCASE)).asArray());
             if (jasaList.size() > 0) {
                 rvPart.getAdapter().notifyDataSetChanged();
             }
@@ -236,6 +238,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
                 super.onBindViewHolder(viewHolder, position);
+                viewHolder.find(R.id.view_mark_tambah_jasa).setVisibility(View.GONE);
                 viewHolder.find(R.id.tv_namaPart_booking3_checkin3, TextView.class)
                         .setText(partList.get(position).get("NAMA_PART").asString());
                 viewHolder.find(R.id.tv_noPart_booking3_checkin3, TextView.class)
@@ -255,9 +258,12 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                             public void onClick(DialogInterface dialog, int which) {
                                 totalBatal += Integer.parseInt(formatOnlyNumber(partList.get(position).get("HARGA_PART").asString()));
                                 totalBatal += Integer.parseInt(formatOnlyNumber(partList.get(position).get("HARGA_JASA").asString()));
-                                find(R.id.et_total_tambah_or_batal, EditText.class).setText(RP + formatRp(String.valueOf(totalBatal)));
-                                int subtraction = totalBiaya - totalBatal;
-                                find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(subtraction)));
+
+                                totalBiaya -= Integer.parseInt(formatOnlyNumber(partList.get(position).get("NET").asString()));;
+                                totalTambah -= Integer.parseInt(formatOnlyNumber(partList.get(position).get("NET").asString()));;
+
+                                find(R.id.et_total_tambah_or_batal, EditText.class).setText(RP + formatRp(String.valueOf(totalTambah)));
+                                find(R.id.et_total_akhir, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));
 
                                 partList.asArray().remove(position);
                                 notifyItemRemoved(position);
@@ -283,6 +289,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
                 super.onBindViewHolder(viewHolder, position);
+                viewHolder.find(R.id.view_mark_tambah_jasa).setVisibility(View.GONE);
                 viewHolder.find(R.id.tv_kelompokPart_booking3_checkin3, TextView.class)
                         .setText(jasaList.get(position).get("NAMA_KELOMPOK_PART").asString());
                 viewHolder.find(R.id.tv_aktifitas_booking3_checkin3, TextView.class)
@@ -297,10 +304,12 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 totalBatal += Integer.parseInt(formatOnlyNumber(jasaList.get(position).get("HARGA_JASA").asString()));
-                                find(R.id.et_total_tambah_or_batal, EditText.class).setText(RP + formatRp(String.valueOf(totalBatal)));
 
-                                int subtraction = totalBiaya - totalBatal;
-                                find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(subtraction)));
+                                totalBiaya -= Integer.parseInt(formatOnlyNumber(jasaList.get(position).get("NET").asString()));;
+                                totalTambah -= Integer.parseInt(formatOnlyNumber(jasaList.get(position).get("NET").asString()));;
+
+                                find(R.id.et_total_tambah_or_batal, EditText.class).setText(RP + formatRp(String.valueOf(totalTambah)));
+                                find(R.id.et_total_akhir, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));
 
                                 jasaList.asArray().remove(position);
                                 notifyItemRemoved(position);
@@ -330,13 +339,16 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
     private void updateTambahOrBatal() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
+            String konfirmasiTambah = "";
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 String estimasiSesudah = find(R.id.et_tgl_estimasi, EditText.class).getText().toString() + " " +
                         find(R.id.et_jam_estimasi, EditText.class).getText().toString();
                 args.put("action", "update");
+                args.put("nopol", nopol);
+                args.put("noPonsel", noPonsel);
+                args.put("idCheckin", idCheckin);
                 if (isTambah) {
                     args.put("aktivitas", "TAMBAH PART - JASA");
                     //args.put("detailId", idCheckinDetail);
@@ -344,9 +356,8 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                     args.put("parts", partList.toJson());
                     args.put("jasaLain", jasaList.toJson());
                     args.put("idDetail", getIntentStringExtra(ID));
-                    args.put("idCheckin", idCheckin);
                     args.put("estimasiSesudah", estimasiSesudah);
-                    String konfirmasiTambah = "";
+
                     if (isWait || (isNotWait && !isKonfirmasiTambah)) {
                         konfirmasiTambah = "N";
                     } else {
@@ -360,12 +371,18 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                 }
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_KONTROL_LAYANAN), args));
+                result.getError();
                 Log.d("cok__", "run: " + result);
             }
 
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    if(konfirmasiTambah.equals("N")){
+                        Intent intent = new Intent(getActivity(), KontrolLayanan_Activity.class);
+                        intent.putExtra("NOPOL", nopol);
+                        showNotification(getActivity(), "Tambah Part - Jasa", formatNopol(nopol), "CHECKIN", intent);
+                    }
                     showSuccess("Menambahkan Part Berhasil");
                     Intent i = new Intent();
                     i.putExtra(ID, idCheckin);
@@ -398,6 +415,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
             case R.id.btn_part:
                 i = new Intent(getActivity(), CariPart_Activity.class);
                 i.putExtra(CARI_PART_LOKASI, RUANG_PART);
+                i.putExtra(TAMBAH_PART, "Y");
                 startActivityForResult(i, REQUEST_CARI_PART);
                 break;
             case R.id.btn_simpan:
@@ -407,9 +425,9 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                         find(R.id.et_tgl_estimasi, EditText.class).getText().toString().isEmpty() &&
                         find(R.id.et_jam_estimasi, EditText.class).getText().toString().isEmpty()) {
                     showWarning("Estimasi Selsai belum terisi");
-                }else if(partList.asArray().isEmpty() && jasaList.asArray().isEmpty()){
+                } else if (partList.asArray().isEmpty() && jasaList.asArray().isEmpty()) {
                     showWarning("PART DAN JASA BELUM DI TAMBAHKAN");
-                }else {
+                } else {
                     updateTambahOrBatal();
                 }
                 break;
@@ -467,6 +485,11 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
     }
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     @SuppressLint({"NewApi", "SetTextI18n"})
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -503,8 +526,9 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                     }
                     break;
                 case REQUEST_CARI_PART:
+                    dataAccept = Nson.readJson(getIntentStringExtra(data, DATA));
                     i = new Intent(getActivity(), JumlahPart_Checkin_Activity.class);
-                    i.putExtra(DATA, Nson.readJson(getIntentStringExtra(data, PART)).toJson());
+                    i.putExtra(DATA, dataAccept.toJson());
                     i.putExtra(TAMBAH_PART, "");
                     startActivityForResult(i, REQUEST_HARGA_PART);
                     break;

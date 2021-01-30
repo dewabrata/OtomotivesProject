@@ -218,8 +218,7 @@ public class AturLokasiPart_Activity extends AppActivity {
                 tinggiRakList.add(String.valueOf(i));
             }
         }
-//        final List<String> lokasiList = Arrays.asList(getResources().getStringArray(R.array.lokasi_simpan));
-//        setSpinnerOffline(lokasiList, sp_lokasi_part, lokasiPart);
+
         setSpinnerOffline(penempatanList, sp_penempatan_part, penempatanPart);
         setSpinnerOffline(noRakList, sp_noRakPalet_part, noRak);
         setSpinnerOffline(tinggiRakList, sp_tinggiRak_part, tinggkatRak);

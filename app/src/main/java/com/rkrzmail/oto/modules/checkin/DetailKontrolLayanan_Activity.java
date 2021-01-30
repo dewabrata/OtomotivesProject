@@ -1,16 +1,21 @@
 package com.rkrzmail.oto.modules.checkin;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -30,6 +35,7 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.bengkel.AturUser_Activity;
 import com.rkrzmail.srv.NikitaMultipleViewAdapter;
+import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
 
@@ -40,6 +46,7 @@ import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.ATUR_KONTROL_LAYANAN;
 import static com.rkrzmail.utils.APIUrls.SET_ANTRIAN;
+import static com.rkrzmail.utils.APIUrls.VIEW_KELUHAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_KONTROL_LAYANAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_MEKANIK;
 import static com.rkrzmail.utils.ConstUtils.DATA;
@@ -48,6 +55,7 @@ import static com.rkrzmail.utils.ConstUtils.ESTIMASI_WAKTU;
 import static com.rkrzmail.utils.ConstUtils.ID;
 import static com.rkrzmail.utils.ConstUtils.MENUNGGU;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CHECKIN;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_HISTORY;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_MEKANIK;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_NEW_CS;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_TAMBAH_PART_JASA_LAIN;
@@ -63,14 +71,18 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
 
     private EditText etNoAntrian, etStatus, etNopol, etNoKunci, etNamaPelanggan, etTotal,
             etDp, etSisa, etEstimasiSebelum, etEstimasiLama, etEstimasiSelesai, etPengambilan, etKeteranganTambahan, etNamaLayanan;
-    private RecyclerView rvDetail;
+    private RecyclerView rvDetail, rvKeluhan;
     private Spinner spAktifitas, spNamaMekanik;
     private TextView tvNamaLayanan, tvBiayaLayanan;
+    private AlertDialog alertDialog;
 
-    private Nson mekanikArray = Nson.newArray(), idMekanikArray = Nson.newArray();
-    private Nson detailCheckinList = Nson.newArray(), partCheckinList = Nson.newArray();
-    private Nson batalPartJasaList = Nson.newArray();
+    private final Nson mekanikArray = Nson.newArray();
+    private final Nson idMekanikArray = Nson.newArray();
+    private final Nson detailCheckinList = Nson.newArray();
+    private final Nson partCheckinList = Nson.newArray();
+    private final Nson batalPartJasaList = Nson.newArray();
     private final Nson partMessage = Nson.newArray();
+    private final Nson keluhanList = Nson.newArray();
 
     private boolean isMekanik = false, isMekanikFromCheckin = false; // true = part, false = jasa
     private boolean isKurangi = false;
@@ -86,12 +98,15 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
     private int totalTambahPart = 0;
     private int totalBiaya = 0;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_kontrol_layanan_);
         initToolbar();
         initComponent();
+        initRecyclerviewDetail();
+        loadData();
     }
 
     @SuppressLint("NewApi")
@@ -101,6 +116,14 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         Objects.requireNonNull(getSupportActionBar()).setTitle("Kontrol Layanan");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
+
+    private void initToolbarKeluhan(View dialogView) {
+        Toolbar toolbar = dialogView.findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Keluhan");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+    }
+
 
     private void initComponent() {
         etNoAntrian = findViewById(R.id.et_noAntrian);
@@ -122,9 +145,6 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         rvDetail = findViewById(R.id.recyclerView);
         tvNamaLayanan = findViewById(R.id.tv_nama_layanan);
         tvBiayaLayanan = findViewById(R.id.tv_biaya_layanan);
-
-        initRecyclerviewDetail();
-        loadData();
     }
 
     @SuppressLint("SetTextI18n")
@@ -194,9 +214,63 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             }
         });
 
+        find(R.id.btn_keluhan, Button.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                initKeluhanDialog();
+            }
+        });
+
+        find(R.id.btn_history).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), History_Activity.class);
+                intent.putExtra("ALL", "ALL");
+                intent.putExtra("NOPOL", etNopol.getText().toString().trim());
+                startActivityForResult(intent, REQUEST_HISTORY);
+            }
+        });
+
         setSpAktifitas();
         setSpMekanik(data.get("MEKANIK").asString());
         getDetailCheckin(idCheckin);
+        viewKeluhan();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void initKeluhanDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.activity_list_basic, null);
+        builder.setView(dialogView);
+
+        SwipeRefreshLayout swipeRefreshLayout = dialogView.findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setEnabled(false);
+        initToolbarKeluhan(dialogView);
+        initRecylerviewKeluhan(dialogView);
+        if(keluhanList.size() > 0){
+            Objects.requireNonNull(rvKeluhan.getAdapter()).notifyDataSetChanged();
+        }
+        builder.create();
+        alertDialog = builder.show();
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void initRecylerviewKeluhan(View dialogView) {
+        rvKeluhan = dialogView.findViewById(R.id.recyclerView);
+        rvKeluhan.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvKeluhan.setHasFixedSize(true);
+        rvKeluhan.setAdapter(new NikitaRecyclerAdapter(keluhanList, R.layout.item_keluhan) {
+            @Override
+            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+                super.onBindViewHolder(viewHolder, position);
+                viewHolder.find(R.id.tv_no, TextView.class).setVisibility(View.VISIBLE);
+                viewHolder.find(R.id.tv_no, TextView.class).setText(keluhanList.get(position).get("NO").asString() + ". ");
+                viewHolder.find(R.id.tv_keluhan, TextView.class).setText(keluhanList.get(position).get("KELUHAN").asString());
+                viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.GONE);
+            }
+        });
+
     }
 
     private void initRecyclerviewDetail() {
@@ -211,9 +285,9 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
 
                 if (itemType == ITEM_VIEW_1) {
                     if(detailCheckinList.get(position).get("STATUS_DETAIL").asString().equals("TAMBAH PART - JASA")){
-                        viewHolder.find(R.id.tv_mark_tambah_jasa).setVisibility(View.VISIBLE);
+                        viewHolder.find(R.id.view_mark_tambah_jasa).setVisibility(View.VISIBLE);
                     }else{
-                        viewHolder.find(R.id.tv_mark_tambah_jasa).setVisibility(View.GONE);
+                        viewHolder.find(R.id.view_mark_tambah_jasa).setVisibility(View.GONE);
                     }
 
                     viewHolder.find(R.id.tv_namaPart_booking3_checkin3, TextView.class)
@@ -266,9 +340,9 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                     }
                 } else if (itemType == ITEM_VIEW_2) {
                     if(detailCheckinList.get(position).get("STATUS_DETAIL").asString().equals("TAMBAH PART - JASA")){
-                        viewHolder.find(R.id.tv_mark_tambah_jasa).setVisibility(View.VISIBLE);
+                        viewHolder.find(R.id.view_mark_tambah_jasa).setVisibility(View.VISIBLE);
                     }else{
-                        viewHolder.find(R.id.tv_mark_tambah_jasa).setVisibility(View.GONE);
+                        viewHolder.find(R.id.view_mark_tambah_jasa).setVisibility(View.GONE);
                     }
                     viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class)
                             .setText(RP + formatRp(detailCheckinList.get(position).get("HARGA_JASA").asString()));
@@ -311,6 +385,33 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             }
         });
     }
+
+    @SuppressLint("NewApi")
+    private void viewKeluhan() {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "view");
+                args.put("id", idCheckin);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_KELUHAN), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    keluhanList.asArray().clear();
+                    keluhanList.asArray().addAll(result.get("data").asArray());
+                    Log.d("no__", "runUI: " + keluhanList);
+                } else {
+                    showInfo(result.get("message").asString());
+                }
+            }
+        });
+    }
+
 
     @SuppressLint("SetTextI18n")
     private void getDetailCheckin(final String id) {
@@ -476,9 +577,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 etStatus.getText().toString().equals("INVOICE") ||
                 etStatus.getText().toString().equals("EPAY")) {
             aktifitasList.add("CHECK OUT");
-        } else if (etStatus.getText().toString().equals("TAMBAH PART - JASA") &&
-                (isKonfirmasiTambahan &&
-                        find(R.id.cb_tidak_menunggu, CheckBox.class).isChecked())) {
+        } else if (etStatus.getText().toString().equals("TAMBAH PART - JASA") && find(R.id.cb_tidak_menunggu, CheckBox.class).isChecked()) {
             aktifitasList.add("BATAL BENGKEL");
             aktifitasList.add("BATAL PELANGGAN");
             aktifitasList.add("TAMBAH PART - JASA OKAY");
@@ -553,6 +652,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                     intent.putExtra("CHECKIN_ID", idCheckin);
                     intent.putExtra(TOTAL_BIAYA, formatOnlyNumber(etTotal.getText().toString()));
                     intent.putExtra(TAMBAH_PART, "");
+                    intent.putExtra("NO_PONSEL", noPonsel);
                     intent.putExtra("NOPOL", etNopol.getText().toString());
                     intent.putExtra("KONFIRMASI_TAMBAH", isKonfirmasiTambahan);
                     intent.putExtra("LAYANAN", etNamaLayanan.getText().toString());
@@ -596,7 +696,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 });
     }
 
-    private void updateData(final String id) {
+    private void updateData(final String idCheckin) {
         if (status.contains("MESSAGE") || status.equals("DATA KENDARAAN")) {
             setResult(RESULT_OK);
             finish();
@@ -611,8 +711,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
 
                 args.put("action", "update");
                 args.put("status", status);
-                args.put("id", id);
-
+                args.put("idCheckin", idCheckin);
                 if (isEstimasi) {
                     args.put("isEstimasi", "Y");
                 }

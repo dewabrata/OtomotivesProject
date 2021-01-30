@@ -179,6 +179,9 @@
     <string name="jumlah_bayar_uppercase">JUMLAH BAYAR</string>
     <string name="balance_akhir_uppercase">BALANCE AKHIR</string>
     <string name="nama_penerima_uppercase">NAMA PENERIMA</string>
+    <string name="tampilkan_uppercase">TAMPILKAN</string>
+    <string name="filter_uppercase">FILTER</string>
+    <string name="history_uppercase">HISTORY</string>
     <string-array name="pola_harga_jual">
         <item>FLEXIBLE</item>
         <item>BELI + MARGIN</item>

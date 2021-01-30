@@ -334,7 +334,7 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
         String tipe = spinnerSupplier.getSelectedItem().toString().toUpperCase();
         String nama = tvNamaSupplier.getText().toString().toUpperCase();
         String nodo = txtNoDo.getText().toString().toUpperCase();
-        String ongkir = txtOngkosKirim.getText().toString().toUpperCase();
+        String ongkir = NumberFormatUtils.formatOnlyNumber(txtOngkosKirim.getText().toString());
         String pembayaran = spinnerPembayaran.getSelectedItem().toString().toUpperCase();
 
         Nson nson = Nson.newObject();

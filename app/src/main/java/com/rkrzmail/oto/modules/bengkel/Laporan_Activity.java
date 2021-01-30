@@ -27,6 +27,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.utils.Tools;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.io.BufferedInputStream;
@@ -59,7 +60,7 @@ import static com.rkrzmail.utils.Tools.setFormatDayAndMonthToDb;
 public class Laporan_Activity extends AppActivity {
 
     private TextView tvAwal, tvAkhir, txtProgress;
-    private String jenisLaporan="", tglAwal="",tglAkhir="";
+    private String jenisLaporan = "", tglAwal = "", tglAkhir = "";
     private Spinner spJenisLap;
     private Nson testList = Nson.newArray();
     private ProgressBar progressBar;
@@ -109,7 +110,26 @@ public class Laporan_Activity extends AppActivity {
         btnUnduh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DownloadExcel().execute(CETAK_EXCEL(UtilityAndroid.getSetting(getApplicationContext(), "CID", "").trim(), jenisLaporan,tglAwal,tglAkhir));
+                if (jenisLaporan.isEmpty()) {
+                    showWarning("JENIS LAPORAN HARUS DI PILIH", Toast.LENGTH_LONG);
+                } else if (tglAwal.isEmpty()) {
+                    showWarning("TANGGAL AWAL HARUS DI MASUKKAN", Toast.LENGTH_LONG);
+                    tvAwal.performClick();
+                } else if (tglAkhir.isEmpty()) {
+                    showWarning("TANGGAL AKHIR HARUS DI PILIJ", Toast.LENGTH_LONG);
+                } else {
+                    tglAwal = Tools.setFormatDayAndMonthToDb(tglAwal);
+                    tglAkhir = Tools.setFormatDayAndMonthToDb(tglAkhir);
+
+                    new DownloadExcel().execute(
+                            CETAK_EXCEL(UtilityAndroid.getSetting(getApplicationContext(), "CID", "").trim(),
+                                    jenisLaporan,
+                                    tglAwal,
+                                    tglAkhir
+                            )
+                    );
+
+                }
             }
         });
 
@@ -123,6 +143,8 @@ public class Laporan_Activity extends AppActivity {
                     jenisLaporan = "UNIT DETAIL";
                 } else if (item.equalsIgnoreCase("UNIT ENTRY AHAS")) {
                     jenisLaporan = "UNIT ENTRY AHASS";
+                } else {
+                    jenisLaporan = "";
                 }
             }
 
@@ -133,10 +155,13 @@ public class Laporan_Activity extends AppActivity {
         });
     }
 
-    private void setDefaultTgl(){
-        if(tvAwal.getText().toString().isEmpty() && tvAkhir.getText().toString().isEmpty()){
+    private void setDefaultTgl() {
+        if (tvAwal.getText().toString().isEmpty() && tvAkhir.getText().toString().isEmpty()) {
             tvAwal.setText(currentDateTime("dd/MM/yyyy"));
             tvAkhir.setText(currentDateTime("dd/MM/yyyy"));
+
+            tglAwal = tvAwal.getText().toString();
+            tglAkhir = tvAkhir.getText().toString();
         }
     }
 
@@ -146,7 +171,9 @@ public class Laporan_Activity extends AppActivity {
         progressBar.setVisibility(View.GONE);
     }
 
-    private void showDialogComplete(){
+    private void showDialogComplete() {
+        txtProgress.setVisibility(View.GONE);
+        progressBar.setVisibility(View.GONE);
         Messagebox.showDialog(getActivity(), "KONFIRMASI", "BUKA LAPORAN ?", "YA", "TIDAK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -164,17 +191,18 @@ public class Laporan_Activity extends AppActivity {
     }
 
     @SuppressLint("SetTextI18n")
-    private CountDownTimer setTime(){
-        long time = 1000 * 2;
+    private CountDownTimer setTime() {
+        long time = 2000 * 2;
         final int[] countProgress = {0};
         countDownTimer = new CountDownTimer(time, 1000) {
 
             @Override
             public void onTick(long millisUntilFinished) {
                 countProgress[0]++;
-                progressBar.setProgress((int)countProgress[0]*100/(5000/1000));
-                txtProgress.setText(((int)countProgress[0]*100/(5000/1000)) + " %");
+                progressBar.setProgress((int) countProgress[0] * 100 / (5000 / 1000));
+                txtProgress.setText(((int) countProgress[0] * 100 / (5000 / 1000)) + " %");
             }
+
             @Override
             public void onFinish() {
                 progressBar.setProgress(100);
@@ -199,13 +227,11 @@ public class Laporan_Activity extends AppActivity {
         @Override
         protected void onPostExecute(String result) {
             setTime().cancel();
-            progressBar.setVisibility(View.GONE);
             if (result.equals("SUCCESS")) {
                 showDialogComplete();
-            } else{
+            } else {
                 showError(ERROR_INFO);
             }
-            txtProgress.setVisibility(View.GONE);
             super.onPostExecute(result);
         }
 
@@ -223,8 +249,15 @@ public class Laporan_Activity extends AppActivity {
             try {
 //                String fileName = "/report - " + jenisLaporan + "-" +tglMulai.getText().toString() + "-"
 //                         + tglSelesai.getText().toString() + ".xls";
-                String fileName = "report - " +jenisLaporan+ ".xls";
+                String fileName = "report - " + jenisLaporan + ".xls";
                 file = new File(EXTERNAL_DIR_OTO + fileName);
+                file.delete();
+                if (file.exists()) {
+                    file.getCanonicalFile().delete();
+                    if (file.exists()) {
+                        getApplicationContext().deleteFile(file.getName());
+                    }
+                }
                 if (!file.exists()) {
                     URL url = new URL(urls[0]);
                     URLConnection connection = url.openConnection();
@@ -237,16 +270,16 @@ public class Laporan_Activity extends AppActivity {
                     byte[] data = new byte[1024];
                     long total = 0;
 
-                    try{
+                    try {
                         while ((count = input.read(data)) != -1) {
                             totalLoop++;
                             total += count;
                             length = (int) ((total * 100) / fileLength);
-                            publishProgress(totalLoop);
+                            publishProgress(length);
                             output.write(data, 0, count);
                         }
                         Log.e("fail__", "total: " + total);
-                    }catch (final Exception e){
+                    } catch (final Exception e) {
                         Log.e("fail__", "doInBackground: " + e.getMessage());
                         Laporan_Activity.this.runOnUiThread(new Runnable() {
                             @Override
@@ -297,8 +330,8 @@ public class Laporan_Activity extends AppActivity {
                 }
                 String formattedTime = sdf.format(date);
                 //tanggalString += formattedTime;
-               tvAwal.setText(formattedTime);
-               //tglAwal = setFormatDayAndMonthFromDb(formattedTime,"yyyy-MM-dd");
+                tvAwal.setText(formattedTime);
+                //tglAwal = setFormatDayAndMonthFromDb(formattedTime,"yyyy-MM-dd");
 
             }
         }, year, month, day);

@@ -8,8 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Selection;
@@ -35,22 +33,16 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.BarcodeActivity;
 import com.rkrzmail.srv.NikitaAutoComplete;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.srv.NsonAutoCompleteAdapter;
-import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
-import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.SET_CHECKIN;
 import static com.rkrzmail.utils.APIUrls.VIEW_JENIS_KENDARAAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_NOMOR_POLISI;
 import static com.rkrzmail.utils.APIUrls.VIEW_PELANGGAN;
-import static com.rkrzmail.utils.APIUrls.VIEW_SUGGESTION;
 import static com.rkrzmail.utils.ConstUtils.DATA;
-import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CHECKIN;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_HISTORY;
@@ -180,7 +172,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                                 isGaransiHari = result.get(i).get("GARANSI_LAYANAN_HARI").asString();
                                 expiredGaransiHari = !result.get(i).get("EXPIRATION_GARANSI_HARI").asString().isEmpty() ? result.get(i).get("EXPIRATION_GARANSI_HARI").asInteger() : 0;
                                 expiredGaransiKm = !result.get(i).get("EXPIRATION_GARANSI_HARI").asString().isEmpty() ? result.get(i).get("EXPIRATION_GARANSI_KM").asInteger() : 0;
-                                availHistory = true;
+                                availHistory = !result.get(i).get("LAYANAN").asString().equals("INSPEKSI & ESTIMASI");
                                 break;
                             }
                         }
@@ -718,7 +710,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 }
                 break;
             case R.id.btn_history_checkin1:
-                Intent i = new Intent(getActivity(), HistoryBookingCheckin_Activity.class);
+                Intent i = new Intent(getActivity(), History_Activity.class);
                 i.putExtra(DATA, historyList.toJson());
                 startActivityForResult(i, REQUEST_HISTORY);
                 break;

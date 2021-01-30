@@ -92,7 +92,7 @@ public class KontrolBooking_Activity extends AppActivity {
                             public boolean onMenuItemClick(MenuItem menuItem) {
                                 switch (menuItem.getItemId()) {
                                     case R.id.action_history:
-                                        Intent i = new Intent(getActivity(), HistoryBookingCheckin_Activity.class);
+                                        Intent i = new Intent(getActivity(), History_Activity.class);
                                         i.putExtra("booking", nListArray.get(position).toJson());
                                         startActivityForResult(i, REQUEST_HISTORY);
                                         break;

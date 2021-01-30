@@ -34,6 +34,7 @@ import java.util.Map;
 
 import static com.rkrzmail.utils.APIUrls.ATUR_SPAREPART;
 import static com.rkrzmail.utils.APIUrls.VIEW_SPAREPART;
+import static com.rkrzmail.utils.ConstUtils.RP;
 
 public class AturParts_Activity extends AppActivity {
 
@@ -68,11 +69,12 @@ public class AturParts_Activity extends AppActivity {
         final Nson aturParts = Nson.readJson(getIntentStringExtra("atur_part")); //EDIT PART
         final Nson addParts = Nson.readJson(getIntentStringExtra("data")); //ADD PART
 
+        find(R.id.tl_waktuGanti_part).setVisibility(View.VISIBLE);
         find(R.id.sp_lokasiPart, Spinner.class).setEnabled(false);
         //isParts = true for aturParts, isParts = false for addParts
         if (getIntent().hasExtra("atur_part")) {
             isParts = true;
-            find(R.id.et_hpp_part, EditText.class).setEnabled(false);
+            //find(R.id.et_hpp_part, EditText.class).setEnabled(false);
             find(R.id.et_stockTersedia_part, EditText.class).setEnabled(false);
             find(R.id.btn_hapus, Button.class).setVisibility(View.VISIBLE);
             find(R.id.btn_hapus, Button.class).setOnClickListener(new View.OnClickListener() {
@@ -97,6 +99,14 @@ public class AturParts_Activity extends AppActivity {
             find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    if (find(R.id.sp_polaHarga_part, Spinner.class).getSelectedItem().toString().equalsIgnoreCase("BELI + MARGIN") ||
+                            find(R.id.sp_polaHarga_part, Spinner.class).getSelectedItem().toString().equalsIgnoreCase("FLEXIBLE")) {
+                        if (find(R.id.et_hpp_part, EditText.class).getText().toString().isEmpty()) {
+                            find(R.id.et_hpp_part, EditText.class).setError("Masukkan HPP");
+                            find(R.id.et_hpp_part, EditText.class).requestFocus();
+                            return;
+                        }
+                    }
                     updateData(aturParts);
                 }
             });
@@ -147,6 +157,7 @@ public class AturParts_Activity extends AppActivity {
             });
         }
 
+        find(R.id.et_hpp_part, EditText.class).setText(isParts ? RP + NumberFormatUtils.formatRp(aturParts.get("HPP").asString()) : "");
         find(R.id.et_namaPart_part, EditText.class).setText(isParts ? aturParts.get("NAMA_PART").asString() : addParts.get("NAMA_PART").asString());
         find(R.id.et_noPart_part, EditText.class).setText(isParts ? aturParts.get("NO_PART").asString() : addParts.get("NO_PART").asString());
         find(R.id.et_merk_part, EditText.class).setText(isParts ? aturParts.get("MERK").asString() : addParts.get("MERK").asString());
@@ -325,14 +336,14 @@ public class AturParts_Activity extends AppActivity {
         final String stock = find(R.id.et_stockTersedia_part, EditText.class).getText().toString();
         final String stockMin = find(R.id.et_stockMin_part, EditText.class).getText().toString();
         final String waktuPesan = find(R.id.et_waktuPesan_part, EditText.class).getText().toString();
-        final String hargaJual = find(R.id.et_hargaJual_part, EditText.class).getText().toString().replaceAll("[^0-9]+", "");
+        final String hargaJual =  NumberFormatUtils.clearPercent(find(R.id.et_hargaJual_part, EditText.class).getText().toString());
         final String polaHarga = find(R.id.sp_polaHarga_part, Spinner.class).getSelectedItem().toString();
-        final String het = find(R.id.et_het_part, EditText.class).getText().toString();
-        final String hpp = find(R.id.et_hpp_part, EditText.class).getText().toString().replaceAll("[^0-9]+", "");
+        final String het = NumberFormatUtils.formatOnlyNumber(find(R.id.et_het_part, EditText.class).getText().toString());
+        final String hpp = NumberFormatUtils.formatOnlyNumber(find(R.id.et_hpp_part, EditText.class).getText().toString());
 
         try {
             if (hargaJual.contains("%")) {
-                harga = NumberFormatUtils.clearPercent(hargaJual);
+                harga = hargaJual;
                 margin = (int) (Integer.parseInt(hpp) * Double.parseDouble(harga) / 100);
                 total = margin + Integer.parseInt(hpp);
                 Log.e("sparepart__", "saveData: " + total);
@@ -354,7 +365,7 @@ public class AturParts_Activity extends AppActivity {
                 args.put("waktupesan", waktuPesan);
                 args.put("stokminim", stockMin);
                 if (polaHarga.equalsIgnoreCase("HET")) {
-                    args.put("hargajual", het.replaceAll("[^0-9]+", ""));
+                    args.put("hargajual", het);
                 } else if (polaHarga.equalsIgnoreCase("BELI + MARGIN") ||
                         polaHarga.equalsIgnoreCase("RATA - RATA + MARGIN") ||
                         polaHarga.equalsIgnoreCase("FLEXIBLE")) {
@@ -362,6 +373,7 @@ public class AturParts_Activity extends AppActivity {
                     args.put("margin", hargaJual);
                 }
                 args.put("polahargajual", polaHarga);
+                args.put("hpp", hpp);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_SPAREPART), args));
             }
@@ -424,7 +436,7 @@ public class AturParts_Activity extends AppActivity {
                 args.put("action", "add");
                 args.put("nama", namaPart);
                 args.put("nopart", noPart);
-                args.put("partid", id.get("PART_ID").asString());
+                args.put("partid", id.get("ID").asString());
                 args.put("merk", merkPart);
                 if (polaHarga.equalsIgnoreCase("HET")) {
                     args.put("hargajual", het.replaceAll("[^0-9]+", ""));

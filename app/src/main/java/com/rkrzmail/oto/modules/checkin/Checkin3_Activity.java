@@ -136,7 +136,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
     private boolean flagPartWajib = false,
             flagMasterPart = false,
             isPartWajib = false, isSelanjutnya = false, isDelete = false;
-    private boolean isPartKosong = false;
+    private boolean isPartKosong = false, isPartKosong2 = false;
     private boolean isBatal = false;
     private boolean isJasaExternal = false;
     private boolean isHplusLayanan = false;
@@ -259,6 +259,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
                 super.onBindViewHolder(viewHolder, position);
+                viewHolder.find(R.id.view_mark_tambah_jasa).setVisibility(View.GONE);
                 viewHolder.find(R.id.tv_namaPart_booking3_checkin3, TextView.class)
                         .setText(partList.get(position).get("NAMA_PART").asString());
                 viewHolder.find(R.id.tv_noPart_booking3_checkin3, TextView.class)
@@ -321,6 +322,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
                 super.onBindViewHolder(viewHolder, position);
+                viewHolder.find(R.id.view_mark_tambah_jasa).setVisibility(View.GONE);
                 viewHolder.find(R.id.tv_kelompokPart_booking3_checkin3, TextView.class)
                         .setText(jasaList.get(position).get("NAMA_KELOMPOK_PART").asString());
                 viewHolder.find(R.id.tv_aktifitas_booking3_checkin3, TextView.class)
@@ -502,7 +504,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         nson.set("TOTAL", find(R.id.et_totalBiaya_checkin3, EditText.class).getText().toString());
                         nson.set("WAKTU_LAYANAN", dummyTime.toString());
                         nson.set("LOKASI_LAYANAN", lokasiLayananList.toJson());
-                        nson.set("PART_KOSONG", isPartKosong);
+                        nson.set("PART_KOSONG", isPartKosong2);
                         nson.set("OUTSOURCE", isOutsource);
                         nson.set("JENIS_ANTRIAN", find(R.id.tv_jenis_antrian, TextView.class).getText().toString());
                         nson.set("DP", formatOnlyNumber(find(R.id.et_dp_checkin3, EditText.class).getText().toString()));
@@ -763,10 +765,11 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         batasanBulan = dataLayananList.get(i).get("BATASAN_NON_PAKET_BULAN").asInteger();
                         break;
                     } else {
+                        totalHarga = 0;
+                        biayaLayanan = "0";
                         find(R.id.tv_waktu_layanan, TextView.class).setText("Total Waktu Layanan : " + "00:00:00");
                         find(R.id.tv_namaLayanan_checkin, TextView.class).setText(item);
                         find(R.id.tv_biayaLayanan_checkin, TextView.class).setText("");
-                        totalHarga = 0;
                         find(R.id.et_totalBiaya_checkin3, EditText.class).setText(RP + formatRp(String.valueOf(totalHarga)));
                     }
                 }
@@ -1058,6 +1061,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                             totalHarga += Integer.parseInt(formatOnlyNumber(dataAccept.get("NET").asString()));
                             if (data != null && data.getStringExtra("PART_KOSONG").equals("Y")) {
                                 isPartKosong = true;
+                                isPartKosong2 = true;
                                 totalDp += Integer.parseInt(formatOnlyNumber(dataAccept.get("DP").asString()));
                                 sisaDp = totalHarga - totalDp;
                                 setDpAndSisa();

@@ -20,6 +20,7 @@ import com.naa.data.Nson;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
 import java.util.Objects;
@@ -133,7 +134,7 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
                         nson.get("HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE")) {
                     find(R.id.ly_hpp_jumlah_harga_part, TextInputLayout.class).setVisibility(View.VISIBLE);
                     try {
-                        etHpp.setText(RP + formatRp(hpp));
+                        etHpp.setText(RP + NumberFormatUtils.formatRp(nson.get("HARGA_JUAL").asString()));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -334,8 +335,9 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
 
         if (nson.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE") || nson.get("HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE")) {
             find(R.id.ly_hpp_jumlah_harga_part, TextInputLayout.class).setVisibility(View.VISIBLE);
+            find(R.id.ly_hpp_jumlah_harga_part, TextInputLayout.class).setHint("HARGA JUAL FLEXIBLE");
             try {
-                etHpp.setText("Rp. " + formatRp(nson.get("HPP").asString()));
+                etHpp.setText(RP + formatRp(nson.get("HARGA_JUAL").asString()));
             } catch (Exception e) {
                 e.printStackTrace();
             }

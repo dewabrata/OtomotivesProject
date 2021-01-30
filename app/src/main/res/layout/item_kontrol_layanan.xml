@@ -166,6 +166,32 @@
 
             </TableRow>
 
+            <TableRow android:layout_marginTop="@dimen/paddingMedium">
+
+                <TextView
+                    android:id="@+id/tv_tidak_menunggu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tidak Menunggu"
+                    android:textSize="12sp"
+                    android:paddingEnd="30dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="start"
+                    card_view:ignore="RtlSymmetry" />
+
+                <TextView
+                    android:id="@+id/tv_waktu_ambil"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="DD/MM-HH:MM"
+                    android:textSize="12sp"
+                    android:paddingEnd="30dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="end"/>
+
+            </TableRow>
+
+
         </TableLayout>
 
     </FrameLayout>

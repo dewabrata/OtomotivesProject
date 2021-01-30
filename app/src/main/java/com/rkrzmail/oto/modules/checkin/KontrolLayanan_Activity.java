@@ -1,21 +1,25 @@
 package com.rkrzmail.oto.modules.checkin;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.os.Bundle;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -30,6 +34,7 @@ import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
+import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.SET_CHECKIN;
 import static com.rkrzmail.utils.APIUrls.VIEW_KONTROL_LAYANAN;
@@ -40,44 +45,61 @@ import static com.rkrzmail.utils.ConstUtils.REQUEST_NEW_CS;
 
 public class KontrolLayanan_Activity extends AppActivity {
 
+    private AlertDialog alertDialog;
     private RecyclerView rvKontrolLayanan;
     private boolean isSwipe = false;
+
+    private LinearLayout lyContainerFilter;
+    private BottomSheetBehavior filterBottomSheet;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_basic);
+        setContentView(R.layout.activity_kontrol_layanan);
+        initToolbar();
         initComponent();
+        initViewSortBy();
+        initFilterBottomSheet();
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Kontrol Layanan");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Kontrol Layanan");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initComponent() {
-        initToolbar();
         rvKontrolLayanan = findViewById(R.id.recyclerView);
-        if(getIntent().hasExtra("NOPOL")){
-            catchData(getIntentStringExtra("NOPOL"));
-        }else{
-            catchData("");
+        lyContainerFilter = findViewById(R.id.ly_container_filter);
+
+        if (getIntent().hasExtra("NOPOL")) {
+            viewKontrolLayanan(getIntentStringExtra("NOPOL"), "");
+        } else {
+            viewKontrolLayanan("", "");
         }
 
         rvKontrolLayanan.setLayoutManager(new LinearLayoutManager(this));
         rvKontrolLayanan.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_kontrol_layanan) {
+                    @SuppressLint("SetTextI18n")
                     @Override
                     public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
                         super.onBindViewHolder(viewHolder, position);
                         //String estimasi = Tools.setFormatDateTimeFromDb(nListArray.get(position).get("ESTIMASI_SELESAI").asString(), "yyyy-MM-dd hh:mm", "dd/MM-hh:mm", false);
-                        String waktu =  Tools.setFormatDateTimeFromDb(nListArray.get(position).get("CREATED_DATE").asString(), "", "dd/MM hh:mm", true);
+                        String waktu = Tools.setFormatDateTimeFromDb(nListArray.get(position).get("CREATED_DATE").asString(), "", "dd/MM hh:mm", true);
                         String waktuStatus = "";
-                        if(!nListArray.get(position).get("MODIFIED_DATE").asString().isEmpty()){
-                            waktuStatus =  Tools.setFormatDateTimeFromDb(nListArray.get(position).get("MODIFIED_DATE").asString(), "", "dd/MM hh:mm", true);
+                        if (!nListArray.get(position).get("MODIFIED_DATE").asString().isEmpty()) {
+                            waktuStatus = Tools.setFormatDateTimeFromDb(nListArray.get(position).get("MODIFIED_DATE").asString(), "", "dd/MM hh:mm", true);
                         }
 
+                        if (nListArray.get(position).get("PELANGGAN_TIDAK_MENUNGGU").asString().equals("Y")) {
+                            viewHolder.find(R.id.tv_tidak_menunggu, TextView.class).setText("TIDAK MENUNGGU");
+                            viewHolder.find(R.id.tv_waktu_ambil, TextView.class).setText(nListArray.get(position).get("WAKTU_AMBIL").asString());
+                        } else {
+                            viewHolder.find(R.id.tv_tidak_menunggu, TextView.class).setText("MENUNGGU");
+                            viewHolder.find(R.id.tv_waktu_ambil, TextView.class).setText("");
+                        }
                         viewHolder.find(R.id.tv_waktu_checkin, TextView.class).setText(waktu);
                         viewHolder.find(R.id.tv_no_antrian, TextView.class).setText(nListArray.get(position).get("NO_ANTRIAN").asString());
                         viewHolder.find(R.id.tv_nopol, TextView.class).setText(formatNopol(nListArray.get(position).get("NOPOL").asString()));
@@ -98,7 +120,7 @@ public class KontrolLayanan_Activity extends AppActivity {
                                     @Override
                                     public boolean onMenuItemClick(MenuItem menuItem) {
                                         if (menuItem.getItemId() == R.id.action_history) {
-                                            Intent i = new Intent(getActivity(), HistoryBookingCheckin_Activity.class);
+                                            Intent i = new Intent(getActivity(), History_Activity.class);
                                             i.putExtra(SET_CHECKIN, nListArray.get(position).toJson());
                                             startActivity(i);
                                         }
@@ -122,20 +144,117 @@ public class KontrolLayanan_Activity extends AppActivity {
         find(R.id.swiperefresh, SwipeRefreshLayout.class).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                catchData("");
+                viewKontrolLayanan("", "");
+            }
+        });
+
+        find(R.id.btn_filter).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (filterBottomSheet.getState() != BottomSheetBehavior.STATE_EXPANDED) {
+                    filterBottomSheet.setState(BottomSheetBehavior.STATE_EXPANDED);
+                } else {
+                    filterBottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                }
             }
         });
     }
 
-    private void catchData(final String cari) {
+    private void initFilterBottomSheet() {
+        filterBottomSheet = BottomSheetBehavior.from(lyContainerFilter);
+        filterBottomSheet.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View view, int newState) {
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_HIDDEN:
+
+                        break;
+
+                    case BottomSheetBehavior.STATE_EXPANDED: {
+
+                    }
+                    break;
+
+                    case BottomSheetBehavior.STATE_COLLAPSED: {
+                        find(R.id.view_blur).setVisibility(View.GONE);
+                    }
+                    break;
+
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                        break;
+
+                    case BottomSheetBehavior.STATE_SETTLING:
+                        break;
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View view, float slideOffset) {
+                find(R.id.view_blur).setVisibility(View.VISIBLE);
+                find(R.id.view_blur).setAlpha(slideOffset);
+            }
+        });
+    }
+
+    private void initViewSortBy() {
+        RecyclerView rvStatus = findViewById(R.id.rv_status);
+        rvStatus.setHasFixedSize(false);
+        RecyclerView.LayoutManager layoutManager = new StaggeredGridLayoutManager
+                (
+                2,
+                StaggeredGridLayoutManager.HORIZONTAL
+                );
+        rvStatus.setLayoutManager(layoutManager);
+
+        final Nson statusList = Nson.newArray();
+        statusList.add(Nson.newObject().set("tittle", "ALL"));
+        statusList.add(Nson.newObject().set("tittle", "CHECKIN ANTRIAN"));
+        statusList.add(Nson.newObject().set("tittle", "DEBET DP"));
+        statusList.add(Nson.newObject().set("tittle", "GANTI MEKANIK"));
+        statusList.add(Nson.newObject().set("tittle", "INSPEKSI, PELAYANAN SELESAI"));
+        statusList.add(Nson.newObject().set("tittle", "KREDIT DP"));
+        statusList.add(Nson.newObject().set("tittle", "MEKANIK MULAI"));
+        statusList.add(Nson.newObject().set("tittle", "MEKANIK PAUSE"));
+        statusList.add(Nson.newObject().set("tittle", "PELAYANAN SELESAI"));
+        statusList.add(Nson.newObject().set("tittle", "PENUGASAN INSPKESI"));
+        statusList.add(Nson.newObject().set("tittle", "PENUGASAN MEKANIK"));
+        statusList.add(Nson.newObject().set("tittle", "TAMBAH PART JASA"));
+        statusList.add(Nson.newObject().set("tittle", "TRANSFER DP"));
+        statusList.add(Nson.newObject().set("tittle", "TUNGGU DP"));
+
+        rvStatus.setAdapter(new NikitaRecyclerAdapter(statusList, R.layout.item_sort_by) {
+            @Override
+            public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
+                super.onBindViewHolder(viewHolder, position);
+                viewHolder.find(R.id.tv_tittle_sort_by, TextView.class).setText(statusList.get(position).get("tittle").asString());
+                viewHolder.find(R.id.ly_container_status).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (filterBottomSheet.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                            filterBottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                        }
+                        if (statusList.get(position).get("tittle").asString().equals("ALL")) {
+                            viewKontrolLayanan("", "");
+                        } else {
+                            viewKontrolLayanan("", statusList.get(position).get("tittle").asString());
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    private void viewKontrolLayanan(final String cari, final String sortBy) {
         newTask(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 swipeProgress(true);
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 args.put("search", cari);
+                args.put("sortBy", sortBy);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_KONTROL_LAYANAN), args));
             }
 
@@ -146,7 +265,7 @@ public class KontrolLayanan_Activity extends AppActivity {
                     result = result.get("data");
                     nListArray.asArray().clear();
                     for (int i = 0; i < result.size(); i++) {
-                        if(!result.get(i).get("STATUS_KONTROL").asString().isEmpty()){
+                        if (!result.get(i).get("STATUS_KONTROL").asString().isEmpty()) {
                             nListArray.add(result.get(i));
                         }
                     }
@@ -193,7 +312,7 @@ public class KontrolLayanan_Activity extends AppActivity {
             public boolean onQueryTextSubmit(String query) {
                 searchMenu.collapseActionView();
                 //filter(null);
-                catchData(query);
+                viewKontrolLayanan(query, "");
 
                 return true;
             }
@@ -203,13 +322,27 @@ public class KontrolLayanan_Activity extends AppActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (filterBottomSheet.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+            filterBottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK && requestCode == REQUEST_CHECKIN)
-            catchData("");
-        else if(resultCode == RESULT_OK && requestCode == REQUEST_DETAIL)
-            catchData("");
-        else if(resultCode == RESULT_OK && requestCode == REQUEST_NEW_CS)
-            catchData("");
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CHECKIN)
+            viewKontrolLayanan("", "");
+        else if (resultCode == RESULT_OK && requestCode == REQUEST_DETAIL)
+            viewKontrolLayanan("", "");
+        else if (resultCode == RESULT_OK && requestCode == REQUEST_NEW_CS)
+            viewKontrolLayanan("", "");
     }
 }
