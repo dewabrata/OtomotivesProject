@@ -50,9 +50,54 @@
                     android:inputType="textCapSentences|textMultiLine"
                     android:maxLength="2000"
                     android:maxLines="4"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:enabled="false"/>
 
             </android.support.design.widget.TextInputLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_marginTop="5dp"
+                    android:hint="KODE POS">
+
+                    <com.rkrzmail.srv.NikitaAutoComplete
+                        android:id="@+id/et_kotakab_regist"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:inputType="textCapSentences"
+                        android:padding="@dimen/spacing_large"/>
+
+                </android.support.design.widget.TextInputLayout>
+
+
+                <ProgressBar
+                    android:id="@+id/pb_et_kotakab_regist"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_gravity="center_vertical|right"
+                    android:layout_marginRight="20dp"
+                    android:visibility="gone" />
+
+            </FrameLayout>
+
+            <Button
+                android:id="@+id/btn_lokasi_regist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="PETA LOKASI"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/btn_rounded_accent"
+                android:textColor="@android:color/white" />
 
 
             <android.support.design.widget.TextInputLayout
@@ -93,7 +138,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:textAlignment="center"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:enabled="false"/>
 
             </LinearLayout>
 
@@ -117,7 +163,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:textAlignment="center"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:enabled="false"/>
 
             </LinearLayout>
 
@@ -165,7 +212,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:textAlignment="center"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:enabled="false"/>
 
             </LinearLayout>
 
@@ -275,7 +323,7 @@
                 <TextView
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/nama_jaringan_uppercase"
+                    android:text="@string/nama_principial_uppercase"
                     android:textStyle="bold" />
 
                 <Spinner
@@ -302,34 +350,30 @@
                     android:ems="10"
                     android:inputType="phone"
                     android:singleLine="true"
+                    android:textSize="14sp"
+                    android:enabled="false"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:hint="@string/no_telpmsg_uupercase">
+
+                <EditText
+                    android:id="@+id/et_noPhone_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="phone"
+                    android:singleLine="true"
                     android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/border_solid"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:padding="10dp">
 
-                <TextView
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/jumlah_user_uppercase"
-                    android:textStyle="bold" />
-
-                <Spinner
-                    android:id="@+id/sp_jumlahUser_usaha"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textAlignment="center"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
 
             <TableLayout
                 android:layout_width="match_parent"
