@@ -74,8 +74,6 @@ public class Laporan_Activity extends AppActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_laporan);
         initComponent();
-        setDefaultTgl();
-
     }
 
     private void initToolbar() {
@@ -171,9 +169,7 @@ public class Laporan_Activity extends AppActivity {
         progressBar.setVisibility(View.GONE);
     }
 
-    private void showDialogComplete() {
-        txtProgress.setVisibility(View.GONE);
-        progressBar.setVisibility(View.GONE);
+    private void showDialogComplete(){
         Messagebox.showDialog(getActivity(), "KONFIRMASI", "BUKA LAPORAN ?", "YA", "TIDAK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -227,11 +223,13 @@ public class Laporan_Activity extends AppActivity {
         @Override
         protected void onPostExecute(String result) {
             setTime().cancel();
+            progressBar.setVisibility(View.GONE);
             if (result.equals("SUCCESS")) {
                 showDialogComplete();
-            } else {
+            } else{
                 showError(ERROR_INFO);
             }
+            txtProgress.setVisibility(View.GONE);
             super.onPostExecute(result);
         }
 
@@ -247,9 +245,7 @@ public class Laporan_Activity extends AppActivity {
         protected String doInBackground(String... urls) {
             int count = 0;
             try {
-//                String fileName = "/report - " + jenisLaporan + "-" +tglMulai.getText().toString() + "-"
-//                         + tglSelesai.getText().toString() + ".xls";
-                String fileName = "report - " + jenisLaporan + ".xls";
+                String fileName = "/REPORT-" +jenisLaporan +"-"+ tglAwal +"-"+ tglAkhir + ".xls";
                 file = new File(EXTERNAL_DIR_OTO + fileName);
                 file.delete();
                 if (file.exists()) {
