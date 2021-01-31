@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -28,6 +29,7 @@ import android.widget.TextView;
 
 import com.naa.data.Nson;
 import com.naa.data.UtilityAndroid;
+import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.fragment.PageAdapter;
 import com.rkrzmail.oto.fragment.SlideFragment;
@@ -78,8 +80,12 @@ import com.rkrzmail.oto.modules.sparepart.TerimaPart;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Vector;
 
+import static com.rkrzmail.utils.APIUrls.VIEW_PERINTAH_KERJA_MEKANIK;
+import static com.rkrzmail.utils.APIUrls.VIEW_TUGAS_PART;
 import static com.rkrzmail.utils.ConstUtils.PART;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 
@@ -204,10 +210,10 @@ public class MenuActivity extends AppActivity {
                 } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_CHECK_IN)) {
                     Intent intent = new Intent(MenuActivity.this, Checkin1_Activity.class);
                     startActivity(intent);
-                }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_KONTROL_LAYANAN)) {
+                } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_KONTROL_LAYANAN)) {
                     Intent intent = new Intent(MenuActivity.this, KontrolLayanan_Activity.class);
                     startActivity(intent);
-                }else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_DASHBOARD)) {
+                } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_DASHBOARD)) {
                     Intent intent = new Intent(MenuActivity.this, Dashboard_MainTab_Activity.class);
                     intent.putExtra("title", "Dashboard");
                     intent.putExtra("url", "https://m.otomotives.com/#/?" + getWebUrl());
@@ -247,10 +253,10 @@ public class MenuActivity extends AppActivity {
                 } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_TUGAS_PARTS)) {
                     Intent intent = new Intent(MenuActivity.this, TugasPart_MainTab_Activity.class);
                     startActivity(intent);
-                }else if(nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_ABSENSI)){
+                } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_ABSENSI)) {
                     Intent intent = new Intent(MenuActivity.this, Absensi_MainTab_Activity.class);
                     startActivity(intent);
-                }else if(nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_COLLECTION)){
+                } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_COLLECTION)) {
                     Intent intent = new Intent(MenuActivity.this, Collection_Activity.class);
                     startActivity(intent);
                 }
@@ -300,10 +306,10 @@ public class MenuActivity extends AppActivity {
 
         } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_PAYROLL)) {
 
-        }else if (item.getTitle().toString().equalsIgnoreCase(LAPORAN)) {
+        } else if (item.getTitle().toString().equalsIgnoreCase(LAPORAN)) {
             Intent intent = new Intent(MenuActivity.this, Laporan_Activity.class);
             startActivity(intent);
-        }else if (item.getTitle().toString().equalsIgnoreCase(SCHEDULE)) {
+        } else if (item.getTitle().toString().equalsIgnoreCase(SCHEDULE)) {
             Intent intent = new Intent(MenuActivity.this, AturSchedule_Activity.class);
             startActivity(intent);
         }
@@ -311,7 +317,7 @@ public class MenuActivity extends AppActivity {
         else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER)) {
             Intent intent = new Intent(MenuActivity.this, User_Activity.class);
             startActivity(intent);
-        }else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_LAYANAN)) {
+        } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_LAYANAN)) {
             Intent intent = new Intent(MenuActivity.this, Layanan_Avtivity.class);
             startActivity(intent);
         } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_BIAYA_MEKANIK)) {
@@ -558,7 +564,7 @@ public class MenuActivity extends AppActivity {
         if (getAccess(KENDARAAN_CUSTOMER)) {
             menu.add(KENDARAAN_CUSTOMER);
         }
-        if(getAccess(LAPORAN)){
+        if (getAccess(LAPORAN)) {
             menu.add(LAPORAN);
         }
 //        if (getAccess(M_MENUNGGU)) {
@@ -624,6 +630,111 @@ public class MenuActivity extends AppActivity {
 
         return true;
     }
+
+    private final Nson permintaanPart = Nson.newArray();
+    private final Nson kerjaMekanik = Nson.newArray();
+    int permintaanSize = 0;
+    int kerjaMekanikSize = 0;
+
+    @Override
+    public void onUserInteraction() {
+        super.onUserInteraction();
+        final Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                viewPartPermintaan();
+                viewPerintahMekanik("");
+            }
+        }, 5000);
+    }
+
+    @SuppressLint("NewApi")
+    public void viewPartPermintaan() {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+
+                args.put("action", "NOTIFICATION");
+
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_TUGAS_PART), args));
+            }
+
+            @SuppressLint("NewApi")
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    result = result.get("data");
+                    if(result.size() > 0){
+                        for (int i = 0; i < result.size(); i++) {
+                            if(permintaanPart.size()> 0){
+                                for (int j = 0; j < permintaanPart.size(); j++) {
+                                    if(permintaanPart.get(j).get("PART_ID").asInteger() != result.get(i).get("PART_ID").asInteger()){
+                                        permintaanPart.add(Nson.newObject()
+                                                .set("PART_ID", result.get(i).get("PART_ID").asInteger())
+                                                .set("NAMA_PART", result.get(i).get("NAMA_PART").asString())
+                                        );
+                                    }
+                                }
+                            }else{
+                                permintaanPart.add(Nson.newObject()
+                                        .set("PART_ID", result.get(i).get("PART_ID").asInteger())
+                                        .set("NAMA_PART", result.get(i).get("NAMA_PART").asString())
+                                );
+                            }
+                        }
+
+                        permintaanSize = permintaanPart.size();
+                        if(permintaanSize > result.size()){
+                            Intent intent = new Intent(getActivity(), TugasPart_MainTab_Activity.class);
+                            intent.putExtra("NOPOL", result.get(0).get("NOPOL").asString());
+                            showNotification(
+                                    getActivity(),
+                                    "Tugas Part",
+                                    "Tugas Part Baru",
+                                    "TUGAS PART",
+                                    intent);
+                        }
+
+                    }
+                }
+            }
+        });
+    }
+
+    private void viewPerintahMekanik(final String cari) {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "view");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PERINTAH_KERJA_MEKANIK), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    result = result.get("data");
+                    if(result.size() > 0){
+                        Intent intent = new Intent(getActivity(), PerintahKerjaMekanik_Activity.class);
+                        intent.putExtra("NOPOL", result.get(0).get("NOPOL").asString());
+                        showNotification(
+                                getActivity(),
+                                "Perintah Kerja Mekanik",
+                                "Mekanik",
+                                "MEKANIK",
+                                intent);
+                    }
+                }
+            }
+        });
+    }
+
 
 
     @Override

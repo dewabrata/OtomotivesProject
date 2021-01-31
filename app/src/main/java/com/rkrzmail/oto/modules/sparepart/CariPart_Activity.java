@@ -41,6 +41,7 @@ import static com.rkrzmail.utils.ConstUtils.CARI_PART_OTOMOTIVES;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_TERALOKASIKAN;
 import static com.rkrzmail.utils.ConstUtils.PART;
 import static com.rkrzmail.utils.ConstUtils.RP;
+import static com.rkrzmail.utils.ConstUtils.TAMBAH_PART;
 
 public class CariPart_Activity extends AppActivity {
 
@@ -395,6 +396,7 @@ public class CariPart_Activity extends AppActivity {
                 args.put("spec", "Bengkel");
                 args.put("search", cari);
                 args.put("lokasi", getIntentStringExtra(CARI_PART_LOKASI));
+                args.put("isTambahPart", getIntentStringExtra(TAMBAH_PART));
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SPAREPART), args));
             }
 

@@ -610,7 +610,9 @@ public class AppActivity extends AppCompatActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "view");
-                args.put(arguments, "Bengkel");
+                if(!flag.equals("OTO")){
+                    args.put(arguments, "Bengkel");
+                }
                 args.put("flag", flag);
                 args.put("search", bookTitle);
 

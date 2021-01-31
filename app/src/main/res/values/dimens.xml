@@ -38,5 +38,7 @@
     <dimen name="paddingXXXLarge">32dp</dimen>
     <dimen name="civ_home">120dp</dimen>
     <dimen name="et_login">50dp</dimen>
+    <dimen name="card_width">70dp</dimen>
+    <dimen name="card_height">20dp</dimen>
 
 </resources>

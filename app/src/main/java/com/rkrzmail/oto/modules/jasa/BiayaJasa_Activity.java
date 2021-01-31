@@ -37,6 +37,7 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
     private String hari = "", jam = "", menit = "";
     private String inspeksiJam = "", inspeksiMenit = "";
     private String inspeksi = "";
+    private String berkalaKm = "", berkalaBulan = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +84,8 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
             } else {
                 inspeksi = "N";
             }
-
+            berkalaKm = n.get("BERKALA_KM").asString();
+            berkalaBulan = n.get("BERKALA_BULAN").asString();
             etKelompokPart.setText(n.get("KELOMPOK_PART").asString());
             etAktivitas.setText(n.get("AKTIVITAS").asString());
             etAktivitas.setEnabled(false);
@@ -134,6 +136,8 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
                         nson.set("WAKTU_KERJA_MENIT", menit);
                         nson.set("WAKTU_INSPEKSI_JAM", inspeksiJam);
                         nson.set("WAKTU_INSPEKSI_MENIT", inspeksiMenit);
+                        nson.set("BERKALA_KM", berkalaKm);
+                        nson.set("BERKALA_BULAN", berkalaBulan);
 
                         Intent intent = new Intent();
                         intent.putExtra(DATA, nson.toJson());

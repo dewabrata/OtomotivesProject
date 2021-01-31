@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -31,6 +32,8 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.gmod.MyCode;
+import com.rkrzmail.oto.modules.checkin.History_Activity;
 import com.rkrzmail.oto.modules.checkin.TambahPartJasaDanBatal_Activity;
 import com.rkrzmail.srv.NikitaMultipleViewAdapter;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
@@ -50,7 +53,9 @@ import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.ID;
 import static com.rkrzmail.utils.ConstUtils.MENUNGGU;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_HISTORY;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_TAMBAH_PART_JASA_LAIN;
 import static com.rkrzmail.utils.ConstUtils.RP;
 import static com.rkrzmail.utils.ConstUtils.TAMBAH_PART;
@@ -146,12 +151,18 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
         loadData();
 
         imgNote.setOnClickListener(this);
-        find(R.id.btn_keluhan).setOnClickListener(this);
-        find(R.id.btn_point_layanan).setOnClickListener(this);
-        find(R.id.btn_lkk).setOnClickListener(this);
+        find(R.id.img_btn_keluhan).setOnClickListener(this);
+        find(R.id.img_btn_point_layanan).setOnClickListener(this);
+        find(R.id.img_btn_lkk).setOnClickListener(this);
         imgStart.setOnClickListener(this);
         imgStop.setOnClickListener(this);
-        find(R.id.btn_tambah_part).setOnClickListener(this);
+        find(R.id.img_btn_tambah_part).setOnClickListener(this);
+        find(R.id.img_btn_history).setOnClickListener(this);
+        find(R.id.img_btn_katalog).setOnClickListener(this);
+        find(R.id.img_btn_diagnostic).setOnClickListener(this);
+        find(R.id.img_btn_my_code).setOnClickListener(this);
+        find(R.id.img_btn_berkala).setOnClickListener(this);
+        find(R.id.img_btn_tambah_part).setOnClickListener(this);
     }
 
     private void loadData() {
@@ -242,8 +253,16 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
                 super.onBindViewHolder(viewHolder, position);
                 final int itemType = getItemViewType(position);
-                int no = position + 1;
 
+                if (partJasaList.get(position).get("STATUS_DETAIL").asString().equals("TAMBAH PART - JASA")) {
+                    viewHolder.find(R.id.view_mark_tambah_jasa).setVisibility(View.VISIBLE);
+                } else {
+                    viewHolder.find(R.id.view_mark_tambah_jasa).setVisibility(View.GONE);
+                }
+
+                viewHolder.find(R.id.img_delete).setVisibility(View.GONE);
+                viewHolder.find(R.id.tv_no, TextView.class).setVisibility(View.VISIBLE);
+                viewHolder.find(R.id.tv_no, TextView.class).setText("" + (position + 1));
                 if (itemType == ITEM_VIEW_1) {
                     viewHolder.find(R.id.tv_namaPart_booking3_checkin3, TextView.class)
                             .setText(partJasaList.get(position).get("NAMA_PART").asString());
@@ -255,11 +274,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                             .setText(RP + formatRp(partJasaList.get(position).get("HARGA_JASA_PART").asString()));
                     viewHolder.find(R.id.tv_hargaNet_booking3_checkin3, TextView.class)
                             .setText(RP + formatRp(partJasaList.get(position).get("HARGA_PART").asString()));
-                    viewHolder.find(R.id.tv_no, TextView.class).setVisibility(View.VISIBLE);
-                    viewHolder.find(R.id.tv_no, TextView.class).setText(no + ". ");
                 } else {
-                    viewHolder.find(R.id.tv_no, TextView.class).setVisibility(View.VISIBLE);
-                    viewHolder.find(R.id.tv_no, TextView.class).setText(no + ". ");
                     viewHolder.find(R.id.tv_kelompokPart_booking3_checkin3, TextView.class)
                             .setText(partJasaList.get(position).get("KELOMPOK_PART").asString());
                     viewHolder.find(R.id.tv_aktifitas_booking3_checkin3, TextView.class)
@@ -308,18 +323,18 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
         final EditText etEditText = dialogView.findViewById(R.id.et_edit_text);
         Button btnSimpan = dialogView.findViewById(R.id.btn_simpan);
 
-        if(isKm){
+        if (isKm) {
             tlEt.setHint("KM");
             etEditText.setText("");
             etEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
             builder.setCancelable(false);
-        }else{
+        } else {
             tlEt.setHint("CATATAN MEKANIK");
             etEditText.setText(catatanMekanik);
             etEditText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
-            if(isDissmissAndStop){
+            if (isDissmissAndStop) {
                 builder.setCancelable(false);
-            }else{
+            } else {
                 builder.setCancelable(true);
             }
 
@@ -339,7 +354,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 } else {
                     catatanMekanik = etEditText.getText().toString();
                     alertDialog.dismiss();
-                    if(isDissmissAndStop){
+                    if (isDissmissAndStop) {
                         stopWork();
                     }
                 }
@@ -357,9 +372,11 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
         View dialogView = inflater.inflate(R.layout.activity_list_basic, null);
         builder.setView(dialogView);
 
+        SwipeRefreshLayout swipeRefreshLayout = dialogView.findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setEnabled(false);
         initToolbarKeluhan(dialogView);
         initRecylerviewKeluhan(dialogView);
-        if (partJasaList.size() > 0) {
+        if (keluhanList.size() > 0) {
             Objects.requireNonNull(rvKeluhan.getAdapter()).notifyDataSetChanged();
         }
 
@@ -374,6 +391,8 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
         View dialogView = inflater.inflate(R.layout.activity_list_basic, null);
         builder.setView(dialogView);
 
+        SwipeRefreshLayout swipeRefreshLayout = dialogView.findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setEnabled(false);
         initToolbarPointLayanan(dialogView);
         initRecyclerviewPointLayanan(dialogView);
         Objects.requireNonNull(rvPointLayanan.getAdapter()).notifyDataSetChanged();
@@ -627,6 +646,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
     @SuppressLint({"NewApi", "NonConstantResourceId"})
     @Override
     public void onClick(View view) {
+        Intent intent = null;
         switch (view.getId()) {
             case R.id.imgBtn_note:
                 isDissmissAndStop = false;
@@ -663,18 +683,19 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                     pauseWork();
                 }
                 break;
-            case R.id.btn_point_layanan:
+            case R.id.img_btn_point_layanan:
                 initPointLayananDialog();
                 break;
-            case R.id.btn_keluhan:
+            case R.id.img_btn_keluhan:
                 initKeluhanDialog();
                 break;
-            case R.id.btn_lkk:
+            case R.id.img_btn_lkk:
                 SetDataForClaim();
                 break;
-            case R.id.btn_tambah_part:
-                Intent intent = new Intent(getActivity(), TambahPartJasaDanBatal_Activity.class);
+            case R.id.img_btn_tambah_part:
+                intent = new Intent(getActivity(), TambahPartJasaDanBatal_Activity.class);
                 intent.putExtra("CHECKIN_ID", idCheckin);
+                intent.putExtra("NO_PONSEL", noHp);
                 intent.putExtra(TOTAL_BIAYA, formatOnlyNumber(totalBiaya));
                 intent.putExtra(TAMBAH_PART, "");
                 intent.putExtra("NOPOL", etNopol.getText().toString());
@@ -685,6 +706,24 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 }
                 intent.putExtra("KONFIRMASI_TAMBAH", isKonfirmasiTambahan);
                 startActivityForResult(intent, REQUEST_TAMBAH_PART_JASA_LAIN);
+                break;
+            case R.id.img_btn_history:
+                intent = new Intent(getActivity(), History_Activity.class);
+                intent.putExtra("ALL", "ALL");
+                intent.putExtra("NOPOL", etNopol.getText().toString().trim());
+                startActivityForResult(intent, REQUEST_HISTORY);
+                break;
+            case R.id.img_btn_katalog:
+                showInfo("SEDANG DALAM TAHAP PENGEMBANGAN");
+                break;
+            case R.id.img_btn_diagnostic:
+                showInfo("SEDANG DALAM TAHAP PENGEMBANGAN");
+                break;
+            case R.id.img_btn_my_code:
+                startActivityForResult(new Intent(getActivity(), MyCode.class), REQUEST_BARCODE);
+                break;
+            case R.id.img_btn_berkala:
+                showInfo("SEDANG DALAM TAHAP PENGEMBANGAN");
                 break;
         }
     }
@@ -711,11 +750,16 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_DETAIL && resultCode == RESULT_OK) {
-            showInfo("Sukses Simpan Claim Garansi");
-        } else if (requestCode == REQUEST_TAMBAH_PART_JASA_LAIN && resultCode == RESULT_OK) {
-            viewLayananPartJasa();
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_DETAIL:
+                    showSuccess("SUKSES MENAMBAHKAN CLAIM PARTS", Toast.LENGTH_LONG);
+                    break;
+                case REQUEST_TAMBAH_PART_JASA_LAIN:
+                case REQUEST_BARCODE:
+                    viewLayananPartJasa();
+                    break;
+            }
         }
-
     }
 }

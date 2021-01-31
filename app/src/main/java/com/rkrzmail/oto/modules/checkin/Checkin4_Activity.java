@@ -79,7 +79,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
     private Nson noKunciList = Nson.newArray();
 
     private boolean isSign = false, isBatal = false, isMekanik = false;
-    private boolean isExpressAndStandard = false, isExtra = false, isHplusPartKosong = false, isDp = false;
+    private boolean isExpressAndStandard = false, isExtra = false, isHplusPartKosong = false, isDp = false, isHpLus = false;
     private String waktuLayananHplusExtra = "", jenisLayanan = "", waktuLayananStandartExpress = "";
     private String tglEstimasi = "", waktuEstimasi = "", antrianSebelumnya = "";
     private String ttdPath = "";
@@ -152,7 +152,9 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             Tools.setViewAndChildrenEnabled(find(R.id.ly_estimasi_selesai, LinearLayout.class), true);
             find(R.id.tv_disable_estimasi).setVisibility(View.GONE);
         } else if (getData.get("JENIS_ANTRIAN").asString().equals("H+")) {
+            find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setChecked(true);
             isHplusPartKosong = getData.get("PART_KOSONG").asBoolean();
+            isHpLus = true;
             find(R.id.et_dp_checkin4, EditText.class).setText(RP + formatRp(getData.get("DP").asString()));
             find(R.id.et_sisa_checkin4, EditText.class).setText(RP + formatRp(getData.get("SISA").asString()));
             Tools.setViewAndChildrenEnabled(find(R.id.ly_estimasi_selesai, LinearLayout.class), true);
@@ -825,21 +827,19 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                         find(R.id.sp_bbm, Spinner.class).performClick();
                         find(R.id.sp_bbm, Spinner.class).requestFocus();
                         showWarning("LEVEL BBM BELUM DI PILIH", Toast.LENGTH_LONG);
-                    }else if((isExtra || isHplusPartKosong) &&
-                            find(R.id.sp_bbm, Spinner.class).getSelectedItem().toString().equals("--PILIH--")){
+                    } else if ((isHplusPartKosong || isHpLus) &&
+                            find(R.id.sp_bbm, Spinner.class).getSelectedItem().toString().equals("--PILIH--")) {
                         showWarning("LEVEL BBM BELUM DI PILIH", Toast.LENGTH_LONG);
+                    }  else if ((isExtra || isHplusPartKosong || isHpLus) &&
+                            find(R.id.tv_tgl_estimasi_checkin4, TextView.class).getText().toString().isEmpty()) {
+                        showWarning("TANGGAL ESTIMASI HARUS DI ISI", Toast.LENGTH_LONG);
+                        find(R.id.tv_jam_estimasi_checkin4, TextView.class).requestFocus();
+                    } else if ((isExtra || isHplusPartKosong || isHpLus) &&
+                            find(R.id.tv_jam_estimasi_checkin4, TextView.class).getText().toString().isEmpty()) {
+                        showWarning("JAM ESTIMASI HARUS DI ISI", Toast.LENGTH_LONG);
+                        find(R.id.tv_tgl_estimasi_checkin4, TextView.class).requestFocus();
                     } else {
-                        if ((isExtra || isHplusPartKosong) &&
-                                find(R.id.tv_tgl_estimasi_checkin4, TextView.class).getText().toString().isEmpty()) {
-                            showWarning("TANGGAL ESTIMASI HARUS DI ISI", Toast.LENGTH_LONG);
-                            find(R.id.tv_jam_estimasi_checkin4, TextView.class).requestFocus();
-                        } else if ((isExtra || isHplusPartKosong) &&
-                                find(R.id.tv_jam_estimasi_checkin4, TextView.class).getText().toString().isEmpty() ) {
-                            showWarning("JAM ESTIMASI HARUS DI ISI", Toast.LENGTH_LONG);
-                            find(R.id.tv_tgl_estimasi_checkin4, TextView.class).requestFocus();
-                        } else {
-                            saveData("CHECKIN ANTRIAN");
-                        }
+                        saveData("CHECKIN ANTRIAN");
                     }
                 }
                 break;

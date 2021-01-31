@@ -41,6 +41,15 @@ public class PartBengkel_PartHome_Fragment extends Fragment {
     public PartBengkel_PartHome_Fragment() {
     }
 
+    public static PartBengkel_PartHome_Fragment newInstance(String query){
+        PartBengkel_PartHome_Fragment fragment = new PartBengkel_PartHome_Fragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(PartHome_MainTab_Activity.SEARCH_PART, query);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

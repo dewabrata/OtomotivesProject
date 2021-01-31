@@ -33,14 +33,22 @@ import static com.rkrzmail.utils.ConstUtils.ALL;
 import static com.rkrzmail.utils.ConstUtils.PART;
 import static com.rkrzmail.utils.ConstUtils.RP;
 
-public class PartOto_PartHome_Activity extends Fragment {
+public class PartOto_PartHome_Fragment extends Fragment {
 
     private RecyclerView rvPart;
     private AppActivity activity;
 
     private final Nson partList = Nson.newArray();
 
-    public PartOto_PartHome_Activity() {
+    public PartOto_PartHome_Fragment() {
+    }
+
+    public static PartOto_PartHome_Fragment newInstance(String query){
+        PartOto_PartHome_Fragment fragment = new PartOto_PartHome_Fragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(PartHome_MainTab_Activity.SEARCH_PART, query);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
@@ -101,9 +109,8 @@ public class PartOto_PartHome_Activity extends Fragment {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "view");
-                args.put("spec", "Bengkel");
                 args.put("search", cari);
-                args.put("lokasi", ALL);
+                args.put("isPartHome", "Y");
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SPAREPART), args));
             }

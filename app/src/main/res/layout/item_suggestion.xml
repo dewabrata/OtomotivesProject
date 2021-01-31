@@ -16,7 +16,7 @@
     <ImageView
         android:layout_width="@dimen/spacing_mlarge"
         android:layout_height="@dimen/spacing_mlarge"
-        app:srcCompat="@drawable/ic_history" />
+        app:srcCompat="@drawable/ic_history_resize" />
 
     <View
         android:layout_width="@dimen/spacing_smlarge"

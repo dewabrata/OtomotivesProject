@@ -2,14 +2,15 @@ package com.rkrzmail.oto.modules.Fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.view.ViewGroup;
 
 import com.naa.data.Nson;
 import com.rkrzmail.oto.modules.bengkel.Absensi_MainTab_Activity;
-import com.rkrzmail.oto.modules.bengkel.Dashboard_Activity;
 import com.rkrzmail.oto.modules.bengkel.Dashboard_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Pembayaran_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
@@ -27,6 +28,7 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
     private Bundle bundle;
     private String keyBundle;
     private Nson data;
+    private String searchQueryText;
 
     public FragmentsAdapter(FragmentManager fm) {
         super(fm);
@@ -51,6 +53,11 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
         bundle = new Bundle();
         bundle.putSerializable(key, nson);
         return bundle;
+    }
+
+    @Override
+    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+        super.destroyItem(container, position, object);
     }
 
     @Override
@@ -155,11 +162,11 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
         if (context instanceof PartHome_MainTab_Activity) {
             switch (i) {
                 case 0:
-                    fragment = Fragment.instantiate(context, PartBengkel_PartHome_Fragment.class.getName());
-                    break;
+                    //fragment = Fragment.instantiate(context, PartBengkel_PartHome_Fragment.class.getName());
+                    return PartBengkel_PartHome_Fragment.newInstance(searchQueryText);
                 case 1:
-                    fragment = Fragment.instantiate(context, PartOto_PartHome_Activity.class.getName());
-                    break;
+                    //fragment = Fragment.instantiate(context, PartOto_PartHome_Fragment.class.getName());
+                    return PartOto_PartHome_Fragment.newInstance(searchQueryText);
             }
             return fragment;
         }
@@ -248,5 +255,9 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
             }
         }
         return null;
+    }
+
+    public void setTextQueryChanged(String newText) {
+        searchQueryText = newText;
     }
 }

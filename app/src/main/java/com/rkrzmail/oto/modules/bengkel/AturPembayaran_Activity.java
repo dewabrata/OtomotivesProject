@@ -279,6 +279,7 @@ public class AturPembayaran_Activity extends AppActivity {
 
             }
 
+            @SuppressLint("SetTextI18n")
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 try {

@@ -70,6 +70,9 @@ dependencies {
     implementation 'com.aseem.versatileprogressbar:MultiProgressBar:1.1.0'
     //gif image lib for splashscreen
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.19'
+    //gridview width dynamically
+    implementation 'com.riontech.staggeredtextgridview:staggeredtextgridview:1.0.1'
+
 
 }
 

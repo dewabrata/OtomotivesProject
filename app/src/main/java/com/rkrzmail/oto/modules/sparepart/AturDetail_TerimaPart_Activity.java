@@ -325,8 +325,8 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
         dataAdd.set("NO_PART", txtNoPart.getText().toString());
         dataAdd.set("NAMA_PART", txtNamaPart.getText().toString());
         dataAdd.set("JUMLAH", txtJumlah.getText().toString());
-        dataAdd.set("HARGA_BELI", txtHargaBeliUnit.getText().toString());
-        dataAdd.set("NET", etHargaBersih.getText().toString());
+        dataAdd.set("HARGA_BELI", NumberFormatUtils.formatOnlyNumber(txtHargaBeliUnit.getText().toString()));
+        dataAdd.set("NET", NumberFormatUtils.formatOnlyNumber(etHargaBersih.getText().toString()));
         dataAdd.set("PART_ID", partId);
         dataAdd.set("KODE", kodeFolder);
         dataAdd.set("MERK", merkPart);

@@ -54,9 +54,15 @@ public class AppApplication extends Application {
         return "http://otomotives.com/api/v2/apitest/" + name;
     }
 
+    //production
     public static String getBaseUrlV3(String name) {
         return "http://otomotives.com/api/v3/" + name;
     }
+
+    //dev
+//    public static String getBaseUrlV3(String name) {
+//        return "http://otomotives.com/api/dev/" + name;
+//    }
 
     /*Mas Brahma, ni link nya :
     Pengajuan,
