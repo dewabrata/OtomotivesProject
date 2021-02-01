@@ -34,6 +34,10 @@
 
     <string name="nib_uppercase">NIB</string>
 
+    <string name="nama_principial_uppercase">NAMA PRINCIPAL</string>
+
+    <string name="no_telpmsg_uupercase">NO. TELP MESSAGE</string>
+
 
     <string name="no_telp_uupercase">NO. TELP</string>
 
@@ -51,6 +55,8 @@
     <string name="booking_uppercase">BOOKING</string>
 
     <string name="layanan_tambahan_uppercase">LAYANAN TAMBAHAN</string>
+
+    <string name="luarbengkel_uppercase">LUAR BENGKEL</string>
 
     <string name="layanan_uppercase">LAYANAN</string>
 

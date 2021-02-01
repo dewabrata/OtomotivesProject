@@ -24,7 +24,7 @@ import java.util.List;
 public class TabUsaha_Fragment extends Fragment {
 
     private EditText etNamaBengkel, etAlamat, etBadanUsaha, etKotaKab, etNoponsel, etNib, etNpwp;
-    private Spinner spAfiliasi, spJaringan, spJumlahUser;
+    private Spinner spAfiliasi, spJaringan;
     private Button btnSimpan;
     private CheckBox cbPkp;
     private MultiSelectionSpinner spJenisKendaraan, spBidangUsaha, spMerkKendaraan, spAktivitasUsaha;
@@ -57,7 +57,6 @@ public class TabUsaha_Fragment extends Fragment {
         spJenisKendaraan = v.findViewById(R.id.sp_jenisKendaraan_usaha);
         spBidangUsaha = v.findViewById(R.id.sp_bidangUsaha_usaha);
         spMerkKendaraan = v.findViewById(R.id.sp_merkKendaraan_usaha);
-        spJumlahUser = v.findViewById(R.id.sp_jumlahUser_usaha);
         btnSimpan = v.findViewById(R.id.btn_simpan_usaha);
         cbPkp = v.findViewById(R.id.cb_pkp_usaha);
         lyJaringan = v.findViewById(R.id.ly_jaringan_usaha);
@@ -87,7 +86,6 @@ public class TabUsaha_Fragment extends Fragment {
     }
 
     private void validation() {
-        ((ProfileBengkel_Activity) getActivity()).spinnerNoDefaultOffline(spJumlahUser, getResources().getStringArray(R.array.max_jumlah_user));
         ((ProfileBengkel_Activity) getActivity()).spinnerNoDefaultOffline(spAfiliasi, getResources().getStringArray(R.array.afiliasi_usaha));
         ((ProfileBengkel_Activity) getActivity()).setMultiSelectionSpinnerFromApi(
                 spJenisKendaraan, "nama", "BENGKEL", "viewmst", new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {

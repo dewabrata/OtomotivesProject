@@ -48,7 +48,6 @@ public class TabTambahan_Fragment extends Fragment {
     private void initComponent(View v) {
         spFasilitas = v.findViewById(R.id.sp_fasilitas_tambahan);
         spBooking = v.findViewById(R.id.sp_booking_tambahan);
-        spLayanan = v.findViewById(R.id.sp_afiliasi_tambahan);
         etHomeKm = v.findViewById(R.id.et_homeKm_tambahan);
         etEmergencyKm = v.findViewById(R.id.et_emgKm_tambahan);
         etJemputKm = v.findViewById(R.id.et_jemputKm_tambahan);
@@ -64,7 +63,7 @@ public class TabTambahan_Fragment extends Fragment {
         lyEntryMax = v.findViewById(R.id.ly_entryMax_tambahan);
         lyTambahan = v.findViewById(R.id.ly_tambahan);
 
-        validation();
+        //validation();
 
         btnSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
