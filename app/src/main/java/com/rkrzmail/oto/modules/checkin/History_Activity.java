@@ -65,6 +65,14 @@ public class History_Activity extends AppActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    private void initToolbarDetail(View dialogView) {
+        Toolbar toolbar = dialogView.findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("History Detail");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+    }
+
+
     private void initData() {
         Nson data = Nson.readJson(getIntentStringExtra(DATA));
         if (data != null) {
@@ -85,11 +93,11 @@ public class History_Activity extends AppActivity {
 
         EditText etCatatanMekanik = dialogView.findViewById(R.id.et_catatan_mekanik);
         etCatatanMekanik.setText(catatanMekanik);
+        etCatatanMekanik.setEnabled(false);
 
+        initToolbarDetail(dialogView);
         initRvPartJasa(dialogView);
         initRecylerviewKeluhan(dialogView);
-        viewKeluhan(idCheckin);
-        viewPartJasa(idCheckin);
 
         builder.create();
         alertDialog = builder.show();
@@ -97,9 +105,9 @@ public class History_Activity extends AppActivity {
 
     private void initRvPartJasa(View dialogView) {
         rvPartJasa = dialogView.findViewById(R.id.rv_part_jasa);
-        rvHistory.setLayoutManager(new LinearLayoutManager(this));
-        rvHistory.setHasFixedSize(true);
-        rvHistory.setAdapter(new NikitaMultipleViewAdapter(partJasaList, R.layout.item_part_booking3_checkin3, R.layout.item_jasalain_booking_checkin) {
+        rvPartJasa.setLayoutManager(new LinearLayoutManager(this));
+        rvPartJasa.setHasFixedSize(true);
+        rvPartJasa.setAdapter(new NikitaMultipleViewAdapter(partJasaList, R.layout.item_part_booking3_checkin3, R.layout.item_jasalain_booking_checkin) {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
@@ -134,7 +142,7 @@ public class History_Activity extends AppActivity {
 
     @SuppressLint("SetTextI18n")
     private void initRecylerviewKeluhan(View dialogView) {
-        rvKeluhan = dialogView.findViewById(R.id.recyclerView);
+        rvKeluhan = dialogView.findViewById(R.id.rv_keluhan);
         rvKeluhan.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvKeluhan.setHasFixedSize(true);
         rvKeluhan.setAdapter(new NikitaRecyclerAdapter(keluhanList, R.layout.item_keluhan) {
@@ -183,6 +191,8 @@ public class History_Activity extends AppActivity {
                 public void onItemClick(Nson parent, View view, int position) {
                     catatanMekanik = nListArray.get(position).get("CATATAN_MEKANIK").asString();
                     initDetailHistory(nListArray.get(position).get("CHECKIN_ID").asString());
+                    viewKeluhan(nListArray.get(position).get("CHECKIN_ID").asString());
+                    viewPartJasa(nListArray.get(position).get("CHECKIN_ID").asString());
                 }
             });
         } else {
@@ -272,8 +282,8 @@ public class History_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "HISTORY");
-                args.put("detail", "PART JASA");
-                args.put("id", idCheckin);
+                args.put("detail", "PART - JASA");
+                args.put("idCheckin", idCheckin);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_KONTROL_LAYANAN), args));
             }
@@ -284,8 +294,6 @@ public class History_Activity extends AppActivity {
                     partJasaList.asArray().clear();
                     partJasaList.asArray().addAll(result.get("data").asArray());
                     rvPartJasa.getAdapter().notifyDataSetChanged();
-                } else {
-                    showInfo(result.get("message").asString());
                 }
             }
         });

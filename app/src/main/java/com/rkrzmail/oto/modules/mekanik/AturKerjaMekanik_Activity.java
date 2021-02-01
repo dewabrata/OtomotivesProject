@@ -710,7 +710,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
             case R.id.img_btn_history:
                 intent = new Intent(getActivity(), History_Activity.class);
                 intent.putExtra("ALL", "ALL");
-                intent.putExtra("NOPOL", etNopol.getText().toString().trim());
+                intent.putExtra("NOPOL", etNopol.getText().toString().replaceAll(" ", ""));
                 startActivityForResult(intent, REQUEST_HISTORY);
                 break;
             case R.id.img_btn_katalog:

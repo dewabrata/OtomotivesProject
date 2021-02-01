@@ -674,10 +674,14 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_btnPart_checkin3, LinearLayout.class), true);
                     find(R.id.btn_lanjut_checkin3, Button.class).setEnabled(true);
                 }
+
                 if (item.equals("GARANSI LAYANAN")) {
-                    if (data.get("isExpiredKm").asBoolean() || data.get("isExpiredHari").asBoolean()) {
-                        showWarning("GARANSI LAYANAN EXPIRED, MAX KM : "
-                                + data.get("expiredKmVal").asString() + ", MAX BULAN : " + data.get("expiredHariVal").asString(), Toast.LENGTH_LONG);
+                    if (data.get("isExpiredKm").asBoolean()) {
+                        showWarning("GARANSI LAYANAN EXPIRED, MAX KM : " + data.get("expiredKmVal").asString(), Toast.LENGTH_LONG);
+                        spLayanan.setSelection(0);
+                        return;
+                    }else if(data.get("isExpiredHari").asBoolean()){
+                        showWarning("GARANSI LAYANAN EXPIRED, MAX HARI : " + data.get("expiredHariVal").asString(), Toast.LENGTH_LONG);
                         spLayanan.setSelection(0);
                         return;
                     }

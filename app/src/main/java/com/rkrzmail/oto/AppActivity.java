@@ -34,6 +34,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.TextWatcher;
@@ -600,7 +601,7 @@ public class AppActivity extends AppCompatActivity {
 
 
     public void adapterSearchView(final android.support.v7.widget.SearchView searchView, final String arguments, final String api, final String jsonObject, final String flag) {
-        final android.support.v7.widget.SearchView.SearchAutoComplete searchAutoComplete = (android.support.v7.widget.SearchView.SearchAutoComplete) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        final SearchView.SearchAutoComplete searchAutoComplete =  searchView.findViewById(R.id.search_src_text);
         searchAutoComplete.setDropDownBackgroundResource(R.drawable.bg_radius_white);
         searchAutoComplete.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
             Nson result;
@@ -610,7 +611,7 @@ public class AppActivity extends AppCompatActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "view");
-                if(!flag.equals("OTO")){
+                if (!flag.equals("OTO")) {
                     args.put(arguments, "Bengkel");
                 }
                 args.put("flag", flag);
@@ -648,8 +649,8 @@ public class AppActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(i)));
                 String object = n.get(jsonObject).asString();
-                find(android.support.v7.appcompat.R.id.search_src_text, android.support.v7.widget.SearchView.SearchAutoComplete.class).setText(object);
-                find(android.support.v7.appcompat.R.id.search_src_text, android.support.v7.widget.SearchView.SearchAutoComplete.class).setTag(String.valueOf(adapterView.getItemAtPosition(i)));
+                find(R.id.search_src_text, SearchView.SearchAutoComplete.class).setText(object);
+                find(R.id.search_src_text, SearchView.SearchAutoComplete.class).setTag(String.valueOf(adapterView.getItemAtPosition(i)));
                 searchView.setQuery(object, true);
             }
         });
@@ -763,7 +764,7 @@ public class AppActivity extends AppCompatActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put(params, arguments);
-                if(api.equals(VIEW_LAYANAN)){
+                if (api.equals(VIEW_LAYANAN)) {
                     args.put("spec", "OTOMOTIVES");
                     args.put("layanan", "BENGKEL");
                 }
@@ -913,7 +914,7 @@ public class AppActivity extends AppCompatActivity {
         return "0";
     }
 
-    public SpannableString setUnderline(String text){
+    public SpannableString setUnderline(String text) {
         SpannableString content = new SpannableString(text);
         content.setSpan(new UnderlineSpan(), 0, text.length(), 0);
         return content;
@@ -1129,11 +1130,11 @@ public class AppActivity extends AppCompatActivity {
         notificationManager.notify(notificationId, mBuilder.build());
     }
 
-    public void showMessageInvalidNotif(Context context, String messageInfo, Intent intent){
-        if(
+    public void showMessageInvalidNotif(Context context, String messageInfo, Intent intent) {
+        if (
                 Utility.isNumeric(messageInfo) ||
-                messageInfo.equalsIgnoreCase("Mysql") ||
-                messageInfo.isEmpty()
+                        messageInfo.equalsIgnoreCase("Mysql") ||
+                        messageInfo.isEmpty()
         )
             return;
         showNotification(context, "Info", messageInfo, "NOMOR PONSEL", intent);

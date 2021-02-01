@@ -47,10 +47,12 @@ public class KontrolLayanan_Activity extends AppActivity {
 
     private AlertDialog alertDialog;
     private RecyclerView rvKontrolLayanan;
-    private boolean isSwipe = false;
 
     private LinearLayout lyContainerFilter;
     private BottomSheetBehavior filterBottomSheet;
+
+    private String sortBy = "";
+    private boolean isSwipe = false;
 
 
     @Override
@@ -59,7 +61,9 @@ public class KontrolLayanan_Activity extends AppActivity {
         setContentView(R.layout.activity_kontrol_layanan);
         initToolbar();
         initComponent();
-        initViewSortBy();
+        initSortByStatus();
+        initSortByAntrian();
+        initSortByPelanggan();
         initFilterBottomSheet();
     }
 
@@ -158,6 +162,14 @@ public class KontrolLayanan_Activity extends AppActivity {
                 }
             }
         });
+
+        find(R.id.img_btn_close).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                filterBottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            }
+        });
+
     }
 
     private void initFilterBottomSheet() {
@@ -196,16 +208,7 @@ public class KontrolLayanan_Activity extends AppActivity {
         });
     }
 
-    private void initViewSortBy() {
-        RecyclerView rvStatus = findViewById(R.id.rv_status);
-        rvStatus.setHasFixedSize(false);
-        RecyclerView.LayoutManager layoutManager = new StaggeredGridLayoutManager
-                (
-                2,
-                StaggeredGridLayoutManager.HORIZONTAL
-                );
-        rvStatus.setLayoutManager(layoutManager);
-
+    private void initSortByStatus() {
         final Nson statusList = Nson.newArray();
         statusList.add(Nson.newObject().set("tittle", "ALL"));
         statusList.add(Nson.newObject().set("tittle", "CHECKIN ANTRIAN"));
@@ -218,18 +221,27 @@ public class KontrolLayanan_Activity extends AppActivity {
         statusList.add(Nson.newObject().set("tittle", "PELAYANAN SELESAI"));
         statusList.add(Nson.newObject().set("tittle", "PENUGASAN INSPKESI"));
         statusList.add(Nson.newObject().set("tittle", "PENUGASAN MEKANIK"));
-        statusList.add(Nson.newObject().set("tittle", "TAMBAH PART JASA"));
+        statusList.add(Nson.newObject().set("tittle", "TAMBAH PART - JASA"));
         statusList.add(Nson.newObject().set("tittle", "TRANSFER DP"));
         statusList.add(Nson.newObject().set("tittle", "TUNGGU DP"));
 
+
+        RecyclerView rvStatus = setRecylerViewSortBy(R.id.rv_status, 2);
         rvStatus.setAdapter(new NikitaRecyclerAdapter(statusList, R.layout.item_sort_by) {
             @Override
             public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
                 super.onBindViewHolder(viewHolder, position);
+                if(sortBy.isEmpty()){
+                    viewHolder.find(R.id.img_check_selected).setVisibility(statusList.get(position).get("tittle").asString().equals("ALL") ? View.VISIBLE : View.GONE);
+                }else{
+                    viewHolder.find(R.id.img_check_selected).setVisibility(sortBy.equals(statusList.get(position).get("tittle").asString()) ? View.VISIBLE : View.GONE);
+                }
+
                 viewHolder.find(R.id.tv_tittle_sort_by, TextView.class).setText(statusList.get(position).get("tittle").asString());
                 viewHolder.find(R.id.ly_container_status).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        sortBy = statusList.get(position).get("tittle").asString();
                         if (filterBottomSheet.getState() == BottomSheetBehavior.STATE_EXPANDED) {
                             filterBottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED);
                         }
@@ -238,10 +250,99 @@ public class KontrolLayanan_Activity extends AppActivity {
                         } else {
                             viewKontrolLayanan("", statusList.get(position).get("tittle").asString());
                         }
+                        notifyDataSetChanged();
                     }
                 });
             }
         });
+    }
+
+    private void initSortByAntrian() {
+        final Nson antrianList = Nson.newArray();
+        antrianList.add(Nson.newObject().set("tittle", "ALL"));
+        antrianList.add(Nson.newObject().set("tittle", "EXPRESS"));
+        antrianList.add(Nson.newObject().set("tittle", "STANDART"));
+        antrianList.add(Nson.newObject().set("tittle", "EXTRA"));
+        antrianList.add(Nson.newObject().set("tittle", "H+"));
+
+        RecyclerView rvAntrian = setRecylerViewSortBy(R.id.rv_antrian, 1);
+        rvAntrian.setAdapter(new NikitaRecyclerAdapter(antrianList, R.layout.item_sort_by) {
+            @Override
+            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
+                super.onBindViewHolder(viewHolder, position);
+                if(sortBy.isEmpty()){
+                    viewHolder.find(R.id.img_check_selected).setVisibility(antrianList.get(position).get("tittle").asString().equals("ALL") ? View.VISIBLE : View.GONE);
+                }else{
+                    viewHolder.find(R.id.img_check_selected).setVisibility(sortBy.equals(antrianList.get(position).get("tittle").asString()) ? View.VISIBLE : View.GONE);
+                }
+                viewHolder.find(R.id.tv_tittle_sort_by, TextView.class).setText(antrianList.get(position).get("tittle").asString());
+                viewHolder.find(R.id.ly_container_status).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        sortBy = antrianList.get(position).get("tittle").asString();
+                        if (filterBottomSheet.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                            filterBottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                        }
+                        if (antrianList.get(position).get("tittle").asString().equals("ALL")) {
+                            viewKontrolLayanan("", "");
+                        } else {
+                            viewKontrolLayanan("", antrianList.get(position).get("tittle").asString());
+                        }
+                        notifyDataSetChanged();
+                    }
+                });
+            }
+        });
+    }
+
+    private void initSortByPelanggan() {
+        final Nson pelangganList = Nson.newArray();
+        pelangganList.add(Nson.newObject().set("tittle", "ALL"));
+        pelangganList.add(Nson.newObject().set("tittle", "MENUNGGU"));
+        pelangganList.add(Nson.newObject().set("tittle", "TIDAK MENUNGGU"));
+
+        RecyclerView rvPelanggan = setRecylerViewSortBy(R.id.rv_pelanggan, 1);
+        rvPelanggan.setAdapter(new NikitaRecyclerAdapter(pelangganList, R.layout.item_sort_by) {
+            @Override
+            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
+                super.onBindViewHolder(viewHolder, position);
+                if(sortBy.isEmpty()){
+                    viewHolder.find(R.id.img_check_selected).setVisibility(pelangganList.get(position).get("tittle").asString().equals("ALL") ? View.VISIBLE : View.GONE);
+                }else{
+                    viewHolder.find(R.id.img_check_selected).setVisibility(sortBy.equals(pelangganList.get(position).get("tittle").asString()) ? View.VISIBLE : View.GONE);
+                }
+                viewHolder.find(R.id.tv_tittle_sort_by, TextView.class).setText(pelangganList.get(position).get("tittle").asString());
+                viewHolder.find(R.id.ly_container_status).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        sortBy = pelangganList.get(position).get("tittle").asString();
+                        if (filterBottomSheet.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                            filterBottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                        }
+                        if (pelangganList.get(position).get("tittle").asString().equals("ALL")) {
+                            viewKontrolLayanan("", "");
+                        } else {
+                            viewKontrolLayanan("", pelangganList.get(position).get("tittle").asString());
+                        }
+                        notifyDataSetChanged();
+                    }
+                });
+            }
+        });
+
+    }
+
+    private RecyclerView setRecylerViewSortBy(int viewId, int spanCount) {
+        if (viewId == 0) return null;
+        RecyclerView recyclerView = findViewById(viewId);
+        recyclerView.setHasFixedSize(false);
+        RecyclerView.LayoutManager layoutManager = new StaggeredGridLayoutManager
+                (
+                        spanCount,
+                        StaggeredGridLayoutManager.HORIZONTAL
+                );
+        recyclerView.setLayoutManager(layoutManager);
+        return recyclerView;
     }
 
     private void viewKontrolLayanan(final String cari, final String sortBy) {
@@ -324,6 +425,12 @@ public class KontrolLayanan_Activity extends AppActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        viewKontrolLayanan("", "");
     }
 
     @Override

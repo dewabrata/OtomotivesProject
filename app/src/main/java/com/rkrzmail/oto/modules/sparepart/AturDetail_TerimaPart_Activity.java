@@ -1,6 +1,7 @@
 package com.rkrzmail.oto.modules.sparepart;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -121,18 +122,12 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (txtJumlah.getText().toString().isEmpty() || txtHargaBeliUnit.getText().toString().isEmpty()) {
-                    showWarning("INFORMASI TIDAK LENGKAP");
-                    txtJumlah.requestFocus();
-                    txtHargaBeliUnit.requestFocus();
-                    return;
-                }
-                int jumlah = Integer.parseInt(txtJumlah.getText().toString());
-                if (jumlah > 0) {
-                    jumlahAllPart += jumlah;
-                }
-                Log.d(TAG, "total_part : " + jumlahAllPart);
-                addData();
+                showInfoDialog("ENTRY DATA SUDAH LENGKAP / BENAR ? ", "YA", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                addData();
+                            }
+                        }, null);
             }
         });
     }
@@ -319,6 +314,17 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
     }
 
     private void addData() {
+        if (txtJumlah.getText().toString().isEmpty() || txtHargaBeliUnit.getText().toString().isEmpty()) {
+            showWarning("INFORMASI PART TIDAK LENGKAP");
+            txtJumlah.requestFocus();
+            txtHargaBeliUnit.requestFocus();
+            return;
+        }
+        int jumlah = Integer.parseInt(txtJumlah.getText().toString());
+        if (jumlah > 0) {
+            jumlahAllPart += jumlah;
+        }
+        Log.d(TAG, "total_part : " + jumlahAllPart);
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         Nson dataAdd = Nson.newObject();

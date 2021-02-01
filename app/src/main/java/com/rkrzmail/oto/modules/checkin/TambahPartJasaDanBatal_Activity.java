@@ -377,6 +377,11 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
 
             @Override
             public void runUI() {
+                if(result.asString().isEmpty()){
+                    showError("SEDANG ADA GANGGUAN SERVER, SILAHKAN HUBUNGI SUPPORT", Toast.LENGTH_LONG);
+                    finish();
+                    return;
+                }
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     if(konfirmasiTambah.equals("N")){
                         Intent intent = new Intent(getActivity(), KontrolLayanan_Activity.class);
@@ -415,16 +420,15 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
             case R.id.btn_part:
                 i = new Intent(getActivity(), CariPart_Activity.class);
                 i.putExtra(CARI_PART_LOKASI, RUANG_PART);
-                i.putExtra(TAMBAH_PART, "Y");
                 startActivityForResult(i, REQUEST_CARI_PART);
                 break;
             case R.id.btn_simpan:
                 if (isWait && !isSign) {
-                    showWarning("Tanda Tangan belum terisi");
+                    showWarning("TANDA TANGAN BELUM TERISI");
                 } else if (find(R.id.ly_not_konfirmasi_tambah).getVisibility() == View.VISIBLE &&
                         find(R.id.et_tgl_estimasi, EditText.class).getText().toString().isEmpty() &&
                         find(R.id.et_jam_estimasi, EditText.class).getText().toString().isEmpty()) {
-                    showWarning("Estimasi Selsai belum terisi");
+                    showWarning("ESTIMASI SELSAI BELUM TERISI");
                 } else if (partList.asArray().isEmpty() && jasaList.asArray().isEmpty()) {
                     showWarning("PART DAN JASA BELUM DI TAMBAHKAN");
                 } else {
@@ -527,10 +531,16 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                     break;
                 case REQUEST_CARI_PART:
                     dataAccept = Nson.readJson(getIntentStringExtra(data, DATA));
-                    i = new Intent(getActivity(), JumlahPart_Checkin_Activity.class);
-                    i.putExtra(DATA, dataAccept.toJson());
-                    i.putExtra(TAMBAH_PART, "");
-                    startActivityForResult(i, REQUEST_HARGA_PART);
+                    int stock = dataAccept.get("STOCK_RUANG_PART").asInteger();
+                    if(stock == 0){
+                        dialogIgnoreStock();
+                    }else{
+                        i = new Intent(getActivity(), JumlahPart_Checkin_Activity.class);
+                        i.putExtra(DATA, dataAccept.toJson());
+                        i.putExtra(TAMBAH_PART, "");
+                        startActivityForResult(i, REQUEST_HARGA_PART);
+                    }
+
                     break;
                 case REQUEST_HARGA_PART:
                     try {
@@ -554,5 +564,18 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
             //find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));
             find(R.id.et_total_akhir, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));
         }
+    }
+
+    private void dialogIgnoreStock(){
+        Messagebox.showDialog(getActivity(), "Konfirmasi", "PART KOSNG TIDAK BISA TAMBAH", "Ya", null, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent i = new Intent(getActivity(), CariPart_Activity.class);
+                i.putExtra(CARI_PART_LOKASI, RUANG_PART);
+                i.putExtra(TAMBAH_PART, "Y");
+                startActivityForResult(i, REQUEST_CARI_PART);
+            }
+        },null);
+
     }
 }

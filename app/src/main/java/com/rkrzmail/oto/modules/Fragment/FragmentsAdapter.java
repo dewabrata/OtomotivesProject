@@ -29,6 +29,7 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
     private String keyBundle;
     private Nson data;
     private String searchQueryText;
+    private String searchViewTag;
 
     public FragmentsAdapter(FragmentManager fm) {
         super(fm);
@@ -163,12 +164,16 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
             switch (i) {
                 case 0:
                     //fragment = Fragment.instantiate(context, PartBengkel_PartHome_Fragment.class.getName());
-                    return PartBengkel_PartHome_Fragment.newInstance(searchQueryText);
+                    //break;
+                    return PartBengkel_PartHome_Fragment.newInstance(searchQueryText, searchViewTag);
+
                 case 1:
                     //fragment = Fragment.instantiate(context, PartOto_PartHome_Fragment.class.getName());
-                    return PartOto_PartHome_Fragment.newInstance(searchQueryText);
+                    //break;
+                    return PartOto_PartHome_Fragment.newInstance(searchQueryText, searchViewTag);
+
             }
-            return fragment;
+            return null;
         }
 
         return fragment;
@@ -259,5 +264,9 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
 
     public void setTextQueryChanged(String newText) {
         searchQueryText = newText;
+    }
+
+    public void setSearchViewTag(String tag){
+        searchViewTag = tag;
     }
 }

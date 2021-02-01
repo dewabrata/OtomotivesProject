@@ -392,11 +392,12 @@ public class CariPart_Activity extends AppActivity {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
+
                 args.put("action", "view");
                 args.put("spec", "Bengkel");
                 args.put("search", cari);
                 args.put("lokasi", getIntentStringExtra(CARI_PART_LOKASI));
-                args.put("isTambahPart", getIntentStringExtra(TAMBAH_PART));
+
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SPAREPART), args));
             }
 

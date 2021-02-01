@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.naa.data.Nson;
@@ -19,7 +18,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.gmod.SearchListener;
+import com.rkrzmail.srv.SearchListener;
 import com.rkrzmail.oto.modules.Fragment.FragmentsAdapter;
 import com.rkrzmail.oto.modules.Fragment.PartBengkel_PartHome_Fragment;
 import com.rkrzmail.oto.modules.Fragment.PartOto_PartHome_Fragment;
@@ -30,23 +29,23 @@ import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.VIEW_CARI_PART_SUGGESTION;
 import static com.rkrzmail.utils.APIUrls.VIEW_SPAREPART;
-import static com.rkrzmail.utils.ConstUtils.CARI_PART;
 
-public class PartHome_MainTab_Activity extends AppActivity implements SearchView.OnQueryTextListener, SearchListener.IFragmentListener {
+public class PartHome_MainTab_Activity extends AppActivity implements SearchView.OnQueryTextListener, SearchListener.IFragmentListener, TabLayout.BaseOnTabSelectedListener {
 
-    public static String SEARCH_PART = "SEARCH PART";
-    ViewPager vpPart;
-    TabLayout tabPart;
-    FragmentsAdapter pagerAdapter;
-    ArrayList<Fragment> fragments;
-    SearchView mSearchView;
+    public static final String SEARCH_PART = "SEARCH PART";
+    public static final String SEARCH_TAG = "SEARCH TAG";
 
-    PartBengkel_PartHome_Fragment partBengkel;
-    PartOto_PartHome_Fragment partOto;
+    private ViewPager vpPart;
+    private TabLayout tabPart;
+    private FragmentsAdapter pagerAdapter;
+    private ArrayList<Fragment> fragments;
+    private SearchView mSearchView;
 
-    ArrayList<SearchListener.ISearch> iSearch = new ArrayList<>();
-    SearchListener.IDataCallback dataCallback = null;
+    private final ArrayList<SearchListener.ISearch> iSearch = new ArrayList<>();
+    private final ArrayList<SearchListener.ISearchAutoComplete> searchAutoCompleteArrayList = new ArrayList<>();
     private String queryText;
+    private int tabPosition;
+    private String searchViewTag;
 
     private Nson partOtoList = Nson.newArray();
 
@@ -78,103 +77,50 @@ public class PartHome_MainTab_Activity extends AppActivity implements SearchView
         pagerAdapter = new FragmentsAdapter(getSupportFragmentManager(), this, fragments);
         vpPart.setAdapter(pagerAdapter);
         vpPart.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabPart));
-        vpPart.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int i, float v, int i1) {
-
-            }
-
-            @Override
-            public void onPageSelected(int i) {
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int i) {
-
-            }
-        });
         tabPart.setupWithViewPager(vpPart);
-        tabPart.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
+        tabPart.addOnTabSelectedListener(this);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        MenuItem searchMenuItem = menu.findItem(R.id.action_search);
+        getMenuInflater().inflate(R.menu.menu_part, menu);
 
-        SearchView searchView = (SearchView) searchMenuItem.getActionView();
-        searchView.setQueryHint("Cari Part");
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setSubmitButtonEnabled(true);
-        searchView.setOnQueryTextListener(this);
+        try {
+            SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+            mSearchView = new SearchView(getSupportActionBar().getThemedContext());
+            mSearchView.setQueryHint("Cari Part");
+            mSearchView.setMaxWidth(Integer.MAX_VALUE);
 
-//        if(isPartBengkel){
-//            adapterSearchView(mSearchView, "spec", VIEW_SPAREPART, "NAMA_PART", "");
-//        }else{
-//            adapterSearchView(mSearchView, "", VIEW_CARI_PART_SUGGESTION, "NAMA_PART", "OTO");
-//        }
+            final MenuItem searchMenu = menu.findItem(R.id.action_search);
+            searchMenu.setActionView(mSearchView);
+            searchMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+
+            mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+            mSearchView.setSubmitButtonEnabled(true);
+            mSearchView.setOnQueryTextListener(this);
+        } catch (Exception e) {
+            showError(e.getMessage());
+        }
+
+        final SearchView.SearchAutoComplete searchAutoComplete = mSearchView.findViewById(R.id.search_src_text);
+        searchAutoComplete.setDropDownBackgroundResource(R.drawable.bg_radius_white);
+
+        for (SearchListener.ISearchAutoComplete autoComplete : searchAutoCompleteArrayList) {
+            autoComplete.attachAdapter(searchAutoComplete);
+        }
+
+        //adapterSearchView(mSearchView, "", VIEW_CARI_PART_SUGGESTION, "NAMA_PART", "OTO");
 
         return super.onCreateOptionsMenu(menu);
-    }
-
-    private void searchInFragment(boolean isSearch, String query){
-        final FragmentsAdapter adapter = (FragmentsAdapter) vpPart.getAdapter();
-        if(isSearch){
-            for (int i = 0; i < adapter.getCount(); i++) {
-                Fragment fragments = (Fragment) vpPart.getAdapter().instantiateItem(vpPart, i);
-                if(fragments.isAdded()){
-                    if(fragments instanceof PartBengkel_PartHome_Fragment){
-                        partBengkel = (PartBengkel_PartHome_Fragment) fragments;
-                        partBengkel.viewALLPart(query);
-                        break;
-                    }else if(fragments instanceof PartOto_PartHome_Fragment){
-                        partOto = (PartOto_PartHome_Fragment) fragments;
-                        partOto.viewALLPart(query);
-                        break;
-                    }
-                }
-            }
-        }else{
-            for (int i = 0; i < Objects.requireNonNull(adapter).getCount(); i++) {
-                Fragment fragments = (Fragment) vpPart.getAdapter().instantiateItem(vpPart, i);
-                if(fragments.isAdded()){
-                    if(fragments instanceof PartBengkel_PartHome_Fragment){
-                        partBengkel = (PartBengkel_PartHome_Fragment) fragments;
-                        break;
-                    }else if(fragments instanceof PartOto_PartHome_Fragment){
-                        partOto = (PartOto_PartHome_Fragment) fragments;
-                        break;
-                    }
-                }
-            }
-
-        }
     }
 
     @Override
     public boolean onQueryTextSubmit(String queryText) {
         this.queryText = queryText;
         pagerAdapter.setTextQueryChanged(queryText);
+        pagerAdapter.setSearchViewTag(tabPosition == 0 ? "BENGKEL" : "OTO");
 
-        for(SearchListener.ISearch searchLocal : iSearch){
+        for (SearchListener.ISearch searchLocal : iSearch) {
             searchLocal.onTextQuery(queryText);
         }
         return true;
@@ -185,47 +131,33 @@ public class PartHome_MainTab_Activity extends AppActivity implements SearchView
         return false;
     }
 
-    public void setiDataCallback(SearchListener.IDataCallback dataCallback) {
-        this.dataCallback = dataCallback;
-        //dataCallback.onFragmentCreated();
-    }
-
     @Override
-    public void addiSearch(SearchListener.ISearch iSearch) {
+    public void addiSearch(SearchListener.ISearch iSearch, SearchListener.ISearchAutoComplete autoComplete) {
         this.iSearch.add(iSearch);
+        this.searchAutoCompleteArrayList.add(autoComplete);
     }
 
     @Override
-    public void removeISearch(SearchListener.ISearch iSearch) {
+    public void removeISearch(SearchListener.ISearch iSearch, SearchListener.ISearchAutoComplete autoComplete) {
         this.iSearch.remove(iSearch);
+        this.searchAutoCompleteArrayList.remove(autoComplete);
     }
 
-    public void viewALLPartOto(final String cari) {
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
-
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-
-                args.put("action", "view");
-                args.put("search", cari);
-                args.put("isPartHome", "Y");
-
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SPAREPART), args));
-            }
-
-            @Override
-            public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    result = result.get("data");
-                    partOtoList.asArray().clear();
-                    partOtoList.asArray().addAll(result.asArray());
-                } else {
-                    showError("Gagal Mencari Part");
-                }
-            }
-        });
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+        tabPosition = tab.getPosition();
+        this.searchViewTag = tabPosition == 0 ? "BENGKEL" : "OTO";
+        vpPart.setCurrentItem(tab.getPosition());
+        pagerAdapter.setSearchViewTag(searchViewTag);
     }
 
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
+
+    }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
+
+    }
 }

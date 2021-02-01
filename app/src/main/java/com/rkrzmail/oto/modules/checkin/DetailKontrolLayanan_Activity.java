@@ -226,7 +226,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), History_Activity.class);
                 intent.putExtra("ALL", "ALL");
-                intent.putExtra("NOPOL", etNopol.getText().toString().trim());
+                intent.putExtra("NOPOL", etNopol.getText().toString().replaceAll(" ", ""));
                 startActivityForResult(intent, REQUEST_HISTORY);
             }
         });
@@ -248,7 +248,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         swipeRefreshLayout.setEnabled(false);
         initToolbarKeluhan(dialogView);
         initRecylerviewKeluhan(dialogView);
-        if(keluhanList.size() > 0){
+        if (keluhanList.size() > 0) {
             Objects.requireNonNull(rvKeluhan.getAdapter()).notifyDataSetChanged();
         }
         builder.create();
@@ -274,7 +274,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
     }
 
     private void initRecyclerviewDetail() {
-        rvDetail.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true));
+        rvDetail.setLayoutManager(new LinearLayoutManager(this));
         rvDetail.setHasFixedSize(false);
         rvDetail.setAdapter(new NikitaMultipleViewAdapter(detailCheckinList, R.layout.item_part_booking3_checkin3, R.layout.item_jasalain_booking_checkin) {
             @SuppressLint("SetTextI18n")
@@ -283,10 +283,43 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 super.onBindViewHolder(viewHolder, position);
                 final int itemType = getItemViewType(position);
 
+                viewHolder.find(R.id.tv_no, TextView.class).setVisibility(View.VISIBLE);
+                viewHolder.find(R.id.tv_no, TextView.class).setText("" + (position + 1));
+                if (isKurangi) {
+                    viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.VISIBLE);
+                    viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Messagebox.showDialog(getActivity(), "Konfirmasi", "Kurangi Jasa?", "Ya", "Tidak", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    batalPartJasaList.add(Nson.newObject()
+                                            .set("ID", detailCheckinList.get(position).get("CHECKIN_DETAIL_ID"))
+                                            .set("PART_ID", detailCheckinList.get(position).get("PART_ID"))
+                                            .set("JASA_ID", detailCheckinList.get(position).get("JASA_ID"))
+                                            .set("JUMLAH", detailCheckinList.get(position).get("JUMLAH"))
+                                            .set("TUGAS_PART_ID", detailCheckinList.get(position).get("TUGAS_PART_ID"))
+                                            .set("NET", detailCheckinList.get(position).get("NET"))
+                                    );
+                                    detailCheckinList.asArray().remove(position);
+                                    notifyItemRemoved(position);
+                                }
+                            }, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.GONE);
+                }
+
                 if (itemType == ITEM_VIEW_1) {
-                    if(detailCheckinList.get(position).get("STATUS_DETAIL").asString().equals("TAMBAH PART - JASA")){
+                    if (detailCheckinList.get(position).get("STATUS_DETAIL").asString().equals("TAMBAH PART - JASA")) {
                         viewHolder.find(R.id.view_mark_tambah_jasa).setVisibility(View.VISIBLE);
-                    }else{
+                    } else {
                         viewHolder.find(R.id.view_mark_tambah_jasa).setVisibility(View.GONE);
                     }
 
@@ -296,8 +329,6 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                             .setText(detailCheckinList.get(position).get("NO_PART").asString());
                     viewHolder.find(R.id.tv_merk_booking3_checkin3, TextView.class)
                             .setText(detailCheckinList.get(position).get("MERK").asString());
-                    viewHolder.find(R.id.tv_no, TextView.class).setVisibility(View.VISIBLE);
-                    viewHolder.find(R.id.tv_no, TextView.class).setText(detailCheckinList.get(position).get("NO").asString() + ". ");
                     viewHolder.find(R.id.tv_hargaNet_booking3_checkin3, TextView.class).setText(
                             RP + formatRp(detailCheckinList.get(position).get("HARGA_PART").asString()));
                     if (!detailCheckinList.get(position).get("JASA_EXTERNAL").asString().isEmpty()) {
@@ -307,80 +338,21 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                         viewHolder.find(R.id.tv_jasaNet_booking3_checkin3, TextView.class).setText(
                                 RP + formatRp(detailCheckinList.get(position).get("HARGA_JASA_PART").asString()));
                     }
-
-                    if (isKurangi) {
-                        viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.VISIBLE);
-                        viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Messagebox.showDialog(getActivity(), "Konfirmasi", "Kurangi Part?", "Ya", "Tidak", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        batalPartJasaList.add(Nson.newObject()
-                                                .set("ID", detailCheckinList.get(position).get("CHECKIN_DETAIL_ID"))
-                                                .set("PART_ID", detailCheckinList.get(position).get("PART_ID"))
-                                                .set("JASA_ID", "")
-                                                .set("JUMLAH", detailCheckinList.get(position).get("JUMLAH"))
-                                                .set("TUGAS_PART_ID", detailCheckinList.get(position).get("TUGAS_PART_ID"))
-                                                .set("NET", detailCheckinList.get(position).get("NET"))
-                                        );
-                                        detailCheckinList.asArray().remove(position);
-                                        notifyItemRemoved(position);
-                                    }
-                                }, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                            }
-                        });
-                    } else {
-                        viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.GONE);
-                    }
                 } else if (itemType == ITEM_VIEW_2) {
-                    if(detailCheckinList.get(position).get("STATUS_DETAIL").asString().equals("TAMBAH PART - JASA")){
+                    if (detailCheckinList.get(position).get("STATUS_DETAIL").asString().equals("TAMBAH PART - JASA")) {
                         viewHolder.find(R.id.view_mark_tambah_jasa).setVisibility(View.VISIBLE);
-                    }else{
+                    } else {
                         viewHolder.find(R.id.view_mark_tambah_jasa).setVisibility(View.GONE);
                     }
                     viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class)
                             .setText(RP + formatRp(detailCheckinList.get(position).get("HARGA_JASA").asString()));
-                    viewHolder.find(R.id.tv_no, TextView.class).setText(detailCheckinList.get(position).get("NO").asString() + ". ");
                     viewHolder.find(R.id.tv_kelompokPart_booking3_checkin3, TextView.class)
                             .setText(detailCheckinList.get(position).get("KELOMPOK_PART").asString());
                     viewHolder.find(R.id.tv_aktifitas_booking3_checkin3, TextView.class)
                             .setText(detailCheckinList.get(position).get("AKTIVITAS").asString());
                     viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class).
                             setText(RP + formatRp(detailCheckinList.get(position).get("HARGA_JASA_LAIN").asString()));
-                    if (isKurangi) {
-                        viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.VISIBLE);
-                        viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Messagebox.showDialog(getActivity(), "Konfirmasi", "Kurangi Jasa?", "Ya", "Tidak", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        batalPartJasaList.add(Nson.newObject()
-                                                .set("ID", detailCheckinList.get(position).get("CHECKIN_DETAIL_ID"))
-                                                .set("PART_ID", "")
-                                                .set("JASA_ID", detailCheckinList.get(position).get("JASA_ID"))
-                                                .set("JUMLAH", detailCheckinList.get(position).get("JUMLAH"))
-                                                .set("TUGAS_PART_ID", detailCheckinList.get(position).get("TUGAS_PART_ID"))
-                                                .set("NET", detailCheckinList.get(position).get("NET"))
-                                        );
-                                        detailCheckinList.asArray().remove(position);
-                                        notifyItemRemoved(position);
-                                    }
-                                }, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                            }
-                        });
-                    }
+
                 }
             }
         });

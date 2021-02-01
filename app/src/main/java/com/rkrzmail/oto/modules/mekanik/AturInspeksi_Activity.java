@@ -161,6 +161,10 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
                 super.onBindViewHolder(viewHolder, position);
                 final int itemType = getItemViewType(position);
                 int no = position + 1;
+
+                viewHolder.find(R.id.view_mark_tambah_jasa).setVisibility(View.GONE);
+                viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.GONE);
+
                 if (itemType == ITEM_VIEW_1) {
                     viewHolder.find(R.id.tv_namaPart_booking3_checkin3, TextView.class)
                             .setText(nListArray.get(position).get("NAMA_PART").asString());

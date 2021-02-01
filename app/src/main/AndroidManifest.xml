@@ -6,22 +6,22 @@
     <application
         android:name=".AppApplication"
         android:allowBackup="true"
+        android:appComponentFactory="android.support.v4.app.CoreComponentFactory"
         android:icon="@drawable/speed"
         android:label="Bengkel Pro"
         android:roundIcon="@drawable/speed"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        android:appComponentFactory="android.support.v4.app.CoreComponentFactory"
         tools:ignore="AllowBackup,UnusedAttribute"
-        tools:replace="android:label"
-        >
+        tools:replace="android:label">
+        <activity android:name=".modules.bengkel.SaranActivity"></activity>
         <activity
             android:name=".modules.bengkel.Dashboard_MainTab_Activity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".modules.sparepart.PartHome_MainTab_Activity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".modules.bengkel.Dashboard_Activity"
             android:screenOrientation="portrait" />

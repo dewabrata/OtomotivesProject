@@ -164,7 +164,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     result = result.get("data");
-                    if (result.asArray().size() > 0) {
+                    if (result.size() > 0) {
                         find(R.id.btn_history_checkin1).setEnabled(true);
                         historyList.asArray().addAll(result.asArray());
                         for (int i = 0; i < result.size(); i++) {
@@ -259,7 +259,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             public void afterTextChanged(Editable s) {
                 etNoPonsel.removeTextChangedListener(this);
                 int counting = (s == null) ? 0 : s.toString().length();
-                if(counting == 0) return;
+                if (counting == 0) return;
                 if (counting < 4 && !etNoPonsel.getText().toString().contains("+62 ")) {
                     etNoPonsel.setTag(null);
                     etNoPonsel.setText("+62 ");
@@ -282,14 +282,15 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
         });
     }
 
-    private void validateNoPonsel(@NonNull final String noPonsel){
-        if(noPonsel.length() > 10){
+    private void validateNoPonsel(@NonNull final String noPonsel) {
+        if (noPonsel.length() > 10) {
             find(R.id.pb_etNoPonsel_checkin).setVisibility(View.VISIBLE);
-        }else{
+        } else {
             return;
         }
         newTask(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -301,14 +302,14 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void runUI() {
                 find(R.id.pb_etNoPonsel_checkin).setVisibility(View.GONE);
-                if(!etNamaPelanggan.getText().toString().isEmpty()){
+                if (!etNamaPelanggan.getText().toString().isEmpty()) {
                     result = result.get("data").get(0);
                     String dataNama = result.get("NAMA_PELANGGAN").asString();
                     String dataNoponsel = result.get("NO_PONSEL").asString();
-                    if(!etNamaPelanggan.getText().toString().equals(dataNama)
-                            && noPonsel.equals(dataNoponsel)){
+                    if (!etNamaPelanggan.getText().toString().equals(dataNama)
+                            && noPonsel.equals(dataNoponsel)) {
                         find(R.id.tl_nohp, TextInputLayout.class).setError("NO PONSEL TIDAK VALID DENGAN NAMA PELANGGAN");
-                    }else{
+                    } else {
                         find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
                     }
                 }
@@ -580,10 +581,10 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     nson.set("tahunProduksi", tahunProduksi);
                     nson.set("km", etKm.getText().toString());
                     nson.set("NOPOL", nopol);
-                    nson.set("isExpiredKm", Integer.parseInt(formatOnlyNumber(etKm.getText().toString())) < expiredGaransiKm);
-                    nson.set("isExpiredHari", isGaransiHari.equals("VALID"));
-                    nson.set("expiredKmVal", Integer.parseInt(formatOnlyNumber(etKm.getText().toString())) < expiredGaransiKm ? expiredGaransiKm : 0);
-                    nson.set("expiredHariVal", isGaransiHari.equals("VALID") ? expiredGaransiHari : 0);
+                    nson.set("isExpiredKm", Integer.parseInt(formatOnlyNumber(etKm.getText().toString())) > expiredGaransiKm);
+                    nson.set("isExpiredHari", isGaransiHari.equals("NOT VALID"));
+                    nson.set("expiredKmVal", expiredGaransiKm);
+                    nson.set("expiredHariVal", expiredGaransiHari);
                     nson.set("jenisKendaraan", jenisKendaraan);
                     nson.set("noRangka", noRangka);
                     nson.set("noMesin", noMesin);

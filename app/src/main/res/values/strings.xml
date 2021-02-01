@@ -182,6 +182,7 @@
     <string name="tampilkan_uppercase">TAMPILKAN</string>
     <string name="filter_uppercase">FILTER</string>
     <string name="history_uppercase">HISTORY</string>
+    <string name="antrian_uppercase">ANTRIAN</string>
     <string-array name="pola_harga_jual">
         <item>FLEXIBLE</item>
         <item>BELI + MARGIN</item>
