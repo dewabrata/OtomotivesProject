@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -53,6 +54,7 @@ import static com.rkrzmail.utils.ConstUtils.CETAK_EXCEL;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.EXTERNAL_DIR_OTO;
 import static com.rkrzmail.utils.ConstUtils.ONEDAY;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_FOTO_PART;
 import static com.rkrzmail.utils.Tools.setFormatDayAndMonthFromDb;
 import static com.rkrzmail.utils.Tools.setFormatDayAndMonthToDb;
 
@@ -108,24 +110,15 @@ public class Laporan_Activity extends AppActivity {
         btnUnduh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (jenisLaporan.isEmpty()) {
-                    showWarning("JENIS LAPORAN HARUS DI PILIH", Toast.LENGTH_LONG);
-                } else if (tglAwal.isEmpty()) {
-                    showWarning("TANGGAL AWAL HARUS DI MASUKKAN", Toast.LENGTH_LONG);
-                    tvAwal.performClick();
-                } else if (tglAkhir.isEmpty()) {
-                    showWarning("TANGGAL AKHIR HARUS DI PILIJ", Toast.LENGTH_LONG);
-                } else {
-                    tglAwal = Tools.setFormatDayAndMonthToDb(tglAwal);
-                    tglAkhir = Tools.setFormatDayAndMonthToDb(tglAkhir);
-
-                    new DownloadExcel().execute(
-                            CETAK_EXCEL(UtilityAndroid.getSetting(getApplicationContext(), "CID", "").trim(),
-                                    jenisLaporan,
-                                    tglAwal,
-                                    tglAkhir
-                            )
-                    );
+                if (!checkPermission()) {
+                    validation();
+                }
+                else {
+                    if (checkPermission()) {
+                        requestPermissionAndContinue();
+                    } else {
+                        validation();
+                    }
 
                 }
             }
@@ -151,6 +144,25 @@ public class Laporan_Activity extends AppActivity {
 
             }
         });
+    }
+
+    private void validation(){
+        if (jenisLaporan.isEmpty()) {
+            showWarning("JENIS LAPORAN HARUS DI PILIH", Toast.LENGTH_LONG);
+        } else if (tglAwal.isEmpty()) {
+            showWarning("TANGGAL AWAL TIDAK BOLEH KOSONG", Toast.LENGTH_LONG);
+            tvAwal.performClick();
+        } else if (tglAkhir.isEmpty()) {
+            showWarning("TANGGAL AKHIR TIDAK BOLEH KOSONG", Toast.LENGTH_LONG);
+        } else {
+            new DownloadExcel().execute(
+                    CETAK_EXCEL(UtilityAndroid.getSetting(getApplicationContext(), "CID", "").trim(),
+                            jenisLaporan,
+                            tglAwal,
+                            tglAkhir
+                    )
+            );
+        }
     }
 
     private void setDefaultTgl() {

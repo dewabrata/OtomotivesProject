@@ -22,51 +22,124 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/border_solid"
+                android:layout_marginTop="@dimen/paddingMedium"
+                android:layout_marginBottom="@dimen/paddingMedium"
                 android:gravity="center"
                 android:orientation="horizontal"
-                android:padding="10dp">
+                android:paddingStart="@dimen/paddingMedium"
+                android:paddingEnd="@dimen/paddingMedium">
 
                 <TextView
-                    android:layout_width="170dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/fasilitas_pelanggan_uppercase" />
+                    android:text="@string/fasilitas_pelanggan_uppercase"
+                    android:layout_width="0dp"
+                    android:layout_weight="4"
+                    android:textColor="@color/grey_900"
+                    android:textStyle="bold"
+                    android:textSize="12sp"/>
 
-                <Spinner
-                    android:id="@+id/sp_fasilitas_tambahan"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:textAlignment="center"
-                    android:textStyle="bold" />
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
+
+                    <Spinner
+                        android:id="@+id/sp_fasilitas_tambahan"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textAlignment="center"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
 
             </LinearLayout>
+
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:background="@drawable/border_solid"-->
+<!--                android:gravity="center"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:padding="10dp">-->
+
+<!--                <TextView-->
+<!--                    android:layout_width="170dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="@string/fasilitas_pelanggan_uppercase" />-->
+
+<!--                <Spinner-->
+<!--                    android:id="@+id/sp_fasilitas_tambahan"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:gravity="center"-->
+<!--                    android:textAlignment="center"-->
+<!--                    android:textStyle="bold" />-->
+
+<!--            </LinearLayout>-->
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/border_solid"
+                android:layout_marginTop="@dimen/paddingMedium"
+                android:layout_marginBottom="@dimen/paddingMedium"
                 android:gravity="center"
-                android:padding="10dp">
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/paddingMedium"
+                android:paddingEnd="@dimen/paddingMedium">
 
                 <TextView
-                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/booking_uppercase" />
+                    android:text="@string/booking_uppercase"
+                    android:layout_width="0dp"
+                    android:layout_weight="4"
+                    android:textColor="@color/grey_900"
+                    android:textStyle="bold"
+                    android:textSize="12sp"/>
 
-                <Spinner
-                    android:id="@+id/sp_booking_tambahan"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:entries="@array/ya_tidak"
-                    android:gravity="center"
-                    android:textAlignment="center"
-                    android:textStyle="bold" />
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
+
+                    <Spinner
+                        android:id="@+id/sp_booking_tambahan"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textAlignment="center"
+                        android:textStyle="bold"
+                        android:entries="@array/ya_tidak"/>
+
+                </RelativeLayout>
 
             </LinearLayout>
+
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:background="@drawable/border_solid"-->
+<!--                android:gravity="center"-->
+<!--                android:padding="10dp">-->
+
+<!--                <TextView-->
+<!--                    android:layout_width="150dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="@string/booking_uppercase" />-->
+
+<!--                <Spinner-->
+<!--                    android:id="@+id/sp_booking_tambahan"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:entries="@array/ya_tidak"-->
+<!--                    android:gravity="center"-->
+<!--                    android:textAlignment="center"-->
+<!--                    android:textStyle="bold" />-->
+
+<!--            </LinearLayout>-->
 
             <LinearLayout
                 android:id="@+id/ly_tambahan"
@@ -75,36 +148,72 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/ly_layanan_tambahan"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/border_solid"
+                    android:layout_marginTop="@dimen/paddingMedium"
+                    android:layout_marginBottom="@dimen/paddingMedium"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:padding="10dp">
+                    android:paddingStart="@dimen/paddingMedium"
+                    android:paddingEnd="@dimen/paddingMedium">
 
                     <TextView
-                        android:layout_width="150dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="@string/luarbengkel_uppercase" />
-
-                    <com.rkrzmail.srv.MultiSelectionSpinner
-                        android:id="@+id/sp_luarbengkel"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:textAlignment="center"
+                        android:layout_weight="4"
+                        android:text="@string/luarbengkel_uppercase"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp"
                         android:textStyle="bold" />
 
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="34dp"
+                        android:layout_weight="6"
+                        android:background="@drawable/background_edittext">
+
+                        <Spinner
+                            android:id="@+id/sp_luarbengkel"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAlignment="center"
+                            android:textStyle="bold" />
+
+                    </RelativeLayout>
+
                 </LinearLayout>
+
+<!--                <LinearLayout-->
+<!--                    android:id="@+id/ly_layanan_tambahan"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="10dp"-->
+<!--                    android:background="@drawable/border_solid"-->
+<!--                    android:gravity="center"-->
+<!--                    android:orientation="horizontal"-->
+<!--                    android:padding="10dp">-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="150dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="@string/luarbengkel_uppercase" />-->
+
+<!--                    <com.rkrzmail.srv.MultiSelectionSpinner-->
+<!--                        android:id="@+id/sp_luarbengkel"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:gravity="center"-->
+<!--                        android:textAlignment="center"-->
+<!--                        android:textStyle="bold" />-->
+
+<!--                </LinearLayout>-->
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginRight="10dp"
                     android:text="MAX RADIUS"
                     android:textStyle="bold" />
@@ -114,89 +223,42 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:padding="10dp"
+                    android:background="@drawable/border_solid">
 
-                    <android.support.design.widget.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    <CheckBox
+                        android:id="@+id/cbHome"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginEnd="5dp"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:hint="MIN">
+                        android:layout_gravity="center"
+                        android:text="HOME" />
 
-                        <EditText
-                            android:id="@+id/et_minRadius_tambahan"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ems="10"
-                            android:inputType="text"
-                            android:singleLine="true"
-                            android:textSize="14sp" />
-
-                    </android.support.design.widget.TextInputLayout>
-
-
-                    <android.support.design.widget.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    <CheckBox
+                        android:id="@+id/cbJemput"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:hint="@string/home">
+                        android:layout_gravity="center"
+                        android:text="JEMPUT" />
 
-                        <EditText
-                            android:id="@+id/et_homeRadius_tambahan"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ems="10"
-                            android:inputType="text"
-                            android:singleLine="true"
-                            android:textSize="14sp" />
-
-                    </android.support.design.widget.TextInputLayout>
-
-
-                    <android.support.design.widget.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    <CheckBox
+                        android:id="@+id/cbDerek"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="5dp"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:hint="@string/jemput">
+                        android:layout_gravity="center"
+                        android:text="DEREK" />
 
-                        <EditText
-                            android:id="@+id/et_jemputRadius_tambahan"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ems="10"
-                            android:inputType="text"
-                            android:singleLine="true"
-                            android:textSize="14sp" />
-
-                    </android.support.design.widget.TextInputLayout>
-
-
-                    <android.support.design.widget.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    <CheckBox
+                        android:id="@+id/cbEmg"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:hint="@string/emergency">
-
-                        <EditText
-                            android:id="@+id/et_emgRadius_tambahan"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ems="10"
-                            android:inputType="text"
-                            android:singleLine="true"
-                            android:textSize="14sp" />
-
-                    </android.support.design.widget.TextInputLayout>
+                        android:layout_gravity="center"
+                        android:text="EMG" />
 
                 </LinearLayout>
 
@@ -225,9 +287,11 @@
                             android:id="@+id/et_minDerek_tambahan"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="text"
                             android:singleLine="true"
-                            android:textSize="14sp" />
+                            android:textSize="14sp"
+                            android:inputType="number"
+                            android:maxLength="4"
+                            android:enabled="false"/>
 
                     </android.support.design.widget.TextInputLayout>
 
@@ -239,11 +303,13 @@
                         android:hint="LAINNYA">
 
                         <EditText
-                            android:id="@+id/et_derek_tambahan"
+                            android:id="@+id/et_minLainnya_tambahan"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="text"
-                            android:textSize="14sp" />
+                            android:inputType="number"
+                            android:maxLength="4"
+                            android:textSize="14sp"
+                            android:enabled="false"/>
 
                     </android.support.design.widget.TextInputLayout>
 
@@ -278,7 +344,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:ems="10"
-                            android:inputType="text"
+                            android:inputType="number"
+                            android:maxLength="3"
                             android:singleLine="true"
                             android:textSize="14sp" />
 
@@ -298,7 +365,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:ems="10"
-                            android:inputType="text"
+                            android:inputType="number"
+                            android:maxLength="3"
                             android:singleLine="true"
                             android:textSize="14sp" />
 
@@ -319,7 +387,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:ems="10"
-                            android:inputType="text"
+                            android:inputType="number"
+                            android:maxLength="3"
                             android:singleLine="true"
                             android:textSize="14sp" />
 
@@ -339,7 +408,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:ems="10"
-                            android:inputType="text"
+                            android:inputType="number"
+                            android:maxLength="3"
                             android:singleLine="true"
                             android:textSize="14sp" />
 
@@ -363,43 +433,73 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:inputType="number"
+                    android:maxLength="3"
                     android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+<!--            sd-->
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:hint="MAX HARI FREE SIMPAN">
+                android:layout_height="60dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:gravity="center">
 
-                <EditText
-                    android:id="@+id/et_maxHari_tambahan"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:inputType="number"
-                    android:textSize="14sp" />
+                    android:layout_weight="4"
+                    android:text="FREE SIMPAN/BIAYA" />
 
-            </android.support.design.widget.TextInputLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_weight="7">
 
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:hint="BIAYA SIMPAN / HARI">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_weight="2"
+                        android:layout_marginRight="5dp"
+                        android:padding="2dp">
 
-                <EditText
-                    android:id="@+id/et_biayaSimpan_tambahan"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:inputType="numberDecimal"
-                    android:textSize="14sp" />
+                        <Spinner
+                            android:id="@+id/sp_freesimpanan_tambahan"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAlignment="center"
+                            android:textStyle="bold"
+                            android:entries="@array/number"
+                            android:background="@drawable/border_solid"/>
 
-            </android.support.design.widget.TextInputLayout>
+                    </RelativeLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:hint="Rp.">
+
+                        <EditText
+                            android:id="@+id/et_freesimpanan_tambahan"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:ems="5"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:singleLine="true"
+                            android:textSize="14sp" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
 
             <android.support.design.widget.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -413,6 +513,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
+                    android:maxLength="2"
                     android:inputType="numberDecimal"
                     android:textSize="14sp" />
 

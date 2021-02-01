@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -26,8 +28,9 @@ import java.util.List;
 public class TabTambahan_Fragment extends Fragment {
 
     private Spinner spFasilitas, spBooking;
-    private EditText etHomeKm, etEmergencyKm, etJemputKm, etHomeRadius, etEmergencyRadius, etJemputRadius, etKapasitas, etMaxHari, etBiaya;
+    private EditText etHomeKm, etEmergencyKm, etJemputKm, etMinLainnya, etMinDerek, etKapasitas, etMaxHari, etBiaya;
     private Button btnSimpan;
+    private CheckBox cbHome, cbJemput, cbEmg, cbDerek;
     private LinearLayout lyLayanan, lyTambahan, lyEntryMax, lyEntryKm;
     private MultiSelectionSpinner spLayanan;
 
@@ -42,6 +45,7 @@ public class TabTambahan_Fragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_tab_tambahan_bengkel, container, false);
         initComponent(v);
+        validation();
         return v;
     }
 
@@ -51,20 +55,46 @@ public class TabTambahan_Fragment extends Fragment {
         etHomeKm = v.findViewById(R.id.et_homeKm_tambahan);
         etEmergencyKm = v.findViewById(R.id.et_emgKm_tambahan);
         etJemputKm = v.findViewById(R.id.et_jemputKm_tambahan);
-        etEmergencyRadius = v.findViewById(R.id.et_emgRadius_tambahan);
-        etHomeRadius = v.findViewById(R.id.et_homeRadius_tambahan);
-        etJemputRadius = v.findViewById(R.id.et_jemputRadius_tambahan);
+        etMinLainnya = v.findViewById(R.id.et_minLainnya_tambahan);
+        etMinDerek = v.findViewById(R.id.et_minDerek_tambahan);
         etKapasitas = v.findViewById(R.id.et_kapasitas_tambahan);
-        etMaxHari = v.findViewById(R.id.et_maxHari_tambahan);
-        etBiaya = v.findViewById(R.id.et_biayaSimpan_tambahan);
         btnSimpan = v.findViewById(R.id.btn_simpan_tambahan);
-        lyLayanan = v.findViewById(R.id.ly_layanan_tambahan);
         lyEntryKm = v.findViewById(R.id.ly_entryKm_tambahan);
         lyEntryMax = v.findViewById(R.id.ly_entryMax_tambahan);
         lyTambahan = v.findViewById(R.id.ly_tambahan);
+        cbDerek= v.findViewById(R.id.cbDerek);
+        cbEmg= v.findViewById(R.id.cbEmg);
+        cbHome= v.findViewById(R.id.cbHome);
+        cbJemput= v.findViewById(R.id.cbJemput);
 
-        //validation();
 
+        cbDerek.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                validation();
+            }
+        });
+
+        cbHome.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                validation();
+            }
+        });
+
+        cbJemput.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                validation();
+            }
+        });
+
+        cbEmg.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                validation();
+            }
+        });
         btnSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -89,38 +119,6 @@ public class TabTambahan_Fragment extends Fragment {
     }
 
     private void validation() {
-        String[] items = getResources().getStringArray(R.array.layanan_tambahan);
-        spLayanan.setItems(items);
-        spLayanan.setSelection(new int[]{});
-        spLayanan.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
-            @Override
-            public void selectedIndices(List<Integer> indices) {
-            }
-
-            @Override
-            public void selectedStrings(List<String> strings) {
-                for (View view : lyTambahan.getTouchables()) {
-                    if (view instanceof EditText) {
-                        EditText editText = (EditText) view;
-                        editText.setEnabled(false);
-                        if (strings.contains("HOME")) {
-                            etHomeKm.setEnabled(true);
-                            etHomeRadius.setEnabled(true);
-                        } else if (strings.contains("ANTAR - JEMPUT")) {
-                            etJemputKm.setEnabled(true);
-                            etJemputRadius.setEnabled(true);
-                        } else if (strings.contains("EMERGENCY")) {
-                            etEmergencyKm.setEnabled(true);
-                            etEmergencyRadius.setEnabled(true);
-                        } else {
-                            editText.setEnabled(false);
-
-                        }
-                    }
-                }
-            }
-        });
-
         spBooking.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -137,6 +135,16 @@ public class TabTambahan_Fragment extends Fragment {
 
             }
         });
-    }
 
+        if(cbDerek.isChecked() && (cbEmg.isChecked() || cbJemput.isChecked() || cbHome.isChecked())){
+            etMinLainnya.setEnabled(true);
+            etMinDerek.setEnabled(true);
+        }else if (cbHome.isChecked() || cbJemput.isChecked() || cbEmg.isChecked()){
+            etMinLainnya.setEnabled(true);
+            etMinDerek.setEnabled(false);
+        }else if (cbDerek.isChecked()){
+            etMinLainnya.setEnabled(false);
+            etMinDerek.setEnabled(true);
+        }
+    }
 }

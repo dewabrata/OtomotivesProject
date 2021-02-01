@@ -36,9 +36,8 @@
 
     <string name="nama_principial_uppercase">NAMA PRINCIPAL</string>
 
-    <string name="no_telpmsg_uupercase">NO. TELP MESSAGE</string>
-
-
+    <string name="no_ponselmsg_uupercase">NO. PONSEL MESSAGE</string>
+    
     <string name="no_telp_uupercase">NO. TELP</string>
 
     <string name="npwp_uppercase">NPWP</string>
@@ -341,6 +340,20 @@
         <item>LAYANAN BOOKING</item>
         <item>LAYANAN HOME SERVICES</item>
         <item>LAYANAN EMERGENCY</item>
+        <item></item>
+    </string-array>
+    <string-array name="number">
+        <item>--PILIH--</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
         <item></item>
     </string-array>
     <string-array name="ya_tidak">
