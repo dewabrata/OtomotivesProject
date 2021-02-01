@@ -86,13 +86,14 @@ public class Laporan_Activity extends AppActivity {
     }
 
     private void initComponent() {
+
         initToolbar();
         initProgressbar();
         tvAwal = findViewById(R.id.tv_tglMulai_lap);
         tvAkhir = findViewById(R.id.tv_tglSelesai_lap);
         spJenisLap = findViewById(R.id.sp_nama_laporan);
         Button btnUnduh = findViewById(R.id.btn_unduh);
-
+        setDefaultTgl();
         find(R.id.ic_tglMulai_lap).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -166,13 +167,12 @@ public class Laporan_Activity extends AppActivity {
     }
 
     private void setDefaultTgl() {
-        if (tvAwal.getText().toString().isEmpty() && tvAkhir.getText().toString().isEmpty()) {
-            tvAwal.setText(currentDateTime("dd/MM/yyyy"));
-            tvAkhir.setText(currentDateTime("dd/MM/yyyy"));
+        tvAwal.setText(currentDateTime("dd/MM/yyyy"));
+        tvAkhir.setText(currentDateTime("dd/MM/yyyy"));
 
-            tglAwal = tvAwal.getText().toString();
-            tglAkhir = tvAkhir.getText().toString();
-        }
+        tglAwal = setFormatDayAndMonthToDb(tvAwal.getText().toString());
+        tglAkhir = setFormatDayAndMonthToDb(tvAkhir.getText().toString());
+
     }
 
     private void initProgressbar() {
