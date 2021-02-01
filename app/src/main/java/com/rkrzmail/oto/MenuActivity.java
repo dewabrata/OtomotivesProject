@@ -42,6 +42,7 @@ import com.rkrzmail.oto.modules.bengkel.Dashboard_Activity;
 import com.rkrzmail.oto.modules.bengkel.Dashboard_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Laporan_Activity;
 import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
+import com.rkrzmail.oto.modules.bengkel.SaranActivity;
 import com.rkrzmail.oto.modules.checkin.Checkin1_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiTerbayar_Activity;
 import com.rkrzmail.oto.modules.mekanik.AturSchedule_Activity;
@@ -134,7 +135,7 @@ public class MenuActivity extends AppActivity {
     public static final int MN_PENGEMBALIAN_PART = 42;
     public static final int MN_KOMISI_PART = 43;
 
-
+    private final String SARAN = "SARAN";
     private final String REFERAL = "REFERAL";
     private final String CHECK_OUT = "CHECK OUT";
     private final String COLLECTION = "COLLECTION";
@@ -389,6 +390,9 @@ public class MenuActivity extends AppActivity {
 
                 }
             });
+        }else if(item.getTitle().toString().equalsIgnoreCase(SARAN)){
+            Intent intent = new Intent(MenuActivity.this, SaranActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
@@ -584,7 +588,7 @@ public class MenuActivity extends AppActivity {
             menu.add(SCHEDULE);
         }
         menu.add(REFERAL);
-        String SARAN = "SARAN";
+
         menu.add(SARAN);
 
         String MY_BUSINESS = "MY BUSINESS";
