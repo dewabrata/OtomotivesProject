@@ -165,12 +165,12 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
                 case 0:
                     //fragment = Fragment.instantiate(context, PartBengkel_PartHome_Fragment.class.getName());
                     //break;
-                    return PartBengkel_PartHome_Fragment.newInstance(searchQueryText, searchViewTag);
+                    return PartBengkel_PartHome_Fragment.newInstance(searchQueryText, "BENGKEL");
 
                 case 1:
                     //fragment = Fragment.instantiate(context, PartOto_PartHome_Fragment.class.getName());
                     //break;
-                    return PartOto_PartHome_Fragment.newInstance(searchQueryText, searchViewTag);
+                    return PartOto_PartHome_Fragment.newInstance(searchQueryText, "OTO");
 
             }
             return null;

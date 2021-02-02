@@ -542,15 +542,14 @@ public class Tools {
         return nson;
     }
 
-    @SuppressLint("NewApi")
-    public static void hideKeyboard(Activity context) {
-        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        View view = context.getCurrentFocus();
-        if (view == null) {
-            view = new View(context);
+    public static void hideKeyboard(Activity context){
+        try {
+            InputMethodManager inputManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(context.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        } catch (Exception e) {
         }
-        imm.hideSoftInputFromWindow(Objects.requireNonNull(view).getWindowToken(), 0);
     }
+
 
     public static Bitmap getResizedBitmap(Bitmap image, int maxSize) {
         int width = image.getWidth();

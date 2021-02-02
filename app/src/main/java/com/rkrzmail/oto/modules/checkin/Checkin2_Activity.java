@@ -100,6 +100,8 @@ public class Checkin2_Activity extends AppActivity {
             find(R.id.tv_tahun_checkin2, TextView.class).setText(readCheckin.get("tahunProduksi").asString());
             etNomesin.setVisibility(View.GONE);
             etNorangka.setVisibility(View.GONE);
+            find(R.id.et_alamat, EditText.class).setText(readCheckin.get("ALAMAT").asString());
+            etKotaKab.setText(readCheckin.get("KOTA").asString());
         }
 
         initListener();

@@ -188,6 +188,12 @@
     <string name="filter_uppercase">FILTER</string>
     <string name="history_uppercase">HISTORY</string>
     <string name="antrian_uppercase">ANTRIAN</string>
+    <string name="konfirmasi_part_uppercase">KONFIRMASI PART</string>
+    <string name="harga_part">Harga Part</string>
+    <string name="batal_uppercase">BATAL</string>
+    <string name="nama_layanan">Nama Layanan</string>
+    <string name="km">KM</string>
+    <string name="part_jasa_uppercase"><![CDATA[PART & JASA]]></string>
     <string-array name="pola_harga_jual">
         <item>FLEXIBLE</item>
         <item>BELI + MARGIN</item>

@@ -273,7 +273,7 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
 
                 Intent i = new Intent(AturTerimaPart_Activity.this, AturDetail_TerimaPart_Activity.class);
                 i.putExtra("detail", sendObject().toJson());
-                startActivityForResult(i, TerimaPart.REQUEST_TERIMA_PART);
+                startActivityForResult(i, TerimaPart_Activity.REQUEST_TERIMA_PART);
             }
         });
     }
@@ -427,7 +427,7 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == TerimaPart.REQUEST_TERIMA_PART && resultCode == RESULT_OK) {
+        if (requestCode == TerimaPart_Activity.REQUEST_TERIMA_PART && resultCode == RESULT_OK) {
             setResult(RESULT_OK);
             finish();
         } else if (requestCode == REQUEST_CONTACT) {

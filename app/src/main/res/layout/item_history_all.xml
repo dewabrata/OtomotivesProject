@@ -33,10 +33,10 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
             <TextView
-                android:id="@+id/tv_bidang_usaha"
+                android:id="@+id/tv_km"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bidang Usaha"
+                android:text="@string/km"
                 android:layout_gravity="end"
                 android:textSize="12sp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
@@ -58,7 +58,7 @@
                 android:id="@+id/tv_nama_layanan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nama Layanan"
+                android:text="@string/nama_layanan"
                 android:textSize="12sp"
                 android:layout_gravity="end"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
@@ -66,7 +66,9 @@
 
         </TableRow>
 
-        <TableRow android:layout_marginTop="7dp">
+        <TableRow
+            android:id="@+id/tl_ket_bengkel_lain"
+            android:layout_marginTop="7dp">
 
             <TextView
                 android:id="@+id/tv_nama_mekanik"

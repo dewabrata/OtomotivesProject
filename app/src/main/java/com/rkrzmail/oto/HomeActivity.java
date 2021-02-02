@@ -45,7 +45,7 @@ import com.rkrzmail.oto.gmod.part.PartSearchActivity;
 import com.rkrzmail.oto.modules.mekanik.Schedule_Activity;
 import com.rkrzmail.oto.modules.bengkel.RekeningBank_Activity;
 import com.rkrzmail.oto.modules.bengkel.Tenda_Activity;
-import com.rkrzmail.oto.modules.sparepart.TerimaPart;
+import com.rkrzmail.oto.modules.sparepart.TerimaPart_Activity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -184,7 +184,7 @@ public class HomeActivity extends MenuActivity{
                     startActivity(intent);
 
                 }else if(nPopulate.get(position).get("id").asInteger() == MN_TERIMA_PART){
-                    Intent intent = new Intent(HomeActivity.this, TerimaPart.class);
+                    Intent intent = new Intent(HomeActivity.this, TerimaPart_Activity.class);
                     startActivity(intent);
 
                 }else if((nPopulate.get(position).get("id").asInteger() == MN_LAYANAN)){

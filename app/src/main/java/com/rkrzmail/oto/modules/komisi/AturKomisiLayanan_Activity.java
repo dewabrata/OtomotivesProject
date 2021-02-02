@@ -225,7 +225,6 @@ public class AturKomisiLayanan_Activity extends AppActivity {
                 args.put("action", "add");
                 args.put("aktivitas", spAktivitas.getSelectedItem().toString());
                 args.put("nama", spLayanan.getSelectedItem().toString());
-                args.put("idlayanan", layananId);
                 args.put("komisi", NumberFormatUtils.clearPercent(etKomisi.getText().toString()));
                 args.put("status", spStatus.getSelectedItem().toString());
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(KOMISI_LAYANAN), args));
@@ -252,7 +251,7 @@ public class AturKomisiLayanan_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "update");
-                args.put("idlayanan", nson.get("LAYANAN_ID").asString());
+                args.put("idKomisi", nson.get("ID").asString());
                 args.put("komisi", NumberFormatUtils.clearPercent(etKomisi.getText().toString()));
                 args.put("status", spStatus.getSelectedItem().toString());
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(KOMISI_LAYANAN), args));

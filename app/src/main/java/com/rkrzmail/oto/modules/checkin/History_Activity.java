@@ -3,6 +3,8 @@ package com.rkrzmail.oto.modules.checkin;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -50,6 +53,7 @@ public class History_Activity extends AppActivity {
         initToolbar();
         initRvHistory();
         initData();
+        find(R.id.swiperefresh).setEnabled(false);
     }
 
     private void initToolbar() {
@@ -90,17 +94,29 @@ public class History_Activity extends AppActivity {
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_history_detail, null);
         builder.setView(dialogView);
+        alertDialog = builder.create();
 
         EditText etCatatanMekanik = dialogView.findViewById(R.id.et_catatan_mekanik);
         etCatatanMekanik.setText(catatanMekanik);
         etCatatanMekanik.setEnabled(false);
 
+        LinearLayout lyKeluhan=dialogView.findViewById(R.id.ly_keluhan);
+        LinearLayout lyPartJasa=dialogView.findViewById(R.id.ly_part_jasa);
+
         initToolbarDetail(dialogView);
         initRvPartJasa(dialogView);
         initRecylerviewKeluhan(dialogView);
 
-        builder.create();
-        alertDialog = builder.show();
+        if(keluhanList.asArray().isEmpty())
+            lyKeluhan.setVisibility(View.GONE);
+        if(partJasaList.asArray().isEmpty())
+            lyPartJasa.setVisibility(View.GONE);
+
+        if (alertDialog.getWindow() != null)
+            alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+
+        viewKeluhan(idCheckin);
+
     }
 
     private void initRvPartJasa(View dialogView) {
@@ -170,7 +186,7 @@ public class History_Activity extends AppActivity {
                     super.onBindViewHolder(viewHolder, position);
 
                     viewHolder.find(R.id.tv_tgl_pembayaran, TextView.class).setText(nListArray.get(position).get("TANGGAL_PEMBAYARAN").asString());
-                    viewHolder.find(R.id.tv_bidang_usaha, TextView.class).setText(nListArray.get(position).get("BIDANG_USAHA").asString());
+                    viewHolder.find(R.id.tv_km, TextView.class).setText(nListArray.get(position).get("KM").asString());
                     viewHolder.find(R.id.tv_nama_layanan, TextView.class).setText(nListArray.get(position).get("NAMA_LAYANAN").asString());
 
                     String ket;
@@ -180,19 +196,16 @@ public class History_Activity extends AppActivity {
                         viewHolder.find(R.id.tv_nama_mekanik, TextView.class).setText(nListArray.get(position).get("NAMA_MEKANIK").asString());
                     } else {
                         ket = "LAIN";
-                        viewHolder.find(R.id.tv_total_biaya, TextView.class).setText("");
-                        viewHolder.find(R.id.tv_nama_mekanik, TextView.class).setText("");
+                        viewHolder.find(R.id.tl_ket_bengkel_lain).setVisibility(View.GONE);
                     }
                     viewHolder.find(R.id.tv_ket_bengkel, TextView.class).setText(ket);
 
                 }
             }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                 @Override
-                public void onItemClick(Nson parent, View view, int position) {
+                public void onItemClick(Nson parent, View view, final int position) {
                     catatanMekanik = nListArray.get(position).get("CATATAN_MEKANIK").asString();
                     initDetailHistory(nListArray.get(position).get("CHECKIN_ID").asString());
-                    viewKeluhan(nListArray.get(position).get("CHECKIN_ID").asString());
-                    viewPartJasa(nListArray.get(position).get("CHECKIN_ID").asString());
                 }
             });
         } else {
@@ -263,7 +276,7 @@ public class History_Activity extends AppActivity {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     keluhanList.asArray().clear();
                     keluhanList.asArray().addAll(result.get("data").asArray());
-                    rvKeluhan.getAdapter().notifyDataSetChanged();
+                    viewPartJasa(idCheckin);
                 } else {
                     showInfo(result.get("message").asString());
                 }
@@ -294,6 +307,8 @@ public class History_Activity extends AppActivity {
                     partJasaList.asArray().clear();
                     partJasaList.asArray().addAll(result.get("data").asArray());
                     rvPartJasa.getAdapter().notifyDataSetChanged();
+                    rvKeluhan.getAdapter().notifyDataSetChanged();
+                    alertDialog.show();
                 }
             }
         });

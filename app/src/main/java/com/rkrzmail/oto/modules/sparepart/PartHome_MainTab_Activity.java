@@ -118,7 +118,6 @@ public class PartHome_MainTab_Activity extends AppActivity implements SearchView
     public boolean onQueryTextSubmit(String queryText) {
         this.queryText = queryText;
         pagerAdapter.setTextQueryChanged(queryText);
-        pagerAdapter.setSearchViewTag(tabPosition == 0 ? "BENGKEL" : "OTO");
 
         for (SearchListener.ISearch searchLocal : iSearch) {
             searchLocal.onTextQuery(queryText);
@@ -146,9 +145,7 @@ public class PartHome_MainTab_Activity extends AppActivity implements SearchView
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
         tabPosition = tab.getPosition();
-        this.searchViewTag = tabPosition == 0 ? "BENGKEL" : "OTO";
         vpPart.setCurrentItem(tab.getPosition());
-        pagerAdapter.setSearchViewTag(searchViewTag);
     }
 
     @Override

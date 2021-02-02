@@ -38,7 +38,7 @@ import static com.rkrzmail.utils.APIUrls.VIEW_TERIMA_PART;
 import static com.rkrzmail.utils.ConstUtils.PART;
 import static com.rkrzmail.utils.ConstUtils.RP;
 
-public class TerimaPart extends AppActivity {
+public class TerimaPart_Activity extends AppActivity {
 
     private static final String TAG = "TerimaPart";
     private static final int REQUEST_DETAIL = 667;
@@ -71,6 +71,7 @@ public class TerimaPart extends AppActivity {
             }
         });
 
+        viewTerimaPart("");
         find(R.id.swiperefresh, SwipeRefreshLayout.class).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

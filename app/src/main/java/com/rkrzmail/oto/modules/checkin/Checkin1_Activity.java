@@ -355,6 +355,8 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
 
+                alamat = n.get("ALAMAT").asString();
+                kotaKab = n.get("KOTA_KAB").asString();
                 noHp = n.get("NO_PONSEL").asString();
                 pekerjaan = n.get("PEKERJAAN").asString();
                 if (!noHp.isEmpty()) {
@@ -596,12 +598,14 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     nson.set("kendaraanPelanggan", etJenisKendaraan.getText().toString());
                     nson.set("availHistory", availHistory);
                     nson.set("tanggalBeli", tanggalBeliKendaraan);
-
-                    if (noRangka.isEmpty()) {
+                    nson.set("KOTA", kotaKab);
+                    nson.set("ALAMAT", alamat);
+                    /*if (noRangka.isEmpty()) {
                         setIntentCheckin2(nson);
                     } else if (noMesin.isEmpty()) {
                         setIntentCheckin2(nson);
-                    } else if (alamat.isEmpty()) {
+                    } */
+                    if (alamat.isEmpty()) {
                         setIntentCheckin2(nson);
                     } else if (kotaKab.isEmpty()) {
                         setIntentCheckin2(nson);

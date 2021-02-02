@@ -105,8 +105,8 @@ public class PartBengkel_PartHome_Fragment extends Fragment implements SearchLis
     public void attachAdapter(SearchView.SearchAutoComplete searchAutoComplete) {
         this.searchAutoComplete = searchAutoComplete;
         this.searchAutoComplete.setTag("BENGKEL");
-        searchAutoComplete.setAdapter(autoCompleteAdapter());
-        searchAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        this.searchAutoComplete.setAdapter(autoCompleteAdapter());
+        this.searchAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(i)));
@@ -127,23 +127,19 @@ public class PartBengkel_PartHome_Fragment extends Fragment implements SearchLis
         }
 
         if (isVisibleToUser) {
-            if(activity != null){
-                activity.showError(searchTag);
-            }
-            if(searchTag != null){
-                if(searchTag.equals("BENGKEL")){
+            if (searchTag.equals("BENGKEL")) {
+                if (activity != null) {
                     attachAdapter(searchAutoComplete);
-                    if (searchQuery != null) {
-                        onTextQuery(searchQuery);
-                    } else {
-                        if(activity != null){
-                            activity.showError(searchAutoComplete.getTag().toString());
-                            viewALLPart("");
-                        }
-                    }
-                }else{
-                    attachAdapter(null);
                 }
+                if (searchQuery != null) {
+                    onTextQuery(searchQuery);
+                } else {
+                    if (activity != null) {
+                        viewALLPart("");
+                    }
+                }
+            } else {
+                attachAdapter(null);
             }
         }
     }
@@ -230,6 +226,7 @@ public class PartBengkel_PartHome_Fragment extends Fragment implements SearchLis
         return new NsonAutoCompleteAdapter(getActivity()) {
             Nson result;
             boolean isNoPart;
+
             @Override
             public Nson onFindNson(Context context, String bookTitle) {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -241,7 +238,7 @@ public class PartBengkel_PartHome_Fragment extends Fragment implements SearchLis
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SPAREPART), args));
                 result = result.get("data");
-                isNoPart = bookTitle.contains(result.get(0).get("NO_PART").asString());
+                isNoPart = result.get(0).get("NO_PART").asString().contains(bookTitle);
                 return result;
             }
 
@@ -252,17 +249,11 @@ public class PartBengkel_PartHome_Fragment extends Fragment implements SearchLis
                     convertView = inflater.inflate(R.layout.item_suggestion, parent, false);
                 }
                 String search;
-                if(isNoPart){
-                    search =  getItem(position).get("NO_PART").asString();
-                }else{
-                    if (!getItem(position).containsKey("NAMA_LAIN")) {
-                        search = getItem(position).get("NAMA_PART").asString();
-                    } else {
-                        search = getItem(position).get("NAMA_PART").asString() + " ( " + getItem(position).get("NO_PART").asString() + " ) ";
-                    }
+                if (isNoPart) {
+                    search = getItem(position).get("NO_PART").asString();
+                } else {
+                    search = getItem(position).get("NAMA_PART").asString();
                 }
-
-
                 activity.findView(convertView, R.id.title, TextView.class).setText(search);
                 return convertView;
             }

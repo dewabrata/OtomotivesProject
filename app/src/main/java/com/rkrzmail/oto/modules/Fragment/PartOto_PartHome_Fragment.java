@@ -102,8 +102,8 @@ public class PartOto_PartHome_Fragment extends Fragment implements SearchListene
     public void attachAdapter(SearchView.SearchAutoComplete searchAutoComplete) {
         this.searchAutoComplete = searchAutoComplete;
         this.searchAutoComplete.setTag("OTO");
-        searchAutoComplete.setAdapter(autoCompleteAdapter());
-        searchAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        this.searchAutoComplete.setAdapter(autoCompleteAdapter());
+        this.searchAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(i)));
@@ -124,17 +124,15 @@ public class PartOto_PartHome_Fragment extends Fragment implements SearchListene
         }
 
         if (isVisibleToUser) {
-            if (searchTag != null) {
-                if (searchTag.equals("OTO")) {
-                    attachAdapter(searchAutoComplete);
-                    if (searchQuery != null) {
-                        onTextQuery(searchQuery);
-                    } else {
-                        viewALLPart("");
-                    }
+            if (searchTag.equals("OTO")) {
+                attachAdapter(searchAutoComplete);
+                if (searchQuery != null) {
+                    onTextQuery(searchQuery);
                 } else {
-                    attachAdapter(null);
+                    viewALLPart("");
                 }
+            } else {
+                attachAdapter(null);
             }
         }
     }
@@ -144,11 +142,7 @@ public class PartOto_PartHome_Fragment extends Fragment implements SearchListene
     public void onResume() {
         super.onResume();
         if (isVisible()) {
-            if (searchQuery != null) {
-                onTextQuery(searchQuery);
-            } else {
-                viewALLPart("");
-            }
+            viewALLPart("");
         }
     }
 
@@ -207,7 +201,7 @@ public class PartOto_PartHome_Fragment extends Fragment implements SearchListene
     private NsonAutoCompleteAdapter autoCompleteAdapter() {
         return new NsonAutoCompleteAdapter(getActivity()) {
             Nson result;
-
+            boolean isNoPart;
             @Override
             public Nson onFindNson(Context context, String bookTitle) {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -216,8 +210,9 @@ public class PartOto_PartHome_Fragment extends Fragment implements SearchListene
                 args.put("search", bookTitle);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SPAREPART), args));
-
-                return result.get("data");
+                result = result.get("data");
+                isNoPart = result.get(0).get("NO_PART").asString().contains(bookTitle);
+                return result;
             }
 
             @Override
@@ -227,12 +222,11 @@ public class PartOto_PartHome_Fragment extends Fragment implements SearchListene
                     convertView = inflater.inflate(R.layout.item_suggestion, parent, false);
                 }
                 String search;
-                if (!getItem(position).containsKey("NAMA_LAIN")) {
-                    search = getItem(position).get("NAMA_PART").asString();
+                if (isNoPart) {
+                    search = getItem(position).get("NO_PART").asString();
                 } else {
-                    search = getItem(position).get("NAMA_PART").asString() + " ( " + getItem(position).get("NO_PART").asString() + " ) ";
+                    search = getItem(position).get("NAMA_PART").asString();
                 }
-
                 activity.findView(convertView, R.id.title, TextView.class).setText(search);
                 return convertView;
             }

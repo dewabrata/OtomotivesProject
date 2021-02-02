@@ -55,9 +55,10 @@ public class AturKomisiPart_Activity extends AppActivity {
     private Nson availKomisi = Nson.newArray();
     private Nson grupPartData = Nson.newArray();
     private final List<String> aktivitasList = Arrays.asList(
-            "--PILIH--",
+            "-- PILIH --",
             "BOOKING",
-            "CHECK IN, TAMBAH PART-JASA, JUAL PART, SERAH TERIMA PART",
+            "CHECK IN, TAMBAH PART - JASA, JUAL PART",
+            "SERAH TERIMA PART",
             "PENUGASAN MEKANIK",
             "MEKANIK SELESAI",
             "INSPEKSI SELESAI",

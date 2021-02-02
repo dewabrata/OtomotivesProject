@@ -453,7 +453,6 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 args.put("jenisCheckin", "3");
                 args.put("id", nson.get("CHECKIN_ID").asString());
                 args.put("status", status);
-                args.put("isBatal", "true");
                 args.put("alasanBatal", alasanBatal);
                 args.put("layanan", layanan);
                 args.put("layananestimasi", layananEstimasi);

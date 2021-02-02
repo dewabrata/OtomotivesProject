@@ -95,9 +95,12 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
                 @Override
                 public void onClick(View v) {
                     if (etBiaya.getText().toString().isEmpty()) {
-                        etBiaya.setError("Biaya Jasa Harus di Isi");
+                        etBiaya.setError("BIAYA JASA HARUS DI ISI");
                         etBiaya.requestFocus();
-                    } else {
+                    }else if(etWaktuKerja.getText().toString().equals(getResources().getString(R.string._00_00_00))) {
+                        etWaktuKerja.setError("WAKTU KERJA HARUS DI ISI");
+                        etWaktuKerja.requestFocus();
+                    }else {
                         Nson nson = Nson.newObject();
                         double discJasa = 0;
                         int net;

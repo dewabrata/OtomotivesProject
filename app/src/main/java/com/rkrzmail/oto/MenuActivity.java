@@ -38,7 +38,6 @@ import com.rkrzmail.oto.gmod.MyCode;
 import com.rkrzmail.oto.modules.antar_jemput.AntarJemput_Activity;
 import com.rkrzmail.oto.modules.bengkel.Absensi_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Collection_Activity;
-import com.rkrzmail.oto.modules.bengkel.Dashboard_Activity;
 import com.rkrzmail.oto.modules.bengkel.Dashboard_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Laporan_Activity;
 import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
@@ -77,12 +76,11 @@ import com.rkrzmail.oto.modules.bengkel.Layanan_Avtivity;
 import com.rkrzmail.oto.modules.sparepart.LokasiPart_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.RekeningBank_Activity;
 import com.rkrzmail.oto.modules.bengkel.Tenda_Activity;
-import com.rkrzmail.oto.modules.sparepart.TerimaPart;
+import com.rkrzmail.oto.modules.sparepart.TerimaPart_Activity;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Vector;
 
 import static com.rkrzmail.utils.APIUrls.VIEW_PERINTAH_KERJA_MEKANIK;
@@ -249,7 +247,7 @@ public class MenuActivity extends AppActivity {
                     Intent intent = new Intent(MenuActivity.this, HistoryStockOpname_Activity.class);
                     startActivity(intent);
                 } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_TERIMA_PARTS)) {
-                    Intent intent = new Intent(MenuActivity.this, TerimaPart.class);
+                    Intent intent = new Intent(MenuActivity.this, TerimaPart_Activity.class);
                     startActivity(intent);
                 } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_TUGAS_PARTS)) {
                     Intent intent = new Intent(MenuActivity.this, TugasPart_MainTab_Activity.class);
@@ -644,13 +642,13 @@ public class MenuActivity extends AppActivity {
     public void onUserInteraction() {
         super.onUserInteraction();
         final Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                viewPartPermintaan();
-                viewPerintahMekanik("");
-            }
-        }, 5000);
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                viewPartPermintaan();
+//                viewPerintahMekanik("");
+//            }
+//        }, 5000);
     }
 
     @SuppressLint("NewApi")

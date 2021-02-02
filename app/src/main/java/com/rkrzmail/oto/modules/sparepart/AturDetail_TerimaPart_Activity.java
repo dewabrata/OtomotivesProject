@@ -1,6 +1,7 @@
 package com.rkrzmail.oto.modules.sparepart;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -62,11 +64,13 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
     private Spinner spinnerLokasiSimpan;
     private EditText txtNoPart, txtNamaPart, txtJumlah, txtHargaBeliUnit, etDiscRp, etDiscPercent, etHargaBersih, etPenempatan;
     private RecyclerView rvTerimaPart;
+    private AlertDialog alertDialog;
+
     private Nson partAvailableList = Nson.newArray();
     private String scanResult, penempatan, lokasiPart = "", merkPart = "";
+    private String kodeFolder = "";
     private int jumlahAllPart = 0, count = 0, partId;
     private boolean isDelete = false;
-    private String kodeFolder = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +102,7 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
 
         Tools.setViewAndChildrenEnabled(find(R.id.ly_lokasi, LinearLayout.class), false);
         initListener();
+        initRecylerView();
 
         find(R.id.img_scan_terimaPart, ImageButton.class).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,7 +116,7 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
             @Override
             public void onClick(View view) {
                 if (nListArray == null) {
-                    showWarning("Part Tidak Boleh Kosong");
+                    showWarning("PART TIDAK BOLEH KOSONG", Toast.LENGTH_LONG);
                     return;
                 }
                 insertdata();
@@ -122,14 +127,63 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showInfoDialog("ENTRY DATA SUDAH LENGKAP / BENAR ? ", "YA", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                addData();
-                            }
-                        }, null);
+                addData();
             }
         });
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void dialogKonfirmasi(final Nson data, String namaPart, String noPart, String hargaPart, String jumlah, String disc) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_info_terima_part, null);
+        builder.setView(dialogView);
+        alertDialog = builder.create();
+
+        TextView tvNamaPart = dialogView.findViewById(R.id.tv_nama_part);
+        TextView tvNoPart = dialogView.findViewById(R.id.tv_no_part);
+        TextView tvHargaPart = dialogView.findViewById(R.id.tv_harga_part);
+        TextView tvJumlahPart = dialogView.findViewById(R.id.tv_jumlah);
+        TextView tvDiscount = dialogView.findViewById(R.id.tv_discount);
+        Button btnSimpan = dialogView.findViewById(R.id.btn_simpan);
+        Button btnBatal = dialogView.findViewById(R.id.btn_batal);
+
+        tvNamaPart.setText(namaPart);
+        tvNoPart.setText(noPart);
+        tvHargaPart.setText(RP + NumberFormatUtils.formatRp(hargaPart));
+        tvJumlahPart.setText(jumlah);
+        tvDiscount.setText(disc);
+
+        btnSimpan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    nListArray.add(data);
+                    rvTerimaPart.getAdapter().notifyDataSetChanged();
+                    Tools.clearForm(find(R.id.ly_detailPart, LinearLayout.class));
+                    Tools.hideKeyboard(getActivity());
+                    showInfo("PART DI TAMBAHKAN");
+                    count++;
+                } catch (Exception e) {
+                    showError("SILAHKAN HUBUNGI SUPPORT, " + e.getMessage());
+                }
+                alertDialog.dismiss();
+            }
+        });
+
+        btnBatal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (alertDialog.isShowing()) {
+                    alertDialog.dismiss();
+                }
+            }
+        });
+
+        builder.setCancelable(false);
+        if (alertDialog.getWindow() != null)
+            alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        alertDialog.show();
     }
 
     @SuppressLint("SetTextI18n")
@@ -160,10 +214,10 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
 
                 if (!hargaBeli.isEmpty()) {
                     hargaBersih = Integer.parseInt(jumlahBeli) * Integer.parseInt(hargaBeli);
-                    if(!discPercent.isEmpty()){
+                    if (!discPercent.isEmpty()) {
                         allDiskon = (int) ((Double.parseDouble(discPercent) * hargaBersih) / 10);
                         hargaBersih = hargaBersih - allDiskon;
-                    }else if(!discRp.isEmpty()){
+                    } else if (!discRp.isEmpty()) {
                         allDiskon = Integer.parseInt(jumlahBeli) * Integer.parseInt(discRp);
                         hargaBersih = hargaBersih - allDiskon;
                     }
@@ -320,7 +374,7 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
             txtHargaBeliUnit.requestFocus();
             return;
         }
-        int jumlah = Integer.parseInt(txtJumlah.getText().toString());
+        int jumlah = Integer.parseInt(NumberFormatUtils.formatOnlyNumber(txtJumlah.getText().toString()));
         if (jumlah > 0) {
             jumlahAllPart += jumlah;
         }
@@ -338,18 +392,23 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
         dataAdd.set("MERK", merkPart);
         dataAdd.set("LOKASI_SIMPAN", spinnerLokasiSimpan.getSelectedItem().toString());
 
+        String disc = null;
         if (etDiscPercent.isEnabled()) {
-            dataAdd.set("DISCOUNT", etDiscPercent.getText().toString());
+            disc = NumberFormatUtils.clearPercent(etDiscPercent.getText().toString());
+            dataAdd.set("DISCOUNT", disc);
         } else if (etDiscRp.isEnabled()) {
-            dataAdd.set("DISCOUNT", etDiscRp.getText().toString());
+            disc = formatOnlyNumber(etDiscRp.getText().toString());
+            dataAdd.set("DISCOUNT", disc);
         }
 
-        initRecylerView();
-        nListArray.add(dataAdd);
-        rvTerimaPart.getAdapter().notifyDataSetChanged();
-        Tools.clearForm(find(R.id.ly_detailPart, LinearLayout.class));
-        showInfo("Part Di tambahkan");
-        count++;
+        dialogKonfirmasi(
+                dataAdd,
+                dataAdd.get("NAMA_PART").asString(),
+                dataAdd.get("NO_PART").asString(),
+                dataAdd.get("HARGA_BELI").asString(),
+                dataAdd.get("JUMLAH").asString(),
+                disc.contains(".") ? NumberFormatUtils.formatPercent(Double.parseDouble(disc)) : RP + NumberFormatUtils.formatRp(disc)
+        );
     }
 
     private void initRecylerView() {
@@ -436,11 +495,11 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
     public void onFocusChange(View v, boolean hasFocus) {
         switch (v.getId()) {
             case R.id.et_discPercent_terimaPart:
-                //etDiscRp.setText("");
+                etDiscRp.setText("");
                 etDiscRp.setEnabled(!hasFocus);
                 break;
             case R.id.et_discRp_terimaPart:
-                //etDiscPercent.setText("");
+                etDiscPercent.setText("");
                 etDiscPercent.setEnabled(!hasFocus);
                 break;
         }

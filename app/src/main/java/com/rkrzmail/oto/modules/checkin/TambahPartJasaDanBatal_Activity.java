@@ -378,7 +378,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
             @Override
             public void runUI() {
                 if(result.asString().isEmpty()){
-                    showError("SEDANG ADA GANGGUAN SERVER, SILAHKAN HUBUNGI SUPPORT", Toast.LENGTH_LONG);
+                    showError("SEDANG ADA GANGGUAN SERVER, SILAHKAN HUBUNGI SUPPORT. ATAU CHECK KONTROL LAYANAN ", Toast.LENGTH_LONG);
                     finish();
                     return;
                 }
@@ -530,7 +530,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                     }
                     break;
                 case REQUEST_CARI_PART:
-                    dataAccept = Nson.readJson(getIntentStringExtra(data, DATA));
+                    dataAccept = Nson.readJson(getIntentStringExtra(data, PART));
                     int stock = dataAccept.get("STOCK_RUANG_PART").asInteger();
                     if(stock == 0){
                         dialogIgnoreStock();

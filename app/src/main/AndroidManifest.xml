@@ -272,7 +272,7 @@
             android:name=".modules.sparepart.AturStockOpname_Activity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".modules.sparepart.TerimaPart"
+            android:name=".modules.sparepart.TerimaPart_Activity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".modules.sparepart.AturLokasiPart_Activity"

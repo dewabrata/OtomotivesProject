@@ -88,6 +88,9 @@ import java.util.Random;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static com.rkrzmail.utils.APIUrls.VIEW_LAYANAN;
+import static com.rkrzmail.utils.APIUrls.VIEW_LOKASI_PART;
+import static com.rkrzmail.utils.APIUrls.VIEW_SPAREPART;
+import static com.rkrzmail.utils.APIUrls.VIEW_SUGGESTION;
 import static com.rkrzmail.utils.ConstUtils.PERMISSION_REQUEST_CODE;
 
 
@@ -601,10 +604,11 @@ public class AppActivity extends AppCompatActivity {
 
 
     public void adapterSearchView(final android.support.v7.widget.SearchView searchView, final String arguments, final String api, final String jsonObject, final String flag) {
-        final SearchView.SearchAutoComplete searchAutoComplete =  searchView.findViewById(R.id.search_src_text);
+        final SearchView.SearchAutoComplete searchAutoComplete = searchView.findViewById(R.id.search_src_text);
         searchAutoComplete.setDropDownBackgroundResource(R.drawable.bg_radius_white);
         searchAutoComplete.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
             Nson result;
+            boolean isNoPart;
 
             @Override
             public Nson onFindNson(Context context, String bookTitle) {
@@ -614,12 +618,18 @@ public class AppActivity extends AppCompatActivity {
                 if (!flag.equals("OTO")) {
                     args.put(arguments, "Bengkel");
                 }
+
                 args.put("flag", flag);
                 args.put("search", bookTitle);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(api), args));
-
-                return result.get("data");
+                result = result.get("data");
+                isNoPart = (
+                                api.equals(VIEW_SPAREPART) |
+                                api.equals(VIEW_SUGGESTION) |
+                                api.equals(VIEW_LOKASI_PART)
+                ) & result.get(0).get("NO_PART").asString().contains(bookTitle);
+                return result;
             }
 
             @Override
@@ -629,16 +639,20 @@ public class AppActivity extends AppCompatActivity {
                     convertView = inflater.inflate(R.layout.item_suggestion, parent, false);
                 }
                 String search;
-                if (!getItem(position).containsKey("NAMA_LAIN")) {
-                    if (getItem(position).containsKey("NOPOL")) {
-                        search = formatNopol(getItem(position).get(jsonObject).asString());
+                if (isNoPart) {
+                    search = getItem(position).get("NO_PART").asString();
+                } else {
+                    if (!getItem(position).containsKey("NAMA_LAIN")) {
+                        if (getItem(position).containsKey("NOPOL")) {
+                            search = formatNopol(getItem(position).get(jsonObject).asString());
+                        } else {
+                            search = getItem(position).get(jsonObject).asString();
+                        }
                     } else {
                         search = getItem(position).get(jsonObject).asString();
                     }
-
-                } else {
-                    search = getItem(position).get(jsonObject).asString() + " ( " + getItem(position).get("NAMA_LAIN").asString() + " ) ";
                 }
+
 
                 findView(convertView, R.id.title, TextView.class).setText(search);
                 return convertView;
