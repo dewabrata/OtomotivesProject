@@ -120,11 +120,11 @@ public class TabSchedule_Fragment extends Fragment implements View.OnClickListen
     }
 
     private void listener() {
-        Tools.setViewAndChildrenEnabled(lySj, false);
-        Tools.setViewAndChildrenEnabled(lyJ, false);
-        Tools.setViewAndChildrenEnabled(lySab, false);
-        Tools.setViewAndChildrenEnabled(lyM, false);
-        Tools.setViewAndChildrenEnabled(lyLib, false);
+//        Tools.setViewAndChildrenEnabled(lySj, false);
+//        Tools.setViewAndChildrenEnabled(lyJ, false);
+//        Tools.setViewAndChildrenEnabled(lySab, false);
+//        Tools.setViewAndChildrenEnabled(lyM, false);
+//        Tools.setViewAndChildrenEnabled(lyLib, false);
 
         cbSeninJumat.setOnCheckedChangeListener(this);
         cbJumat.setOnCheckedChangeListener(this);

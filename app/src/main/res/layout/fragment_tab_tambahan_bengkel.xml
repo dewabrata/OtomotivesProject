@@ -177,6 +177,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:textAlignment="center"
+                            android:entries="@array/luar_bengkel"
                             android:textStyle="bold" />
 
                     </RelativeLayout>
@@ -216,7 +217,9 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginRight="10dp"
                     android:text="MAX RADIUS"
-                    android:textStyle="bold" />
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:textStyle="bold"/>
 
                 <LinearLayout
                     android:id="@+id/ly_entryMax_tambahan"
@@ -321,7 +324,9 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="20dp"
                     android:text="BIAYA TRANSPORT / KM"
-                    android:textStyle="bold" />
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:textStyle="bold"/>
 
                 <LinearLayout
                     android:id="@+id/ly_entryKm_tambahan"
@@ -438,7 +443,6 @@
 
             </android.support.design.widget.TextInputLayout>
 
-<!--            sd-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
@@ -450,7 +454,10 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
-                    android:text="FREE SIMPAN/BIAYA" />
+                    android:text="FREE SIMPAN/BIAYA"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:textStyle="bold"/>
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -471,6 +478,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:textAlignment="center"
+                            android:textColor="@color/grey_900"
+                            android:textSize="12sp"
                             android:textStyle="bold"
                             android:entries="@array/number"
                             android:background="@drawable/border_solid"/>
@@ -500,7 +509,6 @@
 
             </LinearLayout>
 
-
             <android.support.design.widget.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
@@ -509,7 +517,7 @@
                 android:hint="%DOWN PAYMENT">
 
                 <EditText
-                    android:id="@+id/et_downpayment"
+                    android:id="@+id/et_downpayment_tambahan"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
@@ -530,7 +538,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="MERCH. DISC. RATE"
-                    android:textStyle="bold" />
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:textStyle="bold"/>
 
                 <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -544,9 +554,9 @@
                         android:id="@+id/et_onUs_tambahan"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="text"
                         android:singleLine="true"
-                        android:textSize="14sp" />
+                        android:inputType="numberDecimal"
+                        android:textSize="14sp"/>
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -598,28 +608,36 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="MAX ANTRIAN EXPRESS"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/ic_AntrianExpress_tambahan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:textStyle="bold"
-                    android:drawableRight="@drawable/icon_jam"/>
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/icon_jam"/>
 
                 <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
-                    android:layout_weight="1"
-                    android:hint="ON US">
+                    android:layout_weight="1">
 
                     <EditText
-
+                        android:id="@+id/et_maxAntrianExpress"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="text"
+                        android:gravity="center"
                         android:singleLine="true"
                         android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
-
-
 
             </LinearLayout>
 
@@ -634,30 +652,80 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="MAX ANTRIAN STANDART"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/ic_AntrianStandart_tambahan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:textStyle="bold"
-                    android:drawableRight="@drawable/icon_jam"/>
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/icon_jam"/>
 
                 <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
-                    android:layout_weight="1"
-                    android:hint="ON US">
+                    android:layout_weight="1">
 
                     <EditText
-
+                        android:id="@+id/et_maxAntrianStandart"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="text"
                         android:singleLine="true"
+                        android:gravity="center"
                         android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
+            </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="JUAL PART ONLINE"
+                android:textColor="@color/grey_900"
+                android:textSize="12sp"
+                android:textStyle="bold"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/cbPartOnlineBengkel_tambahan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:text="BENGKEL" />
+
+                <CheckBox
+                    android:id="@+id/cbPartOnlinePelanggan_tambahan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:text="PELANGGAN" />
 
             </LinearLayout>
+
+        </LinearLayout>
 
             <Button
                 android:id="@+id/btn_simpan_tambahan"

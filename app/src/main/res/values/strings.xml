@@ -362,6 +362,12 @@
         <item>10</item>
         <item></item>
     </string-array>
+    <string-array name="luar_bengkel">
+        <item>HOME</item>
+        <item>ANTAR - JEMPUT</item>
+        <item>EMERGENCY</item>
+        <item>DEREK</item>
+    </string-array>
     <string-array name="ya_tidak">
         <item>TIDAK</item>
         <item>YA</item>

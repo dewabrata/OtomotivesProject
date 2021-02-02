@@ -384,8 +384,7 @@
                     android:ems="10"
                     android:inputType="phone"
                     android:singleLine="true"
-                    android:textSize="14sp"
-                    android:enabled="false"/>
+                    android:textSize="14sp"/>
 
             </android.support.design.widget.TextInputLayout>
 
