@@ -35,6 +35,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static android.app.Activity.RESULT_OK;
+import static com.rkrzmail.utils.APIUrls.SET_CLAIM;
 import static com.rkrzmail.utils.APIUrls.VIEW_DASHBOARD;
 import static com.rkrzmail.utils.APIUrls.VIEW_JENIS_KENDARAAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_MASTER;
@@ -43,11 +45,11 @@ import static com.rkrzmail.utils.Tools.setFormatDayAndMonthToDb;
 
 public class TabUsaha_Fragment extends Fragment {
 
-    private EditText etNamaBengkel, etAlamat, etBadanUsaha, etKotaKab, etNoponsel, etNib, etNpwp, etKodePos;
-    private Spinner spAfiliasi, spPrincial, spJenisKendaraan, spBidangUsaha, spMerkKendaraan, spAktivitasUsaha;
+    private EditText etNamaBengkel, etAlamat, etBadanUsaha, etKotaKab, etNoponsel, etNib, etNpwp, etKodePos, etnoPhoneMessage;
+    private Spinner spAfiliasi, spPrincial, spJenisKendaraan, spBidangUsaha, spMerkKendaraan;
     private Button btnSimpan;
     private CheckBox cbPkp;
-    private Nson merkKendaraanList = Nson.newArray(), bidangUsahaList  = Nson.newArray();
+    private Nson merkKendaraanList = Nson.newArray(), bidangUsahaList  = Nson.newArray(), principalList = Nson.newArray();
     private AppActivity activity;
     private final List<String> jenisKendaraanList = Arrays.asList(
             "--PILIH--",
@@ -83,6 +85,7 @@ public class TabUsaha_Fragment extends Fragment {
         etBadanUsaha = v.findViewById(R.id.et_namaUsaha_usaha);
         etKotaKab = v.findViewById(R.id.et_kotaKab_usaha);
         etNoponsel = v.findViewById(R.id.et_noPhone_usaha);
+        etnoPhoneMessage = v.findViewById(R.id.et_noPhone_message);
         etNib = v.findViewById(R.id.et_nib_usaha);
         etNpwp = v.findViewById(R.id.et_npwp_usaha);
         spAfiliasi = v.findViewById(R.id.sp_afiliasi_usaha);
@@ -94,8 +97,7 @@ public class TabUsaha_Fragment extends Fragment {
         cbPkp = v.findViewById(R.id.cb_pkp_usaha);
 
         activity.setSpinnerOffline(afiliasiList, spAfiliasi,"");
-        spPrincial.setEnabled(false);
-
+        setSpNamaPrincipal("");
         btnSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -105,14 +107,33 @@ public class TabUsaha_Fragment extends Fragment {
     }
 
     private void saveData() {
-        MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
+        activity.newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
             @Override
             public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
 
+                args.put("action", "update");
+                args.put("kategori", "USAHA");
+                args.put("kodePos", etKodePos.getText().toString().toUpperCase());
+                args.put("namaUsaha", etBadanUsaha.getText().toString().toUpperCase());
+                args.put("nib", etNib.getText().toString().toUpperCase());
+                args.put("npwp", etNpwp.getText().toString().toUpperCase());
+                args.put("pkp", cbPkp.isChecked() ? "Y" : "N");
+                args.put("afliasi", spAfiliasi.getSelectedItem().toString());
+                args.put("noTelp", etNoponsel.getText().toString().toUpperCase());
+                args.put("hpMessage", etnoPhoneMessage.getText().toString().toUpperCase());
+
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PROFILE), args));
             }
             @Override
             public void runUI() {
-
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    activity.showInfo("Sukses Menyimpan Data");
+                    activity.setResult(RESULT_OK);
+                } else {
+                    activity.showInfo("Gagagl Menyimpan Data");
+                }
             }
         });
     }
@@ -249,6 +270,41 @@ public class TabUsaha_Fragment extends Fragment {
                     }
                 } else {
                     activity.showInfo("Merk Kendaraan Gagal Di Muat");
+                }
+            }
+        });
+    }
+
+    private void setSpNamaPrincipal(final String principal) {
+        activity.newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "Principal");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("databengkel"), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    result = result.get("data");
+                    principalList.add("--PILIH--");
+                    for (int i = 0; i < result.size(); i++) {
+                        principalList.add(result.get(i).get("NAMA"));
+                    }
+                    ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, principalList.asArray());
+                    spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spPrincial.setAdapter(spinnerAdapter);
+                    if (!principal.isEmpty()) {
+                        for (int in = 0; in < spPrincial.getCount(); in++) {
+                            if (spPrincial.getItemAtPosition(in).toString().contains(principal)) {
+                                spPrincial.setSelection(in);
+                                break;
+                            }
+                        }
+                    }
                 }
             }
         });

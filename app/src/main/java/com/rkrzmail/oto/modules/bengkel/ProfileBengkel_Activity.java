@@ -9,6 +9,7 @@ import android.view.animation.AccelerateInterpolator;
 
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.Fragment.TabSchedule_Fragment;
 import com.rkrzmail.oto.modules.Fragment.TabTambahan_Fragment;
 import com.rkrzmail.oto.modules.Fragment.TabUsaha_Fragment;
 import com.rkrzmail.oto.modules.Fragment.FragmentsAdapter;
@@ -44,7 +45,7 @@ public class ProfileBengkel_Activity extends AppActivity {
         fragments = new ArrayList<>();
         fragments.add(new TabUsaha_Fragment());
         fragments.add(new TabTambahan_Fragment());
-        fragments.add(new TabUsaha_Fragment());
+        fragments.add(new TabSchedule_Fragment());
 
         FragmentsAdapter fragmentsAdapter = new FragmentsAdapter(getSupportFragmentManager(), getActivity(), fragments);
 
