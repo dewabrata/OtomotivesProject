@@ -143,7 +143,7 @@
                     android:layout_weight="6"
                     android:background="@drawable/background_edittext">
 
-                    <Spinner
+                    <com.rkrzmail.srv.MultiSelectionSpinner
                         android:id="@+id/sp_jenisKendaraan_usaha"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -180,7 +180,7 @@
                     android:layout_weight="6"
                     android:background="@drawable/background_edittext">
 
-                    <Spinner
+                    <com.rkrzmail.srv.MultiSelectionSpinner
                         android:id="@+id/sp_merkKendaraan_usaha"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -217,7 +217,7 @@
                     android:layout_weight="6"
                     android:background="@drawable/background_edittext">
 
-                    <Spinner
+                    <com.rkrzmail.srv.MultiSelectionSpinner
                         android:id="@+id/sp_bidangUsaha_usaha"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
