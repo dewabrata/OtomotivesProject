@@ -44,12 +44,11 @@
                     android:layout_weight="6"
                     android:background="@drawable/background_edittext">
 
-                    <Spinner
+                    <com.rkrzmail.srv.MultiSelectionSpinner
                         android:id="@+id/sp_fasilitas_tambahan"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:textAlignment="center"
-                        android:textStyle="bold" />
+                        android:textAlignment="center" />
 
                 </RelativeLayout>
 

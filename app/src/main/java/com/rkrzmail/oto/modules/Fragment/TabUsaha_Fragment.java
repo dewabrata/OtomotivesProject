@@ -47,7 +47,7 @@ public class TabUsaha_Fragment extends Fragment {
 
     private EditText etNamaBengkel, etAlamat, etBadanUsaha, etKotaKab, etNoponsel, etNib, etNpwp, etKodePos, etnoPhoneMessage;
     private Spinner spAfiliasi, spPrincial, spJenisKendaraan, spBidangUsaha, spMerkKendaraan;
-    private Button btnSimpan;
+    private Button btnSimpan, btnLokasi;
     private CheckBox cbPkp;
     private Nson merkKendaraanList = Nson.newArray(), bidangUsahaList  = Nson.newArray(), principalList = Nson.newArray();
     private AppActivity activity;
@@ -94,10 +94,19 @@ public class TabUsaha_Fragment extends Fragment {
         spBidangUsaha = v.findViewById(R.id.sp_bidangUsaha_usaha);
         spMerkKendaraan = v.findViewById(R.id.sp_merkKendaraan_usaha);
         btnSimpan = v.findViewById(R.id.btn_simpan_usaha);
+        btnLokasi = v.findViewById(R.id.btn_lokasi_tambahan);
         cbPkp = v.findViewById(R.id.cb_pkp_usaha);
 
         activity.setSpinnerOffline(afiliasiList, spAfiliasi,"");
         setSpNamaPrincipal("");
+
+        btnLokasi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         btnSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

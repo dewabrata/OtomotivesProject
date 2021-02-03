@@ -33,6 +33,7 @@ import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
 import java.text.NumberFormat;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -47,16 +48,23 @@ import static com.rkrzmail.utils.APIUrls.VIEW_PROFILE;
  */
 public class TabTambahan_Fragment extends Fragment {
 
-    private Spinner spFasilitas, spBooking, spFreesimpan;
+    private Spinner spBooking, spFreesimpan;
+    private MultiSelectionSpinner spFasilitas;
     private EditText etHomeKm, etEmergencyKm, etJemputKm, etMinLainnya, etMinDerek, etKapasitas, etDerekKm, etFreeBiaya,
             etDp,etOnus,etOffus,etkreditus,etAntrianExpress,etAntrianStandart;
     private Button btnSimpan;
     private TextView tvAntrianExpress, tvAntrianStandart;
     private CheckBox cbHome, cbJemput, cbEmg, cbDerek,cbOnlineBengkel,cbOnlinePelanggan;
     private LinearLayout lyLayanan, lyTambahan, lyEntryMax, lyEntryKm;
-    private MultiSelectionSpinner spLayanan;
     private AppActivity activity;
 
+    private final List<String> fasilitasList = Arrays.asList(
+            "RUANG TUNGGU",
+            "RUANG TUNGGU AC",
+            "WIFI INTERNET",
+            "TV",
+            "AQUA GRATIS"
+    );
     public TabTambahan_Fragment() {
         // Required empty public constructor
     }
@@ -104,9 +112,23 @@ public class TabTambahan_Fragment extends Fragment {
         cbOnlinePelanggan = v.findViewById(R.id.cbPartOnlinePelanggan_tambahan);
         tvAntrianExpress = v.findViewById(R.id.ic_AntrianExpress_tambahan);
         tvAntrianStandart = v.findViewById(R.id.ic_AntrianStandart_tambahan);
+
+
     }
 
     private void initListener(){
+        spFasilitas.setItems(fasilitasList);
+        spFasilitas.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
+            @Override
+            public void selectedIndices(List<Integer> indices) {
+
+            }
+
+            @Override
+            public void selectedStrings(List<String> strings) {
+
+            }
+        });
         cbDerek.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -301,7 +323,7 @@ public class TabTambahan_Fragment extends Fragment {
 
                 args.put("action", "update");
                 args.put("kategori", "TAMBAHAN");
-                //args.put("fasilitasPelanggan", spFasilitas.getSelectedItem().toString());
+                args.put("fasilitasPelanggan", spFasilitas.getSelectedItemsAsString());
                 //luarbengkel
                 args.put("booking", spBooking.getSelectedItem().toString().toUpperCase());
                 args.put("maxRadiusHome", cbHome.isChecked() ? "Y" : "N");

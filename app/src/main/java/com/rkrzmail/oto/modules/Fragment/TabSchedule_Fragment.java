@@ -27,6 +27,7 @@ import com.rkrzmail.utils.Tools;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
 
@@ -40,6 +41,7 @@ public class TabSchedule_Fragment extends Fragment implements View.OnClickListen
     private EditText etBukaSJ, etTutupSJ, etBukaJ, etTutupJ, etBukaSab, etTutupSab, etBukaM, etTutupM, etBukaL, etTutupL;
     private Button btnSimpan;
     private Spinner spTipeLayanan;
+    private AppActivity activity;
     private LinearLayout lySj, lyJ, lySab, lyM, lyLib, frameSchedule;
 
     public TabSchedule_Fragment() {
@@ -52,6 +54,7 @@ public class TabSchedule_Fragment extends Fragment implements View.OnClickListen
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_tab_schedule_bengkel, container, false);
+        activity = ((ProfileBengkel_Activity) getActivity());
         initComponent(v);
         return v;
     }
@@ -143,7 +146,8 @@ public class TabSchedule_Fragment extends Fragment implements View.OnClickListen
         tvTutupL.setOnClickListener(this);
 
         String[] tipe = getResources().getStringArray(R.array.tipe_schedule);
-        ((ProfileBengkel_Activity) getActivity()).spinnerNoDefaultOffline(spTipeLayanan, tipe);
+        activity.setSpinnerOffline(Arrays.asList(tipe), spTipeLayanan,"");
+        //((ProfileBengkel_Activity) getActivity()).spinnerNoDefaultOffline(spTipeLayanan, tipe);
         spTipeLayanan.setOnItemSelectedListener(this);
     }
 
