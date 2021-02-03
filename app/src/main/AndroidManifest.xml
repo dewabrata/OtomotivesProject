@@ -15,7 +15,8 @@
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,UnusedAttribute"
         tools:replace="android:label">
-        <activity android:name=".modules.bengkel.SaranActivity"></activity>
+        <activity android:name=".modules.bengkel.AturSaran_Activity"></activity>
+        <activity android:name=".modules.bengkel.SaranActivity" />
         <activity
             android:name=".modules.bengkel.Dashboard_MainTab_Activity"
             android:screenOrientation="portrait" />

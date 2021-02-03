@@ -17,9 +17,12 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.naa.data.Nson;
+import com.naa.utils.InternetX;
 import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
+import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
 import com.rkrzmail.utils.Tools;
@@ -29,7 +32,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+
+import static android.app.Activity.RESULT_OK;
+import static com.rkrzmail.srv.NumberFormatUtils.clearPercent;
+import static com.rkrzmail.utils.APIUrls.VIEW_PROFILE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,6 +49,7 @@ public class TabSchedule_Fragment extends Fragment implements View.OnClickListen
     private TextView tvBukaSJ, tvTutupSJ, tvBukaJ, tvTutupJ, tvBukaSab, tvTutupSab, tvBukaM, tvTutupM, tvBukaL, tvTutupL;
     private EditText etBukaSJ, etTutupSJ, etBukaJ, etTutupJ, etBukaSab, etTutupSab, etBukaM, etTutupM, etBukaL, etTutupL;
     private Button btnSimpan;
+    private String home="", jemput="", derek="", emg="";
     private Spinner spTipeLayanan;
     private AppActivity activity;
     private LinearLayout lySj, lyJ, lySab, lyM, lyLib, frameSchedule;
@@ -93,14 +103,16 @@ public class TabSchedule_Fragment extends Fragment implements View.OnClickListen
         lyLib = view.findViewById(R.id.ly_l_schedule);
         frameSchedule = view.findViewById(R.id.frame_schedule);
         spTipeLayanan = view.findViewById(R.id.sp_tipe_schedule);
-
+        loadData();
         listener();
+
 
         btnSimpan.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("NewApi")
             @Override
             public void onClick(View view) {
                 timeValidation("");
+                saveData();
                 Log.d("jamjadwal", ((ProfileBengkel_Activity) Objects.requireNonNull(getActivity())).getSetting("jambuka" + "OPERASIONAL"));
                 Log.d("jamjadwal", ((ProfileBengkel_Activity) getActivity()).getSetting("jamtutup" + "OPERASIONAL"));
 
@@ -109,26 +121,93 @@ public class TabSchedule_Fragment extends Fragment implements View.OnClickListen
     }
 
     private void saveData() {
-        MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
+        activity.newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
             @Override
             public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
 
+                args.put("action", "update");
+                args.put("kategori", "SCHEDULE");
+                args.put("tipeSchedule", spTipeLayanan.getSelectedItem().toString());
+                args.put("op1Awal", etBukaSJ.getText().toString());
+                args.put("op1Akhir", etTutupSJ.getText().toString());
+                args.put("op5Awal", etBukaJ.getText().toString());
+                args.put("op5Akhir", etTutupJ.getText().toString());
+                args.put("op6Awal", etBukaSab.getText().toString());
+                args.put("op6Akhir", etTutupSab.getText().toString());
+                args.put("op7Awal", etBukaM.getText().toString());
+                args.put("op7Akhir", etTutupM.getText().toString());
+                args.put("opLiburAwal", etBukaL.getText().toString());
+                args.put("opLiburAkhir", etTutupL.getText().toString());
+
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PROFILE), args));
             }
 
             @Override
             public void runUI() {
-
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    activity.showInfo("Sukses Menyimpan Data");
+                    activity.setResult(RESULT_OK);
+                } else {
+                    activity.showInfo("Gagagl Menyimpan Data");
+                }
             }
         });
     }
 
-    private void listener() {
-//        Tools.setViewAndChildrenEnabled(lySj, false);
-//        Tools.setViewAndChildrenEnabled(lyJ, false);
-//        Tools.setViewAndChildrenEnabled(lySab, false);
-//        Tools.setViewAndChildrenEnabled(lyM, false);
-//        Tools.setViewAndChildrenEnabled(lyLib, false);
+    private void loadData(){
+        activity.newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
 
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+
+                args.put("action", "view");
+
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PROFILE), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    result = result.get("data");
+                    for (int i = 0; i < result.size(); i++) {
+                        home = result.get(i).get("MAX_RADIUS_HOME").asString();
+                        jemput = result.get(i).get("MAX_RADIUS_ANTAR_JEMPUT").asString();
+                        emg = result.get(i).get("MAX_RADIUS_EMERGENCY").asString();
+                        derek = result.get(i).get("MAX_RADIUS_DEREK").asString();
+                        validasiTipeLayanan();
+                    }
+                } else {
+                    activity.showInfo(result.get("message").asString());
+                }
+            }
+        });
+    }
+
+    private void validasiTipeLayanan(){
+        String[] tipe = getResources().getStringArray(R.array.tipe_schedule);
+
+        if(derek.equalsIgnoreCase("Y") && jemput.equalsIgnoreCase("Y")){
+            activity.setSpinnerOffline(Arrays.asList(tipe), spTipeLayanan,"LAYANAN BOOKING");
+        }else if(home.equalsIgnoreCase("Y")){
+            activity.setSpinnerOffline(Arrays.asList(tipe), spTipeLayanan,"HOME SERVICES");
+        }else if(emg.equalsIgnoreCase("Y")){
+            activity.setSpinnerOffline(Arrays.asList(tipe), spTipeLayanan,"LAYANAN EMERGENCY");
+        }else {
+            activity.setSpinnerOffline(Arrays.asList(tipe), spTipeLayanan,"OPERASIONAL");
+        }
+
+        cbSeninJumat.setChecked(true);
+        cbJumat.setChecked(true);
+        cbSabtu.setChecked(true);
+        cbMingu.setChecked(true);
+        cbLibur.setChecked(true);
+    }
+
+    private void listener() {
         cbSeninJumat.setOnCheckedChangeListener(this);
         cbJumat.setOnCheckedChangeListener(this);
         cbSabtu.setOnCheckedChangeListener(this);
@@ -144,10 +223,6 @@ public class TabSchedule_Fragment extends Fragment implements View.OnClickListen
         tvTutupM.setOnClickListener(this);
         tvBukaL.setOnClickListener(this);
         tvTutupL.setOnClickListener(this);
-
-        String[] tipe = getResources().getStringArray(R.array.tipe_schedule);
-        activity.setSpinnerOffline(Arrays.asList(tipe), spTipeLayanan,"");
-        //((ProfileBengkel_Activity) getActivity()).spinnerNoDefaultOffline(spTipeLayanan, tipe);
         spTipeLayanan.setOnItemSelectedListener(this);
     }
 

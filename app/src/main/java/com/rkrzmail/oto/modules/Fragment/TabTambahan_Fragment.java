@@ -177,6 +177,7 @@ public class TabTambahan_Fragment extends Fragment {
                 saveData();
             }
         });
+
         etOnus.addTextChangedListener(new TextWatcher() {
             int prevLength = 0; // detected keyEvent action delete
 
@@ -312,7 +313,6 @@ public class TabTambahan_Fragment extends Fragment {
             }
         });
     }
-
 
     private void saveData() {
         activity.newProses(new Messagebox.DoubleRunnable() {

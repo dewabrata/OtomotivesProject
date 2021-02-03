@@ -31,6 +31,7 @@ import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
 import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.utils.Tools;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +47,8 @@ import static com.rkrzmail.utils.Tools.setFormatDayAndMonthToDb;
 public class TabUsaha_Fragment extends Fragment {
 
     private EditText etNamaBengkel, etAlamat, etBadanUsaha, etKotaKab, etNoponsel, etNib, etNpwp, etKodePos, etnoPhoneMessage;
-    private Spinner spAfiliasi, spPrincial, spJenisKendaraan, spBidangUsaha, spMerkKendaraan;
+    private Spinner spAfiliasi, spPrincial;
+    private MultiSelectionSpinner spJenisKendaraan,spMerkKendaraan,spBidangUsaha;
     private Button btnSimpan, btnLokasi;
     private CheckBox cbPkp;
     private Nson merkKendaraanList = Nson.newArray(), bidangUsahaList  = Nson.newArray(), principalList = Nson.newArray();
@@ -150,7 +152,8 @@ public class TabUsaha_Fragment extends Fragment {
     private void viewprofileusaha(){
         activity.newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
+            List<String> jenisList = new ArrayList<>(), merkList = new ArrayList<>(),
+            bidangList = new ArrayList<>();
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -170,9 +173,16 @@ public class TabUsaha_Fragment extends Fragment {
                         etKodePos.setText(result.get(i).get("KODE_POS").asString());
                         etKotaKab.setText(result.get(i).get("KOTA_KABUPATEN").asString());
                         etBadanUsaha.setText(result.get(i).get("NAMA_USAHA").asString());
-                        setSpJenisKendaraan(result.get(i).get("JENIS_KENDARAAN").asString());
-                        setSpMerkKendaraan(result.get(i).get("MERK_KENDARAAN").asString());
-                        setSpBidangUsaha(result.get(i).get("KATEGORI_BENGKEL").asString());
+                        jenisList.add(result.get(i).get("JENIS_KENDARAAN").asString());
+                        merkList.add(result.get(i).get("MERK_KENDARAAN").asString());
+                        bidangList.add(result.get(i).get("KATEGORI_BENGKEL").asString());
+
+
+
+                        setJenisKendaraan(jenisList);
+                        setMerkKendaraan(merkList);
+                        setSpBidangUsaha(bidangList);
+
                     }
                 } else {
                     activity.showInfo(result.get("message").asString());
@@ -181,107 +191,19 @@ public class TabUsaha_Fragment extends Fragment {
         });
     }
 
-    private void setSpJenisKendaraan(String selection) {
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, jenisKendaraanList) {
-            @Override
-            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                final View v = super.getDropDownView(position, convertView, parent);
-                v.post(new Runnable() {
-                    @SuppressLint("WrongConstant")
-                    @Override
-                    public void run() {
-                        ((TextView) v.findViewById(android.R.id.text1)).setSingleLine(false);
-                        ((TextView) v.findViewById(android.R.id.text1)).setGravity(Gravity.CENTER);
-                        ((TextView) v.findViewById(android.R.id.text1)).setTextAlignment(Gravity.CENTER);
-                    }
-                });
-                return v;
-            }
-        };
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spJenisKendaraan.setAdapter(spinnerAdapter);
+    private void setJenisKendaraan(List<String> string){
         spJenisKendaraan.setEnabled(false);
-        if (!selection.isEmpty()) {
-            for (int in = 0; in < spJenisKendaraan.getCount(); in++) {
-                if (spJenisKendaraan.getItemAtPosition(in).toString().contains(selection)) {
-                    spJenisKendaraan.setSelection(in);
-                    break;
-                }
-            }
-        }
+        spJenisKendaraan.setItems(string);
     }
 
-    private void setSpMerkKendaraan(final String selection){
+    private void setMerkKendaraan(List<String> string){
         spMerkKendaraan.setEnabled(false);
-        activity.newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
-
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_JENIS_KENDARAAN), args));
-            }
-
-            @Override
-            public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    for (int i = 0; i < result.size(); i++) {
-                        merkKendaraanList.add(result.get("data").get(i).get("MERK") + " - " + result.get("data").get(i).get("TYPE"));
-                    }
-                    ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, merkKendaraanList.asArray());
-                    spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spMerkKendaraan.setAdapter(spinnerAdapter);
-                    if (!selection.isEmpty()) {
-                        for (int i = 0; i < spMerkKendaraan.getCount(); i++) {
-                            if (spJenisKendaraan.getItemAtPosition(i).toString().contains(selection)) {
-                                spJenisKendaraan.setSelection(i);
-                                break;
-                            }
-                        }
-                    }
-                } else {
-                    activity.showInfo("Merk Kendaraan Gagal Di Muat");
-                }
-            }
-        });
+        spMerkKendaraan.setItems(string);
     }
 
-    private void setSpBidangUsaha(final String selection){
+    private void setSpBidangUsaha(List<String> string){
         spBidangUsaha.setEnabled(false);
-        activity.newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
-
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("nama", "BENGKEL");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MASTER), args));
-            }
-
-            @Override
-            public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-
-                    for (int i = 0; i < result.size(); i++) {
-                        bidangUsahaList.add(result.get("data").get(i).get("KATEGORI") + " - " + result.get("data").get(i).get("TYPE"));
-                    }
-                    ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, bidangUsahaList.asArray());
-                    spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spBidangUsaha.setAdapter(spinnerAdapter);
-                    if (!selection.isEmpty()) {
-                        for (int i = 0; i < spBidangUsaha.getCount(); i++) {
-                            if (spBidangUsaha.getItemAtPosition(i).toString().contains(selection)) {
-                                spBidangUsaha.setSelection(i);
-                                break;
-                            }
-                        }
-                    }
-                } else {
-                    activity.showInfo("Merk Kendaraan Gagal Di Muat");
-                }
-            }
-        });
+        spBidangUsaha.setItems(string);
     }
 
     private void setSpNamaPrincipal(final String principal) {

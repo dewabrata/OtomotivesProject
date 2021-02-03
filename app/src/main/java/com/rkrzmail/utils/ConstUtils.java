@@ -109,4 +109,5 @@ public class ConstUtils {
     public static final int REQUEST_FOTO_PART = 47;
     public static final int REQUEST_FOTO_STNK = 48;
     public static final int REQUEST_FOTO_KTP = 49;
+    public static final int REQUEST_SARAN = 50;
 }
