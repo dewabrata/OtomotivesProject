@@ -2,15 +2,10 @@ package com.rkrzmail.oto.modules.Fragment;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,12 +19,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.bengkel.Absensi_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Dashboard_MainTab_Activity;
-import com.rkrzmail.oto.modules.bengkel.Pembayaran_MainTab_Activity;
-import com.rkrzmail.oto.modules.bengkel.Rincian_Pembayaran_Activity;
-import com.rkrzmail.srv.NikitaMultipleViewAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.text.ParseException;
@@ -42,13 +32,6 @@ import java.util.Objects;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.rkrzmail.utils.APIUrls.VIEW_DASHBOARD;
-import static com.rkrzmail.utils.APIUrls.VIEW_PEMBAYARAN;
-import static com.rkrzmail.utils.ConstUtils.DATA;
-import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
-import static com.rkrzmail.utils.ConstUtils.ID;
-import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
-import static com.rkrzmail.utils.ConstUtils.RINCIAN_JUAL_PART;
-import static com.rkrzmail.utils.ConstUtils.RINCIAN_LAYANAN;
 import static com.rkrzmail.utils.ConstUtils.RP;
 import static com.rkrzmail.utils.Tools.setFormatDayAndMonthToDb;
 
@@ -57,13 +40,16 @@ public class Dashboard_Angka_Fragment extends Fragment {
     private RecyclerView rvPembayaranCheckin;
     private SwipeRefreshLayout swipeRefreshLayout;
     private LinearLayout lyDasboard;
+    private TextView tvTglMulai, tvTglAkhir, tvRPBooking, tvRPLayanan, tvRPJualPart, tvRPBatal;
+    private View fragmentView;
+
     private Nson pembayaranList = Nson.newArray();
 
-    private String argsRefresh = "",idCheckin="";
+    private String argsRefresh = "", idCheckin = "";
     private AppActivity activity;
-    private String tanggalAkhir="", tglAwal="", totLayanan="", totPart="", totJasapart="", totJasalain="",
-            totLainnya="", totDiscount="", totPendapatan="", totDownpayment="", totIncome="", totBiaya="", totHpp="",
-            totMargin="", totKas="", totBank="", totPiutang="", totColeection="", totStockpart="", totHutang="";
+    private String tanggalAkhir = "", tglAwal = "", totLayanan = "", totPart = "", totJasapart = "", totJasalain = "",
+            totLainnya = "", totDiscount = "", totPendapatan = "", totDownpayment = "", totIncome = "", totBiaya = "", totHpp = "",
+            totMargin = "", totKas = "", totBank = "", totPiutang = "", totColeection = "", totStockpart = "", totHutang = "";
 
     public Dashboard_Angka_Fragment() {
 
@@ -85,11 +71,11 @@ public class Dashboard_Angka_Fragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_dashboard_, container, false);
+        fragmentView = inflater.inflate(R.layout.fragment_dashboard_angka, container, false);
         activity = ((Dashboard_MainTab_Activity) getActivity());
-        initHideToolbar(view);
-        initComponent(view);
-        return view;
+        initHideToolbar();
+        initComponent();
+        return fragmentView;
     }
 
 //    @Override
@@ -100,29 +86,64 @@ public class Dashboard_Angka_Fragment extends Fragment {
 //        }
 //    }
 
-    private void initHideToolbar(View view) {
-        AppBarLayout appBarLayout = view.findViewById(R.id.appbar);
+    private void initHideToolbar() {
+        AppBarLayout appBarLayout = fragmentView.findViewById(R.id.appbar);
         appBarLayout.setVisibility(GONE);
     }
 
-    private void initComponent(View view){
-        lyDasboard= view.findViewById(R.id.ly_dashboard);
+    @SuppressLint("SetTextI18n")
+    private void initComponent() {
+        tvTglAkhir = fragmentView.findViewById(R.id.tv_selesaitgl);
+        tvTglMulai = fragmentView.findViewById(R.id.tv_mulaitgl);
+        lyDasboard = fragmentView.findViewById(R.id.ly_dashboard);
+        tvRPBatal = fragmentView.findViewById(R.id.tv_dbBatal);
+        tvRPBooking = fragmentView.findViewById(R.id.tv_dbBooking);
+        tvRPJualPart = fragmentView.findViewById(R.id.tv_dbJualpart);
+        tvRPLayanan = fragmentView.findViewById(R.id.tv_dbLayanan1);
+
         lyDasboard.setVisibility(GONE);
 
-        view.findViewById(R.id.ic_mulaitgl).setOnClickListener(new View.OnClickListener() {
+        tvTglMulai.setText(firstDate());
+        tvTglAkhir.setText(activity.currentDateTime("dd/MM/yyyy"));
+
+        fragmentView.findViewById(R.id.ic_mulaitgl).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getDatePickerAwal();
             }
         });
 
-        view.findViewById(R.id.ic_selesaitgl).setOnClickListener(new View.OnClickListener() {
+        fragmentView.findViewById(R.id.ic_selesaitgl).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getDatePickerAkhir();
             }
         });
+
+        fragmentView.findViewById(R.id.btn_tampilkan).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (activity.find(R.id.tv_mulaitgl, TextView.class).getText().toString().isEmpty()) {
+                    activity.showWarning("TANGGAL MULAI HARUS DI MASUKKAN");
+                } else if (activity.find(R.id.tv_selesaitgl, TextView.class).getText().toString().isEmpty()) {
+                    activity.showWarning("TANGGAL AKHIR HARUS DI MASUKKAN");
+                } else {
+                    viewDashboard(activity);
+                }
+            }
+        });
     }
+
+    public String firstDate() {
+        Calendar calendar = Calendar.getInstance();
+        final int month = calendar.get(Calendar.MONTH);
+        final int year = calendar.get(Calendar.YEAR);
+        calendar.set(year, month, 1);
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        return simpleDateFormat.format(calendar.getTime());
+    }
+
 
     @SuppressLint("NewApi")
     private void viewDashboard(final AppActivity activity) {
@@ -144,27 +165,25 @@ public class Dashboard_Angka_Fragment extends Fragment {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    result = result.get("data");
-                    for (int i = 0; i < result.size(); i++) {
-                        totLayanan = result.get(i).get("TOTAL_LAYANAN").asString();
-                        totPart = result.get(i).get("TOTAL_PART").asString();
-                        totJasapart = result.get(i).get("TOTAL_JASA_PART").asString();
-                        totJasalain = result.get(i).get("TOTAL_JASA_LAIN").asString();
-                        totLainnya = result.get(i).get("TOTAL_LAINYA").asString();
-                        totDiscount = result.get(i).get("TOTAL_DISCOUNT").asString();
-                        totPendapatan = result.get(i).get("TOTAL_PENDAPATAN").asString();
-                        totDownpayment = result.get(i).get("TOTAL_DP").asString();
-                        totIncome = result.get(i).get("TOTAL_INCOME").asString();
-                        totBiaya = result.get(i).get("TOTAL_BIAYA").asString();
-                        totHpp = result.get(i).get("TOTAL_HPP").asString();
-                        totMargin = result.get(i).get("TOTAL_MARGIN").asString();
-                        totKas = result.get(i).get("TOTAL_KAS").asString();
-                        totBank = result.get(i).get("TOTAL_KAS_BANK").asString();
-                        totPiutang = result.get(i).get("TOTAL_PIUTANG").asString();
-                        totColeection = result.get(i).get("TOTAL_COLLECTION").asString();
-                        totStockpart = result.get(i).get("TOTAL_STOCK_PART").asString();
-                        totHutang = result.get(i).get("TOTAL_HUTANG").asString();
-                    }
+                    result = result.get("data").get(0);
+                    totLayanan = result.get("TOTAL_LAYANAN").asString();
+                    totPart = result.get("TOTAL_PART").asString();
+                    totJasapart = result.get("TOTAL_JASA_PART").asString();
+                    totJasalain = result.get("TOTAL_JASA_LAIN").asString();
+                    totLainnya = result.get("TOTAL_LAINYA").asString();
+                    totDiscount = result.get("TOTAL_DISCOUNT").asString();
+                    totPendapatan = result.get("TOTAL_PENDAPATAN").asString();
+                    totDownpayment = result.get("TOTAL_DP").asString();
+                    totIncome = result.get("TOTAL_INCOME").asString();
+                    totBiaya = result.get("TOTAL_BIAYA").asString();
+                    totHpp = result.get("TOTAL_HPP").asString();
+                    totMargin = result.get("TOTAL_MARGIN").asString();
+                    totKas = result.get("TOTAL_KAS").asString();
+                    totBank = result.get("TOTAL_KAS_BANK").asString();
+                    totPiutang = result.get("TOTAL_PIUTANG").asString();
+                    totColeection = result.get("TOTAL_COLLECTION").asString();
+                    totStockpart = result.get("TOTAL_STOCK_PART").asString();
+                    totHutang = result.get("TOTAL_HUTANG").asString();
                     setValuedashboard();
                     lyDasboard.setVisibility(VISIBLE);
                 } else {
@@ -173,7 +192,12 @@ public class Dashboard_Angka_Fragment extends Fragment {
             }
         });
     }
-    private void setValuedashboard(){
+
+    private void setValuedashboard() {
+        tvRPLayanan.setText(activity.setUnderline(RP + activity.formatRp("")));
+        tvRPJualPart.setText(activity.setUnderline(RP + activity.formatRp("")));
+        tvRPBooking.setText(activity.setUnderline(RP + activity.formatRp("")));
+        tvRPBatal.setText(activity.setUnderline(RP + activity.formatRp("")));
         activity.find(R.id.tv_dbLayanan2, TextView.class).setText(activity.setUnderline(RP + activity.formatRp(totLayanan)));
         activity.find(R.id.tv_dbPart, TextView.class).setText(activity.setUnderline(RP + activity.formatRp(totPart)));
         activity.find(R.id.tv_dbJasapart, TextView.class).setText(activity.setUnderline(RP + activity.formatRp(totJasapart)));
@@ -196,7 +220,7 @@ public class Dashboard_Angka_Fragment extends Fragment {
 
     public void getDatePickerAwal() {
         final Calendar cldr = Calendar.getInstance();
-        final int day = cldr.get(Calendar.DAY_OF_WEEK);
+        final int day = cldr.getActualMinimum(Calendar.DAY_OF_MONTH);
         final int month = cldr.get(Calendar.MONTH);
         final int year = cldr.get(Calendar.YEAR);
         DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
@@ -221,7 +245,7 @@ public class Dashboard_Angka_Fragment extends Fragment {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 activity.find(R.id.ic_selesaitgl, TextView.class).setEnabled(true);
-                tglAwal =  activity.find(R.id.tv_mulaitgl, TextView.class).getText().toString();
+                tglAwal = activity.find(R.id.tv_mulaitgl, TextView.class).getText().toString();
             }
         });
 
@@ -258,12 +282,17 @@ public class Dashboard_Angka_Fragment extends Fragment {
             public void onDismiss(DialogInterface dialog) {
                 try {
                     tanggalAkhir = activity.find(R.id.tv_selesaitgl, TextView.class).getText().toString();
-                    if (validateDate(tglAwal,tanggalAkhir)) {
+                    if (validateDate(tglAwal, tanggalAkhir)) {
                         activity.showWarning("TANGGAL AKHIR TIDAK BOLEH LEBIH KECIL DARI TANGGAL AWAL");
                         activity.find(R.id.tv_selesaitgl, TextView.class).setText("");
                         activity.find(R.id.tv_selesaitgl, TextView.class).performClick();
                     } else {
-                        viewDashboard((Dashboard_MainTab_Activity) Objects.requireNonNull(getActivity()));
+                        fragmentView.findViewById(R.id.btn_tampilkan).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                fragmentView.findViewById(R.id.btn_tampilkan).performClick();
+                            }
+                        });
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -301,7 +330,6 @@ public class Dashboard_Angka_Fragment extends Fragment {
 
         return calendar;
     }
-
 
 
 }

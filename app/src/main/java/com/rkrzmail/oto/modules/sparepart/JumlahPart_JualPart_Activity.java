@@ -36,6 +36,7 @@ public class JumlahPart_JualPart_Activity extends AppActivity {
 
     private String idLokasiPart = "";
     private boolean isJual, isPartKosong = false;
+    private int hppPart = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,6 +164,7 @@ public class JumlahPart_JualPart_Activity extends AppActivity {
         try {
             getData = Nson.readJson(getIntentStringExtra(PART));
             initPartKosongValidation(getData);
+            hppPart = getData.get("HPP").asInteger();
             namaPart = getData.get("NAMA_PART").asString();
             idLokasiPart = getData.get("LOKASI_PART_ID").asString();
             Log.d("detail__", "data : " + getData);
@@ -250,6 +252,7 @@ public class JumlahPart_JualPart_Activity extends AppActivity {
         parts.set("LOKASI_PART_ID", idLokasiPart);
         parts.set("TOTAL", total);
         parts.set("NET", net);
+        parts.set("HPP", net);
         if (isPartKosong) {
             parts.set("WAKTU_PESAN", find(R.id.et_waktu_pesan, EditText.class).getText().toString());
             parts.set("DP", calculatePercentage(Double.parseDouble(formatOnlyNumber(find(R.id.et_dp, EditText.class).getText().toString())),
@@ -257,7 +260,7 @@ public class JumlahPart_JualPart_Activity extends AppActivity {
             );
         } else {
             parts.set("WAKTU_PESAN", "");
-            parts.set("DP", "");
+            parts.set("DP", hppPart);
         }
 
         Intent intent = new Intent();

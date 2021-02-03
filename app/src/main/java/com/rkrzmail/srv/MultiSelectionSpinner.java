@@ -67,6 +67,7 @@ public class MultiSelectionSpinner extends Spinner implements
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean performClick() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -132,7 +133,7 @@ public class MultiSelectionSpinner extends Spinner implements
         if(listChecked != null){
             for (int j = 0; j < _items.length;j++) {
                 for (int i = 0; i < listChecked.size(); i++) {
-                    if (_items[j].equals(listChecked.get(i))) {
+                    if (_items[j].equals(listChecked.get(i)) && !listChecked.get(i).equals("--PILIH--")) {
                         mSelectionBool[j] = true;
                         mSelectionAtStartBool[j] = true;
                         Log.d("okkk__", "setItems: " + _items[j]);
@@ -245,7 +246,7 @@ public class MultiSelectionSpinner extends Spinner implements
             StringBuilder sb = new StringBuilder();
             boolean foundOne = false;
             for (int i = 0; i < _items.length; ++i) {
-                if (mSelectionBool[i]) {
+                if (mSelectionBool[i] && !_items[i].equals("--PILIH--")) {
                     if (foundOne) {
                         sb.append(", ");
                     }

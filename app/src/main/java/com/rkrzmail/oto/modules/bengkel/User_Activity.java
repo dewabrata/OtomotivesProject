@@ -31,6 +31,7 @@ import com.rkrzmail.srv.NikitaViewHolder;
 import java.util.Map;
 
 import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 
 public class User_Activity extends AppActivity {
 
@@ -59,7 +60,7 @@ public class User_Activity extends AppActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(new Intent(getActivity(), AturUser_Activity.class), 10);
+                startActivityForResult(new Intent(getActivity(), AturUser_Activity.class), REQUEST_DETAIL);
             }
         });
 
@@ -126,7 +127,7 @@ public class User_Activity extends AppActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            if (requestCode == 10) {
+            if (requestCode == REQUEST_DETAIL) {
                 reload("");
             }
         }

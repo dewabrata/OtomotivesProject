@@ -184,7 +184,6 @@
     <string name="jumlah_bayar_uppercase">JUMLAH BAYAR</string>
     <string name="balance_akhir_uppercase">BALANCE AKHIR</string>
     <string name="nama_penerima_uppercase">NAMA PENERIMA</string>
-    <string name="tampilkan_uppercase">TAMPILKAN</string>
     <string name="filter_uppercase">FILTER</string>
     <string name="history_uppercase">HISTORY</string>
     <string name="antrian_uppercase">ANTRIAN</string>
@@ -194,6 +193,28 @@
     <string name="nama_layanan">Nama Layanan</string>
     <string name="km">KM</string>
     <string name="part_jasa_uppercase"><![CDATA[PART & JASA]]></string>
+    <string name="part_uppercase">PART</string>
+    <string name="default_rp_uppercase">Rp. NN.NNN.NNN</string>
+    <string name="jual_part_uppercase">JUAL PART</string>
+    <string name="discount_uppercase">DISCOUNT</string>
+    <string name="lainnya_uppercase">LAINNYA</string>
+    <string name="jasa_lain_uppercase">JASA LAIN</string>
+    <string name="pendapatan_uppercase">PENDAPATAN</string>
+    <string name="downpayment_uppercase">DOWNPAYMENT</string>
+    <string name="income_uppercase">INCOME</string>
+    <string name="kas_uppercase">KAS</string>
+    <string name="bank_uppercase">BANK</string>
+    <string name="piutang_uppercase">PIUTANG</string>
+    <string name="collection_uppercase">COLLECTION</string>
+    <string name="stock_part_uppercase">STOCK PART</string>
+    <string name="hutang_uppercase">HUTANG</string>
+    <string name="kasir_uppercase">KASIR</string>
+    <string name="biaya_uppercase">BIAYA</string>
+    <string name="hpp_part_uppercase">HPP PART</string>
+    <string name="margin_upercase">MARGIN</string>
+    <string name="periode_uppercase">PERIODE</string>
+    <string name="tampilkan_uppercase">TAMPILKAN</string>
+    <string name="dd_mm_yy_uppercase">DD/MM/YY</string>
     <string-array name="pola_harga_jual">
         <item>FLEXIBLE</item>
         <item>BELI + MARGIN</item>

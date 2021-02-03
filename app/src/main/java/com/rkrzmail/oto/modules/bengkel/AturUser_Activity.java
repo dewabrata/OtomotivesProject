@@ -41,7 +41,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static com.rkrzmail.utils.APIUrls.KARYAWAN;
 import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.RP;
 
 public class AturUser_Activity extends AppActivity {
 
@@ -299,13 +301,16 @@ public class AturUser_Activity extends AppActivity {
             fungsiMekanik = data.get("FUNGSI_MEKANIK").asString();
             idUser = data.get("ID").asInteger();
 
-            find(R.id.txtGaji, TextView.class).setText(data.get("GAJI").asString());
+            find(R.id.txtGaji, TextView.class).setText(RP + NumberFormatUtils.formatRp(data.get("GAJI").asString()));
             find(R.id.tblSimpan, Button.class).setText("Update");
 
             String[] splitAkses = data.get("AKSES_APP").asString().trim().split(", ");
             List<String> dummy = new ArrayList<>();
             for (String s : splitAkses) {
                 dummy.add(s.trim());
+            }
+            if(posisi.equals("MANAGEMENT")){
+                dummy.addAll(aksesArr);
             }
             setSpAkses(dummy);
         } else {
@@ -352,7 +357,7 @@ public class AturUser_Activity extends AppActivity {
                     args.values().remove("--PILIH--");
                 }
 
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturkaryawan"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(KARYAWAN), args));
             }
 
             @Override
@@ -378,35 +383,35 @@ public class AturUser_Activity extends AppActivity {
         final String aksesApp = spAkses.getSelectedItemsAsString();
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
+            String parseTglMasuk = Tools.setFormatDayAndMonthToDb(find(R.id.txtTglMasuk, TextView.class).getText().toString());
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "update");
-                args.put("id", String.valueOf(idUser));
+                args.put("idUser", String.valueOf(idUser));
                 args.put("nama", find(R.id.txtNamaKaryawan, EditText.class).getText().toString());
                 args.put("noPonsel", formatOnlyNumber(find(R.id.txtNoPonsel, EditText.class).getText().toString()));
                 args.put("email", find(R.id.txtEmail, EditText.class).getText().toString());
                 args.put("alamat", find(R.id.txtAlamat, EditText.class).getText().toString());
-                args.put("tangalmasuk", find(R.id.txtTglMasuk, TextView.class).getText().toString());
+                args.put("tangalmasuk", parseTglMasuk);
                 args.put("posisi", spPosisi.getSelectedItem().toString());
                 args.put("status", find(R.id.spinnerStatus, Spinner.class).getSelectedItem().toString());
                 args.put("penggajian", find(R.id.spinnerPenggajian, Spinner.class).getSelectedItem().toString());
                 args.put("gaji", formatOnlyNumber(find(R.id.txtGaji, EditText.class).getText().toString()));
                 args.put("akses", aksesApp);
 
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("aturkaryawan"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(KARYAWAN), args));
             }
 
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    showSuccess("Sukses Memperharui Data");
+                    showSuccess("SUKSES MEMPERHARUI DATA");
                     setResult(RESULT_OK);
                     finish();
                 } else {
-                    showError("Gagal Memperbarui Data");
+                    showError("GAGAL MEMPERBARUI DATA");
                 }
             }
         });

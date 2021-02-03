@@ -36,7 +36,7 @@ public class Dashboard_MainTab_Activity extends AppActivity {
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Dasboard");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Dashboard");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -53,7 +53,6 @@ public class Dashboard_MainTab_Activity extends AppActivity {
         vpDashboard.setAdapter(pagerAdapter);
         vpDashboard.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabDashboard));
         tabDashboard.setupWithViewPager(vpDashboard);
-
 
     }
 }

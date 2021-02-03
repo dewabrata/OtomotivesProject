@@ -2,7 +2,7 @@ package com.rkrzmail.utils;
 
 public class APIUrls {
 
-    //VIEW
+    public static final String KARYAWAN = "aturkaryawan";
     public static final String PEMBAYARAN_KOMISI = "pembayarankomisi";
     public static final String KOMISI_PART = "komisipart";
     public static final String KOMISI_JASA_LAIN = "komisijasalain";
@@ -35,7 +35,6 @@ public class APIUrls {
     public static final String VIEW_MST = "viewmst";
     public static final String VIEW_DASHBOARD = "viewdashboard";
     public static final String VIEW_PROFILE = "profilebengkel";
-    //INSERT, UPDATE, DELETE
     public static final String ATUR_COLLECTION = "aturcollection";
     public static final String DISCOUNT_LAYANAN = "aturdiskonlayanan";
     public static final String ATUR_PEMBAYARAN = "aturpembayaran";
