@@ -115,11 +115,15 @@ public class MultiSelectionSpinner extends Spinner implements
     }
 
     public void setItems(List<String> items) {
-        _items = items.toArray(new String[0]);
+        _items = items.toArray(new String[items.size()]);
         mSelectionBool = new boolean[_items.length];
+        mSelectionAtStartBool = new boolean[_items.length];
+        simple_adapter.clear();
         simple_adapter.add(_items[0]);
         Arrays.fill(mSelectionBool, false);
+        mSelectionBool[0] = true;
     }
+
 
     public void setItems(List<String> items, List<String> listChecked) {
         _items = items.toArray(new String[0]);

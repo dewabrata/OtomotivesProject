@@ -231,9 +231,9 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             }
         });
 
+        getDetailCheckin(idCheckin);
         setSpAktifitas();
         setSpMekanik(data.get("MEKANIK").asString());
-        getDetailCheckin(idCheckin);
         viewKeluhan();
     }
 
@@ -410,6 +410,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                     detailCheckinList.asArray().clear();
                     detailCheckinList.asArray().addAll(result.get("data").asArray());
                     for (int i = 0; i < detailCheckinList.size(); i++) {
+                        isKonfirmasiTambahan = detailCheckinList.get(i).get("STATUS_DETAIL").asString().equals("TAMBAH PART - JASA");
                         partCheckinList.add(Nson.newObject()
                                 .set("CHECKIN_DETAIL_ID", detailCheckinList.get(i).get("CHECKIN_DETAIL_ID"))
                                 .set("PART_ID", detailCheckinList.get(i).get("PART_ID"))
@@ -549,7 +550,8 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 etStatus.getText().toString().equals("INVOICE") ||
                 etStatus.getText().toString().equals("EPAY")) {
             aktifitasList.add("CHECK OUT");
-        } else if (etStatus.getText().toString().equals("TAMBAH PART - JASA") && find(R.id.cb_tidak_menunggu, CheckBox.class).isChecked()) {
+        } else if ((etStatus.getText().toString().equals("TAMBAH PART - JASA")
+                && find(R.id.cb_tidak_menunggu, CheckBox.class).isChecked()) || isKonfirmasiTambahan) {
             aktifitasList.add("BATAL BENGKEL");
             aktifitasList.add("BATAL PELANGGAN");
             aktifitasList.add("TAMBAH PART - JASA OKAY");
