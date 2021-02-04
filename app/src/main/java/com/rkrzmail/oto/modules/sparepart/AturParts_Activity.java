@@ -173,8 +173,8 @@ public class AturParts_Activity extends AppActivity {
             find(R.id.et_het_part, EditText.class).setText(isParts ?
                     "Rp. " + NumberFormatUtils.formatRp(aturParts.get("HET").asString()) :
                     "Rp. " + NumberFormatUtils.formatRp(addParts.get("HET").asString()));
-            if (!aturParts.get("MARGIN").asString().equals("")) {
-                find(R.id.et_hargaJual_part, EditText.class).setText(aturParts.get("MARGIN").asString());
+            if (!aturParts.get("MARGIN").asString().isEmpty()) {
+                find(R.id.et_hargaJual_part, EditText.class).setText(NumberFormatUtils.formatPercent(Double.parseDouble(aturParts.get("MARGIN").asString())));
             } else {
                 find(R.id.et_hargaJual_part, EditText.class).setText("Rp. " + NumberFormatUtils.formatRp(aturParts.get("HARGA_JUAL").asString()));
             }
@@ -336,14 +336,14 @@ public class AturParts_Activity extends AppActivity {
         final String stock = find(R.id.et_stockTersedia_part, EditText.class).getText().toString();
         final String stockMin = find(R.id.et_stockMin_part, EditText.class).getText().toString();
         final String waktuPesan = find(R.id.et_waktuPesan_part, EditText.class).getText().toString();
-        final String hargaJual =  NumberFormatUtils.clearPercent(find(R.id.et_hargaJual_part, EditText.class).getText().toString());
+        final String hargaJual = find(R.id.et_hargaJual_part, EditText.class).getText().toString();
         final String polaHarga = find(R.id.sp_polaHarga_part, Spinner.class).getSelectedItem().toString();
         final String het = NumberFormatUtils.formatOnlyNumber(find(R.id.et_het_part, EditText.class).getText().toString());
         final String hpp = NumberFormatUtils.formatOnlyNumber(find(R.id.et_hpp_part, EditText.class).getText().toString());
 
         try {
             if (hargaJual.contains("%")) {
-                harga = hargaJual;
+                harga = NumberFormatUtils.clearPercent(hargaJual);
                 margin = (int) (Integer.parseInt(hpp) * Double.parseDouble(harga) / 100);
                 total = margin + Integer.parseInt(hpp);
                 Log.e("sparepart__", "saveData: " + total);
@@ -370,7 +370,7 @@ public class AturParts_Activity extends AppActivity {
                         polaHarga.equalsIgnoreCase("RATA - RATA + MARGIN") ||
                         polaHarga.equalsIgnoreCase("FLEXIBLE")) {
                     args.put("hargajual", String.valueOf(total));
-                    args.put("margin", hargaJual);
+                    args.put("margin",  hargaJual.replace("%", ""));
                 }
                 args.put("polahargajual", polaHarga);
                 args.put("hpp", hpp);
@@ -444,7 +444,7 @@ public class AturParts_Activity extends AppActivity {
                         polaHarga.equalsIgnoreCase("RATA - RATA + MARGIN") ||
                         polaHarga.equalsIgnoreCase("FLEXIBLE")) {
                     args.put("hargajual", String.valueOf(total));
-                    args.put("margin", hargaJual);
+                    args.put("margin", hargaJual.replace("%", ""));
                 }
                 args.put("waktupesan", waktuPesan);
                 args.put("stokminim", stockMin);

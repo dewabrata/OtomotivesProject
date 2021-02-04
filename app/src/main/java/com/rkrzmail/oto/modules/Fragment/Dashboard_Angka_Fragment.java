@@ -40,7 +40,7 @@ public class Dashboard_Angka_Fragment extends Fragment {
     private RecyclerView rvPembayaranCheckin;
     private SwipeRefreshLayout swipeRefreshLayout;
     private LinearLayout lyDasboard;
-    private TextView tvTglMulai, tvTglAkhir, tvRPBooking, tvRPLayanan, tvRPJualPart, tvRPBatal;
+    private TextView tvTglMulai, tvTglAkhir, tvHariKerja, tvRPLayanan, tvRPJualPart, tvRPBatal;
     private View fragmentView;
 
     private Nson pembayaranList = Nson.newArray();
@@ -50,6 +50,7 @@ public class Dashboard_Angka_Fragment extends Fragment {
     private String tanggalAkhir = "", tglAwal = "", totLayanan = "", totPart = "", totJasapart = "", totJasalain = "",
             totLainnya = "", totDiscount = "", totPendapatan = "", totDownpayment = "", totIncome = "", totBiaya = "", totHpp = "",
             totMargin = "", totKas = "", totBank = "", totPiutang = "", totColeection = "", totStockpart = "", totHutang = "";
+    private int totalHariKerja = 0, totalLayanan = 0, totalJualPart = 0;
 
     public Dashboard_Angka_Fragment() {
 
@@ -97,7 +98,7 @@ public class Dashboard_Angka_Fragment extends Fragment {
         tvTglMulai = fragmentView.findViewById(R.id.tv_mulaitgl);
         lyDasboard = fragmentView.findViewById(R.id.ly_dashboard);
         tvRPBatal = fragmentView.findViewById(R.id.tv_dbBatal);
-        tvRPBooking = fragmentView.findViewById(R.id.tv_dbBooking);
+        tvHariKerja = fragmentView.findViewById(R.id.tv_total_hari_kerja);
         tvRPJualPart = fragmentView.findViewById(R.id.tv_dbJualpart);
         tvRPLayanan = fragmentView.findViewById(R.id.tv_dbLayanan1);
 
@@ -156,8 +157,8 @@ public class Dashboard_Angka_Fragment extends Fragment {
 
                 args.put("action", "view");
                 args.put("kategori", "ANGKA");
-                args.put("periodeAwal", setFormatDayAndMonthToDb(tglAwal));
-                args.put("periodeAkhir", setFormatDayAndMonthToDb(tanggalAkhir));
+                args.put("periodeAwal", setFormatDayAndMonthToDb(tvTglMulai.getText().toString()));
+                args.put("periodeAkhir", setFormatDayAndMonthToDb(tvTglAkhir.getText().toString()));
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_DASHBOARD), args));
             }
@@ -166,6 +167,9 @@ public class Dashboard_Angka_Fragment extends Fragment {
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     result = result.get("data").get(0);
+                    totalHariKerja = result.get("HARI").asInteger();
+                    totalLayanan = result.get("LAYANAN").asInteger();
+                    totalJualPart = result.get("JUAL_PART").asInteger();
                     totLayanan = result.get("TOTAL_LAYANAN").asString();
                     totPart = result.get("TOTAL_PART").asString();
                     totJasapart = result.get("TOTAL_JASA_PART").asString();
@@ -175,9 +179,9 @@ public class Dashboard_Angka_Fragment extends Fragment {
                     totPendapatan = result.get("TOTAL_PENDAPATAN").asString();
                     totDownpayment = result.get("TOTAL_DP").asString();
                     totIncome = result.get("TOTAL_INCOME").asString();
-                    totBiaya = result.get("TOTAL_BIAYA").asString();
+                    totBiaya = "0";//result.get("TOTAL_BIAYA").asString()
                     totHpp = result.get("TOTAL_HPP").asString();
-                    totMargin = result.get("TOTAL_MARGIN").asString();
+                    totMargin = "0";
                     totKas = result.get("TOTAL_KAS").asString();
                     totBank = result.get("TOTAL_KAS_BANK").asString();
                     totPiutang = result.get("TOTAL_PIUTANG").asString();
@@ -194,10 +198,10 @@ public class Dashboard_Angka_Fragment extends Fragment {
     }
 
     private void setValuedashboard() {
-        tvRPLayanan.setText(activity.setUnderline(RP + activity.formatRp("")));
-        tvRPJualPart.setText(activity.setUnderline(RP + activity.formatRp("")));
-        tvRPBooking.setText(activity.setUnderline(RP + activity.formatRp("")));
-        tvRPBatal.setText(activity.setUnderline(RP + activity.formatRp("")));
+        tvRPLayanan.setText(activity.setUnderline(String.valueOf(totalLayanan)));
+        tvRPJualPart.setText(activity.setUnderline(String.valueOf(totalJualPart)));
+        tvHariKerja.setText(activity.setUnderline(String.valueOf(totalHariKerja)));
+        tvRPBatal.setText(activity.setUnderline("0"));
         activity.find(R.id.tv_dbLayanan2, TextView.class).setText(activity.setUnderline(RP + activity.formatRp(totLayanan)));
         activity.find(R.id.tv_dbPart, TextView.class).setText(activity.setUnderline(RP + activity.formatRp(totPart)));
         activity.find(R.id.tv_dbJasapart, TextView.class).setText(activity.setUnderline(RP + activity.formatRp(totJasapart)));

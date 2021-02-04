@@ -127,13 +127,9 @@ public class NumberFormatUtils {
 
         values = formatOnlyNumber(values);
         double percentValue = Double.parseDouble(values) / 1000;
-
         NumberFormat percentageFormat = NumberFormat.getPercentInstance();
         percentageFormat.setMinimumFractionDigits(1);
-        String percent = percentageFormat.format(percentValue);
-        Log.e("percent_", "afterTextChange: " + percent);
-
-        return percent;
+        return percentageFormat.format(percentValue);
     }
 
     public static InputFilter[] getPercentFilter() {

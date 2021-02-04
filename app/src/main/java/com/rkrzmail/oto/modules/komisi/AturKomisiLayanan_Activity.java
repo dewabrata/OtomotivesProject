@@ -53,7 +53,7 @@ public class AturKomisiLayanan_Activity extends AppActivity {
     private final List<String> aktivitasList = Arrays.asList(
             "--PILIH--",
             "BOOKING",
-            "CHECK IN ANTRIAN",
+            "CHECKIN ANTRIAN",
             "PENUGASAN",
             "MEKANIK SELESAI",
             "INSPEKSI SELESAI",
@@ -223,7 +223,7 @@ public class AturKomisiLayanan_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "add");
-                args.put("aktivitas", spAktivitas.getSelectedItem().toString());
+                args.put("aktivitas", spAktivitas.getSelectedItem().toString() + ",");
                 args.put("nama", spLayanan.getSelectedItem().toString());
                 args.put("komisi", NumberFormatUtils.clearPercent(etKomisi.getText().toString()));
                 args.put("status", spStatus.getSelectedItem().toString());

@@ -167,14 +167,13 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:layout_weight="1"
-                            android:gravity="center"
-                            android:layout_marginEnd="5dp">
+                            android:gravity="center">
 
                             <TextView
-                                android:id="@+id/tv_dbBooking"
+                                android:id="@+id/tv_total_hari_kerja"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/default_rp_uppercase"
+                                android:text="@string/default_number"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                                 android:textSize="12sp"
                                 android:textColor="@color/grey_900" />
@@ -182,7 +181,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/booking_uppercase"
+                                android:text="@string/hari_uppercase"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                                 android:textSize="12sp"
                                 android:layout_marginTop="5dp"
@@ -195,15 +194,13 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:layout_weight="1"
-                            android:gravity="center"
-                            android:layout_marginEnd="5dp">
+                            android:gravity="center">
 
                             <TextView
                                 android:id="@+id/tv_dbLayanan1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/default_rp_uppercase"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:text="@string/default_number"                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                                 android:textSize="12sp" />
 
                             <TextView
@@ -221,15 +218,13 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:layout_weight="1"
-                            android:gravity="center"
-                            android:layout_marginEnd="5dp">
+                            android:gravity="center">
 
                             <TextView
                                 android:id="@+id/tv_dbJualpart"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/default_rp_uppercase"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:text="@string/default_number"                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                                 android:textSize="12sp" />
 
                             <TextView
@@ -247,15 +242,13 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:layout_weight="1"
-                            android:gravity="center"
-                            android:layout_marginEnd="5dp">
+                            android:gravity="center"    >
 
                             <TextView
                                 android:id="@+id/tv_dbBatal"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/default_rp_uppercase"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:text="@string/default_number"                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                                 android:textSize="12sp" />
 
                             <TextView
@@ -365,7 +358,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="5dp"
-                                    android:text="@string/jasa_dan_part"
+                                    android:text="@string/jasa_part_uppercase"
                                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                                     android:textSize="12sp" />
 

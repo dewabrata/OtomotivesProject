@@ -25,6 +25,7 @@ import com.rkrzmail.utils.Tools;
 import static com.rkrzmail.srv.NumberFormatUtils.calculatePercentage;
 import static com.rkrzmail.utils.ConstUtils.PART;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
+import static com.rkrzmail.utils.ConstUtils.RP;
 
 public class JumlahPart_JualPart_Activity extends AppActivity {
 
@@ -120,7 +121,7 @@ public class JumlahPart_JualPart_Activity extends AppActivity {
                         showWarning("Harga Jual Harus Di isi");
                         return;
                     }
-                    if(Integer.parseInt(formatOnlyNumber(etHargaJual.getText().toString())) < Integer.parseInt(formatOnlyNumber(etHpp.getText().toString()))){
+                    if (Integer.parseInt(formatOnlyNumber(etHargaJual.getText().toString())) < Integer.parseInt(formatOnlyNumber(etHpp.getText().toString()))) {
                         etHargaJual.setError("Harga Jual Kurang dari HPP Part");
                         return;
                     }
@@ -169,26 +170,15 @@ public class JumlahPart_JualPart_Activity extends AppActivity {
             idLokasiPart = getData.get("LOKASI_PART_ID").asString();
             Log.d("detail__", "data : " + getData);
 
-            if (getData.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE") || getData.get("HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE")) {
+            if (getData.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE")) {
                 find(R.id.tl_hpp, TextInputLayout.class).setVisibility(View.VISIBLE);
+                find(R.id.tl_hpp, TextInputLayout.class).setHint("HARGA JUAL FLEXIBLE");
                 etHpp.setEnabled(false);
-                etHpp.setText("Rp. " + formatRp(getData.get("HPP").asString()));
+                etHpp.setText(RP + formatRp(getData.get("HARGA_JUAL").asString()));
                 etHargaJual.setEnabled(true);
-                showInfo("Pola Harga Jual Flexible, Silahkan Masukkan Harga Jual", Toast.LENGTH_LONG);
-            } else if (getData.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("NOMINAL")) {
-                etHargaJual.setText("Rp. " + formatRp(getData.get("HARGA_JUAL").asString()));
-            } else if (getData.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("BELI + MARGIN")) {
-                etHargaJual.setText("Rp. " + formatRp(getData.get("HARGA_JUAL").asString()));
-            } else if (getData.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("RATA - RATA + MARGIN")) {
-                etHargaJual.setText("Rp. " + formatRp(getData.get("HARGA_JUAL").asString()));
-            } else if (getData.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("HET")) {
-                etHargaJual.setText("Rp. " + formatRp(getData.get("HARGA_JUAL").asString()));
-            }else{
-                find(R.id.tl_hpp, TextInputLayout.class).setVisibility(View.VISIBLE);
-                etHpp.setEnabled(false);
-                etHpp.setText("Rp. " + formatRp(getData.get("HPP").asString()));
-                etHargaJual.setEnabled(true);
-                showInfo("Pola Harga Jual Flexible, Silahkan Masukkan Harga Jual", Toast.LENGTH_LONG);
+            } else {
+                etHargaJual.setText(RP + formatRp(getData.get("HARGA_JUAL").asString()));
+
             }
 
             etDisc.setText(getData.get("DISCOUNT").asString());
@@ -252,7 +242,8 @@ public class JumlahPart_JualPart_Activity extends AppActivity {
         parts.set("LOKASI_PART_ID", idLokasiPart);
         parts.set("TOTAL", total);
         parts.set("NET", net);
-        parts.set("HPP", net);
+        parts.set("HPP", hppPart);
+
         if (isPartKosong) {
             parts.set("WAKTU_PESAN", find(R.id.et_waktu_pesan, EditText.class).getText().toString());
             parts.set("DP", calculatePercentage(Double.parseDouble(formatOnlyNumber(find(R.id.et_dp, EditText.class).getText().toString())),
@@ -260,7 +251,7 @@ public class JumlahPart_JualPart_Activity extends AppActivity {
             );
         } else {
             parts.set("WAKTU_PESAN", "");
-            parts.set("DP", hppPart);
+            parts.set("DP", "");
         }
 
         Intent intent = new Intent();

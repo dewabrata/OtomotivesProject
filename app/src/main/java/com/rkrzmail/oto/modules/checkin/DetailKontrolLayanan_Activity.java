@@ -159,7 +159,6 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         noPonsel = data.get("NO_PONSEL").asString();
         merkKendaraan = data.get("NO_PONSEL").asString();
         isEstimasi = data.get("STATUS").asString().equals("LAYANAN ESTIMASI") & !data.get("STATUS").asString().isEmpty();
-        isKonfirmasiTambahan = data.get("KONFIRMASI_TAMBAHAN").asString().equals("Y") & !data.get("KONFIRMASI_TAMBAHAN").asString().isEmpty();
 
         find(R.id.et_catatan_mekanik, EditText.class).setText(data.get("CATATAN_MEKANIK").asString());
         etNoAntrian.setText(data.get("NO_ANTRIAN").asString());
@@ -316,13 +315,14 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                     viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.GONE);
                 }
 
-                if (itemType == ITEM_VIEW_1) {
-                    if (detailCheckinList.get(position).get("STATUS_DETAIL").asString().equals("TAMBAH PART - JASA")) {
-                        viewHolder.find(R.id.view_mark_tambah_jasa).setVisibility(View.VISIBLE);
-                    } else {
-                        viewHolder.find(R.id.view_mark_tambah_jasa).setVisibility(View.GONE);
-                    }
+                if (detailCheckinList.get(position).get("STATUS_DETAIL").asString().equals("TAMBAH PART - JASA") &&
+                        !etStatus.getText().toString().contains("SELESAI")) {
+                    viewHolder.find(R.id.view_mark_tambah_jasa).setVisibility(View.VISIBLE);
+                } else {
+                    viewHolder.find(R.id.view_mark_tambah_jasa).setVisibility(View.GONE);
+                }
 
+                if (itemType == ITEM_VIEW_1) {
                     viewHolder.find(R.id.tv_namaPart_booking3_checkin3, TextView.class)
                             .setText(detailCheckinList.get(position).get("NAMA_PART").asString());
                     viewHolder.find(R.id.tv_noPart_booking3_checkin3, TextView.class)
@@ -339,11 +339,6 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                                 RP + formatRp(detailCheckinList.get(position).get("HARGA_JASA_PART").asString()));
                     }
                 } else if (itemType == ITEM_VIEW_2) {
-                    if (detailCheckinList.get(position).get("STATUS_DETAIL").asString().equals("TAMBAH PART - JASA")) {
-                        viewHolder.find(R.id.view_mark_tambah_jasa).setVisibility(View.VISIBLE);
-                    } else {
-                        viewHolder.find(R.id.view_mark_tambah_jasa).setVisibility(View.GONE);
-                    }
                     viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class)
                             .setText(RP + formatRp(detailCheckinList.get(position).get("HARGA_JASA").asString()));
                     viewHolder.find(R.id.tv_kelompokPart_booking3_checkin3, TextView.class)
