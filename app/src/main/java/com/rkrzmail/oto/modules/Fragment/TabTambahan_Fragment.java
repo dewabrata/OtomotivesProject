@@ -315,7 +315,7 @@ public class TabTambahan_Fragment extends Fragment {
     }
 
     private void saveData() {
-        activity.newProses(new Messagebox.DoubleRunnable() {
+        MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
             public void run() {

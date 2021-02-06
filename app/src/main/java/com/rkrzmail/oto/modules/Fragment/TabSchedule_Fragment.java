@@ -121,7 +121,7 @@ public class TabSchedule_Fragment extends Fragment implements View.OnClickListen
     }
 
     private void saveData() {
-        activity.newProses(new Messagebox.DoubleRunnable() {
+        MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
             public void run() {
@@ -157,7 +157,8 @@ public class TabSchedule_Fragment extends Fragment implements View.OnClickListen
     }
 
     private void loadData(){
-        activity.newProses(new Messagebox.DoubleRunnable() {
+        final String[] tipe = getResources().getStringArray(R.array.tipe_schedule);
+        MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result;
 
             @Override
@@ -178,33 +179,67 @@ public class TabSchedule_Fragment extends Fragment implements View.OnClickListen
                         jemput = result.get(i).get("MAX_RADIUS_ANTAR_JEMPUT").asString();
                         emg = result.get(i).get("MAX_RADIUS_EMERGENCY").asString();
                         derek = result.get(i).get("MAX_RADIUS_DEREK").asString();
-                        validasiTipeLayanan();
+                        cbSeninJumat.setChecked(true);
+                        cbJumat.setChecked(true);
+                        cbSabtu.setChecked(true);
+                        cbMingu.setChecked(true);
+                        cbLibur.setChecked(true);
+                        if(derek.equalsIgnoreCase("Y") && jemput.equalsIgnoreCase("Y")){
+                            activity.setSpinnerOffline(Arrays.asList(tipe), spTipeLayanan,"LAYANAN BOOKING");
+                            etBukaSJ.setText(result.get(i).get("HP_BOOKING_SERVIS1_AWAL").asString());
+                            etTutupSJ.setText(result.get(i).get("HP_BOOKING_SERVIS1_AKHIR").asString());
+                            etBukaJ.setText(result.get(i).get("HP_BOOKING_SERVIS5_AWAL").asString());
+                            etTutupJ.setText(result.get(i).get("HP_BOOKING_SERVIS5_AKHIR").asString());
+                            etBukaSab.setText(result.get(i).get("HP_BOOKING_SERVIS6_AWAL").asString());
+                            etTutupSab.setText(result.get(i).get("HP_BOOKING_SERVIS6_AKHIR").asString());
+                            etBukaM.setText(result.get(i).get("HP_BOOKING_SERVIS7_AWAL").asString());
+                            etTutupM.setText(result.get(i).get("HP_BOOKING_SERVIS7_AKHIR").asString());
+                            etBukaL.setText(result.get(i).get("HP_BOOKING_SERVIS_LIBUR_AWAL").asString());
+                            etTutupL.setText(result.get(i).get("HP_BOOKING_SERVIS_LIBUR_AKHIR").asString());
+                        }else if(home.equalsIgnoreCase("Y")){
+                            activity.setSpinnerOffline(Arrays.asList(tipe), spTipeLayanan,"HOME SERVICES");
+                            etBukaSJ.setText(result.get(i).get("HP_HOME_SERVIS1_AWAL").asString());
+                            etTutupSJ.setText(result.get(i).get("HP_HOME_SERVIS1_AKHIR").asString());
+                            etBukaJ.setText(result.get(i).get("HP_HOME_SERVIS5_AWAL").asString());
+                            etTutupJ.setText(result.get(i).get("HP_HOME_SERVIS5_AKHIR").asString());
+                            etBukaSab.setText(result.get(i).get("HP_HOME_SERVIS6_AWAL").asString());
+                            etTutupSab.setText(result.get(i).get("HP_HOME_SERVIS6_AKHIR").asString());
+                            etBukaM.setText(result.get(i).get("HP_HOME_SERVIS7_AWAL").asString());
+                            etTutupM.setText(result.get(i).get("HP_HOME_SERVIS7_AKHIR").asString());
+                            etBukaL.setText(result.get(i).get("HP_HOME_SERVIS_LIBUR_AWAL").asString());
+                            etTutupL.setText(result.get(i).get("HP_HOME_SERVIS_LIBUR_AKHIR").asString());
+                        }else if(emg.equalsIgnoreCase("Y")){
+                            activity.setSpinnerOffline(Arrays.asList(tipe), spTipeLayanan,"LAYANAN EMERGENCY");
+                            etBukaSJ.setText(result.get(i).get("HP_EMERGENCY1_AWAL").asString());
+                            etTutupSJ.setText(result.get(i).get("HP_EMERGENCY1_AKHIR").asString());
+                            etBukaJ.setText(result.get(i).get("HP_EMERGENCY5_AWAL").asString());
+                            etTutupJ.setText(result.get(i).get("HP_EMERGENCY5_AKHIR").asString());
+                            etBukaSab.setText(result.get(i).get("HP_EMERGENCY6_AWAL").asString());
+                            etTutupSab.setText(result.get(i).get("HP_EMERGENCY6_AKHIR").asString());
+                            etBukaM.setText(result.get(i).get("HP_EMERGENCY7_AWAL").asString());
+                            etTutupM.setText(result.get(i).get("HP_EMERGENCY7_AKHIR").asString());
+                            etBukaL.setText(result.get(i).get("HP_EMERGENCY_LIBUR_AWAL").asString());
+                            etTutupL.setText(result.get(i).get("HP_EMERGENCY_LIBUR_AKHIR").asString());
+                        }else {
+                            activity.setSpinnerOffline(Arrays.asList(tipe), spTipeLayanan,"OPERASIONAL");
+                            etBukaSJ.setText(result.get(i).get("HP_OPERASIONAL1_AWAL").asString());
+                            etTutupSJ.setText(result.get(i).get("HP_OPERASIONAL1_AKHIR").asString());
+                            etBukaJ.setText(result.get(i).get("HP_OPERASIONAL5_AWAL").asString());
+                            etTutupJ.setText(result.get(i).get("HP_OPERASIONAL5_AKHIR").asString());
+                            etBukaSab.setText(result.get(i).get("HP_OPERASIONAL6_AWAL").asString());
+                            etTutupSab.setText(result.get(i).get("HP_OPERASIONAL6_AKHIR").asString());
+                            etBukaM.setText(result.get(i).get("HP_OPERASIONAL7_AWAL").asString());
+                            etTutupM.setText(result.get(i).get("HP_OPERASIONAL7_AKHIR").asString());
+                            etBukaL.setText(result.get(i).get("HP_OPERASIONAL_LIBUR_AWAL").asString());
+                            etTutupL.setText(result.get(i).get("HP_OPERASIONAL_LIBUR_AKHIR").asString());
+
+                        }
                     }
                 } else {
                     activity.showInfo(result.get("message").asString());
                 }
             }
         });
-    }
-
-    private void validasiTipeLayanan(){
-        String[] tipe = getResources().getStringArray(R.array.tipe_schedule);
-
-        if(derek.equalsIgnoreCase("Y") && jemput.equalsIgnoreCase("Y")){
-            activity.setSpinnerOffline(Arrays.asList(tipe), spTipeLayanan,"LAYANAN BOOKING");
-        }else if(home.equalsIgnoreCase("Y")){
-            activity.setSpinnerOffline(Arrays.asList(tipe), spTipeLayanan,"HOME SERVICES");
-        }else if(emg.equalsIgnoreCase("Y")){
-            activity.setSpinnerOffline(Arrays.asList(tipe), spTipeLayanan,"LAYANAN EMERGENCY");
-        }else {
-            activity.setSpinnerOffline(Arrays.asList(tipe), spTipeLayanan,"OPERASIONAL");
-        }
-
-        cbSeninJumat.setChecked(true);
-        cbJumat.setChecked(true);
-        cbSabtu.setChecked(true);
-        cbMingu.setChecked(true);
-        cbLibur.setChecked(true);
     }
 
     private void listener() {
