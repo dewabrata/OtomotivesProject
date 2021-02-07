@@ -83,6 +83,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import static com.rkrzmail.utils.APIUrls.ATUR_KONTROL_LAYANAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_PERINTAH_KERJA_MEKANIK;
 import static com.rkrzmail.utils.APIUrls.VIEW_TUGAS_PART;
 import static com.rkrzmail.utils.ConstUtils.PART;
@@ -642,13 +643,13 @@ public class MenuActivity extends AppActivity {
     public void onUserInteraction() {
         super.onUserInteraction();
         final Handler handler = new Handler(Looper.getMainLooper());
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                viewPartPermintaan();
-//                viewPerintahMekanik("");
-//            }
-//        }, 5000);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //viewPartPermintaan();
+                //viewPerintahMekanik("");
+            }
+        }, 2000);
     }
 
     @SuppressLint("NewApi")
@@ -708,21 +709,21 @@ public class MenuActivity extends AppActivity {
     }
 
     private void viewPerintahMekanik(final String cari) {
-        newProses(new Messagebox.DoubleRunnable() {
+        newTask(new Messagebox.DoubleRunnable() {
             Nson result;
 
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "view");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PERINTAH_KERJA_MEKANIK), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_KONTROL_LAYANAN), args));
             }
 
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     result = result.get("data");
-                    if(result.size() > 0){
+                    if(result.asString().equals("PENUGASAN MEKANIK")){
+                        showInfo(result.asString());
                         Intent intent = new Intent(getActivity(), PerintahKerjaMekanik_Activity.class);
                         intent.putExtra("NOPOL", result.get(0).get("NOPOL").asString());
                         showNotification(

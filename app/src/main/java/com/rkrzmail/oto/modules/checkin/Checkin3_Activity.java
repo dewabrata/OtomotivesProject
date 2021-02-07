@@ -56,7 +56,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.rkrzmail.srv.NumberFormatUtils.calculatePercentage;
 import static com.rkrzmail.utils.APIUrls.SET_CHECKIN;
 import static com.rkrzmail.utils.APIUrls.VIEW_LAYANAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_SUGGESTION;
@@ -108,34 +107,44 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
     private final Nson masterPartList = Nson.newArray();
     private final Nson partIdList = Nson.newArray();
     private final Nson keluhanList = Nson.newArray();
+    private Nson data;
 
-    private String namaLayanan, jenisLayanan = "", waktuMekanik = "", waktuInspeksi = "", waktuLayanan = "";
+    private String namaLayanan = "",
+            jenisLayanan = "",
+            waktuMekanik = "",
+            waktuInspeksi = "",
+            waktuLayanan = "";
     private final String jenisAntrian = "";
     private String isOutsource = "";
     private final String noAntrian = "";
     private String discFasilitas = "";
     private String discLayanan = "";
     private String biayaLayanan = "", biayaPergantian = "";
+    private String layananId = "";
+
+    private int kmKendaraan = 0;
     private int totalHarga = 0;
     private final int totalPartJasa = 0;
     private int batasanKm = 0;
     private int batasanBulan = 0;
     private int jumlahPartWajib = 0;
     private int feeNonPaket = 0;
-    private String layananId = "";
     private final int idAntrian = 0;
     private int waktuPesan = 0;
     private int totalHargaPartKosong = 0;
     private int hargaPartLayanan = 0; // afs, recall, otomotives
     private int partId = 0, jumlahPart = 0;
-    private double sisaDp = 0;
     private int totalDp = 0;
+
     private final List<Integer> jumlahList = new ArrayList<>();
     private final Tools.TimePart dummyTime = Tools.TimePart.parse("00:00:00");
-
-    private boolean flagPartWajib = false,
+    private double sisaDp = 0;
+    private boolean
+            flagPartWajib = false,
             flagMasterPart = false,
-            isPartWajib = false, isSelanjutnya = false, isDelete = false;
+            isPartWajib = false,
+            isSelanjutnya = false,
+            isDelete = false;
     private boolean isPartKosong = false, isPartKosong2 = false;
     private boolean isBatal = false;
     private boolean isJasaExternal = false;
@@ -147,7 +156,9 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkin3_);
+        initToolbar();
         initComponent();
+        loadData();
     }
 
     @SuppressLint("NewApi")
@@ -173,7 +184,6 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
     }
 
     private void initComponent() {
-        initToolbar();
         find(R.id.btn_jasaLain_checkin3, Button.class).setOnClickListener(this);
         find(R.id.btn_sparePart_checkin3, Button.class).setOnClickListener(this);
         find(R.id.btn_jasaLainBerkala_checkin3, Button.class).setOnClickListener(this);
@@ -209,7 +219,11 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 }
             }
         });
+    }
 
+    private void loadData(){
+        data = Nson.readJson(getIntentStringExtra(DATA));
+        kmKendaraan = data.get("km").asInteger();
     }
 
     private void initAutoCompleteKeluhan() {
@@ -1028,6 +1042,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         break;
                     case REQUEST_CARI_PART:
                         i = new Intent(getActivity(), JumlahPart_Checkin_Activity.class);
+                        i.putExtra("KM", kmKendaraan);
                         i.putExtra(DATA, Nson.readJson(getIntentStringExtra(data, PART)).toJson());
                         i.putExtra("bengkel", "");
                         //Log.d("JUMLAH_HARGA_PART", "INTENT : "   + Nson.readJson(getIntentStringExtra(data, "part")).toJson());

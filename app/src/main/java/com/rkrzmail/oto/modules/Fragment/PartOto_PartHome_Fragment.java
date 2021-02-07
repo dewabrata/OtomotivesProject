@@ -41,20 +41,23 @@ public class PartOto_PartHome_Fragment extends Fragment implements SearchListene
 
     private final Nson partList = Nson.newArray();
     private SearchListener.IFragmentListener iFragmentListener = null;
-    private String searchQuery = null;
-    private String searchTag = null;
+    private String searchQuery = "";
+    private String searchTag = "";
+    private int tabPosition = 0;
 
     private SearchView.SearchAutoComplete searchAutoComplete = null;
-    private boolean isShowUp = false;
+    private boolean isVisible;
+    private boolean isStarted;
 
     public PartOto_PartHome_Fragment() {
     }
 
-    public static PartOto_PartHome_Fragment newInstance(String query, String tag) {
+    public static PartOto_PartHome_Fragment newInstance(String query, String tag, int tabPosition) {
         PartOto_PartHome_Fragment fragment = new PartOto_PartHome_Fragment();
         Bundle bundle = new Bundle();
         bundle.putString(PartHome_MainTab_Activity.SEARCH_PART, query);
         bundle.putString(PartHome_MainTab_Activity.SEARCH_TAG, tag);
+        bundle.putInt(PartHome_MainTab_Activity.TAB_POSITION, tabPosition);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -69,7 +72,7 @@ public class PartOto_PartHome_Fragment extends Fragment implements SearchListene
         swipeRefreshLayout.setEnabled(false);
         initHideToolbar(view);
         initRecylerviewPart(view);
-
+        iFragmentListener = (SearchListener.IFragmentListener) activity;
         return view;
     }
 
@@ -79,40 +82,47 @@ public class PartOto_PartHome_Fragment extends Fragment implements SearchListene
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        iFragmentListener = (SearchListener.IFragmentListener) context;
-        iFragmentListener.addiSearch(PartOto_PartHome_Fragment.this, PartOto_PartHome_Fragment.this);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        if (iFragmentListener != null) {
-            iFragmentListener.removeISearch(PartOto_PartHome_Fragment.this, PartOto_PartHome_Fragment.this);
+    public void onTextQuery(String text, int tabPosition) {
+        if(tabPosition == 2){
+            viewALLPart(text);
+        }else{
+            viewALLPart("");
         }
     }
 
     @Override
-    public void onTextQuery(String text) {
-        viewALLPart(text);
+    public void attachAdapter(SearchView.SearchAutoComplete searchAutoComplete, int tabPosition) {
+        if(tabPosition == 2){
+            try{
+                this.searchAutoComplete = searchAutoComplete;
+                this.searchAutoComplete.setTag("OTO");
+                this.searchAutoComplete.setAdapter(autoCompleteAdapter());
+                this.searchAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(i)));
+                        String object = n.get("NAMA_PART").asString();
+
+                        activity.find(R.id.search_src_text, SearchView.SearchAutoComplete.class).setText(object);
+                        activity.find(R.id.search_src_text, SearchView.SearchAutoComplete.class).setTag(String.valueOf(adapterView.getItemAtPosition(i)));
+                    }
+                });
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
-    public void attachAdapter(SearchView.SearchAutoComplete searchAutoComplete) {
-        this.searchAutoComplete = searchAutoComplete;
-        this.searchAutoComplete.setTag("OTO");
-        this.searchAutoComplete.setAdapter(autoCompleteAdapter());
-        this.searchAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(i)));
-                String object = n.get("NAMA_PART").asString();
+    public void onStart() {
+        super.onStart();
+        isStarted = true;
+    }
 
-                activity.find(R.id.search_src_text, SearchView.SearchAutoComplete.class).setText(object);
-                activity.find(R.id.search_src_text, SearchView.SearchAutoComplete.class).setTag(String.valueOf(adapterView.getItemAtPosition(i)));
-            }
-        });
+    @Override
+    public void onStop() {
+        super.onStop();
+        isStarted = false;
     }
 
     @Override
@@ -121,19 +131,22 @@ public class PartOto_PartHome_Fragment extends Fragment implements SearchListene
         if (getArguments() != null) {
             searchQuery = (String) getArguments().get(PartHome_MainTab_Activity.SEARCH_PART);
             searchTag = (String) getArguments().get(PartHome_MainTab_Activity.SEARCH_TAG);
+            tabPosition = (Integer) getArguments().getInt(PartHome_MainTab_Activity.TAB_POSITION, 0);
         }
 
-        if (isVisibleToUser) {
-            if (searchTag.equals("OTO")) {
-                attachAdapter(searchAutoComplete);
+        isVisible = isVisibleToUser;
+        if (isStarted && isVisible) {
+            iFragmentListener.addiSearch(PartOto_PartHome_Fragment.this, PartOto_PartHome_Fragment.this);
+            if (searchTag != null && searchTag.equals("OTO")) {
                 if (searchQuery != null) {
-                    onTextQuery(searchQuery);
-                } else {
-                    viewALLPart("");
+                    onTextQuery(searchQuery, tabPosition);
                 }
-            } else {
-                attachAdapter(null);
             }
+        } else {
+            if(iFragmentListener != null){
+                iFragmentListener.removeISearch(PartOto_PartHome_Fragment.this, PartOto_PartHome_Fragment.this);
+            }
+            searchQuery = "";
         }
     }
 
@@ -142,7 +155,11 @@ public class PartOto_PartHome_Fragment extends Fragment implements SearchListene
     public void onResume() {
         super.onResume();
         if (isVisible()) {
-            viewALLPart("");
+            if (searchQuery != null) {
+                onTextQuery(searchQuery, tabPosition);
+            } else {
+                viewALLPart("");
+            }
         }
     }
 
@@ -202,6 +219,7 @@ public class PartOto_PartHome_Fragment extends Fragment implements SearchListene
         return new NsonAutoCompleteAdapter(getActivity()) {
             Nson result;
             boolean isNoPart;
+
             @Override
             public Nson onFindNson(Context context, String bookTitle) {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();

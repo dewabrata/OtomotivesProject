@@ -223,9 +223,10 @@ public class AppActivity extends AppCompatActivity {
 
     public int getIntentIntExtra(Intent intent, String key) {
         if (intent != null) {
-            intent.getIntExtra(key, 0);
+            return intent.getIntExtra(key, 0);
+        }else{
+            return 0;
         }
-        return intent.getIntExtra(key, 0);
     }
 
     public void showInfoDialog(String message, DialogInterface.OnClickListener onClickListener) {

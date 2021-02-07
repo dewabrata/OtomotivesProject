@@ -95,6 +95,17 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         ttd = null;
     }
 
+    @Override
+    public void onBackPressed() {
+        showInfoDialog("KONFIRMASI", "KELUAR CHECKIN ? ", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                setResult(RESULT_OK);
+                finish();
+            }
+        }, null);
+    }
+
     @SuppressLint("NewApi")
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

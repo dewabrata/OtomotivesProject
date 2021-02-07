@@ -28,8 +28,10 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
     private Bundle bundle;
     private String keyBundle;
     private Nson data;
+
     private String searchQueryText;
     private String searchViewTag;
+    private int tabPosition;
 
     public FragmentsAdapter(FragmentManager fm) {
         super(fm);
@@ -59,6 +61,12 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         super.destroyItem(container, position, object);
+
+    }
+
+    @Override
+    public int getItemPosition(@NonNull Object object) {
+        return super.getItemPosition(object);
     }
 
     @Override
@@ -165,12 +173,15 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
                 case 0:
                     //fragment = Fragment.instantiate(context, PartBengkel_PartHome_Fragment.class.getName());
                     //break;
-                    return PartBengkel_PartHome_Fragment.newInstance(searchQueryText, "BENGKEL");
-
+                    return PartBengkel_PartHome_Fragment.newInstance(searchQueryText, "BENGKEL", tabPosition);
                 case 1:
                     //fragment = Fragment.instantiate(context, PartOto_PartHome_Fragment.class.getName());
                     //break;
-                    return PartOto_PartHome_Fragment.newInstance(searchQueryText, "OTO");
+                    return AlertPart_PartHome_Fragment.newInstance(searchQueryText, "ALERT", tabPosition);
+                case 2:
+                    //fragment = Fragment.instantiate(context, PartOto_PartHome_Fragment.class.getName());
+                    //break;
+                    return PartOto_PartHome_Fragment.newInstance(searchQueryText, "OTO", tabPosition);
 
             }
             return null;
@@ -247,7 +258,6 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
                     return "Angka";
                 case 1:
                     return "Keuangan";
-
             }
         }
 
@@ -256,17 +266,16 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
                 case 0:
                     return "Bengkel";
                 case 1:
+                    return "Alert";
+                case 2:
                     return "Otomotives";
             }
         }
         return null;
     }
 
-    public void setTextQueryChanged(String newText) {
+    public void setTextQueryChanged(String newText, int position) {
         searchQueryText = newText;
-    }
-
-    public void setSearchViewTag(String tag){
-        searchViewTag = tag;
+        tabPosition = position;
     }
 }

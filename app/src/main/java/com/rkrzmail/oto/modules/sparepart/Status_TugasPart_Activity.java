@@ -42,13 +42,15 @@ public class Status_TugasPart_Activity extends AppActivity {
     private EditText etPelanggan, etMekanik;
     private Toolbar toolbar;
 
-    private Nson partSerahTerimaList = Nson.newArray();
+    private final Nson partSerahTerimaList = Nson.newArray();
     private boolean isPermintaan = false;
     private boolean isTersedia = false;
     private boolean isJualPart = false;
+
     private String mGroup = "";
     private String mekanik = "", tanggal = "", nopol = "", noHp = "";
     private String idLokasiPart = "", idDetail = "", idTugasPat = "", idCheckin = "", idJualPart = "";
+
     private int jumlahSerahTerima = 0;
 
     @Override
@@ -210,7 +212,15 @@ public class Status_TugasPart_Activity extends AppActivity {
                         }
                     }
                     Log.d("PART__", "SERAHTERIMA: " + partSerahTerimaList);
-                    recyclerView.getAdapter().notifyDataSetChanged();
+                    Objects.requireNonNull(recyclerView.getAdapter()).notifyDataSetChanged();
+                    if(nListArray.asArray().isEmpty()){
+                        find(R.id.btn_simpan).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                find(R.id.btn_simpan).performClick();
+                            }
+                        });
+                    }
                 } else {
                     showInfo(result.get("message").asString());
                 }

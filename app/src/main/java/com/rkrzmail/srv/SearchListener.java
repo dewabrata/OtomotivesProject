@@ -15,10 +15,10 @@ public class SearchListener {
     }
 
     public interface ISearch {
-        void onTextQuery(String text);
+        void onTextQuery(String text, int tabPostion);
     }
 
     public interface ISearchAutoComplete{
-        void attachAdapter(SearchView.SearchAutoComplete searchAutoComplete);
+        void attachAdapter(SearchView.SearchAutoComplete searchAutoComplete, int tabPostion);
     }
 }

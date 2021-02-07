@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -37,6 +38,7 @@ import static com.rkrzmail.utils.ConstUtils.TUGAS_PART_TERSEDIA;
 
 public class Tersedia_TugasPart_Fragment extends Fragment {
 
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -76,6 +78,13 @@ public class Tersedia_TugasPart_Fragment extends Fragment {
         View view = inflater.inflate(R.layout.activity_list_basic, container, false);
         initHideToolbar(view);
         rvTersedia = view.findViewById(R.id.recyclerView);
+        swipeRefreshLayout = view.findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                viewPartTersedia();
+            }
+        });
         initRecylerviewTersediaJualPart();
         return view;
     }
@@ -89,8 +98,21 @@ public class Tersedia_TugasPart_Fragment extends Fragment {
         } else {
             Log.d("visi__", "setUserVisibleHint: " + "invisible tersedia");
         }
-
     }
+
+    private void swipeProgress(final boolean show) {
+        if (!show) {
+            swipeRefreshLayout.setRefreshing(show);
+            return;
+        }
+        swipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeRefreshLayout.setRefreshing(show);
+            }
+        });
+    }
+
 
     private void initHideToolbar(View view) {
         AppBarLayout appBarLayout = view.findViewById(R.id.appbar);
@@ -155,6 +177,7 @@ public class Tersedia_TugasPart_Fragment extends Fragment {
 
             @Override
             public void run() {
+                swipeProgress(true);
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "view");
@@ -175,6 +198,7 @@ public class Tersedia_TugasPart_Fragment extends Fragment {
             @SuppressLint("NewApi")
             @Override
             public void runUI() {
+                swipeProgress(false);
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     Objects.requireNonNull(rvTersedia.getAdapter()).notifyDataSetChanged();
                 } else {

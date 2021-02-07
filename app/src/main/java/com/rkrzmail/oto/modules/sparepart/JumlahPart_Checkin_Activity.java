@@ -48,7 +48,7 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
     private String idLokasiPart = "", hpp = "";
     private String inspeksi = "", garansiPart = "";
     private int stock = 0;
-    private int berkalaKm = 0, berkalaBulan = 0;
+    private int berkalaKm = 0, berkalaBulan = 0, kmKendaraan = 0, batasanGaransiKm = 0, batasanGaransiBulan = 0;
     private double discPart = 0, discFasilitas = 0;
 
     @Override
@@ -96,10 +96,14 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
             find(R.id.ly_waktu_kerja).setVisibility(View.GONE);
             etBiayaJasa.setVisibility(View.GONE);
             isPartWajib = true;
+            batasanGaransiKm = nson.get("GARANSI_PART_KM").asInteger();
+            batasanGaransiBulan = nson.get("GARANSI_PART_BULAN").asInteger();
+            kmKendaraan = getIntentIntegerExtra("KM");
+            garansiPart = nson.get("GARANSI_PART_PABRIKAN").asString();
             berkalaBulan = Integer.parseInt(formatOnlyNumber(nson.get("BERKALA_BULAN").asString()));
-            berkalaKm = Integer.parseInt(formatOnlyNumber(nson.get("BERKALA_KM").asString()));
+            berkalaKm = Integer.parseInt(formatOnlyNumber(nson.get("BERKALA_KM").asString())) + kmKendaraan;
             stock = nson.get("STOCK").asInteger();
-            garansiPart = nson.get("GARANSI_PART_PABRIKAN").asString().equals("Y") ? "Y" : "N";
+            garansiPart = nson.get("GARANSI_PART_PABRIKAN").asString();
             hpp = nson.get("HPP").asString();
             idLokasiPart = nson.get("LOKASI_PART_ID").asString();
 
@@ -316,9 +320,12 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
         final Nson nson = Nson.readJson(getIntentStringExtra(intent, intentExtra));
         Log.d("parts__", "data : " + nson);
 
+        batasanGaransiKm = nson.get("GARANSI_PART_KM").asInteger();
+        batasanGaransiBulan = nson.get("GARANSI_PART_BULAN").asInteger();
+        kmKendaraan = getIntentIntegerExtra("KM");
         garansiPart = nson.get("GARANSI_PART_PABRIKAN").asString();
         berkalaBulan = Integer.parseInt(formatOnlyNumber(nson.get("BERKALA_BULAN").asString()));
-        berkalaKm = Integer.parseInt(formatOnlyNumber(nson.get("BERKALA_KM").asString()));
+        berkalaKm = Integer.parseInt(formatOnlyNumber(nson.get("BERKALA_KM").asString())) + kmKendaraan;
         hpp = nson.get("HPP").asString();
         stock = nson.get("STOCK_RUANG_PART").asInteger();
         idLokasiPart = nson.get("LOKASI_PART_ID").asString();
@@ -482,7 +489,11 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
         sendData.set("BERKALA_BULAN", berkalaBulan);
         sendData.set("WAKTU_INSPEKSI", find(R.id.et_waktu_set_inspeksi, EditText.class).getText().toString());
         sendData.set("WAKTU_KERJA", find(R.id.et_waktuSet, EditText.class).getText().toString());
-        sendData.set("GARANSI", garansiPart);
+        if(kmKendaraan < batasanGaransiKm){
+            sendData.set("GARANSI", garansiPart);
+        }else{
+            sendData.set("GARANSI", "N");
+        }
         sendData.set("NAMA_PART", nson.get("NAMA_PART").asString());
         sendData.set("NO_PART", nson.get("NO_PART").asString());
         sendData.set("PART_ID", nson.get("PART_ID").asString());

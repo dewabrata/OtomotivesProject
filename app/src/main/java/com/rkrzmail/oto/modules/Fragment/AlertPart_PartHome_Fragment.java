@@ -31,12 +31,13 @@ import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.srv.SearchListener;
 
 import java.util.Map;
+import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.VIEW_SPAREPART;
 import static com.rkrzmail.utils.ConstUtils.ALL;
 import static com.rkrzmail.utils.ConstUtils.RP;
 
-public class PartBengkel_PartHome_Fragment extends Fragment implements SearchListener.ISearch, SearchListener.ISearchAutoComplete {
+public class AlertPart_PartHome_Fragment extends Fragment implements SearchListener.ISearch, SearchListener.ISearchAutoComplete{
 
     private RecyclerView rvPart;
     private AppActivity activity;
@@ -52,11 +53,11 @@ public class PartBengkel_PartHome_Fragment extends Fragment implements SearchLis
     private boolean isVisible;
     private boolean isStarted;
 
-    public PartBengkel_PartHome_Fragment() {
+    public AlertPart_PartHome_Fragment() {
     }
 
-    public static PartBengkel_PartHome_Fragment newInstance(String query, String tag, int tabPosition) {
-        PartBengkel_PartHome_Fragment fragment = new PartBengkel_PartHome_Fragment();
+    public static AlertPart_PartHome_Fragment newInstance(String query, String tag, int tabPosition) {
+        AlertPart_PartHome_Fragment fragment = new AlertPart_PartHome_Fragment();
         Bundle bundle = new Bundle();
         bundle.putString(PartHome_MainTab_Activity.SEARCH_PART, query);
         bundle.putString(PartHome_MainTab_Activity.SEARCH_TAG, tag);
@@ -66,22 +67,21 @@ public class PartBengkel_PartHome_Fragment extends Fragment implements SearchLis
     }
 
 
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         activity = ((PartHome_MainTab_Activity) getActivity());
         fragmentView = inflater.inflate(R.layout.activity_list_basic, container, false);
         SwipeRefreshLayout swipeRefreshLayout = fragmentView.findViewById(R.id.swiperefresh);
         swipeRefreshLayout.setEnabled(false);
-        initHideToolbar(fragmentView);
-        initRecylerviewPart(fragmentView);
+        initHideToolbar();
+        initRecylerviewPart();
         iFragmentListener = (SearchListener.IFragmentListener) activity;
         return fragmentView;
     }
 
-    private void initHideToolbar(View view) {
-        AppBarLayout appBarLayout = view.findViewById(R.id.appbar);
+    private void initHideToolbar() {
+        AppBarLayout appBarLayout = fragmentView.findViewById(R.id.appbar);
         appBarLayout.setVisibility(View.GONE);
     }
 
@@ -98,11 +98,6 @@ public class PartBengkel_PartHome_Fragment extends Fragment implements SearchLis
     }
 
     @Override
-    public void setMenuVisibility(boolean menuVisible) {
-        super.setMenuVisibility(menuVisible);
-    }
-
-    @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (getArguments() != null) {
@@ -112,9 +107,9 @@ public class PartBengkel_PartHome_Fragment extends Fragment implements SearchLis
         }
 
         isVisible = isVisibleToUser;
-        if (isVisible && isStarted) {
-            iFragmentListener.addiSearch(PartBengkel_PartHome_Fragment.this, PartBengkel_PartHome_Fragment.this);
-            if (searchTag != null && searchTag.equals("BENGKEL")) {
+        if (isStarted && isVisible) {
+            iFragmentListener.addiSearch(AlertPart_PartHome_Fragment.this, AlertPart_PartHome_Fragment.this);
+            if (searchTag != null && searchTag.equals("ALERT")) {
                 attachAdapter(searchAutoComplete, tabPosition);
                 if (searchQuery != null) {
                     onTextQuery(searchQuery, tabPosition);
@@ -122,7 +117,7 @@ public class PartBengkel_PartHome_Fragment extends Fragment implements SearchLis
             }
         }else{
             if(iFragmentListener != null){
-                iFragmentListener.removeISearch(PartBengkel_PartHome_Fragment.this, PartBengkel_PartHome_Fragment.this);
+                iFragmentListener.removeISearch(AlertPart_PartHome_Fragment.this, AlertPart_PartHome_Fragment.this);
             }
             searchQuery = "";
         }
@@ -134,26 +129,27 @@ public class PartBengkel_PartHome_Fragment extends Fragment implements SearchLis
         if (isVisible()) {
             if (searchQuery != null) {
                 onTextQuery(searchQuery, tabPosition);
-            } else {
+            }else {
                 viewALLPart("");
             }
         }
     }
 
     @Override
-    public void onTextQuery(String text, int tabPosition) {
-        if(tabPosition == 0){
+    public void onTextQuery(String text, int tabPositon) {
+        if(tabPositon == 1){
             viewALLPart(text);
         }else{
             viewALLPart("");
         }
     }
+
     @Override
-    public void attachAdapter(SearchView.SearchAutoComplete searchAutoComplete, int tabPosition) {
-        if(tabPosition == 0){
+    public void attachAdapter(final SearchView.SearchAutoComplete searchAutoComplete, int tabPosition) {
+        if(tabPosition == 1){
             try{
                 this.searchAutoComplete = searchAutoComplete;
-                this.searchAutoComplete.setTag("BENGKEL");
+                this.searchAutoComplete.setTag("ALERT");
                 this.searchAutoComplete.setAdapter(autoCompleteAdapter());
                 this.searchAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
@@ -171,33 +167,21 @@ public class PartBengkel_PartHome_Fragment extends Fragment implements SearchLis
         }
     }
 
-    private void initRecylerviewPart(View view) {
-        rvPart = view.findViewById(R.id.recyclerView);
+    private void initRecylerviewPart() {
+        rvPart = fragmentView.findViewById(R.id.recyclerView);
         rvPart.setHasFixedSize(true);
         rvPart.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvPart.setAdapter(new NikitaRecyclerAdapter(partList, R.layout.item_daftar_cari_part) {
+        rvPart.setAdapter(new NikitaRecyclerAdapter(partList, R.layout.item_alert_part) {
             @SuppressLint("SetTextI18n")
             @Override
             public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
                 super.onBindViewHolder(viewHolder, position);
-                viewHolder.find(R.id.tv_cari_merkPart, TextView.class).setText(partList.get(position).get("MERK").asString());
-                viewHolder.find(R.id.tv_cari_namaPart, TextView.class).setText(partList.get(position).get("NAMA_PART").asString());
-                viewHolder.find(R.id.tv_cari_noPart, TextView.class).setText(partList.get(position).get("NO_PART").asString());
-                viewHolder.find(R.id.tv_cari_stockPart, TextView.class).setText(partList.get(position).get("STOCK_RUANG_PART").asString());
-
-                if (partList.get(position).get("HARGA_JUAL").asString().equals("FLEXIBLE")) {
-                    viewHolder.find(R.id.tv_cari_harga_part, TextView.class).setText("");
-                    viewHolder.find(R.id.tv_cari_hpp, TextView.class).setText(RP + NumberFormatUtils.formatRp(partList.get(position).get("HPP").asString()));
-                } else {
-                    viewHolder.find(R.id.tv_cari_harga_part, TextView.class).setText(RP + NumberFormatUtils.formatRp(partList.get(position).get("HARGA_JUAL").asString()));
-                    viewHolder.find(R.id.tv_cari_hpp, TextView.class).setText("");
-                }
-                if (!partList.get(position).get("LOKASI").asString().equals("*")) {
-                    viewHolder.find(R.id.tv_cari_pending, TextView.class).setText(partList.get(position).get("LOKASI").asString());
-                } else {
-                    viewHolder.find(R.id.tv_cari_pending, TextView.class).setText("");
-                }
-
+                viewHolder.find(R.id.tv_merk_part, TextView.class).setText(partList.get(position).get("MERK").asString());
+                viewHolder.find(R.id.tv_nama_part, TextView.class).setText(partList.get(position).get("NAMA_PART").asString());
+                viewHolder.find(R.id.tv_no_part, TextView.class).setText(partList.get(position).get("NO_PART").asString());
+                viewHolder.find(R.id.tv_stock_part, TextView.class).setText(partList.get(position).get("STOCK").asString());
+                viewHolder.find(R.id.tv_min_stock_part, TextView.class).setText(partList.get(position).get("STOCK_MINIMUM").asString());
+                viewHolder.find(R.id.tv_pembelian_terakhir, TextView.class).setText("");
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
@@ -218,7 +202,7 @@ public class PartBengkel_PartHome_Fragment extends Fragment implements SearchLis
                 args.put("action", "view");
                 args.put("spec", "Bengkel");
                 args.put("search", cari);
-                args.put("lokasi", ALL);
+                args.put("lokasi", "ALERT STOCK PART");
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SPAREPART), args));
             }
@@ -248,7 +232,7 @@ public class PartBengkel_PartHome_Fragment extends Fragment implements SearchLis
 
                 args.put("action", "view");
                 args.put("spec", "Bengkel");
-                args.put("lokasi", "ALL");
+                args.put("lokasi", "ALERT STOCK PART");
                 args.put("search", bookTitle);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SPAREPART), args));
@@ -260,7 +244,7 @@ public class PartBengkel_PartHome_Fragment extends Fragment implements SearchLis
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 if (convertView == null) {
-                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    LayoutInflater inflater = (LayoutInflater) Objects.requireNonNull(getActivity()).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     convertView = inflater.inflate(R.layout.item_suggestion, parent, false);
                 }
                 String search;
@@ -274,4 +258,5 @@ public class PartBengkel_PartHome_Fragment extends Fragment implements SearchLis
             }
         };
     }
+
 }

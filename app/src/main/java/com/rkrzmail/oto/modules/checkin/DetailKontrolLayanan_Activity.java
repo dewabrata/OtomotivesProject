@@ -34,6 +34,7 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.bengkel.AturUser_Activity;
+import com.rkrzmail.oto.modules.mekanik.PerintahKerjaMekanik_Activity;
 import com.rkrzmail.srv.NikitaMultipleViewAdapter;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
@@ -405,7 +406,8 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                     detailCheckinList.asArray().clear();
                     detailCheckinList.asArray().addAll(result.get("data").asArray());
                     for (int i = 0; i < detailCheckinList.size(); i++) {
-                        isKonfirmasiTambahan = detailCheckinList.get(i).get("STATUS_DETAIL").asString().equals("TAMBAH PART - JASA");
+                        isKonfirmasiTambahan = detailCheckinList.get(i).get("STATUS_DETAIL").asString().equals("TAMBAH PART") ||
+                                detailCheckinList.get(i).get("STATUS_DETAIL").asString().equals("TAMBAH JASA");
                         partCheckinList.add(Nson.newObject()
                                 .set("CHECKIN_DETAIL_ID", detailCheckinList.get(i).get("CHECKIN_DETAIL_ID"))
                                 .set("PART_ID", detailCheckinList.get(i).get("PART_ID"))
@@ -718,7 +720,11 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    showSuccess("Aktivitas Berhasil di Perbaharui");
+                    if(result.get("data").asString().equals("PENUGASAN MEKANIK")){
+                        Intent intent = new Intent(getActivity(), PerintahKerjaMekanik_Activity.class);
+                        showNotification(getActivity(), "PENUGASAN MEKANIK", formatNopol(etNopol.getText().toString()), "MEKANIK", intent);
+                    }
+                    showSuccess("AKTIVITAS BERHASIL DI PERBAHARUI");
                     setResult(RESULT_OK);
                     finish();
                 } else {

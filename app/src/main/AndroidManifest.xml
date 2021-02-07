@@ -499,7 +499,6 @@
                 <action android:name="com.nikita.generator.service" />
             </intent-filter>
         </receiver>
-
         <service
             android:name="com.rkrzmail.fcm.FCMMessagingService"
             tools:ignore="ExportedService">

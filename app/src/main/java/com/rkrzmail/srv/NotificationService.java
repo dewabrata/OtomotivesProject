@@ -29,12 +29,13 @@ import com.rkrzmail.oto.modules.mekanik.PerintahKerjaMekanik_Activity;
 import java.util.Map;
 import java.util.Random;
 
+import static com.rkrzmail.utils.APIUrls.ATUR_KONTROL_LAYANAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_PERINTAH_KERJA_MEKANIK;
 import static com.rkrzmail.utils.APIUrls.VIEW_TUGAS_PART;
 
 public class NotificationService extends Service {
 
-    private final long IDDLE_TIME = 2 * 60 * 1000; // 15 MINS IDLE TIME
+    private final long IDDLE_TIME = 2 * 60 * 1000; // 2 MINS IDLE TIME
     private final IBinder mBinder = new LocalBinder();
     private Handler handler;
     public static CountDownTimer refreshNotifications;
@@ -119,7 +120,7 @@ public class NotificationService extends Service {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PERINTAH_KERJA_MEKANIK), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_KONTROL_LAYANAN), args));
             }
 
             @Override

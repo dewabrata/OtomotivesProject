@@ -218,6 +218,8 @@
     <string name="hari_uppercase">HARI</string>
     <string name="default_number">NNN</string>
     <string name="jasa_part_uppercase">JASA PART</string>
+    <string name="min_stock">Min Stock</string>
+    <string name="penjualan_30_hari_terakhir">Penjualan 30 Hari Terakhir</string>
     <string-array name="pola_harga_jual">
         <item>FLEXIBLE</item>
         <item>BELI + MARGIN</item>

@@ -16,7 +16,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
@@ -138,7 +138,6 @@
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/btn_rounded_accent"
                 android:textColor="@android:color/white" />
-
 
             <LinearLayout
                 android:id="@+id/ly_dashboard"
@@ -851,6 +850,6 @@
 
         </LinearLayout>
 
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

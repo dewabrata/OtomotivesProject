@@ -18,6 +18,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.Fragment.AlertPart_PartHome_Fragment;
 import com.rkrzmail.srv.SearchListener;
 import com.rkrzmail.oto.modules.Fragment.FragmentsAdapter;
 import com.rkrzmail.oto.modules.Fragment.PartBengkel_PartHome_Fragment;
@@ -34,11 +35,10 @@ public class PartHome_MainTab_Activity extends AppActivity implements SearchView
 
     public static final String SEARCH_PART = "SEARCH PART";
     public static final String SEARCH_TAG = "SEARCH TAG";
+    public static final String TAB_POSITION = "TAB POSITION";
 
     private ViewPager vpPart;
-    private TabLayout tabPart;
     private FragmentsAdapter pagerAdapter;
-    private ArrayList<Fragment> fragments;
     private SearchView mSearchView;
 
     private final ArrayList<SearchListener.ISearch> iSearch = new ArrayList<>();
@@ -68,10 +68,11 @@ public class PartHome_MainTab_Activity extends AppActivity implements SearchView
     private void initComponent() {
         initToolbar();
         vpPart = findViewById(R.id.vp);
-        tabPart = findViewById(R.id.tablayout);
+        TabLayout tabPart = findViewById(R.id.tablayout);
 
-        fragments = new ArrayList<>();
+        ArrayList<Fragment> fragments = new ArrayList<>();
         fragments.add(new PartBengkel_PartHome_Fragment());
+        fragments.add(new AlertPart_PartHome_Fragment());
         fragments.add(new PartOto_PartHome_Fragment());
 
         pagerAdapter = new FragmentsAdapter(getSupportFragmentManager(), this, fragments);
@@ -106,10 +107,8 @@ public class PartHome_MainTab_Activity extends AppActivity implements SearchView
         searchAutoComplete.setDropDownBackgroundResource(R.drawable.bg_radius_white);
 
         for (SearchListener.ISearchAutoComplete autoComplete : searchAutoCompleteArrayList) {
-            autoComplete.attachAdapter(searchAutoComplete);
+            autoComplete.attachAdapter(searchAutoComplete, tabPosition);
         }
-
-        //adapterSearchView(mSearchView, "", VIEW_CARI_PART_SUGGESTION, "NAMA_PART", "OTO");
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -117,10 +116,10 @@ public class PartHome_MainTab_Activity extends AppActivity implements SearchView
     @Override
     public boolean onQueryTextSubmit(String queryText) {
         this.queryText = queryText;
-        pagerAdapter.setTextQueryChanged(queryText);
+        pagerAdapter.setTextQueryChanged(queryText, tabPosition);
 
         for (SearchListener.ISearch searchLocal : iSearch) {
-            searchLocal.onTextQuery(queryText);
+            searchLocal.onTextQuery(queryText, tabPosition);
         }
         return true;
     }
