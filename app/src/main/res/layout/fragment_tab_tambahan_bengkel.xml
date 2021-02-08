@@ -325,7 +325,7 @@
                         android:text="BIAYA TRANSPORT MIN"
                         android:textColor="@color/grey_900"
                         android:textSize="12sp"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
 
                     <android.support.design.widget.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -339,8 +339,8 @@
                             android:id="@+id/et_minDerek_tambahan"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:maxLength="11"
                             android:inputType="numberDecimal"
+                            android:maxLength="11"
                             android:textSize="14sp" />
 
                     </android.support.design.widget.TextInputLayout>
@@ -356,8 +356,8 @@
                             android:id="@+id/et_minLainnya_tambahan"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:maxLength="11"
                             android:inputType="numberDecimal"
+                            android:maxLength="11"
                             android:textSize="14sp" />
 
                     </android.support.design.widget.TextInputLayout>
@@ -395,8 +395,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:ems="10"
-                            android:maxLength="11"
                             android:inputType="numberDecimal"
+                            android:maxLength="11"
                             android:textSize="14sp" />
 
                     </android.support.design.widget.TextInputLayout>
@@ -415,8 +415,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:ems="10"
-                            android:maxLength="11"
                             android:inputType="numberDecimal"
+                            android:maxLength="11"
                             android:textSize="14sp" />
 
                     </android.support.design.widget.TextInputLayout>
@@ -436,8 +436,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:ems="10"
-                            android:maxLength="11"
                             android:inputType="numberDecimal"
+                            android:maxLength="11"
                             android:textSize="14sp" />
 
                     </android.support.design.widget.TextInputLayout>
@@ -456,8 +456,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:ems="10"
-                            android:maxLength="11"
                             android:inputType="numberDecimal"
+                            android:maxLength="11"
                             android:textSize="14sp" />
 
                     </android.support.design.widget.TextInputLayout>
@@ -513,8 +513,8 @@
                         android:layout_height="55dp"
                         android:layout_marginRight="5dp"
                         android:layout_weight="2"
-                        android:padding="2dp"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:padding="2dp">
 
                         <Spinner
                             android:id="@+id/sp_freesimpanan_tambahan"
@@ -522,11 +522,11 @@
                             android:layout_height="match_parent"
                             android:background="@drawable/border_solid"
                             android:entries="@array/number"
+                            android:gravity="center"
                             android:textAlignment="center"
                             android:textColor="@color/grey_900"
                             android:textSize="12sp"
-                            android:textStyle="bold"
-                            android:gravity="center"/>
+                            android:textStyle="bold" />
 
                     </RelativeLayout>
 
@@ -542,8 +542,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:ems="5"
-                            android:maxLength="11"
                             android:inputType="numberDecimal"
+                            android:maxLength="11"
                             android:textSize="14sp" />
 
                     </android.support.design.widget.TextInputLayout>

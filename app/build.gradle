@@ -43,6 +43,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:11.8.0'
     implementation 'com.google.android.gms:play-services-places:11.8.0'
 
+    implementation 'com.github.delight-im:Android-SimpleLocation:v1.0.1' //google maps
+
     // google gson --------------------------------------------------------------------------------
     implementation 'com.google.code.gson:gson:2.8.1'
 

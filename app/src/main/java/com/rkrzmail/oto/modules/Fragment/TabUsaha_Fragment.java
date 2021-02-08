@@ -26,6 +26,8 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
 import com.naa.utils.MessageMsg;
@@ -33,6 +35,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.MapPicker_Dialog;
 import com.rkrzmail.oto.modules.bengkel.Dashboard_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
 import com.rkrzmail.srv.MultiSelectionSpinner;
@@ -73,6 +76,9 @@ public class TabUsaha_Fragment extends Fragment {
             "JARINGAN",
             "INDIVIDUAL"
     );
+
+    private GoogleMap map;
+
 
 
     public TabUsaha_Fragment() {
@@ -117,7 +123,7 @@ public class TabUsaha_Fragment extends Fragment {
         btnLokasi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                new MapPicker_Dialog().show(getFragmentManager(),null);
             }
         });
 
@@ -308,5 +314,6 @@ public class TabUsaha_Fragment extends Fragment {
         int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
         return cursor.getString(idx);
     }
+
 
 }
