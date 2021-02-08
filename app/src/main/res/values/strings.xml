@@ -45,11 +45,14 @@
     <string name="nama_jaringan_uppercase">NAMA JARINGAN</string>
 
     <string name="jenis_kendaraan_uppercase">JENIS KENDARAAN</string>
+
     <string name="bidang_usaha_uppercase">BIDANG USAHA</string>
 
     <string name="jumlah_user_uppercase">JUMLAH USER</string>
 
     <string name="fasilitas_pelanggan_uppercase">FASILITAS PELANGGAN *</string>
+
+    <string name="merk_lkk_ippercase">MERK LKK WAJIB</string>
 
     <string name="booking_uppercase">BOOKING</string>
 
@@ -386,12 +389,6 @@
         <item>9</item>
         <item>10</item>
         <item></item>
-    </string-array>
-    <string-array name="luar_bengkel">
-        <item>HOME</item>
-        <item>ANTAR - JEMPUT</item>
-        <item>EMERGENCY</item>
-        <item>DEREK</item>
     </string-array>
     <string-array name="ya_tidak">
         <item>TIDAK</item>
