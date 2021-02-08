@@ -84,6 +84,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
     private int totalBiaya = 0;
     private int totalTambah = 0;
     private int totalBatal = 0, countBatal = 0;
+    private int countClick = 0;
 
     private boolean isWait = false, isPartKosong = false, isBatal = false, isTambah = false, isNotWait = false;
     private boolean isSign = false;
@@ -423,6 +424,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                 startActivityForResult(i, REQUEST_CARI_PART);
                 break;
             case R.id.btn_simpan:
+                countClick++;
                 if (isWait && !isSign) {
                     showWarning("TANDA TANGAN BELUM TERISI");
                 } else if (find(R.id.ly_not_konfirmasi_tambah).getVisibility() == View.VISIBLE &&
@@ -432,7 +434,12 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                 } else if (partList.asArray().isEmpty() && jasaList.asArray().isEmpty()) {
                     showWarning("PART DAN JASA BELUM DI TAMBAHKAN");
                 } else {
-                    updateTambahOrBatal();
+                    if(countClick == 1){
+                        updateTambahOrBatal();
+                    }else{
+                        setResult(RESULT_OK);
+                        finish();
+                    }
                 }
                 break;
             case R.id.img_btn_kalender_konfirmasi:

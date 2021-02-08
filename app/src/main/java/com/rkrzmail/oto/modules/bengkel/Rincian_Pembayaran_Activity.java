@@ -76,7 +76,6 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             ket = "",
             catatanMekanik = "", merkKendaraan = "";
     private String idCheckin = "", idJualPart = "";
-    private String noBuktiBayar = "";
     private String tglLayanan = "", noKunci = "";
     private int maxFreePenyimpanan = 0;
     private int partId = 0, dataKendaraanId = 0;
@@ -224,11 +223,6 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         tglLayanan = data.get("TANGGAL_CHECKIN").asString();
         merkKendaraan = data.get("MERK").asString();
         noKunci = data.get("NO_KUNCI").asString();
-        noBuktiBayar = data.get("NO_BUKTI_BAYAR").asString();
-        if (noBuktiBayar.length() > 1) {
-            String[] split = noBuktiBayar.split("-");
-            noBuktiBayar = split[split.length - 1];
-        }
     }
 
 
@@ -264,7 +258,6 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         sendData.set("SISA_DP", sisaBiayaDp);
         sendData.set("TOTAL_DP", totalDp);
         sendData.set("NO_KUNCI", noKunci);
-        sendData.set("NO_BUKTI_BAYAR", Integer.parseInt(noBuktiBayar) + 1);
         sendData.set("PELUNASAN_SISA_BIAYA", !isDp & totalDp > 0 ? "Y" : "N");
         sendData.set("TOTAL", isBatal ? 0 : isDp ? totalDp : total1);
         sendData.set("GRAND_TOTAL", total2);

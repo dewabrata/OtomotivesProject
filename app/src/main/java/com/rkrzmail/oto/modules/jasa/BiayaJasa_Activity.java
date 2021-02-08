@@ -37,7 +37,8 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
     private String hari = "", jam = "", menit = "";
     private String inspeksiJam = "", inspeksiMenit = "";
     private String inspeksi = "";
-    private String berkalaKm = "", berkalaBulan = "";
+    private int berkalaKm = 0;
+    private int berkalaBulan = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +85,15 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
             } else {
                 inspeksi = "N";
             }
-            berkalaKm = n.get("BERKALA_KM").asString();
-            berkalaBulan = n.get("BERKALA_BULAN").asString();
+
+            int kmKendaraan = getIntentIntegerExtra("KM");
+            try{
+                berkalaKm = n.get("KM").asInteger() + kmKendaraan;
+                berkalaBulan = n.get("BULAN").asInteger();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
             etKelompokPart.setText(n.get("KELOMPOK_PART").asString());
             etAktivitas.setText(n.get("AKTIVITAS").asString());
             etAktivitas.setEnabled(false);
@@ -97,20 +105,20 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
                     if (etBiaya.getText().toString().isEmpty()) {
                         etBiaya.setError("BIAYA JASA HARUS DI ISI");
                         etBiaya.requestFocus();
-                    }else if(etWaktuKerja.getText().toString().equals(getResources().getString(R.string._00_00_00))) {
+                    } else if (etWaktuKerja.getText().toString().equals(getResources().getString(R.string._00_00_00))) {
                         etWaktuKerja.setError("WAKTU KERJA HARUS DI ISI");
                         etWaktuKerja.requestFocus();
-                    }else {
+                    } else {
                         Nson nson = Nson.newObject();
                         double discJasa = 0;
                         int net;
                         if (find(R.id.et_discJasa, EditText.class).getVisibility() == View.VISIBLE) {
-                            try{
+                            try {
                                 discJasa = Double.parseDouble(find(R.id.et_discJasa, EditText.class).getText().toString()
                                         .replace("%", "")
                                         .replace(",", ".").trim());
                                 discJasa = calculatePercentage(discJasa, Integer.parseInt(formatOnlyNumber(etBiaya.getText().toString())));
-                            }catch (NumberFormatException e){
+                            } catch (NumberFormatException e) {
                                 e.printStackTrace();
                             }
                             net = (int) (Integer.parseInt(formatOnlyNumber(etBiaya.getText().toString())) - discJasa);
@@ -140,7 +148,7 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
                         nson.set("WAKTU_INSPEKSI_JAM", inspeksiJam);
                         nson.set("WAKTU_INSPEKSI_MENIT", inspeksiMenit);
                         nson.set("BERKALA_KM", berkalaKm);
-                        nson.set("BERKALA_BULAN", berkalaBulan);
+                        nson.set("BERKALA_BULAN", getBerkalaBulan(berkalaBulan));
 
                         Intent intent = new Intent();
                         intent.putExtra(DATA, nson.toJson());
@@ -191,7 +199,7 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
     private void initListener() {
         find(R.id.ly_waktu_inspeksi).setVisibility(View.GONE);
         find(R.id.img_clear, ImageButton.class).setVisibility(View.GONE);
-        etBiaya.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etBiaya,  find(R.id.img_clear, ImageButton.class)));
+        etBiaya.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etBiaya, find(R.id.img_clear, ImageButton.class)));
         find(R.id.img_clear, ImageButton.class).setOnClickListener(this);
         find(R.id.btn_img_waktu_kerja).setOnClickListener(this);
         find(R.id.btn_img_waktu_inspeksi).setOnClickListener(this);
@@ -208,14 +216,43 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
                 getTimesDialog(find(R.id.et_waktuSet, EditText.class));
                 break;
             case R.id.btn_img_waktu_inspeksi:
-                if(inspeksi.equals("Y")){
+                if (inspeksi.equals("Y")) {
                     getTimesDialog(find(R.id.et_waktu_set_inspeksi, EditText.class));
-                }else{
+                } else {
                     showWarning("Jasa Lain Tidak Perlu INSPEKSI");
                 }
                 break;
         }
     }
+
+    @SuppressLint("DefaultLocale")
+    private String getBerkalaBulan(int berkalaBulan) {
+        if (berkalaBulan == 0) return "";
+        String nows = currentDateTime("dd/MM/yyyy");
+        String[] split = nows.split("/");
+
+        int day = Integer.parseInt(split[0]);
+        int month = Integer.parseInt(split[1]);
+        int year = Integer.parseInt(split[2]);
+
+        if (berkalaBulan >= 12) {
+            berkalaBulan = berkalaBulan - 12;
+            year += 1;
+        }
+
+        month += berkalaBulan;
+        if (month >= 12) {
+            month -= 12;
+            year += 1;
+            if (month >= 12) {
+                month -= 12;
+                year += 1;
+            }
+        }
+
+        return String.format("%02d/%02d/%02d", day, month, year);
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

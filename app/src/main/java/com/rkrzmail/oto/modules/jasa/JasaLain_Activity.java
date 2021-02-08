@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -105,6 +106,7 @@ public class JasaLain_Activity extends AppActivity {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
                 Intent intent = new Intent(getActivity(), BiayaJasa_Activity.class);
+                intent.putExtra("KM", getIntentIntegerExtra("KM"));
                 intent.putExtra(DATA, parent.get(position).toJson());
                 intent.putExtra(JASA_LAIN, Nson.readJson(getIntentStringExtra(JASA_LAIN)).toJson());
                 Log.d("JASA_LAIN_CLASS", "JASA : " + parent);
@@ -113,6 +115,12 @@ public class JasaLain_Activity extends AppActivity {
             }
         }));
 
+        find(R.id.swiperefresh, SwipeRefreshLayout.class).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                catchData("");
+            }
+        });
         catchData("");
     }
 
@@ -122,6 +130,7 @@ public class JasaLain_Activity extends AppActivity {
 
             @Override
             public void run() {
+                swipeProgress(true);
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 args.put("flag", "ALL");
@@ -136,6 +145,7 @@ public class JasaLain_Activity extends AppActivity {
             @SuppressLint("NewApi")
             @Override
             public void runUI() {
+                swipeProgress(false);
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());

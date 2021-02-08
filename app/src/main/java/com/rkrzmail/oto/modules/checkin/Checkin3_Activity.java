@@ -97,8 +97,8 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
     private final Nson layananAFSHistory = Nson.newArray();
     private final Nson layananArray = Nson.newArray();
     private final Nson dataLayananList = Nson.newArray();
-    private final Nson partList = Nson.newArray();
-    private final Nson jasaList = Nson.newArray();
+    private Nson partList = Nson.newArray();
+    private Nson jasaList = Nson.newArray();
     private final Nson lokasiLayananList = Nson.newArray();
     private final Nson partWajibList = Nson.newArray();
     private final Nson jasaGaransiList = Nson.newArray();
@@ -474,6 +474,8 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 args.put("dp", dp);
                 args.put("sisa", sisa);
                 args.put("tunggu", tungguKonfirmasi);
+                //jasaList = Tools.removeDuplicates(jasaList);
+                //partList = Tools.removeDuplicates(partList);
                 args.put("partbook", partList.toJson());
                 args.put("jasabook", jasaList.toJson());
                 args.put("antrian", find(R.id.tv_jenis_antrian, TextView.class).getText().toString());
@@ -955,6 +957,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 if (jasaList.size() > 0) {
                     i.putExtra(JASA_LAIN, jasaList.toJson());
                 }
+                i.putExtra("KM", kmKendaraan);
                 startActivityForResult(i, REQUEST_JASA_LAIN);
                 break;
             case R.id.btn_sparePart_checkin3:

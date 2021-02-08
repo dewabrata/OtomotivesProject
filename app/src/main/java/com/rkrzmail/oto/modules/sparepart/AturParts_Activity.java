@@ -196,13 +196,13 @@ public class AturParts_Activity extends AppActivity {
                 String item = adapterView.getItemAtPosition(i).toString();
                 if (item.equalsIgnoreCase("NOMINAL")) {
                     find(R.id.tl_margin, TextInputLayout.class).setVisibility(View.VISIBLE);
-                    find(R.id.et_hargaJual_part, EditText.class).setHint("HARGA");
+                    find(R.id.tl_margin, TextInputLayout.class).setHint("HARGA");
                 } else if (item.equalsIgnoreCase("HET")) {
                     find(R.id.tl_margin, TextInputLayout.class).setVisibility(View.GONE);
                     find(R.id.et_hargaJual_part, EditText.class).setText("");
                 } else {
                     find(R.id.tl_margin, TextInputLayout.class).setVisibility(View.VISIBLE);
-                    find(R.id.et_hargaJual_part, EditText.class).setHint("MARGIN");
+                    find(R.id.tl_margin, TextInputLayout.class).setHint("MARGIN");
                 }
             }
 

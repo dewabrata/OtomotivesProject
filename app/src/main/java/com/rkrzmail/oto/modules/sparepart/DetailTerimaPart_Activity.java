@@ -23,6 +23,7 @@ import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
 import java.util.Map;
+import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.VIEW_TERIMA_PART;
 import static com.rkrzmail.utils.ConstUtils.PART;
@@ -37,18 +38,18 @@ public class DetailTerimaPart_Activity extends AppActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_terima_part_);
+        initToolbar();
         initComponent();
     }
 
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Detail Terima Part");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Detail Terima Part");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initComponent() {
-        initToolbar();
         etNamaSup = findViewById(R.id.et_namaSup_terimaPart);
         etUser = findViewById(R.id.et_user_terimaPart);
         etTglTerima = findViewById(R.id.et_tglTerima_terimaPart);
@@ -57,7 +58,7 @@ public class DetailTerimaPart_Activity extends AppActivity {
         etPembayaran = findViewById(R.id.et_pembayaran_terimaPart);
         etInv = findViewById(R.id.et_tempoInv_terimaPart);
         etOngkir = findViewById(R.id.et_ongkir_terimaPart);
-        rvTerimaPart = findViewById(R.id.recyclerView_detailTerimaPart);
+        rvTerimaPart = findViewById(R.id.recyclerView);
         etNoSupplier = findViewById(R.id.et_noSup_terimaPart);
 
         loadData();
@@ -72,7 +73,7 @@ public class DetailTerimaPart_Activity extends AppActivity {
             etNoSupplier.setVisibility(View.GONE);
         }
         String noHp = "";
-        if(!data.get("NO_PONSEL_SUPPLIER").asString().contains("+")){
+        if(!data.get("NO_PONSEL_SUPPLIER").asString().startsWith("+")){
             noHp = "+" + data.get("NO_PONSEL_SUPPLIER").asString();
         }
         etNamaSup.setText(data.get("NAMA_SUPPLIER").asString());

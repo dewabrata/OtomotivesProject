@@ -467,7 +467,6 @@ public class AturPembayaran_Activity extends AppActivity {
                 args.put("sisaBiaya", isDp ? String.valueOf(sisaBiayaDp) : data.get("SISA_BIAYA").asString());
                 args.put("biayaSimpan", data.get("BIAYA_SIMPAN").asString());
                 args.put("discountSpot", data.get("DISC_SPOT").asString());
-                args.put("noBuktiBayar", currentDateTime() + "-" + data.get("NO_BUKTI_BAYAR").asString());
                 args.put("biayaJasaPart", data.get("HARGA_JASA_PART").asString());
                 args.put("discountJasaPart", data.get("DISC_JASA_PART").asString());
                 args.put("netJasaPart", data.get("HARGA_JASA_PART_NET").asString());

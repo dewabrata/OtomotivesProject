@@ -339,7 +339,6 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("CID", "kosong");
                 args.put("flag", "Merk");
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_JENIS_KENDARAAN), args));
             }

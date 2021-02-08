@@ -265,9 +265,10 @@ public class InternetX {
                         inputStream = con.getInputStream();
                     }*/
                     BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+                    sb.append(HttpResult);
                     String line = null;
                     while ((line = br.readLine()) != null) {
-                        sb.append(line + "\n");
+                        sb.append(line).append("\n");
                     }
                     br.close();
                     return sb.toString();

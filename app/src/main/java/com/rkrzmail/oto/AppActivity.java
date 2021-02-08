@@ -39,6 +39,7 @@ import android.text.Editable;
 import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -87,6 +88,7 @@ import java.util.Random;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static com.rkrzmail.utils.APIUrls.VIEW_JASA_LAIN;
 import static com.rkrzmail.utils.APIUrls.VIEW_LAYANAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_LOKASI_PART;
 import static com.rkrzmail.utils.APIUrls.VIEW_SPAREPART;
@@ -605,12 +607,12 @@ public class AppActivity extends AppCompatActivity {
 
 
     public void adapterSearchView(final android.support.v7.widget.SearchView searchView, final String arguments, final String api, final String jsonObject, final String flag) {
+        final boolean[] isNoPart = new boolean[1];
+        final boolean[] isJasaLain = new boolean[1];
         final SearchView.SearchAutoComplete searchAutoComplete = searchView.findViewById(R.id.search_src_text);
         searchAutoComplete.setDropDownBackgroundResource(R.drawable.bg_radius_white);
         searchAutoComplete.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
             Nson result;
-            boolean isNoPart;
-
             @Override
             public Nson onFindNson(Context context, String bookTitle) {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -625,7 +627,9 @@ public class AppActivity extends AppCompatActivity {
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(api), args));
                 result = result.get("data");
-                isNoPart = (
+                result = Tools.removeDuplicates(result);
+                isJasaLain[0] = api.equals(VIEW_JASA_LAIN) & result.get(0).get("AKTIVITAS").asString().toLowerCase().contains(bookTitle);
+                isNoPart[0] = (
                                 api.equals(VIEW_SPAREPART) |
                                 api.equals(VIEW_SUGGESTION) |
                                 api.equals(VIEW_LOKASI_PART)
@@ -640,20 +644,24 @@ public class AppActivity extends AppCompatActivity {
                     convertView = inflater.inflate(R.layout.item_suggestion, parent, false);
                 }
                 String search;
-                if (isNoPart) {
+                if (isNoPart[0]) {
                     search = getItem(position).get("NO_PART").asString();
                 } else {
-                    if (!getItem(position).containsKey("NAMA_LAIN")) {
-                        if (getItem(position).containsKey("NOPOL")) {
-                            search = formatNopol(getItem(position).get(jsonObject).asString());
+                    if(isJasaLain[0]){
+                        search = getItem(position).get("AKTIVITAS").asString();
+                        Log.d("jasa__", "getView: " + "aktivitas");
+                    }else{
+                        if (!getItem(position).containsKey("NAMA_LAIN")) {
+                            if (getItem(position).containsKey("NOPOL")) {
+                                search = formatNopol(getItem(position).get(jsonObject).asString());
+                            } else {
+                                search = getItem(position).get(jsonObject).asString();
+                            }
                         } else {
                             search = getItem(position).get(jsonObject).asString();
                         }
-                    } else {
-                        search = getItem(position).get(jsonObject).asString();
                     }
                 }
-
 
                 findView(convertView, R.id.title, TextView.class).setText(search);
                 return convertView;
@@ -663,7 +671,16 @@ public class AppActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(i)));
-                String object = n.get(jsonObject).asString();
+                String object;
+                if (isNoPart[0]) {
+                    object = n.get("NO_PART").asString();
+                }else{
+                    if(isJasaLain[0]){
+                        object = n.get("AKTIVITAS").asString();
+                    }else{
+                        object = n.get(jsonObject).asString();
+                    }
+                }
                 find(R.id.search_src_text, SearchView.SearchAutoComplete.class).setText(object);
                 find(R.id.search_src_text, SearchView.SearchAutoComplete.class).setTag(String.valueOf(adapterView.getItemAtPosition(i)));
                 searchView.setQuery(object, true);

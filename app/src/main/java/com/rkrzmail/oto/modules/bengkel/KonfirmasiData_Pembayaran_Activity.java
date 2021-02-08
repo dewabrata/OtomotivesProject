@@ -15,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -128,7 +129,11 @@ public class KonfirmasiData_Pembayaran_Activity extends AppActivity {
                     setResult(RESULT_OK, i);
                     finish();
                 } else {
-                    showWarning(ERROR_INFO);
+                    if(result.get("message").asString().contains("Duplicate")){
+                        showWarning("NO PONSEL PELANGGAN SUDAH TERDAFTAR", Toast.LENGTH_LONG);
+                    }else{
+                        showWarning(ERROR_INFO);
+                    }
                 }
             }
         });

@@ -43,13 +43,13 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
     private EditText etHpp, etHargaJual, etDiscPart, etBiayaJasa, etDiscJasa, etDp, etWaktuPesan, etJumlah;
 
     private final Nson sendData = Nson.newObject();
-
     private boolean isFlexible = false, isPartKosong = false, isPartWajib = false, isTambahPart = false;
+    private double discPart = 0, discFasilitas = 0;
+
     private String idLokasiPart = "", hpp = "";
     private String inspeksi = "", garansiPart = "";
-    private int stock = 0;
+    private int stock = 0, countClick = 0;
     private int berkalaKm = 0, berkalaBulan = 0, kmKendaraan = 0, batasanGaransiKm = 0, batasanGaransiBulan = 0;
-    private double discPart = 0, discFasilitas = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,33 +170,39 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
             find(R.id.btn_simpan_jumlah_harga_part, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (find(R.id.ly_hpp_jumlah_harga_part, TextInputLayout.class).getVisibility() == View.VISIBLE) {
-                        if (etHargaJual.isEnabled()) {
-                            if (!etHargaJual.getText().toString().isEmpty() && !etHpp.getText().toString().isEmpty()) {
-                                int hppPart = Integer.parseInt(formatOnlyNumber(etHpp.getText().toString()));
-                                int hargaJualPart = Integer.parseInt(formatOnlyNumber(etHargaJual.getText().toString()));
-                                if (hargaJualPart < hppPart) {
-                                    Messagebox.showDialog(getActivity(), "Konfirmasi", "Harga Jual Kurang Dari Hpp Part", "Lanjut", "Batal", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            nextForm(nson);
-                                        }
-                                    }, new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            etHargaJual.setText("");
-                                            etHargaJual.requestFocus();
-                                        }
-                                    });
+                    countClick++;
+                    if(countClick == 1){
+                        if (find(R.id.ly_hpp_jumlah_harga_part, TextInputLayout.class).getVisibility() == View.VISIBLE) {
+                            if (etHargaJual.isEnabled()) {
+                                if (!etHargaJual.getText().toString().isEmpty() && !etHpp.getText().toString().isEmpty()) {
+                                    int hppPart = Integer.parseInt(formatOnlyNumber(etHpp.getText().toString()));
+                                    int hargaJualPart = Integer.parseInt(formatOnlyNumber(etHargaJual.getText().toString()));
+                                    if (hargaJualPart < hppPart) {
+                                        Messagebox.showDialog(getActivity(), "Konfirmasi", "Harga Jual Kurang Dari Hpp Part", "Lanjut", "Batal", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                nextForm(nson);
+                                            }
+                                        }, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                etHargaJual.setText("");
+                                                etHargaJual.requestFocus();
+                                            }
+                                        });
+                                    } else {
+                                        nextForm(nson);
+                                    }
                                 } else {
-                                    nextForm(nson);
+                                    etHargaJual.setError("Harga Jual Flexible, Harus Di isi");
                                 }
-                            } else {
-                                etHargaJual.setError("Harga Jual Flexible, Harus Di isi");
                             }
+                        }else {
+                            nextForm(nson);
                         }
-                    }else {
-                        nextForm(nson);
+                    }else{
+                        setResult(RESULT_OK);
+                        finish();
                     }
                 }
             });
@@ -374,6 +380,7 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
         find(R.id.btn_simpan_jumlah_harga_part, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                countClick++;
                 if (find(R.id.et_waktuSet, EditText.class).getText().toString().equals(getResources().getString(R.string._00_00_00))) {
                     find(R.id.et_waktuSet, EditText.class).requestFocus();
                     showWarning("Waktu Kerja Harus di Isi");
@@ -418,7 +425,12 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
                         }
                     }
                 } else {
-                    nextForm(nson);
+                    if(countClick == 1){
+                        nextForm(nson);
+                    }else{
+                        setResult(RESULT_OK);
+                        finish();
+                    }
                 }
             }
         });
@@ -486,7 +498,7 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
             sendData.set("DISCOUNT_PART", discPart);
         }
         sendData.set("BERKALA_KM", berkalaKm);
-        sendData.set("BERKALA_BULAN", berkalaBulan);
+        sendData.set("BERKALA_BULAN", getBerkalaBulan(berkalaBulan));
         sendData.set("WAKTU_INSPEKSI", find(R.id.et_waktu_set_inspeksi, EditText.class).getText().toString());
         sendData.set("WAKTU_KERJA", find(R.id.et_waktuSet, EditText.class).getText().toString());
         if(kmKendaraan < batasanGaransiKm){
@@ -586,6 +598,34 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
                 getTimesDialog(find(R.id.et_waktuSet, EditText.class));
                 break;
         }
+    }
+
+    @SuppressLint("DefaultLocale")
+    private String getBerkalaBulan(int berkalaBulan){
+        if(berkalaBulan == 0) return "";
+        String nows = currentDateTime("dd/MM/yyyy");
+        String[] split = nows.split("/");
+
+        int day = Integer.parseInt(split[0]);
+        int month = Integer.parseInt(split[1]);
+        int year = Integer.parseInt(split[2]);
+
+        if(berkalaBulan >= 12){
+            berkalaBulan = berkalaBulan - 12;
+            year += 1;
+        }
+
+        month += berkalaBulan;
+        if(month >= 12){
+            month -= 12;
+            year += 1;
+            if(month >= 12){
+                month -= 12;
+                year += 1;
+            }
+        }
+
+        return String.format("%02d/%02d/%02d", day, month, year);
     }
 
     @Override
