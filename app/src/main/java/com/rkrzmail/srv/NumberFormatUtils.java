@@ -88,6 +88,37 @@ public class NumberFormatUtils {
         };
     }
 
+    public TextWatcher rupiahTextWatcher(final EditText editText, final EditText enabled) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                enabled.setEnabled(true);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String s = editable.toString();
+                if (s.isEmpty()) return;
+                editText.removeTextChangedListener(this);
+                try {
+                    String cleanString = formatOnlyNumber(s);
+                    String formatted = RP + formatRp(cleanString);
+                    editText.setText(formatted);
+                    editText.setSelection(formatted.length());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                editText.addTextChangedListener(this);
+            }
+        };
+    }
+
 
     public TextWatcher percentTextWatcher(final EditText editText) {
         return new TextWatcher() {

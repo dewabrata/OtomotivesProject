@@ -103,9 +103,11 @@ public class TabSchedule_Fragment extends Fragment implements View.OnClickListen
         lyLib = view.findViewById(R.id.ly_l_schedule);
         frameSchedule = view.findViewById(R.id.frame_schedule);
         spTipeLayanan = view.findViewById(R.id.sp_tipe_schedule);
-        loadData();
+        //loadData();
         listener();
 
+        final String[] tipe = getResources().getStringArray(R.array.tipe_schedule);
+        activity.setSpinnerOffline(Arrays.asList(tipe), spTipeLayanan, "");
 
         btnSimpan.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("NewApi")
@@ -121,6 +123,10 @@ public class TabSchedule_Fragment extends Fragment implements View.OnClickListen
     }
 
     private void saveData() {
+        final String tipe = spTipeLayanan.getSelectedItem().toString();
+        if (tipe.contains("--PILIH--")) {
+            tipe.replace("--PILIH--", "");
+        }
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
@@ -243,6 +249,11 @@ public class TabSchedule_Fragment extends Fragment implements View.OnClickListen
     }
 
     private void listener() {
+        cbSeninJumat.setChecked(true);
+        cbJumat.setChecked(true);
+        cbSabtu.setChecked(true);
+        cbMingu.setChecked(true);
+        cbLibur.setChecked(true);
         cbSeninJumat.setOnCheckedChangeListener(this);
         cbJumat.setOnCheckedChangeListener(this);
         cbSabtu.setOnCheckedChangeListener(this);

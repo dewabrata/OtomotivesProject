@@ -1,7 +1,13 @@
 package com.rkrzmail.oto.modules.Fragment;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,10 +21,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
 import com.naa.utils.MessageMsg;
@@ -26,13 +35,17 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.MapPicker_Dialog;
 import com.rkrzmail.oto.modules.bengkel.Dashboard_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
 import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.utils.Tools;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -46,23 +59,26 @@ import static com.rkrzmail.utils.Tools.setFormatDayAndMonthToDb;
 
 public class TabUsaha_Fragment extends Fragment {
 
+    private static final int REQUEST_PHOTO = 80;
+    private static final int REQUEST_LOGO = 81;
     private EditText etNamaBengkel, etAlamat, etBadanUsaha, etKotaKab, etNoponsel, etNib, etNpwp, etKodePos, etnoPhoneMessage;
     private Spinner spAfiliasi, spPrincial;
     private MultiSelectionSpinner spJenisKendaraan,spMerkKendaraan,spBidangUsaha;
     private Button btnSimpan, btnLokasi;
     private CheckBox cbPkp;
-    private Nson merkKendaraanList = Nson.newArray(), bidangUsahaList  = Nson.newArray(), principalList = Nson.newArray();
+    private ImageView uploadLogo, uploadTampakdepan;
+    private String fotoLogo="", fotoTampakDepan="";
+    private Nson principalList = Nson.newArray();
     private AppActivity activity;
-    private final List<String> jenisKendaraanList = Arrays.asList(
-            "--PILIH--",
-            "MOTOR",
-            "MOBIL"
-    );
+
     private final List<String> afiliasiList = Arrays.asList(
             "--PILIH--",
             "JARINGAN",
             "INDIVIDUAL"
     );
+
+    private GoogleMap map;
+
 
 
     public TabUsaha_Fragment() {
@@ -98,6 +114,8 @@ public class TabUsaha_Fragment extends Fragment {
         btnSimpan = v.findViewById(R.id.btn_simpan_usaha);
         btnLokasi = v.findViewById(R.id.btn_lokasi_tambahan);
         cbPkp = v.findViewById(R.id.cb_pkp_usaha);
+        uploadLogo = v.findViewById(R.id.imgBtn_upload);
+        uploadTampakdepan = v.findViewById(R.id.img_logoDepan_usaha);
 
         activity.setSpinnerOffline(afiliasiList, spAfiliasi,"");
         setSpNamaPrincipal("");
@@ -105,7 +123,21 @@ public class TabUsaha_Fragment extends Fragment {
         btnLokasi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                new MapPicker_Dialog().show(getFragmentManager(),null);
+            }
+        });
 
+        uploadTampakdepan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getImageFromAlbum(REQUEST_PHOTO);
+            }
+        });
+
+        uploadLogo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getImageFromAlbum(REQUEST_LOGO);
             }
         });
 
@@ -132,8 +164,10 @@ public class TabUsaha_Fragment extends Fragment {
                 args.put("npwp", etNpwp.getText().toString().toUpperCase());
                 args.put("pkp", cbPkp.isChecked() ? "Y" : "N");
                 args.put("afliasi", spAfiliasi.getSelectedItem().toString());
+                args.put("namaPrincipial", spPrincial.getSelectedItem().toString());
                 args.put("noTelp", etNoponsel.getText().toString().toUpperCase());
                 args.put("hpMessage", etnoPhoneMessage.getText().toString().toUpperCase());
+                args.put("logo", fotoLogo);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PROFILE), args));
             }
@@ -150,10 +184,10 @@ public class TabUsaha_Fragment extends Fragment {
     }
 
     private void viewprofileusaha(){
-        activity.newProses(new Messagebox.DoubleRunnable() {
+        MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
+            List<String> jenisKendaraanList = new ArrayList<>(), merkKendaraanList = new ArrayList<>(),
+                    bidangUsahaList = new ArrayList<>();
             Nson result;
-            List<String> jenisList = new ArrayList<>(), merkList = new ArrayList<>(),
-            bidangList = new ArrayList<>();
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -170,19 +204,14 @@ public class TabUsaha_Fragment extends Fragment {
                     for (int i = 0; i < result.size(); i++) {
                         etNamaBengkel.setText(result.get(i).get("NAMA_BENGKEL").asString());
                         etAlamat.setText(result.get(i).get("ALAMAT").asString());
-                        etKodePos.setText(result.get(i).get("KODE_POS").asString());
                         etKotaKab.setText(result.get(i).get("KOTA_KABUPATEN").asString());
-                        etBadanUsaha.setText(result.get(i).get("NAMA_USAHA").asString());
-                        jenisList.add(result.get(i).get("JENIS_KENDARAAN").asString());
-                        merkList.add(result.get(i).get("MERK_KENDARAAN").asString());
-                        bidangList.add(result.get(i).get("KATEGORI_BENGKEL").asString());
+                        jenisKendaraanList.add(result.get(i).get("JENIS_KENDARAAN").asString());
+                        merkKendaraanList.add(result.get(i).get("MERK_KENDARAAN").asString());
+                        bidangUsahaList.add(result.get(i).get("KATEGORI_BENGKEL").asString());
 
-
-
-                        setJenisKendaraan(jenisList);
-                        setMerkKendaraan(merkList);
-                        setSpBidangUsaha(bidangList);
-
+                        setJenisKendaraan(jenisKendaraanList);
+                        setMerkKendaraan(merkKendaraanList);
+                        setSpBidangUsaha(bidangUsahaList);
                     }
                 } else {
                     activity.showInfo(result.get("message").asString());
@@ -240,5 +269,51 @@ public class TabUsaha_Fragment extends Fragment {
             }
         });
     }
+
+    private void getImageFromAlbum(final int REQUEST) {
+        try {
+            Intent i = new Intent(Intent.ACTION_PICK);
+            i.setType("image/*");
+            startActivityForResult(i, REQUEST);
+        } catch (Exception exp) {
+            Log.i("Error", exp.toString());
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == REQUEST_LOGO) {
+            final Uri imageUri = data.getData();
+            try {
+                InputStream imageStream = activity.getContentResolver().openInputStream(imageUri);
+                Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                selectedImage = Tools.getResizedBitmap(selectedImage, 400);
+                fotoLogo = getRealPathFromURI(imageUri);
+                uploadLogo.setImageBitmap(selectedImage);
+            } catch (FileNotFoundException f) {
+                activity.showError("Fail" + f.getMessage());
+            }
+        }else if(resultCode == RESULT_OK && requestCode == REQUEST_PHOTO){
+            final Uri imageUri = data.getData();
+            try {
+                InputStream imageStream = activity.getContentResolver().openInputStream(imageUri);
+                Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                selectedImage = Tools.getResizedBitmap(selectedImage, 400);
+                fotoTampakDepan = getRealPathFromURI(imageUri);
+                uploadTampakdepan.setImageBitmap(selectedImage);
+            } catch (FileNotFoundException f) {
+                activity.showError("Fail" + f.getMessage());
+            }
+        }
+    }
+
+    public String getRealPathFromURI(Uri uri) {
+        Cursor cursor = activity.getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+        return cursor.getString(idx);
+    }
+
 
 }

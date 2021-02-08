@@ -65,6 +65,7 @@ import com.naa.data.UtilityAndroid;
 import com.naa.utils.InternetX;
 import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
+import com.rkrzmail.oto.modules.TimeHourPicker_Dialog;
 import com.rkrzmail.oto.modules.TimePicker_Dialog;
 import com.rkrzmail.oto.modules.YearPicker_Dialog;
 import com.rkrzmail.srv.MultiSelectionSpinner;
@@ -913,6 +914,23 @@ public class AppActivity extends AppCompatActivity {
             @Override
             public void getTime(int day, int hours, int minutes) {
                 ddHHmm.setText(String.format("%02d", day) + ":" + String.format("%02d", hours) + ":" + String.format("%02d", minutes));
+            }
+
+            @Override
+            public void getYear(int year) {
+
+            }
+        });
+    }
+
+    public void getTimeHourDialog(final EditText ddHHmm) {
+        TimeHourPicker_Dialog timePickerDialog = new TimeHourPicker_Dialog();
+        timePickerDialog.show(getSupportFragmentManager(), "TimePicker");
+        timePickerDialog.getTimes(new TimeHourPicker_Dialog.OnClickDialog() {
+            @SuppressLint({"DefaultLocale", "SetTextI18n"})
+            @Override
+            public void getTime(int hours, int minutes) {
+                ddHHmm.setText(String.format("%02d", hours) + ":" + String.format("%02d", minutes));
             }
 
             @Override

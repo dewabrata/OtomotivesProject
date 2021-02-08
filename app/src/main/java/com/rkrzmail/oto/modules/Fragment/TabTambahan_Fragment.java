@@ -33,15 +33,20 @@ import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
+import static android.support.constraint.Constraints.TAG;
 import static com.rkrzmail.srv.NumberFormatUtils.clearPercent;
+import static com.rkrzmail.srv.NumberFormatUtils.formatOnlyNumber;
 import static com.rkrzmail.srv.NumberFormatUtils.getPercentFilter;
 import static com.rkrzmail.srv.NumberFormatUtils.setPercentage;
+import static com.rkrzmail.utils.APIUrls.VIEW_JENIS_KENDARAAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_PROFILE;
+import static com.rkrzmail.utils.ConstUtils.RP;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,12 +54,12 @@ import static com.rkrzmail.utils.APIUrls.VIEW_PROFILE;
 public class TabTambahan_Fragment extends Fragment {
 
     private Spinner spBooking, spFreesimpan;
-    private MultiSelectionSpinner spFasilitas;
+    private MultiSelectionSpinner spFasilitas, spMerkLkkWajib, spLuarBengkel;
     private EditText etHomeKm, etEmergencyKm, etJemputKm, etMinLainnya, etMinDerek, etKapasitas, etDerekKm, etFreeBiaya,
-            etDp,etOnus,etOffus,etkreditus,etAntrianExpress,etAntrianStandart;
+            etDp,etOnus,etOffus,etkreditus,etAntrianExpress,etAntrianStandart,etMaxHome,etMaxEmg,etMaxDerek,etMaxJemput;
     private Button btnSimpan;
     private TextView tvAntrianExpress, tvAntrianStandart;
-    private CheckBox cbHome, cbJemput, cbEmg, cbDerek,cbOnlineBengkel,cbOnlinePelanggan;
+    private CheckBox cbOnlineBengkel,cbOnlinePelanggan;
     private LinearLayout lyLayanan, lyTambahan, lyEntryMax, lyEntryKm;
     private AppActivity activity;
 
@@ -63,8 +68,15 @@ public class TabTambahan_Fragment extends Fragment {
             "RUANG TUNGGU AC",
             "WIFI INTERNET",
             "TV",
-            "AQUA GRATIS"
-    );
+            "AQUA GRATIS"),
+            merkMotorList = new ArrayList<>(), merkMobilList = new ArrayList<>(), allMerkList = new ArrayList<>();
+
+    private final List<String> luarlist = Arrays.asList(
+            "HOME",
+            "ANTAR - JEMPUT",
+            "EMERGENCY",
+            "DEREK");
+
     public TabTambahan_Fragment() {
         // Required empty public constructor
     }
@@ -83,9 +95,11 @@ public class TabTambahan_Fragment extends Fragment {
     }
 
     private void initComponent(View v) {
+        spMerkLkkWajib = v.findViewById(R.id.sp_jualparonline_tambahan);
         spFasilitas = v.findViewById(R.id.sp_fasilitas_tambahan);
         spBooking = v.findViewById(R.id.sp_booking_tambahan);
         spFreesimpan = v.findViewById(R.id.sp_freesimpanan_tambahan);
+        spLuarBengkel = v.findViewById(R.id.sp_luarbengkel);
         etHomeKm = v.findViewById(R.id.et_homeKm_tambahan);
         etEmergencyKm = v.findViewById(R.id.et_emgKm_tambahan);
         etJemputKm = v.findViewById(R.id.et_jemputKm_tambahan);
@@ -100,23 +114,160 @@ public class TabTambahan_Fragment extends Fragment {
         etkreditus = v.findViewById(R.id.et_kredit_tambahan);
         etAntrianExpress = v.findViewById(R.id.et_maxAntrianExpress);
         etAntrianStandart = v.findViewById(R.id.et_maxAntrianStandart);
+        etMaxDerek = v.findViewById(R.id.et_maxDerek_tambahan);
+        etMaxEmg = v.findViewById(R.id.et_maxEmg_tambahan);
+        etMaxHome = v.findViewById(R.id.et_maxHome_tambahan);
+        etMaxJemput = v.findViewById(R.id.et_maxJemput_tambahan);
         btnSimpan = v.findViewById(R.id.btn_simpan_tambahan);
         lyEntryKm = v.findViewById(R.id.ly_entryKm_tambahan);
-        lyEntryMax = v.findViewById(R.id.ly_entryMax_tambahan);
         lyTambahan = v.findViewById(R.id.ly_tambahan);
-        cbDerek = v.findViewById(R.id.cbDerek);
-        cbEmg = v.findViewById(R.id.cbEmg);
-        cbHome = v.findViewById(R.id.cbHome);
-        cbJemput = v.findViewById(R.id.cbJemput);
         cbOnlineBengkel = v.findViewById(R.id.cbPartOnlineBengkel_tambahan);
         cbOnlinePelanggan = v.findViewById(R.id.cbPartOnlinePelanggan_tambahan);
         tvAntrianExpress = v.findViewById(R.id.ic_AntrianExpress_tambahan);
         tvAntrianStandart = v.findViewById(R.id.ic_AntrianStandart_tambahan);
 
+        setSpFasilitas();
+        setSpMerkLkkWajib();
+        setSpLuarBengkel();
 
     }
 
     private void initListener(){
+        etHomeKm.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etHomeKm));
+        etDerekKm.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etDerekKm));
+        etEmergencyKm.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etEmergencyKm));
+        etJemputKm.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etJemputKm));
+        etMinDerek.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etMinDerek));
+        etMinLainnya.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etMinLainnya));
+        etFreeBiaya.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etFreeBiaya));
+        etOnus.addTextChangedListener(new NumberFormatUtils().percentTextWatcher(etOnus));
+        etOffus.addTextChangedListener(new NumberFormatUtils().percentTextWatcher(etOffus));
+        etkreditus.addTextChangedListener(new NumberFormatUtils().percentTextWatcher(etkreditus));
+
+        etMaxJemput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String text = s.toString();
+                if (text.isEmpty()) return;
+                etMaxJemput.removeTextChangedListener(this);
+                try {
+                    validation();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                etMaxJemput.addTextChangedListener(this);
+            }
+        });
+
+        etMaxHome.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String text = s.toString();
+                if (text.isEmpty()) return;
+                etMaxHome.removeTextChangedListener(this);
+                try {
+                    validation();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                etMaxHome.addTextChangedListener(this);
+            }
+        });
+
+        etMaxEmg.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String text = s.toString();
+                if (text.isEmpty()) return;
+                etMaxEmg.removeTextChangedListener(this);
+                try {
+                    validation();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                etMaxEmg.addTextChangedListener(this);
+            }
+        });
+
+        etMaxDerek.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String text = s.toString();
+                if (text.isEmpty()) return;
+                etMaxDerek.removeTextChangedListener(this);
+                try {
+                    validation();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                etMaxDerek.addTextChangedListener(this);
+            }
+        });
+
+        tvAntrianExpress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.getTimeHourDialog(etAntrianExpress);
+            }
+        });
+
+        tvAntrianStandart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.getTimeHourDialog(etAntrianStandart);
+            }
+        });
+
+        btnSimpan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveData();
+            }
+        });
+
+    }
+
+    private void setSpFasilitas(){
         spFasilitas.setItems(fasilitasList);
         spFasilitas.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
             @Override
@@ -129,192 +280,81 @@ public class TabTambahan_Fragment extends Fragment {
 
             }
         });
-        cbDerek.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+    }
+
+    private void setSpLuarBengkel(){
+        spLuarBengkel.setItems(luarlist);
+        spLuarBengkel.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                validation();
+            public void selectedIndices(List<Integer> indices) {
+
+            }
+
+            @Override
+            public void selectedStrings(List<String> strings) {
+
             }
         });
+    }
 
-        cbHome.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+    private void setSpMerkLkkWajib(){
+        MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
+            Nson result;
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                validation();
-            }
-        });
-
-        cbJemput.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                validation();
-            }
-        });
-
-        cbEmg.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                validation();
-            }
-        });
-
-        tvAntrianExpress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                activity.getTimePickerDialogTextView(getContext(), etAntrianExpress);
-            }
-        });
-
-        tvAntrianStandart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                activity.getTimePickerDialogTextView(getContext(), etAntrianStandart);
-            }
-        });
-
-        btnSimpan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveData();
-            }
-        });
-
-        etOnus.addTextChangedListener(new TextWatcher() {
-            int prevLength = 0; // detected keyEvent action delete
-
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                prevLength = charSequence.length();
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("CID", "kosong");
+                args.put("flag", "Merk");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_JENIS_KENDARAAN), args));
             }
 
-
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-
-            }
-
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String text = editable.toString();
-                if (text.isEmpty()) return;
-                etOnus.removeTextChangedListener(this);
-
-                try {
-                    text = new NumberFormatUtils().formatOnlyNumber(text);
-                    double percentValue = Double.parseDouble(text.isEmpty() ? "0" : text) / 1000;
-
-                    NumberFormat percentageFormat = NumberFormat.getPercentInstance();
-                    percentageFormat.setMinimumFractionDigits(1);
-                    String percent = percentageFormat.format(percentValue);
-
-                    InputFilter[] filterArray = new InputFilter[1];
-                    filterArray[0] = new InputFilter.LengthFilter(6);
-
-                    etOnus.setFilters(filterArray);
-                    etOnus.setText(percent);
-                    etOnus.setSelection(percent.length() - 1);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
+            public void runUI() {
+                for (int i = 0; i < result.get("data").size(); i++) {
+                    if (result.get("data").get(i).get("TYPE").asString().equalsIgnoreCase("MOTOR")) {
+                        merkMotorList.add(result.get("data").get(i).get("MERK") + " - " + result.get("data").get(i).get("TYPE"));
+                    } else if (result.get("data").get(i).get("TYPE").asString().equalsIgnoreCase("MOBIL")) {
+                        merkMobilList.add(result.get("data").get(i).get("MERK") + " - " + result.get("data").get(i).get("TYPE"));
+                    }
                 }
 
-                etOnus.addTextChangedListener(this);
-            }
-        });
-
-        etOffus.addTextChangedListener(new TextWatcher() {
-            int prevLength = 0; // detected keyEvent action delete
-
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                prevLength = charSequence.length();
-            }
-
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-
-            }
-
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String text = editable.toString();
-                if (text.isEmpty()) return;
-                etOffus.removeTextChangedListener(this);
-
                 try {
-                    text = new NumberFormatUtils().formatOnlyNumber(text);
-                    double percentValue = Double.parseDouble(text.isEmpty() ? "0" : text) / 1000;
+                    allMerkList.addAll(merkMotorList);
+                    allMerkList.addAll(merkMobilList);
+                    Log.d(TAG, "runUI: " + allMerkList);
+                    spMerkLkkWajib.setItems(allMerkList);
+//                    if (count > 0) {
+//                        spJuallPartOnline.setItems(allMerkList);
+//                        //spMerkKendaraan.setSelection(allMerkList, false);
+//                    } else {
+//                        spJuallPartOnline.setItems(isKategori ? merkMotorList : merkMobilList);
+//                        //spMerkKendaraan.setSelection(isKategori ? merkMotorList : merkMobilList, false);
+//                    }
 
-                    NumberFormat percentageFormat = NumberFormat.getPercentInstance();
-                    percentageFormat.setMinimumFractionDigits(1);
-                    String percent = percentageFormat.format(percentValue);
+                    spMerkLkkWajib.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
+                        @Override
+                        public void selectedIndices(List<Integer> indices) {
 
-                    InputFilter[] filterArray = new InputFilter[1];
-                    filterArray[0] = new InputFilter.LengthFilter(6);
+                        }
 
-                    etOffus.setFilters(filterArray);
-                    etOffus.setText(percent);
-                    etOffus.setSelection(percent.length() - 1);
+                        @Override
+                        public void selectedStrings(List<String> strings) {
 
+                        }
+                    });
                 } catch (Exception e) {
                     e.printStackTrace();
+                    activity.showInfo("Perlu di Muat Ulang");
                 }
-
-                etOffus.addTextChangedListener(this);
-            }
-        });
-
-        etkreditus.addTextChangedListener(new TextWatcher() {
-            int prevLength = 0; // detected keyEvent action delete
-
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                prevLength = charSequence.length();
-            }
-
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-
-            }
-
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String text = editable.toString();
-                if (text.isEmpty()) return;
-                etOffus.removeTextChangedListener(this);
-
-                try {
-                    text = new NumberFormatUtils().formatOnlyNumber(text);
-                    double percentValue = Double.parseDouble(text.isEmpty() ? "0" : text) / 1000;
-
-                    NumberFormat percentageFormat = NumberFormat.getPercentInstance();
-                    percentageFormat.setMinimumFractionDigits(1);
-                    String percent = percentageFormat.format(percentValue);
-
-                    InputFilter[] filterArray = new InputFilter[1];
-                    filterArray[0] = new InputFilter.LengthFilter(6);
-
-                    etkreditus.setFilters(filterArray);
-                    etkreditus.setText(percent);
-                    etkreditus.setSelection(percent.length() - 1);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                etkreditus.addTextChangedListener(this);
             }
         });
     }
 
     private void saveData() {
+        final String spFree = spFreesimpan.getSelectedItem().toString();
+        if (spFree.contains("--PILIH--")) {
+            spFree.replace("--PILIH--", "");
+        }
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
@@ -324,21 +364,21 @@ public class TabTambahan_Fragment extends Fragment {
                 args.put("action", "update");
                 args.put("kategori", "TAMBAHAN");
                 args.put("fasilitasPelanggan", spFasilitas.getSelectedItemsAsString());
-                //luarbengkel
+                args.put("luarBengkel", spLuarBengkel.getSelectedItemsAsString());
                 args.put("booking", spBooking.getSelectedItem().toString().toUpperCase());
-                args.put("maxRadiusHome", cbHome.isChecked() ? "Y" : "N");
-                args.put("maxRadiusEmg", cbEmg.isChecked() ? "Y" : "N");
-                args.put("maxRadiusJemput", cbJemput.isChecked() ? "Y" : "N");
-                args.put("maxRadiusDerek", cbDerek.isChecked() ? "Y" : "N");
-                args.put("biayaMinDerek", etMinDerek.getText().toString().toUpperCase());
-                args.put("biayaMinLainnya", etMinLainnya.getText().toString().toUpperCase());
-                args.put("biayaKmHome", etHomeKm.getText().toString().toUpperCase());
-                args.put("biayaKmEmg", etEmergencyKm.getText().toString().toUpperCase());
-                args.put("biayaKmJemput", etJemputKm.getText().toString().toUpperCase());
-                args.put("biayaKmDerek", etDerekKm.getText().toString().toUpperCase());
+                args.put("maxRadiusHome", etMaxHome.getText().toString());
+                args.put("maxRadiusEmg", etMaxEmg.getText().toString());
+                args.put("maxRadiusJemput", etMaxJemput.getText().toString());
+                args.put("maxRadiusDerek", etMaxDerek.getText().toString());
+                args.put("biayaMinDerek", formatOnlyNumber(etMinDerek.getText().toString()));
+                args.put("biayaMinLainnya", formatOnlyNumber(etMinLainnya.getText().toString()));
+                args.put("biayaKmHome", formatOnlyNumber(etHomeKm.getText().toString()));
+                args.put("biayaKmEmg", formatOnlyNumber(etEmergencyKm.getText().toString()));
+                args.put("biayaKmJemput", formatOnlyNumber(etJemputKm.getText().toString()));
+                args.put("biayaKmDerek", formatOnlyNumber(etDerekKm.getText().toString()));
                 args.put("kapasitasSimpan", etKapasitas.getText().toString().toUpperCase());
-                args.put("freeSimpan", spFreesimpan.getSelectedItem().toString());
-                args.put("freeBiaya", etFreeBiaya.getText().toString().toUpperCase());
+                args.put("freeSimpan", spFree);
+                args.put("freeBiaya", formatOnlyNumber(etFreeBiaya.getText().toString()));
                 args.put("dpPersen", etDp.getText().toString().toUpperCase());
                 args.put("mdrOnUs", clearPercent(etOnus.getText().toString().toUpperCase()));
                 args.put("mdrOffUs", clearPercent(etOffus.getText().toString().toUpperCase()));
@@ -347,6 +387,7 @@ public class TabTambahan_Fragment extends Fragment {
                 args.put("antrianStandart", etAntrianStandart.getText().toString().toUpperCase());
                 args.put("jualPartOlBengkel", cbOnlineBengkel.isChecked() ? "Y" : "N");
                 args.put("jualPartOlPelanggan", cbOnlinePelanggan.isChecked() ? "Y" : "N");
+                args.put("merkLkkWajib", spMerkLkkWajib.getSelectedItemsAsString());
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PROFILE), args));
             }
@@ -372,6 +413,8 @@ public class TabTambahan_Fragment extends Fragment {
                     Tools.setViewAndChildrenEnabled(lyTambahan, false);
                 } else {
                     Tools.setViewAndChildrenEnabled(lyTambahan, true);
+                    etMinLainnya.setEnabled(false);
+                    etMinDerek.setEnabled(false);
                 }
             }
 
@@ -381,13 +424,15 @@ public class TabTambahan_Fragment extends Fragment {
             }
         });
 
-        if(cbDerek.isChecked() && (cbEmg.isChecked() || cbJemput.isChecked() || cbHome.isChecked())){
+        if(!etMaxDerek.getText().toString().isEmpty() && (!etMaxEmg.getText().toString().isEmpty() ||
+                !etMaxJemput.getText().toString().isEmpty() || !etMaxHome.getText().toString().isEmpty())){
             etMinLainnya.setEnabled(true);
             etMinDerek.setEnabled(true);
-        }else if (cbHome.isChecked() || cbJemput.isChecked() || cbEmg.isChecked()){
+        }else if (!etMaxEmg.getText().toString().isEmpty() || !etMaxJemput.getText().toString().isEmpty() ||
+                !etMaxHome.getText().toString().isEmpty()){
             etMinLainnya.setEnabled(true);
             etMinDerek.setEnabled(false);
-        }else if (cbDerek.isChecked()){
+        }else if (!etMaxDerek.getText().toString().isEmpty()) {
             etMinLainnya.setEnabled(false);
             etMinDerek.setEnabled(true);
         }

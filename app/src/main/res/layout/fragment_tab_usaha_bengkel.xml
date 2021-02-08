@@ -417,24 +417,35 @@
                 <TableRow>
 
                     <ImageView
-                        android:id="@+id/img_logo_tambahan"
+                        android:id="@+id/imgBtn_upload"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
-                        android:scaleType="fitXY" />
+                        android:layout_gravity="start|center_vertical"
+                        android:background="@drawable/border_solid"
+                        android:padding="10dp"
+                        android:scaleType="fitXY"
+                        android:layout_weight="1"
+                        app:srcCompat="@drawable/ic_data" />
+
 
                     <ImageView
-                        android:id="@+id/img_logoDepan_tambahan"
+                        android:id="@+id/img_logoDepan_usaha"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
-                        android:layout_column="3"
-                        android:layout_marginLeft="20dp"
-                        android:scaleType="fitXY" />
+                        android:layout_gravity="start|center_vertical"
+                        android:background="@drawable/border_solid"
+                        android:padding="10dp"
+                        android:scaleType="fitXY"
+                        android:layout_marginLeft="15dp"
+                        android:layout_weight="1"
+                        app:srcCompat="@drawable/ic_data" />
 
                     <Button
                         android:id="@+id/btn_simpan_usaha"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
+                        android:layout_weight="1"
                         android:background="@drawable/btn_rounded_accent"
                         android:text="@string/simpan_uppercase"
                         android:textColor="@android:color/white" />
