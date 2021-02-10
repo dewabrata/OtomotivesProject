@@ -42,6 +42,7 @@ import com.rkrzmail.oto.modules.bengkel.Dashboard_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Laporan_Activity;
 import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
 import com.rkrzmail.oto.modules.bengkel.SaranActivity;
+import com.rkrzmail.oto.modules.bengkel.Schedule_MainTab_Activity;
 import com.rkrzmail.oto.modules.checkin.Checkin1_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiTerbayar_Activity;
 import com.rkrzmail.oto.modules.mekanik.AturSchedule_Activity;
@@ -310,7 +311,7 @@ public class MenuActivity extends AppActivity {
             Intent intent = new Intent(MenuActivity.this, Laporan_Activity.class);
             startActivity(intent);
         } else if (item.getTitle().toString().equalsIgnoreCase(SCHEDULE)) {
-            Intent intent = new Intent(MenuActivity.this, AturSchedule_Activity.class);
+            Intent intent = new Intent(MenuActivity.this, Schedule_MainTab_Activity.class);
             startActivity(intent);
         }
         //Pengaturan

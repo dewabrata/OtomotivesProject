@@ -62,4 +62,5 @@ public class APIUrls {
     public static final String SET_CLAIM = "setupclaim";
     public static final String ABSEN = "setupAbsensi";
     public static final String ATUR_LAYANAN = "aturlayanan";
+    public static final String SET_SCHEDULE = "setupschedule";
 }
