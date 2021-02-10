@@ -2,7 +2,7 @@
     <string name="app_name">Otomotives</string>
     <string name="spinner_no_default_hint"></string>
     <string name="hint_cari_part">CARI PART</string>
-
+    <string name="GoogleMapsApi">AIzaSyD9lPBFebmjZWgS6PpNGnHej2Umu3migII</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="discount">Discount</string>
 
@@ -163,7 +163,6 @@
     <string name="checkout_uppercase">CHECKOUT</string>
     <string name="print_bukti_uppercase">PRINT BUKTI</string>
     <string name="jam_home_uppercase">JAM HOME</string>
-    <string name="pengambilan_uppercase">PENGAMBILAN</string>
     <string name="point_layanan_uppercase">POINT LAYANAN</string>
     <string name="keluhan_uppercase">KELUHAN</string>
     <string name="nama_pelanggan_nama_usaha">Nama Pelanggan / Nama Usaha</string>
@@ -223,6 +222,10 @@
     <string name="jasa_part_uppercase">JASA PART</string>
     <string name="min_stock">Min Stock</string>
     <string name="penjualan_30_hari_terakhir">Penjualan 30 Hari Terakhir</string>
+    <string name="lokasi_part">Lokasi Part</string>
+    <string name="tidak_menunggu_uppercase">TIDAK MENUNGGU</string>
+    <string name="waktu_ambil_antar_uppercase">WAKTU AMBIL / ANTAR</string>
+    <string name="pengambilan_uppercase">PENGAMBILAN</string>
     <string-array name="pola_harga_jual">
         <item>FLEXIBLE</item>
         <item>BELI + MARGIN</item>

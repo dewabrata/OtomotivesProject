@@ -165,7 +165,7 @@ public class NumberFormatUtils {
 
     public static InputFilter[] getPercentFilter() {
         InputFilter[] filterArray = new InputFilter[1];
-        filterArray[0] = new InputFilter.LengthFilter(6);
+        filterArray[0] = new InputFilter.LengthFilter(5);
         return filterArray;
     }
 

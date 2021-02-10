@@ -345,7 +345,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         timePickerDialog.show(getFragmentManager(), "Timepickerdialog");
     }
 
-    public void getTimePickerDialogWaktuAmbil() {
+    private void getTimePickerDialogWaktuAmbil() {
         final String[] waktuAmbil = {""};
         Calendar calendar = Calendar.getInstance();
         int currentHour = calendar.get(Calendar.HOUR_OF_DAY);

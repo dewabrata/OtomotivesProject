@@ -323,7 +323,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             @Override
             public Nson onFindNson(Context context, String bookTitle) {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "Pelanggan");
+                args.put("action", "PELANGGAN");
                 args.put("nama", bookTitle);
                 Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PELANGGAN), args));
                 return result.get("data");
@@ -392,6 +392,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             public Nson onFindNson(Context context, String bookTitle) {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 String nopol = bookTitle.replaceAll(" ", "").toUpperCase();
+                args.put("action", "SUGGESTION");
                 args.put("nopol", nopol);
                 Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_NOMOR_POLISI), args));
                 return result.get("data");

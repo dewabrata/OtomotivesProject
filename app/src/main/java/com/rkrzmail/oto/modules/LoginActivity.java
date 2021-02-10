@@ -1,18 +1,26 @@
 package com.rkrzmail.oto.modules;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.Html;
-import android.text.Selection;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.data.Utility;
@@ -21,10 +29,13 @@ import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
-import com.rkrzmail.oto.MenuActivity;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.bengkel.RegistrasiBengkel_Activity;
+import com.valdesekamdem.library.mdtoast.MDToast;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.rkrzmail.utils.APIUrls.SET_LOGIN;
@@ -32,9 +43,12 @@ import static com.rkrzmail.utils.APIUrls.VIEW_DATA_BENGKEL;
 
 public class LoginActivity extends AppActivity {
 
+    public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_login);
+        checkAndRequestPermissions();
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         initComponent();
@@ -216,6 +230,99 @@ public class LoginActivity extends AppActivity {
 
             }
         });
+    }
+
+    private void checkAndRequestPermissions() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            int permissionCamera = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+            int locationPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+            int courseLocationPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
+            int readContactPermision = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
+            int WritePermision = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            int readPhonePermision = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
+            List<String> listPermissionsNeeded = new ArrayList<>();
+            if (permissionCamera != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(Manifest.permission.CAMERA);
+            }
+            if (locationPermission != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
+            }
+            if (courseLocationPermission != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+            }
+            if (readContactPermision != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(Manifest.permission.READ_CONTACTS);
+            }
+            if (WritePermision != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            }
+            if (readPhonePermision != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(Manifest.permission.READ_PHONE_STATE);
+            }
+            if (!listPermissionsNeeded.isEmpty()) {
+                ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[0]), REQUEST_ID_MULTIPLE_PERMISSIONS);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_ID_MULTIPLE_PERMISSIONS) {
+            Map<String, Integer> perms = new HashMap<>();
+            perms.put(Manifest.permission.CAMERA, PackageManager.PERMISSION_GRANTED);
+            perms.put(Manifest.permission.ACCESS_FINE_LOCATION, PackageManager.PERMISSION_GRANTED);
+            perms.put(Manifest.permission.ACCESS_COARSE_LOCATION, PackageManager.PERMISSION_GRANTED);
+            perms.put(Manifest.permission.CALL_PHONE, PackageManager.PERMISSION_GRANTED);
+            perms.put(Manifest.permission.WRITE_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
+            perms.put(Manifest.permission.READ_PHONE_STATE, PackageManager.PERMISSION_GRANTED);
+            perms.put(Manifest.permission.READ_CONTACTS, PackageManager.PERMISSION_GRANTED);
+            if (grantResults.length > 0) {
+                for (int i = 0; i < permissions.length; i++)
+                    perms.put(permissions[i], grantResults[i]);
+                if (perms.get(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+                        || perms.get(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                        || perms.get(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                        || perms.get(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED
+                        || perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                        || perms.get(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED
+                        || perms.get(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA) ||
+                            ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION) ||
+                            ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION) ||
+                            ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE) ||
+                            ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
+                            ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE) ||
+                            ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CONTACTS)) {
+                        showDialogOK(new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                switch (i) {
+                                    case DialogInterface.BUTTON_POSITIVE:
+                                        checkAndRequestPermissions();
+                                        break;
+                                    case DialogInterface.BUTTON_NEGATIVE:
+                                        break;
+                                }
+                            }
+                        });
+                    } else {
+                        MDToast.makeText(this, "Go to settings and enable permissions",
+                                Toast.LENGTH_LONG, MDToast.TYPE_WARNING).show();
+                    }
+                }
+            }
+        }
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    private void showDialogOK(DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(this)
+                .setMessage("Camera, Call Phone, Read Phone State, Location, Read Contacts Services Permission required for this app")
+                .setPositiveButton("OK", okListener)
+                .setNegativeButton("Cancel", okListener)
+                .create()
+                .show();
     }
 
 

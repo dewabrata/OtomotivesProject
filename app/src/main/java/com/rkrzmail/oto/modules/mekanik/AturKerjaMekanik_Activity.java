@@ -87,6 +87,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
     private String sisaWaktuPaused = "";
     private String idCheckin = "", mekanik = "", catatanMekanik = "", idMekanikKerja = "", statusDone = "", noHp = "";
     private String totalBiaya = "";
+    private String merkLKKWajib = "";
 
     private int countClick = 0;
     private int kmKendaraan = 0;
@@ -99,6 +100,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
     private boolean isInspeksi = false;
     private boolean isNotWait = false, isKonfirmasiTambahan = false;
     private boolean isDissmissAndStop = false;
+    private boolean isLkk = false;
 
     private AlertDialog alertDialog;
     private CountDownTimer cTimer = null;
@@ -175,6 +177,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
         isHplus = n.get("ANTRIAN").asString().equals("H+");
         isRework = n.get("STATUS_SELESAI").asString().equals("MEKANIK PAUSE");
 
+        merkLKKWajib = n.get("MERK_LKK_WAJIB").asString();
         totalBiaya = n.get("TOTAL_BIAYA").asString();
         kmKendaraan = n.get("KM").asInteger();
         isNotWait = n.get("TIDAK_MENUNGGU").asString().equals("Y") & !n.get("TIDAK_MENUNGGU").asString().isEmpty();
@@ -460,14 +463,15 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                         waktuHari += partJasaList.get(i).get("WAKTU_KERJA_HARI").asInteger();
                         waktuJam += partJasaList.get(i).get("WAKTU_KERJA_JAM").asInteger();
                         waktuMenit += partJasaList.get(i).get("WAKTU_KERJA_MENIT").asInteger();
-
+                        if(partJasaList.get(i).get("MERK").asString().equals(merkLKKWajib)){
+                            isLkk = true;
+                        }
                         if (partJasaList.get(i).get("INSPEKSI_PART").asString().equals("Y") ||
                                 partJasaList.get(i).get("INSPEKSI_JASA").asString().equals("Y") ||
                                 partJasaList.get(i).get("INSPEKSI_MST_PART").asString().equals("Y") ||
                                 partJasaList.get(i).get("INSPEKSI_MST_JASA").asString().equals("Y")) {
                             isInspeksi = true;
                         }
-
                     }
                 } else {
                     showInfo(result.get("message").asString());

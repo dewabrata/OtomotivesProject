@@ -179,7 +179,7 @@ public class DiscountSpot_Activity extends AppActivity {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "DISC_SPOT");
+                args.put("action", "DISC SPOT");
                 args.put("search", namaPelanggan);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PELANGGAN), args));
             }

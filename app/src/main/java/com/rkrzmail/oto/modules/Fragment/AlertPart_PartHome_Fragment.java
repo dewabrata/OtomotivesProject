@@ -34,8 +34,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.VIEW_SPAREPART;
-import static com.rkrzmail.utils.ConstUtils.ALL;
-import static com.rkrzmail.utils.ConstUtils.RP;
 
 public class AlertPart_PartHome_Fragment extends Fragment implements SearchListener.ISearch, SearchListener.ISearchAutoComplete{
 

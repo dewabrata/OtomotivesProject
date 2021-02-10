@@ -112,6 +112,7 @@ public class KonfirmasiData_Pembayaran_Activity extends AppActivity {
                 args.put("isPemilik", find(R.id.cb_pemilik, CheckBox.class).isChecked() ? "Y" : "N");
                 args.put("namaPelanggan", find(R.id.et_namaPelanggan, NikitaAutoComplete.class).getText().toString());
                 args.put("pekerjaan", find(R.id.sp_pekerjaan, Spinner.class).getSelectedItem().toString());
+                args.put("nopol", getIntentStringExtra("NOPOL"));
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PELANGGAN), args));
             }

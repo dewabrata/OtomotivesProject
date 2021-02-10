@@ -189,6 +189,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                 Intent i = new Intent(getActivity(), KonfirmasiData_Pembayaran_Activity.class);
                 i.putExtra(ID, idCheckin);
                 i.putExtra("NO_PONSEL", noHp);
+                i.putExtra("NOPOL", nopol);
                 startActivityForResult(i, REQUEST_KONFIRMASI);
             }
         });
@@ -355,14 +356,14 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
 
                 namaLayanan = result.get(i).get("LAYANAN").asString();
                 isPkp = result.get(i).get("PKP").asString();
-
-                dataKendaraanId = result.get(i).get("DATA_KENDARAAN_ID").asInteger();
-                noMesin = result.get(i).get("NO_MESIN_PELANGGAN").asString();
-                noRangka = result.get(i).get("NO_RANGKA_PELANGGAN").asString();
-                kodeTipe = result.get(i).get("KODE_TYPE_PELANGGAN").asString();
             }
 
+            dataKendaraanId = result.get(i).get("DATA_KENDARAAN_ID").asInteger();
+            noMesin = result.get(i).get("NO_MESIN_PELANGGAN").asString();
+            noRangka = result.get(i).get("NO_RANGKA_PELANGGAN").asString();
+            kodeTipe = result.get(i).get("KODE_TYPE_PELANGGAN").asString();
             isMdrOffUs = result.get(i).get("OFF_US").asString().equals("Y");
+
             find(R.id.cb_derek, CheckBox.class).setChecked(result.get(i).get("DEREK").asString().equals("Y"));
             find(R.id.cb_buangPart, CheckBox.class).setChecked(result.get(i).get("BUANG_PART").asString().equals("Y"));
             find(R.id.cb_antar_jemput, CheckBox.class).setChecked(result.get(i).get("ANTAR_JEMPUT").asString().equals("Y"));

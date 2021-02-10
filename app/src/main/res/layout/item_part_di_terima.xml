@@ -102,6 +102,29 @@
 
         </TableRow>
 
+        <TableRow android:layout_marginTop="5dp">
+
+            <TextView
+                android:id="@+id/tv_lokasi_part"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/lokasi_part"
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+            <TextView
+                android:id="@+id/tv_kode_folder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="@string/no_folder"
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
+
+        </TableRow>
+
+
     </TableLayout>
 
 </android.support.v7.widget.CardView>

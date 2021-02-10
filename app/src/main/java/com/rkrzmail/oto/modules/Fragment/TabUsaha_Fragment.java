@@ -1,6 +1,7 @@
 package com.rkrzmail.oto.modules.Fragment;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -11,6 +12,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -27,6 +29,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -48,6 +51,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
 import static com.rkrzmail.utils.APIUrls.SET_CLAIM;
@@ -57,19 +61,24 @@ import static com.rkrzmail.utils.APIUrls.VIEW_MASTER;
 import static com.rkrzmail.utils.APIUrls.VIEW_PROFILE;
 import static com.rkrzmail.utils.Tools.setFormatDayAndMonthToDb;
 
-public class TabUsaha_Fragment extends Fragment {
+public class TabUsaha_Fragment extends Fragment implements OnMapReadyCallback, MapPicker_Dialog.GetLocation {
 
     private static final int REQUEST_PHOTO = 80;
     private static final int REQUEST_LOGO = 81;
+
     private EditText etNamaBengkel, etAlamat, etBadanUsaha, etKotaKab, etNoponsel, etNib, etNpwp, etKodePos, etnoPhoneMessage;
     private Spinner spAfiliasi, spPrincial;
-    private MultiSelectionSpinner spJenisKendaraan,spMerkKendaraan,spBidangUsaha;
+    private MultiSelectionSpinner spJenisKendaraan, spMerkKendaraan, spBidangUsaha;
     private Button btnSimpan, btnLokasi;
     private CheckBox cbPkp;
     private ImageView uploadLogo, uploadTampakdepan;
-    private String fotoLogo="", fotoTampakDepan="";
+    private AlertDialog alertDialog;
+
+    private String fotoLogo = "", fotoTampakDepan = "";
     private Nson principalList = Nson.newArray();
+
     private AppActivity activity;
+
 
     private final List<String> afiliasiList = Arrays.asList(
             "--PILIH--",
@@ -78,7 +87,6 @@ public class TabUsaha_Fragment extends Fragment {
     );
 
     private GoogleMap map;
-
 
 
     public TabUsaha_Fragment() {
@@ -99,7 +107,7 @@ public class TabUsaha_Fragment extends Fragment {
         viewprofileusaha();
         etNamaBengkel = v.findViewById(R.id.et_namaBengkel_usaha);
         etAlamat = v.findViewById(R.id.et_alamat_usaha);
-        etKodePos =v.findViewById(R.id.et_kodepos_usaha);
+        etKodePos = v.findViewById(R.id.et_kodepos_usaha);
         etBadanUsaha = v.findViewById(R.id.et_namaUsaha_usaha);
         etKotaKab = v.findViewById(R.id.et_kotaKab_usaha);
         etNoponsel = v.findViewById(R.id.et_noPhone_usaha);
@@ -117,13 +125,15 @@ public class TabUsaha_Fragment extends Fragment {
         uploadLogo = v.findViewById(R.id.imgBtn_upload);
         uploadTampakdepan = v.findViewById(R.id.img_logoDepan_usaha);
 
-        activity.setSpinnerOffline(afiliasiList, spAfiliasi,"");
+        activity.setSpinnerOffline(afiliasiList, spAfiliasi, "");
         setSpNamaPrincipal("");
 
+        final MapPicker_Dialog mapPicker_dialog = new MapPicker_Dialog();
+        mapPicker_dialog.getBengkelLocation(this);
         btnLokasi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new MapPicker_Dialog().show(getFragmentManager(),null);
+                mapPicker_dialog.show(getFragmentManager(), null);
             }
         });
 
@@ -133,7 +143,6 @@ public class TabUsaha_Fragment extends Fragment {
                 getImageFromAlbum(REQUEST_PHOTO);
             }
         });
-
         uploadLogo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -152,6 +161,7 @@ public class TabUsaha_Fragment extends Fragment {
     private void saveData() {
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -171,6 +181,7 @@ public class TabUsaha_Fragment extends Fragment {
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PROFILE), args));
             }
+
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
@@ -183,11 +194,12 @@ public class TabUsaha_Fragment extends Fragment {
         });
     }
 
-    private void viewprofileusaha(){
+    private void viewprofileusaha() {
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             List<String> jenisKendaraanList = new ArrayList<>(), merkKendaraanList = new ArrayList<>(),
                     bidangUsahaList = new ArrayList<>();
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -220,17 +232,17 @@ public class TabUsaha_Fragment extends Fragment {
         });
     }
 
-    private void setJenisKendaraan(List<String> string){
+    private void setJenisKendaraan(List<String> string) {
         spJenisKendaraan.setEnabled(false);
         spJenisKendaraan.setItems(string);
     }
 
-    private void setMerkKendaraan(List<String> string){
+    private void setMerkKendaraan(List<String> string) {
         spMerkKendaraan.setEnabled(false);
         spMerkKendaraan.setItems(string);
     }
 
-    private void setSpBidangUsaha(List<String> string){
+    private void setSpBidangUsaha(List<String> string) {
         spBidangUsaha.setEnabled(false);
         spBidangUsaha.setItems(string);
     }
@@ -294,7 +306,7 @@ public class TabUsaha_Fragment extends Fragment {
             } catch (FileNotFoundException f) {
                 activity.showError("Fail" + f.getMessage());
             }
-        }else if(resultCode == RESULT_OK && requestCode == REQUEST_PHOTO){
+        } else if (resultCode == RESULT_OK && requestCode == REQUEST_PHOTO) {
             final Uri imageUri = data.getData();
             try {
                 InputStream imageStream = activity.getContentResolver().openInputStream(imageUri);
@@ -316,4 +328,13 @@ public class TabUsaha_Fragment extends Fragment {
     }
 
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
+    }
+
+    @Override
+    public void getLatLong(String latitude, String longitude) {
+        activity.showWarning(latitude + "\n" + longitude);
+    }
 }

@@ -324,7 +324,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="3"
-                        android:text="WAKTU AMBIL / ANTAR"
+                        android:text="@string/waktu_ambil_antar_uppercase"
                         android:textColor="@color/grey_900"
                         android:textSize="12sp"
                         android:textStyle="bold" />

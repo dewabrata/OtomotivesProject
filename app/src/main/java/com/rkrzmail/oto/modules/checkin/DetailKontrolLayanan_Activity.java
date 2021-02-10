@@ -21,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -39,8 +40,13 @@ import com.rkrzmail.srv.NikitaMultipleViewAdapter;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -95,6 +101,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
     private String namaMekanik = "", idMekanik = "";
     private String jenisAntrian = "", noPonsel = "";
     private String merkKendaraan = "";
+    private String waktuEstimasi = "";
 
     private int totalTambahPart = 0;
     private int totalBiaya = 0;
@@ -154,6 +161,12 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         final Nson data = Nson.readJson(getIntentStringExtra(DATA));
         Log.d(TAG, "loadData: " + data);
 
+        try{
+            String[] splitJamEstimasi = data.get("ESTIMASI_SELESAI").asString().split("-");
+            waktuEstimasi = splitJamEstimasi[0];
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         totalBiaya = data.get("TOTAL_BIAYA").asInteger();
         idCheckin = data.get(ID).asString();
         jenisAntrian = data.get("ANTRIAN").asString();
@@ -182,8 +195,13 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         tvNamaLayanan.setText(data.get("LAYANAN").asString());
         tvBiayaLayanan.setText(RP + formatRp(formatOnlyNumber(data.get("BIAYA_LAYANAN").asString())));
 
+        if(data.get("PELANGGAN_TIDAK_MENUNGGU").asString().equals("Y")){
+            find(R.id.cb_tidak_menunggu, CheckBox.class).setChecked(true);
+        }else{
+            find(R.id.img_btn_waktu_ambil).setVisibility(View.GONE);
+        }
         find(R.id.cb_tungguConfirm_biaya, CheckBox.class).setChecked(data.get("TUNGGU_KONFIRMASI_BIAYA").asString().equals("Y"));
-        find(R.id.cb_tidak_menunggu, CheckBox.class).setChecked(data.get("PELANGGAN_TIDAK_MENUNGGU").asString().equals("Y"));
+
         find(R.id.cb_konfirm_tambah, CheckBox.class).setChecked(data.get("KONFIRMASI_TAMBAHAN").asString().equals("Y"));
         find(R.id.cb_buangPart, CheckBox.class).setChecked(data.get("BUANG_PART").asString().equals("Y"));
         find(R.id.cb_antar, CheckBox.class).setChecked(data.get("ANTAR_JEMPUT").asString().equals("Y"));
@@ -214,6 +232,17 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             }
         });
 
+        find(R.id.cb_tidak_menunggu, CheckBox.class).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(compoundButton.isChecked()){
+                    find(R.id.img_btn_waktu_ambil).setVisibility(View.VISIBLE);
+                }else{
+                    find(R.id.img_btn_waktu_ambil).setVisibility(View.GONE);
+                }
+            }
+        });
+
         find(R.id.btn_keluhan, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -228,6 +257,13 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 intent.putExtra("ALL", "ALL");
                 intent.putExtra("NOPOL", etNopol.getText().toString().replaceAll(" ", ""));
                 startActivityForResult(intent, REQUEST_HISTORY);
+            }
+        });
+
+        find(R.id.img_btn_waktu_ambil).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getTimePickerDialogWaktuAmbil();
             }
         });
 
@@ -682,6 +718,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 args.put("action", "update");
                 args.put("status", status);
                 args.put("idCheckin", idCheckin);
+                args.put("waktuAmbil", etPengambilan.getText().toString());
                 if (isEstimasi) {
                     args.put("isEstimasi", "Y");
                 }
@@ -783,6 +820,61 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             }
         });
     }
+
+    private void getTimePickerDialogWaktuAmbil() {
+        final String[] waktuAmbil = {""};
+        Calendar calendar = Calendar.getInstance();
+        int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
+        int currentMinute = calendar.get(Calendar.MINUTE);
+        @SuppressLint("SimpleDateFormat") final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+                String time = hourOfDay + ":" + minute;
+                Date date = null;
+                try {
+                    date = sdf.parse(time);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                String formattedTime = sdf.format(date);
+                waktuAmbil[0] = formattedTime;
+                etPengambilan.setText(formattedTime);
+            }
+        }, currentHour, currentMinute, true);
+
+        timePickerDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                try {
+                    if (validateWaktuAmbil(waktuEstimasi, waktuAmbil[0])) {
+                        showWarning("WAKTU AMBIL HARUS MELEBIHI ESTIMASI SELESAI");
+                        find(R.id.img_btn_waktu_ambil).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                find(R.id.img_btn_waktu_ambil).performClick();
+                            }
+                        });
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        timePickerDialog.setTitle("Tentukan Waktu Ambil");
+        timePickerDialog.show(getFragmentManager(), "Timepickerdialog");
+    }
+
+    private boolean validateWaktuAmbil(String jamEstimasi, String jamAmbil) throws ParseException {
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+        Date waktuAmbil = sdf.parse(jamAmbil);
+        Date waktuEstimasi = sdf.parse(jamEstimasi);
+
+        return !waktuAmbil.after(waktuEstimasi);
+    }
+
 
     @SuppressLint("NewApi")
     @Override

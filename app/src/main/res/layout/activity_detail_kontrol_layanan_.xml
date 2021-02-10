@@ -466,32 +466,52 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/paddingXSmall"
                 android:enabled="false"
+                android:visibility="gone"
                 android:text="TUNGGU KONFIRMASI BIAYA" />
 
             <CheckBox
                 android:id="@+id/cb_tidak_menunggu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/paddingXSmall"
-                android:enabled="false"
-                android:text="TIDAK MENUNGGU" />
+                android:layout_marginTop="@dimen/paddingSemiLarge"
+                android:text="@string/tidak_menunggu_uppercase" />
 
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/paddingSemiLarge">
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/paddingSemiLarge"
+                android:gravity="center">
 
-                <EditText
-                    android:id="@+id/et_pengambilan"
+                <ImageButton
+                    android:id="@+id/img_btn_waktu_ambil"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    app:srcCompat="@drawable/icon_jam"
+                    android:layout_gravity="center"
+                    android:backgroundTint="@android:color/white"
+                    android:layout_marginEnd="@dimen/paddingSemiLarge"
+                    tools:ignore="ContentDescription" />
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:enabled="false"
-                    android:hint="PENGAMBILAN"
-                    android:inputType="numberDecimal"
-                    android:textSize="14sp" />
+                    android:layout_height="wrap_content">
 
-            </android.support.design.widget.TextInputLayout>
+                    <EditText
+                        android:id="@+id/et_pengambilan"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:hint="@string/pengambilan_uppercase"
+                        android:inputType="numberDecimal"
+                        android:textSize="14sp"
+                        tools:ignore="Autofill" />
+
+                </android.support.design.widget.TextInputLayout>
+
+
+            </LinearLayout>
 
             <CheckBox
                 android:id="@+id/cb_buangPart"

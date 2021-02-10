@@ -131,6 +131,9 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
                         });
                     }
                     find(R.id.layout_jatuh_tempo).setVisibility(View.GONE);
+                }else if(item.equals("KONSIGMENT")){
+                    showWarning("TIPE PEMBAYARAN BELUM AKTIF");
+                    spinnerPembayaran.setSelection(0);
                 } else {
                     find(R.id.ly_rek, LinearLayout.class).setVisibility(View.GONE);
                     find(R.id.layout_jatuh_tempo).setVisibility(View.GONE);
@@ -177,7 +180,7 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
                     return;
                 }
                 if (find(R.id.ly_rek, LinearLayout.class).getVisibility() == View.VISIBLE) {
-                    if (spRek.getSelectedItem().toString().equalsIgnoreCase("Belum Di Pilih")) {
+                    if (spRek.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
                         spRek.requestFocus();
                         showWarning("Nomor Rekening Harus di Pilih");
                         return;
@@ -348,8 +351,8 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
         nson.set("noSupplier", nama.replaceAll("[^0-9]", ""));
         nson.set("tipe", tipe);
         nson.set("rek", rek);
+        nson.set("rekening", spRek.getSelectedItem().toString());
 
-        //nson.set("rekening", find(R.id.sp_rekAsal_terimaPart, Spinner.class).getSelectedItem().toString());
         showInfo("Catatkan Detail Part");
         return nson;
     }

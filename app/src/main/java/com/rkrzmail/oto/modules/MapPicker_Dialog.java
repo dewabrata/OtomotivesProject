@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.Toast;
@@ -25,30 +26,52 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
 
 import java.util.Calendar;
+import java.util.Objects;
 
 import im.delight.android.location.SimpleLocation;
 
 public class MapPicker_Dialog extends DialogFragment implements OnMapReadyCallback {
 
     private GoogleMap map;
-    private Button btnSave;
+    private Button btnGetLocation;
     private SupportMapFragment mapFragment;
-    private String lat,lon;
-
+    private String getLatitude = "", getLongitude = "";
+    private AppActivity activity;
+    private GetLocation getLocation;
 
     public MapPicker_Dialog() {
+    }
+
+    public interface GetLocation{
+        void getLatLong(String latitude, String longitude);
+    }
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        return super.onCreateDialog(savedInstanceState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.activity_location_peta_picker, container, false);
-
+        activity = ((ProfileBengkel_Activity) getActivity());
+        assert getFragmentManager() != null;
         mapFragment = (SupportMapFragment) getFragmentManager().findFragmentById(R.id.map);
+        btnGetLocation = rootView.findViewById(R.id.btn_get_location);
+        btnGetLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                takeLocation();
+            }
+        });
+
         if (mapFragment == null) {
             Toast.makeText(getActivity(),
                     "Sorry! unable to create maps", Toast.LENGTH_SHORT)
@@ -57,6 +80,15 @@ public class MapPicker_Dialog extends DialogFragment implements OnMapReadyCallba
         mapFragment.getMapAsync(this);
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        WindowManager.LayoutParams params = Objects.requireNonNull(getDialog().getWindow()).getAttributes();
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+        getDialog().getWindow().setAttributes(params);
     }
 
     @SuppressLint("MissingPermission")
@@ -73,15 +105,19 @@ public class MapPicker_Dialog extends DialogFragment implements OnMapReadyCallba
     }
 
     private void takeLocation() {
-        //location
-        SimpleLocation location = new SimpleLocation(getActivity(), false, false, 6000);
+        SimpleLocation location = new SimpleLocation(activity.getActivity(), false, false, 6000);
         if (!location.hasLocationEnabled()) {
-            SimpleLocation.openSettings(getActivity());
+            SimpleLocation.openSettings(activity.getActivity());
         }
         final double latitude = location.getLatitude();
         final double longtitude = location.getLongitude();
-        lat = String.valueOf(latitude);
-        lon = String.valueOf(longtitude);
+
+        getLatitude = String.valueOf(latitude);
+        getLongitude = String.valueOf(longtitude);
+        if(getLocation != null){
+            getLocation.getLatLong(getLatitude, getLongitude);
+        }
+
         LatLng current = new LatLng(latitude, longtitude);
         map.addMarker(new MarkerOptions()
                 .position(current)
@@ -90,16 +126,25 @@ public class MapPicker_Dialog extends DialogFragment implements OnMapReadyCallba
         map.animateCamera(CameraUpdateFactory.zoomTo(15));
         Log.d("latitude", String.valueOf(latitude));
         Log.d("longtitude", String.valueOf(longtitude));
+        dismiss();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-
         if (null != mapFragment)
-            getActivity().getSupportFragmentManager().beginTransaction()
+            Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction()
                     .remove(mapFragment)
                     .commit();
     }
 
+    public void getBengkelLocation(GetLocation getLocation){
+        this.getLocation = getLocation;
+
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+    }
 }

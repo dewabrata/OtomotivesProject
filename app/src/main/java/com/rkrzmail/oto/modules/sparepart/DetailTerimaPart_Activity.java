@@ -95,7 +95,6 @@ public class DetailTerimaPart_Activity extends AppActivity {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
-
                 viewHolder.find(R.id.tv_noPart_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
                 viewHolder.find(R.id.tv_namaPart_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("NAMA_PART").asString());
                 viewHolder.find(R.id.tv_jumlah_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("JUMLAH").asString());
@@ -103,6 +102,8 @@ public class DetailTerimaPart_Activity extends AppActivity {
                 viewHolder.find(R.id.tv_harga_detailTerimaPart, TextView.class).setText(RP + formatRp(nListArray.get(position).get("HARGA_BELI").asString()));
                 viewHolder.find(R.id.tv_disc_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("DISCOUNT").asString());
                 viewHolder.find(R.id.tv_merk_detailTerimaPart, TextView.class).setText(nListArray.get(position).get("MERK").asString());
+                viewHolder.find(R.id.tv_lokasi_part, TextView.class).setText(nListArray.get(position).get("LOKASI_PART").asString());
+                viewHolder.find(R.id.tv_kode_folder, TextView.class).setText(nListArray.get(position).get("KODE").asString());
             }
         });
     }
