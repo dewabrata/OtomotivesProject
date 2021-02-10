@@ -65,8 +65,9 @@ public class TabUsaha_Fragment extends Fragment implements OnMapReadyCallback, M
 
     private static final int REQUEST_PHOTO = 80;
     private static final int REQUEST_LOGO = 81;
+    private EditText etNamaBengkel, etAlamat, etBadanUsaha, etKotaKab, etNoponsel, etNib, etNpwp, etKodePos, etnoPhoneMessage,
+            etAntrianExpress,etAntrianStandart;
 
-    private EditText etNamaBengkel, etAlamat, etBadanUsaha, etKotaKab, etNoponsel, etNib, etNpwp, etKodePos, etnoPhoneMessage;
     private Spinner spAfiliasi, spPrincial;
     private MultiSelectionSpinner spJenisKendaraan, spMerkKendaraan, spBidangUsaha;
     private Button btnSimpan, btnLokasi;
@@ -77,6 +78,7 @@ public class TabUsaha_Fragment extends Fragment implements OnMapReadyCallback, M
     private String fotoLogo = "", fotoTampakDepan = "";
     private Nson principalList = Nson.newArray();
 
+    private TextView tvAntrianExpress, tvAntrianStandart;
     private AppActivity activity;
 
 
@@ -124,6 +126,10 @@ public class TabUsaha_Fragment extends Fragment implements OnMapReadyCallback, M
         cbPkp = v.findViewById(R.id.cb_pkp_usaha);
         uploadLogo = v.findViewById(R.id.imgBtn_upload);
         uploadTampakdepan = v.findViewById(R.id.img_logoDepan_usaha);
+        etAntrianExpress = v.findViewById(R.id.et_maxAntrianExpress);
+        etAntrianStandart = v.findViewById(R.id.et_maxAntrianStandart);
+        tvAntrianExpress = v.findViewById(R.id.ic_AntrianExpress_usaha);
+        tvAntrianStandart = v.findViewById(R.id.ic_AntrianStandart_usaha);
 
         activity.setSpinnerOffline(afiliasiList, spAfiliasi, "");
         setSpNamaPrincipal("");
@@ -137,12 +143,27 @@ public class TabUsaha_Fragment extends Fragment implements OnMapReadyCallback, M
             }
         });
 
+        tvAntrianExpress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.getTimeHourDialog(etAntrianExpress);
+            }
+        });
+
+        tvAntrianStandart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.getTimeHourDialog(etAntrianStandart);
+            }
+        });
+
         uploadTampakdepan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getImageFromAlbum(REQUEST_PHOTO);
             }
         });
+
         uploadLogo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -178,6 +199,8 @@ public class TabUsaha_Fragment extends Fragment implements OnMapReadyCallback, M
                 args.put("noTelp", etNoponsel.getText().toString().toUpperCase());
                 args.put("hpMessage", etnoPhoneMessage.getText().toString().toUpperCase());
                 args.put("logo", fotoLogo);
+                args.put("antrianExpres", etAntrianExpress.getText().toString());
+                args.put("antrianStandart", etAntrianStandart.getText().toString());
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PROFILE), args));
             }

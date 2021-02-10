@@ -58,7 +58,6 @@ public class TabTambahan_Fragment extends Fragment {
     private EditText etHomeKm, etEmergencyKm, etJemputKm, etMinLainnya, etMinDerek, etKapasitas, etDerekKm, etFreeBiaya,
             etDp,etOnus,etOffus,etkreditus,etAntrianExpress,etAntrianStandart,etMaxHome,etMaxEmg,etMaxDerek,etMaxJemput;
     private Button btnSimpan;
-    private TextView tvAntrianExpress, tvAntrianStandart;
     private CheckBox cbOnlineBengkel,cbOnlinePelanggan;
     private LinearLayout lyLayanan, lyTambahan, lyEntryMax, lyEntryKm;
     private AppActivity activity;
@@ -112,8 +111,6 @@ public class TabTambahan_Fragment extends Fragment {
         etOnus = v.findViewById(R.id.et_onUs_tambahan);
         etOffus = v.findViewById(R.id.et_offUs_tambahan);
         etkreditus = v.findViewById(R.id.et_kredit_tambahan);
-        etAntrianExpress = v.findViewById(R.id.et_maxAntrianExpress);
-        etAntrianStandart = v.findViewById(R.id.et_maxAntrianStandart);
         etMaxDerek = v.findViewById(R.id.et_maxDerek_tambahan);
         etMaxEmg = v.findViewById(R.id.et_maxEmg_tambahan);
         etMaxHome = v.findViewById(R.id.et_maxHome_tambahan);
@@ -123,8 +120,7 @@ public class TabTambahan_Fragment extends Fragment {
         lyTambahan = v.findViewById(R.id.ly_tambahan);
         cbOnlineBengkel = v.findViewById(R.id.cbPartOnlineBengkel_tambahan);
         cbOnlinePelanggan = v.findViewById(R.id.cbPartOnlinePelanggan_tambahan);
-        tvAntrianExpress = v.findViewById(R.id.ic_AntrianExpress_tambahan);
-        tvAntrianStandart = v.findViewById(R.id.ic_AntrianStandart_tambahan);
+
 
         setSpFasilitas();
         setSpMerkLkkWajib();
@@ -241,20 +237,6 @@ public class TabTambahan_Fragment extends Fragment {
                     e.printStackTrace();
                 }
                 etMaxDerek.addTextChangedListener(this);
-            }
-        });
-
-        tvAntrianExpress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                activity.getTimeHourDialog(etAntrianExpress);
-            }
-        });
-
-        tvAntrianStandart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                activity.getTimeHourDialog(etAntrianStandart);
             }
         });
 
@@ -383,8 +365,6 @@ public class TabTambahan_Fragment extends Fragment {
                 args.put("mdrOnUs", clearPercent(etOnus.getText().toString().toUpperCase()));
                 args.put("mdrOffUs", clearPercent(etOffus.getText().toString().toUpperCase()));
                 args.put("mdrKredit", clearPercent(etkreditus.getText().toString().toUpperCase()));
-                args.put("antrianExpres", etAntrianExpress.getText().toString().toUpperCase());
-                args.put("antrianStandart", etAntrianStandart.getText().toString().toUpperCase());
                 args.put("jualPartOlBengkel", cbOnlineBengkel.isChecked() ? "Y" : "N");
                 args.put("jualPartOlPelanggan", cbOnlinePelanggan.isChecked() ? "Y" : "N");
                 args.put("merkLkkWajib", spMerkLkkWajib.getSelectedItemsAsString());
