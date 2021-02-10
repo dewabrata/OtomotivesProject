@@ -3,7 +3,11 @@ package com.rkrzmail.oto.modules;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,10 +24,12 @@ import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.rkrzmail.oto.AppActivity;
@@ -42,12 +48,18 @@ public class MapPicker_Dialog extends DialogFragment implements OnMapReadyCallba
     private SupportMapFragment mapFragment;
     private String getLatitude = "", getLongitude = "";
     private AppActivity activity;
+
     private GetLocation getLocation;
+    private LocationManager locationManager;
+
+    private static final long MIN_TIME = 400;
+    private static final float MIN_DISTANCE = 1000;
+    private boolean isFisrtTime = false;
 
     public MapPicker_Dialog() {
     }
 
-    public interface GetLocation{
+    public interface GetLocation {
         void getLatLong(String latitude, String longitude);
     }
 
@@ -57,11 +69,15 @@ public class MapPicker_Dialog extends DialogFragment implements OnMapReadyCallba
         return super.onCreateDialog(savedInstanceState);
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_location_peta_picker, container, false);
         activity = ((ProfileBengkel_Activity) getActivity());
+        assert activity != null;
+        locationManager = (LocationManager) activity.getActivity().getSystemService(Context.LOCATION_SERVICE);
+
         assert getFragmentManager() != null;
         mapFragment = (SupportMapFragment) getFragmentManager().findFragmentById(R.id.map);
         btnGetLocation = rootView.findViewById(R.id.btn_get_location);
@@ -102,6 +118,16 @@ public class MapPicker_Dialog extends DialogFragment implements OnMapReadyCallba
         map.getUiSettings().setZoomGesturesEnabled(true);
         map.getUiSettings().setRotateGesturesEnabled(false);
         map.getUiSettings().setZoomControlsEnabled(true);
+
+        Location location = new Location(LocationManager.GPS_PROVIDER);
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(latLng)
+                .zoom(17)
+
+                .build();
+
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
     private void takeLocation() {
@@ -114,7 +140,7 @@ public class MapPicker_Dialog extends DialogFragment implements OnMapReadyCallba
 
         getLatitude = String.valueOf(latitude);
         getLongitude = String.valueOf(longtitude);
-        if(getLocation != null){
+        if (getLocation != null) {
             getLocation.getLatLong(getLatitude, getLongitude);
         }
 
@@ -138,13 +164,7 @@ public class MapPicker_Dialog extends DialogFragment implements OnMapReadyCallba
                     .commit();
     }
 
-    public void getBengkelLocation(GetLocation getLocation){
+    public void getBengkelLocation(GetLocation getLocation) {
         this.getLocation = getLocation;
-
-    }
-
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        super.onDismiss(dialog);
     }
 }

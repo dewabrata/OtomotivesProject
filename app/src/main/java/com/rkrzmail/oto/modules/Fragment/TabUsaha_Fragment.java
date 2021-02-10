@@ -65,20 +65,18 @@ public class TabUsaha_Fragment extends Fragment implements OnMapReadyCallback, M
 
     private static final int REQUEST_PHOTO = 80;
     private static final int REQUEST_LOGO = 81;
+
     private EditText etNamaBengkel, etAlamat, etBadanUsaha, etKotaKab, etNoponsel, etNib, etNpwp, etKodePos, etnoPhoneMessage,
             etAntrianExpress,etAntrianStandart;
-
     private Spinner spAfiliasi, spPrincial;
     private MultiSelectionSpinner spJenisKendaraan, spMerkKendaraan, spBidangUsaha;
-    private Button btnSimpan, btnLokasi;
     private CheckBox cbPkp;
     private ImageView uploadLogo, uploadTampakdepan;
-    private AlertDialog alertDialog;
+    private TextView tvAntrianExpress, tvAntrianStandart;
 
     private String fotoLogo = "", fotoTampakDepan = "";
+    private String latitude = "", longitude = "";
     private Nson principalList = Nson.newArray();
-
-    private TextView tvAntrianExpress, tvAntrianStandart;
     private AppActivity activity;
 
 
@@ -121,8 +119,8 @@ public class TabUsaha_Fragment extends Fragment implements OnMapReadyCallback, M
         spJenisKendaraan = v.findViewById(R.id.sp_jenisKendaraan_usaha);
         spBidangUsaha = v.findViewById(R.id.sp_bidangUsaha_usaha);
         spMerkKendaraan = v.findViewById(R.id.sp_merkKendaraan_usaha);
-        btnSimpan = v.findViewById(R.id.btn_simpan_usaha);
-        btnLokasi = v.findViewById(R.id.btn_lokasi_tambahan);
+        Button btnSimpan = v.findViewById(R.id.btn_simpan_usaha);
+        Button btnLokasi = v.findViewById(R.id.btn_lokasi_tambahan);
         cbPkp = v.findViewById(R.id.cb_pkp_usaha);
         uploadLogo = v.findViewById(R.id.imgBtn_upload);
         uploadTampakdepan = v.findViewById(R.id.img_logoDepan_usaha);
@@ -358,6 +356,7 @@ public class TabUsaha_Fragment extends Fragment implements OnMapReadyCallback, M
 
     @Override
     public void getLatLong(String latitude, String longitude) {
-        activity.showWarning(latitude + "\n" + longitude);
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 }
