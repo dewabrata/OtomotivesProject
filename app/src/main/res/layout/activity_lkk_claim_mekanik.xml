@@ -327,7 +327,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:enabled="true"
-                        android:hint="Informasi Tambahan"
+                        android:hint="INFORMASI TAMBAHAN"
                         android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -354,7 +354,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:enabled="false"
-                        android:hint="Nik Pemilik"
+                        android:hint="NIK PEMILIK"
                         android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -379,7 +379,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:enabled="false"
-                        android:hint="No Buku Garansi"
+                        android:hint="NO. BUKU GARANSI"
                         android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -388,8 +388,10 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="@dimen/paddingSemiLarge">
 
                 <Button
                     android:id="@+id/btn_foto_stnk"
@@ -399,7 +401,9 @@
                     android:text="@string/foto_stnk"
                     android:enabled="false"
                     android:background="@drawable/btn_rounded_accent"
-                    android:textColor="@android:color/white" />
+                    android:textColor="@android:color/white"
+                    android:textSize="12sp"
+                    tools:ignore="ButtonStyle" />
 
                 <Button
                     android:id="@+id/btn_foto_ktp"
@@ -409,7 +413,9 @@
                     android:text="@string/foto_ktp"
                     android:enabled="false"
                     android:background="@drawable/btn_rounded_accent"
-                    android:textColor="@android:color/white" />
+                    android:textColor="@android:color/white"
+                    android:textSize="12sp"
+                    tools:ignore="ButtonStyle" />
 
                 <Button
                     android:id="@+id/btn_foto_part"
@@ -418,18 +424,13 @@
                     android:layout_weight="1"
                     android:text="@string/foto_part"
                     android:background="@drawable/btn_rounded_accent"
-                    android:textColor="@android:color/white" />
-
-                <Button
-                    android:id="@+id/btn_simpan_lkkclaim"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/simpan_uppercase"
-                    android:background="@drawable/btn_rounded_accent"
-                    android:textColor="@android:color/white" />
+                    android:textColor="@android:color/white"
+                    android:textSize="12sp"
+                    tools:ignore="ButtonStyle" />
 
             </LinearLayout>
+
+            <include layout="@layout/layout_btn_simpan_hapus"/>
 
         </LinearLayout>
 

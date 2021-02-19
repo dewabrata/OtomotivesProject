@@ -309,7 +309,6 @@
 
                 </LinearLayout>
 
-
                 <LinearLayout
                     android:id="@+id/ly_waktuAmbil"
                     android:layout_width="match_parent"
@@ -332,23 +331,56 @@
                     <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_height="34dp"
-                        android:layout_marginStart="@dimen/spacing_medium"
                         android:layout_weight="6"
-                        android:background="@drawable/background_edittext"
-                        android:paddingStart="10dp"
-                        android:paddingTop="2dp"
-                        android:paddingBottom="2dp"
-                        tools:ignore="RtlSymmetry">
+                        android:background="@drawable/background_edittext">
 
                         <TextView
-                            android:id="@+id/tv_waktu_checkin4"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:drawableStart="@drawable/icon_jam"
+                            android:id="@+id/tv_tgl_ambil"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginTop="3dp"
                             android:gravity="center"
-                            android:textColor="@color/grey_900" />
+                            android:textAlignment="center"
+                            android:drawablePadding="10dp"
+                            android:layout_marginBottom="3dp"
+                            android:textColor="@color/grey_900"
+                            android:drawableStart="@drawable/icon_tanggal" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:drawablePadding="5dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginStart="10dp"
+                            android:textColor="@color/grey_900"
+                            android:layout_marginEnd="10dp"
+                            android:text="-" />
+
+                        <TextView
+                            android:id="@+id/tv_jam_ambil"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentEnd="true"
+                            android:drawablePadding="10dp"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginTop="3dp"
+                            android:gravity="center"
+                            android:layout_marginEnd="5dp"
+                            android:textAlignment="center"
+                            android:textColor="@color/grey_900"
+                            android:layout_marginBottom="3dp"
+                            android:drawableEnd="@drawable/icon_jam" />
 
                     </RelativeLayout>
+
 
                 </LinearLayout>
 

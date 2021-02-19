@@ -1,8 +1,11 @@
 package com.rkrzmail.oto;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,6 +17,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -28,6 +32,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingService;
 import com.naa.data.Nson;
 import com.naa.data.UtilityAndroid;
 import com.naa.utils.InternetX;
@@ -38,12 +44,15 @@ import com.rkrzmail.oto.fragment.pageindicator.CirclePageIndicator;
 import com.rkrzmail.oto.gmod.MyCode;
 import com.rkrzmail.oto.modules.antar_jemput.AntarJemput_Activity;
 import com.rkrzmail.oto.modules.bengkel.Absensi_MainTab_Activity;
+import com.rkrzmail.oto.modules.bengkel.Asset_Activity;
 import com.rkrzmail.oto.modules.bengkel.Collection_Activity;
 import com.rkrzmail.oto.modules.bengkel.Dashboard_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Laporan_Activity;
 import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
 import com.rkrzmail.oto.modules.bengkel.SaranActivity;
+import com.rkrzmail.oto.modules.bengkel.Schedule_MainTab_Activity;
 import com.rkrzmail.oto.modules.checkin.Checkin1_Activity;
+import com.rkrzmail.oto.modules.hutang.Piutang_MainTab_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiTerbayar_Activity;
 import com.rkrzmail.oto.modules.mekanik.AturSchedule_Activity;
 import com.rkrzmail.oto.modules.mekanik.BiayaMekanik2Activity;
@@ -78,10 +87,12 @@ import com.rkrzmail.oto.modules.sparepart.LokasiPart_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.RekeningBank_Activity;
 import com.rkrzmail.oto.modules.bengkel.Tenda_Activity;
 import com.rkrzmail.oto.modules.sparepart.TerimaPart_Activity;
+import com.rkrzmail.srv.OtoReceiver;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Vector;
 
 import static com.rkrzmail.utils.APIUrls.ATUR_KONTROL_LAYANAN;
@@ -181,6 +192,7 @@ public class MenuActivity extends AppActivity {
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         setContentView(R.layout.activity_main);
 
+        initBrodcastReceiver();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         Drawable iconOto = getResources().getDrawable(R.drawable.icon_oto);
         iconOto.setTint(getResources().getColor(R.color.colorWhite));
@@ -260,12 +272,35 @@ public class MenuActivity extends AppActivity {
                 } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_COLLECTION) && getAccess(M_COLLECTION)) {
                     Intent intent = new Intent(MenuActivity.this, Collection_Activity.class);
                     startActivity(intent);
-                }else{
+                } else {
                     showWarning("ANDA TIDAK MEMILIKI AKSES MENU " + nPopulate.get(position).get("text").asString(), Toast.LENGTH_LONG);
                 }
             }
         });
         // banner();
+    }
+
+    private void initBrodcastReceiver() {
+        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (Objects.requireNonNull(intent.getAction())) {
+                    case "notifyMekanik":
+                        showInfo("Mekanik");
+                        Log.e("otoReceiver", "onReceive: " + "mekanik");
+                        break;
+                    case "notifyPart":
+                        showInfo("Mekanik");
+                        Log.e("otoReceiver", "onReceive: " + "part");
+                        break;
+                }
+            }
+        };
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("notifyMekanik");
+        intentFilter.addAction("notifyPart");
+        registerReceiver(broadcastReceiver, intentFilter);
     }
 
     @Override
@@ -289,22 +324,24 @@ public class MenuActivity extends AppActivity {
             intent.putExtra("url", "https://m.otomotives.com/#/hutang?" + getWebUrl());
             startActivity(intent);
         } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_PIUTANG) && getAccess(MY_BUSINESS)) {
-           /* Intent intent = new Intent(MenuActivity.this, Piutang_Activity.class);
-            startActivity(intent);*/
-            Intent intent = new Intent(MenuActivity.this, WebActivity.class);
+            Intent intent = new Intent(MenuActivity.this, Piutang_MainTab_Activity.class);
+            startActivity(intent);
+           /* Intent intent = new Intent(MenuActivity.this, WebActivity.class);
             intent.putExtra("title", "Dashboard");
             intent.putExtra("url", "https://m.otomotives.com/#/piutang?" + getWebUrl());
-            startActivity(intent);
+            startActivity(intent);*/
         } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_BILLING) && getAccess(MY_BUSINESS)) {
 
         } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_PROFILE) && getAccess(PENGATURAN)) {
             Intent intent = new Intent(MenuActivity.this, ProfileBengkel_Activity.class);
             startActivity(intent);
         } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_ASET) && getAccess(MY_BUSINESS)) {
-            Intent intent = new Intent(MenuActivity.this, WebActivity.class);
+            Intent intent = new Intent(MenuActivity.this, Asset_Activity.class);
+            startActivity(intent);
+           /* Intent intent = new Intent(MenuActivity.this, WebActivity.class);
             intent.putExtra("title", "Dashboard");
             intent.putExtra("url", "https://m.otomotives.com/#/aset?" + getWebUrl());
-            startActivity(intent);
+            startActivity(intent);*/
         } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_CUSTOMER) && getAccess(MY_BUSINESS)) {
 
         } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_PAYROLL) && getAccess(MY_BUSINESS)) {
@@ -313,7 +350,7 @@ public class MenuActivity extends AppActivity {
             Intent intent = new Intent(MenuActivity.this, Laporan_Activity.class);
             startActivity(intent);
         } else if (item.getTitle().toString().equalsIgnoreCase(SCHEDULE) && getAccess(SCHEDULE)) {
-            Intent intent = new Intent(MenuActivity.this, AturSchedule_Activity.class);
+            Intent intent = new Intent(MenuActivity.this, Schedule_MainTab_Activity.class);
             startActivity(intent);
         }
         //Pengaturan
@@ -348,21 +385,21 @@ public class MenuActivity extends AppActivity {
         else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_FREKWENSI) && getAccess(DISCOUNT)) {
             Intent intent = new Intent(MenuActivity.this, FrekwensiDiscount_Activity.class);
             startActivity(intent);
-        } else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_JASA_LAIN)  && getAccess(DISCOUNT)) {
+        } else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_JASA_LAIN) && getAccess(DISCOUNT)) {
             Intent intent = new Intent(MenuActivity.this, DiscountJasaLain_Activity.class);
             startActivity(intent);
-        } else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_LAYANAN)  && getAccess(DISCOUNT)) {
+        } else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_LAYANAN) && getAccess(DISCOUNT)) {
             Intent intent = new Intent(MenuActivity.this, DiscountLayanan_Activity.class);
             startActivity(intent);
-        } else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_PART)  && getAccess(DISCOUNT)) {
+        } else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_PART) && getAccess(DISCOUNT)) {
             Intent intent = new Intent(MenuActivity.this, DiscountPart_Activity.class);
             startActivity(intent);
-        } else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_SPOT)  && getAccess(DISCOUNT)) {
+        } else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_SPOT) && getAccess(DISCOUNT)) {
             Intent intent = new Intent(MenuActivity.this, DiscountSpot_Activity.class);
             startActivity(intent);
         }
         //Komisi
-        else if (item.getTitle().toString().equalsIgnoreCase(KOMISI_JASA_LAIN)  && getAccess(KOMISI)) {
+        else if (item.getTitle().toString().equalsIgnoreCase(KOMISI_JASA_LAIN) && getAccess(KOMISI)) {
             Intent intent = new Intent(MenuActivity.this, KomisiJasaLain_Activity.class);
             startActivity(intent);
         } else if (item.getTitle().toString().equalsIgnoreCase(KOMISI_LAYANAN) && getAccess(KOMISI)) {
@@ -392,11 +429,17 @@ public class MenuActivity extends AppActivity {
 
                 }
             });
-        }else if(item.getTitle().toString().equalsIgnoreCase(SARAN)){
+        } else if (item.getTitle().toString().equalsIgnoreCase(SARAN)) {
             Intent intent = new Intent(MenuActivity.this, SaranActivity.class);
             startActivity(intent);
-        }else{
-            showWarning("ANDA TIDAK MEMILIKI AKSES MENU " + item.getTitle().toString(), Toast.LENGTH_LONG);
+        } else if (item.getTitle().toString().equals(PENGATURAN) && !getAccess(PENGATURAN)) {
+            showWarning("ANDA TIDAK MEMILIK AKSES " + PENGATURAN);
+        }else if (item.getTitle().toString().equals(PENGATURAN) && !getAccess(MY_BUSINESS)) {
+            showWarning("ANDA TIDAK MEMILIK AKSES " + MY_BUSINESS);
+        }else if (item.getTitle().toString().equals(PENGATURAN) && !getAccess(DISCOUNT)) {
+            showWarning("ANDA TIDAK MEMILIK AKSES " + DISCOUNT);
+        }else if (item.getTitle().toString().equals(PENGATURAN) && !getAccess(KOMISI)) {
+            showWarning("ANDA TIDAK MEMILIK AKSES " + KOMISI);
         }
 
         return super.onOptionsItemSelected(item);
@@ -405,7 +448,6 @@ public class MenuActivity extends AppActivity {
     private String getWebUrl() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("user=").append(UtilityAndroid.getSetting(getApplicationContext(), "user", ""));
-        ;
         stringBuilder.append("&token=").append(UtilityAndroid.getSetting(getApplicationContext(), "session", ""));
         return stringBuilder.toString();
     }
@@ -504,7 +546,6 @@ public class MenuActivity extends AppActivity {
     public final String M_TERIMA_PARTS = "TERIMA PARTS";
     public final String M_TUGAS_PARTS = "TUGAS PARTS";
     //parent sub
-    public final String ENTRY_CHECKIN = "ENTRY CHECKIN";
     public final String KENDARAAN_CUSTOMER = "KENDARAAN CUSTOMER";
     public final String PEMBELIAN_PART = "PEMBELIAN PART";
     public final String MY_BUSINESS = "MY BUSINESS";
@@ -566,7 +607,6 @@ public class MenuActivity extends AppActivity {
 
         menu.add(ANTAR_JEMPUT);//FREE AKSES
         menu.add(CHECK_OUT);
-        menu.add(ENTRY_CHECKIN);
         menu.add(KENDARAAN_CUSTOMER);
         menu.add(LAPORAN);
         menu.add(PART_KELUAR);
@@ -646,18 +686,18 @@ public class MenuActivity extends AppActivity {
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     result = result.get("data");
-                    if(result.size() > 0){
+                    if (result.size() > 0) {
                         for (int i = 0; i < result.size(); i++) {
-                            if(permintaanPart.size()> 0){
+                            if (permintaanPart.size() > 0) {
                                 for (int j = 0; j < permintaanPart.size(); j++) {
-                                    if(permintaanPart.get(j).get("PART_ID").asInteger() != result.get(i).get("PART_ID").asInteger()){
+                                    if (permintaanPart.get(j).get("PART_ID").asInteger() != result.get(i).get("PART_ID").asInteger()) {
                                         permintaanPart.add(Nson.newObject()
                                                 .set("PART_ID", result.get(i).get("PART_ID").asInteger())
                                                 .set("NAMA_PART", result.get(i).get("NAMA_PART").asString())
                                         );
                                     }
                                 }
-                            }else{
+                            } else {
                                 permintaanPart.add(Nson.newObject()
                                         .set("PART_ID", result.get(i).get("PART_ID").asInteger())
                                         .set("NAMA_PART", result.get(i).get("NAMA_PART").asString())
@@ -666,7 +706,7 @@ public class MenuActivity extends AppActivity {
                         }
 
                         permintaanSize = permintaanPart.size();
-                        if(permintaanSize > result.size()){
+                        if (permintaanSize > result.size()) {
                             Intent intent = new Intent(getActivity(), TugasPart_MainTab_Activity.class);
                             intent.putExtra("NOPOL", result.get(0).get("NOPOL").asString());
                             showNotification(
@@ -697,7 +737,7 @@ public class MenuActivity extends AppActivity {
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     result = result.get("data");
-                    if(result.asString().equals("PENUGASAN MEKANIK")){
+                    if (result.asString().equals("PENUGASAN MEKANIK")) {
                         showInfo(result.asString());
                         Intent intent = new Intent(getActivity(), PerintahKerjaMekanik_Activity.class);
                         intent.putExtra("NOPOL", result.get(0).get("NOPOL").asString());
@@ -712,7 +752,6 @@ public class MenuActivity extends AppActivity {
             }
         });
     }
-
 
 
     @Override

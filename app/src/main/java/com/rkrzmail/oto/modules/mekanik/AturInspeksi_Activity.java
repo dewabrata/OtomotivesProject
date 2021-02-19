@@ -50,6 +50,8 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
 
     private String idMekanikKerja = "", idCheckin = "";
     private String mekanik = "", catatan = "", noPonsel = "";
+    private String tidakMenunggu = "";
+    private String nopol = "";
 
     private boolean isRework = false, isStart = false, isStop = false;
 
@@ -96,6 +98,8 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
         idMekanikKerja = nson.get("MEKANIK_KERJA_ID").asString();
         mekanik = nson.get("MEKANIK").asString();
         noPonsel = nson.get("NO_PONSEL").asString();
+        tidakMenunggu = nson.get("TIDAK_MENUNGGU").asString();
+        nopol = nson.get("NOPOL").asString();
 
         viewLayananPartJasa();
         viewKeluhan();
@@ -264,6 +268,8 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
                 args.put("idKerja", idMekanikKerja);
                 args.put("catatan", catatan);
                 args.put("noPonsel", noPonsel);
+                args.put("tidakMenunggu", tidakMenunggu);
+                args.put("nopol", nopol);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_INSPEKSI), args));
             }

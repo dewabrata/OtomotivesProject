@@ -6,7 +6,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,7 +26,6 @@ import com.rkrzmail.srv.NikitaViewHolder;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Map;
 
@@ -39,7 +37,7 @@ public class ChecklistAntarJemput_Activity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_basic_2);
+        setContentView(R.layout.activity_list_basic_with_btn);
         initComponent();
     }
 

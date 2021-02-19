@@ -30,6 +30,8 @@ import com.rkrzmail.utils.Tools;
 import java.util.Map;
 
 import static com.rkrzmail.utils.APIUrls.SET_STOCK_OPNAME;
+import static com.rkrzmail.utils.ConstUtils.ALL;
+import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_TERALOKASIKAN;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.PART;
@@ -61,7 +63,7 @@ public class HistoryStockOpname_Activity extends AppActivity {
             @Override
             public void onClick(View view) {
                 intent = new Intent(getActivity(), CariPart_Activity.class);
-                intent.putExtra(CARI_PART_TERALOKASIKAN, "");
+                intent.putExtra(CARI_PART_LOKASI, ALL);
                 startActivityForResult(intent, REQUEST_CARI_PART);
             }
         });

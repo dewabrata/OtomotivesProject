@@ -93,8 +93,9 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
         } else {
             final Nson nson = Nson.readJson(getIntentStringExtra(PART_WAJIB));
 
-            find(R.id.ly_waktu_kerja).setVisibility(View.GONE);
             etBiayaJasa.setVisibility(View.GONE);
+            find(R.id.ly_waktu_kerja).setVisibility(View.GONE);
+
             isPartWajib = true;
             batasanGaransiKm = nson.get("GARANSI_PART_KM").asInteger();
             batasanGaransiBulan = nson.get("GARANSI_PART_BULAN").asInteger();
@@ -103,7 +104,6 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
             berkalaBulan = Integer.parseInt(formatOnlyNumber(nson.get("BERKALA_BULAN").asString()));
             berkalaKm = Integer.parseInt(formatOnlyNumber(nson.get("BERKALA_KM").asString())) + kmKendaraan;
             stock = nson.get("STOCK").asInteger();
-            garansiPart = nson.get("GARANSI_PART_PABRIKAN").asString();
             hpp = nson.get("HPP").asString();
             idLokasiPart = nson.get("LOKASI_PART_ID").asString();
 
@@ -501,11 +501,16 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
         sendData.set("BERKALA_BULAN", getBerkalaBulan(berkalaBulan));
         sendData.set("WAKTU_INSPEKSI", find(R.id.et_waktu_set_inspeksi, EditText.class).getText().toString());
         sendData.set("WAKTU_KERJA", find(R.id.et_waktuSet, EditText.class).getText().toString());
-        if(kmKendaraan < batasanGaransiKm){
-            sendData.set("GARANSI", garansiPart);
+        if(kmKendaraan > 0){
+            if(kmKendaraan < batasanGaransiKm){
+                sendData.set("GARANSI", garansiPart);
+            }else{
+                sendData.set("GARANSI", "N");
+            }
         }else{
-            sendData.set("GARANSI", "N");
+            sendData.set("GARANSI", "");
         }
+
         sendData.set("NAMA_PART", nson.get("NAMA_PART").asString());
         sendData.set("NO_PART", nson.get("NO_PART").asString());
         sendData.set("PART_ID", nson.get("PART_ID").asString());

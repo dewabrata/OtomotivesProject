@@ -85,6 +85,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
     private int totalTambah = 0;
     private int totalBatal = 0, countBatal = 0;
     private int countClick = 0;
+    private int kmKendaraan = 0;
 
     private boolean isWait = false, isPartKosong = false, isBatal = false, isTambah = false, isNotWait = false;
     private boolean isSign = false;
@@ -131,6 +132,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
         idCheckin = getIntentStringExtra("CHECKIN_ID");
         nopol = getIntentStringExtra("NOPOL");
         noPonsel = getIntentStringExtra("NO_PONSEL");
+        kmKendaraan = getIntentIntegerExtra("KM");
         Log.d(TAG, "initData: " + idCheckin);
         totalBiaya = Integer.parseInt(getIntentStringExtra(TOTAL_BIAYA));
         find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));
@@ -545,6 +547,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                         i = new Intent(getActivity(), JumlahPart_Checkin_Activity.class);
                         i.putExtra(DATA, dataAccept.toJson());
                         i.putExtra(TAMBAH_PART, "");
+                        i.putExtra("KM", kmKendaraan);
                         startActivityForResult(i, REQUEST_HARGA_PART);
                     }
 

@@ -36,7 +36,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/paddingSemiLarge"
+                android:layout_marginBottom="@dimen/paddingSemiLarge"
                 android:layout_gravity="center_horizontal">
 
                 <Button
@@ -44,15 +45,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    android:layout_marginRight="20dp"
-                    android:text="CANCEL"/>
+                    android:layout_marginEnd="20dp"
+                    android:text="@string/batal_uppercase"
+                    android:background="@drawable/btn_rounded_accent"
+                    android:textColor="@android:color/white"/>
                 
                 <Button
                     android:id="@+id/btn_alert_save"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    android:text="SIMPAN"/>
+                    android:text="@string/simpan_uppercase"
+                    android:background="@drawable/btn_rounded_accent"
+                    android:textColor="@android:color/white"/>
 
             </LinearLayout>
 

@@ -16,6 +16,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -92,18 +93,19 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkin4_);
         initComponent();
+        initToolbar();
         ttd = null;
     }
 
     @Override
     public void onBackPressed() {
-        showInfoDialog("KONFIRMASI", "KELUAR CHECKIN ? ", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                setResult(RESULT_OK);
-                finish();
-            }
-        }, null);
+        setResult(RESULT_OK);
+        finish();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @SuppressLint("NewApi")
@@ -114,9 +116,17 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            setResult(RESULT_OK);
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @SuppressLint("SetTextI18n")
     private void initComponent() {
-        initToolbar();
         if (getIntent().hasExtra("BATAL")) {
             Tools.setViewAndChildrenEnabled(find(R.id.ly_checkin4, LinearLayout.class), false);
             Tools.setViewAndChildrenEnabled(find(R.id.ly_ttd, LinearLayout.class), false);
@@ -137,7 +147,6 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             });
             return;
         }
-
         initData();
         initListener();
     }
@@ -182,7 +191,8 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
     }
 
     private void initListener() {
-        find(R.id.tv_waktu_checkin4, TextView.class).setOnClickListener(this);
+        find(R.id.tv_jam_ambil, TextView.class).setOnClickListener(this);
+        find(R.id.tv_tgl_ambil, TextView.class).setOnClickListener(this);
         find(R.id.tv_tgl_estimasi_checkin4, TextView.class).setOnClickListener(this);
         find(R.id.tv_jam_estimasi_checkin4, TextView.class).setOnClickListener(this);
         find(R.id.btn_hapus, Button.class).setVisibility(View.VISIBLE);
@@ -306,7 +316,8 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 }
             }
         });
-        datePickerDialog.setMinDate(parseWaktuPesan());
+
+        datePickerDialog.setMinDate(cldr);
         datePickerDialog.show(getFragmentManager(), "Datepickerdialog");
     }
 
@@ -345,6 +356,48 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         timePickerDialog.show(getFragmentManager(), "Timepickerdialog");
     }
 
+    private void getDatePickerTglAmbil() {
+        final String[] waktuAmbil = {""};
+        final Calendar cldr = Calendar.getInstance();
+        final int day = cldr.get(Calendar.DAY_OF_MONTH);
+        final int month = cldr.get(Calendar.MONTH);
+        final int year = cldr.get(Calendar.YEAR);
+        DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                String newDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                Date date = null;
+                try {
+                    date = sdf.parse(newDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                String formattedTime = sdf.format(date);
+                waktuAmbil[0] = formattedTime;
+                find(R.id.tv_tgl_ambil, TextView.class).setText(formattedTime);
+            }
+        }, year, month, day);
+
+        datePickerDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                try {
+                    if (validateWaktuAmbil(true, tglEstimasi, waktuAmbil[0])) {
+                        showWarning("Waktu Ambil Harus Melebihi Estimasi Selesai");
+                        find(R.id.tv_jam_ambil, TextView.class).setText("");
+                        find(R.id.tv_jam_ambil, TextView.class).performClick();
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Log.d(TAG, "WAKTU AMBIL: " + waktuLayananHplusExtra);
+            }
+        });
+        datePickerDialog.setMinDate(parseWaktuPesan());
+        datePickerDialog.show(getFragmentManager(), "Datepickerdialog");
+    }
+
     private void getTimePickerDialogWaktuAmbil() {
         final String[] waktuAmbil = {""};
         Calendar calendar = Calendar.getInstance();
@@ -354,6 +407,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+                minute -= 10;
                 String time = hourOfDay + ":" + minute;
                 Date date = null;
                 try {
@@ -363,7 +417,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 }
                 String formattedTime = sdf.format(date);
                 waktuAmbil[0] = formattedTime;
-                find(R.id.tv_waktu_checkin4, TextView.class).setText(formattedTime);
+                find(R.id.tv_jam_ambil, TextView.class).setText(formattedTime);
             }
         }, currentHour, currentMinute, true);
 
@@ -372,10 +426,10 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void onDismiss(DialogInterface dialog) {
                 try {
-                    if (validateWaktuAmbil(waktuEstimasi, waktuAmbil[0])) {
+                    if (validateWaktuAmbil(false, waktuEstimasi, waktuAmbil[0])) {
                         showWarning("Waktu Ambil Harus Melebihi Estimasi Selesai");
-                        find(R.id.tv_waktu_checkin4, TextView.class).setText("");
-                        find(R.id.tv_waktu_checkin4, TextView.class).performClick();
+                        find(R.id.tv_jam_ambil, TextView.class).setText("");
+                        find(R.id.tv_jam_ambil, TextView.class).performClick();
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -557,12 +611,20 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         return String.format("%02d:%02d:%02d", Integer.parseInt(result[0]), Integer.parseInt(result[1]), Integer.parseInt(result[2]));
     }
 
-    private boolean validateWaktuAmbil(String jamEstimasi, String jamAmbil) throws ParseException {
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
-        Date waktuAmbil = sdf.parse(jamAmbil);
-        Date waktuEstimasi = sdf.parse(jamEstimasi);
+    @SuppressLint("SimpleDateFormat")
+    private boolean validateWaktuAmbil(boolean isTgl, String estimasi, String waktuAmbil) throws ParseException {
+        Date jamTglAmbil;
+        Date waktuEstimasi;
+        SimpleDateFormat sdf;
+        if (isTgl) {
+            sdf = new SimpleDateFormat("dd/MM/yyyy");
+        } else {
+            sdf = new SimpleDateFormat("hh:mm");
+        }
 
-        return !waktuAmbil.after(waktuEstimasi);
+        jamTglAmbil = sdf.parse(waktuAmbil);
+        waktuEstimasi = sdf.parse(estimasi);
+        return !jamTglAmbil.after(waktuEstimasi);
     }
 
     private void saveData(final String status) {
@@ -572,7 +634,8 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         final String tidakMenunggu = find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).isChecked() ? "Y" : "N";
         final String konfirmTambahan = find(R.id.cb_konfirmTambah_checkin4, CheckBox.class).isChecked() ? "Y" : "N";
         final String buangPart = find(R.id.cb_buangPart_checkin4, CheckBox.class).isChecked() ? "Y" : "N";
-        final String waktuAmbil = find(R.id.tv_waktu_checkin4, TextView.class).getText().toString();
+        final String[] tglAmbil = {find(R.id.tv_tgl_ambil, TextView.class).getText().toString()};
+        final String jamAmbil = find(R.id.tv_jam_ambil, TextView.class).getText().toString();
         final String sk = find(R.id.cb_aggrement_checkin4, CheckBox.class).isChecked() ? "Y" : "N";
         final String hari = find(R.id.et_lamaWaktu_checkin, EditText.class).getText().toString().substring(0, 2);
         final String jam = find(R.id.et_lamaWaktu_checkin, EditText.class).getText().toString().substring(3, 5);
@@ -603,7 +666,17 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 args.put("tidakmenunggu", tidakMenunggu);
                 args.put("konfirmtambahan", konfirmTambahan);
                 args.put("buangpart", buangPart);
-                args.put("waktuambil", waktuAmbil);
+                if (find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).isChecked()) {
+                    if (tglAmbil[0].isEmpty()){
+                        tglAmbil[0] = currentDateTime("dd/MM");
+                    }else {
+                        tglAmbil[0] =  Tools.formatDate(tglAmbil[0], "dd/MM");
+                    }
+                    args.put("waktuambil", tglAmbil[0] + " " + jamAmbil);
+                }else{
+                    args.put("waktuAmbi", "");
+                }
+
                 args.put("sk", sk);
                 args.put("waktuLayananHari", hari);
                 args.put("waktuLayananJam", jam);
@@ -810,7 +883,10 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             case R.id.tv_tgl_estimasi_checkin4:
                 getDatePickerCheckin();
                 break;
-            case R.id.tv_waktu_checkin4:
+            case R.id.tv_tgl_ambil:
+                getDatePickerTglAmbil();
+                break;
+            case R.id.tv_jam_ambil:
                 getTimePickerDialogWaktuAmbil();
                 break;
             case R.id.tv_jam_estimasi_checkin4:
@@ -830,7 +906,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 } else if (!isSign) {
                     showWarning("TANDA TANGAN WAJIB DI INPUT", Toast.LENGTH_LONG);
                 } else if (find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).isChecked() &&
-                        find(R.id.tv_waktu_checkin4, TextView.class).getText().toString().isEmpty()) {
+                        find(R.id.tv_jam_ambil, TextView.class).getText().toString().isEmpty()) {
                     showWarning("WAKTU AMBIL HARUS DI ISI", Toast.LENGTH_LONG);
                 } else {
                     if (find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).isChecked() &&
@@ -841,7 +917,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                     } else if ((isHplusPartKosong || isHpLus) &&
                             find(R.id.sp_bbm, Spinner.class).getSelectedItem().toString().equals("--PILIH--")) {
                         showWarning("LEVEL BBM BELUM DI PILIH", Toast.LENGTH_LONG);
-                    }  else if ((isExtra || isHplusPartKosong || isHpLus) &&
+                    } else if ((isExtra || isHplusPartKosong || isHpLus) &&
                             find(R.id.tv_tgl_estimasi_checkin4, TextView.class).getText().toString().isEmpty()) {
                         showWarning("TANGGAL ESTIMASI HARUS DI ISI", Toast.LENGTH_LONG);
                         find(R.id.tv_jam_estimasi_checkin4, TextView.class).requestFocus();

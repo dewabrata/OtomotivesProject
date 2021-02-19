@@ -124,7 +124,6 @@ public class MapPicker_Dialog extends DialogFragment implements OnMapReadyCallba
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(latLng)
                 .zoom(17)
-
                 .build();
 
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));

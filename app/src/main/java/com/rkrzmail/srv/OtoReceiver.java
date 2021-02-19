@@ -4,6 +4,7 @@ package com.rkrzmail.srv;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.naa.data.UtilityAndroid;
 import com.rkrzmail.oto.gmod.Splash;
@@ -13,6 +14,14 @@ import com.rkrzmail.oto.gmod.Update;
 public class OtoReceiver extends BroadcastReceiver {
 	
      public void onReceive(Context context, Intent intent) {
+        switch (intent.getAction()){
+            case "notifyMekanik":
+                Log.e("otoReceiver", "onReceive: " + "mekanik");
+                break;
+            case "notifyPart":
+                Log.e("otoReceiver", "onReceive: " + "part");
+                break;
+        }
          if (intent.getAction().equals("android.net.conn.CONNECTIVITY_CHANGE")) {
              //internet(context, intent);
          }

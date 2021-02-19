@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -54,7 +55,7 @@ public class Otp_Activity extends AppActivity {
                 if (s.length() == 1) {
                     find(R.id.et2, EditText.class).requestFocus();
                 } else if (s.length() == 0) {
-                    find(R.id.et1, EditText.class).clearFocus();
+                    find(R.id.et1, EditText.class).requestFocus();
                 }
             }
         });
@@ -277,6 +278,19 @@ public class Otp_Activity extends AppActivity {
                 } else {
                     showError(nson.get("error").asString());
                 }
+            }
+        });
+    }
+
+    private void clearAndSetFocus(final EditText editText, final EditText editText2){
+        editText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if(keyEvent.getAction() == KeyEvent.KEYCODE_DEL){
+                    editText.clearFocus();
+                    editText2.requestFocus();
+                }
+                return false;
             }
         });
     }

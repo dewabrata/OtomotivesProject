@@ -109,7 +109,7 @@ public class TerimaPart_Activity extends AppActivity {
                 viewHolder.find(R.id.txtNoDo, TextView.class).setText(nListArray.get(position).get("NO_DO").asString());
                 viewHolder.find(R.id.txtJatuhTempo, TextView.class).setText(tglInv);
                 try{
-                    viewHolder.find(R.id.txtTotal, TextView.class).setText(RP + formatRp(nListArray.get(position).get("NET").asString()));
+                    viewHolder.find(R.id.txtTotal, TextView.class).setText(RP + formatRp(nListArray.get(position).get("TOTAL_ALL").asString()));
                     viewHolder.find(R.id.tv_ongkir, TextView.class).setText(RP + formatRp(nListArray.get(position).get("ONGKOS_KIRIM").asString()));
                 }catch(Exception e){
                     Log.d(TAG, "exception: " + e.getMessage() + "cause : " + e.getCause());

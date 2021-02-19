@@ -15,6 +15,7 @@ import com.rkrzmail.oto.modules.bengkel.Dashboard_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Pembayaran_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
 import com.rkrzmail.oto.modules.bengkel.Schedule_MainTab_Activity;
+import com.rkrzmail.oto.modules.hutang.Piutang_MainTab_Activity;
 import com.rkrzmail.oto.modules.sparepart.LokasiPart_MainTab_Activity;
 import com.rkrzmail.oto.modules.sparepart.OutSource_Activity;
 import com.rkrzmail.oto.modules.sparepart.PartHome_MainTab_Activity;
@@ -199,6 +200,18 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
             return fragment;
         }
 
+        if(context instanceof Piutang_MainTab_Activity){
+            switch (i) {
+                case 0:
+                    fragment = Fragment.instantiate(context, Transaksi_Piutang_Fragment.class.getName());
+                    break;
+                case 1:
+                    fragment = Fragment.instantiate(context, Invoice_Piutang_Fragment.class.getName());
+                    break;
+            }
+            return fragment;
+        }
+
         return fragment;
     }
 
@@ -289,6 +302,14 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
                     return "Jadwal";
                 case 1:
                     return "Kehadiran";
+            }
+        }
+        if(context instanceof Piutang_MainTab_Activity){
+            switch (position){
+                case 0:
+                    return "Transaksi";
+                case 1:
+                    return "Invoice";
             }
         }
         return null;

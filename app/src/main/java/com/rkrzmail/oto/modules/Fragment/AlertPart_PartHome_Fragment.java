@@ -41,6 +41,7 @@ public class AlertPart_PartHome_Fragment extends Fragment implements SearchListe
     private AppActivity activity;
     private View fragmentView;
     private SearchView.SearchAutoComplete searchAutoComplete = null;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     private final Nson partList = Nson.newArray();
     private SearchListener.IFragmentListener iFragmentListener = null;
@@ -70,8 +71,13 @@ public class AlertPart_PartHome_Fragment extends Fragment implements SearchListe
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         activity = ((PartHome_MainTab_Activity) getActivity());
         fragmentView = inflater.inflate(R.layout.activity_list_basic, container, false);
-        SwipeRefreshLayout swipeRefreshLayout = fragmentView.findViewById(R.id.swiperefresh);
-        swipeRefreshLayout.setEnabled(false);
+        swipeRefreshLayout = fragmentView.findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                viewALLPart("");
+            }
+        });
         initHideToolbar();
         initRecylerviewPart();
         iFragmentListener = (SearchListener.IFragmentListener) activity;
@@ -177,7 +183,7 @@ public class AlertPart_PartHome_Fragment extends Fragment implements SearchListe
                 viewHolder.find(R.id.tv_merk_part, TextView.class).setText(partList.get(position).get("MERK").asString());
                 viewHolder.find(R.id.tv_nama_part, TextView.class).setText(partList.get(position).get("NAMA_PART").asString());
                 viewHolder.find(R.id.tv_no_part, TextView.class).setText(partList.get(position).get("NO_PART").asString());
-                viewHolder.find(R.id.tv_stock_part, TextView.class).setText(partList.get(position).get("STOCK").asString());
+                viewHolder.find(R.id.tv_stock_part, TextView.class).setText(partList.get(position).get("STOCK_LOKASI_PART").asString());
                 viewHolder.find(R.id.tv_min_stock_part, TextView.class).setText(partList.get(position).get("STOCK_MINIMUM").asString());
                 viewHolder.find(R.id.tv_pembelian_terakhir, TextView.class).setText("");
             }
@@ -195,6 +201,7 @@ public class AlertPart_PartHome_Fragment extends Fragment implements SearchListe
 
             @Override
             public void run() {
+                swipeProgress(true);
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "view");
@@ -207,6 +214,7 @@ public class AlertPart_PartHome_Fragment extends Fragment implements SearchListe
 
             @Override
             public void runUI() {
+                swipeProgress(false);
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     result = result.get("data");
                     partList.asArray().clear();
@@ -218,6 +226,20 @@ public class AlertPart_PartHome_Fragment extends Fragment implements SearchListe
             }
         });
     }
+
+    private void swipeProgress(final boolean show) {
+        if (!show) {
+            swipeRefreshLayout.setRefreshing(show);
+            return;
+        }
+        swipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeRefreshLayout.setRefreshing(show);
+            }
+        });
+    }
+
 
     private NsonAutoCompleteAdapter autoCompleteAdapter() {
         return new NsonAutoCompleteAdapter(getActivity()) {

@@ -86,6 +86,13 @@ public class PartBengkel_PartHome_Fragment extends Fragment implements SearchLis
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        iFragmentListener = (SearchListener.IFragmentListener) context;
+
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         isStarted = true;
@@ -132,6 +139,7 @@ public class PartBengkel_PartHome_Fragment extends Fragment implements SearchLis
     public void onResume() {
         super.onResume();
         if (isVisible()) {
+            attachAdapter(searchAutoComplete, tabPosition);
             if (searchQuery != null) {
                 onTextQuery(searchQuery, tabPosition);
             } else {

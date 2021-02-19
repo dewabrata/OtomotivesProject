@@ -99,7 +99,7 @@ public class Jadwal_Schedule_Fragment extends Fragment {
         spUser = v.findViewById(R.id.sp_userSchedule);
         cbCopy = v.findViewById(R.id.cb_copydata);
         rcSchedule = v.findViewById(R.id.recyclerViewSchedule);
-        btnSimpan = v.findViewById(R.id.btn_simpan_schedule_atur);
+        btnSimpan = v.findViewById(R.id.btn_simpan);
         ic_tanggal = v.findViewById(R.id.ic_tanggal);
         ic_tanggal2 = v.findViewById(R.id.ic_tanggal2);
         setSpUser();

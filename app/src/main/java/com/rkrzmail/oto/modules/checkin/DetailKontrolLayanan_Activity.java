@@ -27,6 +27,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -40,6 +41,7 @@ import com.rkrzmail.srv.NikitaMultipleViewAdapter;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.text.ParseException;
@@ -77,10 +79,10 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
     private static final String TAG = "DetailKontrol__";
 
     private EditText etNoAntrian, etStatus, etNopol, etNoKunci, etNamaPelanggan, etTotal,
-            etDp, etSisa, etEstimasiSebelum, etEstimasiLama, etEstimasiSelesai, etPengambilan, etKeteranganTambahan, etNamaLayanan;
+            etDp, etSisa, etEstimasiSebelum, etEstimasiLama, etEstimasiSelesai, etKeteranganTambahan, etNamaLayanan;
     private RecyclerView rvDetail, rvKeluhan;
     private Spinner spAktifitas, spNamaMekanik;
-    private TextView tvNamaLayanan, tvBiayaLayanan;
+    private TextView tvNamaLayanan, tvBiayaLayanan, tvTglAmbil, tvJamAmbil;
     private AlertDialog alertDialog;
 
     private final Nson mekanikArray = Nson.newArray();
@@ -95,16 +97,18 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
     private boolean isKurangi = false;
     private boolean isMekanikSelected = false;
     private boolean isEstimasi = false, isKonfirmasiTambahan = false;
+    private boolean isModifiedTidakMenunggu = false;
 
     private String idCheckin = "", idAntrian = "";
     private String status = "";
     private String namaMekanik = "", idMekanik = "";
     private String jenisAntrian = "", noPonsel = "";
     private String merkKendaraan = "";
-    private String waktuEstimasi = "";
+    private String waktuEstimasi = "", tglEstimasi = "";
 
     private int totalTambahPart = 0;
     private int totalBiaya = 0;
+    private int kmKendaraan = 0;
 
 
     @Override
@@ -147,12 +151,13 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         etEstimasiLama = findViewById(R.id.et_estimasi_lama);
         etEstimasiSelesai = findViewById(R.id.et_estimasi_selesai);
         etKeteranganTambahan = findViewById(R.id.et_keterangan_tambahan);
-        etPengambilan = findViewById(R.id.et_pengambilan);
         spAktifitas = findViewById(R.id.sp_aktifitas);
         spNamaMekanik = findViewById(R.id.sp_nama_mekanik);
         rvDetail = findViewById(R.id.recyclerView);
         tvNamaLayanan = findViewById(R.id.tv_nama_layanan);
         tvBiayaLayanan = findViewById(R.id.tv_biaya_layanan);
+        tvTglAmbil = findViewById(R.id.tv_tgl_ambil);
+        tvJamAmbil = findViewById(R.id.tv_jam_ambil);
     }
 
     @SuppressLint("SetTextI18n")
@@ -161,10 +166,10 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         final Nson data = Nson.readJson(getIntentStringExtra(DATA));
         Log.d(TAG, "loadData: " + data);
 
-        try{
+        try {
             String[] splitJamEstimasi = data.get("ESTIMASI_SELESAI").asString().split("-");
             waktuEstimasi = splitJamEstimasi[0];
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         totalBiaya = data.get("TOTAL_BIAYA").asInteger();
@@ -173,6 +178,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         noPonsel = data.get("NO_PONSEL").asString();
         merkKendaraan = data.get("NO_PONSEL").asString();
         isEstimasi = data.get("STATUS").asString().equals("LAYANAN ESTIMASI") & !data.get("STATUS").asString().isEmpty();
+        kmKendaraan = data.get("KM").asInteger();
 
         find(R.id.et_catatan_mekanik, EditText.class).setText(data.get("CATATAN_MEKANIK").asString());
         etNoAntrian.setText(data.get("NO_ANTRIAN").asString());
@@ -189,19 +195,20 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 data.get("WAKTU_KERJA_JAM").asString(),
                 data.get("WAKTU_KERJA_MENIT").asString()));
         etEstimasiSelesai.setText(Tools.setFormatDateTimeFromDb(data.get("ESTIMASI_SELESAI").asString(), "yyyy-MM-dd hh:mm", "dd/MM-hh:mm", false));
-        etPengambilan.setText(data.get("JAM_PENGAMBILAN").asString());
+        try {
+            String[] waktuAmbil = data.get("WAKTU_AMBIL").asString().split(" ");
+            tvTglAmbil.setText(waktuAmbil[0]);
+            tvJamAmbil.setText(waktuAmbil[1]);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         etKeteranganTambahan.setText(data.get("KETERANGAN_TAMBAHAN").asString());
         etNamaLayanan.setText(data.get("LAYANAN").asString());
         tvNamaLayanan.setText(data.get("LAYANAN").asString());
         tvBiayaLayanan.setText(RP + formatRp(formatOnlyNumber(data.get("BIAYA_LAYANAN").asString())));
 
-        if(data.get("PELANGGAN_TIDAK_MENUNGGU").asString().equals("Y")){
-            find(R.id.cb_tidak_menunggu, CheckBox.class).setChecked(true);
-        }else{
-            find(R.id.img_btn_waktu_ambil).setVisibility(View.GONE);
-        }
+        find(R.id.cb_tidak_menunggu, CheckBox.class).setChecked(data.get("PELANGGAN_TIDAK_MENUNGGU").asString().equals("Y"));
         find(R.id.cb_tungguConfirm_biaya, CheckBox.class).setChecked(data.get("TUNGGU_KONFIRMASI_BIAYA").asString().equals("Y"));
-
         find(R.id.cb_konfirm_tambah, CheckBox.class).setChecked(data.get("KONFIRMASI_TAMBAHAN").asString().equals("Y"));
         find(R.id.cb_buangPart, CheckBox.class).setChecked(data.get("BUANG_PART").asString().equals("Y"));
         find(R.id.cb_antar, CheckBox.class).setChecked(data.get("ANTAR_JEMPUT").asString().equals("Y"));
@@ -222,23 +229,26 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                     return;
                 }
 
-                if (spAktifitas.getSelectedItem().toString().equals("--PILIH--")) {
+                /*if (spAktifitas.getSelectedItem().toString().equals("--PILIH--")) {
                     showWarning("Aktivitas Harus di Pilih");
                     spAktifitas.performClick();
                     spAktifitas.requestFocus();
                     return;
+                }*/
+                if (find(R.id.cb_tidak_menunggu, CheckBox.class).isChecked() && tvJamAmbil.getText().toString().isEmpty()) {
+                    showWarning("WAKTU AMBIL HARUS DI ISI UNTUK PELANGGAN TIDAK MENUNGGU", Toast.LENGTH_LONG);
+                } else {
+                    updateData(idCheckin);
                 }
-                updateData(idCheckin);
             }
         });
 
         find(R.id.cb_tidak_menunggu, CheckBox.class).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(compoundButton.isChecked()){
-                    find(R.id.img_btn_waktu_ambil).setVisibility(View.VISIBLE);
-                }else{
-                    find(R.id.img_btn_waktu_ambil).setVisibility(View.GONE);
+                if (!compoundButton.isChecked()) {
+                    tvTglAmbil.setText("");
+                    tvJamAmbil.setText("");
                 }
             }
         });
@@ -260,15 +270,20 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             }
         });
 
-        find(R.id.img_btn_waktu_ambil).setOnClickListener(new View.OnClickListener() {
+        tvJamAmbil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getTimePickerDialogWaktuAmbil();
             }
         });
+        tvTglAmbil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getDatePickerTglAmbil();
+            }
+        });
 
         getDetailCheckin(idCheckin);
-
         setSpMekanik(data.get("MEKANIK").asString());
         viewKeluhan();
     }
@@ -326,17 +341,21 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                     viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Messagebox.showDialog(getActivity(), "Konfirmasi", "Kurangi Jasa?", "Ya", "Tidak", new DialogInterface.OnClickListener() {
+                            String tittle = detailCheckinList.get(position).get("PARENT VIEW TYPE").asInteger() == ITEM_VIEW_1 ? "Part ?" : "Jasa Lain ?";
+                            Messagebox.showDialog(getActivity(), "Konfirmasi", "Kurangi " + tittle, "Ya", "Tidak", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     batalPartJasaList.add(Nson.newObject()
-                                            .set("ID", detailCheckinList.get(position).get("CHECKIN_DETAIL_ID"))
-                                            .set("PART_ID", detailCheckinList.get(position).get("PART_ID"))
-                                            .set("JASA_ID", detailCheckinList.get(position).get("JASA_ID"))
-                                            .set("JUMLAH", detailCheckinList.get(position).get("JUMLAH"))
-                                            .set("TUGAS_PART_ID", detailCheckinList.get(position).get("TUGAS_PART_ID"))
-                                            .set("NET", detailCheckinList.get(position).get("NET"))
+                                            .set("ID", detailCheckinList.get(position).get("CHECKIN_DETAIL_ID").asInteger())
+                                            .set("PART_ID", detailCheckinList.get(position).get("PARENT VIEW TYPE").asInteger() == 1 ? detailCheckinList.get(position).get("PART_ID").asInteger() : "")
+                                            .set("JASA_ID", detailCheckinList.get(position).get("PARENT VIEW TYPE").asInteger() == 2 ? detailCheckinList.get(position).get("JASA_ID").asInteger() : "")
+                                            .set("JUMLAH", detailCheckinList.get(position).get("JUMLAH").asInteger())
+                                            .set("TUGAS_PART_ID", detailCheckinList.get(position).get("TUGAS_PART_ID").asInteger())
+                                            .set("NET", detailCheckinList.get(position).get("NET").asInteger())
                                     );
+
+                                    totalBiaya -= detailCheckinList.get(position).get("NET").asInteger();
+                                    etTotal.setText(RP + formatRp(String.valueOf(totalBiaya)));
                                     detailCheckinList.asArray().remove(position);
                                     notifyItemRemoved(position);
                                 }
@@ -655,6 +674,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 if (status.equals("TAMBAH PART - JASA")) { //|| status.equals("TAMBAH PART - JASA MSG") || status.equals("TAMBAH PART - JASA OK")
                     Intent intent = new Intent(getActivity(), TambahPartJasaDanBatal_Activity.class);
                     //intent.putExtra(ID, dataDetailList.toJson());
+                    intent.putExtra("KM", kmKendaraan);
                     intent.putExtra("CHECKIN_ID", idCheckin);
                     intent.putExtra(TOTAL_BIAYA, formatOnlyNumber(etTotal.getText().toString()));
                     intent.putExtra(TAMBAH_PART, "");
@@ -710,6 +730,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         }
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+            String tglAmbil = find(R.id.tv_tgl_ambil, TextView.class).getText().toString();
 
             @Override
             public void run() {
@@ -718,7 +739,19 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 args.put("action", "update");
                 args.put("status", status);
                 args.put("idCheckin", idCheckin);
-                args.put("waktuAmbil", etPengambilan.getText().toString());
+                args.put("nopol", formatNopol(etNopol.getText().toString()));
+                if (find(R.id.cb_tidak_menunggu, CheckBox.class).isChecked()) {
+                    if (tglAmbil.isEmpty()){
+                        tglAmbil = currentDateTime("dd/MM");
+                    }else{
+                        tglAmbil = Tools.formatDate(tglAmbil, "dd/MM");
+                    }
+                    args.put("waktuAmbil", tglAmbil + " " + tvJamAmbil.getText().toString());
+                }else{
+                    args.put("waktuAmbi", "");
+                }
+
+                args.put("tidakMenunggu", find(R.id.cb_tidak_menunggu, CheckBox.class).isChecked() ? "Y" : "N");
                 if (isEstimasi) {
                     args.put("isEstimasi", "Y");
                 }
@@ -756,7 +789,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    if(result.get("data").asString().equals("PENUGASAN MEKANIK")){
+                    if (result.get("data").asString().equals("PENUGASAN MEKANIK")) {
                         Intent intent = new Intent(getActivity(), PerintahKerjaMekanik_Activity.class);
                         showNotification(getActivity(), "PENUGASAN MEKANIK", formatNopol(etNopol.getText().toString()), "MEKANIK", intent);
                     }
@@ -821,6 +854,40 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         });
     }
 
+    private void getDatePickerTglAmbil() {
+        final String[] waktuAmbil = {""};
+        final Calendar cldr = Calendar.getInstance();
+        final int day = cldr.get(Calendar.DAY_OF_MONTH);
+        final int month = cldr.get(Calendar.MONTH);
+        final int year = cldr.get(Calendar.YEAR);
+        DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                String newDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                Date date = null;
+                try {
+                    date = sdf.parse(newDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                String formattedTime = sdf.format(date);
+                waktuAmbil[0] = formattedTime;
+                find(R.id.tv_tgl_ambil, TextView.class).setText(formattedTime);
+            }
+        }, year, month, day);
+
+        datePickerDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+
+            }
+        });
+        datePickerDialog.setMinDate(cldr);
+        datePickerDialog.show(getFragmentManager(), "Datepickerdialog");
+    }
+
+
     private void getTimePickerDialogWaktuAmbil() {
         final String[] waktuAmbil = {""};
         Calendar calendar = Calendar.getInstance();
@@ -830,6 +897,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+                minute -= 10;
                 String time = hourOfDay + ":" + minute;
                 Date date = null;
                 try {
@@ -839,7 +907,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 }
                 String formattedTime = sdf.format(date);
                 waktuAmbil[0] = formattedTime;
-                etPengambilan.setText(formattedTime);
+                tvJamAmbil.setText(formattedTime);
             }
         }, currentHour, currentMinute, true);
 
@@ -848,12 +916,12 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 try {
-                    if (validateWaktuAmbil(waktuEstimasi, waktuAmbil[0])) {
+                    if (validateWaktuAmbil(false, waktuEstimasi, waktuAmbil[0])) {
                         showWarning("WAKTU AMBIL HARUS MELEBIHI ESTIMASI SELESAI");
-                        find(R.id.img_btn_waktu_ambil).post(new Runnable() {
+                        tvJamAmbil.post(new Runnable() {
                             @Override
                             public void run() {
-                                find(R.id.img_btn_waktu_ambil).performClick();
+                                tvJamAmbil.performClick();
                             }
                         });
                     }
@@ -867,14 +935,21 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         timePickerDialog.show(getFragmentManager(), "Timepickerdialog");
     }
 
-    private boolean validateWaktuAmbil(String jamEstimasi, String jamAmbil) throws ParseException {
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
-        Date waktuAmbil = sdf.parse(jamAmbil);
-        Date waktuEstimasi = sdf.parse(jamEstimasi);
+    @SuppressLint("SimpleDateFormat")
+    private boolean validateWaktuAmbil(boolean isTgl, String estimasi, String waktuAmbil) throws ParseException {
+        Date jamTglAmbil;
+        Date waktuEstimasi;
+        SimpleDateFormat sdf;
+        if (isTgl) {
+            sdf = new SimpleDateFormat("dd/MM/yyyy");
+        } else {
+            sdf = new SimpleDateFormat("hh:mm");
+        }
 
-        return !waktuAmbil.after(waktuEstimasi);
+        jamTglAmbil = sdf.parse(waktuAmbil);
+        waktuEstimasi = sdf.parse(estimasi);
+        return !jamTglAmbil.after(waktuEstimasi);
     }
-
 
     @SuppressLint("NewApi")
     @Override

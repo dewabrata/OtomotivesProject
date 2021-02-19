@@ -15,7 +15,7 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService {
     @Override
     public void onTokenRefresh() {
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        Log.i("Firebase", refreshedToken);
+        Log.i("FirebaseMessage", refreshedToken);
         UtilityAndroid.setSetting(this, "FCMID", refreshedToken);
     }
 }

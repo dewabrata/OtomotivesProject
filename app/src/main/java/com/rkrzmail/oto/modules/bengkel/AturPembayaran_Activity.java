@@ -1,6 +1,7 @@
 package com.rkrzmail.oto.modules.bengkel;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -44,6 +46,7 @@ import static com.rkrzmail.utils.ConstUtils.RP;
 public class AturPembayaran_Activity extends AppActivity {
 
     private Spinner spTipePembayaran, spNoRek;
+    private AlertDialog alertDialog;
 
     private Nson rekeningList = Nson.newArray();
     private Nson partIdList;
@@ -150,7 +153,7 @@ public class AturPembayaran_Activity extends AppActivity {
         mdrOfUs = nson.get("MDR_OFF_US").asDouble();
         mdrOnUs = nson.get("MDR_ON_US").asDouble();
         mdrKreditCard = nson.get("MDR_KREDIT_CARD").asDouble();
-        grandTotal =  nson.get("GRAND_TOTAL").asInteger();
+        grandTotal = nson.get("GRAND_TOTAL").asInteger();
         totalBiaya = isDp ? totalDp : nson.get("TOTAL").asInteger();
 
         if (nson.get("PKP").asString().equals("Y") && !isDp) {
@@ -227,7 +230,7 @@ public class AturPembayaran_Activity extends AppActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 tipePembayaran = parent.getItemAtPosition(position).toString();
 
-                if (tipePembayaran.equals("CASH") || tipePembayaran.equals("INVOICE")) {
+                if (tipePembayaran.equals("CASH")) {
                     if (!isDp) {
                         find(R.id.et_grandTotal, EditText.class).setText(RP + formatRp(String.valueOf(grandTotal)));
                     }
@@ -236,6 +239,9 @@ public class AturPembayaran_Activity extends AppActivity {
                     find(R.id.et_noTrack, EditText.class).setEnabled(false);
                     find(R.id.et_namaBankEpay).setEnabled(false);
                     find(R.id.et_totalBayar, EditText.class).setEnabled(true);
+                }else if(tipePembayaran.equals("INVOICE")){
+                    find(R.id.et_totalBayar, EditText.class).setEnabled(false);
+                    find(R.id.et_totalBayar, EditText.class).setText(RP + "0");
                 } else {
                     if (tipePembayaran.equals("TRANSFER")) {
                         setSpRek();
@@ -312,65 +318,77 @@ public class AturPembayaran_Activity extends AppActivity {
         find(R.id.btn_simpan).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (tipePembayaran.equals("CASH")) {
-                    if (find(R.id.et_totalBayar, EditText.class).getText().toString().isEmpty()) {
-                        find(R.id.et_totalBayar, EditText.class).setError("Total Bayar Belum di Isi");
-                        return;
-                    }
-                    if (Integer.parseInt(formatOnlyNumber(find(R.id.et_totalBayar, EditText.class).getText().toString())) < Integer.parseInt(formatOnlyNumber(find(R.id.et_grandTotal, EditText.class).getText().toString()))) {
-                        find(R.id.et_totalBayar, EditText.class).setError("Total Bayar Tidak Valid");
-                        return;
-                    }
-                    int kembalian = 0;
-                    if (!find(R.id.et_kembalian, EditText.class).getText().toString().isEmpty()) {
-                        kembalian = Integer.parseInt(formatOnlyNumber(find(R.id.et_kembalian, EditText.class).getText().toString()));
-                    }
+                switch (tipePembayaran) {
+                    case "CASH":
+                        if (find(R.id.et_totalBayar, EditText.class).getText().toString().isEmpty()) {
+                            find(R.id.et_totalBayar, EditText.class).setError("Total Bayar Belum di Isi");
+                            return;
+                        }
+                        if (Integer.parseInt(formatOnlyNumber(find(R.id.et_totalBayar, EditText.class).getText().toString())) < Integer.parseInt(formatOnlyNumber(find(R.id.et_grandTotal, EditText.class).getText().toString()))) {
+                            find(R.id.et_totalBayar, EditText.class).setError("Total Bayar Tidak Valid");
+                            return;
+                        }
+                        int kembalian = 0;
+                        if (!find(R.id.et_kembalian, EditText.class).getText().toString().isEmpty()) {
+                            kembalian = Integer.parseInt(formatOnlyNumber(find(R.id.et_kembalian, EditText.class).getText().toString()));
+                        }
 
-                    if (kembalian < 500 && kembalian > 0) {
-                        initMssgDonasi(RP + formatRp(String.valueOf(kembalian)), kembalian);
-                    } else {
-                        String ratusRupiah = String.valueOf(kembalian);
-                        if (ratusRupiah.length() >= 3) {
-                            ratusRupiah = ratusRupiah.substring(ratusRupiah.length() - 3);
-                            int castRatusRupiah = Integer.parseInt(ratusRupiah);
-                            castRatusRupiah = castRatusRupiah > 500 && castRatusRupiah < 1000 ? castRatusRupiah - 500 : castRatusRupiah;
-                            if (castRatusRupiah >= 500 || castRatusRupiah == 0) {
-                                saveData();
+                        if (kembalian < 500 && kembalian > 0) {
+                            showDialogDonasi(RP + formatRp(String.valueOf(kembalian)), "", kembalian);
+                        } else {
+                            String ratusRupiah = String.valueOf(kembalian);
+                            if (ratusRupiah.length() >= 3) {
+                                ratusRupiah = ratusRupiah.substring(ratusRupiah.length() - 3);
+                                int donasi2 = Integer.parseInt(ratusRupiah);
+                                int donasi1 = donasi2 > 500 && donasi2 < 1000 ? donasi2 - 500 : donasi2;
+                                if (donasi2 == 0) {
+                                    saveData();
+                                }else {
+                                    if(donasi2 == 500){
+                                        showDialogDonasi(RP + formatRp(String.valueOf(donasi1)), "", donasi2);
+                                    }else{
+                                        showDialogDonasi(RP + formatRp(String.valueOf(donasi1)), RP + formatRp(String.valueOf(donasi2)), donasi2);
+
+                                    }
+                                }
+
                             } else {
-                                initMssgDonasi(RP + formatRp(String.valueOf(castRatusRupiah)), castRatusRupiah);
+                                saveData();
                             }
+                        }
 
+                        break;
+                    case "TRANSFER":
+                        if (spNoRek.getSelectedItem().toString().equals("--PILIH--")) {
+                            showWarning("Rekening Internal Belum di Pilih");
+                            spNoRek.performClick();
+                        } else if (find(R.id.et_noTrack, EditText.class).getText().toString().isEmpty()) {
+                            find(R.id.et_noTrack, EditText.class).setError("NO TRACE BELUM DI ISI");
+                            find(R.id.et_noTrack, EditText.class).requestFocus();
                         } else {
                             saveData();
                         }
-                    }
-
-                } else if (tipePembayaran.equals("TRANSFER")) {
-                    if (spNoRek.getSelectedItem().toString().equals("--PILIH--")) {
-                        showWarning("Rekening Internal Belum di Pilig");
-                        spNoRek.performClick();
-                    } else if (find(R.id.et_noTrack, EditText.class).getText().toString().isEmpty()) {
-                        find(R.id.et_noTrack, EditText.class).setError("No Trace Belum di Isi");
-                        find(R.id.et_noTrack, EditText.class).requestFocus();
-                    } else {
+                        break;
+                    case "INVOICE":
                         saveData();
-                    }
-                } else {
-                    if (find(R.id.et_namaBankEpay, NikitaAutoComplete.class).getText().toString().isEmpty()) {
-                        find(R.id.et_namaBankEpay, NikitaAutoComplete.class).setError("Masukkan Nama Bank");
-                        find(R.id.et_namaBankEpay, NikitaAutoComplete.class).requestFocus();
-                    } else if (find(R.id.et_noTrack, EditText.class).getText().toString().isEmpty()) {
-                        find(R.id.et_noTrack, EditText.class).setError("No Trace Belum di Isi");
-                        find(R.id.et_noTrack, EditText.class).requestFocus();
-                    } else {
-                        saveData();
-                    }
+                        break;
+                    default:
+                        if (find(R.id.et_namaBankEpay, NikitaAutoComplete.class).getText().toString().isEmpty()) {
+                            find(R.id.et_namaBankEpay, NikitaAutoComplete.class).setError("Masukkan Nama Bank");
+                            find(R.id.et_namaBankEpay, NikitaAutoComplete.class).requestFocus();
+                        } else if (find(R.id.et_noTrack, EditText.class).getText().toString().isEmpty()) {
+                            find(R.id.et_noTrack, EditText.class).setError("No Trace Belum di Isi");
+                            find(R.id.et_noTrack, EditText.class).requestFocus();
+                        } else {
+                            saveData();
+                        }
+                        break;
                 }
             }
         });
     }
 
-    private void setBlankCash(){
+    private void setBlankCash() {
         find(R.id.et_namaBankEpay, NikitaAutoComplete.class).setText("");
         find(R.id.et_percent_disc_merc, EditText.class).setText("");
         find(R.id.et_rp_disc_merc, EditText.class).setText("");
@@ -381,25 +399,56 @@ public class AturPembayaran_Activity extends AppActivity {
         }
     }
 
-    private void initMssgDonasi(String message, final int kembalianDonasi) {
-        Messagebox.showDialog(getActivity(),
-                "Konfirmasi", "Pelanggan Setuju Untuk Mendonasikan Kembalian " + message, "Ya", "Tidak", new DialogInterface.OnClickListener() {
-                    @SuppressLint("SetTextI18n")
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        isDonasi = true;
-                        showSuccess("Kembalian di Donasikan");
-                        nominalDonasi = String.valueOf(kembalianDonasi);
-                        saveData();
-                    }
-                }, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        saveData();
-                    }
-                });
+    private void showDialogDonasi(String donasi1, String donasi2, final int kembalianDonasi) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_donasi, null);
+        builder.setView(dialogView);
+        alertDialog = builder.create();
 
+        Button btnTidak = dialogView.findViewById(R.id.btn_tidak);
+        Button btnDonasi1 = dialogView.findViewById(R.id.btn_donasi1);
+        Button btnDonasi2 = dialogView.findViewById(R.id.btn_donasi2);
+
+        btnDonasi1.setText(donasi1);
+        if (!donasi2.isEmpty()) {
+            btnDonasi2.setText(donasi2);
+        } else {
+            btnDonasi2.setVisibility(View.GONE);
+        }
+
+        btnTidak.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+                saveData();
+            }
+        });
+
+        btnDonasi1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isDonasi = true;
+                showSuccess("Kembalian di Donasikan");
+                nominalDonasi = String.valueOf(kembalianDonasi);
+                saveData();
+            }
+        });
+
+        btnDonasi2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isDonasi = true;
+                showSuccess("Kembalian di Donasikan");
+                nominalDonasi = String.valueOf(kembalianDonasi);
+                saveData();
+            }
+        });
+
+        alertDialog.setCancelable(false);
+        if (alertDialog.getWindow() != null)
+            alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        alertDialog.show();
     }
 
     private void initAutoCompleteNamaBank() {
@@ -411,7 +460,7 @@ public class AturPembayaran_Activity extends AppActivity {
                 args.put("action", "AUTO COMPLETE");
                 args.put("search", bookTitle);
                 Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_REKENING_BANK), args));
-                if(result.get("data").asArray().isEmpty()){
+                if (result.get("data").asArray().isEmpty()) {
                     showWarning(result.get("message").asString());
                     return result.get("message");
                 }
@@ -448,7 +497,7 @@ public class AturPembayaran_Activity extends AppActivity {
         final Nson data = Nson.readJson(getIntentStringExtra(DATA));
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
+            @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
@@ -489,8 +538,8 @@ public class AturPembayaran_Activity extends AppActivity {
                 args.put("reminderPelanggan", find(R.id.cb_pelanggan, CheckBox.class).isChecked() ? "Y" : "N");
                 args.put("reminderPemilik", find(R.id.cb_pemilik, CheckBox.class).isChecked() ? "Y" : "N");
                 args.put("donasi", formatOnlyNumber(nominalDonasi));
-                args.put("noInvoice", "?");
-                args.put("noKartu", "?");
+                args.put("noInvoice", "");
+                args.put("noKartu", "");
                 args.put("tipePembayaran1", jenis);
                 args.put("ppn", String.valueOf(totalPpn));
                 args.put("transaksi", jenis);
@@ -521,7 +570,10 @@ public class AturPembayaran_Activity extends AppActivity {
                         args.put("bankRekInternal", namaBank);
                         args.put("noRekInternal", noRek);
                         args.put("keterangan", "Transfer");
-                    } else {
+                    }else if(tipePembayaran.equals("INVOICE")){
+                        args.put("totalDue", "0");
+                        args.put("totalBayar", "0");
+                    }else {
                         if (tipePembayaran.equals("KREDIT")) {
                             args.put("keterangan", "Kredit");
                         } else {
@@ -580,6 +632,7 @@ public class AturPembayaran_Activity extends AppActivity {
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_PEMBAYARAN), args));
             }
 
+            @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     showSuccess("Sukses Menyimpan Aktifitas");
@@ -611,7 +664,7 @@ public class AturPembayaran_Activity extends AppActivity {
                     result = result.get("data");
                     bankEdc = "";
 
-                    if(result.size() > 0){
+                    if (result.size() > 0) {
                         for (int i = 0; i < result.size(); i++) {
                             if (result.get(i).get("BANK_NAME").asString().equals(namaBank)) {
                                 isOnUs = true;
@@ -629,7 +682,7 @@ public class AturPembayaran_Activity extends AppActivity {
                                 isOffUs = true;
                             }
                         }
-                    }else{
+                    } else {
                         isOffUs = true;
                         isOnUs = false;
                     }
@@ -662,7 +715,7 @@ public class AturPembayaran_Activity extends AppActivity {
                     }
                 } else {
                     showError(result.get("message").asString(), Toast.LENGTH_LONG);
-                    if(result.get("message").asString().equals("DATA SUDAH DI MASUKKAN")){
+                    if (result.get("message").asString().equals("DATA SUDAH DI MASUKKAN")) {
                         finish();
                     }
                 }

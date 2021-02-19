@@ -99,6 +99,7 @@ public class KontrolLayanan_Activity extends AppActivity {
 
                         if (nListArray.get(position).get("PELANGGAN_TIDAK_MENUNGGU").asString().equals("Y")) {
                             viewHolder.find(R.id.tv_tidak_menunggu, TextView.class).setText("TIDAK MENUNGGU");
+                            viewHolder.find(R.id.tv_tidak_menunggu, TextView.class).setText("TIDAK MENUNGGU");
                             viewHolder.find(R.id.tv_waktu_ambil, TextView.class).setText(nListArray.get(position).get("WAKTU_AMBIL").asString());
                         } else {
                             viewHolder.find(R.id.tv_tidak_menunggu, TextView.class).setText("MENUNGGU");

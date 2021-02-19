@@ -8,6 +8,8 @@ import android.support.annotation.Nullable;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -35,19 +38,24 @@ import java.util.Map;
 import static com.rkrzmail.utils.APIUrls.SET_STOCK_OPNAME;
 import static com.rkrzmail.utils.APIUrls.VIEW_LOKASI_PART;
 import static com.rkrzmail.utils.APIUrls.VIEW_SPAREPART;
+import static com.rkrzmail.utils.ConstUtils.CARI_PART_TERALOKASIKAN;
 import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.PART;
 import static com.rkrzmail.utils.ConstUtils.PENYESUAIAN;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_PENYESUAIAN;
 
 public class AturStockOpname_Activity extends AppActivity {
 
     private EditText noFolder, noPart, etJumlahOpname, namaPart, etPending, etMerk, etStock;
-    private String partId = "", barcodeResult="";
+
+    private String partId = "", barcodeResult = "";
     private int stockBeda = 0;
     private int counterBarcode = 0;
     private int idLokasiPart = 0;
     private Nson lokasiArray = Nson.newArray();
+    Nson getData;
     private Intent intent;
     private boolean isPenyesuaian = false;
 
@@ -58,6 +66,7 @@ public class AturStockOpname_Activity extends AppActivity {
         setContentView(R.layout.activity_stock_opname);
         initToolbar();
         initComponent();
+        loadData();
     }
 
     private void initToolbar() {
@@ -68,6 +77,7 @@ public class AturStockOpname_Activity extends AppActivity {
     }
 
     private void initComponent() {
+        getData = Nson.readJson(getIntentStringExtra(DATA));
         noFolder = findViewById(R.id.et_noFolder_stockOpname);
         noPart = findViewById(R.id.et_noPart_stockOpname);
         etJumlahOpname = findViewById(R.id.et_jumlah_opname);
@@ -76,16 +86,13 @@ public class AturStockOpname_Activity extends AppActivity {
         etMerk = findViewById(R.id.et_merkPart_stockOpname);
         etStock = findViewById(R.id.et_stock);
 
-
-        loadData();
-
         find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(etJumlahOpname.getText().toString().isEmpty()){
+                if (etJumlahOpname.getText().toString().isEmpty()) {
                     etJumlahOpname.setError("Jumlah Opname Harus Di Isi");
                     return;
-                }else if (barcodeResult.isEmpty()) {
+                } else if (barcodeResult.isEmpty()) {
                     showInfo("Barcode Harus Di Isi");
                 }
 
@@ -94,21 +101,21 @@ public class AturStockOpname_Activity extends AppActivity {
                 int stockAkhir = Integer.parseInt(etJumlahOpname.getText().toString());
                 intent = new Intent(getActivity(), AturPenyesuain_StockOpname_Activity.class);
 
-                if(stockAkhir > stockAwal){
+                if (stockAkhir > stockAwal) {
                     isPenyesuaian = true;
                     stockBeda = stockAkhir - stockAwal;
                     showInfo("Diperlukan Penyesuaian");
                     intent.putExtra(PENYESUAIAN, lokasiArray.toJson());
                     intent.putExtra("STOCK LEBIH", stockBeda);
                     startActivityForResult(intent, REQUEST_PENYESUAIAN);
-                }else if (stockAkhir < stockAwal) {
+                } else if (stockAkhir < stockAwal) {
                     isPenyesuaian = true;
                     stockBeda = stockAwal - stockAkhir;
                     showInfo("Diperlukan Penyesuaian");
                     intent.putExtra(PENYESUAIAN, lokasiArray.toJson());
                     intent.putExtra("STOCK KURANG", stockBeda);
                     startActivityForResult(intent, REQUEST_PENYESUAIAN);
-                }else {
+                } else {
                     saveData(null);
                 }
             }
@@ -121,24 +128,49 @@ public class AturStockOpname_Activity extends AppActivity {
                 startActivityForResult(i, REQUEST_BARCODE);
             }
         });
+
+        etJumlahOpname.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String text = editable.toString();
+                etPending.setText("0");
+                if(text.isEmpty()) return;
+                if(!etPending.getText().toString().isEmpty()){
+//                    int opname = Integer.parseInt(text);
+//                    int pending = Integer.parseInt(etPending.getText().toString());
+//                    etPending.setText(String.valueOf(opname + pending));
+                }
+            }
+        });
     }
 
     private void loadData() {
-        final Nson data = Nson.readJson(getIntentStringExtra(DATA));
-        if(data.get("PENDING").asInteger() > 0){
-            showInfo("Part Pending, Stock Opname Di batalkan");
+        if (getData.get("PENDING_STOCK").asInteger() > 0) {
+            showInfo("PART PENDING, STOCK OPNAME DI TUNDA", Toast.LENGTH_LONG);
+            intent = new Intent(getActivity(), CariPart_Activity.class);
+            intent.putExtra(CARI_PART_TERALOKASIKAN, "");
+            startActivityForResult(intent, REQUEST_CARI_PART);
             return;
         }
-        idLokasiPart = data.get("ID").asInteger();
-        showInfo(String.valueOf(idLokasiPart));
-        viewLokasiPart(data, data.get("LOKASI").asString());
-        noFolder.setText(data.get("KODE").asString());
-        noPart.setText(data.get("NOMOR_PART_NOMOR").asString());
-        namaPart.setText(data.get("NAMA_PART").asString());
-        etMerk.setText(data.get("MERK").asString());
-        etStock.setText(data.get("STOCK").asString());
-        etPending.setText(data.get("PENDING").asString());
-        partId = data.get("PART_ID").asString();
+        viewLokasiPart(getData, getData.get("LOKASI").asString());
+        idLokasiPart = getData.get("ID").asInteger();
+        noFolder.setText(getData.get("KODE").asString());
+        noPart.setText(getData.get("NOMOR_PART_NOMOR").asString());
+        namaPart.setText(getData.get("NAMA_PART").asString());
+        etMerk.setText(getData.get("MERK").asString());
+        etStock.setText(getData.get("STOCK").asString());
+        etPending.setText(getData.get("PENDING_STOCK").asString());
+        partId = getData.get("PART_ID").asString();
 
     }
 
@@ -238,7 +270,7 @@ public class AturStockOpname_Activity extends AppActivity {
                     List<String> lokasiList = new ArrayList<>();
                     List<String> idList = new ArrayList<>();
                     for (int i = 0; i < result.size(); i++) {
-                        if(result.get(i).get("PART_ID").asInteger() == data.get("PART_ID").asInteger()){
+                        if (result.get(i).get("PART_ID").asInteger() == data.get("PART_ID").asInteger()) {
                             lokasiList.add(result.get(i).get("LOKASI").asString());
                             idList.add(result.get(i).get("ID").asString());
                             lokasiArray.add(Nson.newObject().set("LOKASI", result.get(i).get("LOKASI")).set("KODE", result.get(i).get("KODE")));
@@ -246,9 +278,9 @@ public class AturStockOpname_Activity extends AppActivity {
                     }
 
                     setSpLokasi(lokasiList);
-                    if(!lokasi.equals("")){
+                    if (!lokasi.equals("")) {
                         for (int i = 0; i < find(R.id.sp_lokasi_stockOpname, Spinner.class).getCount(); i++) {
-                            if(lokasi.equals(find(R.id.sp_lokasi_stockOpname, Spinner.class).getItemAtPosition(i))){
+                            if (lokasi.equals(find(R.id.sp_lokasi_stockOpname, Spinner.class).getItemAtPosition(i))) {
                                 find(R.id.sp_lokasi_stockOpname, Spinner.class).setSelection(i);
                                 find(R.id.sp_lokasi_stockOpname, Spinner.class).setEnabled(false);
                                 break;
@@ -267,7 +299,7 @@ public class AturStockOpname_Activity extends AppActivity {
                         }
                     });
 
-                    if(lokasiArray.size() == 1){
+                    if (lokasiArray.size() == 1) {
                         Tools.setViewAndChildrenEnabled(find(R.id.ly_lokasi_part, LinearLayout.class), false);
                     }
                 }
@@ -322,6 +354,9 @@ public class AturStockOpname_Activity extends AppActivity {
             getDataBarcode(barcodeResult);
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_PENYESUAIAN) {
             saveData(Nson.readJson(getIntentStringExtra(data, DATA)));
+        } else if (resultCode == RESULT_OK && requestCode == REQUEST_CARI_PART) {
+            getData = Nson.readJson(getIntentStringExtra(data, PART));
+            loadData();
         }
     }
 }

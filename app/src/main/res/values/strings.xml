@@ -226,6 +226,46 @@
     <string name="tidak_menunggu_uppercase">TIDAK MENUNGGU</string>
     <string name="waktu_ambil_antar_uppercase">WAKTU AMBIL / ANTAR</string>
     <string name="pengambilan_uppercase">PENGAMBILAN</string>
+    <string name="tittle_donasi">PELANGGAN SETUJU UNTUK MENDONASIKAN KEMBALIAN ?</string>
+    <string name="tidak_uppercase">TIDAK</string>
+    <string name="selesai_uppercase">SELESAI</string>
+    <string name="proses_uppercase">PROSES</string>
+    <string name="penjualan_uppercase">PENJUALAN</string>
+    <string name="pendapat_lain_uppercase">PENDAPATAN LAIN</string>
+    <string name="asset_uppercase">ASSET</string>
+    <string name="part_online_uppercase">PART ONLINE</string>
+    <string name="dp_part_uppercase">DP PART</string>
+    <string name="saldo_epay_uppercase">SALDO EPAY</string>
+    <string name="donasi_uppercase">DONASI</string>
+    <string name="nama_pelanggan_or_principal">Nama Pelanggan / Principal</string>
+    <string name="biaya_layanan">Biaya Layanan</string>
+    <string name="total">Total</string>
+    <string name="jasa_lain">Jasa Lain</string>
+    <string name="nominal">Nominal</string>
+    <string name="jatuh_tempo">Jatuh Tempo</string>
+    <string name="no_invoice">No Invoice</string>
+    <string name="tanggal_invoice">Tanggal Invoice</string>
+    <string name="total_invoice_uppercase">TOTAL INVOICE</string>
+    <string name="no_invoice_uppercase">NO INVOICE</string>
+    <string name="tanggal_jatuh_tempo_uppercase">TANGGAL JATUH TEMPO</string>
+    <string name="tanggal_bayar_uppercase">TANGGAL BAYAR</string>
+    <string name="tipe_pembayaran_uppercase">TIPE PEMBAYARAN</string>
+    <string name="rekening_internal_uppercase">REKENING INTERNAL</string>
+    <string name="selisih_uppercase">SELISIH</string>
+    <string name="total_bayar_uppercase">TOTAL BAYAR</string>
+    <string name="detail_invoice">Detail Invoice</string>
+    <string name="total_part">Total Part</string>
+    <string name="nama_aset">Nama Aset</string>
+    <string name="tanggal_beli">Tanggal Beli</string>
+    <string name="umur_aset">Umur Aset</string>
+    <string name="nilai_akhir">Nilai Akhir</string>
+    <string name="nama_aset_uppercase">NAMA ASET</string>
+    <string name="no_aset_uppercase">NO ASET</string>
+    <string name="nilai_sisa_uppercase">NILAI SISA</string>
+    <string name="harga_jual_uppercase">HARGA JUAL</string>
+    <string name="pembeli_uppercase">PEMBELI</string>
+    <string name="pembayaran_uppercase">PEMBAYARAN</string>
+    <string name="jatuh_tempo_uppercase">JATUH TEMPO</string>
     <string-array name="pola_harga_jual">
         <item>FLEXIBLE</item>
         <item>BELI + MARGIN</item>
@@ -273,7 +313,7 @@
     <string-array name="pembayaran">
         <item>--PILIH--</item>
         <item>TRANSFER</item>
-        <item>COD</item>
+        <item>CASH ON DELIVERY</item>
         <item>INVOICE</item>
         <item>KONSIGNMENT</item>
     </string-array>

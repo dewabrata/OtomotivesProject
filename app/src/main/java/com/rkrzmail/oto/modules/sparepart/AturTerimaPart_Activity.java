@@ -131,9 +131,14 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
                         });
                     }
                     find(R.id.layout_jatuh_tempo).setVisibility(View.GONE);
-                }else if(item.equals("KONSIGMENT")){
+                }else if(item.equals("KONSIGNMENT")){
                     showWarning("TIPE PEMBAYARAN BELUM AKTIF");
-                    spinnerPembayaran.setSelection(0);
+                    spinnerPembayaran.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            spinnerPembayaran.performClick();
+                        }
+                    });
                 } else {
                     find(R.id.ly_rek, LinearLayout.class).setVisibility(View.GONE);
                     find(R.id.layout_jatuh_tempo).setVisibility(View.GONE);

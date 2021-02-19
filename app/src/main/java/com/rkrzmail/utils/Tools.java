@@ -420,6 +420,23 @@ public class Tools {
     }
 
     @SuppressLint("SimpleDateFormat")
+    public static String formatDate(String value, String pattern){
+        if(value.isEmpty()) return "";
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        Date tgl = new Date();
+        try {
+            tgl = sdf.parse(value);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        //yyyy-MM-dd HH:mm:ss
+        sdf = new SimpleDateFormat(pattern);
+        return sdf.format(tgl);
+    }
+
+
+
+    @SuppressLint("SimpleDateFormat")
     public static String parseTime(String time) {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         Date tgl = new Date();

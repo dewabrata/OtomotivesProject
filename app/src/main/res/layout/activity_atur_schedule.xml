@@ -132,100 +132,83 @@
                         android:textStyle="bold" />
 
                     <LinearLayout
-                        android:id="@+id/ly_tanggal"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="6"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/paddingMedium">
-
-                        <TextView
-                            android:id="@+id/ic_tanggal"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:drawableLeft="@drawable/icon_tanggal"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/ic_tanggal2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginStart="10dp"
-                            android:drawableLeft="@drawable/icon_tanggal"
-                            android:textStyle="bold"
-                            android:enabled="false"/>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/paddingXXSmall"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:paddingStart="@dimen/paddingMedium"
-                    android:paddingEnd="@dimen/paddingMedium">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="3"
-                        android:textSize="12sp"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="6"
-                        android:background="@drawable/background_edittext"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/paddingMedium">
+                        android:orientation="vertical"
+                        android:layout_weight="6">
 
                         <LinearLayout
-                            android:layout_width="wrap_content"
+                            android:id="@+id/ly_tanggal"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:padding="@dimen/paddingMedium"
+                            tools:ignore="UselessParent">
+
+                            <TextView
+                                android:id="@+id/ic_tanggal"
+                                android:layout_weight="1"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:drawableStart="@drawable/icon_tanggal"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/ic_tanggal2"
+                                android:layout_weight="1"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginStart="10dp"
+                                android:drawableEnd="@drawable/icon_tanggal"
+                                android:textStyle="bold"
+                                android:enabled="false"/>
 
                         </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/tv_tanggal"
-                            android:layout_width="0dp"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_weight="4"
-                            android:gravity="center"
-                            android:textColor="@color/grey_900"
-                            android:textSize="12sp"
-                            android:hint="DD/MM/YY"
-                            android:textStyle="bold" />
+                            android:background="@drawable/background_edittext"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/paddingMedium">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginLeft="3dp"
-                            android:layout_marginRight="3dp"
-                            android:text="-"
-                            android:textSize="12sp" />
+                            <TextView
+                                android:id="@+id/tv_tanggal"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="4"
+                                android:gravity="center"
+                                android:textColor="@color/grey_900"
+                                android:textSize="12sp"
+                                android:hint="@string/dd_mm_yy_uppercase"
+                                android:textStyle="bold" />
 
-                        <TextView
-                            android:id="@+id/tv_tanggal2"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_weight="4"
-                            android:gravity="center"
-                            android:textColor="@color/grey_900"
-                            android:textSize="12sp"
-                            android:hint="DD/MM/YY"
-                            android:textStyle="bold"
-                            android:enabled="false"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="3dp"
+                                android:layout_marginRight="3dp"
+                                android:text="-"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:id="@+id/tv_tanggal2"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="4"
+                                android:gravity="center"
+                                android:textColor="@color/grey_900"
+                                android:textSize="12sp"
+                                android:hint="@string/dd_mm_yy_uppercase"
+                                android:textStyle="bold"
+                                android:enabled="false"/>
+
+                        </LinearLayout>
 
                     </LinearLayout>
 
@@ -373,11 +356,10 @@
                 </LinearLayout>
 
                 <Button
-                    android:id="@+id/btn_simpan_schedule_atur"
+                    android:id="@+id/btn_simpan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:layout_weight="1"
                     android:background="@drawable/btn_rounded_accent"
                     android:text="@string/simpan_uppercase"
                     android:textColor="@android:color/white" />

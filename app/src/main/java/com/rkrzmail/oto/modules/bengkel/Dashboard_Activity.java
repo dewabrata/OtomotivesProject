@@ -120,8 +120,8 @@ public class Dashboard_Activity extends AppActivity {
         find(R.id.tv_dbJasalainnya, TextView.class).setText(setUnderline(RP + formatRp(totJasalain)));
         find(R.id.tv_dblainnya, TextView.class).setText(setUnderline(RP + formatRp(totLainnya)));
         find(R.id.tv_dbDiscount, TextView.class).setText(setUnderline(RP + formatRp(totDiscount)));
-        find(R.id.tv_dbPendapatan, TextView.class).setText(setUnderline(RP + formatRp(totPendapatan)));
-        find(R.id.tv_dbDownpayment, TextView.class).setText(setUnderline(RP + formatRp(totDownpayment)));
+        //find(R.id.tv_dbPendapatan, TextView.class).setText(setUnderline(RP + formatRp(totPendapatan)));
+        //find(R.id.tv_d, TextView.class).setText(setUnderline(RP + formatRp(totDownpayment)));
         find(R.id.tv_dbIncome, TextView.class).setText(setUnderline(RP + formatRp(totIncome)));
         find(R.id.tv_dbBiaya, TextView.class).setText(setUnderline(RP + formatRp(totBiaya)));
         find(R.id.tv_dbHpppart, TextView.class).setText(setUnderline(RP + formatRp(totHpp)));

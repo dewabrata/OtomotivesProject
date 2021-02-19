@@ -88,6 +88,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
     private String idCheckin = "", mekanik = "", catatanMekanik = "", idMekanikKerja = "", statusDone = "", noHp = "";
     private String totalBiaya = "";
     private String merkLKKWajib = "";
+    private boolean isGaransiLKK = false;
 
     private int countClick = 0;
     private int kmKendaraan = 0;
@@ -463,7 +464,10 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                         waktuHari += partJasaList.get(i).get("WAKTU_KERJA_HARI").asInteger();
                         waktuJam += partJasaList.get(i).get("WAKTU_KERJA_JAM").asInteger();
                         waktuMenit += partJasaList.get(i).get("WAKTU_KERJA_MENIT").asInteger();
-                        if(partJasaList.get(i).get("MERK").asString().equals(merkLKKWajib)){
+                        if (partJasaList.get(i).get("GARANSI_LAYANAN").asString().equals("Y")) {
+                            isGaransiLKK = true;
+                        }
+                        if (partJasaList.get(i).get("MERK").asString().equals(merkLKKWajib)) {
                             isLkk = true;
                         }
                         if (partJasaList.get(i).get("INSPEKSI_PART").asString().equals("Y") ||
@@ -506,6 +510,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    viewLayananPartJasa();
                     if (!isRework) {
                         idMekanikKerja = result.get("data").get(0).asString();
                     }
@@ -570,6 +575,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 args.put("catatan", catatanMekanik);
                 args.put("nopol", formatNopol(etNopol.getText().toString()));
                 args.put("noPonsel", noHp);
+                args.put("tidakMenunggu", isNotWait ? "Y" : "N");
                 if (isInspeksi) {
                     statusDone = "PENUGASAN INSPEKSI";
                     args.put("status", statusDone);
@@ -703,6 +709,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 intent.putExtra(TOTAL_BIAYA, formatOnlyNumber(totalBiaya));
                 intent.putExtra(TAMBAH_PART, "");
                 intent.putExtra("NOPOL", etNopol.getText().toString());
+                intent.putExtra("KM", kmKendaraan);
                 if (isNotWait) {
                     intent.putExtra(TIDAK_MENUNGGU, TIDAK_MENUNGGU);
                 } else {

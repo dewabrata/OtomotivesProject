@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/white"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_marginBottom="20dp">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -28,7 +29,7 @@
             android:scrollbars="vertical"
             android:scrollingCache="true"
             android:layoutAnimation="@anim/layout_animation"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="10dp"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView2"

@@ -20,6 +20,7 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.bengkel.Dashboard_MainTab_Activity;
+import com.rkrzmail.srv.NumberFormatUtils;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.text.ParseException;
@@ -27,7 +28,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
-import java.util.Objects;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -48,9 +48,12 @@ public class Dashboard_Angka_Fragment extends Fragment {
     private String argsRefresh = "", idCheckin = "";
     private AppActivity activity;
     private String tanggalAkhir = "", tglAwal = "", totLayanan = "", totPart = "", totJasapart = "", totJasalain = "",
-            totLainnya = "", totDiscount = "", totPendapatan = "", totDownpayment = "", totIncome = "", totBiaya = "", totHpp = "",
+            totLainnya = "", totDiscount = "", totalPenjualan = "", totDownpayment = "", totIncome = "", totBiaya = "", totHpp = "",
             totMargin = "", totKas = "", totBank = "", totPiutang = "", totColeection = "", totStockpart = "", totHutang = "";
-    private int totalHariKerja = 0, totalLayanan = 0, totalJualPart = 0;
+    private int totalHariKerja = 0, totalLayanan = 0, totalJualPart = 0,
+            totalTidakMenunggu = 0, totalMenunggu = 0, totalProgress = 0,
+            totalSelesai = 0, totalSaldoEpay = 0, totalPartOnline = 0, totalAsset = 0,
+            totalPendapatanLain = 0, totalDonasi = 0;
 
     public Dashboard_Angka_Fragment() {
 
@@ -167,6 +170,16 @@ public class Dashboard_Angka_Fragment extends Fragment {
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     result = result.get("data").get(0);
+                    totalTidakMenunggu = result.get("TOTAL_TIDAK_MENUNGGU").asInteger();
+                    totalMenunggu = result.get("TOTAL_MENUNGGU").asInteger();
+                    totalProgress = result.get("TOTAL_PROGRESS").asInteger();
+                    totalSelesai = result.get("TOTAL_SELESAI").asInteger();
+                    totalSaldoEpay = result.get("TOTAL_SALDO_EPAY").asInteger();
+                    totalPartOnline = result.get("TOTAL_PART_ONLINE").asInteger();
+                    totalAsset = result.get("TOTAL_ASSET").asInteger();
+                    totalPendapatanLain = result.get("TOTAL_PENDAPATAN_LAIN").asInteger();
+                    totalPenjualan = result.get("TOTAL_PENDAPATAN").asString();
+                    totalDonasi = result.get("TOTAL_DONASI").asInteger();
                     totalHariKerja = result.get("HARI").asInteger();
                     totalLayanan = result.get("LAYANAN").asInteger();
                     totalJualPart = result.get("JUAL_PART").asInteger();
@@ -176,7 +189,6 @@ public class Dashboard_Angka_Fragment extends Fragment {
                     totJasalain = result.get("TOTAL_JASA_LAIN").asString();
                     totLainnya = result.get("TOTAL_LAINYA").asString();
                     totDiscount = result.get("TOTAL_DISCOUNT").asString();
-                    totPendapatan = result.get("TOTAL_PENDAPATAN").asString();
                     totDownpayment = result.get("TOTAL_DP").asString();
                     totIncome = result.get("TOTAL_INCOME").asString();
                     totBiaya = "0";//result.get("TOTAL_BIAYA").asString()
@@ -202,14 +214,25 @@ public class Dashboard_Angka_Fragment extends Fragment {
         tvRPJualPart.setText(activity.setUnderline(String.valueOf(totalJualPart)));
         tvHariKerja.setText(activity.setUnderline(String.valueOf(totalHariKerja)));
         tvRPBatal.setText(activity.setUnderline("0"));
+
+        activity.find(R.id.tv_total_tidak_menunggu, TextView.class).setText(activity.setUnderline(String.valueOf(totalTidakMenunggu)));
+        activity.find(R.id.tv_total_menunggu, TextView.class).setText(activity.setUnderline(String.valueOf(totalMenunggu)));
+        activity.find(R.id.tv_total_progress, TextView.class).setText(activity.setUnderline(String.valueOf(totalProgress)));
+        activity.find(R.id.tv_total_selesai, TextView.class).setText(activity.setUnderline(String.valueOf(totalSelesai)));
+        activity.find(R.id.tv_total_saldo_epay, TextView.class).setText(activity.setUnderline(RP + NumberFormatUtils.formatRp(String.valueOf(totalSaldoEpay))));
+        activity.find(R.id.tv_total_part_online, TextView.class).setText(activity.setUnderline(RP + NumberFormatUtils.formatRp(String.valueOf(totalPartOnline))));
+        activity.find(R.id.tv_total_asset, TextView.class).setText(activity.setUnderline(RP + NumberFormatUtils.formatRp(String.valueOf(totalAsset))));
+        activity.find(R.id.tv_total_pendapatan_lain, TextView.class).setText(activity.setUnderline(RP + NumberFormatUtils.formatRp(String.valueOf(totalPendapatanLain))));
+        activity.find(R.id.tv_total_donasi, TextView.class).setText(activity.setUnderline(RP + NumberFormatUtils.formatRp(String.valueOf(totalDonasi))));
+        activity.find(R.id.tv_total_penjualan, TextView.class).setText(activity.setUnderline(RP + activity.formatRp(totalPenjualan)));
+
         activity.find(R.id.tv_dbLayanan2, TextView.class).setText(activity.setUnderline(RP + activity.formatRp(totLayanan)));
         activity.find(R.id.tv_dbPart, TextView.class).setText(activity.setUnderline(RP + activity.formatRp(totPart)));
         activity.find(R.id.tv_dbJasapart, TextView.class).setText(activity.setUnderline(RP + activity.formatRp(totJasapart)));
         activity.find(R.id.tv_dbJasalainnya, TextView.class).setText(activity.setUnderline(RP + activity.formatRp(totJasalain)));
         activity.find(R.id.tv_dblainnya, TextView.class).setText(activity.setUnderline(RP + activity.formatRp(totLainnya)));
         activity.find(R.id.tv_dbDiscount, TextView.class).setText(activity.setUnderline(RP + activity.formatRp(totDiscount)));
-        activity.find(R.id.tv_dbPendapatan, TextView.class).setText(activity.setUnderline(RP + activity.formatRp(totPendapatan)));
-        activity.find(R.id.tv_dbDownpayment, TextView.class).setText(activity.setUnderline(RP + activity.formatRp(totDownpayment)));
+        activity.find(R.id.tv_total_dp_part, TextView.class).setText(activity.setUnderline(RP + activity.formatRp(totDownpayment)));
         activity.find(R.id.tv_dbIncome, TextView.class).setText(activity.setUnderline(RP + activity.formatRp(totIncome)));
         activity.find(R.id.tv_dbBiaya, TextView.class).setText(activity.setUnderline(RP + activity.formatRp(totBiaya)));
         activity.find(R.id.tv_dbHpppart, TextView.class).setText(activity.setUnderline(RP + activity.formatRp(totHpp)));

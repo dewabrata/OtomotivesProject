@@ -1,11 +1,12 @@
-package com.rkrzmail.oto.modules.hutang;
+package com.rkrzmail.oto.modules.bengkel;
 
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -21,88 +22,95 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.srv.DateFormatUtils;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.srv.NumberFormatUtils;
 
 import java.util.Map;
 
-public class Piutang_Activity extends AppActivity {
+import static com.rkrzmail.utils.APIUrls.ASSET;
+import static com.rkrzmail.utils.APIUrls.PIUTANG;
+import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
+import static com.rkrzmail.utils.ConstUtils.RP;
+
+public class Asset_Activity extends AppActivity {
 
     private RecyclerView recyclerView;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_basic);
-        initComponent();
+        initToolbar();
+        initRvAset();
+        viewAsset("");
     }
 
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Piutang");
+        getSupportActionBar().setTitle("Aset");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void initComponent() {
-        initToolbar();
+    private void initRvAset(){
         recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_piutang) {
-                    @Override
-                    public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                        super.onBindViewHolder(viewHolder, position);
+        recyclerView.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_aset){
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+                super.onBindViewHolder(viewHolder, position);
 
-                        viewHolder.find(R.id.tv_tglTransaksi_piutang, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_nama_piutang, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_status_piutang, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_tipe_piutang, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_transaksi_piutang, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_nominal_piutang, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_tglInv_piutang, TextView.class).setText(nListArray.get(position).get("").asString());
-
-                    }
-
-                }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(Nson parent, View view, int position) {
-                        String status = nListArray.get(position).get("").asString();
-                        Intent i;
-                        if(status.equalsIgnoreCase("SIAP")){
-
-                        }else if(status.equalsIgnoreCase("PERMINTAAN")){
-
-                        }else{
-
-                        }
-                    }
-                })
-        );
+                String tgl = DateFormatUtils.formatDate(nListArray.get(position).get("TANGGAL_BELI").asString(), "yyyy-MM-dd HH:mm:ss", "dd/MM/yyyy");
+                viewHolder.find(R.id.tv_nama_aset, TextView.class).setText(nListArray.get(position).get("NAMA_ASET").asString());
+                viewHolder.find(R.id.tv_nomor_aset, TextView.class).setText(RP + NumberFormatUtils.formatRp(nListArray.get(position).get("NILAI_PENYUSUTAN").asString()));
+                viewHolder.find(R.id.tv_tgl_beli, TextView.class).setText(tgl);
+                viewHolder.find(R.id.tv_umur_aset, TextView.class).setText(nListArray.get(position).get("UMUR").asString());
+                viewHolder.find(R.id.tv_harga, TextView.class).setText(RP + NumberFormatUtils.formatRp(nListArray.get(position).get("HARGA_BELI").asString()));
+                viewHolder.find(R.id.tv_nilai_akhir, TextView.class).setText(RP + NumberFormatUtils.formatRp(nListArray.get(position).get("NILAI_AKHIR").asString()));
+            }
+        }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Nson parent, View view, int position) {
+                Intent intent = new Intent(getActivity(), AturAsset_Activity.class);
+                intent.putExtra(DATA, parent.get(position).toJson());
+                startActivityForResult(intent, REQUEST_DETAIL);
+            }
+        }));
     }
 
-    private void catchData() {
+
+    private void viewAsset(final String search) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
             @Override
             public void run() {
+                swipeProgress(true);
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(""), args));
+                args.put("action", "view");
+                args.put("search", search);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ASSET), args));
             }
 
             @Override
             public void runUI() {
+                swipeProgress(false);
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
                     recyclerView.getAdapter().notifyDataSetChanged();
                 } else {
-                    showInfo("Gagal");
+                    showInfo(result.get("message").asString());
                 }
             }
         });
     }
+
 
     SearchView mSearchView;
 
@@ -134,8 +142,7 @@ public class Piutang_Activity extends AppActivity {
 
             public boolean onQueryTextSubmit(String query) {
                 searchMenu.collapseActionView();
-                //filter(null);
-                //reload(query);
+                viewAsset(query);
                 return true;
             }
         };
@@ -143,4 +150,12 @@ public class Piutang_Activity extends AppActivity {
         return true;
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK && requestCode == REQUEST_DETAIL){
+            viewAsset("");
+        }
+    }
 }

@@ -108,7 +108,7 @@ public class PenjualanPart_Activity extends AppActivity {
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
                 String tgl = Tools.setFormatDayAndMonthFromDb(usahaList.get(position).get("TANGGAL").asString());
-                String noHp = pelangganList.get(position).get("NO_PONSEL").asString();
+                String noHp = usahaList.get(position).get("NO_PONSEL").asString();
 
                 if (noHp.length() > 4) {
                     noHp = noHp.substring(noHp.length() - 4);
@@ -123,8 +123,8 @@ public class PenjualanPart_Activity extends AppActivity {
                 viewHolder.find(R.id.tv_tgl_jualPart, TextView.class).setText(tgl);
                 viewHolder.find(R.id.tv_status_usaha, TextView.class).setText(usahaList.get(position).get("STATUS").asString());
                 viewHolder.find(R.id.tv_disc_jualPart, TextView.class).setText(usahaList.get(position).get("DISCOUNT").asString());
-                viewHolder.find(R.id.tv_user_usaha, TextView.class).setText(usahaList.get(position).get("USER_JUAL").asString());
-                viewHolder.find(R.id.tv_total_jualPart, TextView.class).setText(RP + formatRp(usahaList.get(position).get("NET").asString()));
+                viewHolder.find(R.id.tv_user_usaha, TextView.class).setText(usahaList.get(position).get("NAMA_PENJUAL").asString());
+                viewHolder.find(R.id.tv_total_jualPart, TextView.class).setText(RP + formatRp(usahaList.get(position).get("TOTAL").asString()));
                 viewHolder.find(R.id.tv_harga_jualPart, TextView.class).setText(RP + formatRp(usahaList.get(position).get("TOTAL").asString()));
                 viewHolder.find(R.id.tv_noPhone_jualPart, TextView.class).setText("XXXXXXXX" + noHp);
             }

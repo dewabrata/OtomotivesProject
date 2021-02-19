@@ -718,7 +718,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             case R.id.btn_history_checkin1:
                 Intent i = new Intent(getActivity(), History_Activity.class);
                 i.putExtra(DATA, historyList.toJson());
-                startActivityForResult(i, REQUEST_HISTORY);
+                startActivity(i);
                 break;
         }
     }

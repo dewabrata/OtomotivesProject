@@ -200,7 +200,7 @@ public class InternetX {
                 con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 con.setRequestProperty("Accept", "application/json");
                 con.setRequestMethod("POST");
-                con.setConnectTimeout(30000);
+                con.setConnectTimeout(0000);
 
                 Nson keys = args.getObjectKeys();
 
@@ -265,7 +265,7 @@ public class InternetX {
                         inputStream = con.getInputStream();
                     }*/
                     BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-                    sb.append(HttpResult);
+                    sb.append(HttpResult).append("\n");
                     String line = null;
                     while ((line = br.readLine()) != null) {
                         sb.append(line).append("\n");
@@ -446,6 +446,30 @@ public class InternetX {
             intent.setAction("com.nikita.generator.service");
             intent.putExtra("action", "update");
             AppApplication.getInstance().sendBroadcast(intent);
+        } else if (HttpResult == 500) {
+
+        } else if (HttpResult == 501) {
+
+        } else if (HttpResult == 504) {
+
+        } else if (HttpResult == 505) {
+
+        } else if (HttpResult == 506) {
+
+        } else if (HttpResult == 507) {
+
+        } else if (HttpResult == 511) {
+
+        } else if (HttpResult == 400) {
+
+        } else if (HttpResult == 401) {
+
+        } else if (HttpResult == 403) {
+
+        } else if (HttpResult == 404) {
+
+        } else if (HttpResult == 405) {
+
         }
     }
 }

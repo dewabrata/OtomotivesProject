@@ -332,7 +332,6 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             if (!isBatal) {
                 partIdList.add(isDp & result.get(i).get("DP_PART").asInteger() > 0 ?
                         Nson.newObject().set("PART_ID", result.get(i).get("PART_ID").asInteger()) : 0);
-
                 totalPart += result.get(i).get("HARGA_PART").asInteger();
                 totalJasaPart += result.get(i).get("HARGA_JASA_PART").asInteger();
                 totalJasa += result.get(i).get("HARGA_JASA_LAIN").asInteger();

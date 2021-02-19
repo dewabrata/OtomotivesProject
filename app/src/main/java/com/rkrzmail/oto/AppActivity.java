@@ -89,6 +89,7 @@ import java.util.Random;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static com.rkrzmail.utils.APIUrls.SET_STOCK_OPNAME;
 import static com.rkrzmail.utils.APIUrls.VIEW_JASA_LAIN;
 import static com.rkrzmail.utils.APIUrls.VIEW_LAYANAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_LOKASI_PART;
@@ -98,6 +99,7 @@ import static com.rkrzmail.utils.ConstUtils.PERMISSION_REQUEST_CODE;
 
 
 public class AppActivity extends AppCompatActivity {
+
 
     public void swipeProgress(final boolean show) {
         if (!show) {
@@ -227,7 +229,7 @@ public class AppActivity extends AppCompatActivity {
     public int getIntentIntExtra(Intent intent, String key) {
         if (intent != null) {
             return intent.getIntExtra(key, 0);
-        }else{
+        } else {
             return 0;
         }
     }
@@ -610,10 +612,12 @@ public class AppActivity extends AppCompatActivity {
     public void adapterSearchView(final android.support.v7.widget.SearchView searchView, final String arguments, final String api, final String jsonObject, final String flag) {
         final boolean[] isNoPart = new boolean[1];
         final boolean[] isJasaLain = new boolean[1];
+        final boolean[] isStockOpname = new boolean[1];
         final SearchView.SearchAutoComplete searchAutoComplete = searchView.findViewById(R.id.search_src_text);
         searchAutoComplete.setDropDownBackgroundResource(R.drawable.bg_radius_white);
         searchAutoComplete.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
             Nson result;
+
             @Override
             public Nson onFindNson(Context context, String bookTitle) {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -629,12 +633,14 @@ public class AppActivity extends AppCompatActivity {
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(api), args));
                 result = result.get("data");
                 result = Tools.removeDuplicates(result);
-                isJasaLain[0] = api.equals(VIEW_JASA_LAIN) & result.get(0).get("AKTIVITAS").asString().toLowerCase().contains(bookTitle);
+                isJasaLain[0] = api.equals(VIEW_JASA_LAIN) & result.get(0).get("AKTIVITAS").asString().toLowerCase().contains(bookTitle.toLowerCase());
                 isNoPart[0] = (
                                 api.equals(VIEW_SPAREPART) |
                                 api.equals(VIEW_SUGGESTION) |
-                                api.equals(VIEW_LOKASI_PART)
+                                api.equals(VIEW_LOKASI_PART) |
+                                api.equals(SET_STOCK_OPNAME)
                 ) & result.get(0).get("NO_PART").asString().contains(bookTitle);
+                isStockOpname[0] = api.equals(SET_STOCK_OPNAME) & result.get(0).get("KODE").asString().toLowerCase().contains(bookTitle.toLowerCase().replace(" ", ""));
                 return result;
             }
 
@@ -648,18 +654,21 @@ public class AppActivity extends AppCompatActivity {
                 if (isNoPart[0]) {
                     search = getItem(position).get("NO_PART").asString();
                 } else {
-                    if(isJasaLain[0]){
+                    if (isJasaLain[0]) {
                         search = getItem(position).get("AKTIVITAS").asString();
-                        Log.d("jasa__", "getView: " + "aktivitas");
-                    }else{
-                        if (!getItem(position).containsKey("NAMA_LAIN")) {
-                            if (getItem(position).containsKey("NOPOL")) {
-                                search = formatNopol(getItem(position).get(jsonObject).asString());
+                    } else {
+                        if (isStockOpname[0]) {
+                            search = getItem(position).get("KODE").asString();
+                        } else {
+                            if (!getItem(position).containsKey("NAMA_LAIN")) {
+                                if (getItem(position).containsKey("NOPOL")) {
+                                    search = formatNopol(getItem(position).get(jsonObject).asString());
+                                } else {
+                                    search = getItem(position).get(jsonObject).asString();
+                                }
                             } else {
                                 search = getItem(position).get(jsonObject).asString();
                             }
-                        } else {
-                            search = getItem(position).get(jsonObject).asString();
                         }
                     }
                 }
@@ -675,11 +684,15 @@ public class AppActivity extends AppCompatActivity {
                 String object;
                 if (isNoPart[0]) {
                     object = n.get("NO_PART").asString();
-                }else{
-                    if(isJasaLain[0]){
+                } else {
+                    if (isJasaLain[0]) {
                         object = n.get("AKTIVITAS").asString();
-                    }else{
-                        object = n.get(jsonObject).asString();
+                    } else {
+                        if (isStockOpname[0]) {
+                            object = n.get("KODE").asString();
+                        } else {
+                            object = n.get(jsonObject).asString();
+                        }
                     }
                 }
                 find(R.id.search_src_text, SearchView.SearchAutoComplete.class).setText(object);

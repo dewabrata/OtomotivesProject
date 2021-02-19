@@ -166,7 +166,9 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:layout_weight="1"
-                            android:gravity="center">
+                            android:gravity="center"
+                            android:paddingEnd="20dp"
+                            tools:ignore="RtlSymmetry">
 
                             <TextView
                                 android:id="@+id/tv_total_hari_kerja"
@@ -241,7 +243,9 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:layout_weight="1"
-                            android:gravity="center"    >
+                            android:gravity="center"
+                            android:paddingStart="20dp"
+                            tools:ignore="RtlSymmetry">
 
                             <TextView
                                 android:id="@+id/tv_dbBatal"
@@ -263,6 +267,136 @@
                     </LinearLayout>
 
                 </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="2dp"
+                    app:cardElevation="2dp"
+                    android:layout_marginTop="10dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="13dp"
+                        android:baselineAligned="false">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            android:paddingEnd="20dp"
+                            tools:ignore="RtlSymmetry">
+
+                            <TextView
+                                android:id="@+id/tv_total_tidak_menunggu"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/default_number"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textSize="12sp"
+                                android:textColor="@color/grey_900" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/tidak_menunggu_uppercase"
+                                android:textAlignment="center"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textSize="10sp"
+                                android:layout_marginTop="5dp"
+                                android:textColor="@color/grey_900" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:layout_gravity="center">
+
+                            <TextView
+                                android:id="@+id/tv_total_menunggu"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/default_number"                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="MENUNGGU"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textSize="10sp"
+                                android:layout_marginTop="5dp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:layout_gravity="center">
+
+                            <TextView
+                                android:id="@+id/tv_total_progress"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/default_number"                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/proses_uppercase"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textSize="10sp"
+                                android:layout_marginTop="5dp"
+                                tools:ignore="SmallSp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:paddingStart="20dp"
+                            tools:ignore="RtlSymmetry"
+                            android:layout_gravity="center">
+
+                            <TextView
+                                android:id="@+id/tv_total_selesai"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/default_number"                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/selesai_uppercase"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textSize="10sp"
+                                android:layout_marginTop="5dp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
@@ -487,7 +621,7 @@
                                 tools:ignore="RtlSymmetry">
 
                                 <TextView
-                                    android:id="@+id/tv_dbPendapatan"
+                                    android:id="@+id/tv_total_penjualan"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/default_rp_uppercase"
@@ -498,7 +632,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="5dp"
-                                    android:text="@string/pendapatan_uppercase"
+                                    android:text="@string/penjualan_uppercase"
                                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                                     android:textSize="12sp" />
 
@@ -512,7 +646,7 @@
                                 android:gravity="center">
 
                                 <TextView
-                                    android:id="@+id/tv_dbDownpayment"
+                                    android:id="@+id/tv_total_pendapatan_lain"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/default_rp_uppercase"
@@ -523,7 +657,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="5dp"
-                                    android:text="@string/downpayment_uppercase"
+                                    android:text="@string/pendapat_lain_uppercase"
                                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                                     android:textSize="12sp" />
 
@@ -705,7 +839,35 @@
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical"
                                 android:layout_weight="1"
-                                android:gravity="center">
+                                android:gravity="center"
+                                tools:ignore="RtlSymmetry">
+
+                                <TextView
+                                    android:id="@+id/tv_dbColeection"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/default_rp_uppercase"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                    android:textSize="12sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:text="@string/kasir_uppercase"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                    android:textSize="12sp" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:paddingStart="20dp"
+                                tools:ignore="RtlSymmetry">
 
                                 <TextView
                                     android:id="@+id/tv_dbBank"
@@ -720,6 +882,70 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="5dp"
                                     android:text="@string/bank_uppercase"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                    android:textSize="12sp" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:baselineAligned="false"
+                            android:layout_marginTop="15dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:layout_marginStart="@dimen/paddingSmall"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:paddingEnd="20dp"
+                                tools:ignore="RtlSymmetry">
+
+                                <TextView
+                                    android:id="@+id/tv_total_saldo_epay"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/default_rp_uppercase"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                    android:textSize="12sp"
+                                    tools:ignore="TooManyViews" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:text="@string/saldo_epay_uppercase"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                    android:textSize="12sp" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                tools:ignore="RtlSymmetry">
+
+                                <TextView
+                                    android:id="@+id/tv_total_part_online"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/default_rp_uppercase"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                    android:textSize="12sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:text="@string/part_online_uppercase"
                                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                                     android:textSize="12sp" />
 
@@ -759,7 +985,7 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:baselineAligned="true"
-                            android:layout_marginTop="15dp">
+                            android:layout_marginTop="20dp">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -769,31 +995,6 @@
                                 android:gravity="center"
                                 android:paddingEnd="20dp"
                                 tools:ignore="RtlSymmetry">
-
-                                <TextView
-                                    android:id="@+id/tv_dbColeection"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/default_rp_uppercase"
-                                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                                    android:textSize="12sp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
-                                    android:text="@string/kasir_uppercase"
-                                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                                    android:textSize="12sp" />
-
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:layout_weight="1"
-                                android:gravity="center">
 
                                 <TextView
                                     android:id="@+id/tv_dbStockpart"
@@ -819,11 +1020,36 @@
                                 android:orientation="vertical"
                                 android:layout_weight="1"
                                 android:gravity="center"
+                                android:paddingEnd="50dp"
+                                tools:ignore="RtlSymmetry">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                    android:textSize="12sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                    android:textSize="12sp" />
+
+                            </LinearLayout>
+
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:layout_weight="1"
+                                android:gravity="center"
                                 android:paddingStart="20dp"
                                 tools:ignore="RtlSymmetry">
 
                                 <TextView
-                                    android:id="@+id/tv_dbHutang"
+                                    android:id="@+id/tv_total_asset"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/default_rp_uppercase"
@@ -834,7 +1060,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="5dp"
-                                    android:text="@string/hutang_uppercase"
+                                    android:text="@string/asset_uppercase"
                                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                                     android:textSize="12sp" />
 
@@ -845,6 +1071,106 @@
                     </LinearLayout>
 
                 </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    app:cardCornerRadius="2dp"
+                    app:cardElevation="2dp"
+                    android:layout_marginBottom="10dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:baselineAligned="false">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:paddingEnd="20dp"
+                            tools:ignore="RtlSymmetry">
+
+                            <TextView
+                                android:id="@+id/tv_dbHutang"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/default_rp_uppercase"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:text="@string/hutang_uppercase"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textSize="12sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_weight="1"
+                            android:gravity="center">
+
+                            <TextView
+                                android:id="@+id/tv_total_dp_part"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/default_rp_uppercase"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:text="@string/dp_part_uppercase"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textSize="12sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:paddingStart="20dp"
+                            tools:ignore="RtlSymmetry">
+
+                            <TextView
+                                android:id="@+id/tv_total_donasi"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/default_rp_uppercase"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:text="@string/donasi_uppercase"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textSize="12sp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+
 
             </LinearLayout>
 

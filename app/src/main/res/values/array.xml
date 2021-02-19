@@ -156,7 +156,6 @@
         <item>CHECK OUT</item>
         <item>ENTRY CHECKIN</item>
         <item>KENDARAAN CUSTOMER</item>
-        <item>MESSAGE</item>
         <item>PART KELUAR</item>
         <item>PEMBELIAN PART</item>
         <item>SCHEDULE</item>
@@ -299,6 +298,7 @@
         <item>TRANSFER</item>
         <item>DEBET</item>
         <item>KREDIT</item>
+        <item>INVOICE</item>
     </string-array>
 
     <string-array name="aktivitas_usaha">

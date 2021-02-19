@@ -180,7 +180,15 @@ public class Checkin2_Activity extends AppActivity {
                         setSelanjutnya(readCheckin);
                     }
                 } else {
-                    setSelanjutnya(readCheckin);
+                    if (find(R.id.tv_tahun_checkin2, TextView.class).getText().toString().isEmpty()) {
+                        showInfo("Tahun Produksi Tidak Valid");
+                        find(R.id.tv_tahun_checkin2, TextView.class).performClick();
+                    } else if (tvTgl.isEnabled() && tvTgl.getText().toString().isEmpty()) {
+                        showWarning("Tanggal Berisi Harus Di Isi");
+                        tvTgl.performClick();
+                    }else{
+                        setSelanjutnya(readCheckin);
+                    }
                 }
             }
         });

@@ -11,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -29,6 +31,7 @@ import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
+import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.VIEW_KELUHAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_KONTROL_LAYANAN;
@@ -39,6 +42,7 @@ public class History_Activity extends AppActivity {
 
     private RecyclerView rvHistory, rvPartJasa, rvKeluhan;
     private AlertDialog alertDialog;
+    private LinearLayout lyKeluhan, lyPartJasa;
 
     private Nson partJasaList = Nson.newArray();
     private Nson keluhanList = Nson.newArray();
@@ -100,23 +104,13 @@ public class History_Activity extends AppActivity {
         etCatatanMekanik.setText(catatanMekanik);
         etCatatanMekanik.setEnabled(false);
 
-        LinearLayout lyKeluhan=dialogView.findViewById(R.id.ly_keluhan);
-        LinearLayout lyPartJasa=dialogView.findViewById(R.id.ly_part_jasa);
+        lyKeluhan = dialogView.findViewById(R.id.ly_keluhan);
+        lyPartJasa = dialogView.findViewById(R.id.ly_part_jasa);
 
         initToolbarDetail(dialogView);
         initRvPartJasa(dialogView);
         initRecylerviewKeluhan(dialogView);
-
-        if(keluhanList.asArray().isEmpty())
-            lyKeluhan.setVisibility(View.GONE);
-        if(partJasaList.asArray().isEmpty())
-            lyPartJasa.setVisibility(View.GONE);
-
-        if (alertDialog.getWindow() != null)
-            alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-
         viewKeluhan(idCheckin);
-
     }
 
     private void initRvPartJasa(View dialogView) {
@@ -306,9 +300,23 @@ public class History_Activity extends AppActivity {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     partJasaList.asArray().clear();
                     partJasaList.asArray().addAll(result.get("data").asArray());
+
+                    if (keluhanList.asArray().isEmpty())
+                        lyKeluhan.setVisibility(View.GONE);
+
+                    if (partJasaList.asArray().isEmpty())
+                        lyPartJasa.setVisibility(View.GONE);
+
                     rvPartJasa.getAdapter().notifyDataSetChanged();
                     rvKeluhan.getAdapter().notifyDataSetChanged();
-                    alertDialog.show();
+
+                    if (alertDialog != null) {
+                        if (alertDialog.getWindow() != null)
+                            alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+
+                        alertDialog.show();
+
+                    }
                 }
             }
         });
