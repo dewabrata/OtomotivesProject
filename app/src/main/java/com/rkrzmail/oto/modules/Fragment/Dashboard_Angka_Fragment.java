@@ -200,8 +200,9 @@ public class Dashboard_Angka_Fragment extends Fragment {
                     totColeection = result.get("TOTAL_COLLECTION").asString();
                     totStockpart = result.get("TOTAL_STOCK_PART").asString();
                     totHutang = result.get("TOTAL_HUTANG").asString();
-                    setValuedashboard();
+
                     lyDasboard.setVisibility(VISIBLE);
+                    setValuedashboard();
                 } else {
                     activity.showInfo(result.get("message").asString());
                 }

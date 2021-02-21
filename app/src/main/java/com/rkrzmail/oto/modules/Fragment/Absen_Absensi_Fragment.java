@@ -121,10 +121,8 @@ public class Absen_Absensi_Fragment extends Fragment {
             public void run() {
                 swipeProgress(true);
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-
                 args.put("action", "view");
                 args.put("kategori", "ABSEN");
-
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ABSEN), args));
             }
 

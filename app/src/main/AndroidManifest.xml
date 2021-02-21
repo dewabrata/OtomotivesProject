@@ -104,7 +104,7 @@
             android:name=".modules.hutang.PembayaranHutang_Activity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".modules.hutang.Hutang_Activity"
+            android:name=".modules.hutang.Hutang_MainTab_Activity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".modules.hutang.PembayaranPiutang_Activity"
@@ -343,7 +343,6 @@
         <activity android:name=".gmod.Lokasi_PersediaanActivity" />
         <activity android:name=".gmod.PenjualanPartActivity" />
         <activity android:name=".gmod.Penerimaan_PartAcitivity" />
-        <activity android:name=".gmod.Stock_OpnameActivity" />
         <activity android:name=".gmod.Penampung_Item_DetailActivity" />
         <activity android:name=".gmod.MyCode" />
         <activity
@@ -423,11 +422,6 @@
             android:name=".gmod.BarcodeActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="landscape" />
-        <activity
-            android:name=".gmod.Update"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".gmod.Splash"
             android:screenOrientation="portrait"

@@ -4,6 +4,9 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,19 +24,29 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.Fragment.BatalPart_TugasPart_Fragment;
+import com.rkrzmail.oto.modules.Fragment.FragmentsAdapter;
+import com.rkrzmail.oto.modules.Fragment.Hutang_Hutang_Fragment;
+import com.rkrzmail.oto.modules.Fragment.Kewajiban_Hutang_Fragment;
+import com.rkrzmail.oto.modules.Fragment.PartKosong_TugasPart_Fragment;
+import com.rkrzmail.oto.modules.Fragment.Permintaan_TugasPart_Fragment;
+import com.rkrzmail.oto.modules.Fragment.Tersedia_TugasPart_Fragment;
+import com.rkrzmail.oto.modules.sparepart.OutSource_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
+import java.util.ArrayList;
 import java.util.Map;
 
-public class Hutang_Activity extends AppActivity {
+public class Hutang_MainTab_Activity extends AppActivity {
 
     private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_basic);
+        setContentView(R.layout.activity_main_tab_layout);
+        initToolbar();
         initComponent();
     }
 
@@ -45,7 +58,22 @@ public class Hutang_Activity extends AppActivity {
     }
 
     private void initComponent() {
-        initToolbar();
+        ViewPager vp = findViewById(R.id.vp);
+        TabLayout tabLayout = findViewById(R.id.tablayout);
+        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+
+        final ArrayList<Fragment> fragments = new ArrayList<>();
+        fragments.add(new Hutang_Hutang_Fragment());
+        fragments.add(new Kewajiban_Hutang_Fragment());
+
+        FragmentsAdapter pagerAdapter = new FragmentsAdapter(getSupportFragmentManager(), this, fragments);
+        vp.setAdapter(pagerAdapter);
+        vp.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.setupWithViewPager(vp);
+
+    }
+
+    private void initRv(){
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);

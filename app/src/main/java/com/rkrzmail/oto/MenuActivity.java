@@ -52,6 +52,7 @@ import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
 import com.rkrzmail.oto.modules.bengkel.SaranActivity;
 import com.rkrzmail.oto.modules.bengkel.Schedule_MainTab_Activity;
 import com.rkrzmail.oto.modules.checkin.Checkin1_Activity;
+import com.rkrzmail.oto.modules.hutang.Hutang_MainTab_Activity;
 import com.rkrzmail.oto.modules.hutang.Piutang_MainTab_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiTerbayar_Activity;
 import com.rkrzmail.oto.modules.mekanik.AturSchedule_Activity;
@@ -317,12 +318,12 @@ public class MenuActivity extends AppActivity {
         }
         //Business
         else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_HUTANG) && getAccess(MY_BUSINESS)) {
-            /*Intent intent = new Intent(MenuActivity.this, Hutang_Activity.class);
-            startActivity(intent);*/
-            Intent intent = new Intent(MenuActivity.this, WebActivity.class);
+            Intent intent = new Intent(MenuActivity.this, Hutang_MainTab_Activity.class);
+            startActivity(intent);
+            /*Intent intent = new Intent(MenuActivity.this, WebActivity.class);
             intent.putExtra("title", "Dashboard");
             intent.putExtra("url", "https://m.otomotives.com/#/hutang?" + getWebUrl());
-            startActivity(intent);
+            startActivity(intent);*/
         } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_PIUTANG) && getAccess(MY_BUSINESS)) {
             Intent intent = new Intent(MenuActivity.this, Piutang_MainTab_Activity.class);
             startActivity(intent);

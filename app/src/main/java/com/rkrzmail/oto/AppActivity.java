@@ -90,6 +90,7 @@ import java.util.Random;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static com.rkrzmail.utils.APIUrls.SET_STOCK_OPNAME;
+import static com.rkrzmail.utils.APIUrls.VIEW_CARI_PART_SUGGESTION;
 import static com.rkrzmail.utils.APIUrls.VIEW_JASA_LAIN;
 import static com.rkrzmail.utils.APIUrls.VIEW_LAYANAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_LOKASI_PART;
@@ -635,11 +636,11 @@ public class AppActivity extends AppCompatActivity {
                 result = Tools.removeDuplicates(result);
                 isJasaLain[0] = api.equals(VIEW_JASA_LAIN) & result.get(0).get("AKTIVITAS").asString().toLowerCase().contains(bookTitle.toLowerCase());
                 isNoPart[0] = (
-                                api.equals(VIEW_SPAREPART) |
-                                api.equals(VIEW_SUGGESTION) |
+                                api.equals(VIEW_SPAREPART) | api.equals(VIEW_SUGGESTION) |
                                 api.equals(VIEW_LOKASI_PART) |
-                                api.equals(SET_STOCK_OPNAME)
-                ) & result.get(0).get("NO_PART").asString().contains(bookTitle);
+                                api.equals(SET_STOCK_OPNAME) | api.equals(VIEW_CARI_PART_SUGGESTION)
+                ) & result.get(0).get("NO_PART").asString().toLowerCase().contains(bookTitle.toLowerCase()) |
+                        result.get(0).get("NOMOR_PART_NOMOR").asString().toLowerCase().contains(bookTitle.toLowerCase());
                 isStockOpname[0] = api.equals(SET_STOCK_OPNAME) & result.get(0).get("KODE").asString().toLowerCase().contains(bookTitle.toLowerCase().replace(" ", ""));
                 return result;
             }

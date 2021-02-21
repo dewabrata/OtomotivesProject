@@ -19,6 +19,7 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.bengkel.Schedule_MainTab_Activity;
+import com.rkrzmail.srv.DateFormatUtils;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
@@ -64,6 +65,7 @@ public class Jadwal_Kehadiran_Fragment extends Fragment {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "view");
+                args.put("kategori", "KEHADIRAN");
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_SCHEDULE), args));
             }
@@ -89,14 +91,17 @@ public class Jadwal_Kehadiran_Fragment extends Fragment {
                     @Override
                     public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                         super.onBindViewHolder(viewHolder, position);
-                        viewHolder.find(R.id.tv_kehadiran_tanggal, TextView.class).setText(kehadiranArray.get(position).get("CREATED_DATE").asString());
+                        String absenMulai = DateFormatUtils.formatDate(kehadiranArray.get(position).get("ABSEN_MULAI").asString(), "HH:mm:ss", "HH:mm");
+                        String absenSelesai = DateFormatUtils.formatDate(kehadiranArray.get(position).get("ABSEN_SELESAI").asString(), "HH:mm:ss", "HH:mm");
+
+                        viewHolder.find(R.id.tv_kehadiran_tanggal, TextView.class).setText(kehadiranArray.get(position).get("TANGGAL_ABSEN").asString());
                         viewHolder.find(R.id.tv_kehadiran_nama, TextView.class).setText(kehadiranArray.get(position).get("NAMA_USER").asString());
                         viewHolder.find(R.id.tv_kehadiran_scmulai, TextView.class).setText(kehadiranArray.get(position).get("SCHEDULE_MULAI").asString());
                         viewHolder.find(R.id.tv_kehadiran_scakhir, TextView.class).setText(kehadiranArray.get(position).get("SCHEDULE_SELESAI").asString());
-                        viewHolder.find(R.id.tv_kehadiran_hari, TextView.class).setText(kehadiranArray.get(position).get("NAMA_HARI").asString());
+                        viewHolder.find(R.id.tv_kehadiran_hari, TextView.class).setText(kehadiranArray.get(position).get("HARI").asString());
                         viewHolder.find(R.id.tv_kehadiran_status, TextView.class).setText(kehadiranArray.get(position).get("STATUS").asString());
-                        viewHolder.find(R.id.tv_kehadiran_tglmulai, TextView.class).setText(kehadiranArray.get(position).get("TANGGAL_MULAI").asString());
-                        viewHolder.find(R.id.tv_kehadiran_tglakhir, TextView.class).setText(kehadiranArray.get(position).get("TANGGAL_SELESAI").asString());
+                        viewHolder.find(R.id.tv_kehadiran_tglmulai, TextView.class).setText(absenMulai);
+                        viewHolder.find(R.id.tv_kehadiran_tglakhir, TextView.class).setText(absenSelesai);
                     }
                 }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                     @Override

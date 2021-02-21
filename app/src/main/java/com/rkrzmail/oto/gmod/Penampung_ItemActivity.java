@@ -143,11 +143,7 @@ public class Penampung_ItemActivity extends AppActivity {
                     @Override
                     public void onClick(View view) {
                         int position = Utility.getInt(  String.valueOf(view.getTag())  );
-                        Intent intent =  new Intent(getActivity(), Stock_OpnameActivity.class);
-                        intent.putExtra("DATA", nListArray.get(position).toJson());
-                        intent.putExtra("ID", nListArray.get(position).get("ID").asString());
-                        intent.putExtra("NO_FOLDER", nListArray.get(position).get("NO_FOLDER").asString());
-                        startActivityForResult(intent, REQUEST_STOCK);
+
                     }
                 });
             }

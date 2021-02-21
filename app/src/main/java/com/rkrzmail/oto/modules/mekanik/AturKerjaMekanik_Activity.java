@@ -755,7 +755,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
 
         Intent i = new Intent(getActivity(), LkkClaimMekanik_Activity.class);
         i.putExtra(DATA, nson.toJson());
-        startActivityForResult(i, REQUEST_DETAIL);
+        startActivity(i);
     }
 
     @Override

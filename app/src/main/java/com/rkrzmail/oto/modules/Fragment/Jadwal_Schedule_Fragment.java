@@ -34,6 +34,7 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.bengkel.Absensi_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
 import com.rkrzmail.oto.modules.bengkel.Schedule_MainTab_Activity;
+import com.rkrzmail.srv.DateFormatUtils;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
@@ -61,12 +62,21 @@ public class Jadwal_Schedule_Fragment extends Fragment {
     private Spinner sp_status,spLokasi, spUser;
     private Button btnSimpan;
     private RecyclerView rcSchedule;
-    private String izin = "", tanggalString= "", hari="", namauser, hari2="";
     private CheckBox cbCopy ;
-    private boolean isIzin = false, isSakit=false, isTrue=false, isIzinlamabat=false;
-    private Nson userList = Nson.newArray(), lokasiArray = Nson.newArray() ,scheduleArray = Nson.newArray();
+
     private AppActivity activity;
     Calendar myCalendar = Calendar.getInstance();
+
+    private String izin = "", tanggalString= "", hari="", namauser, hari2="";
+    private String userId = "";
+    private boolean isIzin = false, isSakit=false, isTrue=false, isIzinlamabat=false;
+
+    private final Nson userList = Nson.newArray();
+    private final Nson lokasiArray = Nson.newArray();
+    private final Nson scheduleArray = Nson.newArray();
+    private final Nson userData = Nson.newArray();
+
+
 
     public Jadwal_Schedule_Fragment() {
 
@@ -245,11 +255,13 @@ public class Jadwal_Schedule_Fragment extends Fragment {
                 args.put("tanggal2", setFormatDayAndMonthToDb(tanggal2));
                 args.put("hari", hari);
                 args.put("status", status);
-                args.put("scheduleMulai", masuk);
-                args.put("scheduleSelesai", selesai);
+                args.put("scheduleMulai", DateFormatUtils.formatDate(masuk, "HH:mm", "HH:mm:ss"));
+                args.put("scheduleSelesai", DateFormatUtils.formatDate(selesai,"HH:mm", "HH:mm:ss"));
                 args.put("lokasi", lokasi);
                 args.put("izinTerlambat", izin);
                 args.put("copyData", copy);
+                args.put("userId", userId);
+
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_SCHEDULE), args));
             }
 
@@ -257,7 +269,7 @@ public class Jadwal_Schedule_Fragment extends Fragment {
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     activity.showSuccess("Berhasil Menambahkan Schedule");
-                    viewSchedule(namauser);
+                    viewSchedule(userId);
                     setDefault();
                 } else {
                     activity.showError("Menambahkan data gagal!");
@@ -287,7 +299,7 @@ public class Jadwal_Schedule_Fragment extends Fragment {
 
                 args.put("action", "view");
                 args.put("kategori", "SCHEDULE");
-                args.put("nama", item);
+                args.put("userId", item);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_SCHEDULE), args));
             }
@@ -350,10 +362,17 @@ public class Jadwal_Schedule_Fragment extends Fragment {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    result = result.get("data");
                     userList.asArray().clear();
+                    userData.asArray().clear();
+                    userData.add("");
                     userList.add("--PILIH--");
-                    for (int i = 0; i < result.get("data").size(); i++) {
-                        userList.add(result.get("data").get(i).get("NAMA").asString());
+                    for (int i = 0; i < result.size(); i++) {
+                        userList.add(result.get(i).get("NAMA").asString());
+                        userData.add(Nson.newObject()
+                                .set("USER_ID", result.get(i).get("NO_PONSEL").asString())
+                                .set("NAMA", result.get(i).get("NAMA").asString()
+                        ));
                     }
                     ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, userList.asArray());
                     spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -368,8 +387,12 @@ public class Jadwal_Schedule_Fragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 namauser = parent.getSelectedItem().toString();
-                viewSchedule(namauser);
-
+                if(namauser.equals(userData.get(position).get("NAMA").asString())){
+                    userId = userData.get(position).get("USER_ID").asString();
+                    viewSchedule(userId);
+                }else{
+                    userId = "";
+                }
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {

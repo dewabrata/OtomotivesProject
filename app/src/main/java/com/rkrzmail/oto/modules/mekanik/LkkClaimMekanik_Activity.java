@@ -490,7 +490,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
                 Tools.setViewAndChildrenEnabled(find(R.id.ly_lkk_claim, LinearLayout.class), false);
                 cbClaim.setChecked(false);
                 cbClaim.setEnabled(false);
-                showInfo("Bukan Part Garansi Layanan");
+                showWarning("BUKAN PART GARANSI LAYANAN");
             }
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_FOTO_PART) {
             bitmapPart = (Bitmap) (extras != null ? extras.get("data") : null);

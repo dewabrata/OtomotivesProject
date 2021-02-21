@@ -8,7 +8,6 @@ import android.util.Log;
 
 import com.naa.data.UtilityAndroid;
 import com.rkrzmail.oto.gmod.Splash;
-import com.rkrzmail.oto.gmod.Update;
 
 
 public class OtoReceiver extends BroadcastReceiver {
@@ -44,9 +43,9 @@ public class OtoReceiver extends BroadcastReceiver {
                          context.startActivity(intent);
                      }else if (String.valueOf(intent.getStringExtra("action")).equalsIgnoreCase("update")){
                          UtilityAndroid.removeSettingAll(context);
-                         Intent intent = new Intent(context,Update.class);
-                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-                         context.startActivity(intent);
+//                         Intent intent = new Intent(context, Update.class);
+//                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+//                         context.startActivity(intent);
                      }
                  }
                  public Runnable get(Context context, Intent intent){
