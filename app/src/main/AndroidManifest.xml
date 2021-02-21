@@ -3,6 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.rkrzmail.oto">
 
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+
     <application
         android:name=".AppApplication"
         android:allowBackup="true"
@@ -15,25 +29,28 @@
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,UnusedAttribute"
         tools:replace="android:label,android:appComponentFactory">
+        <activity android:name=".modules.mekanik.ClaimGaransiPart_Activity"></activity>
         <activity
             android:name=".modules.bengkel.Asset_Activity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".modules.bengkel.AturAsset_Activity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".modules.bengkel.AturPembayaranInvoice_Activity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".modules.bengkel.AturTotalInvoice_Activity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".modules.bengkel.Schedule_MainTab_Activity"
             android:screenOrientation="portrait" />
-        <activity android:name=".modules.bengkel.AturSaran_Activity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".modules.bengkel.SaranActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.bengkel.AturSaran_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.bengkel.SaranActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".modules.bengkel.Dashboard_MainTab_Activity"
             android:screenOrientation="portrait" />
@@ -534,19 +551,5 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
     </application>
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
 
 </manifest>
