@@ -29,7 +29,8 @@
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,UnusedAttribute"
         tools:replace="android:label,android:appComponentFactory">
-        <activity android:name=".modules.mekanik.ClaimGaransiPart_Activity"></activity>
+        <activity android:name=".modules.mekanik.ClaimGaransiStatus_Activity"></activity>
+        <activity android:name=".modules.mekanik.ClaimGaransiPart_Activity" />
         <activity
             android:name=".modules.bengkel.Asset_Activity"
             android:screenOrientation="portrait" />
