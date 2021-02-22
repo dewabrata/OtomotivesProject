@@ -117,8 +117,16 @@
         <item>UNIT ENTRY AHAS</item>
         <item>UNIT ENTRY</item>
         <item>UNIT DETAIL</item>
+    </string-array>
 
-
+    <string-array name="status_claim">
+        <item>--PILIH--</item>
+        <item>FILLING</item>
+        <item>KIRIM PART</item>
+        <item>KETERANGAN</item>
+        <item>INFO PELANGGAN</item>
+        <item>DITERIMA</item>
+        <item>DITOLAK</item>
     </string-array>
 
     <string-array name="posisi_karyawan">

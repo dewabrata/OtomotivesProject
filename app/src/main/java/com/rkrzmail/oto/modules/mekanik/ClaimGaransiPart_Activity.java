@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.mekanik;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.nfc.Tag;
 import android.support.annotation.NonNull;
@@ -18,15 +19,19 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 
 import java.util.Map;
 
 import static com.rkrzmail.utils.APIUrls.SET_CLAIM;
+import static com.rkrzmail.utils.ConstUtils.CARI_PART_CLAIM;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
 
 public class ClaimGaransiPart_Activity extends AppActivity {
 
+    public static final int REQUEST_CLAIM = 99;
     RecyclerView rvClaimGaransi;
 
     @Override
@@ -43,18 +48,23 @@ public class ClaimGaransiPart_Activity extends AppActivity {
         rvClaimGaransi.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_claimgaransi_part) {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                viewHolder.find(R.id.tv_nopolisi, TextView.class).setText(nListArray.get(position).get("NAMA_MEKANIK").asString());
-                viewHolder.find(R.id.tv_jenisKendaraan, TextView.class).setText(nListArray.get(position).get("TIPE_ANTRIAN").asString());
-                viewHolder.find(R.id.tv_tgl_beli, TextView.class).setText(nListArray.get(position).get("LOKASI").asString());
-                viewHolder.find(R.id.tv_km, TextView.class).setText(nListArray.get(position).get("JAM_MASUK").asString());
-                viewHolder.find(R.id.tv_tgl_lkk_claim, TextView.class).setText(nListArray.get(position).get("JAM_PULANG").asString());
-                viewHolder.find(R.id.tv_nama_part, TextView.class).setText(nListArray.get(position).get("JAM_PULANG").asString());
-                viewHolder.find(R.id.tv_noPart_claim, TextView.class).setText(nListArray.get(position).get("JAM_PULANG").asString());
-                viewHolder.find(R.id.tv_harga, TextView.class).setText(nListArray.get(position).get("JAM_PULANG").asString());
-                viewHolder.find(R.id.tv_status, TextView.class).setText(nListArray.get(position).get("JAM_PULANG").asString());
-                viewHolder.find(R.id.tv_keterangan, TextView.class).setText(nListArray.get(position).get("JAM_PULANG").asString());
+                viewHolder.find(R.id.tv_nopolisi, TextView.class).setText(nListArray.get(position).get("NO_POLISI").asString());
+                viewHolder.find(R.id.tv_jenisKendaraan, TextView.class).setText(nListArray.get(position).get("JENIS_KENDARAAN").asString());
+                viewHolder.find(R.id.tv_tgl_beli, TextView.class).setText(nListArray.get(position).get("TANGGAL_PEMBELIAN").asString());
+                viewHolder.find(R.id.tv_km, TextView.class).setText(nListArray.get(position).get("KM").asString());
+                viewHolder.find(R.id.tv_tgl_lkk_claim, TextView.class).setText(nListArray.get(position).get("TANGGAL_LKK").asString());
+                viewHolder.find(R.id.tv_nama_part, TextView.class).setText(nListArray.get(position).get("NAMA_PART").asString());
+                viewHolder.find(R.id.tv_noPart_claim, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
+                viewHolder.find(R.id.tv_harga, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_status, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_keterangan, TextView.class).setText(nListArray.get(position).get("").asString());
             }
-        });
+        }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Nson parent, View view, int position) {
+                startActivity(new Intent(getActivity(), ClaimGaransiStatus_Activity.class));
+            }
+        }));
         catchData();
 
     }

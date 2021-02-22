@@ -32,8 +32,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingService;
 import com.naa.data.Nson;
 import com.naa.data.UtilityAndroid;
 import com.naa.utils.InternetX;
@@ -55,10 +53,10 @@ import com.rkrzmail.oto.modules.checkin.Checkin1_Activity;
 import com.rkrzmail.oto.modules.hutang.Hutang_MainTab_Activity;
 import com.rkrzmail.oto.modules.hutang.Piutang_MainTab_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiTerbayar_Activity;
-import com.rkrzmail.oto.modules.mekanik.AturSchedule_Activity;
 import com.rkrzmail.oto.modules.mekanik.BiayaMekanik2Activity;
 import com.rkrzmail.oto.modules.LoginActivity;
 import com.rkrzmail.oto.modules.komisi.KomisiPart_Activity;
+import com.rkrzmail.oto.modules.mekanik.ClaimGaransiPart_Activity;
 import com.rkrzmail.oto.modules.mekanik.InspeksiMekanik_Activity;
 import com.rkrzmail.oto.modules.mekanik.PerintahKerjaMekanik_Activity;
 import com.rkrzmail.oto.modules.sparepart.MenungguPart_Activity;
@@ -88,7 +86,6 @@ import com.rkrzmail.oto.modules.sparepart.LokasiPart_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.RekeningBank_Activity;
 import com.rkrzmail.oto.modules.bengkel.Tenda_Activity;
 import com.rkrzmail.oto.modules.sparepart.TerimaPart_Activity;
-import com.rkrzmail.srv.OtoReceiver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,7 +94,6 @@ import java.util.Objects;
 import java.util.Vector;
 
 import static com.rkrzmail.utils.APIUrls.ATUR_KONTROL_LAYANAN;
-import static com.rkrzmail.utils.APIUrls.VIEW_PERINTAH_KERJA_MEKANIK;
 import static com.rkrzmail.utils.APIUrls.VIEW_TUGAS_PART;
 import static com.rkrzmail.utils.ConstUtils.PART;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
@@ -413,8 +409,9 @@ public class MenuActivity extends AppActivity {
         } else if (item.getTitle().toString().equalsIgnoreCase(KOMISI_PEMBAYARAN) && getAccess(KOMISI)) {
             Intent intent = new Intent(MenuActivity.this, KomisiTerbayar_Activity.class);
             startActivity(intent);
-        } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_CLAIM_STATUS) && getAccess(MY_BUSINESS_CLAIM_STATUS)) {
-
+        } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_CLAIM_STATUS) && getAccess(MY_BUSINESS)) {
+            Intent intent = new Intent(MenuActivity.this, ClaimGaransiPart_Activity.class);
+            startActivity(intent);
         } else if (item.getItemId() == R.id.action_logout) {
             Messagebox.showDialog(getActivity(), "Logout", "Yakin Logout ?", "Ya", "Tidak", new DialogInterface.OnClickListener() {
                 @Override
