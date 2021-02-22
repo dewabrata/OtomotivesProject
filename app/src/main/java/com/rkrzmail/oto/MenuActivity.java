@@ -182,6 +182,7 @@ public class MenuActivity extends AppActivity {
     private final String MY_BUSINESS_CUSTOMER = "CUSTOMER";//tambahan
     private final String MY_BUSINESS_PAYROLL = "PAYROLL";//tambahan
     private final String MY_BUSINESS_LOKASI_PART = "LOKASI PARTS";
+    private final String MY_BUSINESS_CLAIM_STATUS = "STATUS CLAIM";
 
     private final String LOKASI_PART = "LOKASI PART";
 
@@ -412,6 +413,8 @@ public class MenuActivity extends AppActivity {
         } else if (item.getTitle().toString().equalsIgnoreCase(KOMISI_PEMBAYARAN) && getAccess(KOMISI)) {
             Intent intent = new Intent(MenuActivity.this, KomisiTerbayar_Activity.class);
             startActivity(intent);
+        } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_CLAIM_STATUS) && getAccess(MY_BUSINESS_CLAIM_STATUS)) {
+
         } else if (item.getItemId() == R.id.action_logout) {
             Messagebox.showDialog(getActivity(), "Logout", "Yakin Logout ?", "Ya", "Tidak", new DialogInterface.OnClickListener() {
                 @Override
@@ -435,11 +438,11 @@ public class MenuActivity extends AppActivity {
             startActivity(intent);
         } else if (item.getTitle().toString().equals(PENGATURAN) && !getAccess(PENGATURAN)) {
             showWarning("ANDA TIDAK MEMILIK AKSES " + PENGATURAN);
-        }else if (item.getTitle().toString().equals(PENGATURAN) && !getAccess(MY_BUSINESS)) {
+        } else if (item.getTitle().toString().equals(PENGATURAN) && !getAccess(MY_BUSINESS)) {
             showWarning("ANDA TIDAK MEMILIK AKSES " + MY_BUSINESS);
-        }else if (item.getTitle().toString().equals(PENGATURAN) && !getAccess(DISCOUNT)) {
+        } else if (item.getTitle().toString().equals(PENGATURAN) && !getAccess(DISCOUNT)) {
             showWarning("ANDA TIDAK MEMILIK AKSES " + DISCOUNT);
-        }else if (item.getTitle().toString().equals(PENGATURAN) && !getAccess(KOMISI)) {
+        } else if (item.getTitle().toString().equals(PENGATURAN) && !getAccess(KOMISI)) {
             showWarning("ANDA TIDAK MEMILIK AKSES " + KOMISI);
         }
 
@@ -624,6 +627,7 @@ public class MenuActivity extends AppActivity {
         subMenu.add(MY_BUSINESS_CUSTOMER);
         subMenu.add(MY_BUSINESS_PAYROLL);
         subMenu.add(MY_BUSINESS_LOKASI_PART);
+        subMenu.add(MY_BUSINESS_CLAIM_STATUS);
 
         subMenu = menu.addSubMenu(PENGATURAN);
         subMenu.add(PENGATURAN_USER);

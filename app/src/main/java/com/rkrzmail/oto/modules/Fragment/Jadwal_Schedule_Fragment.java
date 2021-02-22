@@ -466,9 +466,7 @@ public class Jadwal_Schedule_Fragment extends Fragment {
                 alertDialog.dismiss();
                 StringBuilder tanggalValues = new StringBuilder();
                 for (int i = 0; i < dateSelected.size(); i++) {
-                    tanggalList.add(Nson.newObject()
-                       .set("TANGGAL", dateSelected.get(i))
-                    );
+                    tanggalList.add(Nson.newObject().set("TANGGAL", dateSelected.get(i)));
                     if (tanggalValues.length() > 0) tanggalValues.append(", ");
                     tanggalValues.append(dateSelected.get(i));
                 }
