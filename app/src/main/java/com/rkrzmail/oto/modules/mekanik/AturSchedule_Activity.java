@@ -63,7 +63,7 @@ import static com.rkrzmail.utils.Tools.setFormatDayAndMonthToDb;
 
 public class AturSchedule_Activity extends AppActivity implements View.OnClickListener {
 
-    private TextView tvMulai_Kerja, tvSelesai_Kerja, tv_tanggal,tv_tanggal2;
+    private TextView tvMulai_Kerja, tvSelesai_Kerja, tv_tanggal;
     private Spinner sp_status,spLokasi, spUser;
     private RecyclerView rcSchedule;
     private String izin = "", tanggalString= "", hari="", namauser, hari2="";
@@ -89,7 +89,6 @@ public class AturSchedule_Activity extends AppActivity implements View.OnClickLi
     @SuppressLint("SetTextI18n")
     private void initComponent() {
         tv_tanggal = findViewById(R.id.tv_tanggal);
-        tv_tanggal2 = findViewById(R.id.tv_tanggal2);
         tvMulai_Kerja = findViewById(R.id.tv_mulaiKerja);
         tvSelesai_Kerja = findViewById(R.id.tv_selesaiKerja);
         sp_status = findViewById(R.id.sp_statusSchedule);
@@ -185,16 +184,12 @@ public class AturSchedule_Activity extends AppActivity implements View.OnClickLi
         tvMulai_Kerja.setOnClickListener(this);
         tvSelesai_Kerja.setOnClickListener(this);
         tv_tanggal.setOnClickListener(this);
-        tv_tanggal2.setOnClickListener(this);
-        find(R.id.ic_tanggal).setOnClickListener(this);
-        find(R.id.ic_tanggal2).setOnClickListener(this);
     }
 
     private void insertData() {
         final String masuk = tvMulai_Kerja.getText().toString().trim();
         final String selesai = tvSelesai_Kerja.getText().toString().trim();
         final String tanggal = tv_tanggal.getText().toString().trim();
-        final String tanggal2 = tv_tanggal2.getText().toString().trim();
         final String status = sp_status.getSelectedItem().toString().toUpperCase();
         if(status.contains("IZIN TERLAMBAT")){
             izin = "Y";
@@ -213,7 +208,6 @@ public class AturSchedule_Activity extends AppActivity implements View.OnClickLi
                 args.put("kategori", "TEST");
                 args.put("nama", namauser);
                 args.put("tanggal", setFormatDayAndMonthToDb(tanggal));
-                args.put("tanggal2", setFormatDayAndMonthToDb(tanggal2));
                 args.put("hari", hari);
                 args.put("status", status);
                 args.put("scheduleMulai", masuk);
@@ -239,7 +233,6 @@ public class AturSchedule_Activity extends AppActivity implements View.OnClickLi
 
     private void setDefault(){
         tv_tanggal.setText("");
-        tv_tanggal2.setText("");
         sp_status.setSelection(0);
         spLokasi.setSelection(0);
         tvMulai_Kerja.setText("");
@@ -501,7 +494,6 @@ public class AturSchedule_Activity extends AppActivity implements View.OnClickLi
                 }
                 String formattedTime = sdf.format(date);
                 tanggalString += formattedTime;
-                find(R.id.tv_tanggal2, TextView.class).setText(formattedTime);
 
             }
         }, year, month, day);
@@ -581,13 +573,6 @@ public class AturSchedule_Activity extends AppActivity implements View.OnClickLi
 //            case R.id.tv_tanggal2:
 //                getDatePickerStatus2();
 //                break;
-            case R.id.ic_tanggal:
-                find(R.id.ic_tanggal2, TextView.class).setEnabled(true);
-                getDatePickerStatus();
-                break;
-            case R.id.ic_tanggal2:
-                getDatePickerStatus2();
-                break;
         }
     }
 

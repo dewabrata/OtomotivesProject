@@ -1,16 +1,16 @@
 package com.rkrzmail.oto.modules.Fragment;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,51 +31,54 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.bengkel.Absensi_MainTab_Activity;
-import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
 import com.rkrzmail.oto.modules.bengkel.Schedule_MainTab_Activity;
 import com.rkrzmail.srv.DateFormatUtils;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
+import com.squareup.timessquare.CalendarPickerView;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import static android.view.View.GONE;
 import static com.rkrzmail.oto.AppActivity.getTimePickerDialogTextView;
-import static com.rkrzmail.utils.APIUrls.ABSEN;
 import static com.rkrzmail.utils.APIUrls.SET_SCHEDULE;
 import static com.rkrzmail.utils.APIUrls.VIEW_MST;
-import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.ONEDAY;
 import static com.rkrzmail.utils.Tools.setFormatDayAndMonthToDb;
 
 
 public class Jadwal_Schedule_Fragment extends Fragment {
 
-    private TextView tvMulai_Kerja, tvSelesai_Kerja, tv_tanggal,tv_tanggal2, ic_tanggal, ic_tanggal2;
-    private Spinner sp_status,spLokasi, spUser;
+    private TextView tvMulai_Kerja, tvSelesai_Kerja, tv_tanggal;
+    private Spinner sp_status, spLokasi, spUser;
     private Button btnSimpan;
     private RecyclerView rcSchedule;
-    private CheckBox cbCopy ;
+    private CheckBox cbCopy;
 
     private AppActivity activity;
     Calendar myCalendar = Calendar.getInstance();
+    private AlertDialog alertDialog;
+    private View dialogView;
 
-    private String izin = "", tanggalString= "", hari="", namauser, hari2="";
+    private String izin = "", tanggalString = "", hari = "", namauser, hari2 = "";
     private String userId = "";
-    private boolean isIzin = false, isSakit=false, isTrue=false, isIzinlamabat=false;
+    private boolean isIzin = false, isSakit = false, isTrue = false, isIzinlamabat = false;
 
+    private final List<Date> dateList = new ArrayList<>();
+    private final Nson tanggalList = Nson.newArray();
     private final Nson userList = Nson.newArray();
     private final Nson lokasiArray = Nson.newArray();
     private final Nson scheduleArray = Nson.newArray();
     private final Nson userData = Nson.newArray();
-
 
 
     public Jadwal_Schedule_Fragment() {
@@ -100,8 +103,7 @@ public class Jadwal_Schedule_Fragment extends Fragment {
 
     @SuppressLint("SetTextI18n")
     private void initComponent(View v) {
-        tv_tanggal = v.findViewById(R.id.tv_tanggal);
-        tv_tanggal2 = v.findViewById(R.id.tv_tanggal2);
+        tv_tanggal = v.findViewById(R.id.tv_tanggal_schedule);
         tvMulai_Kerja = v.findViewById(R.id.tv_mulaiKerja);
         tvSelesai_Kerja = v.findViewById(R.id.tv_selesaiKerja);
         sp_status = v.findViewById(R.id.sp_statusSchedule);
@@ -110,11 +112,8 @@ public class Jadwal_Schedule_Fragment extends Fragment {
         cbCopy = v.findViewById(R.id.cb_copydata);
         rcSchedule = v.findViewById(R.id.recyclerViewSchedule);
         btnSimpan = v.findViewById(R.id.btn_simpan);
-        ic_tanggal = v.findViewById(R.id.ic_tanggal);
-        ic_tanggal2 = v.findViewById(R.id.ic_tanggal2);
         setSpUser();
         setSpLokasi();
-
 
         sp_status.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -125,55 +124,56 @@ public class Jadwal_Schedule_Fragment extends Fragment {
                     cbCopy.setEnabled(true);
                     tvMulai_Kerja.setTextColor(activity.getColor(R.color.grey_900));
                     tvSelesai_Kerja.setTextColor(activity.getColor(R.color.grey_900));
-                    isTrue=true;
-                    isSakit=false;
-                    isIzin=false;
+                    isTrue = true;
+                    isSakit = false;
+                    isIzin = false;
 
-                } else if (item.equalsIgnoreCase("LIBUR")){
+                } else if (item.equalsIgnoreCase("LIBUR")) {
                     Tools.setViewAndChildrenEnabled(activity.find(R.id.ly_mulaiselesai, LinearLayout.class), false);
                     tvMulai_Kerja.setTextColor(activity.getColor(R.color.grey_40));
                     tvSelesai_Kerja.setTextColor(activity.getColor(R.color.grey_40));
-                    isTrue=true;
-                    isSakit=false;
-                    isIzin=false;
+                    isTrue = true;
+                    isSakit = false;
+                    isIzin = false;
 
-                } else if (item.equalsIgnoreCase("CUTI")){
+                } else if (item.equalsIgnoreCase("CUTI")) {
                     Tools.setViewAndChildrenEnabled(activity.find(R.id.ly_mulaiselesai, LinearLayout.class), false);
                     tvMulai_Kerja.setTextColor(activity.getColor(R.color.grey_40));
                     tvSelesai_Kerja.setTextColor(activity.getColor(R.color.grey_40));
-                    isTrue=true;
-                    isSakit=false;
-                    isIzin=false;
+                    isTrue = true;
+                    isSakit = false;
+                    isIzin = false;
 
-                } else if (item.equalsIgnoreCase("IZIN")){
+                } else if (item.equalsIgnoreCase("IZIN")) {
                     Tools.setViewAndChildrenEnabled(activity.find(R.id.ly_mulaiselesai, LinearLayout.class), false);
                     tvMulai_Kerja.setTextColor(activity.getColor(R.color.grey_40));
                     tvSelesai_Kerja.setTextColor(activity.getColor(R.color.grey_40));
-                    isTrue=true;
-                    isSakit=false;
-                    isIzin=true;
+                    isTrue = true;
+                    isSakit = false;
+                    isIzin = true;
 
-                } else if (item.equalsIgnoreCase("SAKIT")){
+                } else if (item.equalsIgnoreCase("SAKIT")) {
                     Tools.setViewAndChildrenEnabled(activity.find(R.id.ly_mulaiselesai, LinearLayout.class), false);
                     tvMulai_Kerja.setTextColor(activity.getColor(R.color.grey_40));
                     tvSelesai_Kerja.setTextColor(activity.getColor(R.color.grey_40));
-                    isSakit=true;
-                    isIzin=false;
+                    isSakit = true;
+                    isIzin = false;
 
-                } else if (item.equalsIgnoreCase("IZIN TERLAMBAT")){
+                } else if (item.equalsIgnoreCase("IZIN TERLAMBAT")) {
                     Tools.setViewAndChildrenEnabled(activity.find(R.id.ly_mulaiselesai, LinearLayout.class), false);
                     tvMulai_Kerja.setTextColor(activity.getColor(R.color.grey_40));
                     tvSelesai_Kerja.setTextColor(activity.getColor(R.color.grey_40));
-                    isIzinlamabat=true;
-                    isTrue=false;
-                    isSakit=false;
-                    isIzin=false;
+                    isIzinlamabat = true;
+                    isTrue = false;
+                    isSakit = false;
+                    isIzin = false;
                 } else {
                     Tools.setViewAndChildrenEnabled(activity.find(R.id.ly_mulaiselesai, LinearLayout.class), false);
                     tvMulai_Kerja.setTextColor(activity.getColor(R.color.grey_40));
                     tvSelesai_Kerja.setTextColor(activity.getColor(R.color.grey_40));
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
@@ -191,7 +191,7 @@ public class Jadwal_Schedule_Fragment extends Fragment {
         cbCopy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(buttonView.isChecked()){
+                if (buttonView.isChecked()) {
 
                 }
             }
@@ -210,21 +210,16 @@ public class Jadwal_Schedule_Fragment extends Fragment {
             }
         });
 
-        ic_tanggal.setOnClickListener(new View.OnClickListener() {
+        tv_tanggal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(sp_status.getSelectedItem().equals("--PILIH--")){
-                    activity.showInfo("Status Tidak Boleh Kosong");
-                }else {
-                    getStatusDatepicker();
-                    ic_tanggal2.setEnabled(true);
+                if (sp_status.getSelectedItem().equals("--PILIH--")) {
+                    activity.showInfo("STATUS HARUS DI PILIH");
+                    sp_status.performClick();
+                } else {
+                    showDialogMultipleDatePicker();
+                    //getStatusDatepicker();
                 }
-            }
-        });
-        ic_tanggal2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getStatusDatepicker2();
             }
         });
     }
@@ -233,9 +228,8 @@ public class Jadwal_Schedule_Fragment extends Fragment {
         final String masuk = tvMulai_Kerja.getText().toString().trim();
         final String selesai = tvSelesai_Kerja.getText().toString().trim();
         final String tanggal = tv_tanggal.getText().toString().trim();
-        final String tanggal2 = tv_tanggal2.getText().toString().trim();
         final String status = sp_status.getSelectedItem().toString().toUpperCase();
-        if(status.contains("IZIN TERLAMBAT")){
+        if (status.contains("IZIN TERLAMBAT")) {
             izin = "Y";
         }
         final String lokasi = spLokasi.getSelectedItem().toString().toUpperCase();
@@ -252,11 +246,11 @@ public class Jadwal_Schedule_Fragment extends Fragment {
                 args.put("kategori", "SCHEDULE");
                 args.put("nama", namauser);
                 args.put("tanggal", setFormatDayAndMonthToDb(tanggal));
-                args.put("tanggal2", setFormatDayAndMonthToDb(tanggal2));
+                //args.put("tanggal2", setFormatDayAndMonthToDb(tanggal2));
                 args.put("hari", hari);
                 args.put("status", status);
                 args.put("scheduleMulai", DateFormatUtils.formatDate(masuk, "HH:mm", "HH:mm:ss"));
-                args.put("scheduleSelesai", DateFormatUtils.formatDate(selesai,"HH:mm", "HH:mm:ss"));
+                args.put("scheduleSelesai", DateFormatUtils.formatDate(selesai, "HH:mm", "HH:mm:ss"));
                 args.put("lokasi", lokasi);
                 args.put("izinTerlambat", izin);
                 args.put("copyData", copy);
@@ -278,9 +272,8 @@ public class Jadwal_Schedule_Fragment extends Fragment {
         });
     }
 
-    private void setDefault(){
+    private void setDefault() {
         tv_tanggal.setText("");
-        tv_tanggal2.setText("");
         sp_status.setSelection(0);
         spLokasi.setSelection(0);
         tvMulai_Kerja.setText("");
@@ -289,7 +282,7 @@ public class Jadwal_Schedule_Fragment extends Fragment {
         cbCopy.setEnabled(false);
     }
 
-    private void viewSchedule(final String item){
+    private void viewSchedule(final String item) {
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -372,7 +365,7 @@ public class Jadwal_Schedule_Fragment extends Fragment {
                         userData.add(Nson.newObject()
                                 .set("USER_ID", result.get(i).get("NO_PONSEL").asString())
                                 .set("NAMA", result.get(i).get("NAMA").asString()
-                        ));
+                                ));
                     }
                     ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, userList.asArray());
                     spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -387,18 +380,110 @@ public class Jadwal_Schedule_Fragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 namauser = parent.getSelectedItem().toString();
-                if(namauser.equals(userData.get(position).get("NAMA").asString())){
+                if (namauser.equals(userData.get(position).get("NAMA").asString())) {
                     userId = userData.get(position).get("USER_ID").asString();
                     viewSchedule(userId);
-                }else{
+                } else {
                     userId = "";
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
+    }
+
+    @SuppressLint("NewApi")
+    private void initToolbarDatePicker() {
+        Toolbar toolbar = dialogView.findViewById(R.id.toolbar);
+        activity.setSupportActionBar(toolbar);
+        Objects.requireNonNull(activity.getSupportActionBar()).setTitle("Tanggal Schedule");
+    }
+
+    @SuppressLint({"InflateParams", "SetTextI18n"})
+    private void showDialogMultipleDatePicker() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = getLayoutInflater();
+        dialogView = inflater.inflate(R.layout.dialog_multiple_select_date_picker, null);
+        builder.setView(dialogView);
+
+        initToolbarDatePicker();
+        Date date = new Date();
+        Calendar calendar = Calendar.getInstance();
+        final List<String> dateSelected = new ArrayList<>();
+        Button btnSimpan = dialogView.findViewById(R.id.btn_simpan);
+        Button btnBatal = dialogView.findViewById(R.id.btn_hapus);
+
+        btnBatal.setVisibility(View.VISIBLE);
+        btnBatal.setText("BATAL");
+        CalendarPickerView calendarPickerView = dialogView.findViewById(R.id.date_picker);
+
+        calendar.add(Calendar.YEAR, 1); // max next year
+        calendarPickerView.init(date, calendar.getTime()).inMode(CalendarPickerView.SelectionMode.MULTIPLE);
+        if (dateList.size() > 0) {
+            for (Date dateSelect : dateList) {
+                calendarPickerView.selectDate(dateSelect);
+            }
+        } else {
+            calendarPickerView.selectDate(date);
+        }
+        calendarPickerView.setOnDateSelectedListener(new CalendarPickerView.OnDateSelectedListener() {
+            @Override
+            public void onDateSelected(Date date) {
+                dateList.add(date);
+                dateSelected.add(DateFormat.getDateInstance(DateFormat.SHORT).format(date));
+            }
+
+            @Override
+            public void onDateUnselected(Date date) {
+                if (dateList.size() > 0) {
+                    for (int i = 0; i < dateList.size(); i++) {
+                        if (dateList.get(i).equals(date)) {
+                            dateList.remove(date);
+                            break;
+                        }
+                    }
+                }
+
+                if (dateSelected.size() > 0) {
+                    for (int i = 0; i < dateSelected.size(); i++) {
+                        if (dateSelected.get(i).equals(DateFormat.getDateInstance(DateFormat.SHORT).format(date))) {
+                            dateSelected.remove(i);
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+
+        btnSimpan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tanggalList.asArray().addAll(dateSelected);
+                alertDialog.dismiss();
+                StringBuilder tanggalValues = new StringBuilder();
+                for (int i = 0; i < tanggalList.size(); i++) {
+                    if (tanggalValues.length() > 0) tanggalValues.append(", ");
+                    tanggalValues.append(tanggalList.get(i).asString());
+                }
+                tv_tanggal.setText(tanggalValues.toString());
+            }
+        });
+
+        btnBatal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+        alertDialog = builder.create();
+        alertDialog.setCancelable(true);
+        if (alertDialog.getWindow() != null)
+            alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        alertDialog.show();
     }
 
     private void initRecylerview() {
@@ -423,41 +508,41 @@ public class Jadwal_Schedule_Fragment extends Fragment {
         );
     }
 
-    private void getStatusDatepicker(){
-        long now = System.currentTimeMillis()-1000;
+    private void getStatusDatepicker() {
+        long now = System.currentTimeMillis() - 1000;
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity() , date ,myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
-        if(isSakit){
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
+        if (isSakit) {
             datePickerDialog.getDatePicker().setMinDate(now - ONEDAY * 3); //tigaharilalu
-        } else if(isTrue){
+        } else if (isTrue) {
             datePickerDialog.getDatePicker().setMinDate(now);
-        }else if (isIzinlamabat){
+        } else if (isIzinlamabat) {
             datePickerDialog.getDatePicker().setMinDate(now - ONEDAY * 30); //satubulanlalu
         }
 
-        if(isIzin || isSakit){
+        if (isIzin || isSakit) {
             datePickerDialog.getDatePicker().setMaxDate(now);
-        }else {
+        } else {
             datePickerDialog.getDatePicker().setMaxDate(now + ONEDAY * 30); //satubulankedepan
         }
         datePickerDialog.show();
     }
 
-    private void getStatusDatepicker2(){
-        long now = System.currentTimeMillis()-1000;
+    private void getStatusDatepicker2() {
+        long now = System.currentTimeMillis() - 1000;
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity() , date2 ,myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
-        if(isSakit){
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), date2, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
+        if (isSakit) {
             datePickerDialog.getDatePicker().setMinDate(now - ONEDAY * 3); //tigaharilalu
-        } else if(isTrue){
+        } else if (isTrue) {
             datePickerDialog.getDatePicker().setMinDate(now);
-        }else if (isIzinlamabat){
+        } else if (isIzinlamabat) {
             datePickerDialog.getDatePicker().setMinDate(now - ONEDAY * 30); //satubulanlalu
         }
 
-        if(isIzin || isSakit){
+        if (isIzin || isSakit) {
             datePickerDialog.getDatePicker().setMaxDate(now);
-        }else {
+        } else {
             datePickerDialog.getDatePicker().setMaxDate(now + ONEDAY * 30); //satubulankedepan
         }
         datePickerDialog.show();
@@ -468,7 +553,7 @@ public class Jadwal_Schedule_Fragment extends Fragment {
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
             @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             String newDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
-            hari = ParseDateofWeek(dayOfMonth,monthOfYear,year);
+            hari = ParseDateofWeek(dayOfMonth, monthOfYear, year);
             Date date = null;
             try {
                 date = sdf.parse(newDate);
@@ -487,7 +572,7 @@ public class Jadwal_Schedule_Fragment extends Fragment {
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
             @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             String newDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
-            hari2 = ParseDateofWeek(dayOfMonth,monthOfYear,year);
+            hari2 = ParseDateofWeek(dayOfMonth, monthOfYear, year);
             Date date = null;
             try {
                 date = sdf.parse(newDate);
@@ -495,12 +580,12 @@ public class Jadwal_Schedule_Fragment extends Fragment {
                 e.printStackTrace();
             }
             String formattedTime = sdf.format(date);
-            tv_tanggal2.setText(formattedTime);
         }
 
     };
-    private String ParseDateofWeek (int date, int month, int year){
-        if(date>0 && month>0 && year>0){
+
+    private String ParseDateofWeek(int date, int month, int year) {
+        if (date > 0 && month > 0 && year > 0) {
             int day = 0;
             SimpleDateFormat inFormat = new SimpleDateFormat("dd/MM/yyyy");
             try {

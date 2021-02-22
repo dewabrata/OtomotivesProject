@@ -74,8 +74,6 @@ dependencies {
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.19'
     //gridview width dynamically
     implementation 'com.riontech.staggeredtextgridview:staggeredtextgridview:1.0.1'
-    //datepicker multiple
-    implementation 'com.squareup:android-times-square:1.6.5@aar'
 
 
 }

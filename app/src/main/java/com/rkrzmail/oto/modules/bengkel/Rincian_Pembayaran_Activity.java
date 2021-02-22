@@ -302,9 +302,10 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                     nListArray.asArray().addAll(result.get("data").asArray());
                     for (int i = 0; i < nListArray.size(); i++) {
                         partList.add(Nson.newObject()
+                                .set("PART_JASA", nListArray.get(i).get("PART_ID").asString())
                                 .set("PART_ID", nListArray.get(i).get("PART_ID").asString())
                                 .set("JUMLAH", nListArray.get(i).get("JUMLAH").asString())
-
+                                .set("LOKASI_PART_ID", nListArray.get(i).get("LOKASI_PART_ID").asString())
                                 .set("CHECKIN_DETAIL_ID", nListArray.get(i).get("CHECKIN_DETAIL_ID").asString())
                                 .set("JUAL_PART_DETAIL_ID", nListArray.get(i).get("DETAIL_ID").asString())
                         );
