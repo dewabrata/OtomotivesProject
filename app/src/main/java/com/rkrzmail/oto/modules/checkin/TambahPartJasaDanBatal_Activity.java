@@ -545,6 +545,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                         dialogIgnoreStock();
                     }else{
                         i = new Intent(getActivity(), JumlahPart_Checkin_Activity.class);
+                        i.putExtra("KM", kmKendaraan);
                         i.putExtra(DATA, dataAccept.toJson());
                         i.putExtra(TAMBAH_PART, "");
                         i.putExtra("KM", kmKendaraan);
@@ -581,6 +582,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent i = new Intent(getActivity(), CariPart_Activity.class);
+                i.putExtra("KM", kmKendaraan);
                 i.putExtra(CARI_PART_LOKASI, RUANG_PART);
                 i.putExtra(TAMBAH_PART, "Y");
                 startActivityForResult(i, REQUEST_CARI_PART);
