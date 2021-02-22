@@ -255,6 +255,8 @@ public class Jadwal_Schedule_Fragment extends Fragment {
                 args.put("izinTerlambat", izin);
                 args.put("copyData", copy);
                 args.put("userId", userId);
+                //array tanggal
+                args.put("tanggalList", tanggalList.toJson());
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_SCHEDULE), args));
             }
@@ -461,12 +463,14 @@ public class Jadwal_Schedule_Fragment extends Fragment {
         btnSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tanggalList.asArray().addAll(dateSelected);
                 alertDialog.dismiss();
                 StringBuilder tanggalValues = new StringBuilder();
-                for (int i = 0; i < tanggalList.size(); i++) {
+                for (int i = 0; i < dateSelected.size(); i++) {
+                    tanggalList.add(Nson.newObject()
+                       .set("TANGGAL", dateSelected.get(i))
+                    );
                     if (tanggalValues.length() > 0) tanggalValues.append(", ");
-                    tanggalValues.append(tanggalList.get(i).asString());
+                    tanggalValues.append(dateSelected.get(i));
                 }
                 tv_tanggal.setText(tanggalValues.toString());
             }
