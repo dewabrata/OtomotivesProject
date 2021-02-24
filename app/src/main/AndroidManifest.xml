@@ -119,7 +119,7 @@
             android:name=".modules.sparepart.DetailCariPart_Activity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".modules.hutang.PembayaranHutang_Activity"
+            android:name=".modules.hutang.AturPembayaranHutang_Activity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".modules.hutang.Hutang_MainTab_Activity"

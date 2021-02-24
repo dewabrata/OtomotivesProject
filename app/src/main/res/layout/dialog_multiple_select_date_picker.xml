@@ -28,8 +28,7 @@
             android:layout_height="400dp"
             android:clipToPadding="false"
             android:paddingTop="16dp"
-            android:scrollbarStyle="outsideOverlay"
-            app:tsquare_dividerColor="@android:color/transparent" />
+            android:scrollbarStyle="outsideOverlay" />
 
     </LinearLayout>
 

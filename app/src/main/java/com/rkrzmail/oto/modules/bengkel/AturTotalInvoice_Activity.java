@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
+import com.naa.data.UtilityAndroid;
 import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
@@ -23,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
+import java.util.Random;
 
 import static com.rkrzmail.utils.APIUrls.PIUTANG;
 import static com.rkrzmail.utils.ConstUtils.DATA;
@@ -40,6 +42,7 @@ public class AturTotalInvoice_Activity extends AppActivity {
     private String namaPrincipal = "";
     private String tglBayar = "";
     private String namaBank = "", noRek = "", tipePemabayaran = "";
+    private String jenisTransaksi = "";
     private int totalInvoice = 0;
     private int noInvBerikutnya = 0;
     private int
@@ -97,6 +100,7 @@ public class AturTotalInvoice_Activity extends AppActivity {
 
             if (idCheckin.length() > 0) idCheckin.append("-");
 
+            jenisTransaksi = data.get(i).get("JENIS_TRANSAKSI").asString();
             idCheckin.append(data.get(i).get("CHECKIN_ID").asInteger());
             namaPelanggan = data.get(i).get("NAMA_PELANGGAN").asString();
             namaPrincipal = data.get(i).get("PRINCIPAL").asString();
@@ -104,9 +108,11 @@ public class AturTotalInvoice_Activity extends AppActivity {
                     .set("PEMBAYARAN_ID", data.get(i).get("PEMBAYARAN_ID").asString())
             );
         }
-
-        noInv = "INV" + "/" + currentDateTime("dd/MM") + "/" + idCheckin + "/" + 1;
+        jenisTransaksi = jenisTransaksi.equals("CHECKIN") ? "LAYANAN" : "PART";
+        String cid = UtilityAndroid.getSetting(getApplicationContext(), "CID", "").trim();
+        cid = cid.substring(cid.length() - 4);
         totalInvoice = getIntentIntegerExtra("TOTAL_INV");
+        noInv = "INV" + "/" + currentDateTime("ddMMyyyy") + "/" + cid + "/" + totalInvoice + "/" + jenisTransaksi;
         find(R.id.et_total_invoice, EditText.class).setText(RP + NumberFormatUtils.formatRp(String.valueOf(totalInvoice)));
         find(R.id.et_no_invoice, EditText.class).setText(noInv);
         find(R.id.tv_tgl_jatuh_tempo, TextView.class).setOnClickListener(new View.OnClickListener() {
@@ -115,6 +121,7 @@ public class AturTotalInvoice_Activity extends AppActivity {
                 getDatePicker();
             }
         });
+
         find(R.id.btn_simpan, Button.class).setText("XLS INVOICE");
         find(R.id.btn_simpan).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,6 +156,18 @@ public class AturTotalInvoice_Activity extends AppActivity {
         datePickerDialog.show(getFragmentManager(), "Datepickerdialog");
     }
 
+    @SuppressLint("NewApi")
+    private int generateRandomInt() {
+        Random rn = new Random();
+        int range = 20 - 1 + 1;
+        return rn.nextInt(range) + 1;
+    }
+
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_OK);
+        super.onBackPressed();
+    }
 
     private void saveData() {
         newProses(new Messagebox.DoubleRunnable() {
@@ -162,6 +181,7 @@ public class AturTotalInvoice_Activity extends AppActivity {
                 args.put("jenis", "TOTAL INVOICE");
                 args.put("noInvoice", noInv);
                 args.put("tglJatuhTempo", DateFormatUtils.formatDate(find(R.id.tv_tgl_jatuh_tempo, TextView.class).getText().toString(), "dd/MM/yyyy", "yyyy-MM-dd"));
+                args.put("namaCustomer", namaPelanggan);
                 args.put("namaPrincipal", namaPrincipal);
                 args.put("biayaLayanan", String.valueOf(totalLayanan));
                 args.put("feeNonPaket", String.valueOf(totalFeeNonPaket));

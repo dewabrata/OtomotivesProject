@@ -2,6 +2,7 @@ package com.rkrzmail.utils;
 
 public class APIUrls {
 
+    public static final String HUTANG = "hutang";
     public static final String ASSET = "asset";
     public static final String PIUTANG = "piutang";
     public static final String KARYAWAN = "aturkaryawan";

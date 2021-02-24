@@ -80,10 +80,11 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
 
     private EditText etNoAntrian, etStatus, etNopol, etNoKunci, etNamaPelanggan, etTotal,
             etDp, etSisa, etEstimasiSebelum, etEstimasiLama, etEstimasiSelesai, etKeteranganTambahan, etNamaLayanan;
-    private RecyclerView rvDetail, rvKeluhan;
+    private RecyclerView rvDetail, rvKeluhan, rvPart, rvJasaLain;
     private Spinner spAktifitas, spNamaMekanik;
     private TextView tvNamaLayanan, tvBiayaLayanan, tvTglAmbil, tvJamAmbil;
     private AlertDialog alertDialog;
+    private View dialogView;
 
     private final Nson mekanikArray = Nson.newArray();
     private final Nson idMekanikArray = Nson.newArray();
@@ -92,6 +93,9 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
     private final Nson batalPartJasaList = Nson.newArray();
     private final Nson partMessage = Nson.newArray();
     private final Nson keluhanList = Nson.newArray();
+    private final Nson kurangiPartJasaList = Nson.newArray();
+    private final Nson partList = Nson.newArray();
+    private final Nson jasaList = Nson.newArray();
 
     private boolean isMekanik = false, isMekanikFromCheckin = false; // true = part, false = jasa
     private boolean isKurangi = false;
@@ -238,7 +242,11 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 if (find(R.id.cb_tidak_menunggu, CheckBox.class).isChecked() && tvJamAmbil.getText().toString().isEmpty()) {
                     showWarning("WAKTU AMBIL HARUS DI ISI UNTUK PELANGGAN TIDAK MENUNGGU", Toast.LENGTH_LONG);
                 } else {
-                    updateData(idCheckin);
+                    if (status.equals("KURANGI PART - JASA")) {
+                        showDialogKonfirmasi();
+                    } else {
+                        updateData(idCheckin);
+                    }
                 }
             }
         });
@@ -345,19 +353,19 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                             Messagebox.showDialog(getActivity(), "Konfirmasi", "Kurangi " + tittle, "Ya", "Tidak", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    batalPartJasaList.add(Nson.newObject()
-                                            .set("ID", detailCheckinList.get(position).get("CHECKIN_DETAIL_ID").asInteger())
-                                            .set("PART_ID", detailCheckinList.get(position).get("PARENT VIEW TYPE").asInteger() == 1 ? detailCheckinList.get(position).get("PART_ID").asInteger() : "")
-                                            .set("JASA_ID", detailCheckinList.get(position).get("PARENT VIEW TYPE").asInteger() == 2 ? detailCheckinList.get(position).get("JASA_ID").asInteger() : "")
-                                            .set("JUMLAH", detailCheckinList.get(position).get("JUMLAH").asInteger())
-                                            .set("TUGAS_PART_ID", detailCheckinList.get(position).get("TUGAS_PART_ID").asInteger())
-                                            .set("NET", detailCheckinList.get(position).get("NET").asInteger())
-                                    );
+                                    int index = position;
+                                    kurangiPartJasaList.add(detailCheckinList.get(position));
+                                    if (!detailCheckinList.get(position).get("PART_ID").asString().isEmpty()) {
+                                        partList.add(detailCheckinList.get(position));
+                                    } else if (!detailCheckinList.get(position).get("JASA_ID").asString().isEmpty()) {
+                                        jasaList.add(detailCheckinList.get(position));
+                                    }
 
                                     totalBiaya -= detailCheckinList.get(position).get("NET").asInteger();
                                     etTotal.setText(RP + formatRp(String.valueOf(totalBiaya)));
                                     detailCheckinList.asArray().remove(position);
                                     notifyItemRemoved(position);
+                                    rvDetail.getAdapter().notifyDataSetChanged();
                                 }
                             }, new DialogInterface.OnClickListener() {
                                 @Override
@@ -457,7 +465,6 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                         totalBiaya = result.get("data").get(0).get("TOTAL_BIAYA").asInteger();
                     }
                     etTotal.setText(RP + formatRp(String.valueOf(totalBiaya)));
-
                     detailCheckinList.asArray().clear();
                     detailCheckinList.asArray().addAll(result.get("data").asArray());
                     for (int i = 0; i < detailCheckinList.size(); i++) {
@@ -699,11 +706,6 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         });
     }
 
-    private String mssgTambahPart() {
-        String result = "";
-        return result;
-    }
-
     private void moveWa() {
         Messagebox.showDialog(getActivity(),
                 "Konfirmasi", "Message Pelanggan ?", "Ya", "Tidak", new DialogInterface.OnClickListener() {
@@ -721,6 +723,169 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                     }
                 });
     }
+
+    @SuppressLint("NewApi")
+    private void initToolbarKonfirmasi() {
+        Toolbar toolbar = dialogView.findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Konfirmasi Kurangi Part - Jasa");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+    }
+
+    private void initRvKurangiPart() {
+        rvPart = dialogView.findViewById(R.id.recyclerView);
+        rvPart.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvPart.setHasFixedSize(false);
+        rvPart.setAdapter(new NikitaRecyclerAdapter(partList, R.layout.item_part_booking3_checkin3) {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
+                super.onBindViewHolder(viewHolder, position);
+                viewHolder.find(R.id.view_mark_tambah_jasa).setVisibility(View.GONE);
+                viewHolder.find(R.id.tv_namaPart_booking3_checkin3, TextView.class)
+                        .setText(partList.get(position).get("NAMA_PART").asString());
+                viewHolder.find(R.id.tv_noPart_booking3_checkin3, TextView.class)
+                        .setText(partList.get(position).get("NO_PART").asString());
+                try {
+                    if (Tools.isNumeric(partList.get(position).get("HARGA_PART").asString())) {
+                        viewHolder.find(R.id.tv_hargaNet_booking3_checkin3, TextView.class).setText(
+                                RP + formatRp(partList.get(position).get("HARGA_PART").asString()));
+                    } else {
+                        viewHolder.find(R.id.tv_hargaNet_booking3_checkin3, TextView.class)
+                                .setText(partList.get(position).get("HARGA_PART").asString());
+                    }
+                    if (Tools.isNumeric(partList.get(position).get("HARGA_JASA_PART").asString()) ||
+                            !partList.get(position).get("HARGA_JASA_PART").asString().isEmpty()) {
+                        viewHolder.find(R.id.tv_jasaNet_booking3_checkin3, TextView.class).setText(
+                                RP + formatRp(partList.get(position).get("HARGA_JASA_PART").asString()));
+                    } else {
+                        viewHolder.find(R.id.tv_jasaNet_booking3_checkin3, TextView.class).setText("");
+                    }
+                } catch (Exception e) {
+                    showError(e.getMessage());
+                }
+                viewHolder.find(R.id.tv_merk_booking3_checkin3, TextView.class)
+                        .setText(partList.get(position).get("MERK").asString());
+                viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void initRvKurangiJasaLain() {
+        rvJasaLain = dialogView.findViewById(R.id.recyclerView2);
+        rvJasaLain.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvJasaLain.setHasFixedSize(false);
+        rvJasaLain.setAdapter(new NikitaRecyclerAdapter(jasaList, R.layout.item_jasalain_booking_checkin) {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
+                super.onBindViewHolder(viewHolder, position);
+                viewHolder.find(R.id.view_mark_tambah_jasa).setVisibility(View.GONE);
+                viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.GONE);
+
+                viewHolder.find(R.id.tv_kelompokPart_booking3_checkin3, TextView.class)
+                        .setText(jasaList.get(position).get("KELOMPOK_PART").asString());
+                viewHolder.find(R.id.tv_aktifitas_booking3_checkin3, TextView.class)
+                        .setText(jasaList.get(position).get("AKTIVITAS").asString());
+                viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class)
+                        .setText("Rp. " + formatRp(jasaList.get(position).get("HARGA_JASA_LAIN").asString()));
+
+            }
+        });
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void showDialogKonfirmasi() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        dialogView = inflater.inflate(R.layout.dialog_konfirmasi_part_jasa, null);
+        builder.setView(dialogView);
+        alertDialog = builder.create();
+
+        initToolbarKonfirmasi();
+        initRvKurangiPart();
+        initRvKurangiJasaLain();
+
+        TextView tvTittle = dialogView.findViewById(R.id.tv_tittle_konfirmasi);
+        LinearLayout lyPart = dialogView.findViewById(R.id.ly_part);
+        LinearLayout lyJasaLain = dialogView.findViewById(R.id.ly_jasa_lain);
+        Button btnSimpan = dialogView.findViewById(R.id.btn_simpan);
+        Button btnBatal = dialogView.findViewById(R.id.btn_hapus);
+
+        btnBatal.setVisibility(View.VISIBLE);
+        btnBatal.setText("BATAL");
+        tvTittle.setText("*KONFIRMASI KURANGI PART - JASA");
+
+        if(partList.size() > 0){
+            lyPart.setVisibility(View.VISIBLE);
+            rvPart.getAdapter().notifyDataSetChanged();
+        }else{
+            lyPart.setVisibility(View.GONE);
+        }
+
+        if(jasaList.size() > 0){
+            lyJasaLain.setVisibility(View.VISIBLE);
+            rvJasaLain.getAdapter().notifyDataSetChanged();
+        }else{
+            lyJasaLain.setVisibility(View.GONE);
+        }
+
+        btnBatal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                for (int i = 0; i < kurangiPartJasaList.size(); i++) {
+                    if(!detailCheckinList.asArray().contains(kurangiPartJasaList.get(i))){
+                        detailCheckinList.add(kurangiPartJasaList.get(i));
+                    }
+                }
+                rvDetail.getAdapter().notifyDataSetChanged();
+                clearList();
+                alertDialog.dismiss();
+            }
+        });
+
+        btnSimpan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                for (int position = 0; position < kurangiPartJasaList.size(); position++) {
+                    batalPartJasaList.add(Nson.newObject()
+                            .set("ID", kurangiPartJasaList.get(position).get("CHECKIN_DETAIL_ID").asInteger())
+                            .set("PART_ID", detailCheckinList.get(position).get("PARENT VIEW TYPE").asInteger() == 1 ? detailCheckinList.get(position).get("PART_ID").asInteger() : "")
+                            .set("JASA_ID", detailCheckinList.get(position).get("PARENT VIEW TYPE").asInteger() == 2 ? detailCheckinList.get(position).get("JASA_ID").asInteger() : "")
+                            .set("JUMLAH", detailCheckinList.get(position).get("JUMLAH").asInteger())
+                            .set("TUGAS_PART_ID", detailCheckinList.get(position).get("TUGAS_PART_ID").asInteger())
+                            .set("NET", detailCheckinList.get(position).get("NET").asInteger())
+                    );
+                }
+                updateData(idCheckin);
+            }
+        });
+
+        alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+
+            }
+        });
+
+        alertDialog.setCancelable(false);
+        if (alertDialog.getWindow() != null)
+            alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        alertDialog.show();
+    }
+
+    private void clearList(){
+        partList.asArray().clear();
+        jasaList.asArray().clear();
+        kurangiPartJasaList.asArray().clear();
+    }
+
 
     private void updateData(final String idCheckin) {
         if (status.contains("MESSAGE") || status.equals("DATA KENDARAAN")) {
@@ -741,13 +906,13 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 args.put("idCheckin", idCheckin);
                 args.put("nopol", formatNopol(etNopol.getText().toString()));
                 if (find(R.id.cb_tidak_menunggu, CheckBox.class).isChecked()) {
-                    if (tglAmbil.isEmpty()){
+                    if (tglAmbil.isEmpty()) {
                         tglAmbil = currentDateTime("dd/MM");
-                    }else{
+                    } else {
                         tglAmbil = Tools.formatDate(tglAmbil, "dd/MM");
                     }
                     args.put("waktuAmbil", tglAmbil + " " + tvJamAmbil.getText().toString());
-                }else{
+                } else {
                     args.put("waktuAmbi", "");
                 }
 

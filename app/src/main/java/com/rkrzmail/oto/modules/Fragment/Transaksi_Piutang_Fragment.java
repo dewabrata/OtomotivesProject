@@ -78,10 +78,14 @@ public class Transaksi_Piutang_Fragment extends Fragment {
         btnLanjut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AturTotalInvoice_Activity.class);
-                intent.putExtra("TOTAL_INV", totalInvoice);
-                intent.putExtra(DATA, transaksiMarkList.toJson());
-                startActivityForResult(intent, REQUEST_DETAIL);
+                if(transaksiMarkList.size() > 0){
+                    Intent intent = new Intent(getActivity(), AturTotalInvoice_Activity.class);
+                    intent.putExtra("TOTAL_INV", totalInvoice);
+                    intent.putExtra(DATA, transaksiMarkList.toJson());
+                    startActivityForResult(intent, REQUEST_DETAIL);
+                }else {
+                    activity.showWarning("BELUM ADA TRANSAKSI DI PILIH");
+                }
             }
         });
 
@@ -125,39 +129,40 @@ public class Transaksi_Piutang_Fragment extends Fragment {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
                 super.onBindViewHolder(viewHolder, position);
+
                 viewHolder.find(R.id.cb_mark_transaksi, CheckBox.class).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                         if (compoundButton.isChecked()) {
-                            if(transaksiMarkList.size() > 0){
-                                if(
-                                        transaksiMarkList.get(0).get("PRINCIPAL").asString().equals(transaksiList.get(position).get("PRINCIPAL").asString())
-                                ){
-                                    //transaksiMarkList.get(0).get("NAMA_PELANGGAN").asString().equals(transaksiList.get(position).get("NAMA_PELANGGAN").asString())
+                            if (transaksiMarkList.size() > 0) {
+                                if (!transaksiMarkList.get(0).get("PRINCIPAL").asString().isEmpty() &&
+                                        transaksiMarkList.get(0).get("PRINCIPAL").asString().equals(transaksiList.get(position).get("PRINCIPAL").asString())) {
                                     compoundButton.setChecked(true);
                                     totalInvoice += transaksiList.get(position).get("JUMLAH_INVOICE").asInteger();
                                     transaksiMarkList.add(transaksiList.get(position));
-                                    Log.d("transaksiINV", "add: " + transaksiMarkList);
-                                }else{
+                                } else if (!transaksiMarkList.get(0).get("NAMA_PELANGGAN").asString().isEmpty() &&
+                                        transaksiMarkList.get(0).get("NAMA_PELANGGAN").asString().equals(transaksiList.get(position).get("NAMA_PELANGGAN").asString())) {
+                                    compoundButton.setChecked(true);
+                                    totalInvoice += transaksiList.get(position).get("JUMLAH_INVOICE").asInteger();
+                                    transaksiMarkList.add(transaksiList.get(position));
+                                } else {
                                     compoundButton.setChecked(false);
                                     activity.showWarning("TIDAK BISA MEMILIH NAMA PELANGGAN / NAMA PRINCIPAL YG BERBEDA", Toast.LENGTH_LONG);
                                 }
-                            }else{
+                            } else {
                                 compoundButton.setChecked(true);
                                 totalInvoice += transaksiList.get(position).get("JUMLAH_INVOICE").asInteger();
                                 transaksiMarkList.add(transaksiList.get(position));
-                                Log.d("transaksiINV", "add: " + transaksiMarkList);
                             }
 
-                        } else if(!compoundButton.isChecked()){
+                        } else if (!compoundButton.isChecked()) {
                             compoundButton.setChecked(false);
                             totalInvoice -= transaksiList.get(position).get("JUMLAH_INVOICE").asInteger();
                             for (int i = 0; i < transaksiMarkList.size(); i++) {
-                                if(transaksiMarkList.get(i).get("ID").asInteger() == transaksiList.get(position).get("ID").asInteger()){
+                                if (transaksiMarkList.get(i).get("ID").asInteger() == transaksiList.get(position).get("ID").asInteger()) {
                                     transaksiMarkList.remove(i);
                                 }
                             }
-                            Log.d("transaksiINV", "delete: " + transaksiMarkList);
                         }
                     }
                 });
@@ -170,9 +175,15 @@ public class Transaksi_Piutang_Fragment extends Fragment {
                 viewHolder.find(R.id.tv_nopol, TextView.class).setText(transaksiList.get(position).get("NOPOL").asString());
                 viewHolder.find(R.id.tv_jenis_kendaraan, TextView.class).setText(transaksiList.get(position).get("JENIS_KENDARAAN").asString());
                 viewHolder.find(R.id.tv_layanan, TextView.class).setText(transaksiList.get(position).get("LAYANAN").asString());
-                viewHolder.find(R.id.tv_biaya_layanan, TextView.class).setText(RP + NumberFormatUtils.formatRp(transaksiList.get(position).get("FEE_NON_PAKET").asString()));
-                viewHolder.find(R.id.tv_part, TextView.class).setText(RP + NumberFormatUtils.formatRp(transaksiList.get(position).get("PENGGANTIAN_PART").asString()));
-                viewHolder.find(R.id.tv_jasa_lain, TextView.class).setText(RP + NumberFormatUtils.formatRp(transaksiList.get(position).get("").asString()));
+                if (transaksiList.get(position).get("FEE_NON_PAKET").asInteger() == 0 || transaksiList.get(position).get("FEE_NON_PAKET").asString().isEmpty()) {
+                    viewHolder.find(R.id.tv_biaya_layanan, TextView.class).setText(RP + NumberFormatUtils.formatRp(transaksiList.get(position).get("BIAYA_LAYANAN_NET").asString()));
+                    viewHolder.find(R.id.tv_part, TextView.class).setText(RP + NumberFormatUtils.formatRp(transaksiList.get(position).get("HARGA_PART_NET").asString()));
+                    viewHolder.find(R.id.tv_jasa_lain, TextView.class).setText(RP + NumberFormatUtils.formatRp(transaksiList.get(position).get("BIAYA_JASA_LAIN_NET").asString()));
+                } else {
+                    viewHolder.find(R.id.tv_biaya_layanan, TextView.class).setText(RP + NumberFormatUtils.formatRp(transaksiList.get(position).get("FEE_NON_PAKET").asString()));
+                    viewHolder.find(R.id.tv_part, TextView.class).setText(RP + NumberFormatUtils.formatRp(transaksiList.get(position).get("PENGGANTIAN_PART").asString()));
+                    viewHolder.find(R.id.tv_jasa_lain, TextView.class).setText(RP + NumberFormatUtils.formatRp(transaksiList.get(position).get("").asString()));
+                }
                 viewHolder.find(R.id.tv_total_transaksi, TextView.class).setText(RP + NumberFormatUtils.formatRp(String.valueOf(totalTransaksi)));
             }
 
@@ -202,8 +213,11 @@ public class Transaksi_Piutang_Fragment extends Fragment {
                 swipeProgress(false);
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     transaksiList.asArray().clear();
+                    transaksiMarkList.asArray().clear();
+                    totalInvoice = 0;
                     transaksiList.asArray().addAll(result.get("data").asArray());
                     recyclerView.getAdapter().notifyDataSetChanged();
+                    recyclerView.requestFocus(1);
                 } else {
                     activity.showInfo(result.get("message").asString());
                 }
@@ -214,7 +228,7 @@ public class Transaksi_Piutang_Fragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_DETAIL){
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_DETAIL) {
             viewTransaksi();
         }
     }

@@ -18,12 +18,11 @@ import com.rkrzmail.oto.R;
 
 import java.util.Map;
 
-public class PembayaranHutang_Activity extends AppActivity {
+public class AturPembayaranHutang_Activity extends AppActivity {
 
-    private EditText etTotalHutang, etDisc, etTotalBayar, etSelisih, etBankBerbayar, etNorek, etNamarek, etNoTrace, etBiayaTf;
+    private EditText etTotalHutang, etDiscRp, etDiscPercent, etTotalBayar, etSelisih, etBankBerbayar, etNorek, etNamarek, etNoTrace, etBiayaTf;
     private Spinner spPembayaran, spRekAsal;
     private TextView tvTglBayar, tvTglJatuhTempo;
-    private ImageView imgCamera;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,18 +42,18 @@ public class PembayaranHutang_Activity extends AppActivity {
         initToolbar();
         etTotalBayar = findViewById(R.id.et_totalBayar_bayarHutang);
         etTotalHutang = findViewById(R.id.et_totalHutang_bayarHutang);
-        etDisc = findViewById(R.id.et_discPembayaran_bayarHutang);
+        etDiscRp = findViewById(R.id.et_disc_rupiah);
+        etDiscPercent = findViewById(R.id.et_disc_percent);
         etSelisih = findViewById(R.id.et_selisih_bayarHutang);
         etBankBerbayar = findViewById(R.id.et_bankBerbayar_bayarHutang);
         etNorek = findViewById(R.id.et_noRek_bayarHutang);
         etNamarek = findViewById(R.id.et_namaRek_bayarHutang);
         etNoTrace = findViewById(R.id.et_noTrace_bayarHutang);
         etBiayaTf = findViewById(R.id.et_biayaTf_bayarHutang);
-        spPembayaran = findViewById(R.id.sp_pembayaran_bayarHutang);
-        spRekAsal = findViewById(R.id.sp_rekAsal_bayarHutang);
-        tvTglJatuhTempo = findViewById(R.id.tv_tglJatuhTempo_bayarHutang);
+        spPembayaran = findViewById(R.id.sp_tipe_pembayaran);
+        spRekAsal = findViewById(R.id.sp_norek);
+        tvTglJatuhTempo = findViewById(R.id.tv_tgl_jatuh_tempo);
         tvTglBayar = findViewById(R.id.tv_tglBayar_bayarPiutang);
-        imgCamera = findViewById(R.id.img_camera_bayarHutang);
 
         find(R.id.btn_simpan_bayarHutang).setOnClickListener(new View.OnClickListener() {
             @Override

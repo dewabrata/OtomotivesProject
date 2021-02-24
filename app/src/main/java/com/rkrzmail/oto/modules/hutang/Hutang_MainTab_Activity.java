@@ -2,41 +2,23 @@ package com.rkrzmail.oto.modules.hutang;
 
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
-import android.support.annotation.NonNull;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
 
-import com.naa.data.Nson;
-import com.naa.utils.InternetX;
-import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
-import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.Fragment.BatalPart_TugasPart_Fragment;
 import com.rkrzmail.oto.modules.Fragment.FragmentsAdapter;
-import com.rkrzmail.oto.modules.Fragment.Hutang_Hutang_Fragment;
-import com.rkrzmail.oto.modules.Fragment.Kewajiban_Hutang_Fragment;
-import com.rkrzmail.oto.modules.Fragment.PartKosong_TugasPart_Fragment;
-import com.rkrzmail.oto.modules.Fragment.Permintaan_TugasPart_Fragment;
-import com.rkrzmail.oto.modules.Fragment.Tersedia_TugasPart_Fragment;
-import com.rkrzmail.oto.modules.sparepart.OutSource_Activity;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.oto.modules.Fragment.HutangUsaha_Hutang_Fragment;
+import com.rkrzmail.oto.modules.Fragment.HutangLain_Hutang_Fragment;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class Hutang_MainTab_Activity extends AppActivity {
 
@@ -60,65 +42,17 @@ public class Hutang_MainTab_Activity extends AppActivity {
     private void initComponent() {
         ViewPager vp = findViewById(R.id.vp);
         TabLayout tabLayout = findViewById(R.id.tablayout);
-        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
         final ArrayList<Fragment> fragments = new ArrayList<>();
-        fragments.add(new Hutang_Hutang_Fragment());
-        fragments.add(new Kewajiban_Hutang_Fragment());
+        fragments.add(new HutangUsaha_Hutang_Fragment());
+        fragments.add(new HutangLain_Hutang_Fragment());
 
         FragmentsAdapter pagerAdapter = new FragmentsAdapter(getSupportFragmentManager(), this, fragments);
         vp.setAdapter(pagerAdapter);
         vp.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setupWithViewPager(vp);
-
     }
 
-    private void initRv(){
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_hutang) {
-                    @Override
-                    public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                        super.onBindViewHolder(viewHolder, position);
-
-                        viewHolder.find(R.id.tv_tglJatuhTempo_hutang, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_nama_hutang, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_tipe_hutang, TextView.class).setText(nListArray.get(position).get("").asString());
-                        viewHolder.find(R.id.tv_total_hutang, TextView.class).setText(nListArray.get(position).get("").asString());
-                    }
-
-                }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(Nson parent, View view, int position) {
-
-                    }
-                })
-        );
-    }
-
-    private void catchData() {
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
-
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(""), args));
-            }
-
-            @Override
-            public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    nListArray.asArray().clear();
-                    nListArray.asArray().addAll(result.get("data").asArray());
-                    recyclerView.getAdapter().notifyDataSetChanged();
-                } else {
-                    showInfo("Gagal");
-                }
-            }
-        });
-    }
 
     SearchView mSearchView;
 

@@ -52,7 +52,7 @@ public class Cash_Pembayaran_Fragment extends Fragment {
     private boolean isDialog = false;
 
     public Cash_Pembayaran_Fragment() {
-        
+
     }
 
 
@@ -60,7 +60,7 @@ public class Cash_Pembayaran_Fragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-           
+
         }
     }
 
@@ -80,11 +80,11 @@ public class Cash_Pembayaran_Fragment extends Fragment {
     }
 
     @SuppressLint("NewApi")
-    private void initToolbarCash(View dialogView) {
+    private void initToolbarCash() {
         Toolbar toolbar = dialogView.findViewById(R.id.toolbar);
-        ((Pembayaran_MainTab_Activity)getActivity()).setSupportActionBar(toolbar);
-        Objects.requireNonNull(((Pembayaran_MainTab_Activity)getActivity()).getSupportActionBar()).setTitle("Cash Transaksi");
-        ((Pembayaran_MainTab_Activity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        ((Pembayaran_MainTab_Activity) getActivity()).setSupportActionBar(toolbar);
+        Objects.requireNonNull(((Pembayaran_MainTab_Activity) getActivity()).getSupportActionBar()).setTitle("Cash Transaksi");
+        ((Pembayaran_MainTab_Activity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -128,13 +128,13 @@ public class Cash_Pembayaran_Fragment extends Fragment {
                 super.onBindViewHolder(viewHolder, position);
 
                 viewHolder.find(R.id.tv_tanggal, TextView.class).setText(cashColl.get(position).get("TANGGAL").asString());
-                viewHolder.find(R.id.tv_total_cash, TextView.class).setText(RP + ((Pembayaran_MainTab_Activity)getActivity()).formatRp(cashColl.get(position).get("TOTAL_CASH").asString()));
-                viewHolder.find(R.id.tv_total_balance, TextView.class).setText(RP + ((Pembayaran_MainTab_Activity)getActivity()).formatRp(cashColl.get(position).get("SALDO_KASIR").asString()));
+                viewHolder.find(R.id.tv_total_cash, TextView.class).setText(RP + ((Pembayaran_MainTab_Activity) getActivity()).formatRp(cashColl.get(position).get("TOTAL_CASH").asString()));
+                viewHolder.find(R.id.tv_total_balance, TextView.class).setText(RP + ((Pembayaran_MainTab_Activity) getActivity()).formatRp(cashColl.get(position).get("SALDO_KASIR").asString()));
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
-               initDialogTransaksi(cashColl.get(position).get("TANGGAL").asString());
+                initDialogTransaksi(cashColl.get(position).get("TANGGAL").asString());
             }
         }));
 
@@ -145,8 +145,8 @@ public class Cash_Pembayaran_Fragment extends Fragment {
             }
         });
     }
-    
-    private void initRecylerviewCashTransaksi(View dialogView){
+
+    private void initRecylerviewCashTransaksi() {
         rvCashTransaksi = dialogView.findViewById(R.id.recyclerView);
         rvCashTransaksi.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvCashTransaksi.setHasFixedSize(false);
@@ -157,7 +157,7 @@ public class Cash_Pembayaran_Fragment extends Fragment {
                 super.onBindViewHolder(viewHolder, position);
                 String jam = Tools.setFormatDateTimeFromDb(cashTransaksi.get(position).get("CREATED_DATE").asString(), "", "HH:mm", true);
                 viewHolder.find(R.id.tv_no_bukti_bayar, TextView.class).setText(cashTransaksi.get(position).get("NO_BUKTI_BAYAR").asString());
-                viewHolder.find(R.id.tv_total, TextView.class).setText(RP + ((Pembayaran_MainTab_Activity)getActivity()).formatRp(cashTransaksi.get(position).get("GRAND_TOTAL").asString()));
+                viewHolder.find(R.id.tv_total, TextView.class).setText(RP + ((Pembayaran_MainTab_Activity) getActivity()).formatRp(cashTransaksi.get(position).get("GRAND_TOTAL").asString()));
                 viewHolder.find(R.id.tv_transaksi, TextView.class).setText(cashTransaksi.get(position).get("TIPE_PEMBAYARAN1").asString());
                 viewHolder.find(R.id.tv_jam, TextView.class).setText(jam);
             }
@@ -170,12 +170,14 @@ public class Cash_Pembayaran_Fragment extends Fragment {
         dialogView = inflater.inflate(R.layout.activity_list_basic, null);
         builder.setView(dialogView);
 
-        isDialog= true;
-        initToolbarCash(dialogView);
-        initRecylerviewCashTransaksi(dialogView);
+        isDialog = true;
+        initToolbarCash();
+        initRecylerviewCashTransaksi();
         viewCashColl(tanggalPembayaran);
+        SwipeRefreshLayout swipeRefreshLayout = dialogView.findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setEnabled(false);
 
-        builder.create();
+        alertDialog = builder.create();
         alertDialog = builder.show();
         alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
@@ -194,13 +196,13 @@ public class Cash_Pembayaran_Fragment extends Fragment {
                 swipeProgress(true);
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "CASH");
-                if(isDialog){
+                if (isDialog) {
                     args.put("detail", "true");
                     args.put("tanggalPembayaran", tglPembayaran);
                     result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PEMBAYARAN), args));
                     cashTransaksi.asArray().clear();
                     cashTransaksi.asArray().addAll(result.get("data").asArray());
-                }else{
+                } else {
                     result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PEMBAYARAN), args));
                     cashColl.asArray().clear();
                     cashColl.asArray().addAll(result.get("data").asArray());
@@ -211,10 +213,10 @@ public class Cash_Pembayaran_Fragment extends Fragment {
             public void runUI() {
                 swipeProgress(false);
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    if(isDialog){
+                    if (isDialog) {
                         rvCashTransaksi.getAdapter().notifyDataSetChanged();
                         rvCashTransaksi.scheduleLayoutAnimation();
-                    }else{
+                    } else {
                         rvCashColl.getAdapter().notifyDataSetChanged();
                         rvCashColl.scheduleLayoutAnimation();
                     }

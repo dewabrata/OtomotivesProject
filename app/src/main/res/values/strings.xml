@@ -266,6 +266,21 @@
     <string name="pembeli_uppercase">PEMBELI</string>
     <string name="pembayaran_uppercase">PEMBAYARAN</string>
     <string name="jatuh_tempo_uppercase">JATUH TEMPO</string>
+    <string name="nama_kreditur">Nama Kreditur</string>
+    <string name="tanggal_jatuh_tempo">Tanggal Jatuh Tempo</string>
+    <string name="no_hutang">No Hutang</string>
+    <string name="total_hutang">Total Hutang</string>
+    <string name="disc_pembayaran_uppercase">DISC. PEMBAYARAN</string>
+    <string name="rekening_asal_uppercase">REKENING ASAL</string>
+    <string name="bank_Terbayar_uppercase">BANK TERBAYAR</string>
+    <string name="no_rekening_uppercase">NO. REKENING</string>
+    <string name="nama_rekening_uppercase">NAMA REKENING</string>
+    <string name="no_trace_uppercase">NO. TRACE</string>
+    <string name="biaya_transfer_uppercase">BIAYA TRANSFER</string>
+    <string name="kirim_bukti_uppercase">KIRIM BUKTI</string>
+    <string name="foto_bukti_uppercase">FOTO BUKTI</string>
+    <string name="tipe_kewajiban">Tipe Kewajiban</string>
+    <string name="bayar_sebelumnya">Bayar Sebelumnya</string>
     <string-array name="pola_harga_jual">
         <item>FLEXIBLE</item>
         <item>BELI + MARGIN</item>

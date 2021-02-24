@@ -168,7 +168,7 @@ public class AturStockOpname_Activity extends AppActivity {
         noPart.setText(getData.get("NOMOR_PART_NOMOR").asString());
         namaPart.setText(getData.get("NAMA_PART").asString());
         etMerk.setText(getData.get("MERK").asString());
-        etStock.setText(getData.get("STOCK").asString());
+        etStock.setText(getData.get("STOCK_RUANG_PART").asString());
         etPending.setText(getData.get("PENDING_STOCK").asString());
         partId = getData.get("PART_ID").asString();
 

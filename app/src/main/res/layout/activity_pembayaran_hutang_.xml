@@ -29,6 +29,22 @@
                 <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/et_no_invoice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:textSize="14sp"
+                        android:hint="@string/no_invoice_uppercase" />
+
+                </android.support.design.widget.TextInputLayout>
+
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp">
 
@@ -42,30 +58,100 @@
 
                 </android.support.design.widget.TextInputLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="@dimen/paddingMedium"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="4"
+                        android:text="@string/tanggal_bayar_uppercase"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:layout_marginEnd="10dp" />
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="34dp"
+                        android:layout_weight="6"
+                        android:background="@drawable/background_edittext">
+
+                        <TextView
+                            android:id="@+id/tv_tglBayar_bayarPiutang"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginTop="3dp"
+                            android:gravity="center"
+                            android:textAlignment="center"
+                            android:drawablePadding="10dp"
+                            android:layout_marginBottom="3dp"
+                            android:textColor="@color/grey_900"
+                            android:drawableStart="@drawable/icon_tanggal" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
+                        android:textStyle="bold"
                         android:layout_gravity="center"
-                        android:text="TANGGAL BAYAR"
                         android:textColor="@color/grey_900"
-                        android:textStyle="bold" />
+                        android:text="@string/disc_pembayaran_uppercase" />
 
-                    <TextView
-                        android:id="@+id/tv_tglBayar_bayarPiutang"
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/tl_total_terimaPart"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:textStyle="bold"
                         android:layout_weight="1"
-                        android:layout_marginStart="10dp"
-                        android:drawableStart="@drawable/icon_tanggal" />
+                        android:layout_marginEnd="5dp"
+                        android:hint="@string/rp">
+
+                        <EditText
+                            android:id="@+id/et_disc_rupiah"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="numberDecimal"
+                            android:textSize="14sp" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:hint="%">
+
+                        <EditText
+                            android:id="@+id/et_disc_percent"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="numberDecimal"
+                            android:maxLength="4"
+                            android:textSize="14sp" />
+
+                    </android.support.design.widget.TextInputLayout>
 
                 </LinearLayout>
 
@@ -76,28 +162,12 @@
                     android:layout_marginTop="10dp">
 
                     <EditText
-                        android:id="@+id/et_discPembayaran_bayarHutang"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="14sp"
-                        android:inputType="numberDecimal"
-                        android:hint="DISC PEMBAYARAN" />
-
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp">
-
-                    <EditText
                         android:id="@+id/et_totalBayar_bayarHutang"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
                         android:inputType="numberDecimal"
-                        android:hint="TOTAL BAYAR" />
+                        android:hint="@string/total_bayar_uppercase" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -113,76 +183,121 @@
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
                         android:enabled="false"
-                        android:hint="SELESIH" />
+                        android:hint="@string/selisih_uppercase" />
 
                 </android.support.design.widget.TextInputLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="@dimen/paddingMedium"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="150dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="TGL. JATUH TEMPO"
+                        android:layout_weight="4"
+                        android:text="@string/jatuh_tempo_uppercase"
                         android:textColor="@color/grey_900"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tv_tglJatuhTempo_bayarHutang"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
+                        android:textSize="12sp"
                         android:textStyle="bold"
-                        android:layout_weight="1"
-                        android:layout_marginStart="10dp"
-                        android:drawableStart="@drawable/icon_tanggal" />
+                        android:layout_marginEnd="10dp" />
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="34dp"
+                        android:layout_weight="6"
+                        android:background="@drawable/background_edittext">
+
+                        <TextView
+                            android:id="@+id/tv_tgl_jatuh_tempo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginTop="3dp"
+                            android:gravity="center"
+                            android:textAlignment="center"
+                            android:drawablePadding="10dp"
+                            android:layout_marginBottom="3dp"
+                            android:textColor="@color/grey_900"
+                            android:drawableStart="@drawable/icon_tanggal" />
+
+                    </RelativeLayout>
 
                 </LinearLayout>
-
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="@dimen/paddingSemiLarge"
+                    android:layout_marginBottom="@dimen/paddingMedium"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:text="PEMBAYARAN"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold" />
-
-                    <Spinner
-                        android:id="@+id/sp_pembayaran_bayarHutang"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1" />
+                        android:layout_weight="4"
+                        android:text="@string/pembayaran_uppercase"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:layout_marginEnd="10dp" />
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="34dp"
+                        android:layout_weight="6"
+                        android:background="@drawable/background_edittext">
+
+                        <Spinner
+                            android:id="@+id/sp_tipe_pembayaran"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAlignment="center" />
+
+                    </RelativeLayout>
 
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ly_norek"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="@dimen/paddingSemiLarge"
+                    android:layout_marginBottom="@dimen/paddingMedium"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:text="REK ASAL"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold" />
-
-                    <Spinner
-                        android:id="@+id/sp_rekAsal_bayarHutang"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1" />
+                        android:layout_weight="4"
+                        android:text="@string/rekening_asal_uppercase"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:layout_marginEnd="10dp" />
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="34dp"
+                        android:layout_weight="6"
+                        android:background="@drawable/background_edittext">
+
+                        <Spinner
+                            android:id="@+id/sp_norek"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAlignment="center" />
+
+                    </RelativeLayout>
 
                 </LinearLayout>
 
@@ -198,7 +313,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
                         android:inputType="numberDecimal"
-                        android:hint="BANK BERBAYAR" />
+                        android:hint="@string/bank_Terbayar_uppercase" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -206,7 +321,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp">
+                    android:layout_marginTop="10dp">
 
                     <EditText
                         android:id="@+id/et_noRek_bayarHutang"
@@ -214,7 +329,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
                         android:enabled="false"
-                        android:hint="NO. REKENING" />
+                        android:hint="@string/no_rekening_uppercase" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -222,7 +337,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp">
+                    android:layout_marginTop="10dp">
 
                     <EditText
                         android:id="@+id/et_namaRek_bayarHutang"
@@ -230,7 +345,8 @@
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
                         android:enabled="false"
-                        android:hint="NAMA REKEING" />
+                        android:hint="@string/nama_rekening_uppercase"
+                        tools:ignore="Autofill,TextFields" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -238,7 +354,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp">
+                    android:layout_marginTop="10dp">
 
                     <EditText
                         android:id="@+id/et_noTrace_bayarHutang"
@@ -246,7 +362,8 @@
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
                         android:inputType="number"
-                        android:hint="NO. TRACE" />
+                        android:hint="@string/no_trace_uppercase"
+                        tools:ignore="Autofill" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -262,39 +379,49 @@
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
                         android:inputType="numberDecimal"
-                        android:hint="BIAYA TRANSFER" />
+                        android:hint="@string/biaya_transfer_uppercase" />
 
                 </android.support.design.widget.TextInputLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="15dp">
 
-                    <TextView
-                        android:layout_width="150dp"
+                    <LinearLayout
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="BUKTI TRANSFER"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold" />
+                        android:orientation="horizontal"
+                        android:background="@drawable/box_shadow"
+                        tools:ignore="UselessParent"
+                        android:padding="10dp">
 
-                    <ImageView
-                        android:id="@+id/img_camera_bayarHutang"
+                        <Button
+                            android:id="@+id/btn_foto_bukti"
+                            android:layout_width="150dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/foto_bukti_uppercase"
+                            android:drawablePadding="10dp"
+                            android:textSize="12sp"
+                            android:background="@android:color/transparent"
+                            android:drawableStart="@drawable/icon_camera_fill" />
+
+                    </LinearLayout>
+
+                    <View
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        android:scaleType="fitXY"
-                        android:layout_weight="1"
-                        android:src="@drawable/icon_camera_unfill"
-                        android:layout_marginStart="10dp" />
+                        android:layout_weight="1"/>
 
                     <CheckBox
                         android:id="@+id/cb_kirimBukti_bayarHutang"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="KIRIM BUKTI" />
+                        android:text="@string/kirim_bukti_uppercase"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:layout_weight="2"/>
 
                 </LinearLayout>
 
@@ -324,7 +451,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <include layout="@layout/toolbar"/>
+            <include layout="@layout/toolbar" />
 
         </FrameLayout>
 

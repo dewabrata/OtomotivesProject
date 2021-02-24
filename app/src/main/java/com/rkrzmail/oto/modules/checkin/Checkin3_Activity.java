@@ -875,10 +875,12 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
         initRecylerViewPart();
         initRecylerviewJasaLain();
 
+        TextView tvTittle = dialogView.findViewById(R.id.tv_tittle_konfirmasi);
         LinearLayout lyPart = dialogView.findViewById(R.id.ly_part);
         LinearLayout lyJasaLain = dialogView.findViewById(R.id.ly_jasa_lain);
         Button btnLanjut = dialogView.findViewById(R.id.btn_simpan);
 
+        tvTittle.setText("*KURANGI PART / JASA YG BERLEBIH DENGAN TOMBOL X");
         lyPart.setVisibility(partList.size() == 0 ? View.GONE : View.VISIBLE);
         lyJasaLain.setVisibility(jasaList.size() == 0 ? View.GONE : View.VISIBLE);
         btnLanjut.setOnClickListener(new View.OnClickListener() {

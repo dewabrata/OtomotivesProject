@@ -1,6 +1,7 @@
 package com.rkrzmail.oto.modules.checkin;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,11 +15,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,6 +77,8 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
     public static final String TAG = "Tambah___";
 
     private RecyclerView rvPart, rvJasaLain;
+    private View dialogView;
+    private AlertDialog alertDialog;
     private final Nson partList = Nson.newArray();
     private final Nson jasaList = Nson.newArray();
     private final Tools.TimePart dummyTime = Tools.TimePart.parse("00:00:00");
@@ -87,6 +94,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
     private int countClick = 0;
     private int kmKendaraan = 0;
 
+    private boolean isKonfirmasi = false;
     private boolean isWait = false, isPartKosong = false, isBatal = false, isTambah = false, isNotWait = false;
     private boolean isSign = false;
     private boolean isKonfirmasiTambah = false;
@@ -108,8 +116,6 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
     }
 
     private void initComponent() {
-        rvPart = findViewById(R.id.rv_part);
-        rvJasaLain = findViewById(R.id.rv_jasa_lain);
         initRecylerViewPart();
         initRecylerviewJasaLain();
         initData();
@@ -231,8 +237,10 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
     }
 
     private void initRecylerViewPart() {
-        if (isBatal) {
-            setMargins(rvPart, 0, 0, 0, 0);
+        if(isKonfirmasi){
+            rvPart = dialogView.findViewById(R.id.recyclerView);
+        }else{
+            rvPart = findViewById(R.id.rv_part);
         }
         rvPart.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvPart.setHasFixedSize(false);
@@ -285,6 +293,12 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
     }
 
     private void initRecylerviewJasaLain() {
+        if(isKonfirmasi){
+            rvJasaLain = dialogView.findViewById(R.id.recyclerView2);
+        }else{
+            rvJasaLain = findViewById(R.id.rv_jasa_lain);
+        }
+
         rvJasaLain.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvJasaLain.setHasFixedSize(false);
         rvJasaLain.setAdapter(new NikitaRecyclerAdapter(jasaList, R.layout.item_jasalain_booking_checkin) {
@@ -331,12 +345,69 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
         });
     }
 
-    private void setMargins(View view, int left, int top, int right, int bottom) {
-        if (view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
-            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
-            p.setMargins(left, top, right, bottom);
-            view.requestLayout();
-        }
+    @SuppressLint("NewApi")
+    private void initToolbarKonfirmasi() {
+        Toolbar toolbar = dialogView.findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Konfirmasi");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void showDialogKonfirmasi(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        dialogView = inflater.inflate(R.layout.dialog_konfirmasi_part_jasa, null);
+        builder.setView(dialogView);
+        alertDialog = builder.create();
+
+        isKonfirmasi = true;
+        initToolbarKonfirmasi();
+        initRecylerViewPart();
+        initRecylerviewJasaLain();
+
+        TextView tvTittle = dialogView.findViewById(R.id.tv_tittle_konfirmasi);
+        LinearLayout lyPart = dialogView.findViewById(R.id.ly_part);
+        LinearLayout lyJasaLain = dialogView.findViewById(R.id.ly_jasa_lain);
+        Button btnLanjut = dialogView.findViewById(R.id.btn_simpan);
+
+        tvTittle.setText("*KURANGI PART / JASA YG BERLEBIH DENGAN TOMBOL X");
+        lyPart.setVisibility(partList.size() == 0 ? View.GONE : View.VISIBLE);
+        lyJasaLain.setVisibility(jasaList.size() == 0 ? View.GONE : View.VISIBLE);
+        btnLanjut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(countClick == 1){
+                    updateTambahOrBatal();
+                }else{
+                    setResult(RESULT_OK);
+                    finish();
+                }
+            }
+        });
+
+        alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                isKonfirmasi = false;
+                rvPart = findViewById(R.id.recyclerView_part_checkin3);
+                rvJasaLain = findViewById(R.id.recyclerView_jasalain_checkin3);
+                initRecylerViewPart();
+                initRecylerviewJasaLain();
+                Objects.requireNonNull(rvPart.getAdapter()).notifyDataSetChanged();
+                Objects.requireNonNull(rvJasaLain.getAdapter()).notifyDataSetChanged();
+            }
+        });
+
+        if (alertDialog.getWindow() != null)
+            alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        alertDialog.show();
     }
 
     private void updateTambahOrBatal() {
@@ -436,12 +507,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                 } else if (partList.asArray().isEmpty() && jasaList.asArray().isEmpty()) {
                     showWarning("PART DAN JASA BELUM DI TAMBAHKAN");
                 } else {
-                    if(countClick == 1){
-                        updateTambahOrBatal();
-                    }else{
-                        setResult(RESULT_OK);
-                        finish();
-                    }
+                    showDialogKonfirmasi();
                 }
                 break;
             case R.id.img_btn_kalender_konfirmasi:

@@ -25,13 +25,14 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tv_tittle_konfirmasi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="*KURANGI PART / JASA YG BERLEBIH DENGAN TOMBOL X"
+                android:text="TITTLE"
                 android:textColor="@color/red_900"
                 android:textSize="12sp"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="@dimen/paddingSemiLarge"/>
+                android:layout_marginTop="@dimen/paddingSemiLarge" />
 
             <LinearLayout
                 android:id="@+id/ly_part"
@@ -47,7 +48,7 @@
                     android:layout_marginTop="15dp"
                     android:textStyle="bold"
                     android:textColor="@android:color/black"
-                    android:background="@drawable/box_shadow"/>
+                    android:background="@drawable/box_shadow" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recyclerView"
@@ -57,51 +58,46 @@
                     android:scrollingCache="true"
                     android:layoutAnimation="@anim/layout_animation"
                     android:layout_marginTop="10dp"
-                    android:nestedScrollingEnabled="true"/>
+                    android:nestedScrollingEnabled="true" />
 
 
             </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/ly_jasa_lain"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
+            <LinearLayout
+                android:id="@+id/ly_jasa_lain"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/jasa_lain_uppercase"
-                android:padding="15dp"
-                android:layout_marginTop="15dp"
-                android:textStyle="bold"
-                android:textColor="@android:color/black"
-                android:background="@drawable/box_shadow"/>
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/jasa_lain_uppercase"
+                    android:padding="15dp"
+                    android:layout_marginTop="15dp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black"
+                    android:background="@drawable/box_shadow" />
 
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerView2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbars="vertical"
-                android:scrollingCache="true"
-                android:layoutAnimation="@anim/layout_animation"
-                android:layout_marginTop="10dp"
-                android:nestedScrollingEnabled="true"/>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerView2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="vertical"
+                    android:scrollingCache="true"
+                    android:layoutAnimation="@anim/layout_animation"
+                    android:layout_marginTop="10dp"
+                    android:nestedScrollingEnabled="true" />
+
+            </LinearLayout>
+
+
+            <include layout="@layout/layout_btn_simpan_hapus" />
 
         </LinearLayout>
-
-
-            <include layout="@layout/layout_btn_simpan_hapus"/>
-
-
-        </LinearLayout>
-
-
 
     </android.support.v4.widget.NestedScrollView>
-
-
 
 </LinearLayout>
 

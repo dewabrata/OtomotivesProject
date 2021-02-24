@@ -216,10 +216,10 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
         if (context instanceof Hutang_MainTab_Activity) {
             switch (i) {
                 case 0:
-                    fragment = Fragment.instantiate(context, Hutang_Hutang_Fragment.class.getName());
+                    fragment = Fragment.instantiate(context, HutangUsaha_Hutang_Fragment.class.getName());
                     break;
                 case 1:
-                    fragment = Fragment.instantiate(context, Kewajiban_Hutang_Fragment.class.getName());
+                    fragment = Fragment.instantiate(context, HutangLain_Hutang_Fragment.class.getName());
                     break;
             }
             return fragment;
@@ -328,9 +328,9 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
         if (context instanceof Hutang_MainTab_Activity) {
             switch (position) {
                 case 0:
-                    return "Hutang";
+                    return "Hutang Usaha";
                 case 1:
-                    return "Kewajiban";
+                    return "Hutang Lain";
             }
         }
         return null;
