@@ -40,10 +40,11 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="34dp"
-                    android:layout_weight="6">
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
 
                     <TextView
-                        android:id="@+id/ic_tglMulai_lap"
+                        android:id="@+id/ic_tanggal_claim"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -99,7 +100,7 @@
                         android:layout_height="match_parent"
                         android:textAlignment="center"
                         android:textSize="12sp"
-                        android:entries="@array/laporan"/>
+                        android:entries="@array/status_claim"/>
 
                 </RelativeLayout>
 
@@ -123,7 +124,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:hint="NO CLAIM"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:enabled="false"/>
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -147,7 +149,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:hint="@string/keterangan_uppercase"
-                        android:enabled="false"
                         android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>

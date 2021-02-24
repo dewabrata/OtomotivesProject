@@ -364,9 +364,6 @@
         <activity android:name=".gmod.Penampung_Item_DetailActivity" />
         <activity android:name=".gmod.MyCode" />
         <activity
-            android:name=".modules.mekanik.AturSchedule_Activity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".modules.sparepart.LokasiPart_MainTab_Activity"
             android:screenOrientation="portrait" />
         <activity android:name=".WebActivity" />
