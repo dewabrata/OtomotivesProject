@@ -198,6 +198,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:hint="TOTAL REFUND"
+                        android:inputType="numberDecimal"
                         android:enabled="false"
                         android:textSize="14sp" />
 
@@ -206,27 +207,37 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ly_norek"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/paddingXXSmall"
+                android:layout_marginTop="@dimen/paddingSemiLarge"
+                android:layout_marginBottom="@dimen/paddingMedium"
+                android:gravity="center"
                 android:orientation="horizontal">
 
-                <android.support.design.widget.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="80dp"
+                <TextView
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:textAlignment="center"
-                    android:layout_weight="1">
+                    android:layout_weight="3"
+                    android:text="REKENING INTERNAL"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
 
-                    <EditText
-                        android:id="@+id/et_noRek_claim"
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
+
+                    <Spinner
+                        android:id="@+id/sp_norek"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:hint="REKENING INTERNAL"
-                        android:enabled="false"
-                        android:textSize="14sp" />
+                        android:textAlignment="center"
+                        android:enabled="false"/>
 
-                </android.support.design.widget.TextInputLayout>
+                </RelativeLayout>
 
             </LinearLayout>
 
