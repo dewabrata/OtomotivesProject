@@ -115,7 +115,25 @@ public class ClaimGaransiStatus_Activity extends AppActivity {
                 } else if (spStatus.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
                     showWarning("Status Belum di Pilih");
                     spStatus.performClick();
-                } else {
+                } else if (spStatus.getSelectedItem().toString().equals("FILLING")){
+                    if (etNoclaim.getText().toString().isEmpty()){
+                        showWarning("No Claim Belum di Pilih");
+                        etNoclaim.performClick();
+                    }
+                }else if (spStatus.getSelectedItem().toString().equals("KIRIM PART")){
+                    if (etResi.getText().toString().isEmpty()){
+                        showWarning("No Resi Belum di Pilih");
+                        etResi.performClick();
+                    }
+                } else if (spStatus.getSelectedItem().toString().equals("DITERIMA")){
+                    if (etTotalRefund.getText().toString().isEmpty()){
+                        showWarning("Total Refund Belum di Pilih");
+                        etTotalRefund.performClick();
+                    }else if (spNorek.getSelectedItem().toString().equals("--PILIH--")){
+                        showWarning("Rekening Internal Belum di Pilih");
+                        spNorek.performClick();
+                    }
+                }else{
                     SimpanData();
                 }
             }
