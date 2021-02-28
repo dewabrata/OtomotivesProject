@@ -131,7 +131,7 @@ public class Absensi_MainTab_Activity extends AppActivity {
             case Calendar.MONDAY:
                 return "Senin";
             case Calendar.TUESDAY:
-                return "Selesa";
+                return "Selasa";
             case Calendar.WEDNESDAY:
                 return "Rabu";
             case Calendar.THURSDAY:

@@ -281,6 +281,9 @@
     <string name="foto_bukti_uppercase">FOTO BUKTI</string>
     <string name="tipe_kewajiban">Tipe Kewajiban</string>
     <string name="bayar_sebelumnya">Bayar Sebelumnya</string>
+    <string name="no_mesin">No. Mesin</string>
+    <string name="kode_tipe">Kode Tipe</string>
+    <string name="lokasi">Lokasi</string>
     <string-array name="pola_harga_jual">
         <item>FLEXIBLE</item>
         <item>BELI + MARGIN</item>

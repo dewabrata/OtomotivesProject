@@ -856,11 +856,12 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 for (int position = 0; position < kurangiPartJasaList.size(); position++) {
                     batalPartJasaList.add(Nson.newObject()
                             .set("ID", kurangiPartJasaList.get(position).get("CHECKIN_DETAIL_ID").asInteger())
-                            .set("PART_ID", detailCheckinList.get(position).get("PARENT VIEW TYPE").asInteger() == 1 ? detailCheckinList.get(position).get("PART_ID").asInteger() : "")
-                            .set("JASA_ID", detailCheckinList.get(position).get("PARENT VIEW TYPE").asInteger() == 2 ? detailCheckinList.get(position).get("JASA_ID").asInteger() : "")
-                            .set("JUMLAH", detailCheckinList.get(position).get("JUMLAH").asInteger())
-                            .set("TUGAS_PART_ID", detailCheckinList.get(position).get("TUGAS_PART_ID").asInteger())
-                            .set("NET", detailCheckinList.get(position).get("NET").asInteger())
+                            .set("PART_ID", kurangiPartJasaList.get(position).get("PARENT VIEW TYPE").asInteger() == 1 ? kurangiPartJasaList.get(position).get("PART_ID").asInteger() : "")
+                            .set("JASA_ID", kurangiPartJasaList.get(position).get("PARENT VIEW TYPE").asInteger() == 2 ? kurangiPartJasaList.get(position).get("JASA_ID").asInteger() : "")
+                            .set("JUMLAH", kurangiPartJasaList.get(position).get("JUMLAH").asInteger())
+                            .set("TUGAS_PART_ID", kurangiPartJasaList.get(position).get("TUGAS_PART_ID").asInteger())
+                            .set("LOKASI_PART_ID", kurangiPartJasaList.get(position).get("LOKASI_PART_ID").asInteger())
+                            .set("NET", kurangiPartJasaList.get(position).get("NET").asInteger())//
                     );
                 }
                 updateData(idCheckin);

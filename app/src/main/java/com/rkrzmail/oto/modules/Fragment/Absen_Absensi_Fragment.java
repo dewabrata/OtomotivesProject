@@ -98,10 +98,13 @@ public class Absen_Absensi_Fragment extends Fragment {
                 super.onBindViewHolder(viewHolder, position);
                 String jamMulai = Tools.setFormatDateTimeFromDb(absenList.get(position).get("ABSEN_MULAI").asString(), "HH:mm:ss", "HH:mm", false);
                 String jamPulang =  Tools.setFormatDateTimeFromDb(absenList.get(position).get("ABSEN_SELESAI").asString(), "HH:mm:ss", "HH:mm", false);
+
                 viewHolder.find(R.id.tv_mulai_kerja, TextView.class).setText(jamMulai);
                 viewHolder.find(R.id.tv_selesai_kerja, TextView.class).setText(jamPulang);
                 viewHolder.find(R.id.tv_tanggal_kerja, TextView.class).setText(absenList.get(position).get("TANGGAL").asString());
                 viewHolder.find(R.id.tv_bulan_kerja, TextView.class).setText(Tools.getmonth(absenList.get(position).get("BULAN").asInteger()));
+                viewHolder.find(R.id.tv_lokasi, TextView.class).setText(absenList.get(position).get("LOKASI").asString());
+
             }
         });
 

@@ -3,6 +3,7 @@
 
     <item
         android:drawable="@drawable/ic_keluhan"
+        android:state_selected="true"
         android:width="40dp"
         android:height="40dp" />
 

@@ -279,6 +279,7 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     //showMessageInvalidNotif(getActivity(), result.get("data").get("MESSAGE_INFO").asString(), null);
                     showSuccess("Pekerjaan Selesai");
+                    AppApplication.getMessageTrigger();
                     setResult(RESULT_OK);
                     finish();
                 } else {

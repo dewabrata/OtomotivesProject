@@ -324,7 +324,7 @@ public class AturPembayaranInvoice_Activity extends AppActivity {
                         DateFormatUtils.formatDate(find(R.id.tv_tgl_bayar, TextView.class)
                                 .getText()
                                 .toString(), "dd/MM/yyyy", "yyyy-MM-dd"));
-                args.put("tipePembayaran", tipePemabayaran);
+                args.put("tipePembayaran", tipePembayaran);
                 args.put("jumlahPembayaran", NumberFormatUtils.formatOnlyNumber(find(R.id.et_total_bayar, EditText.class).getText().toString()));
                 args.put("namaBankRekeningInternal", namaBank);
                 args.put("nomorRekeningInternal", noRek);

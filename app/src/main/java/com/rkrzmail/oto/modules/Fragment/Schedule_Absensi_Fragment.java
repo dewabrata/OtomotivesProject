@@ -19,11 +19,13 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.bengkel.Absensi_MainTab_Activity;
+import com.rkrzmail.srv.DateFormatUtils;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
+import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.ABSEN;
 import static com.rkrzmail.utils.APIUrls.VIEW_PEMBAYARAN;
@@ -89,10 +91,16 @@ public class Schedule_Absensi_Fragment extends Fragment {
             @Override
             public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
                 super.onBindViewHolder(viewHolder, position);
-                viewHolder.find(R.id.tv_mulai_kerja, TextView.class).setText(scheduleList.get(position).get("MULAI").asString());
-                viewHolder.find(R.id.tv_selesai_kerja, TextView.class).setText(scheduleList.get(position).get("SELESAI").asString());
+                //String tgl = DateFormatUtils.formatDate(scheduleList.get(position).get("TANGGAL").asString(), "yyyy-MM-dd", "dd/MM");
+                String[] splitTgl = scheduleList.get(position).get("TANGGAL").asString().split("-");
+                String bulan = splitTgl[1];
+
+                viewHolder.find(R.id.tv_mulai_kerja, TextView.class).setText(scheduleList.get(position).get("SCHEDULE_MULAI").asString());
+                viewHolder.find(R.id.tv_selesai_kerja, TextView.class).setText(scheduleList.get(position).get("SCHEDULE_SELESAI").asString());
                 viewHolder.find(R.id.tv_tanggal_kerja, TextView.class).setText(scheduleList.get(position).get("TANGGAL").asString());
-                viewHolder.find(R.id.tv_bulan_kerja, TextView.class).setText(Tools.getmonth(scheduleList.get(position).get("BULAN").asInteger()));
+                viewHolder.find(R.id.tv_bulan_kerja, TextView.class).setText(Tools.getmonth(Integer.parseInt(bulan)));
+                viewHolder.find(R.id.tv_lokasi, TextView.class).setText(scheduleList.get(position).get("LOKASI").asString());
+
             }
         });
 
@@ -105,7 +113,7 @@ public class Schedule_Absensi_Fragment extends Fragment {
     }
 
     private void viewSchedule() {
-        ((Absensi_MainTab_Activity) getActivity()).newTask(new Messagebox.DoubleRunnable() {
+        ((Absensi_MainTab_Activity) Objects.requireNonNull(getActivity())).newTask(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
             public void run() {

@@ -30,16 +30,17 @@
                     android:id="@+id/img_btn_keluhan"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_keluhan_resize"
+                    android:src="@drawable/ic_keluhan_resize"
                     android:backgroundTint="@android:color/transparent"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    tools:ignore="ContentDescription" />
 
                 <ImageButton
                     android:id="@+id/img_btn_point_layanan"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/ic_point_layanan_resize"
+                    android:src="@drawable/ic_point_layanan_resize"
                     android:backgroundTint="@android:color/transparent"/>
 
                 <ImageButton
@@ -47,7 +48,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/ic_history_resize"
+                    android:src="@drawable/ic_history_resize"
                     android:backgroundTint="@android:color/transparent"/>
 
                 <ImageButton
@@ -55,7 +56,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/ic_katalog_resize"
+                    android:src="@drawable/ic_katalog_resize"
                     android:backgroundTint="@android:color/transparent"/>
 
                 <ImageButton
@@ -63,7 +64,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/ic_diagnostic_resize"
+                    android:src="@drawable/ic_diagnostic_resize"
                     android:backgroundTint="@android:color/transparent"/>
 
             </LinearLayout>
@@ -332,8 +333,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/icon_location"
-                    android:backgroundTint="@color/transparent" />
+                    android:src="@drawable/icon_location"
+                    android:backgroundTint="@color/transparent"
+                    tools:ignore="ContentDescription" />
 
                 <ImageButton
                     android:id="@+id/imgBtn_note"
@@ -341,7 +343,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:backgroundTint="@color/transparent"
-                    app:srcCompat="@drawable/icon_note" />
+                    android:src="@drawable/icon_note"
+                    tools:ignore="ContentDescription" />
 
                 <ImageButton
                     android:id="@+id/imgBtn_start"
@@ -349,7 +352,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:backgroundTint="@color/transparent"
-                    app:srcCompat="@drawable/icon_start" />
+                    android:src="@drawable/icon_start"
+                    tools:ignore="ContentDescription" />
 
                 <ImageButton
                     android:id="@+id/imgBtn_stop"
@@ -357,7 +361,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:backgroundTint="@color/transparent"
-                    app:srcCompat="@drawable/icon_stop" />
+                    android:src="@drawable/icon_stop"
+                    tools:ignore="ContentDescription" />
 
             </LinearLayout>
 
@@ -374,8 +379,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_gravity="center"
-                    app:srcCompat="@drawable/icon_tanggal"
-                    android:backgroundTint="@color/transparent" />
+                    android:src="@drawable/icon_tanggal"
+                    android:backgroundTint="@color/transparent"
+                    tools:ignore="ContentDescription" />
 
                 <ImageButton
                     android:id="@+id/img_btn_my_code"
@@ -383,23 +389,26 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:backgroundTint="@color/transparent"
-                    app:srcCompat="@drawable/ic_my_code_resize" />
+                    android:src="@drawable/ic_my_code_resize"
+                    tools:ignore="ContentDescription" />
 
                 <ImageButton
                     android:id="@+id/img_btn_lkk"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/ic_lkk_resize"
-                    android:backgroundTint="@android:color/transparent"/>
+                    android:src="@drawable/ic_lkk_resize"
+                    android:backgroundTint="@android:color/transparent"
+                    tools:ignore="ContentDescription" />
 
                 <ImageButton
                     android:id="@+id/img_btn_tambah_part"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/ic_tambah_part_resize"
-                    android:backgroundTint="@android:color/transparent"/>
+                    android:src="@drawable/ic_tambah_part_resize"
+                    android:backgroundTint="@android:color/transparent"
+                    tools:ignore="ContentDescription" />
 
             </LinearLayout>
 

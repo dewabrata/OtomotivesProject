@@ -89,6 +89,37 @@
 
             </TableRow>
 
+            <TableRow
+                android:id="@+id/row_no_mesin"
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:id="@+id/tv_no_mesin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:text="@string/no_mesin"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textSize="12sp" />
+
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/row_kode_tipe"
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:id="@+id/tv_kode_tipe"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:text="@string/kode_tipe"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textSize="12sp" />
+
+            </TableRow>
+
             <TableRow android:layout_marginTop="5dp">
 
                 <TextView

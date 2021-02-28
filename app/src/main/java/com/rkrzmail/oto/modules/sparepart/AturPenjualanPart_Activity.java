@@ -27,6 +27,7 @@ import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NsonAutoCompleteAdapter;
 
 import java.util.Map;
+import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.VIEW_PELANGGAN;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
@@ -46,18 +47,18 @@ public class AturPenjualanPart_Activity extends AppActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_atur_penjualan_part_);
+        initToolbar();
         initComponent();
     }
 
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_atur_jualPart);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Penjualan Part");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Penjualan Part");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initComponent() {
-        initToolbar();
         find(R.id.btn_lanjut_jualPart).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -113,8 +114,10 @@ public class AturPenjualanPart_Activity extends AppActivity {
         });
 
         find(R.id.et_noPhone_jualPart, NikitaAutoComplete.class).addTextChangedListener(new TextWatcher() {
+            int prevLength = 0;
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                prevLength = s.length();
                 if (s.toString().length() == 0) {
                     find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
                 }
@@ -127,6 +130,7 @@ public class AturPenjualanPart_Activity extends AppActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                find(R.id.et_noPhone_jualPart, NikitaAutoComplete.class).removeTextChangedListener(this);
                 int counting = (s == null) ? 0 : s.toString().length();
                 if (counting == 0) {
                     find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
@@ -134,12 +138,18 @@ public class AturPenjualanPart_Activity extends AppActivity {
                     find(R.id.et_noPhone_jualPart, NikitaAutoComplete.class).setText("+62 ");
                     Selection.setSelection(find(R.id.et_noPhone_jualPart, NikitaAutoComplete.class).getText(),
                             find(R.id.et_noPhone_jualPart, NikitaAutoComplete.class).getText().length());
-                } else if (counting < 11) {
+                } else if (counting < 12) {
                     find(R.id.tl_nohp, TextInputLayout.class).setError("No. Hp Min. 6 Karakter");
                     find(R.id.et_noPhone_jualPart, NikitaAutoComplete.class).requestFocus();
                 } else {
                     find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
                 }
+
+                if (prevLength > (s != null ? s.length() : 0)) {
+                    isNoHp = false;
+                }
+
+                find(R.id.et_noPhone_jualPart, NikitaAutoComplete.class).addTextChangedListener(this);
             }
         });
 
@@ -148,7 +158,7 @@ public class AturPenjualanPart_Activity extends AppActivity {
             @Override
             public Nson onFindNson(Context context, String bookTitle) {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "Pelanggan");
+                args.put("action", "PELANGGAN");
                 args.put("nama", bookTitle);
                 Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PELANGGAN), args));
                 return result.get("data");

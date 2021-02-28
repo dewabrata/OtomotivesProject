@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -170,11 +171,18 @@ public class Transaksi_Piutang_Fragment extends Fragment {
                 String tgl = DateFormatUtils.formatDate(transaksiList.get(position).get("TANGGAL_PEMBAYARAN").asString(), "yyyy-MM-dd", "dd/MM");
                 int totalTransaksi = transaksiList.get(position).get("JUMLAH_INVOICE").asInteger();
 
-                viewHolder.find(R.id.tv_nama_customer, TextView.class).setText(transaksiList.get(position).get("NAMA_PELANGGAN").asString() + "\n" + transaksiList.get(position).get("PRINCIPAL").asString());
+                viewHolder.find(R.id.tv_total_transaksi, TextView.class).setText(RP + NumberFormatUtils.formatRp(String.valueOf(totalTransaksi)));
                 viewHolder.find(R.id.tv_tgl_transaksi, TextView.class).setText(tgl);
-                viewHolder.find(R.id.tv_nopol, TextView.class).setText(transaksiList.get(position).get("NOPOL").asString());
+                viewHolder.find(R.id.tv_nopol, TextView.class).setText(activity.formatNopol(transaksiList.get(position).get("NOPOL").asString()));
                 viewHolder.find(R.id.tv_jenis_kendaraan, TextView.class).setText(transaksiList.get(position).get("JENIS_KENDARAAN").asString());
                 viewHolder.find(R.id.tv_layanan, TextView.class).setText(transaksiList.get(position).get("LAYANAN").asString());
+
+                if(transaksiList.get(position).get("PRINCIPAL").asString().isEmpty()){
+                    viewHolder.find(R.id.tv_nama_customer, TextView.class).setText(transaksiList.get(position).get("NAMA_PELANGGAN").asString());
+                }else{
+                    viewHolder.find(R.id.tv_nama_customer, TextView.class).setText(transaksiList.get(position).get("NAMA_PELANGGAN").asString() + "\n" + transaksiList.get(position).get("PRINCIPAL").asString());
+                }
+
                 if (transaksiList.get(position).get("FEE_NON_PAKET").asInteger() == 0 || transaksiList.get(position).get("FEE_NON_PAKET").asString().isEmpty()) {
                     viewHolder.find(R.id.tv_biaya_layanan, TextView.class).setText(RP + NumberFormatUtils.formatRp(transaksiList.get(position).get("BIAYA_LAYANAN_NET").asString()));
                     viewHolder.find(R.id.tv_part, TextView.class).setText(RP + NumberFormatUtils.formatRp(transaksiList.get(position).get("HARGA_PART_NET").asString()));
@@ -184,7 +192,14 @@ public class Transaksi_Piutang_Fragment extends Fragment {
                     viewHolder.find(R.id.tv_part, TextView.class).setText(RP + NumberFormatUtils.formatRp(transaksiList.get(position).get("PENGGANTIAN_PART").asString()));
                     viewHolder.find(R.id.tv_jasa_lain, TextView.class).setText(RP + NumberFormatUtils.formatRp(transaksiList.get(position).get("").asString()));
                 }
-                viewHolder.find(R.id.tv_total_transaksi, TextView.class).setText(RP + NumberFormatUtils.formatRp(String.valueOf(totalTransaksi)));
+
+                if(transaksiList.get(position).get("NO_MESIN").asString().isEmpty() && transaksiList.get(position).get("KODE_TIPE").asString().isEmpty()){
+                    viewHolder.find(R.id.row_no_mesin, TableRow.class).setVisibility(View.GONE);
+                    viewHolder.find(R.id.row_kode_tipe, TableRow.class).setVisibility(View.GONE);
+                }else{
+                    viewHolder.find(R.id.tv_no_mesin, TextView.class).setText(transaksiList.get(position).get("NO_MESIN").asString());
+                    viewHolder.find(R.id.tv_kode_tipe, TextView.class).setText(transaksiList.get(position).get("KODE_TIPE").asString());
+                }
             }
 
             @Override

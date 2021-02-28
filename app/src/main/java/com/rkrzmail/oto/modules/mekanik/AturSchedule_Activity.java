@@ -95,7 +95,7 @@ public class AturSchedule_Activity extends AppActivity implements View.OnClickLi
         spLokasi = findViewById(R.id.sp_lokasi);
         spUser = findViewById(R.id.sp_userSchedule);
         cbCopy = findViewById(R.id.cb_copydata);
-        rcSchedule = findViewById(R.id.recyclerViewSchedule);
+        //rcSchedule = findViewById(R.id.recyclerViewSchedule);
         setSpUser();
         setSpLokasi();
 

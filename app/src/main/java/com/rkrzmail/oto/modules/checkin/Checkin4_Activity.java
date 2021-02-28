@@ -154,7 +154,6 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
     @SuppressLint("SetTextI18n")
     private void initData() {
         getData = Nson.readJson(getIntentStringExtra(DATA));
-        Tools.setViewAndChildrenEnabled(find(R.id.ly_waktuAmbil, LinearLayout.class), false);
         Log.d("coba__", "DATA: " + getData);
         setSpMekanik("");
         setSpBbm();
@@ -168,10 +167,14 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         find(R.id.tv_jenis_antrian, TextView.class).setText("Jenis Antrian : " + getData.get("JENIS_ANTRIAN").asString());
 
         if (getData.get("JENIS_ANTRIAN").asString().equals("EXTRA")) {
+            Tools.setViewAndChildrenEnabled(find(R.id.ly_waktuAmbil, LinearLayout.class), true);
+            find(R.id.tv_disable_waktu_antar).setVisibility(View.GONE);
             isExtra = true;
             Tools.setViewAndChildrenEnabled(find(R.id.ly_estimasi_selesai, LinearLayout.class), true);
             find(R.id.tv_disable_estimasi).setVisibility(View.GONE);
         } else if (getData.get("JENIS_ANTRIAN").asString().equals("H+")) {
+            Tools.setViewAndChildrenEnabled(find(R.id.ly_waktuAmbil, LinearLayout.class), true);
+            find(R.id.tv_disable_waktu_antar).setVisibility(View.GONE);
             find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setChecked(true);
             isHplusPartKosong = getData.get("PART_KOSONG").asBoolean();
             isHpLus = true;
@@ -180,6 +183,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             Tools.setViewAndChildrenEnabled(find(R.id.ly_estimasi_selesai, LinearLayout.class), true);
             find(R.id.tv_disable_estimasi).setVisibility(View.GONE);
         } else {
+            Tools.setViewAndChildrenEnabled(find(R.id.ly_waktuAmbil, LinearLayout.class), false);
             isExpressAndStandard = true;
             viewAntrianStandartExpress(getData.get("JENIS_ANTRIAN").asString());
         }
@@ -695,6 +699,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    AppApplication.getMessageTrigger();
                     Intent intent = new Intent(getActivity(), KontrolLayanan_Activity.class);
                     intent.putExtra("NOPOL", nopol);
                     Log.d(TAG, "runUI: " + result.get("data"));

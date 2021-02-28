@@ -276,7 +276,6 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 }
 
                 validateNoPonsel(formatOnlyNumber(etNoPonsel.getText().toString()));
-
                 etNoPonsel.addTextChangedListener(this);
             }
         });

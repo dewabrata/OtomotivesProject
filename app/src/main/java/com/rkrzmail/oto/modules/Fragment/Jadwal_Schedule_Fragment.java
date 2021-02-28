@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -52,6 +53,7 @@ import static android.view.View.GONE;
 import static com.rkrzmail.oto.AppActivity.getTimePickerDialogTextView;
 import static com.rkrzmail.utils.APIUrls.SET_SCHEDULE;
 import static com.rkrzmail.utils.APIUrls.VIEW_MST;
+import static com.rkrzmail.utils.ConstUtils.DATE_DEFAULT_PATTERN;
 import static com.rkrzmail.utils.ConstUtils.ONEDAY;
 import static com.rkrzmail.utils.Tools.setFormatDayAndMonthToDb;
 
@@ -93,6 +95,7 @@ public class Jadwal_Schedule_Fragment extends Fragment {
         activity = ((Schedule_MainTab_Activity) getActivity());
         initHideToolbar(view);
         initComponent(view);
+        initRecylerview();
         return view;
     }
 
@@ -110,7 +113,7 @@ public class Jadwal_Schedule_Fragment extends Fragment {
         spLokasi = v.findViewById(R.id.sp_lokasi);
         spUser = v.findViewById(R.id.sp_userSchedule);
         cbCopy = v.findViewById(R.id.cb_copydata);
-        rcSchedule = v.findViewById(R.id.recyclerViewSchedule);
+        rcSchedule = v.findViewById(R.id.recyclerView);
         btnSimpan = v.findViewById(R.id.btn_simpan);
         setSpUser();
         setSpLokasi();
@@ -247,7 +250,6 @@ public class Jadwal_Schedule_Fragment extends Fragment {
                 args.put("nama", namauser);
                 args.put("tanggal", setFormatDayAndMonthToDb(tanggal));
                 //args.put("tanggal2", setFormatDayAndMonthToDb(tanggal2));
-                args.put("hari", hari);
                 args.put("status", status);
                 args.put("scheduleMulai", DateFormatUtils.formatDate(masuk, "HH:mm", "HH:mm:ss"));
                 args.put("scheduleSelesai", DateFormatUtils.formatDate(selesai, "HH:mm", "HH:mm:ss"));
@@ -299,12 +301,24 @@ public class Jadwal_Schedule_Fragment extends Fragment {
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_SCHEDULE), args));
             }
 
+            @SuppressLint("SimpleDateFormat")
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    result = result.get("data");
+                    dateList.clear();
                     scheduleArray.asArray().clear();
-                    scheduleArray.asArray().addAll(result.get("data").asArray());
-                    initRecylerview();
+                    scheduleArray.asArray().addAll(result.asArray());
+                    for (int i = 0; i < scheduleArray.size(); i++) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                        try {
+                            Date loadDate = sdf.parse(scheduleArray.get(i).get("TANGGAL").asString());
+                            dateList.add(loadDate);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    Objects.requireNonNull(rcSchedule.getAdapter()).notifyDataSetChanged();
                 } else {
 //                    activity.showInfo(result.get("message").asString());
                 }
@@ -412,8 +426,8 @@ public class Jadwal_Schedule_Fragment extends Fragment {
         builder.setView(dialogView);
 
         initToolbarDatePicker();
-        Date date = new Date();
-        Calendar calendar = Calendar.getInstance();
+        Calendar minDate = Calendar.getInstance();
+        Calendar maxDate = Calendar.getInstance();
         final List<String> dateSelected = new ArrayList<>();
         Button btnSimpan = dialogView.findViewById(R.id.btn_simpan);
         Button btnBatal = dialogView.findViewById(R.id.btn_hapus);
@@ -422,20 +436,28 @@ public class Jadwal_Schedule_Fragment extends Fragment {
         btnBatal.setText("BATAL");
         CalendarPickerView calendarPickerView = dialogView.findViewById(R.id.date_picker);
 
-        calendar.add(Calendar.YEAR, 1); // max next year
-        calendarPickerView.init(date, calendar.getTime()).inMode(CalendarPickerView.SelectionMode.MULTIPLE);
+        minDate.add(Calendar.YEAR, -1);
+        maxDate.add(Calendar.YEAR, 1); // max next year
+        calendarPickerView.init(minDate.getTime(), maxDate.getTime()).inMode(CalendarPickerView.SelectionMode.MULTIPLE);
         if (dateList.size() > 0) {
-            for (Date dateSelect : dateList) {
-                calendarPickerView.selectDate(dateSelect);
+            try{
+                for (Date dateSelect : dateList) {
+                    calendarPickerView.selectDate(dateSelect);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
             }
         } else {
-            calendarPickerView.selectDate(date);
+            calendarPickerView.selectDate(maxDate.getTime());
         }
         calendarPickerView.setOnDateSelectedListener(new CalendarPickerView.OnDateSelectedListener() {
+            @SuppressLint("SimpleDateFormat")
             @Override
             public void onDateSelected(Date date) {
+                //"EEE MMM dd HH:mm:ss zzz yyyy"
+                String tgl = DateFormatUtils.formatDateDefault(date.toString(), "yyyy-MM-dd");
                 dateList.add(date);
-                dateSelected.add(DateFormat.getDateInstance(DateFormat.SHORT).format(date));
+                dateSelected.add(tgl);
             }
 
             @Override
@@ -466,7 +488,16 @@ public class Jadwal_Schedule_Fragment extends Fragment {
                 alertDialog.dismiss();
                 StringBuilder tanggalValues = new StringBuilder();
                 for (int i = 0; i < dateSelected.size(); i++) {
-                    tanggalList.add(Nson.newObject().set("TANGGAL", dateSelected.get(i)));
+                    String[] splitDate = dateSelected.get(i).split("-");
+                    int day = Integer.parseInt(splitDate[2]);
+                    int month = Integer.parseInt(splitDate[1]);
+                    int year = Integer.parseInt(splitDate[0]);
+
+                    tanggalList.add(Nson.newObject()
+                            .set("TANGGAL", dateSelected.get(i))
+                            .set("HARI", ParseDateofWeek(day, month, year))
+                            .set("NO_MINGGU", getNoMinggu(year, month, day))
+                    );
                     if (tanggalValues.length() > 0) tanggalValues.append(", ");
                     tanggalValues.append(dateSelected.get(i));
                 }
@@ -488,9 +519,20 @@ public class Jadwal_Schedule_Fragment extends Fragment {
         alertDialog.show();
     }
 
+    private int getNoMinggu(int year, int month, int day) {
+        if (year == 0 && month == 0) return 0;
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.DAY_OF_MONTH, day);
+
+        return cal.get(Calendar.WEEK_OF_MONTH);
+    }
+
     private void initRecylerview() {
-        rcSchedule.setHasFixedSize(true);
-        rcSchedule.setLayoutManager(new LinearLayoutManager(activity));
+        rcSchedule.setHasFixedSize(false);
+        rcSchedule.setLayoutManager(new LinearLayoutManager(activity.getActivity()));
         rcSchedule.setAdapter(new NikitaRecyclerAdapter(scheduleArray, R.layout.item_schedule_user) {
                     @Override
                     public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
@@ -586,14 +628,14 @@ public class Jadwal_Schedule_Fragment extends Fragment {
 
     };
 
+    @SuppressLint({"SimpleDateFormat", "DefaultLocale"})
     private String ParseDateofWeek(int date, int month, int year) {
         if (date > 0 && month > 0 && year > 0) {
             int day = 0;
-            SimpleDateFormat inFormat = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat inFormat = new SimpleDateFormat("yyyy-MM-dd");
             try {
-                String newDate = date + "/" + (month + 1) + "/" + year;
+                String newDate = String.format("%04d-%02d-%02d", year, month, date);
                 Date myDate = inFormat.parse(newDate);
-                //SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE");
                 Calendar c = Calendar.getInstance();
                 c.setTime(myDate);
                 day = c.get(Calendar.DAY_OF_WEEK);

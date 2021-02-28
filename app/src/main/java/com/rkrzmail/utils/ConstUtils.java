@@ -21,6 +21,7 @@ public class ConstUtils {
         return (int) (milliseconds / (1000 * 60 * 60 * 24));
     }
 
+    public static final String DATE_DEFAULT_PATTERN = "EEE MMM dd HH:mm:ss zzz yyyy";
     public static final long ONEDAY = 86400000;
     public static final String EXTERNAL_DIR_OTO = Environment.getExternalStorageDirectory() + "/Otomotives";
     //ARGUMENTS PARENT

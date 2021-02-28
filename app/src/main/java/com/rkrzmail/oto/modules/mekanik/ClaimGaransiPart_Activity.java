@@ -103,6 +103,4 @@ public class ClaimGaransiPart_Activity extends AppActivity {
             }
         });
     }
-
-
 }

@@ -169,7 +169,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
                 if( find(R.id.btn_foto_part, Button.class).getText().toString().equals("FOTO PART")){
                     setFotoPart();
                 }else{
-                    showDialogPreviewFoto(bitmapPart, null, "Foto Part", fotoPart, true);
+                    showDialogPreviewFoto(bitmapPart,  "Foto Part", fotoPart, true);
                 }
 
             }
@@ -181,7 +181,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
                 if(btn_fotostnk.getText().toString().equals("FOTO STNK")){
                     setFotoStnk();
                 }else{
-                    showDialogPreviewFoto(bitmapStnk, null, "Foto STNK", fotoStnk, true);
+                    showDialogPreviewFoto(bitmapStnk,  "Foto STNK", fotoStnk, true);
                 }
 
             }
@@ -193,7 +193,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
                 if(btn_fotoktp.getText().toString().equals("FOTO KTP")){
                     setFotoKtp();
                 }else{
-                    showDialogPreviewFoto(bitmapKtp, null, "Foto KTP", fotoKtp, true);
+                    showDialogPreviewFoto(bitmapKtp,  "Foto KTP", fotoKtp, true);
                 }
 
             }
@@ -308,7 +308,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
     }
 
     @SuppressLint("SetTextI18n")
-    private void showDialogPreviewFoto(final Bitmap bitmap, final File[] fileFoto, String toolbarTittle, final String[] base64, final boolean isPreview) {
+    private void showDialogPreviewFoto(final Bitmap bitmap, String toolbarTittle, final String[] base64, final boolean isPreview) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.layout_alert_camera, null);
@@ -460,6 +460,18 @@ public class LkkClaimMekanik_Activity extends AppActivity {
         });
     }
 
+    private void disableFields(){
+        et_merkpart.setEnabled(false);
+        et_nopart.setEnabled(false);
+        et_namapart.setEnabled(false);
+        et_nikpemilik.setEnabled(false);
+        et_nobuku.setEnabled(false);
+        cbClaim.setChecked(false);
+        cbClaim.setEnabled(false);
+        btn_fotoktp.setEnabled(false);
+        btn_fotostnk.setEnabled(false);
+    }
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -471,16 +483,8 @@ public class LkkClaimMekanik_Activity extends AppActivity {
         if (resultCode == RESULT_OK && requestCode == REQUEST_CARI_PART) {
             Nson nson = Nson.readJson(getIntentStringExtra(data, PART));
             if (nson.get("GARANSI_LAYANAN").asString().equals("Y")) {
+                disableFields();
                 Tools.setViewAndChildrenEnabled(find(R.id.ly_lkk_claim, LinearLayout.class), true);
-                et_merkpart.setEnabled(false);
-                et_nopart.setEnabled(false);
-                et_namapart.setEnabled(false);
-                et_nikpemilik.setEnabled(false);
-                et_nobuku.setEnabled(false);
-                cbClaim.setChecked(false);
-                cbClaim.setEnabled(false);
-                btn_fotoktp.setEnabled(false);
-                btn_fotostnk.setEnabled(false);
                 et_merkpart.setText(nson.get("MERK").asString());
                 et_nopart.setText(nson.get("NO_PART").asString());
                 et_namapart.setText(nson.get("NAMA_PART").asString());
@@ -494,16 +498,16 @@ public class LkkClaimMekanik_Activity extends AppActivity {
             }
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_FOTO_PART) {
             bitmapPart = (Bitmap) (extras != null ? extras.get("data") : null);
-            showDialogPreviewFoto(bitmapPart, null, "Foto Part", fotoPart, false);
-            Log.e("lkk_part", "onActivityResult: " + fotoPart[0]);
+            find(R.id.btn_foto_part, Button.class).setText("PREVIEW FOTO PART");
+            //showDialogPreviewFoto(bitmapPart,  "Foto Part", fotoPart, false);
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_FOTO_STNK) {
             bitmapStnk = (Bitmap) (extras != null ? extras.get("data") : null);
-            showDialogPreviewFoto(bitmapStnk, null, "Foto STNK", fotoStnk, false);
-            Log.e("lkk_stnk", "onActivityResult: " + fotoStnk[0]);
+            btn_fotostnk.setText("PREVIEW FOTO STNK");
+            //showDialogPreviewFoto(bitmapStnk,  "Foto STNK", fotoStnk, false);
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_FOTO_KTP) {
             bitmapKtp = (Bitmap) (extras != null ? extras.get("data") : null);
-            showDialogPreviewFoto(bitmapKtp, null, "Foto KTP", fotoKtp, false);
-            Log.e("lkk_ktp", "onActivityResult: " + fotoKtp[0]);
+            btn_fotoktp.setText("PREVIEW FOTO KTP");
+            //showDialogPreviewFoto(bitmapKtp,  "Foto KTP", fotoKtp, false);
         }
     }
 

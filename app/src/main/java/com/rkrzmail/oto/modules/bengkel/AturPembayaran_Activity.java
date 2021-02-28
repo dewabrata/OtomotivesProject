@@ -636,6 +636,7 @@ public class AturPembayaran_Activity extends AppActivity {
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     showSuccess("Sukses Menyimpan Aktifitas");
+                    AppApplication.getMessageTrigger();
                     setResult(RESULT_OK);
                     finish();
                 } else {

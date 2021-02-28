@@ -17,6 +17,7 @@ import android.widget.ImageView;
 
 import com.naa.data.Utility;
 import com.naa.data.UtilityAndroid;
+import com.naa.utils.InternetX;
 import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
 
@@ -69,6 +70,17 @@ public class AppApplication extends Application {
     http://202.56.171.19:8185/loyaltyui/home/pengajuan
     MyAccount,
     http://202.56.171.19:8185/loyaltyui/menu/account*/
+
+    public static void getMessageTrigger(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                InternetX.postHttpConnection("https://aps.neyama.com/wapi/queueoto.php", args);
+            }
+        }).start();
+    }
+
     public static String getUrl(String name) {
         return getBaseUrl(name) + "?key=" + UtilityAndroid.getSetting(getInstance().getApplicationContext(), "KEY", "");
     }

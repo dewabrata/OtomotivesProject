@@ -491,7 +491,7 @@ public class CariPart_Activity extends AppActivity {
         if (isLokasi) {
             adapterSearchView(mSearchView, "spec", VIEW_SPAREPART, "NAMA_PART", "");
         } else if (flagGlobal && countForCariPart == 2) {
-            adapterSearchView(mSearchView, "", VIEW_CARI_PART_SUGGESTION, "NAMA_PART", CARI_PART);
+            adapterSearchView(mSearchView, "", VIEW_SPAREPART, "NAMA_PART", CARI_PART);
         } else if (flagBengkel && countForCariPart == 5) {
             adapterSearchView(mSearchView, "spec", VIEW_SPAREPART, "NAMA_PART", "");
         } else if (isTeralokasikan) {

@@ -113,7 +113,7 @@ public class Invoice_Piutang_Fragment extends Fragment {
 
                 String tgl = DateFormatUtils.formatDate(invoiceList.get(position).get("TANGGAL_JATUH_TEMPO").asString(), "yyyy-MM-dd", "dd/MM");
 
-                viewHolder.find(R.id.tv_nama_terhutang, TextView.class).setText(invoiceList.get(position).get("NAMA_PELANGGAN").asString());
+                viewHolder.find(R.id.tv_nama_terhutang, TextView.class).setText(invoiceList.get(position).get("PRINCIPAL").asString());
                 viewHolder.find(R.id.tv_nominal, TextView.class).setText(RP + NumberFormatUtils.formatRp(invoiceList.get(position).get("JUMLAH_INVOICE").asString()));
                 viewHolder.find(R.id.tv_jatuh_tempo, TextView.class).setText(tgl);
                 viewHolder.find(R.id.tv_no_invoice, TextView.class).setText(invoiceList.get(position).get("NO_INVOICE").asString());

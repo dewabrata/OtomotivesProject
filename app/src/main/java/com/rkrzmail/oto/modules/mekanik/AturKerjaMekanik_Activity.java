@@ -184,9 +184,9 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
         isNotWait = n.get("TIDAK_MENUNGGU").asString().equals("Y") & !n.get("TIDAK_MENUNGGU").asString().isEmpty();
         isKonfirmasiTambahan = n.get("KONFIRMASI_TAMBAHAN").asString().equals("Y") & !n.get("KONFIRMASI_TAMBAHAN").asString().isEmpty();
         String lamaLayanan = totalWaktuKerja(
-                n.get("WAKTU_KERJA_HARI").asString(),
-                n.get("WAKTU_KERJA_JAM").asString(),
-                n.get("WAKTU_KERJA_MENIT").asString());
+                n.get("WAKTU_LAYANAN_LAMA_HARI").asString(),
+                n.get("WAKTU_LAYANAN_LAMA_JAM").asString(),
+                n.get("WAKTU_LAYANAN_LAMA_MENIT").asString());
         noHp = n.get("NO_PONSEL").asString();
         etNoAntrian.setText(n.get("NO_ANTRIAN").asString());
         etNopol.setText(formatNopol(n.get("NOPOL").asString()));
@@ -212,7 +212,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
         setTimer();
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "SimpleDateFormat"})
     private void setTimer() {
         if (isRework) {
             try {
@@ -225,24 +225,28 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 e.printStackTrace();
             }
         } else {
-            @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+            String waktuMulai = etMulai.getText().toString();
+            String waktuSelesai = etSelesai.getText().toString();
+            SimpleDateFormat sdfWaktuSelesai = new SimpleDateFormat("dd/MM-HH:mm");
+            SimpleDateFormat sdfWaktuMulai = new SimpleDateFormat("HH:mm:ss");
             Date mulai = null;
             Date selesai = null;
             try {
-                mulai = sdf.parse(etMulai.getText().toString());
-                selesai = sdf.parse(etSelesai.getText().toString());
+                mulai = sdfWaktuSelesai.parse(waktuMulai);
+                selesai = sdfWaktuMulai.parse(waktuSelesai);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            long waktuMulai = 0;
+
+            long waktuMulaiTimeMilis = 0;
             if (mulai != null) {
-                waktuMulai = mulai.getTime();
+                waktuMulaiTimeMilis = mulai.getTime();
             }
-            long waktuSelesai = 0;
+            long waktuSelesaiTimeMilis = 0;
             if (selesai != null) {
-                waktuSelesai = selesai.getTime();
+                waktuSelesaiTimeMilis = selesai.getTime();
             }
-            timerWork = waktuSelesai - waktuMulai;
+            timerWork = waktuMulaiTimeMilis;
         }
     }
 
@@ -593,6 +597,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                     //showMessageInvalidNotif(getActivity(), result.get("data").get("MESSAGE_INFO").asString(), null);
                     stopTimer();
                     showSuccess("Pekerjaan Selesai");
+                    AppApplication.getMessageTrigger();
                     setResult(RESULT_OK);
                     finish();
                 } else {
