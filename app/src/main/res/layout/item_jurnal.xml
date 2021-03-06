@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:padding="10dp"
+            android:padding="15dp"
             android:stretchColumns="*">
 
             <TableRow>
@@ -33,15 +33,21 @@
                     android:id="@+id/tv_tgl_jurnal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="DD/MM - DD/MM"
-                    android:textStyle="bold" />
+                    android:text="@string/tanggal"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/grey_80"
+                    android:layout_gravity="start"
+                    android:textSize="12sp"/>
 
                 <TextView
                     android:id="@+id/tv_aktifitas_jurnal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Aktifitas"
-                    android:textStyle="bold" />
+                    android:text="@string/aktifitas"
+                    android:layout_gravity="end"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/grey_80"
+                    android:textSize="12sp"/>
 
             </TableRow>
 
@@ -51,19 +57,25 @@
                     android:id="@+id/tv_transaksi_jurnal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Transaksi"
-                    android:textStyle="bold" />
+                    android:text="@string/transaksi"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/grey_80"
+                    android:layout_gravity="start"
+                    android:textSize="12sp"/>
 
             </TableRow>
 
             <TableRow android:layout_marginTop="@dimen/spacing_medium">
 
                 <TextView
-                    android:id="@+id/tv_ket_jurnal"
+                    android:id="@+id/tv_nama_kontak"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Keterangan"
-                    android:textStyle="bold" />
+                    android:text="@string/nama_kontak"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/grey_80"
+                    android:layout_gravity="start"
+                    android:textSize="12sp"/>
 
             </TableRow>
 
@@ -73,15 +85,21 @@
                     android:id="@+id/tv_pembayaran_jurnal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Pembayaran"
-                    android:textStyle="bold" />
+                    android:text="@string/pembayaran"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/grey_80"
+                    android:layout_gravity="start"
+                    android:textSize="12sp"/>
 
                 <TextView
                     android:id="@+id/tv_nominal_jurnal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Nominal"
-                    android:textStyle="bold" />
+                    android:text="@string/nominal"
+                    android:layout_gravity="end"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/grey_80"
+                    android:textSize="12sp"/>
 
             </TableRow>
 

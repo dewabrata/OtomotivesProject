@@ -17,6 +17,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.naa.data.Nson;
+import com.naa.data.UtilityAndroid;
 import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
@@ -466,6 +467,7 @@ public class AturParts_Activity extends AppActivity {
                 args.put("noFolder", nofolder);
                 args.put("tingkatrak", finalTinggirak);
                 args.put("kode", tempatPart.equals("--PILIH--") ? "*" : kodePenempatan(tempatPart, rakOrPalet, finalTinggirak, nofolder));
+                args.put("kendaraan", UtilityAndroid.getSetting(getApplicationContext(), "JENIS_KENDARAAN", "").trim());
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_SPAREPART), args));
             }
@@ -522,7 +524,7 @@ public class AturParts_Activity extends AppActivity {
                         text = NumberFormatUtils.setPercentage(text);
 
                         find(R.id.et_hargaJual_part, EditText.class).setText(text);
-                        find(R.id.et_hargaJual_part, EditText.class).setFilters(NumberFormatUtils.getPercentFilter());
+                        find(R.id.et_hargaJual_part, EditText.class).setFilters(NumberFormatUtils.getPercentFilterMargin());
                         find(R.id.et_hargaJual_part, EditText.class).setSelection(text.length() - 1);
                     } else if (find(R.id.sp_polaHarga_part, Spinner.class).getSelectedItem().toString().equalsIgnoreCase("RATA - RATA + MARGIN")) {
                         java.text.NumberFormat format = java.text.NumberFormat.getPercentInstance(new Locale("in", "ID"));

@@ -156,6 +156,8 @@ public class AturCollection_Activity extends AppActivity {
                 args.put("lebihKurang", String.valueOf(sisaTerhutang));
                 args.put("kasirId", kasirId);
                 args.put("tipeSetoran", tipeColl);
+                args.put("namaBank", namaBank);
+                args.put("noRekening", noRek);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_COLLECTION), args));
             }

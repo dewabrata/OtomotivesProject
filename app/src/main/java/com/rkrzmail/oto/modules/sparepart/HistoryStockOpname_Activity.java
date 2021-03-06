@@ -78,7 +78,7 @@ public class HistoryStockOpname_Activity extends AppActivity {
                 viewHolder.find(R.id.tv_noFolder_historyStock, TextView.class).setText(nListArray.get(position).get("NO_FOLDER").asString());
                 viewHolder.find(R.id.tv_namaPart_historyStock, TextView.class).setText(nListArray.get(position).get("NAMA_PART").asString());
                 viewHolder.find(R.id.tv_noPart_historyStock, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
-                viewHolder.find(R.id.tv_stock_historyStock, TextView.class).setText(nListArray.get(position).get("STOCK_LOKASI_PART").asString());
+                viewHolder.find(R.id.tv_stock_historyStock, TextView.class).setText(nListArray.get(position).get("STOCK").asString());
                 viewHolder.find(R.id.tv_merk_historyStock, TextView.class).setText(nListArray.get(position).get("MERK").asString());
                 viewHolder.find(R.id.tv_pending_historyStock, TextView.class).setText(nListArray.get(position).get("PENDING_STOCK").asString());
                 viewHolder.find(R.id.tv_opname_historyStock, TextView.class).setText(nListArray.get(position).get("OPNAME").asString());

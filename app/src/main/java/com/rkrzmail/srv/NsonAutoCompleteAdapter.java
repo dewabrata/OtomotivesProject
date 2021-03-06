@@ -42,13 +42,7 @@ public class NsonAutoCompleteAdapter extends BaseAdapter implements Filterable {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater) mContext
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.activity_history_item, parent, false);
-        }
-
-        return convertView;
+       return getView(position, convertView,parent);
     }
 
     @Override

@@ -200,8 +200,9 @@ public class AppActivity extends AppCompatActivity {
     }
 
     public void getSelectionSpinner(Spinner spinner, String value) {
+        value = value.trim();
         for (int in = 0; in < spinner.getCount(); in++) {
-            if (spinner.getItemAtPosition(in).toString().contains(value)) {
+            if (spinner.getItemAtPosition(in).toString().trim().equalsIgnoreCase(value)) {
                 spinner.setSelection(in);
                 break;
             }
@@ -556,33 +557,6 @@ public class AppActivity extends AppCompatActivity {
         datePickerDialog.show(getFragmentManager(), "Datepickerdialog");
     }
 
-
-    public void getDatePickerDialogTextView(Context context, final TextView dateTime, Calendar minDate, Calendar maxDate, Calendar[] disableDays) {
-        final Calendar cldr = Calendar.getInstance();
-        final int day = cldr.get(Calendar.DAY_OF_MONTH);
-        final int month = cldr.get(Calendar.MONTH);
-        final int year = cldr.get(Calendar.YEAR);
-        DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                String newDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
-                Date date = null;
-                try {
-                    date = sdf.parse(newDate);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                String formattedTime = sdf.format(date);
-                dateTime.setText(formattedTime);
-            }
-        }, year, month, day);
-
-        datePickerDialog.setMinDate(minDate);
-        datePickerDialog.setMaxDate(maxDate);
-        datePickerDialog.setDisabledDays(disableDays);
-        datePickerDialog.show(getFragmentManager(), "Datepickerdialog");
-    }
 
     public static void getTimePickerDialogTextView(Context context, final TextView textView) {
         Calendar calendar = Calendar.getInstance();

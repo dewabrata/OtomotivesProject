@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
+import com.naa.data.UtilityAndroid;
 import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
@@ -55,17 +56,17 @@ public class Asset_Activity extends AppActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void initRvAset(){
+    private void initRvAset() {
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_aset){
+        recyclerView.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_aset) {
             @SuppressLint("SetTextI18n")
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
 
-                String tgl = DateFormatUtils.formatDate(nListArray.get(position).get("TANGGAL_BELI").asString(), "yyyy-MM-dd HH:mm:ss", "dd/MM/yyyy");
+                String tgl = DateFormatUtils.formatDate(nListArray.get(position).get("TANGGAL_BELI").asString(), "yyyy-MM-dd", "dd/MM/yyyy");
                 viewHolder.find(R.id.tv_nama_aset, TextView.class).setText(nListArray.get(position).get("NAMA_ASET").asString());
                 viewHolder.find(R.id.tv_nomor_aset, TextView.class).setText(RP + NumberFormatUtils.formatRp(nListArray.get(position).get("NILAI_PENYUSUTAN").asString()));
                 viewHolder.find(R.id.tv_tgl_beli, TextView.class).setText(tgl);
@@ -91,16 +92,15 @@ public class Asset_Activity extends AppActivity {
             @Override
             public void run() {
                 swipeProgress(true);
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "view");
-                args.put("search", search);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ASSET), args));
+                String[] args = new String[2];
+                args[0] = "CID=" + UtilityAndroid.getSetting(getApplicationContext(), "CID", "").trim();
+                result = Nson.readJson(InternetX.getHttpConnectionX(AppApplication.getBaseUrlV4(ASSET), args));
             }
 
             @Override
             public void runUI() {
                 swipeProgress(false);
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                if (result.get("status").asBoolean()) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
                     recyclerView.getAdapter().notifyDataSetChanged();
@@ -154,7 +154,7 @@ public class Asset_Activity extends AppActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK && requestCode == REQUEST_DETAIL){
+        if (resultCode == RESULT_OK && requestCode == REQUEST_DETAIL) {
             viewAsset("");
         }
     }

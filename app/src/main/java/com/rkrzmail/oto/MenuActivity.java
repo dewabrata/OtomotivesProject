@@ -45,6 +45,7 @@ import com.rkrzmail.oto.modules.bengkel.Absensi_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Asset_Activity;
 import com.rkrzmail.oto.modules.bengkel.Collection_Activity;
 import com.rkrzmail.oto.modules.bengkel.Dashboard_MainTab_Activity;
+import com.rkrzmail.oto.modules.bengkel.Jurnal_Activity;
 import com.rkrzmail.oto.modules.bengkel.Laporan_Activity;
 import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
 import com.rkrzmail.oto.modules.bengkel.SaranActivity;
@@ -236,9 +237,11 @@ public class MenuActivity extends AppActivity {
                     Intent intent = new Intent(MenuActivity.this, PenjualanPart_Activity.class);
                     startActivity(intent);
                 } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_JURNAL) && getAccess(M_JURNAL)) {
-                    Intent intent = new Intent(MenuActivity.this, WebActivity.class);
-                    intent.putExtra("title", "Dashboard");
-                    intent.putExtra("url", "https://m.otomotives.com/#/jurnal?" + getWebUrl());
+//                    Intent intent = new Intent(MenuActivity.this, WebActivity.class);
+//                    intent.putExtra("title", "Dashboard");
+//                    intent.putExtra("url", "https://m.otomotives.com/#/jurnal?" + getWebUrl());
+//                    startActivity(intent);
+                    Intent intent = new Intent(MenuActivity.this, Jurnal_Activity.class);
                     startActivity(intent);
                 } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_MEKANIK) && getAccess(M_MEKANIK)) {
                     Intent intent = new Intent(MenuActivity.this, PerintahKerjaMekanik_Activity.class);

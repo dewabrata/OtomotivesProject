@@ -70,6 +70,7 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
     private String scanResult, penempatan, lokasiPart = "", merkPart = "";
     private String kodeFolder = "";
     private int jumlahAllPart = 0, count = 0, partId;
+    private long totalAll = 0;
     private boolean isDelete = false;
 
     @Override
@@ -347,6 +348,7 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
                 args.put("rekening", nson.get("rekening").asString());
                 args.put("penempatan", etPenempatan.getText().toString());
                 args.put("jumlahall", String.valueOf(jumlahAllPart));
+                args.put("totalAll", String.valueOf(totalAll));
 
                 Log.d(TAG, "PART :  " + nListArray);
                 Log.d(TAG, "send data : " + args);
@@ -362,7 +364,6 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
                 } else {
                     showError("Gagal Menambahkan Aktifitas");
                 }
-                Log.d(TAG, "send data : " + data.get("message"));
             }
         });
     }
@@ -394,13 +395,15 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
 
         String disc = null;
         if (etDiscPercent.isEnabled()) {
-            disc = NumberFormatUtils.clearPercent(etDiscPercent.getText().toString());
+            disc = etDiscPercent.getText().toString();
             dataAdd.set("DISCOUNT", disc);
         } else if (etDiscRp.isEnabled()) {
             disc = formatOnlyNumber(etDiscRp.getText().toString());
             dataAdd.set("DISCOUNT", disc);
+        }else{
+            dataAdd.set("DISCOUNT", "");
         }
-
+        totalAll += Long.parseLong(NumberFormatUtils.formatOnlyNumber(etHargaBersih.getText().toString()));
         dialogKonfirmasi(
                 dataAdd,
                 dataAdd.get("NAMA_PART").asString(),

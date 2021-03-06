@@ -2,6 +2,13 @@ package com.rkrzmail.utils;
 
 public class APIUrls {
 
+    public static final String JURNAL = "jurnal";
+    public static final String JURNAL_KAS = "jurnal/kas_balance";
+    public static final String JURNAL_KAS_BANK = "jurnal/kas_bank_balance";
+    public static final String JURNAL_PERIODE = "jurnal/periode_jurnal";
+    public static final String JURNAL_PEMBAYARAN = "jurnal/metode_pembayaran";
+    public static final String JURNAL_TRANSAKSI = "jurnal/transaksi";
+    public static final String JURNAL_AKTIVITAS = "jurnal/aktivitas";
     public static final String HUTANG = "hutang";
     public static final String ASSET = "asset";
     public static final String PIUTANG = "piutang";
@@ -46,7 +53,8 @@ public class APIUrls {
     public static final String ATUR_INSPEKSI = "aturinspeksi";
     public static final String SET_LOGIN = "login";
     public static final String SET_CHECKIN = "checkin" ;
-    public static final String SET_ANTRIAN = "antrian";
+    public static final String ANTRIAN = "antrian";
+    public static final String ANTRIAN_MULAI = "antrian/waktu_mulai";
     public static final String SET_REKENING_BANK = "setrekeningbank";
     public static final String SET_REGISTRASI = "regristrasi";
     public static final String SET_STOCK_OPNAME = "stockopname";

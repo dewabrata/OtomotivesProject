@@ -50,7 +50,8 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="5dp"
+                android:visibility="gone">
 
                 <EditText
                     android:id="@+id/et_no_asset"
@@ -126,7 +127,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
-                    android:inputType="numberSigned"
+                    android:inputType="textCapCharacters"
                     android:hint="@string/keterangan_uppercase"
                     tools:ignore="Autofill" />
 
@@ -170,10 +171,11 @@
                     android:layout_marginEnd="10dp"/>
 
                 <RelativeLayout
+                    android:id="@+id/vg_kontak"
                     android:layout_width="0dp"
                     android:layout_height="34dp"
                     android:layout_weight="6"
-                    android:background="@drawable/background_edittext">
+                    android:background="@drawable/state_textview_clickable_border">
 
                     <TextView
                         android:id="@+id/tv_pembeli"
@@ -214,10 +216,11 @@
                     android:layout_marginEnd="10dp"/>
 
                 <RelativeLayout
+                    android:id="@+id/ly_pembayaran"
                     android:layout_width="0dp"
                     android:layout_height="34dp"
                     android:layout_weight="6"
-                    android:background="@drawable/background_edittext">
+                    android:background="@drawable/state_textview_clickable_border">
 
                     <Spinner
                         android:id="@+id/sp_tipe_pembayaran"
@@ -235,7 +238,8 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="@dimen/paddingMedium"
                 android:gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="0dp"
@@ -252,7 +256,7 @@
                     android:layout_width="0dp"
                     android:layout_height="34dp"
                     android:layout_weight="6"
-                    android:background="@drawable/background_edittext">
+                    android:background="@drawable/state_textview_clickable_border">
 
                     <TextView
                         android:id="@+id/tv_tgl_jatuh_tempo"
@@ -275,7 +279,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/ly_norek"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/paddingSemiLarge"
@@ -294,10 +297,11 @@
                     android:layout_marginEnd="10dp"/>
 
                 <RelativeLayout
+                    android:id="@+id/ly_norek"
                     android:layout_width="0dp"
                     android:layout_height="34dp"
                     android:layout_weight="6"
-                    android:background="@drawable/background_edittext">
+                    android:background="@drawable/state_textview_clickable_border">
 
                     <Spinner
                         android:id="@+id/sp_norek"

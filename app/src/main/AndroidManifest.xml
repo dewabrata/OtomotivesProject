@@ -299,7 +299,7 @@
             android:name=".modules.bengkel.AturJurnal_Activity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".modules.bengkel.DaftarJurnal_Activity"
+            android:name=".modules.bengkel.Jurnal_Activity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".modules.sparepart.AturPenyesuain_StockOpname_Activity"

@@ -37,7 +37,8 @@
                         android:layout_height="wrap_content"
                         android:enabled="false"
                         android:textSize="14sp"
-                        android:hint="@string/no_invoice_uppercase" />
+                        android:hint="@string/no_invoice_uppercase"
+                        tools:ignore="Autofill,TextFields" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -54,7 +55,8 @@
                         android:layout_height="wrap_content"
                         android:enabled="false"
                         android:textSize="14sp"
-                        android:hint="TOTAL HUTANG" />
+                        android:hint="@string/total_hutang_uppercase"
+                        tools:ignore="Autofill,TextFields" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -78,10 +80,11 @@
                         android:layout_marginEnd="10dp" />
 
                     <RelativeLayout
+                        android:id="@+id/ly_tgl_bayar"
                         android:layout_width="0dp"
                         android:layout_height="34dp"
                         android:layout_weight="6"
-                        android:background="@drawable/background_edittext">
+                        android:background="@drawable/state_textview_clickable_border">
 
                         <TextView
                             android:id="@+id/tv_tglBayar_bayarPiutang"
@@ -104,10 +107,12 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ly_disc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="150dp"
@@ -156,6 +161,7 @@
                 </LinearLayout>
 
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/tl_total_bayar"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -167,7 +173,8 @@
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
                         android:inputType="numberDecimal"
-                        android:hint="@string/total_bayar_uppercase" />
+                        android:hint="@string/total_bayar_uppercase"
+                        tools:ignore="Autofill" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -200,17 +207,18 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="4"
-                        android:text="@string/jatuh_tempo_uppercase"
+                        android:text="@string/tanggal_jatuh_tempo_uppercase"
                         android:textColor="@color/grey_900"
                         android:textSize="12sp"
                         android:textStyle="bold"
                         android:layout_marginEnd="10dp" />
 
                     <RelativeLayout
+                        android:id="@+id/ly_tgl_jatuh_tempo"
                         android:layout_width="0dp"
                         android:layout_height="34dp"
                         android:layout_weight="6"
-                        android:background="@drawable/background_edittext">
+                        android:background="@drawable/state_textview_clickable_border">
 
                         <TextView
                             android:id="@+id/tv_tgl_jatuh_tempo"
@@ -301,21 +309,39 @@
 
                 </LinearLayout>
 
-                <android.support.design.widget.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp">
 
-                    <EditText
-                        android:id="@+id/et_bankBerbayar_bayarHutang"
+                    <android.support.design.widget.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="14sp"
-                        android:inputType="numberDecimal"
-                        android:hint="@string/bank_Terbayar_uppercase" />
+                        android:layout_height="wrap_content">
 
-                </android.support.design.widget.TextInputLayout>
+                        <com.rkrzmail.srv.NikitaAutoComplete
+                            android:id="@+id/et_bankTerbayar"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:padding="@dimen/paddingLarge"
+                            android:inputType="textCapCharacters"
+                            android:hint="@string/bank_terbayar_uppercase"
+                            tools:ignore="Autofill" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <ProgressBar
+                        android:id="@+id/progress_bar"
+                        style="?android:attr/progressBarStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|right"
+                        tools:ignore="RtlHardcoded"
+                        android:layout_marginEnd="10dp"
+                        android:visibility="gone"/>
+
+                </FrameLayout>
 
                 <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -329,7 +355,8 @@
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
                         android:enabled="false"
-                        android:hint="@string/no_rekening_uppercase" />
+                        android:hint="@string/no_rekening_uppercase"
+                        tools:ignore="Autofill,TextFields" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -379,7 +406,9 @@
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
                         android:inputType="numberDecimal"
-                        android:hint="@string/biaya_transfer_uppercase" />
+                        android:hint="@string/biaya_transfer_uppercase"
+                        android:enabled="false"
+                        tools:ignore="Autofill" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -404,7 +433,7 @@
                             android:text="@string/foto_bukti_uppercase"
                             android:drawablePadding="10dp"
                             android:textSize="12sp"
-                            android:background="@android:color/transparent"
+                            android:background="@drawable/state_textview_clickable"
                             android:drawableStart="@drawable/icon_camera_fill" />
 
                     </LinearLayout>

@@ -56,7 +56,7 @@ public class TugasPart_MainTab_Activity extends AppActivity {
         final ArrayList<Fragment> fragments = new ArrayList<>();
         fragments.add(new Permintaan_TugasPart_Fragment());
         fragments.add(new Tersedia_TugasPart_Fragment());
-        fragments.add(new BatalPart_TugasPart_Fragment());
+        //fragments.add(new BatalPart_TugasPart_Fragment());
         fragments.add(new PartKosong_TugasPart_Fragment());
         fragments.add(new OutSource_Activity());
 

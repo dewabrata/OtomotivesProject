@@ -60,6 +60,10 @@ public class AppApplication extends Application {
         return "http://otomotives.com/api/v3/" + name;
     }
 
+    public static String getBaseUrlV4(String name) {//ready for antrian
+        return "https://otomotives.com/api/v4/" + name;
+    }
+
     //dev
 //    public static String getBaseUrlV3(String name) {
 //        return "http://otomotives.com/api/dev/" + name;

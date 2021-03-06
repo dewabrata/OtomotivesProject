@@ -163,7 +163,7 @@ public class AturPembayaran_Activity extends AppActivity {
             find(R.id.et_ppn, EditText.class).setText(RP + formatRp(String.valueOf(totalPpn)));
         }
 
-        find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));
+        find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(grandTotal)));
     }
 
 
@@ -254,12 +254,12 @@ public class AturPembayaran_Activity extends AppActivity {
                         }
                     } else {
                         isMdrKreditCard = tipePembayaran.equals("KREDIT");
-
-                        grandTotal = totalPpn + totalBiaya;
+                        grandTotal = grandTotal == totalBiaya ? totalPpn + totalBiaya : grandTotal;
                         totalMdrOffUs = (int) (((mdrOfUs / 100) * grandTotal));
                         totalMdrOnUs = (int) (((mdrOnUs / 100) * grandTotal));
                         totalMdrKreditCard = (int) (((mdrKreditCard / 100) * grandTotal));
 
+                        find(R.id.et_totalBayar, EditText.class).setText(" ");
                         find(R.id.et_ppn, EditText.class).setText(isDp ? "" : RP + formatRp(String.valueOf(totalPpn)));
                         find(R.id.et_namaBankEpay).setEnabled(true);
                         spNoRek.setSelection(0);
@@ -579,11 +579,13 @@ public class AturPembayaran_Activity extends AppActivity {
                         } else {
                             args.put("keterangan", "Debet");
                         }
+
                         if (isJualPart && !find(R.id.et_rp_disc_merc, EditText.class).getText().toString().isEmpty()) {
                             args.remove("transaksi");
                             args.put("aktivitas", "MDR JUAL PART");
                             args.put("transaksi", "MDR JUAL PART");
                         }
+
                         if (isMdrBank) {
                             args.remove("transaksi");
                             args.put("aktivitas", "MDR BANK");
@@ -592,7 +594,7 @@ public class AturPembayaran_Activity extends AppActivity {
                             args.put("aktivitas", "TERIMA");
                         }
                         args.put("noRekening", "");
-                        args.put("namaBank", find(R.id.et_namaBankEpay, EditText.class).getText().toString());
+                        //args.put("namaBank", find(R.id.et_namaBankEpay, EditText.class).getText().toString());
                         args.put("mechDiscRate", find(R.id.et_percent_disc_merc, EditText.class).getText().toString());
                         args.put("merchDiscRateRp", formatOnlyNumber(find(R.id.et_rp_disc_merc, EditText.class).getText().toString()));
                         int totalNominalPkp = isPpn ? grandTotal - totalPpn : grandTotal;
@@ -607,10 +609,13 @@ public class AturPembayaran_Activity extends AppActivity {
                     //totalDueBy Debit/Kredit
                     if (isOnUs) {
                         args.put("totalDue", String.valueOf(grandTotal + totalMdrOnUs));
+                        args.put("isOnUs", "Y");
                     } else if (isOffUs) {
                         args.put("totalDue", String.valueOf(grandTotal + totalMdrOffUs));
+                        args.put("isOffUs", "Y");
                     } else if (isMdrKreditCard) {
                         args.put("totalDue", String.valueOf(grandTotal + totalMdrKreditCard));
+                        args.put("isMdrKreditCard", "Y");
                     }
                 }
 

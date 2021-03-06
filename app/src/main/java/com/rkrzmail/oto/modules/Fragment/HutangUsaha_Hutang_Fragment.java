@@ -99,7 +99,6 @@ public class HutangUsaha_Hutang_Fragment extends Fragment {
 
                 viewHolder.find(R.id.tv_tgl_jatuh_tempo, TextView.class).setText(tgl);
                 viewHolder.find(R.id.tv_nama_kreditur, TextView.class).setText(hutangList.get(position).get("NAMA_PELANGGAN").asString());
-                viewHolder.find(R.id.tv_tipe_hutang, TextView.class).setText(hutangList.get(position).get("TYPE_HUTANG").asString());
                 viewHolder.find(R.id.tv_total_hutang, TextView.class).setText(hutangList.get(position).get("TOTAL").asString());
                 viewHolder.find(R.id.tv_no_hutang, TextView.class).setText(hutangList.get(position).get("NO").asString());
                 viewHolder.find(R.id.tv_no_ponsel, TextView.class).setText(hutangList.get(position).get("NO_PONSEL").asString());

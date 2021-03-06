@@ -169,6 +169,12 @@ public class NumberFormatUtils {
         return filterArray;
     }
 
+    public static InputFilter[] getPercentFilterMargin() {
+        InputFilter[] filterArray = new InputFilter[1];
+        filterArray[0] = new InputFilter.LengthFilter(6);
+        return filterArray;
+    }
+
     public static String formatRp(String currency) {
         if (!currency.equals("")) {
             DecimalFormat formatter = new DecimalFormat("###,###,###");

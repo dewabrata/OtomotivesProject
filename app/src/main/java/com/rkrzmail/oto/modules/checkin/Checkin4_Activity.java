@@ -1,19 +1,15 @@
 package com.rkrzmail.oto.modules.checkin;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -27,37 +23,44 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.naa.data.Nson;
+import com.naa.data.UtilityAndroid;
 import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.gmod.Capture;
-import com.rkrzmail.oto.modules.bengkel.AturUser_Activity;
 import com.rkrzmail.utils.FileUtility;
 import com.rkrzmail.utils.Tools;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.HttpUrl;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static com.rkrzmail.utils.APIUrls.SET_ANTRIAN;
+import static com.rkrzmail.utils.APIUrls.ANTRIAN;
+import static com.rkrzmail.utils.APIUrls.ANTRIAN_MULAI;
 import static com.rkrzmail.utils.APIUrls.SET_CHECKIN;
 import static com.rkrzmail.utils.APIUrls.VIEW_ANTRIAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_MEKANIK;
@@ -85,6 +88,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
     private String tglEstimasi = "", waktuEstimasi = "", antrianSebelumnya = "";
     private String ttdPath = "";
     private String idMekanik = "";
+    private String jenisAntrian = "";
     private int idAntrian = 0;
     private int waktuPesan = 0;
 
@@ -155,24 +159,25 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
     private void initData() {
         getData = Nson.readJson(getIntentStringExtra(DATA));
         Log.d("coba__", "DATA: " + getData);
-        setSpMekanik("");
-        setSpBbm();
-        setNoAntrian(getData.get("JENIS_ANTRIAN").asString());
 
         waktuLayananStandartExpress = getData.get("WAKTU_LAYANAN").asString();
         jenisLayanan = getData.get("JENIS_LAYANAN").asString();
         waktuPesan = getData.get("WAKTU_PESAN").asInteger();
+        jenisAntrian = getData.get("JENIS_ANTRIAN").asString();
 
         find(R.id.et_lamaWaktu_checkin, EditText.class).setText(waktuLayananStandartExpress);
         find(R.id.tv_jenis_antrian, TextView.class).setText("Jenis Antrian : " + getData.get("JENIS_ANTRIAN").asString());
+        setNoAntrian(getData.get("JENIS_ANTRIAN").asString());
+        setSpMekanik("");
+        setSpBbm();
 
-        if (getData.get("JENIS_ANTRIAN").asString().equals("EXTRA")) {
+        if (jenisAntrian.equals("EXTRA")) {
             Tools.setViewAndChildrenEnabled(find(R.id.ly_waktuAmbil, LinearLayout.class), true);
             find(R.id.tv_disable_waktu_antar).setVisibility(View.GONE);
             isExtra = true;
             Tools.setViewAndChildrenEnabled(find(R.id.ly_estimasi_selesai, LinearLayout.class), true);
             find(R.id.tv_disable_estimasi).setVisibility(View.GONE);
-        } else if (getData.get("JENIS_ANTRIAN").asString().equals("H+")) {
+        } else if (jenisAntrian.equals("H+")) {
             Tools.setViewAndChildrenEnabled(find(R.id.ly_waktuAmbil, LinearLayout.class), true);
             find(R.id.tv_disable_waktu_antar).setVisibility(View.GONE);
             find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).setChecked(true);
@@ -185,7 +190,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         } else {
             Tools.setViewAndChildrenEnabled(find(R.id.ly_waktuAmbil, LinearLayout.class), false);
             isExpressAndStandard = true;
-            viewAntrianStandartExpress(getData.get("JENIS_ANTRIAN").asString());
+            viewAntrianStandartExpress(jenisAntrian);
         }
         try {
             find(R.id.et_totalBiaya_checkin4, EditText.class).setText(getData.get("TOTAL").asString());
@@ -214,6 +219,13 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_waktuAmbil, LinearLayout.class), false);
                     find(R.id.tv_disable_waktu_antar).setVisibility(View.VISIBLE);
                 }
+            }
+        });
+        find(R.id.swiperefresh, SwipeRefreshLayout.class).setEnabled(false);
+        find(R.id.swiperefresh, SwipeRefreshLayout.class).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                viewAntrianStandartExpress(jenisAntrian);
             }
         });
     }
@@ -459,7 +471,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 args.put("statusantri", find(R.id.tv_jenis_antrian, TextView.class).getText().toString().replace("Jenis Antrian :", "").trim());
                 args.put("id", String.valueOf(idAntrian));
 
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_ANTRIAN), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ANTRIAN), args));
             }
 
             @Override
@@ -488,7 +500,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 args.put("status", jenisAntrian);
                 args.put("spec", "Bengkel");
                 args.put("statusantri", jenisAntrian);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_ANTRIAN), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ANTRIAN), args));
             }
 
             @Override
@@ -518,22 +530,22 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
 
             @Override
             public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-
-                args.put("action", "view");
-                args.put("antrian", antrian);
-
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_ANTRIAN), args));
+                swipeProgress(true);
+                String[] args = new String[10];
+                args[0] = "CID" + "=" + UtilityAndroid.getSetting(getApplicationContext(), "CID", "").trim();
+                args[1] = "antrian" + "=" + antrian;
+                result = Nson.readJson(InternetX.getHttpConnectionX(AppApplication.getBaseUrlV4(ANTRIAN_MULAI), args));
             }
 
             @Override
             public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                swipeProgress(false);
+                if (result.get("status").asBoolean()) {
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_estimasi_selesai, LinearLayout.class), false);
                     find(R.id.tv_disable_estimasi).setVisibility(View.VISIBLE);
-                    totalWaktu(result);
+                    find(R.id.et_mulaiWaktu_checkin, TextView.class).setText(result.get("waktu_mulai").asString());
                 } else {
-                    showWarning(result.get("message").asString());
+                    showWarning(result.get("error").asString());
                 }
             }
         });
@@ -567,53 +579,6 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         find(R.id.tv_jam_estimasi_checkin4, TextView.class).setText(find(R.id.et_selesaiWaktu_checkin, TextView.class).getText().toString());
     }
 
-    @SuppressLint("DefaultLocale")
-    public static String totalWaktu(String hari, String jam, String menit) {
-        String[] result = new String[3];
-        result[0] = hari;
-        result[1] = jam;
-        result[2] = menit;
-
-        int incrementWaktu = 0;
-        int calculateJam = 0;
-        int calculateHari = 0;
-
-        if (!menit.equals("0")) {
-            int minutes = Integer.parseInt(menit);
-            while (minutes >= 60) {
-                incrementWaktu++;
-                minutes -= 60;
-            }
-            if (incrementWaktu > 0) {
-                calculateJam = incrementWaktu;
-                result[2] = String.valueOf(minutes);
-            }
-        } else {
-            result[2] = "0";
-        }
-        if (!jam.equals("0") || calculateJam > 0) {
-            incrementWaktu = 0;
-            int finalJam = Integer.parseInt(jam) + calculateJam;
-            result[1] = String.valueOf(finalJam);
-            while (finalJam >= 24) {
-                incrementWaktu++;
-                finalJam -= 24;
-            }
-            if (incrementWaktu > 0) {
-                calculateHari = incrementWaktu;
-            }
-        } else {
-            result[1] = "0";
-        }
-        if (!hari.equals("0") || calculateHari > 0) {
-            int finalJam = Integer.parseInt(hari) + calculateHari;
-            result[0] = String.valueOf(finalJam);
-        } else {
-            result[0] = "0";
-        }
-
-        return String.format("%02d:%02d:%02d", Integer.parseInt(result[0]), Integer.parseInt(result[1]), Integer.parseInt(result[2]));
-    }
 
     @SuppressLint("SimpleDateFormat")
     private boolean validateWaktuAmbil(boolean isTgl, String estimasi, String waktuAmbil) throws ParseException {
@@ -671,13 +636,13 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 args.put("konfirmtambahan", konfirmTambahan);
                 args.put("buangpart", buangPart);
                 if (find(R.id.cb_tidakMenunggu_checkin4, CheckBox.class).isChecked()) {
-                    if (tglAmbil[0].isEmpty()){
+                    if (tglAmbil[0].isEmpty()) {
                         tglAmbil[0] = currentDateTime("dd/MM");
-                    }else {
-                        tglAmbil[0] =  Tools.formatDate(tglAmbil[0], "dd/MM");
+                    } else {
+                        tglAmbil[0] = Tools.formatDate(tglAmbil[0], "dd/MM");
                     }
                     args.put("waktuambil", tglAmbil[0] + " " + jamAmbil);
-                }else{
+                } else {
                     args.put("waktuAmbi", "");
                 }
 
@@ -875,7 +840,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void runUI() {
                 if (data.get("status").asString().equalsIgnoreCase("OK")) {
-                    totalWaktu(data);
+                    //totalWaktu(data);
                 }
             }
         });

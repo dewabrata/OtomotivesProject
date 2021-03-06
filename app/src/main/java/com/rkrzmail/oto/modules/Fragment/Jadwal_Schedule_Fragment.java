@@ -73,6 +73,7 @@ public class Jadwal_Schedule_Fragment extends Fragment {
 
     private String izin = "", tanggalString = "", hari = "", namauser, hari2 = "";
     private String userId = "";
+    private String status = "";
     private boolean isIzin = false, isSakit = false, isTrue = false, isIzinlamabat = false;
 
     private final List<Date> dateList = new ArrayList<>();
@@ -121,8 +122,8 @@ public class Jadwal_Schedule_Fragment extends Fragment {
         sp_status.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String item = parent.getSelectedItem().toString();
-                if (item.equalsIgnoreCase("KERJA")) {
+                status = parent.getSelectedItem().toString();
+                if (status.equalsIgnoreCase("KERJA")) {
                     Tools.setViewAndChildrenEnabled(activity.find(R.id.ly_mulaiselesai, LinearLayout.class), true);
                     cbCopy.setEnabled(true);
                     tvMulai_Kerja.setTextColor(activity.getColor(R.color.grey_900));
@@ -131,7 +132,7 @@ public class Jadwal_Schedule_Fragment extends Fragment {
                     isSakit = false;
                     isIzin = false;
 
-                } else if (item.equalsIgnoreCase("LIBUR")) {
+                } else if (status.equalsIgnoreCase("LIBUR")) {
                     Tools.setViewAndChildrenEnabled(activity.find(R.id.ly_mulaiselesai, LinearLayout.class), false);
                     tvMulai_Kerja.setTextColor(activity.getColor(R.color.grey_40));
                     tvSelesai_Kerja.setTextColor(activity.getColor(R.color.grey_40));
@@ -139,7 +140,7 @@ public class Jadwal_Schedule_Fragment extends Fragment {
                     isSakit = false;
                     isIzin = false;
 
-                } else if (item.equalsIgnoreCase("CUTI")) {
+                } else if (status.equalsIgnoreCase("CUTI")) {
                     Tools.setViewAndChildrenEnabled(activity.find(R.id.ly_mulaiselesai, LinearLayout.class), false);
                     tvMulai_Kerja.setTextColor(activity.getColor(R.color.grey_40));
                     tvSelesai_Kerja.setTextColor(activity.getColor(R.color.grey_40));
@@ -147,7 +148,7 @@ public class Jadwal_Schedule_Fragment extends Fragment {
                     isSakit = false;
                     isIzin = false;
 
-                } else if (item.equalsIgnoreCase("IZIN")) {
+                } else if (status.equalsIgnoreCase("IZIN")) {
                     Tools.setViewAndChildrenEnabled(activity.find(R.id.ly_mulaiselesai, LinearLayout.class), false);
                     tvMulai_Kerja.setTextColor(activity.getColor(R.color.grey_40));
                     tvSelesai_Kerja.setTextColor(activity.getColor(R.color.grey_40));
@@ -155,14 +156,14 @@ public class Jadwal_Schedule_Fragment extends Fragment {
                     isSakit = false;
                     isIzin = true;
 
-                } else if (item.equalsIgnoreCase("SAKIT")) {
+                } else if (status.equalsIgnoreCase("SAKIT")) {
                     Tools.setViewAndChildrenEnabled(activity.find(R.id.ly_mulaiselesai, LinearLayout.class), false);
                     tvMulai_Kerja.setTextColor(activity.getColor(R.color.grey_40));
                     tvSelesai_Kerja.setTextColor(activity.getColor(R.color.grey_40));
                     isSakit = true;
                     isIzin = false;
 
-                } else if (item.equalsIgnoreCase("IZIN TERLAMBAT")) {
+                } else if (status.equalsIgnoreCase("IZIN TERLAMBAT")) {
                     Tools.setViewAndChildrenEnabled(activity.find(R.id.ly_mulaiselesai, LinearLayout.class), false);
                     tvMulai_Kerja.setTextColor(activity.getColor(R.color.grey_40));
                     tvSelesai_Kerja.setTextColor(activity.getColor(R.color.grey_40));
@@ -427,16 +428,16 @@ public class Jadwal_Schedule_Fragment extends Fragment {
 
         initToolbarDatePicker();
         Calendar minDate = Calendar.getInstance();
-        Calendar maxDate = Calendar.getInstance();
+        final Calendar maxDate = Calendar.getInstance();
         final List<String> dateSelected = new ArrayList<>();
         Button btnSimpan = dialogView.findViewById(R.id.btn_simpan);
         Button btnBatal = dialogView.findViewById(R.id.btn_hapus);
 
         btnBatal.setVisibility(View.VISIBLE);
         btnBatal.setText("BATAL");
-        CalendarPickerView calendarPickerView = dialogView.findViewById(R.id.date_picker);
+        final CalendarPickerView calendarPickerView = dialogView.findViewById(R.id.date_picker);
 
-        minDate.add(Calendar.YEAR, -1);
+        minDate.add(Calendar.MONTH, -1);
         maxDate.add(Calendar.YEAR, 1); // max next year
         calendarPickerView.init(minDate.getTime(), maxDate.getTime()).inMode(CalendarPickerView.SelectionMode.MULTIPLE);
         if (dateList.size() > 0) {
@@ -448,13 +449,28 @@ public class Jadwal_Schedule_Fragment extends Fragment {
                 e.printStackTrace();
             }
         } else {
-            calendarPickerView.selectDate(maxDate.getTime());
+            try{
+                calendarPickerView.selectDate(maxDate.getTime());
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
+
+        calendarPickerView.setDateSelectableFilter(new CalendarPickerView.DateSelectableFilter() {
+            @Override
+            public boolean isDateSelectable(Date date) {
+                if(status.equals("KERJA") && date.before(new Date())){
+                    activity.showWarning("TIDAK BISA MEMILIH HARI SEBELUMNYA");
+                    return false;
+                }
+                return true;
+            }
+        });
+
         calendarPickerView.setOnDateSelectedListener(new CalendarPickerView.OnDateSelectedListener() {
             @SuppressLint("SimpleDateFormat")
             @Override
             public void onDateSelected(Date date) {
-                //"EEE MMM dd HH:mm:ss zzz yyyy"
                 String tgl = DateFormatUtils.formatDateDefault(date.toString(), "yyyy-MM-dd");
                 dateList.add(date);
                 dateSelected.add(tgl);

@@ -284,6 +284,19 @@
     <string name="no_mesin">No. Mesin</string>
     <string name="kode_tipe">Kode Tipe</string>
     <string name="lokasi">Lokasi</string>
+    <string name="aktifitas">Aktifitas</string>
+    <string name="nama_kontak">Nama Kontak</string>
+    <string name="pembayaran">Pembayaran</string>
+    <string name="nama_kontak_uppercase">NAMA KONTAK</string>
+    <string name="transaksi_uppercase">TRANSAKSI</string>
+    <string name="nama_perusahaan_uppercase">NAMA PERUSAHAAN</string>
+    <string name="nominal_uppercase">NOMINAL</string>
+    <string name="umur_asset_uppercase">UMUR ASSET</string>
+    <string name="bank_terbayar_uppercase">BANK TERBAYAR</string>
+    <string name="no_nota_trace_uppercase">NO. NOTA - TRACE</string>
+    <string name="total_hutang_uppercase">TOTAL HUTANG</string>
+    <string name="no_do_uppercase">NO. DO</string>
+    <string name="no_do_invoice_uppercase">NO. DO / INVOICE</string>
     <string-array name="pola_harga_jual">
         <item>FLEXIBLE</item>
         <item>BELI + MARGIN</item>

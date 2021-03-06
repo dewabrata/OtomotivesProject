@@ -54,7 +54,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.ATUR_KONTROL_LAYANAN;
-import static com.rkrzmail.utils.APIUrls.SET_ANTRIAN;
+import static com.rkrzmail.utils.APIUrls.ANTRIAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_KELUHAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_KONTROL_LAYANAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_MEKANIK;
@@ -980,7 +980,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 args.put("status", jenisAntrian);
                 args.put("spec", "Bengkel");
                 args.put("statusantri", jenisAntrian);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_ANTRIAN), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ANTRIAN), args));
             }
 
             @Override

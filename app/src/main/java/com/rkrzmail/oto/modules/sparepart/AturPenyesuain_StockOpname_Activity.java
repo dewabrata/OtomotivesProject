@@ -124,7 +124,7 @@ public class AturPenyesuain_StockOpname_Activity extends AppActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 if (parent.getSelectedItemPosition() == 1) {
-                    showInfo("OK");
+                    //showInfo("OK");
                     find(R.id.et_no_folder_lain, EditText.class).setText(kodeLokasi);
                 }
             }

@@ -114,13 +114,13 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
                     Tersedia_TugasPart_Fragment tersediaTugasPartFragment = new Tersedia_TugasPart_Fragment();
                     tersediaTugasPartFragment.setArguments(setArguments(data, keyBundle));
                     return tersediaTugasPartFragment;
+//                case 2:
+//                    fragment = Fragment.instantiate(context, BatalPart_TugasPart_Fragment.class.getName());
+//                    break;
                 case 2:
-                    fragment = Fragment.instantiate(context, BatalPart_TugasPart_Fragment.class.getName());
-                    break;
-                case 3:
                     fragment = Fragment.instantiate(context, PartKosong_TugasPart_Fragment.class.getName());
                     break;
-                case 4:
+                case 3:
                     fragment = Fragment.instantiate(context, OutSource_Activity.class.getName());
                     break;
             }
@@ -260,11 +260,11 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
                     return "Permintaan Part";
                 case 1:
                     return "Part Tersedia";
+//                case 2:
+//                    return "Part Batal";
                 case 2:
-                    return "Part Batal";
-                case 3:
                     return "Part Kosong";
-                case 4:
+                case 3:
                     return "OutSource";
             }
         }

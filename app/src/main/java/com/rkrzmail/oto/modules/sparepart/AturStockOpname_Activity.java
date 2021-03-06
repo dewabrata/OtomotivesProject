@@ -57,7 +57,9 @@ public class AturStockOpname_Activity extends AppActivity {
     private Nson lokasiArray = Nson.newArray();
     Nson getData;
     private Intent intent;
+
     private boolean isPenyesuaian = false;
+    private int stockBeforeOpname = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,16 +164,17 @@ public class AturStockOpname_Activity extends AppActivity {
             startActivityForResult(intent, REQUEST_CARI_PART);
             return;
         }
+
+        stockBeforeOpname = getData.get("STOCK_RUANG_PART").asInteger();
         viewLokasiPart(getData, getData.get("LOKASI").asString());
-        idLokasiPart = getData.get("ID").asInteger();
+        idLokasiPart = getData.get("LOKASI_PART_ID").asInteger();
         noFolder.setText(getData.get("KODE").asString());
-        noPart.setText(getData.get("NOMOR_PART_NOMOR").asString());
+        noPart.setText(getData.get("NO_PART").asString());
         namaPart.setText(getData.get("NAMA_PART").asString());
         etMerk.setText(getData.get("MERK").asString());
         etStock.setText(getData.get("STOCK_RUANG_PART").asString());
         etPending.setText(getData.get("PENDING_STOCK").asString());
         partId = getData.get("PART_ID").asString();
-
     }
 
     private void saveData(final Nson penyesuaianNson) {
@@ -191,6 +194,7 @@ public class AturStockOpname_Activity extends AppActivity {
                     args.put("stock_beda", String.valueOf(stockBeda));
                     args.put("penyesuaian", penyesuaianNson.get("PENYESUAIAN").asString());
                 }
+                args.put("stockBeforeOpname", String.valueOf(stockBeforeOpname));
                 args.put("id_lokasi_part", String.valueOf(idLokasiPart));
                 args.put("part_id", partId);
                 args.put("nama_part", namaPart.getText().toString());

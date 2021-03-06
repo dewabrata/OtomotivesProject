@@ -1,12 +1,19 @@
 package com.naa.utils;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.UrlQuerySanitizer;
 
 import com.naa.data.Nson;
 import com.naa.data.UtilityAndroid;
 
 import com.rkrzmail.oto.AppApplication;
+import com.squareup.okhttp.HttpUrl;
+import com.squareup.okhttp.MultipartBuilder;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,7 +26,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static com.rkrzmail.utils.APIUrls.ANTRIAN_MULAI;
 
 public class InternetX {
 
@@ -191,7 +202,6 @@ public class InternetX {
             HttpURLConnection con;
             try {
                 con = (HttpURLConnection) object.openConnection();
-
                 con.setDoOutput(true);
                 con.setDoInput(true);
                 con.setRequestProperty("User-Agent", "Mozilla/5.0 (Android 4.4; Mobile; rv:41.0; Nikita V3) Gecko/41.0 Firefox/41.0");
@@ -199,8 +209,9 @@ public class InternetX {
                 con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
                 con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 con.setRequestProperty("Accept", "application/json");
+
                 con.setRequestMethod("POST");
-                con.setConnectTimeout(0000);
+                con.setConnectTimeout(10000);
 
                 Nson keys = args.getObjectKeys();
 
@@ -342,26 +353,31 @@ public class InternetX {
     public static String getHttpConnectionX(String stringURL, String... paramvalue) {
         URL object;
         try {
-            stringURL = nikitaYToken(stringURL);
+            //stringURL = nikitaYToken(stringURL);
             if (paramvalue != null) {
-                StringBuffer stringBuffer = new StringBuffer();
-                for (int i = 0; i < paramvalue.length; i++) {
-                    if (paramvalue[i].contains("=")) {
-                        int split = paramvalue[i].indexOf("=");
-                        String sdata = urlEncode(paramvalue[i].substring(split + 1));
-                        stringBuffer.append(paramvalue[i].substring(0, split)).append("=").append(sdata).append("&");
+                StringBuilder values = new StringBuilder();
+                try {
+                    for (String s : paramvalue) {
+                        if(s == null){
+                            break;
+                        }else{
+                            if (s.contains("=")) {
+                                int split = s.indexOf("=");
+                                String sdata = urlEncode(s.substring(split + 1));
+                                values.append(s.substring(0, split)).append("=").append(sdata).append("&");
+                            }
+                        }
                     }
+                    stringURL = stringURL + (stringURL.contains("?") ? "&" : "?") + values.toString();
+                } catch (Exception e) {
+                    stringURL = stringURL + "?" + paramvalue[0];
                 }
-                stringURL = stringURL + (stringURL.contains("?") ? "&" : "?") + stringBuffer.toString();
             }
             object = new URL(stringURL);
-
-
             HttpURLConnection con;
             try {
                 con = (HttpURLConnection) object.openConnection();
-
-                con.setDoOutput(true);
+                con.setDoOutput(false);
                 con.setDoInput(true);
                 con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 con.setRequestProperty("Accept", "application/json");
@@ -371,13 +387,13 @@ public class InternetX {
 
                 StringBuilder sb = new StringBuilder();
                 int HttpResult = con.getResponseCode();
-                sendBroadcastIfUnauthorized401(HttpResult);
+               // sendBroadcastIfUnauthorized401(HttpResult);
                 if (HttpResult == HttpURLConnection.HTTP_OK) {
                     //Utility.sessionExpired(con.getHeaderFields());
                     BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"));
                     String line = null;
                     while ((line = br.readLine()) != null) {
-                        sb.append(line + "\n");
+                        sb.append(line).append("\n");
                     }
                     br.close();
 
@@ -398,7 +414,7 @@ public class InternetX {
                     BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
                     String line = null;
                     while ((line = br.readLine()) != null) {
-                        sb.append(line + "\n");
+                        sb.append(line).append("\n");
                     }
                     br.close();
                     return sb.toString();
@@ -435,41 +451,13 @@ public class InternetX {
     }
 
 
-    public static void sendBroadcastIfUnauthorized401(int HttpResult) {
-        if (HttpResult == 401) {
-            Intent intent = new Intent();
-            intent.setAction("com.nikita.generator.service");
-            intent.putExtra("action", "logout");
-            AppApplication.getInstance().sendBroadcast(intent);
-        } else if (HttpResult == 303) {
-            Intent intent = new Intent();
-            intent.setAction("com.nikita.generator.service");
-            intent.putExtra("action", "update");
-            AppApplication.getInstance().sendBroadcast(intent);
-        } else if (HttpResult == 500) {
-
-        } else if (HttpResult == 501) {
-
-        } else if (HttpResult == 504) {
-
-        } else if (HttpResult == 505) {
-
-        } else if (HttpResult == 506) {
-
-        } else if (HttpResult == 507) {
-
-        } else if (HttpResult == 511) {
-
-        } else if (HttpResult == 400) {
-
-        } else if (HttpResult == 401) {
-
-        } else if (HttpResult == 403) {
-
-        } else if (HttpResult == 404) {
-
-        } else if (HttpResult == 405) {
-
-        }
+    public static boolean sendBroadcastIfUnauthorized401(int HttpResult) {
+        return HttpResult == 500 || HttpResult == 501 ||
+                HttpResult == 504 || HttpResult == 505 ||
+                HttpResult == 506 || HttpResult == 507 ||
+                HttpResult == 511 || HttpResult == 400 ||
+                HttpResult == 403 || HttpResult == 404 ||
+                HttpResult == 405 || HttpResult == 401 ||
+                HttpResult == 303;
     }
 }
