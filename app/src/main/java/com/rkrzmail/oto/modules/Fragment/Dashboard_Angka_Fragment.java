@@ -40,7 +40,9 @@ public class Dashboard_Angka_Fragment extends Fragment {
     private RecyclerView rvPembayaranCheckin;
     private SwipeRefreshLayout swipeRefreshLayout;
     private LinearLayout lyDasboard;
-    private TextView tvTglMulai, tvTglAkhir, tvHariKerja, tvRPLayanan, tvRPJualPart, tvRPBatal;
+    private TextView
+            tvTglMulai, tvTglAkhir, tvHariKerja, tvRPLayanan, tvRPJualPart,
+            tvRPBatal, tvRpPenjualanHarian, tvUnitHarian, tvPercentMarginPartHarian;
     private View fragmentView;
 
     private Nson pembayaranList = Nson.newArray();
@@ -53,7 +55,9 @@ public class Dashboard_Angka_Fragment extends Fragment {
     private int totalHariKerja = 0, totalLayanan = 0, totalJualPart = 0,
             totalTidakMenunggu = 0, totalMenunggu = 0, totalProgress = 0,
             totalSelesai = 0, totalSaldoEpay = 0, totalPartOnline = 0, totalAsset = 0,
-            totalPendapatanLain = 0, totalDonasi = 0;
+            totalPendapatanLain = 0, totalDonasi = 0, totalPenjualanHarian = 0;
+
+    private double totalPercentMarginPartHarian = 0, totalUnitHarian = 0;
 
     public Dashboard_Angka_Fragment() {
 
@@ -104,6 +108,9 @@ public class Dashboard_Angka_Fragment extends Fragment {
         tvHariKerja = fragmentView.findViewById(R.id.tv_total_hari_kerja);
         tvRPJualPart = fragmentView.findViewById(R.id.tv_dbJualpart);
         tvRPLayanan = fragmentView.findViewById(R.id.tv_dbLayanan1);
+        tvRpPenjualanHarian = fragmentView.findViewById(R.id.tv_total_penjualan_harian);
+        tvUnitHarian = fragmentView.findViewById(R.id.tv_total_unit_harian);
+        tvPercentMarginPartHarian = fragmentView.findViewById(R.id.tv_total_margin_harian);
 
         lyDasboard.setVisibility(GONE);
 
@@ -170,6 +177,10 @@ public class Dashboard_Angka_Fragment extends Fragment {
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     result = result.get("data").get(0);
+
+                    totalPenjualanHarian = result.get("TOTAL_PENJUALAN_HARIAN").asInteger();
+                    totalUnitHarian = result.get("TOTAL_UNIT_HARIAN").asDouble();
+                    totalPercentMarginPartHarian = result.get("TOTAL_MARGIN_PART").asDouble();
                     totalTidakMenunggu = result.get("TOTAL_TIDAK_MENUNGGU").asInteger();
                     totalMenunggu = result.get("TOTAL_MENUNGGU").asInteger();
                     totalProgress = result.get("TOTAL_PROGRESS").asInteger();
@@ -191,9 +202,9 @@ public class Dashboard_Angka_Fragment extends Fragment {
                     totDiscount = result.get("TOTAL_DISCOUNT").asString();
                     totDownpayment = result.get("TOTAL_DP").asString();
                     totIncome = result.get("TOTAL_INCOME").asString();
-                    totBiaya = "0";//result.get("TOTAL_BIAYA").asString()
+                    totBiaya = result.get("TOTAL_BIAYA").asString();
                     totHpp = result.get("TOTAL_HPP").asString();
-                    totMargin = "0";
+                    totMargin = result.get("TOTAL_MARGIN").asString();
                     totKas = result.get("TOTAL_KAS").asString();
                     totBank = result.get("TOTAL_KAS_BANK").asString();
                     totPiutang = result.get("TOTAL_PIUTANG").asString();
@@ -215,6 +226,9 @@ public class Dashboard_Angka_Fragment extends Fragment {
         tvRPJualPart.setText(activity.setUnderline(String.valueOf(totalJualPart)));
         tvHariKerja.setText(activity.setUnderline(String.valueOf(totalHariKerja)));
         tvRPBatal.setText(activity.setUnderline("0"));
+        tvPercentMarginPartHarian.setText(activity.setUnderline(NumberFormatUtils.formatPercent2Values(totalPercentMarginPartHarian)));
+        tvRpPenjualanHarian.setText(activity.setUnderline(RP + NumberFormatUtils.formatRp(String.valueOf(totalPenjualanHarian))));
+        tvUnitHarian.setText(activity.setUnderline(String.valueOf(totalUnitHarian)));
 
         activity.find(R.id.tv_total_tidak_menunggu, TextView.class).setText(activity.setUnderline(String.valueOf(totalTidakMenunggu)));
         activity.find(R.id.tv_total_menunggu, TextView.class).setText(activity.setUnderline(String.valueOf(totalMenunggu)));

@@ -1,11 +1,13 @@
 package com.rkrzmail.oto.modules.komisi;
 
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -28,9 +30,11 @@ import com.rkrzmail.srv.NumberFormatUtils;
 import java.util.Map;
 
 import static com.rkrzmail.utils.APIUrls.KOMISI_PART;
+import static com.rkrzmail.utils.APIUrls.PEMBAYARAN_KOMISI;
 import static com.rkrzmail.utils.ConstUtils.ADD;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
+import static com.rkrzmail.utils.ConstUtils.RP;
 
 public class KomisiTerbayar_Activity extends AppActivity {
 
@@ -55,38 +59,45 @@ public class KomisiTerbayar_Activity extends AppActivity {
         find(R.id.fab_tambah).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getActivity(), AturKomisiPart_Activity.class);
+                Intent i = new Intent(getActivity(), AturKomisiTerbayar_Activity.class);
                 i.putExtra(ADD, "");
                 startActivityForResult(i, REQUEST_DETAIL);
+            }
+        });
+        find(R.id.swiperefresh, SwipeRefreshLayout.class).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                viewKomisi("");
             }
         });
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_komisi_part) {
+        recyclerView.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_komisi_terbayar) {
+                    @SuppressLint("SetTextI18n")
                     @Override
                     public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                         super.onBindViewHolder(viewHolder, position);
 
                         viewHolder.find(R.id.tv_tanggal, TextView.class).setText(nListArray.get(position).get("TANGGAL").asString());
-                        viewHolder.find(R.id.tv_nama_user, TextView.class).setText(nListArray.get(position).get("NAMA_USER").asString());
-                        viewHolder.find(R.id.tv_total_bayar, TextView.class).setText(NumberFormatUtils.formatRp(nListArray.get(position).get("TOTAL_BAYAR").asString()));
-                        viewHolder.find(R.id.tv_balance, TextView.class).setText(NumberFormatUtils.formatRp(nListArray.get(position).get("BALANCE").asString()));
+                        viewHolder.find(R.id.tv_nama_user, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
+                        viewHolder.find(R.id.tv_total_bayar, TextView.class).setText(RP + NumberFormatUtils.formatRp(nListArray.get(position).get("KREDIT").asString()));
+                        viewHolder.find(R.id.tv_balance, TextView.class).setText(RP + NumberFormatUtils.formatRp(nListArray.get(position).get("BALANCE").asString()));
                     }
                 }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(Nson parent, View view, int position) {
-                        Intent i = new Intent(getActivity(), AturKomisiPart_Activity.class);
+                       /* Intent i = new Intent(getActivity(), AturKomisiTerbayar_Activity.class);
                         i.putExtra(DATA, nListArray.get(position).toJson());
-                        startActivityForResult(i, REQUEST_DETAIL);
+                        startActivityForResult(i, REQUEST_DETAIL);*/
                     }
                 })
         );
 
-        catchData("");
+        viewKomisi("");
     }
 
-    private void catchData(final String cari) {
+    private void viewKomisi(final String cari) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -97,7 +108,7 @@ public class KomisiTerbayar_Activity extends AppActivity {
                 args.put("action", "view");
                 args.put("search", cari);
 
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(KOMISI_PART), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(PEMBAYARAN_KOMISI), args));
             }
 
             @Override
@@ -118,7 +129,7 @@ public class KomisiTerbayar_Activity extends AppActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_DETAIL) {
-                catchData("");
+                viewKomisi("");
             }
         }
     }
@@ -153,7 +164,7 @@ public class KomisiTerbayar_Activity extends AppActivity {
             public boolean onQueryTextSubmit(String query) {
                 searchMenu.collapseActionView();
                 //filter(null);
-                catchData(query);
+                viewKomisi(query);
                 return true;
             }
         };

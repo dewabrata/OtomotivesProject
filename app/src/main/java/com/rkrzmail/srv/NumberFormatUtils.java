@@ -193,6 +193,16 @@ public class NumberFormatUtils {
         return percentageFormat.format(result);
     }
 
+    public static String formatPercent2Values(double percentValue) {
+        if (percentValue == 0) return "0.0";
+
+        double result = percentValue / 100;
+        NumberFormat percentageFormat = NumberFormat.getPercentInstance();
+        percentageFormat.setMinimumFractionDigits(2);
+
+        return percentageFormat.format(result);
+    }
+
     public static String clearPercent(String value) {
         if (value.isEmpty() || value == null)
             return "0";

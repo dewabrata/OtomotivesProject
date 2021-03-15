@@ -12,10 +12,13 @@ import android.text.Selection;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -24,8 +27,10 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.MapPicker_Dialog;
 import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.srv.NikitaAutoComplete;
+import com.rkrzmail.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,19 +39,24 @@ import java.util.Map;
 import static com.rkrzmail.utils.APIUrls.SET_REGISTRASI;
 import static com.rkrzmail.utils.APIUrls.VIEW_JENIS_KENDARAAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_MASTER;
+import static com.rkrzmail.utils.APIUrls.VIEW_MST;
 import static com.rkrzmail.utils.APIUrls.VIEW_NOMOR_PONSEL;
 
-public class RegistrasiBengkel_Activity extends AppActivity implements View.OnClickListener {
+public class RegistrasiBengkel_Activity extends AppActivity implements View.OnClickListener, MapPicker_Dialog.GetLocation {
 
     private static final int REQUEST_REFEREAL = 56;
     private static final int REQUEST_MAPS = 57;
     private static final String TAG = "REHIST___";
     private EditText etKodeRef, etNamaPemilik, etNoPonsel, etEmail, etNamaBengkel, etAlamat, etJabatan;
-    private MultiSelectionSpinner spKendaraan, spBidangUsaha, spMerkKendaraan;
+    private MultiSelectionSpinner spBidangUsaha, spMerkKendaraan;
+    private Spinner spKendaraan;
     private NikitaAutoComplete etKotaKab;
     private String[] itemsMerk;
     private String typeKendaraan, bidangUsaha = "";
     private boolean isKategori, isRegist = false;
+
+    private String latitude = "", longitude = "";
+
 
     private List<String> motorList = new ArrayList<>(),
             mobilList = new ArrayList<>(),
@@ -89,6 +99,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
         minEntryEditText(etNamaBengkel, 8, find(R.id.tl_namaBengkel_regist, TextInputLayout.class), "Nama Bengkel Min. 5 Karakter");
         minEntryEditText(etAlamat, 20, find(R.id.tl_alamat_regist, TextInputLayout.class), "Entry Alamat Min. 20 Karakter");
         getNoPonsel();
+        setSpKendaraan();
 
         etNoPonsel.addTextChangedListener(new TextWatcher() {
             @Override
@@ -161,45 +172,81 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                 showInfo("Show Aggrement");
             }
         });
+
+        final MapPicker_Dialog mapPicker_dialog = new MapPicker_Dialog();
+        mapPicker_dialog.getBengkelLocation(this);
         find(R.id.btn_lokasi_regist).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                mapPicker_dialog.show(getSupportFragmentManager(), null);
             }
         });
 
         etKotaKab.setLoadingIndicator((ProgressBar) findViewById(R.id.pb_et_kotakab_regist));
         remakeAutoCompleteMaster(etKotaKab, "DAERAH", "KOTA_KAB");
-        setMultiSelectionSpinnerFromApi(spKendaraan, "nama", "BENGKEL", "viewmst", new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
-            @Override
-            public void selectedIndices(List<Integer> indices) {
-
-            }
-
-            @Override
-            public void selectedStrings(List<String> strings) {
-                motorList.clear();
-                mobilList.clear();
-                allList.clear();
-                merkMobilList.clear();
-                merkMotorList.clear();
-                allMerkList.clear();
-                if (spKendaraan.getSelectedItemsAsString().equalsIgnoreCase("MOTOR ")) {
-                    isKategori = true;
-                } else if (spKendaraan.getSelectedItemsAsString().equalsIgnoreCase("MOBIL ")) {
-                    isKategori = false;
-                } else {
-                    count++;
-                }
-                setSpBidangUsaha();
-                setSpMerkKendaraan();
-            }
-        }, "TYPE", "");
-
 
         Log.d(TAG, "initComponent: " + motorList.size());
         find(R.id.btn_simpan_regist, Button.class).setOnClickListener(this);
         find(R.id.btn_check_regist, Button.class).setOnClickListener(this);
+    }
+
+    private void setSpKendaraan(){
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("nama", "BENGKEL");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MST), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    result = result.get("data");
+                    List<String> kendaraanList = new ArrayList<>();
+                    kendaraanList.add("--PILIH--");
+                    for (int i = 0; i < result.size(); i++) {
+                        if(!kendaraanList.contains(result.get(i).get("TYPE").asString())){
+                            kendaraanList.add(result.get(i).get("TYPE").asString());
+                        }
+                    }
+                    ArrayAdapter<String> kendaraanAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, kendaraanList);
+                    kendaraanAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spKendaraan.setAdapter(kendaraanAdapter);
+                    spKendaraan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            motorList.clear();
+                            mobilList.clear();
+                            allList.clear();
+                            merkMobilList.clear();
+                            merkMotorList.clear();
+                            allMerkList.clear();
+                            if (spKendaraan.getItemAtPosition(i).toString().contains("MOTOR")) {
+                                isKategori = true;
+                            } else if (spKendaraan.getItemAtPosition(i).toString().contains("MOBIL")) {
+                                isKategori = false;
+                            } else {
+                                count++;
+                            }
+                            if(i != 0){
+                                setSpBidangUsaha();
+                                setSpMerkKendaraan(spKendaraan.getItemAtPosition(i).toString());
+                            }
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+
+                        }
+                    });
+                }else{
+                    setSpKendaraan();
+                }
+            }
+        });
     }
 
     private void saveData() {
@@ -215,7 +262,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                 args.put("nama", etNamaPemilik.getText().toString());
                 args.put("email", etEmail.getText().toString());
                 args.put("nama_bengkel", etNamaBengkel.getText().toString());
-                args.put("jenis", spKendaraan.getSelectedItemsAsString().trim());
+                args.put("jenis", spKendaraan.getSelectedItem().toString().trim());
                 //args.put("jabatan", etJabatan.getText().toString());
                 args.put("kategori", spBidangUsaha.getSelectedItem().toString().trim());
                 args.put("persetujuan", find(R.id.cb_setuju_regist, CheckBox.class).isChecked() ? "YA" : "TIDAK");
@@ -302,7 +349,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                     etNamaBengkel.requestFocus();
                     return;
                 }
-                if (spKendaraan.getSelectedItemsAsString().equalsIgnoreCase("")) {
+                if (spKendaraan.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
                     showInfo(info + "Kendaraan");
                     spKendaraan.requestFocus();
                     return;
@@ -333,13 +380,15 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
         }
     }
 
-    private void setSpMerkKendaraan(){
+    private void setSpMerkKendaraan(final String jenisKendaraan){
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("CID", "CID");
                 args.put("flag", "Merk");
+                args.put("jenisKendaraan", jenisKendaraan);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_JENIS_KENDARAAN), args));
             }
 
@@ -354,17 +403,8 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                 }
 
                 try {
-                    allMerkList.addAll(merkMotorList);
-                    allMerkList.addAll(merkMobilList);
                     Log.d(TAG, "runUI: " + allMerkList);
-                    if (count > 0) {
-                        spMerkKendaraan.setItems(allMerkList);
-                        //spMerkKendaraan.setSelection(allMerkList, false);
-                    } else {
-                        spMerkKendaraan.setItems(isKategori ? merkMotorList : merkMobilList);
-                        //spMerkKendaraan.setSelection(isKategori ? merkMotorList : merkMobilList, false);
-                    }
-
+                    spMerkKendaraan.setItems(isKategori ? merkMotorList : merkMobilList);
                     spMerkKendaraan.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
                         @Override
                         public void selectedIndices(List<Integer> indices) {
@@ -378,7 +418,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                     });
                 } catch (Exception e) {
                     e.printStackTrace();
-                    showInfo("Perlu di Muat Ulang");
+                    showWarning("Perlu di Muat Ulang Merk Kendaraan");
                 }
             }
         });
@@ -405,17 +445,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                     }
                 }
                 try {
-                    allList.addAll(mobilList);
-                    allList.addAll(motorList);
-                    Log.d(TAG, "runUI: " + allList);
-                    if (count > 0) {
-                        spBidangUsaha.setItems(allList);
-                      //  spBidangUsaha.setSelection(allList, false);
-                    } else {
-                        spBidangUsaha.setItems(isKategori ? motorList : mobilList);
-                       // spBidangUsaha.setSelection(isKategori ? motorList : mobilList, false);
-                    }
-
+                    spBidangUsaha.setItems(isKategori ? motorList : mobilList);
                     spBidangUsaha.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
                         @Override
                         public void selectedIndices(List<Integer> indices) {
@@ -429,7 +459,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                     });
                 } catch (Exception e) {
                     e.printStackTrace();
-                    showInfo("Perlu di Muat Ulang");
+                    showInfo("Perlu di Muat Ulang Bidang Usaha");
                 }
             }
         });
@@ -438,5 +468,11 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void getLatLong(String latitude, String longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 }

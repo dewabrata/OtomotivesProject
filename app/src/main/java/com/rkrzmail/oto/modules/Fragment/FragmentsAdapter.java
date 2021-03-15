@@ -15,6 +15,7 @@ import com.rkrzmail.oto.modules.bengkel.Dashboard_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Pembayaran_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
 import com.rkrzmail.oto.modules.bengkel.Schedule_MainTab_Activity;
+import com.rkrzmail.oto.modules.bengkel.User_MainTab_Activity;
 import com.rkrzmail.oto.modules.hutang.Hutang_MainTab_Activity;
 import com.rkrzmail.oto.modules.hutang.Piutang_MainTab_Activity;
 import com.rkrzmail.oto.modules.sparepart.LokasiPart_MainTab_Activity;
@@ -154,7 +155,7 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
                     fragment = Fragment.instantiate(context, Schedule_Absensi_Fragment.class.getName());
                     break;
                 case 2:
-                    fragment = Fragment.instantiate(context, Komisi_Absensi_Fragment.class.getName());
+                    fragment = Fragment.instantiate(context, KomisiUser_Absensi_Fragment.class.getName());
                     break;
             }
             return fragment;
@@ -220,6 +221,18 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
                     break;
                 case 1:
                     fragment = Fragment.instantiate(context, HutangLain_Hutang_Fragment.class.getName());
+                    break;
+            }
+            return fragment;
+        }
+
+        if (context instanceof User_MainTab_Activity) {
+            switch (i) {
+                case 0:
+                    fragment = Fragment.instantiate(context, DaftarUser_User_Fragment.class.getName());
+                    break;
+                case 1:
+                    fragment = Fragment.instantiate(context, GajiUser_User_Fragment.class.getName());
                     break;
             }
             return fragment;
@@ -331,6 +344,15 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
                     return "Hutang Usaha";
                 case 1:
                     return "Hutang Lain";
+            }
+        }
+
+        if (context instanceof User_MainTab_Activity) {
+            switch (position) {
+                case 0:
+                    return "Daftar User";
+                case 1:
+                    return "Gaji User";
             }
         }
         return null;

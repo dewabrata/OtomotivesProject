@@ -47,13 +47,21 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
+import org.w3c.dom.Text;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import in.galaxyofandroid.spinerdialog.OnSpinerItemClick;
@@ -105,7 +113,7 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
         initComponent();
         loadData();
         if (!getIntent().hasExtra(DATA)) {
-            getLastBalanceKas();
+            getLastBalanceKas("");
             find(R.id.et_created_date, EditText.class).setVisibility(View.GONE);
             find(R.id.et_created_user, EditText.class).setVisibility(View.GONE);
         } else {
@@ -142,6 +150,7 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
         defaultEnabled();
         initAutoCompleteNamaBank();
 
+        etNilaiSisa.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etNilaiSisa));
         etBiayaTf.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etBiayaTf));
         etNominal.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etNominal));
         tvPeriodeAkhir.setOnClickListener(this);
@@ -149,14 +158,6 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
         find(R.id.vg_kontak).setOnClickListener(this);
         find(R.id.vg_tgl_jatuh_tempo).setOnClickListener(this);
         find(R.id.vg_tgl).setOnClickListener(this);
-
-        find(R.id.cb_asset, CheckBox.class).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                etUmurAsset.setEnabled(compoundButton.isChecked());
-                etNilaiSisa.setEnabled(compoundButton.isChecked());
-            }
-        });
         find(R.id.btn_simpan, Button.class).setOnClickListener(this);
     }
 
@@ -171,9 +172,25 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
         Tools.setViewAndChildrenEnabled(find(R.id.tl_biaya_tf, TextInputLayout.class), true);
 
         etBiayaTf.setEnabled(false);
-        etUmurAsset.setEnabled(false);
-        etNilaiSisa.setEnabled(false);
+        etUmurAsset.setEnabled(transaksi.equals("ASET"));
+        etNilaiSisa.setEnabled(transaksi.equals("ASET"));
         etBankTerbayar.setEnabled(false);
+    }
+
+    @SuppressLint("NewApi")
+    private long totalBulanSewa(String tglAwal, String tglAkhir) {
+        if (tglAwal.isEmpty() && tglAkhir.isEmpty()) return 0;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/uuuu");
+        try{
+            long totalBulan = ChronoUnit.MONTHS.between(
+                    YearMonth.from(LocalDate.parse(tglAwal, formatter)),
+                    YearMonth.from(LocalDate.parse(tglAkhir, formatter))
+            );
+            return totalBulan;
+        }catch (DateTimeParseException e){
+            showWarning(e.getMessage());
+            return 0;
+        }
     }
 
     private void defaultHints() {
@@ -223,8 +240,6 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
         setSpTransaksi(data.get("TRANSAKSI").asString());
         setSpRek(data.get("NAMA_BANK_REKENING_INTERNAL").asString() + " - " + data.get("NOMOR_REKENING_INTERNAL").asString());
         setSpPembayaran(data.get("PEMBAYARAN").asString());
-
-        //find(R.id.cb_asset, CheckBox.class).setChecked(data.get("J"));
     }
 
     private void setSpAktivitas(final String selection) {
@@ -256,7 +271,6 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
                             if (i != 0) {
                                 aktivitas = adapterView.getItemAtPosition(i).toString();
                                 isBayarOrBeli = aktivitas.equals("BAYAR") || aktivitas.equals("BELI");
-                                find(R.id.cb_asset, CheckBox.class).setEnabled(aktivitas.equals("BELI"));
                                 if (spAktivitas.isEnabled()) {
                                     setSpTransaksi("");
                                 }
@@ -415,6 +429,9 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
                                 defaultEnabled();
                                 isSetoranTunai = false;
                             }
+
+                            etUmurAsset.setEnabled(transaksi.equals("ASET"));
+                            etNilaiSisa.setEnabled(transaksi.equals("ASET"));
                             find(R.id.btn_transaksi, Button.class).setText(transaksi);
                             spDialogTransaksi.closeSpinerDialog();
                             if (find(R.id.btn_transaksi, Button.class).isEnabled()) {
@@ -481,6 +498,7 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
                 if (adapterView.getSelectedItem().toString().equals(dataRekeningList.get(i).get("COMPARISON").asString())) {
                     noRek = dataRekeningList.get(i).get("NO_REKENING").asString();
                     namaBank = dataRekeningList.get(i).get("BANK_NAME").asString();
+                    if (!getIntent().hasExtra(DATA)) getLastBalanceKas(noRek);
                     if (isSetoranTunai) tvKontak.setText(namaBank);
                     if (tipePembayaran.equals("TRANSFER")) {
                         if (!etBankTerbayar.getText().toString().trim().isEmpty()) {
@@ -696,9 +714,13 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
                             viewFocus(etBankTerbayar);
                             showWarning("BANK TERBAYAR HARUS DI ISI");
                         } else if ((aktivitas.equals("BELI") || aktivitas.equals("BAYAR")) &&
-                                !namaBank.equalsIgnoreCase(etBankTerbayar.getText().toString())) {
+                                !namaBank.equalsIgnoreCase(etBankTerbayar.getText().toString()) &&
+                                etBankTerbayar.getText().toString().isEmpty()) {
                             viewFocus(etBiayaTf);
                             etBiayaTf.setError("BIAYA TF HARUS DI ISI UNTUK BANK BERBEDA");
+                        }else if(transaksi.equals("ASET") && etUmurAsset.getText().toString().isEmpty()){
+                            viewFocus(etUmurAsset);
+                            etUmurAsset.setError("UMUR ASET HARUS DI ISI");
                         } else if (isBayarOrBeli && nominal > lastBalanceKasBank) {
                             viewFocus(etNominal);
                             etNominal.setError("TOTAL BAYAR MELEBIHI KAS BANK");
@@ -721,6 +743,9 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
                         } else if (isBayarOrBeli && nominal > lastBalanceKasBank) {
                             viewFocus(etNominal);
                             etNominal.setError("TOTAL BAYAR MELEBIHI KAS BANK");
+                        } else if(transaksi.equals("ASET") && etUmurAsset.getText().toString().isEmpty()){
+                            viewFocus(etUmurAsset);
+                            etUmurAsset.setError("UMUR ASET HARUS DI ISI");
                         } else {
                             saveDataUsingBody();
                         }
@@ -730,7 +755,10 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
                     } else if (isPeriode && find(R.id.tv_tgl_akhir, TextView.class).getText().toString().isEmpty()) {
                         viewFocus(find(R.id.tv_tgl_akhir, TextView.class));
                         find(R.id.tv_tgl_akhir, TextView.class).setError("TOTAL BAYAR MELEBIHI KAS BANK");
-                    } else {
+                    }else if(transaksi.equals("ASET") && etUmurAsset.getText().toString().isEmpty()){
+                        viewFocus(etUmurAsset);
+                        etUmurAsset.setError("UMUR ASET HARUS DI ISI");
+                    }  else {
                         saveDataUsingBody();
                     }
                 }
@@ -766,6 +794,7 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
                 mDateListener,
                 year, month, day
         );
+
         dialog.setTitle(tittle);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
@@ -797,14 +826,15 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
         });
     }
 
-    private void getLastBalanceKas() {
+    private void getLastBalanceKas(final String noRek) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
             @Override
             public void run() {
-                String[] args = new String[2];
+                String[] args = new String[3];
                 args[0] = "CID=" + UtilityAndroid.getSetting(getApplicationContext(), "CID", "").trim();
+                args[1] = "noRekeningInternal=" + noRek;
                 result = Nson.readJson(InternetX.getHttpConnectionX(AppApplication.getBaseUrlV4(JURNAL_KAS), args));
             }
 
@@ -851,10 +881,11 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
                         .add("nama_bank_terbayar", etBankTerbayar.getText().toString().trim())
                         .add("no_nota_trace", etNota.getText().toString().trim())
                         .add("biaya_transfer", NumberFormatUtils.formatOnlyNumber(etBiayaTf.getText().toString()))
-                        .add("tanggal_mulai_sewa", DateFormatUtils.formatDate(tvPeriodeAwal.getText().toString(), "dd/MM/yyyy", "yyyy-MM-dd HH:mm:ss"))
-                        .add("tanggal_selesai_sewa", DateFormatUtils.formatDate(tvPeriodeAkhir.getText().toString(), "dd/MM/yyyy", "yyyy-MM-dd HH:mm:ss"))
+                        .add("tanggal_mulai_sewa", DateFormatUtils.formatDateToDatabase(find(R.id.tv_tgl_awal, TextView.class).getText().toString()))
+                        .add("tanggal_selesai_sewa", DateFormatUtils.formatDateToDatabase(find(R.id.tv_tgl_akhir, TextView.class).getText().toString()))
                         .add("umur_aset", etUmurAsset.getText().toString().trim())
                         .add("totalTfdanBiaya", String.valueOf(totalTf))
+                        .add("total_bulan_sewa", String.valueOf(totalBulanSewa(find(R.id.tv_tgl_awal, TextView.class).getText().toString(), find(R.id.tv_tgl_akhir, TextView.class).getText().toString())))
                         .add("user_created", UtilityAndroid.getSetting(getApplicationContext(), "user", ""))
                         .build();
                 try {

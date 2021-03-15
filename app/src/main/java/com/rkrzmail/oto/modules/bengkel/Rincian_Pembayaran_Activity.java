@@ -79,6 +79,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
     private String tglLayanan = "", noKunci = "";
     private int maxFreePenyimpanan = 0;
     private int partId = 0, dataKendaraanId = 0;
+    private int jumlahPart = 0;
     int
             total1 = 0,
             total2 = 0,
@@ -93,7 +94,8 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             totalBiayaSimpan = 0,
             sisaBiayaDp = 0,
             discSpot = 0,
-            discPart = 0;
+            discPart = 0,
+            totalHppPart = 0;
     double
             discJasaPart = 0,
             discJasa = 0,
@@ -262,6 +264,8 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         sendData.set("PELUNASAN_SISA_BIAYA", !isDp & totalDp > 0 ? "Y" : "N");
         sendData.set("TOTAL", isBatal ? 0 : isDp ? totalDp : total1);
         sendData.set("GRAND_TOTAL", total2);
+        sendData.set("JUMLAH_PART", jumlahPart);
+        sendData.set("HPP", totalHppPart);
 
         Intent i = new Intent(getActivity(), AturPembayaran_Activity.class);
         i.putExtra(DATA, sendData.toJson());
@@ -334,6 +338,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                 partIdList.add(isDp & result.get(i).get("DP_PART").asInteger() > 0 ?
                         Nson.newObject().set("PART_ID", result.get(i).get("PART_ID").asInteger()) : 0);
                 totalPart += result.get(i).get("HARGA_PART").asInteger();
+                totalHppPart +=  result.get(i).get("HPP").asInteger();
                 totalJasaPart += result.get(i).get("HARGA_JASA_PART").asInteger();
                 totalJasa += result.get(i).get("HARGA_JASA_LAIN").asInteger();
                 totalDp = result.get(i).get("DP").asInteger();
@@ -358,6 +363,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                 isPkp = result.get(i).get("PKP").asString();
             }
 
+            jumlahPart += result.get(i).get("JUMLAH_SERAH_TERIMA").asInteger();
             dataKendaraanId = result.get(i).get("DATA_KENDARAAN_ID").asInteger();
             noMesin = result.get(i).get("NO_MESIN_PELANGGAN").asString();
             noRangka = result.get(i).get("NO_RANGKA_PELANGGAN").asString();

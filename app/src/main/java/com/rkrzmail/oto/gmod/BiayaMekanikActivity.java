@@ -122,9 +122,6 @@ public class BiayaMekanikActivity extends AppActivity {
 
                 //Snackbar.make(parent_view, "Item  "+position+"  clicked", Snackbar.LENGTH_SHORT).show();
 
-                Intent intent =  new Intent(getActivity(), AturBiayaMekanikActivity.class);
-                intent.putExtra("DATA", nListArray.get(position).toJson());
-                startActivityForResult(intent, REQUEST_BIAYA_MEKANIK);
             }
         }));
 

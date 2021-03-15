@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -43,8 +45,11 @@ public class AturTotalInvoice_Activity extends AppActivity {
     private String tglBayar = "";
     private String namaBank = "", noRek = "", tipePemabayaran = "";
     private String jenisTransaksi = "";
+
+    private int totalInvPart = 0, totalInvLayanan = 0;
     private int totalInvoice = 0;
     private int noInvBerikutnya = 0;
+    private int totalBiaya = 0;
     private int
             totalFeeNonPaket = 0, totalPenggantianPart = 0, totalGrandTotal = 0,
             totalTotalDue = 0, totalJasaLain = 0, totalJasaPart = 0,
@@ -77,6 +82,7 @@ public class AturTotalInvoice_Activity extends AppActivity {
             totalTotalDue += data.get(i).get("TOTAL_DUE").asInteger();
             totalPPN += data.get(i).get("PPN").asInteger();
             totalPembayaran += data.get(i).get("JUMLAH_PEMBAYARAN").asInteger();
+            totalBiaya += data.get(i).get("TOTAL_BIAYA").asInteger();
 
             totalJasaLain += data.get(i).get("BIAYA_JASA_LAIN").asInteger();
             totalDiscJasaLain += data.get(i).get("DISCOUNT_JASA_LAIN").asInteger();
@@ -108,13 +114,11 @@ public class AturTotalInvoice_Activity extends AppActivity {
                     .set("PEMBAYARAN_ID", data.get(i).get("PEMBAYARAN_ID").asString())
             );
         }
-        jenisTransaksi = jenisTransaksi.equals("CHECKIN") ? "LAYANAN" : "PART";
-        String cid = UtilityAndroid.getSetting(getApplicationContext(), "CID", "").trim();
-        cid = cid.substring(cid.length() - 4);
+
+        final String cid = UtilityAndroid.getSetting(getApplicationContext(), "CID", "").substring(UtilityAndroid.getSetting(getApplicationContext(), "CID", "").length() - 4);
         totalInvoice = getIntentIntegerExtra("TOTAL_INV");
-        noInv = "INV" + "/" + currentDateTime("ddMMyyyy") + "/" + cid + "/" + totalInvoice + "/" + jenisTransaksi;
+
         find(R.id.et_total_invoice, EditText.class).setText(RP + NumberFormatUtils.formatRp(String.valueOf(totalInvoice)));
-        find(R.id.et_no_invoice, EditText.class).setText(noInv);
         find(R.id.tv_tgl_jatuh_tempo, TextView.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -122,14 +126,113 @@ public class AturTotalInvoice_Activity extends AppActivity {
             }
         });
 
+        if(jenisTransaksi.equals("JUAL PART")){
+            noInv = "INV" + "/" + currentDateTime("ddMMyyyy") + "/" + cid + "/" + jenisTransaksi + "-" + totalInvoice + "/PART";
+            find(R.id.cb_part_inv, CheckBox.class).setEnabled(true);
+        }else{
+            if(totalFeeNonPaket > 0){
+                noInv = "INV" + "/" + currentDateTime("ddMMyyyy") + "/" + cid + "/" + jenisTransaksi + "-" + totalInvoice + "/LAYANAN";
+                find(R.id.cb_layanan_inv, CheckBox.class).setChecked(true);
+                find(R.id.cb_layanan_inv, CheckBox.class).setEnabled(true);
+            }else{
+                find(R.id.cb_layanan_inv, CheckBox.class).setChecked(false);
+                find(R.id.cb_layanan_inv, CheckBox.class).setEnabled(false);
+            }
+
+            if(totalPenggantianPart > 0){
+                if(noInv.isEmpty()){
+                    noInv = "INV" + "/" + currentDateTime("ddMMyyyy") + "/" + cid + "/" + jenisTransaksi + "-" + totalInvoice + "/PART";
+                }else{
+                    noInv += "-PART";
+                }
+                find(R.id.cb_part_inv, CheckBox.class).setChecked(true);
+                find(R.id.cb_part_inv, CheckBox.class).setEnabled(true);
+            }else{
+                find(R.id.cb_part_inv, CheckBox.class).setChecked(false);
+                find(R.id.cb_part_inv, CheckBox.class).setEnabled(false);
+            }
+        }
+
+
+        find(R.id.cb_layanan_inv, CheckBox.class).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    totalInvoice += totalFeeNonPaket;
+                    noInv = "INV" + "/" + currentDateTime("ddMMyyyy") + "/" + cid + "/" + jenisTransaksi + "-" + totalInvoice + "/LAYANAN";
+                    if(find(R.id.cb_part_inv, CheckBox.class).isChecked()){
+                        noInv += "-PART";
+                    }
+                }else{
+                    totalInvoice -= totalFeeNonPaket;
+                    noInv = "INV" + "/" + currentDateTime("ddMMyyyy") + "/" + cid + "/" + jenisTransaksi + "-" + totalInvoice + "/LAYANAN";
+                    if(find(R.id.cb_part_inv, CheckBox.class).isChecked()){
+                        noInv += "-PART";
+                    }
+                    if(noInv.contains("-PART")){
+                        noInv = noInv.replace("/LAYANAN-", "/");
+                    }else{
+                        noInv = noInv.replace("/LAYANAN", "");
+                    }
+                }
+                find(R.id.et_total_invoice, EditText.class).setText(RP + NumberFormatUtils.formatRp(String.valueOf(totalInvoice)));
+                find(R.id.et_no_invoice, EditText.class).setText(noInv);
+            }
+        });
+
+        find(R.id.cb_part_inv, CheckBox.class).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    totalInvoice += totalPenggantianPart;
+                    if(noInv.isEmpty()){
+                        noInv = "INV" + "/" + currentDateTime("ddMMyyyy") + "/" + cid + "/" + jenisTransaksi + "-" + totalInvoice + "/PART";
+                    }else{
+                        if(!noInv.contains("/LAYANAN")){
+                            noInv = "INV" + "/" + currentDateTime("ddMMyyyy") + "/" + cid + "/" + jenisTransaksi + "-" + totalInvoice + "/PART";
+                        }else{
+                            noInv = "INV" + "/" + currentDateTime("ddMMyyyy") + "/" + cid + "/" + jenisTransaksi + "-" + totalInvoice +  "/LAYANAN-PART";
+                        }
+                    }
+                }else{
+                    totalInvoice -= totalPenggantianPart;
+                    noInv = "INV" + "/" + currentDateTime("ddMMyyyy") + "/" + cid + "/" + jenisTransaksi + "-" + totalInvoice;
+                    if(find(R.id.cb_layanan_inv, CheckBox.class).isChecked()){
+                        noInv += "/LAYANAN";
+                    }
+                }
+                find(R.id.et_total_invoice, EditText.class).setText(RP + NumberFormatUtils.formatRp(String.valueOf(totalInvoice)));
+                find(R.id.et_no_invoice, EditText.class).setText(noInv);
+            }
+        });
+
+        find(R.id.et_no_invoice, EditText.class).setText(noInv);
         find(R.id.btn_simpan, Button.class).setText("XLS INVOICE");
         find(R.id.btn_simpan).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveData();
+                if(find(R.id.et_total_invoice, EditText.class).getText().toString().equals("Rp. 0")){
+                    viewFocus(find(R.id.et_total_invoice, EditText.class));
+                    find(R.id.et_total_invoice, EditText.class).setError("PILIH SALAH SATU INVOICE");
+                }else{
+                    saveData();
+                }
             }
         });
     }
+
+    private void viewFocus(final View view) {
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+                view.setFocusable(true);
+                view.requestFocusFromTouch();
+                view.requestFocus();
+                view.performClick();
+            }
+        });
+    }
+
 
     private void getDatePicker() {
         final Calendar cldr = Calendar.getInstance();
@@ -179,16 +282,17 @@ public class AturTotalInvoice_Activity extends AppActivity {
 
                 args.put("action", "add");
                 args.put("jenis", "TOTAL INVOICE");
-                args.put("noInvoice", noInv);
+                args.put("noInvoiceLayanan", find(R.id.cb_layanan_inv, CheckBox.class).isChecked() ? noInv : "");
+                args.put("noInvoicePart", find(R.id.cb_part_inv, CheckBox.class).isChecked() ? noInv : "");
                 args.put("tglJatuhTempo", DateFormatUtils.formatDate(find(R.id.tv_tgl_jatuh_tempo, TextView.class).getText().toString(), "dd/MM/yyyy", "yyyy-MM-dd"));
                 args.put("namaCustomer", namaPelanggan);
                 args.put("namaPrincipal", namaPrincipal);
                 args.put("biayaLayanan", String.valueOf(totalLayanan));
-                args.put("feeNonPaket", String.valueOf(totalFeeNonPaket));
+                args.put("feeNonPaket", find(R.id.cb_layanan_inv, CheckBox.class).isChecked() ? String.valueOf(totalFeeNonPaket) :  String.valueOf(0));
                 args.put("discLayanan", String.valueOf(totalDiscLayanan));
                 args.put("netLayanan", String.valueOf(totalLayanan));
                 args.put("hargaPart", String.valueOf(totalHargaPart));
-                args.put("penggantianPart", String.valueOf(totalPenggantianPart));
+                args.put("penggantianPart", find(R.id.cb_layanan_inv, CheckBox.class).isChecked() ? String.valueOf(totalPenggantianPart) : String.valueOf(0));
                 args.put("discPart", String.valueOf(totalDiscPart));
                 args.put("netPart", String.valueOf(netPart));
                 args.put("jasaPart", String.valueOf(totalJasaPart));

@@ -128,37 +128,36 @@ public class Transaksi_Piutang_Fragment extends Fragment {
         recyclerView.setAdapter(new NikitaRecyclerAdapter(transaksiList, R.layout.item_transaksi_piutang) {
             @SuppressLint("SetTextI18n")
             @Override
-            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
-                super.onBindViewHolder(viewHolder, position);
-
+            public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
+                //super.onBindViewHolder(viewHolder, position);
                 viewHolder.find(R.id.cb_mark_transaksi, CheckBox.class).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                        if (compoundButton.isChecked()) {
+                        if (b) {
                             if (transaksiMarkList.size() > 0) {
                                 if (!transaksiMarkList.get(0).get("PRINCIPAL").asString().isEmpty() &&
                                         transaksiMarkList.get(0).get("PRINCIPAL").asString().equals(transaksiList.get(position).get("PRINCIPAL").asString())) {
-                                    compoundButton.setChecked(true);
+                                    viewHolder.find(R.id.cb_mark_transaksi, CheckBox.class).setChecked(true);
                                     totalInvoice += transaksiList.get(position).get("JUMLAH_INVOICE").asInteger();
                                     transaksiMarkList.add(transaksiList.get(position));
                                 } else if (!transaksiMarkList.get(0).get("NAMA_PELANGGAN").asString().isEmpty() &&
                                         transaksiMarkList.get(0).get("NAMA_PELANGGAN").asString().equals(transaksiList.get(position).get("NAMA_PELANGGAN").asString())) {
-                                    compoundButton.setChecked(true);
+                                    viewHolder.find(R.id.cb_mark_transaksi, CheckBox.class).setChecked(true);
                                     totalInvoice += transaksiList.get(position).get("JUMLAH_INVOICE").asInteger();
                                     transaksiMarkList.add(transaksiList.get(position));
                                 } else {
-                                    compoundButton.setChecked(false);
+                                    viewHolder.find(R.id.cb_mark_transaksi, CheckBox.class).setChecked(false);
                                     activity.showWarning("TIDAK BISA MEMILIH NAMA PELANGGAN / NAMA PRINCIPAL YG BERBEDA", Toast.LENGTH_LONG);
                                 }
                             } else {
-                                compoundButton.setChecked(true);
+                                viewHolder.find(R.id.cb_mark_transaksi, CheckBox.class).setChecked(true);
                                 totalInvoice += transaksiList.get(position).get("JUMLAH_INVOICE").asInteger();
                                 transaksiMarkList.add(transaksiList.get(position));
                             }
 
-                        } else if (!compoundButton.isChecked()) {
+                        } else{
                             compoundButton.setChecked(false);
-                            totalInvoice -= transaksiList.get(position).get("JUMLAH_INVOICE").asInteger();
+                            if(totalInvoice > 0) totalInvoice -= transaksiList.get(position).get("JUMLAH_INVOICE").asInteger();
                             for (int i = 0; i < transaksiMarkList.size(); i++) {
                                 if (transaksiMarkList.get(i).get("ID").asInteger() == transaksiList.get(position).get("ID").asInteger()) {
                                     transaksiMarkList.remove(i);
@@ -207,6 +206,7 @@ public class Transaksi_Piutang_Fragment extends Fragment {
                 activity.find(R.id.btn_simpan).setVisibility(transaksiList.size() == 0 ? View.GONE : View.VISIBLE);
                 return transaksiList.size();
             }
+
         });
     }
 
@@ -232,7 +232,6 @@ public class Transaksi_Piutang_Fragment extends Fragment {
                     totalInvoice = 0;
                     transaksiList.asArray().addAll(result.get("data").asArray());
                     recyclerView.getAdapter().notifyDataSetChanged();
-                    recyclerView.requestFocus(1);
                 } else {
                     activity.showInfo(result.get("message").asString());
                 }

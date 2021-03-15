@@ -13,10 +13,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -29,6 +32,7 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.DateFormatUtils;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.srv.NsonAutoCompleteAdapter;
 import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
@@ -36,6 +40,12 @@ import java.util.Map;
 import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.JURNAL;
+import static com.rkrzmail.utils.APIUrls.SET_STOCK_OPNAME;
+import static com.rkrzmail.utils.APIUrls.VIEW_CARI_PART_SUGGESTION;
+import static com.rkrzmail.utils.APIUrls.VIEW_JASA_LAIN;
+import static com.rkrzmail.utils.APIUrls.VIEW_LOKASI_PART;
+import static com.rkrzmail.utils.APIUrls.VIEW_SPAREPART;
+import static com.rkrzmail.utils.APIUrls.VIEW_SUGGESTION;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 import static com.rkrzmail.utils.ConstUtils.RP;
@@ -73,10 +83,10 @@ public class Jurnal_Activity extends AppActivity {
         find(R.id.swiperefresh, SwipeRefreshLayout.class).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                viewJurnal();
+                viewJurnal("");
             }
         });
-        viewJurnal();
+        viewJurnal("");
     }
 
     private void initRv(){
@@ -87,11 +97,12 @@ public class Jurnal_Activity extends AppActivity {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
-                String tglJurnal = DateFormatUtils.formatDate(nListArray.get(position).get("TANGGAL").asString(), "yyyy-MM-dd HH:mm:ss", "dd/MM/yyyy");
+                String tglJurnal = DateFormatUtils.formatDate(nListArray.get(position).get("TANGGAL").asString(), "yyyy-MM-dd", "dd/MM/yyyy");
 
                 viewHolder.find(R.id.tv_tgl_jurnal, TextView.class).setText(tglJurnal);
+                viewHolder.find(R.id.tv_keterangan, TextView.class).setText(nListArray.get(position).get("KETERANGAN").asString());
                 viewHolder.find(R.id.tv_transaksi_jurnal, TextView.class).setText(nListArray.get(position).get("TRANSAKSI").asString());
-                viewHolder.find(R.id.tv_nama_kontak, TextView.class).setText(nListArray.get(position).get("NAMA_KONTAK").asString());
+                viewHolder.find(R.id.tv_nama_perusahaan, TextView.class).setText(nListArray.get(position).get("NAMA_PERUSAHAAN").asString());
                 viewHolder.find(R.id.tv_nominal_jurnal, TextView.class).setText(RP + NumberFormatUtils.formatRp(nListArray.get(position).get("NOMINAL").asString()));
                 viewHolder.find(R.id.tv_pembayaran_jurnal, TextView.class).setText(nListArray.get(position).get("PEMBAYARAN").asString());
                 viewHolder.find(R.id.tv_aktifitas_jurnal, TextView.class).setText(nListArray.get(position).get("AKTIVITAS").asString());
@@ -108,15 +119,16 @@ public class Jurnal_Activity extends AppActivity {
         }));
     }
 
-    private void viewJurnal() {
+    private void viewJurnal(final String cari) {
         newTask(new Messagebox.DoubleRunnable() {
             Nson result;
 
             @Override
             public void run() {
                 swipeProgress(true);
-                String[] args = new String[2];
+                String[] args = new String[3];
                 args[0] = "CID=" + UtilityAndroid.getSetting(getApplicationContext(), "CID", "").trim();
+                args[1] = "search=" + cari.toUpperCase();
                 result = Nson.readJson(InternetX.getHttpConnectionX(AppApplication.getBaseUrlV4(JURNAL), args));
             }
 
@@ -156,18 +168,15 @@ public class Jurnal_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        adapterSearchView(mSearchView, "search", "caripart", "NAMA", "");
+        setAdapterSearchView();
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
-
                 return false;
             }
 
             public boolean onQueryTextSubmit(String query) {
                 searchMenu.collapseActionView();
-                //filter(null);
-                //cariPart(query);
-
+                viewJurnal(query);
                 return true;
             }
         };
@@ -175,11 +184,52 @@ public class Jurnal_Activity extends AppActivity {
         return true;
     }
 
+    private void setAdapterSearchView(){
+        final SearchView.SearchAutoComplete searchAutoComplete = mSearchView.findViewById(R.id.search_src_text);
+        searchAutoComplete.setDropDownBackgroundResource(R.drawable.bg_radius_white);
+        searchAutoComplete.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
+            Nson result;
+
+            @Override
+            public Nson onFindNson(Context context, String bookTitle) {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+
+                args.put("action", "JURNAL");
+                args.put("search", bookTitle);
+
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SUGGESTION), args));
+                result = result.get("data");
+                return result;
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                if (convertView == null) {
+                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    convertView = inflater.inflate(R.layout.item_suggestion, parent, false);
+                }
+
+                findView(convertView, R.id.title, TextView.class).setText(getItem(position).get("TRANSAKSI").asString());
+                return convertView;
+            }
+        });
+
+        searchAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(i)));
+                find(R.id.search_src_text, SearchView.SearchAutoComplete.class).setText(n.get("TRANSAKSI").asString());
+                find(R.id.search_src_text, SearchView.SearchAutoComplete.class).setTag(String.valueOf(adapterView.getItemAtPosition(i)));
+                mSearchView.setQuery(n.get("TRANSAKSI").asString(), true);
+            }
+        });
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK && requestCode == REQUEST_DETAIL){
-            viewJurnal();
+            viewJurnal("");
         }
     }
 }

@@ -2,6 +2,7 @@ package com.rkrzmail.utils;
 
 public class APIUrls {
 
+    public static final String BIAYA_MEKANIK = "aturbiayamekanik";
     public static final String JURNAL = "jurnal";
     public static final String JURNAL_KAS = "jurnal/kas_balance";
     public static final String JURNAL_KAS_BANK = "jurnal/kas_bank_balance";

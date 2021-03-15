@@ -44,7 +44,9 @@ public class AturKomisiTerbayar_Activity extends AppActivity {
     EditText etBalance, etJumlahBayar, etBalanceAkhir, etUserPenerima;
 
     private Nson userData = Nson.newArray();
+    private final Nson balanceList = Nson.newArray();
     private String namaUser = "", userId = "";
+    private int balanceUser = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +56,7 @@ public class AturKomisiTerbayar_Activity extends AppActivity {
         initComponent();
         setSpUser();
         initListerner();
+        getBalanceUser();
     }
 
     private void initToolbar() {
@@ -88,8 +91,16 @@ public class AturKomisiTerbayar_Activity extends AppActivity {
             public void afterTextChanged(Editable editable) {
                 String text = editable.toString();
                 if (text.isEmpty()) return;
-
+                etJumlahBayar.removeTextChangedListener(this);
                 text = NumberFormatUtils.formatOnlyNumber(text);
+                try {
+                    String formatted = RP + formatRp(text);
+                    etJumlahBayar.setText(formatted);
+                    etJumlahBayar.setSelection(formatted.length());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 if (!etBalance.getText().toString().isEmpty()) {
                     int balanceAwal = Integer.parseInt(NumberFormatUtils.formatOnlyNumber(etBalance.getText().toString()));
                     int totalBayar = Integer.parseInt(text);
@@ -98,24 +109,11 @@ public class AturKomisiTerbayar_Activity extends AppActivity {
                     etBalanceAkhir.setText(RP + formatRp(String.valueOf(balanceAkhir)));
                 }
 
+                etJumlahBayar.addTextChangedListener(this);
             }
         });
 
-        spUser.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                namaUser = adapterView.getSelectedItem().toString();
-                if (namaUser.equals(userData.get(i).get("NAMA").asString())) {
-                    userId = userData.get(i).get("USER_ID").asString();
-                    getBalanceUser();
-                }
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
 
         find(R.id.btn_simpan).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,6 +151,7 @@ public class AturKomisiTerbayar_Activity extends AppActivity {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     final List<String> userList = new ArrayList<>();
                     userList.add("--PILIH--");
+                    userData.add("");
                     result = result.get("data");
                     if (result.size() > 0) {
                         for (int i = 0; i < result.size(); i++) {
@@ -164,10 +163,34 @@ public class AturKomisiTerbayar_Activity extends AppActivity {
                         }
                     }
 
-                    ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, userList) {
-                    };
+                    ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, userList);
                     spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spUser.setAdapter(spinnerAdapter);
+                    spUser.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @SuppressLint("SetTextI18n")
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            namaUser = adapterView.getItemAtPosition(i).toString();
+                            if(i != 0){
+                                for (int j = 0; j < balanceList.size(); j++) {
+                                    if(balanceList.get(j).get("NAMA").asString().equals(namaUser)){
+                                        balanceUser = balanceList.get(j).get("BALANCE").asInteger();
+                                        etBalance.setText(RP + NumberFormatUtils.formatRp(String.valueOf(balanceUser)));
+                                        break;
+                                    }
+                                }
+                                if ( userData.get(i).get("NAMA").asString().equals(namaUser)) {
+                                    userId = userData.get(i).get("USER_ID").asString();
+                                }
+                            }
+
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+
+                        }
+                    });
                 } else {
                     showError(ERROR_INFO);
                 }
@@ -182,10 +205,7 @@ public class AturKomisiTerbayar_Activity extends AppActivity {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-
                 args.put("action", "VIEW BALANCE");
-                args.put("idUser", userId);
-
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(PEMBAYARAN_KOMISI), args));
             }
 
@@ -193,8 +213,13 @@ public class AturKomisiTerbayar_Activity extends AppActivity {
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     result = result.get("data");
-                    etBalance.setText(result.get("BALANCE").asString());
-
+                    for (int i = 0; i < result.size(); i++) {
+                        balanceList.add(Nson.newObject()
+                                .set("USER_ID", result.get(i).get("USER_ID").asString())
+                                .set("BALANCE", result.get(i).get("TOTAL_KOMISI").asString())
+                                .set("NAMA", result.get(i).get("NAMA").asString())
+                        );
+                    }
                 } else {
                     showError(ERROR_INFO);
                 }
@@ -212,9 +237,9 @@ public class AturKomisiTerbayar_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "add");
-                args.put("idUser", userId);
+                args.put("userID", userId);
                 args.put("sisaBalance", NumberFormatUtils.formatOnlyNumber(etBalanceAkhir.getText().toString()));
-                args.put("totalBayar", NumberFormatUtils.formatOnlyNumber(etJumlahBayar.getText().toString()));
+                args.put("totalDiBayarkan", NumberFormatUtils.formatOnlyNumber(etJumlahBayar.getText().toString()));
                 args.put("balance", NumberFormatUtils.formatOnlyNumber(etBalanceAkhir.getText().toString()));
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(PEMBAYARAN_KOMISI), args));

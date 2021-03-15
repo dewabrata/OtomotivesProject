@@ -258,7 +258,7 @@
         <activity android:name=".modules.bengkel.Referal_Activity" />
         <activity android:name=".modules.bengkel.RegistrasiBengkel_Activity" />
         <activity android:name=".modules.bengkel.AturUser_Activity" />
-        <activity android:name=".modules.bengkel.User_Activity" />
+        <activity android:name=".modules.bengkel.User_MainTab_Activity" />
         <activity android:name=".modules.checkin.KontrolBooking_Activity" />
         <activity android:name=".modules.komisi.AturKomisiJasaLain_Activity" />
         <activity android:name=".modules.komisi.KomisiJasaLain_Activity" />
@@ -320,7 +320,7 @@
             android:name=".modules.sparepart.AturDetail_TerimaPart_Activity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".modules.mekanik.AturBiayaMekanik2"
+            android:name=".modules.mekanik.AturBiayaMekanik_Activity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".modules.mekanik.BiayaMekanik2Activity"
@@ -356,7 +356,6 @@
         <activity android:name=".gmod.JasaLainBerkalaActivity" />
         <activity android:name=".gmod.PartBerkalaActivity" />
         <activity android:name=".gmod.AturSparepartActivity" />
-        <activity android:name=".gmod.AturBiayaMekanikActivity" />
         <activity android:name=".gmod.Penampung_ItemActivity" />
         <activity android:name=".gmod.Lokasi_PersediaanActivity" />
         <activity android:name=".gmod.PenjualanPartActivity" />

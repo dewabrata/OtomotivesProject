@@ -502,6 +502,8 @@ public class AturPembayaran_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "add");
+                args.put("jumlahPart", data.get("JUMLAH_PART").asString());
+                args.put("hppPart", data.get("HPP").asString());
                 args.put("isPelunasanSisaBiaya", isPelunasanSisaBiaya ? "Y" : "N");
                 args.put("biayaLayanan", data.get("BIAYA_LAYANAN").asString());
                 args.put("discountLayanan", data.get("DISC_LAYANAN").asString());

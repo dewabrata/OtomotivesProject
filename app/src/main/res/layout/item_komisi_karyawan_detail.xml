@@ -20,9 +20,9 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:stretchColumns="*"
-        android:padding="10dp">
+        android:padding="15dp">
 
-        <TableRow>
+        <TableRow >
 
             <TextView
                 android:id="@+id/tv_tanggal"
@@ -31,61 +31,14 @@
                 android:text="@string/tanggal"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:textColor="@color/grey_900"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/tv_hari"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:text="@string/hari"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:textColor="@color/grey_900"
-                android:textSize="12sp" />
-
-
-        </TableRow>
-
-        <TableRow android:layout_marginTop="7dp">
-
-            <TextView
-                android:id="@+id/tv_komisi_part"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/rp_part"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:textColor="@color/grey_900"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/tv_komisi_layanan"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="end"
-                android:text="@string/rp_layanan"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:textColor="@color/grey_900"
-                android:textSize="12sp" />
-
-        </TableRow>
-
-        <TableRow android:layout_marginTop="7dp">
-
-            <TextView
-                android:id="@+id/tv_komisi_jasa"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/rp_jasa"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:textColor="@color/grey_900"
                 android:textSize="12sp"
                 android:layout_gravity="start"/>
 
             <TextView
-                android:id="@+id/tv_total_komisi"
+                android:id="@+id/tv_komisi_percent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/rp_total"
+                android:text="@string/komisi_percent"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:textColor="@color/grey_900"
                 android:textSize="12sp"
@@ -93,6 +46,28 @@
 
         </TableRow>
 
+        <TableRow android:layout_marginTop="7dp">
+
+            <TextView
+                android:id="@+id/tv_jenis_komisi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/jenis_komisi"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textColor="@color/grey_900"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tv_jumlah_komisi"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:text="@string/jumlah_komisi"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textColor="@color/grey_900"
+                android:textSize="12sp" />
+
+        </TableRow>
 
     </TableLayout>
 

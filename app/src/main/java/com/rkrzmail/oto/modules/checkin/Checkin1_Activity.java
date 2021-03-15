@@ -715,9 +715,10 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 }
                 break;
             case R.id.btn_history_checkin1:
-                Intent i = new Intent(getActivity(), History_Activity.class);
-                i.putExtra(DATA, historyList.toJson());
-                startActivity(i);
+                Intent intent = new Intent(getActivity(), History_Activity.class);
+                intent.putExtra("ALL", "ALL");
+                intent.putExtra("NOPOL", etNopol.getText().toString().replaceAll(" ", ""));
+                startActivityForResult(intent, REQUEST_HISTORY);
                 break;
         }
     }

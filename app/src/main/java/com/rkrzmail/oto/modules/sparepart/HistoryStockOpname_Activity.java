@@ -92,9 +92,15 @@ public class HistoryStockOpname_Activity extends AppActivity {
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
-                /*intent = new Intent(getActivity(), CariPart_Activity.class);
-                intent.putExtra(CARI_PART_LOKASI, nListArray.get(position).toJson());
-                startActivityForResult(intent, REQUEST_OPNAME);*/
+                if(!parent.get(position).get("PENYESUAIAN_ID").asString().isEmpty()){
+                    intent = new Intent(getActivity(), AturPenyesuain_StockOpname_Activity.class);
+                    intent.putExtra("VIEW", "");
+                    intent.putExtra(DATA, nListArray.get(position).toJson());
+                    startActivityForResult(intent, REQUEST_OPNAME);
+                }else{
+                    showWarning("TIDAK TERDAPAT PENYESUAIAN UNTUK " + parent.get(position).get("NAMA_PART").asString());
+                }
+
             }
         }));
 

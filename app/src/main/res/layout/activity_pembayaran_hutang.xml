@@ -6,10 +6,9 @@
     android:layout_height="match_parent"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    android:layout_gravity="center"
-    tools:context=".MainActivity">
+    android:layout_gravity="center">
 
-    <android.support.v4.widget.NestedScrollView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
@@ -262,7 +261,7 @@
                         android:layout_width="0dp"
                         android:layout_height="34dp"
                         android:layout_weight="6"
-                        android:background="@drawable/background_edittext">
+                        android:background="@drawable/state_textview_clickable_border">
 
                         <Spinner
                             android:id="@+id/sp_tipe_pembayaran"
@@ -294,10 +293,11 @@
                         android:layout_marginEnd="10dp" />
 
                     <RelativeLayout
+                        android:id="@+id/vg_rek_internal"
                         android:layout_width="0dp"
                         android:layout_height="34dp"
                         android:layout_weight="6"
-                        android:background="@drawable/background_edittext">
+                        android:background="@drawable/state_textview_clickable_border">
 
                         <Spinner
                             android:id="@+id/sp_norek"
@@ -347,7 +347,8 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginTop="10dp"
+                    android:visibility="gone">
 
                     <EditText
                         android:id="@+id/et_noRek_bayarHutang"
@@ -364,7 +365,8 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginTop="10dp"
+                    android:visibility="gone">
 
                     <EditText
                         android:id="@+id/et_namaRek_bayarHutang"
@@ -416,7 +418,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginTop="15dp">
+                    android:layout_marginTop="15dp"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -469,7 +472,7 @@
 
 
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+    </ScrollView>
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

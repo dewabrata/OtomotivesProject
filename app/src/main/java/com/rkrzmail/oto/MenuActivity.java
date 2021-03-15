@@ -54,7 +54,7 @@ import com.rkrzmail.oto.modules.checkin.Checkin1_Activity;
 import com.rkrzmail.oto.modules.hutang.Hutang_MainTab_Activity;
 import com.rkrzmail.oto.modules.hutang.Piutang_MainTab_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiTerbayar_Activity;
-import com.rkrzmail.oto.modules.mekanik.BiayaMekanik2Activity;
+import com.rkrzmail.oto.modules.mekanik.AturBiayaMekanik_Activity;
 import com.rkrzmail.oto.modules.LoginActivity;
 import com.rkrzmail.oto.modules.komisi.KomisiPart_Activity;
 import com.rkrzmail.oto.modules.mekanik.ClaimGaransiPart_Activity;
@@ -64,7 +64,6 @@ import com.rkrzmail.oto.modules.sparepart.MenungguPart_Activity;
 import com.rkrzmail.oto.modules.bengkel.Pembayaran_MainTab_Activity;
 import com.rkrzmail.oto.modules.checkin.KontrolLayanan_Activity;
 import com.rkrzmail.oto.modules.checkin.KontrolBooking_Activity;
-import com.rkrzmail.oto.modules.discount.DiscountJasaLain_Activity;
 import com.rkrzmail.oto.modules.discount.DiscountLayanan_Activity;
 import com.rkrzmail.oto.modules.checkin.CheckOut_Activity;
 import com.rkrzmail.oto.modules.sparepart.AturParts_Activity;
@@ -79,7 +78,7 @@ import com.rkrzmail.oto.modules.sparepart.Spareparts_Activity;
 import com.rkrzmail.oto.modules.sparepart.PartKeluar_Activity;
 import com.rkrzmail.oto.modules.sparepart.HistoryStockOpname_Activity;
 import com.rkrzmail.oto.modules.sparepart.TugasPart_MainTab_Activity;
-import com.rkrzmail.oto.modules.bengkel.User_Activity;
+import com.rkrzmail.oto.modules.bengkel.User_MainTab_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiJasaLain_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiLayanan_Activity;
 import com.rkrzmail.oto.modules.bengkel.Layanan_Avtivity;
@@ -130,7 +129,7 @@ public class MenuActivity extends AppActivity {
     public static final int MN_REKENING = 28;
     public static final int MN_BOOKING = 29;
     public static final int MN_KONTROL_LAYANAN = 30;
-    public static final int MN_DISCOUNT_JASALAIN = 31;
+    //public static final int MN_DISCOUNT_JASALAIN = 31;
     public static final int MN_DISCOUNT_LAYANAN = 32;
     public static final int MN_KOMISI_LAYANAN = 33;
     public static final int MN_KOMISI_JASA_LAIN = 34;
@@ -154,7 +153,7 @@ public class MenuActivity extends AppActivity {
     public final String LAPORAN = "LAPORAN";
     public final String SCHEDULE = "SCHEDULE";
 
-    private final String PENGATURAN_USER = "USER";
+    private final String USER = "USER";
     private final String PENGATURAN_USER_LAYANAN = "LAYANAN";
     private final String PENGATURAN_USER_BIAYA_MEKANIK = "BIAYA MEKANIK";
     private final String PENGATURAN_USER_SPAREPARTS = "SPAREPARTS";
@@ -166,7 +165,7 @@ public class MenuActivity extends AppActivity {
     private final String KOMISI_LAYANAN = "KOMISI LAYANAN";
     private final String KOMISI_PART = "KOMISI PART";
     private final String KOMISI_PEMBAYARAN = "PEMBAYARAN KOMISI";
-    private final String DISCOUNT_JASA_LAIN = "DISCOUNT JASA LAIN";
+    //private final String DISCOUNT_JASA_LAIN = "DISCOUNT JASA LAIN";
     private final String DISCOUNT_LAYANAN = "DISCOUNT LAYANAN";
     private final String DISCOUNT_PART = "DISCOUNT PART";
     private final String DISCOUNT_SPOT = "DISCOUNT SPOT";
@@ -355,14 +354,14 @@ public class MenuActivity extends AppActivity {
             startActivity(intent);
         }
         //Pengaturan
-        else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER) && getAccess(PENGATURAN)) {
-            Intent intent = new Intent(MenuActivity.this, User_Activity.class);
+        else if (item.getTitle().toString().equalsIgnoreCase(USER) && getAccess(PENGATURAN)) {
+            Intent intent = new Intent(MenuActivity.this, User_MainTab_Activity.class);
             startActivity(intent);
         } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_LAYANAN) && getAccess(PENGATURAN)) {
             Intent intent = new Intent(MenuActivity.this, Layanan_Avtivity.class);
             startActivity(intent);
         } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_BIAYA_MEKANIK) && getAccess(PENGATURAN)) {
-            Intent intent = new Intent(MenuActivity.this, BiayaMekanik2Activity.class);
+            Intent intent = new Intent(MenuActivity.this, AturBiayaMekanik_Activity.class);
             intent.putExtra("data", dataBengkel.toJson());
             startActivity(intent);
         } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_SPAREPARTS) && getAccess(PENGATURAN)) {
@@ -386,10 +385,12 @@ public class MenuActivity extends AppActivity {
         else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_FREKWENSI) && getAccess(DISCOUNT)) {
             Intent intent = new Intent(MenuActivity.this, FrekwensiDiscount_Activity.class);
             startActivity(intent);
-        } else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_JASA_LAIN) && getAccess(DISCOUNT)) {
+        }
+        /*else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_JASA_LAIN) && getAccess(DISCOUNT)) {
             Intent intent = new Intent(MenuActivity.this, DiscountJasaLain_Activity.class);
             startActivity(intent);
-        } else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_LAYANAN) && getAccess(DISCOUNT)) {
+        }*/
+        else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_LAYANAN) && getAccess(DISCOUNT)) {
             Intent intent = new Intent(MenuActivity.this, DiscountLayanan_Activity.class);
             startActivity(intent);
         } else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_PART) && getAccess(DISCOUNT)) {
@@ -618,6 +619,9 @@ public class MenuActivity extends AppActivity {
         menu.add(SCHEDULE);
         menu.add(REFERAL);
         menu.add(SARAN);
+        menu.add(USER);
+        menu.add(DISCOUNT_SPOT);
+
 
         subMenu = menu.addSubMenu(MY_BUSINESS);
         subMenu.add(MY_BUSINESS_BILLING);
@@ -630,7 +634,6 @@ public class MenuActivity extends AppActivity {
         subMenu.add(MY_BUSINESS_CLAIM_STATUS);
 
         subMenu = menu.addSubMenu(PENGATURAN);
-        subMenu.add(PENGATURAN_USER);
         subMenu.add(PENGATURAN_USER_LAYANAN);
         subMenu.add(PENGATURAN_USER_BIAYA_MEKANIK);
         subMenu.add(PENGATURAN_USER_SPAREPARTS);
@@ -639,10 +642,9 @@ public class MenuActivity extends AppActivity {
         subMenu.add(PENGATURAN_PROFILE);
 
         subMenu = menu.addSubMenu(DISCOUNT);
-        subMenu.add(DISCOUNT_JASA_LAIN);
+        //subMenu.add(DISCOUNT_JASA_LAIN);
         subMenu.add(DISCOUNT_LAYANAN);
         subMenu.add(DISCOUNT_PART);
-        subMenu.add(DISCOUNT_SPOT);
         subMenu.add(DISCOUNT_FREKWENSI);
 
         subMenu = menu.addSubMenu(KOMISI);

@@ -38,20 +38,26 @@ public class AturPenyesuain_StockOpname_Activity extends AppActivity {
     String kodeLokasi = "";
     boolean isStockLebih = false;
     boolean isStockKurang = false;
+    private boolean isView = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_penyesuain);
         initToolbar();
-        setSpLokasi();
-        if(getIntent().hasExtra("STOCK LEBIH")){
-            isStockLebih = true;
-        }else if(getIntent().hasExtra("STOCK KURANG")){
-            isStockKurang = true;
+        if(getIntent().hasExtra("VIEW")){
+            isView = true;
+            loadData();
+        }else{
+            if(getIntent().hasExtra("STOCK LEBIH")){
+                isStockLebih = true;
+            }else if(getIntent().hasExtra("STOCK KURANG")){
+                isStockKurang = true;
+            }
+            setSpLokasi("");
+            setSpPenyesuaian("");
+            initButton();
         }
-        setSpPenyesuaian();
-        initButton();
     }
 
     private void initToolbar() {
@@ -59,6 +65,21 @@ public class AturPenyesuain_StockOpname_Activity extends AppActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Penyesuaian");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void loadData(){
+        Nson data = Nson.readJson(getIntentStringExtra(DATA));
+        Tools.setViewAndChildrenEnabled(find(R.id.ly_container, LinearLayout.class), false);
+
+        setSpPenyesuaian(data.get("SEBAB").asString());
+        setSpLokasi(data.get("LOKASI").asString());
+        find(R.id.et_no_folder_lain, EditText.class).setText(data.get("FOLDER_LAIN").asString());
+        find(R.id.et_ket_penyesuaian, EditText.class).setText(data.get("ALASAN").asString());
+        find(R.id.et_user_saksi_penyesuaian, EditText.class).setText(data.get("USER_SAKSI").asString());
+        find(R.id.btn_simpan).setVisibility(View.GONE);
+        find(R.id.et_no_folder_lain, EditText.class).setTextColor(getResources().getColor(R.color.grey_900));
+        find(R.id.et_ket_penyesuaian, EditText.class).setTextColor(getResources().getColor(R.color.grey_900));
+        find(R.id.et_user_saksi_penyesuaian, EditText.class).setTextColor(getResources().getColor(R.color.grey_900));
     }
 
     private void setPenyesuaian() {
@@ -76,40 +97,73 @@ public class AturPenyesuain_StockOpname_Activity extends AppActivity {
         finish();
     }
 
-    private void setSpPenyesuaian() {
+    private void setSpPenyesuaian(String selection) {
         List<String> penyesuaianList = new ArrayList<>();
         penyesuaianList.add("--PILIH--");
-        if(isStockLebih){
-            penyesuaianList.add("SALAH CATAT"); //HANYA AKTIF BILA LEBIH BESAR DARI STOCK
-        }else{
+        if(isView){
+            penyesuaianList.add("SALAH CATAT");
             penyesuaianList.add("HILANG");
             penyesuaianList.add("RUSAK");
-            penyesuaianList.add("PINDAH LOKASI"); //HANYA AKTIF BILA LOKASI TERSEDIA GUDANG DAN DISPLAY
+            penyesuaianList.add("PINDAH LOKASI");
+        }else{
+            if(isStockLebih){
+                penyesuaianList.add("SALAH CATAT"); //HANYA AKTIF BILA LEBIH BESAR DARI STOCK
+            }else{
+                penyesuaianList.add("HILANG");
+                penyesuaianList.add("RUSAK");
+                penyesuaianList.add("PINDAH LOKASI"); //HANYA AKTIF BILA LOKASI TERSEDIA GUDANG DAN DISPLAY
+            }
         }
+
 
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, penyesuaianList);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         find(R.id.sp_sebab_penyesuaian, Spinner.class).setAdapter(spinnerAdapter);
+        if(!selection.isEmpty()){
+            for (int i = 0; i < find(R.id.sp_sebab_penyesuaian, Spinner.class).getCount(); i++) {
+                if(selection.equals(find(R.id.sp_sebab_penyesuaian, Spinner.class).getItemAtPosition(i).toString())){
+                    find(R.id.sp_sebab_penyesuaian, Spinner.class).setSelection(i);
+                    break;
+                }
+            }
+        }
     }
 
-    private void setSpLokasi() {
+    private void setSpLokasi(String selection) {
         Nson penyesuaian = Nson.readJson(getIntentStringExtra(PENYESUAIAN));
         List<String> lokasiList = new ArrayList<>();
         final List<String> kodeList = new ArrayList<>();
-        if (penyesuaian.asArray().size() > 1) {
-            penyesuaian.remove(0);
+        if(isView){
             lokasiList.add("--PILIH--");
-            kodeList.add("");
+            lokasiList.add("RUANG PART");
+            lokasiList.add("DISPLAY");
+            lokasiList.add("PALET");
+        }else{
+            if (penyesuaian.asArray().size() > 1) {
+                penyesuaian.remove(0);
+                lokasiList.add("--PILIH--");
+                kodeList.add("");
+            }
+            for (int i = 0; i < penyesuaian.size(); i++) {
+                lokasiList.add(penyesuaian.get(i).get("LOKASI").asString());
+                kodeList.add(penyesuaian.get(i).get("KODE").asString());
+            }
         }
-        for (int i = 0; i < penyesuaian.size(); i++) {
-            lokasiList.add(penyesuaian.get(i).get("LOKASI").asString());
-            kodeList.add(penyesuaian.get(i).get("KODE").asString());
-        }
+
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, lokasiList);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         find(R.id.sp_lokasi_stockOpname, Spinner.class).setAdapter(spinnerAdapter);
         if (lokasiList.size() == 1) {
             Tools.setViewAndChildrenEnabled(find(R.id.ly_lokasi_part, LinearLayout.class), false);
+        }
+
+        if(!selection.isEmpty()){
+            for (int i = 0; i < find(R.id.sp_lokasi_stockOpname, Spinner.class).getCount(); i++) {
+                if(find(R.id.sp_lokasi_stockOpname, Spinner.class).getItemAtPosition(i).toString().equals(selection)){
+                    find(R.id.sp_lokasi_stockOpname, Spinner.class).setSelection(i);
+                    break;
+                }
+            }
         }
         find(R.id.sp_lokasi_stockOpname, Spinner.class).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

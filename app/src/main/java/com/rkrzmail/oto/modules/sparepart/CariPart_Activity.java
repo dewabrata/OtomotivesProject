@@ -247,6 +247,8 @@ public class CariPart_Activity extends AppActivity {
                         viewHolder.find(R.id.tv_cari_noPart, TextView.class).setText(partLokasiPart.get(position).get("NO_PART").asString());
                         viewHolder.find(R.id.tv_cari_stockPart, TextView.class).setText(partLokasiPart.get(position).get("STOCK_RUANG_PART").asString());
                         viewHolder.find(R.id.tv_cari_hpp, TextView.class).setText((partLokasiPart.get(position).get("KODE").asString()));
+                        viewHolder.find(R.id.tv_cari_harga_part, TextView.class).setText(RP + NumberFormatUtils.formatRp(partLokasiPart.get(position).get("HARGA_JUAL").asString()));
+
                         if (!partLokasiPart.get(position).get("LOKASI").asString().equals("*")) {
                             viewHolder.find(R.id.tv_cari_pending, TextView.class).setText(partLokasiPart.get(position).get("LOKASI").asString());
                         } else {

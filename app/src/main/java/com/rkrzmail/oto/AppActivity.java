@@ -601,7 +601,6 @@ public class AppActivity extends AppCompatActivity {
                 if (!flag.equals("OTO")) {
                     args.put(arguments, "Bengkel");
                 }
-
                 args.put("flag", flag);
                 args.put("search", bookTitle);
 

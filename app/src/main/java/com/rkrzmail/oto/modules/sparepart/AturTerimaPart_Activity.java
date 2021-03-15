@@ -1,6 +1,7 @@
 package com.rkrzmail.oto.modules.sparepart;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -8,9 +9,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -27,6 +29,8 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.bengkel.AturRekening_Activity;
 import com.rkrzmail.srv.AutoCompleteDialog;
+import com.rkrzmail.srv.NikitaAutoComplete;
+import com.rkrzmail.srv.NsonAutoCompleteAdapter;
 import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -39,12 +43,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import in.galaxyofandroid.spinerdialog.OnSpinerItemClick;
 import in.galaxyofandroid.spinerdialog.SpinnerDialog;
 
-import static com.rkrzmail.utils.APIUrls.ATUR_TERIMA_PART;
 import static com.rkrzmail.utils.APIUrls.SET_REKENING_BANK;
 import static com.rkrzmail.utils.APIUrls.VIEW_MST;
+import static com.rkrzmail.utils.APIUrls.VIEW_NOMOR_POLISI;
+import static com.rkrzmail.utils.APIUrls.VIEW_SUGGESTION;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CONTACT;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_REKENING;
 
@@ -52,21 +56,23 @@ import static com.rkrzmail.utils.ConstUtils.REQUEST_REKENING;
 public class AturTerimaPart_Activity extends AppActivity implements View.OnClickListener {
 
     private static final String TAG = "AturTerimaPart";
-    public static final int MIN_SPINNER = 2;
 
-    private Spinner spinnerSupplier, spinnerPembayaran, spRek;
+    private Spinner spSupplier, spPembayaran, spRekening;
     private TextView tvTglPesan, tvTglTerima, tvTglJatuhTempo, tvNamaSupplier;
-    private EditText txtNoDo, txtOngkosKirim;
+    private EditText etNoDo, etOngkir;
+    private NikitaAutoComplete etNamaPerusahaan;
     private Button btnSelanjutnya;
     private SpinnerDialog spDialogPerusahaan;
     private AutoCompleteDialog autoCompleteDialog;
     private DialogInterface dialogInterface;
 
+    private List<String> principalList = new ArrayList<>();
     private ArrayList<String> perusahaanList = new ArrayList<>();
     private ArrayAdapter<String> spRekAdapter;
     private List<String> data = new ArrayList<>();
     private String tglPesan, tglTerima;
     private String tipeSupplier = "";
+    private String tipePembayaran = "";
     private int sizeSupplier = 0;
     final long[] tglPesanTimeMilis = {0};
 
@@ -95,22 +101,23 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
     }
 
     private void initComponent() {
-        spRek = findViewById(R.id.sp_rekAsal_terimaPart);
-        spinnerSupplier = findViewById(R.id.spinnerSupplier);
-        spinnerPembayaran = findViewById(R.id.spinnerPembayaran);
-        tvNamaSupplier = findViewById(R.id.txtNamaSupplier);
-        txtNoDo = findViewById(R.id.txtNoDo);
-        txtOngkosKirim = findViewById(R.id.txtOngkosKirim);
+        spRekening = findViewById(R.id.sp_rekAsal_terimaPart);
+        spSupplier = findViewById(R.id.spinnerSupplier);
+        spPembayaran = findViewById(R.id.spinnerPembayaran);
+        tvNamaSupplier = findViewById(R.id.tv_nama_supplier);
+        etNoDo = findViewById(R.id.txtNoDo);
+        etOngkir = findViewById(R.id.txtOngkosKirim);
         tvTglPesan = findViewById(R.id.tglPesan);
         tvTglTerima = findViewById(R.id.tglTerima);
         tvTglJatuhTempo = findViewById(R.id.tv_tgl_jatuh_tempo);
         btnSelanjutnya = findViewById(R.id.btnSelanjutnya);
+        etNamaPerusahaan = findViewById(R.id.et_nama_perusahaan);
 
         setSpRek();
-        setNamaPerusahaan();
+        initAutoCompletePerusahaan();
         setSpPrincipal();
 
-        txtOngkosKirim.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(txtOngkosKirim));
+        etOngkir.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etOngkir));
         Tools.setViewAndChildrenEnabled(find(R.id.ly_norek, LinearLayout.class), false);
         Tools.setViewAndChildrenEnabled(find(R.id.ly_tgl_jatuh_tempo, LinearLayout.class), false);
 
@@ -118,28 +125,28 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
         tvTglTerima.setOnClickListener(this);
         tvTglJatuhTempo.setOnClickListener(this);
         find(R.id.vg_kontak).setOnClickListener(this);
-        find(R.id.et_nama_perusahaan).setOnClickListener(this);
         find(R.id.btnSelanjutnya, Button.class).setOnClickListener(this);
         find(R.id.tv_tgl_jatuh_tempo).setOnClickListener(this);
 
-        spinnerSupplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spSupplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
                 //nama perusahaan, enable bila tipe supplier selain pincipal,
-                if(position != 0){
-                    tipeSupplier = parent.getItemAtPosition(position).toString();
-                    perusahaanEnable = !tipeSupplier.equalsIgnoreCase("PRINCIPAL");
-                    if(tipeSupplier.equals("PRINCIPAL")){
-                        tvNamaSupplier.setText("");
-                    }
-                    Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_principal, LinearLayout.class), tipeSupplier.equals("PRINCIPAL") && sizeSupplier > 0);
-                    Tools.setViewAndChildrenEnabled(find(R.id.ly_namaSup_terimaPart, LinearLayout.class), !parent.getItemAtPosition(position).toString().equalsIgnoreCase("PRINCIPAL"));
-                }else{
-                    Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_principal, LinearLayout.class),false);
-                    Tools.setViewAndChildrenEnabled(find(R.id.ly_namaSup_terimaPart, LinearLayout.class), false);
-
+                tipeSupplier = parent.getItemAtPosition(position).toString();
+                perusahaanEnable = !tipeSupplier.equalsIgnoreCase("PRINCIPAL");
+                if (tipeSupplier.equals("PRINCIPAL")) {
+                    tvNamaSupplier.setText("");
+                    etNamaPerusahaan.setText("");
+                    setSpPrincipal();
+                } else {
+                    find(R.id.sp_nama_principal, Spinner.class).setSelection(0);
                 }
-
+                etNamaPerusahaan.setEnabled(!tipeSupplier.equals("PRINCIPAL") && !tipeSupplier.equals("--PILIH--"));
+                Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_principal, LinearLayout.class), tipeSupplier.equals("PRINCIPAL") && sizeSupplier > 1);
+                Tools.setViewAndChildrenEnabled(find(R.id.ly_namaSup_terimaPart, LinearLayout.class),
+                        !tipeSupplier.equals("PRINCIPAL") &&
+                        !tipeSupplier.equals("--PILIH--") &&
+                        !tipeSupplier.equals("ECOMERCE"));
             }
 
             @Override
@@ -148,36 +155,44 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
             }
         });
 
-        spinnerPembayaran.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spPembayaran.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
-                String item = parent.getItemAtPosition(position).toString();
-                find(R.id.et_notaTrace_jurnal).setEnabled(item.equals("TRANSFER"));
+                tipePembayaran = parent.getItemAtPosition(position).toString();
+                find(R.id.et_no_trace).setEnabled(tipePembayaran.equals("TRANSFER"));
 
-                if (item.equalsIgnoreCase("INVOICE")) {
+                if (tipePembayaran.equalsIgnoreCase("INVOICE")) {
+                    find(R.id.et_no_trace, EditText.class).setText("");
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_tgl_jatuh_tempo, LinearLayout.class), true);
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_norek, LinearLayout.class), false);
-                } else if (item.equalsIgnoreCase("TRANSFER")) {
+                } else if (tipePembayaran.equalsIgnoreCase("TRANSFER")) {
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_norek, LinearLayout.class), true);
-                    if(spRek.getCount() < MIN_SPINNER){
-                        showInfoDialog("Rekening Belum Di tambah, Tambah Rekening ? ", new DialogInterface.OnClickListener() {
+                    if (spRekening.getCount() == 0) {
+                        showInfoDialog("Konfirmasi", "Rekening Belum Di tambah, Tambah Rekening ? ", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialogInterface = dialog;
                                 startActivityForResult(new Intent(getActivity(), AturRekening_Activity.class), REQUEST_REKENING);
                             }
+                        }, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
                         });
                     }
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_tgl_jatuh_tempo, LinearLayout.class), false);
-                }else if(item.equals("KONSIGNMENT")){
+                } else if (tipePembayaran.equals("KONSIGNMENT")) {
+                    find(R.id.et_no_trace, EditText.class).setText("");
                     showWarning("TIPE PEMBAYARAN BELUM AKTIF");
-                    spinnerPembayaran.post(new Runnable() {
+                    spPembayaran.post(new Runnable() {
                         @Override
                         public void run() {
-                            spinnerPembayaran.performClick();
+                            spPembayaran.performClick();
                         }
                     });
                 } else {
+                    find(R.id.et_no_trace, EditText.class).setText("");
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_norek, LinearLayout.class), false);
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_tgl_jatuh_tempo, LinearLayout.class), false);
                 }
@@ -190,39 +205,90 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
         });
     }
 
-    private void setSpPrincipal(){
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
+    private void setSpPrincipal() {
+        if (principalList.size() > 0) {
+            setSpinnerOffline(principalList, find(R.id.sp_nama_principal, Spinner.class), sizeSupplier > 1 ? "--PILIH--" : principalList.get(1));
+        } else {
+            newProses(new Messagebox.DoubleRunnable() {
+                Nson result;
+
+                @Override
+                public void run() {
+                    Map<String, String> args = AppApplication.getInstance().getArgsData();
+                    args.put("nama", "PRINCIPAL BENGKEL");
+                    result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MST), args));
+                }
+
+                @Override
+                public void runUI() {
+                    if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                        result = result.get("data");
+                        principalList.add("--PILIH--");
+                        for (int i = 0; i < result.size(); i++) {
+                            principalList.add(result.get(i).get("NAMA_PRINCIPAL").asString());
+                        }
+                        sizeSupplier = result.size();
+                        setSpinnerOffline(principalList, find(R.id.sp_nama_principal, Spinner.class), "");
+                    }
+                }
+            });
+        }
+    }
+
+    private void initAutoCompletePerusahaan() {
+        etNamaPerusahaan.setThreshold(6);
+        etNamaPerusahaan.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
             @Override
-            public void run() {
+            public Nson onFindNson(Context context, String bookTitle) {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("nama", "PRINCIPAL BENGKEL");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MST), args));
+
+                args.put("action", "PERUSAHAAN");
+                args.put("namaPerusahaan", bookTitle);
+                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SUGGESTION), args));
+
+                return result.get("data");
             }
 
             @Override
-            public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    result = result.get("data");
-                    sizeSupplier = result.size();
-                    result.asArray().add(0, "--PILIH--");
-                    String selection = "";
-                    if(sizeSupplier > 0){
-                        selection = "--PILIH--";
-                        Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_principal, LinearLayout.class), tipeSupplier.equals("PRINCIPAL"));
-                    }else{
-                        selection = result.get(1).get("NAMA_PRINCIPAL").asString();
-                        Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_principal, LinearLayout.class), false);
-                    }
-                    setSpinnerOffline(result.asArray(), find(R.id.sp_nama_principal, Spinner.class), selection);
+            public View getView(int position, View convertView, ViewGroup parent) {
+                if (convertView == null) {
+                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    convertView = inflater.inflate(R.layout.item_suggestion, parent, false);
                 }
+                String jenis;
+                if(!getItem(position).get("NAMA_PERUSAHAAN").asString().isEmpty()){
+                    jenis = getItem(position).get("NAMA_PERUSAHAAN").asString();
+                }else{
+                    jenis = getItem(position).get("NAMA_USAHA_TOKO").asString();
+                }
+                if(!getItem(position).get("KOTA_KABUPATEN").asString().isEmpty()){
+                    jenis = jenis + "- " + getItem(position).get("KOTA_KABUPATEN").asString();
+                }
+                findView(convertView, R.id.title, TextView.class).setText(jenis);
+                return convertView;
+            }
+        });
+
+        etNamaPerusahaan.setLoadingIndicator((android.widget.ProgressBar) findViewById(R.id.progress_bar));
+        etNamaPerusahaan.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Nson nson = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
+                String jenis;
+                if(!nson.get("NAMA_PERUSAHAAN").asString().isEmpty()){
+                    jenis = nson.get("NAMA_PERUSAHAAN").asString();
+                }else{
+                    jenis = nson.get("NAMA_USAHA_TOKO").asString();
+                }
+                etNamaPerusahaan.setText(jenis);
             }
         });
     }
 
-    private void setNamaPerusahaan(){
+    private void setNamaPerusahaan() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -257,7 +323,7 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
                             spDialogPerusahaan.closeSpinerDialog();
                         }
                     });*/
-                    if(result.size() > 0){
+                    if (result.size() > 0) {
 
                     }
                 }
@@ -268,6 +334,7 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
     public void setSpRek() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -277,19 +344,22 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
 
             @Override
             public void runUI() {
-                ArrayList<String> str = new ArrayList<>();
-                str.add("--PILIH--");
-                for (int i = 0; i < result.get("data").size(); i++) {
-                    str.add(result.get("data").get(i).get("BANK_NAME").asString() + " - " + result.get("data").get(i).get("NO_REKENING").asString());
+                if (result.get("status").asString().equals("OK")) {
+                    result = result.get("data");
+                    ArrayList<String> str = new ArrayList<>();
+                    if (result.size() > 0) {
+                        str.add("--PILIH--");
+                    }
+                    for (int i = 0; i < result.size(); i++) {
+                        str.add(result.get(i).get("BANK_NAME").asString() + " - " + result.get(i).get("NO_REKENING").asString());
+                    }
+                    spRekAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, str);
+                    spRekAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spRekening.setAdapter(spRekAdapter);
+                    spRekAdapter.notifyDataSetChanged();
+                } else {
+                    setSpRek();
                 }
-                ArrayList<String> newStr = Tools.removeDuplicates(str);
-                spRekAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, newStr);
-                spRekAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                if(spRekAdapter.getCount() < 1){
-                    showWarning("Data Belum di Set");
-                }
-                spRek.setAdapter(spRekAdapter);
-                spRekAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -297,6 +367,7 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
     private void checkTgl() {
         newTask(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args2 = AppApplication.getInstance().getArgsData();
@@ -315,14 +386,14 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
 
     private Nson sendObject() {
         String tglpesan = Tools.setFormatDayAndMonthToDb(tvTglPesan.getText().toString());
-        String tglterima =  Tools.setFormatDayAndMonthToDb(tvTglTerima.getText().toString());
-        String rek = spRek.getSelectedItem().toString();
-        String jatuhtempo =  Tools.setFormatDayAndMonthToDb(tvTglJatuhTempo.getText().toString());
-        String tipe = spinnerSupplier.getSelectedItem().toString().toUpperCase();
+        String tglterima = Tools.setFormatDayAndMonthToDb(tvTglTerima.getText().toString());
+        String rek = spRekening.getSelectedItem().toString().equals("--PILIH--") ? "" : spRekening.getSelectedItem().toString();
+        String jatuhtempo = Tools.setFormatDayAndMonthToDb(tvTglJatuhTempo.getText().toString());
+        String tipe = spSupplier.getSelectedItem().toString().toUpperCase();
         String nama = tvNamaSupplier.getText().toString().toUpperCase();
-        String nodo = txtNoDo.getText().toString().toUpperCase();
-        String ongkir = NumberFormatUtils.formatOnlyNumber(txtOngkosKirim.getText().toString());
-        String pembayaran = spinnerPembayaran.getSelectedItem().toString().toUpperCase();
+        String nodo = etNoDo.getText().toString().toUpperCase();
+        String ongkir = NumberFormatUtils.formatOnlyNumber(etOngkir.getText().toString());
+        String pembayaran = spPembayaran.getSelectedItem().toString().toUpperCase();
 
         Nson nson = Nson.newObject();
         nson.set("nodo", nodo);
@@ -334,18 +405,20 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
         nson.set("namaSupplier", nama.replaceAll("[^a-zA-Z]", ""));
         nson.set("noSupplier", nama.replaceAll("[^0-9]", ""));
         nson.set("tipe", tipe);
-        nson.set("rek", rek);
-        nson.set("rekening", spRek.getSelectedItem().toString());
+        nson.set("rekening", rek);
+        nson.set("PRINCIPAL", find(R.id.sp_nama_principal, Spinner.class).getSelectedItem().toString().equals("--PILIH--") ? "" : find(R.id.sp_nama_principal, Spinner.class).getSelectedItem().toString());
+        nson.set("PERUSAHAAN", etNamaPerusahaan.getText().toString());
+        nson.set("NO_TRACE", find(R.id.et_no_trace, EditText.class).getText().toString());
 
         showInfo("Catatkan Detail Part");
         return nson;
     }
 
-    private String getAllNumberFromString(String nama){
-        if(nama == null) return "";
+    private String getAllNumberFromString(String nama) {
+        if (nama == null) return "";
         StringBuilder noSupplier = new StringBuilder();
-        for(char number : nama.toCharArray()){
-            if(Character.isDigit(number)){
+        for (char number : nama.toCharArray()) {
+            if (Character.isDigit(number)) {
                 noSupplier.append(number);
             }
         }
@@ -377,12 +450,14 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
                         tvTglPesan.setText(formattedTime);
                     }
                 }, year, month, day);
+
+                datePickerDialog.setMaxDate(cldr);
                 datePickerDialog.show(getFragmentManager(), "Datepickerdialog");
                 break;
             case R.id.tglTerima:
-                if(tglPesanTimeMilis[0] > 0){
+                if (tglPesanTimeMilis[0] > 0) {
                     getDatePickerDialogTextView(getActivity(), tvTglTerima, parseTglPesan(tglPesanTimeMilis[0]));
-                }else{
+                } else {
                     showWarning("Tanggal Pesan Belum di Input");
                 }
 
@@ -403,50 +478,43 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
                 }
                 break;
             case R.id.btnSelanjutnya:
-                Calendar calendar = Calendar.getInstance();
-                @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                String tglSekarang = simpleDateFormat.format(calendar.getTime());
                 final String tglpesan = tvTglPesan.getText().toString();
                 final String tglterima = tvTglTerima.getText().toString();
 
-                if (spinnerSupplier.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
+                if (tipeSupplier.equals("--PILIH--")) {
+                    viewFocus(spSupplier);
                     showWarning("Supplier Harus Di Pilih");
-                    spinnerSupplier.requestFocus();
                     return;
                 }
-                if (find(R.id.ly_namaSup_terimaPart, LinearLayout.class).getVisibility() == View.VISIBLE) {
-                    if (tvNamaSupplier.getText().toString().isEmpty()) {
-                        tvNamaSupplier.setError("Supplier Tidak Boleh Kosong");
-                        tvNamaSupplier.requestFocus();
-                        return;
-                    }
-                }
-                if (txtNoDo.getText().toString().isEmpty()) {
-                    txtNoDo.setError("No. DO Tidak Boleh Kosong");
-                    txtNoDo.requestFocus();
+
+                if (!tipeSupplier.equals("PRINCIPAL") && tvNamaSupplier.getText().toString().isEmpty()) {
+                    viewFocus(tvNamaSupplier);
+                    tvNamaSupplier.setError("Supplier Tidak Boleh Kosong");
                     return;
                 }
-                if (spinnerPembayaran.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
+
+                if (etNoDo.getText().toString().isEmpty()) {
+                    viewFocus(etNoDo);
+                    etNoDo.setError("No. DO Tidak Boleh Kosong");
+                    return;
+                }
+                if (tipePembayaran.equalsIgnoreCase("--PILIH--")) {
+                    viewFocus(spPembayaran);
                     showWarning("Pembayaran Harus Di Pilih");
-                    spinnerSupplier.requestFocus();
                     return;
                 }
                 if (find(R.id.ly_norek, LinearLayout.class).isEnabled()) {
-                    if (spRek.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
-                        spRek.requestFocus();
+                    if (spRekening.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
+                        spRekening.requestFocus();
                         showWarning("Nomor Rekening Harus di Pilih");
                         return;
                     }
                 }
-//                if (txtOngkosKirim.getText().toString().isEmpty()) {
-//                    txtOngkosKirim.setError("Masukkan Ongkos Kirim");
-//                    txtOngkosKirim.requestFocus();
-//                    return;
-//                }
+
                 if (find(R.id.ly_tgl_jatuh_tempo).isEnabled()) {
                     if (tvTglJatuhTempo.getText().toString().isEmpty()) {
+                        viewFocus(tvTglJatuhTempo);
                         tvTglJatuhTempo.setError("Masukkan Tanggal Jatuh Tempo");
-                        tvTglJatuhTempo.requestFocus();
                         return;
                     }
                 }
@@ -458,37 +526,12 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
                     showWarning("Masukkan Tanggal Terima");
                     return;
                 }
-                try {
-                    @SuppressLint("SimpleDateFormat") Date tanggalTerima = new SimpleDateFormat("dd/MM/yyyy").parse(tglterima);
-                    @SuppressLint("SimpleDateFormat") Date pesan = new SimpleDateFormat("dd/MM/yyyy").parse(tglpesan);
-                    if (tanggalTerima.before(pesan)) {
-                        showWarning("Tanggal Pesan Tidak Boleh Melebihi Tanggal Terima");
-                        return;
-                    } else if (pesan.after(tanggalTerima)) {
-                        showWarning("Tanggal Terima Tidak Boleh Melebihi Tanggal Pesan");
-                        return;
-                    }
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-                try {
-                    @SuppressLint("SimpleDateFormat") Date tanggalTerima = new SimpleDateFormat("dd/MM/yyyy").parse(tglterima);
-                    @SuppressLint("SimpleDateFormat") Date currentDate = new SimpleDateFormat("dd/MM/yyyy").parse(tglSekarang);
-                    if (tanggalTerima.after(currentDate)) {
-                        showWarning("Tanggal Terima Tidak Boleh Melebihi Tanggal Sekarang");
-                        return;
-                    }
-
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
 
                 try {
                     @SuppressLint("SimpleDateFormat") Date jatuhTempo = new SimpleDateFormat("dd/MM/yyyy").parse(tvTglJatuhTempo.getText().toString());
                     @SuppressLint("SimpleDateFormat") Date tanggalTerima2 = new SimpleDateFormat("dd/MM/yyyy").parse(tglterima);
                     if (find(R.id.ly_tgl_jatuh_tempo).isEnabled()) {
-                        if (!jatuhTempo.after(tanggalTerima2) && !tanggalTerima2.before(jatuhTempo)) {
+                        if (!jatuhTempo.after(tanggalTerima2)) {
                             showWarning("Tanggal Jatuh Tempo Invoice / Tanggal Terima Tidak Sesuai");
                             return;
                         }
@@ -496,18 +539,9 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                try {
-                    @SuppressLint("SimpleDateFormat") Date sekarang = new SimpleDateFormat("dd/MM/yyyy").parse(tglSekarang);
-                    @SuppressLint("SimpleDateFormat") Date pesan = new SimpleDateFormat("dd/MM/yyyy").parse(tglpesan);
-                    if (pesan.after(sekarang)) {
-                        showWarning("Tanggal Pesan Tidak Boleh Melebihi Tanggal Sekarang");
-                        return;
-                    }
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+
                 if (data.contains(tglPesan)) {
-                    showInfoDialog("Penerimaan Part Telah Tercatat Sebelumnya", new DialogInterface.OnClickListener() {
+                    showInfoDialog("PENERIMAAN PART TELAH TERCATAT SEBELUMNYA", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
@@ -516,7 +550,7 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
                     return;
                 }
                 if (data.contains(tglTerima)) {
-                    showInfoDialog("Penerimaan Part Telah Tercatat Sebelumnya", new DialogInterface.OnClickListener() {
+                    showInfoDialog("PENERIMAAN PART TELAH TERCATAT SEBELUMNYA", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
@@ -529,22 +563,6 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
                 Intent i = new Intent(AturTerimaPart_Activity.this, AturDetail_TerimaPart_Activity.class);
                 i.putExtra("detail", sendObject().toJson());
                 startActivityForResult(i, TerimaPart_Activity.REQUEST_TERIMA_PART);
-                break;
-            case R.id.et_nama_perusahaan:
-                if(spinnerSupplier.getSelectedItem().toString().equals("--PILIH--")){
-                    viewFocus(spinnerSupplier);
-                    showWarning("TIPE SUPPLIER HARUS DI PILIH");
-                }else{
-                    if(perusahaanEnable){
-                        autoCompleteDialog.showAutoCompleteDialog();
-                        if(perusahaanList.size() != 0){
-
-                        }
-                    }else{
-                        showWarning("PERUSAHAAN TIDAK TERSEDIA UNTUK SUPPLIER PRINCIPAL");
-                    }
-                }
-
                 break;
         }
     }
@@ -561,7 +579,7 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
         });
     }
 
-    private Calendar parseTglPesan(long tglPesan){
+    private Calendar parseTglPesan(long tglPesan) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(tglPesan);
         return calendar;
@@ -583,13 +601,9 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
                 String contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
                 tvNamaSupplier.setText(contactName + "\n" + number);
             }
-        }else if(resultCode == RESULT_OK && requestCode == REQUEST_REKENING){
+        } else if (resultCode == RESULT_OK && requestCode == REQUEST_REKENING) {
             dialogInterface.dismiss();
             setSpRek();
         }
-    }
-
-    private void dialog() {
-
     }
 }

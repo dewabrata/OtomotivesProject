@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.ATUR_TERIMA_PART;
 import static com.rkrzmail.utils.APIUrls.VIEW_SPAREPART;
@@ -160,7 +161,7 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
             public void onClick(View view) {
                 try {
                     nListArray.add(data);
-                    rvTerimaPart.getAdapter().notifyDataSetChanged();
+                    Objects.requireNonNull(rvTerimaPart.getAdapter()).notifyDataSetChanged();
                     Tools.clearForm(find(R.id.ly_detailPart, LinearLayout.class));
                     Tools.hideKeyboard(getActivity());
                     showInfo("PART DI TAMBAHKAN");
@@ -342,16 +343,18 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
                 args.put("pembayaran", nson.get("pembayaran").asString());
                 args.put("jatuhtempo", nson.get("jatuhtempo").asString());
                 args.put("ongkir", nson.get("ongkir").asString().replaceAll("[^0-9]+", ""));
-                //recyleview(array) to json
                 args.put("parts", nListArray.toJson());
-                //args.put("user", getSetting("NAMA_USER"));
                 args.put("rekening", nson.get("rekening").asString());
                 args.put("penempatan", etPenempatan.getText().toString());
                 args.put("jumlahall", String.valueOf(jumlahAllPart));
                 args.put("totalAll", String.valueOf(totalAll));
+                args.put("principal", nson.get("PRINCIPAL").asString());
+                args.put("namaPerusahaan", nson.get("PERUSAHAAN").asString());
+                args.put("noTrace", nson.get("NO_TRACE").asString());
 
                 Log.d(TAG, "PART :  " + nListArray);
                 Log.d(TAG, "send data : " + args);
+
                 data = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_TERIMA_PART), args));
             }
 
@@ -393,7 +396,7 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
         dataAdd.set("MERK", merkPart);
         dataAdd.set("LOKASI_SIMPAN", spinnerLokasiSimpan.getSelectedItem().toString());
 
-        String disc = null;
+        String disc = "";
         if (etDiscPercent.isEnabled()) {
             disc = etDiscPercent.getText().toString();
             dataAdd.set("DISCOUNT", disc);
@@ -401,7 +404,7 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
             disc = formatOnlyNumber(etDiscRp.getText().toString());
             dataAdd.set("DISCOUNT", disc);
         }else{
-            dataAdd.set("DISCOUNT", "");
+            dataAdd.set("DISCOUNT", disc);
         }
         totalAll += Long.parseLong(NumberFormatUtils.formatOnlyNumber(etHargaBersih.getText().toString()));
         dialogKonfirmasi(
@@ -410,7 +413,7 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
                 dataAdd.get("NO_PART").asString(),
                 dataAdd.get("HARGA_BELI").asString(),
                 dataAdd.get("JUMLAH").asString(),
-                disc.contains(".") ? NumberFormatUtils.formatPercent(Double.parseDouble(disc)) : RP + NumberFormatUtils.formatRp(disc)
+                dataAdd.get("DISCOUNT").asString()
         );
     }
 

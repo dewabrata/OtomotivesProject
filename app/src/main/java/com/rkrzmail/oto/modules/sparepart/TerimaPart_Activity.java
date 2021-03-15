@@ -102,9 +102,16 @@ public class TerimaPart_Activity extends AppActivity {
 
                 viewHolder.find(R.id.txtTanggal, TextView.class).setText(tgl);
                 viewHolder.find(R.id.txtSupplier, TextView.class).setText(nListArray.get(position).get("NAMA_SUPPLIER").asString());
-                if(nListArray.get(position).get("NO_PONSEL_SUPPLIER").asString().startsWith("62") && !nListArray.get(position).get("NO_PONSEL_SUPPLIER").asString().contains("+")){
-                    viewHolder.find(R.id.tv_no_ponsel_supplier, TextView.class).setText("+" + nListArray.get(position).get("NO_PONSEL_SUPPLIER").asString());
+                if(!nListArray.get(position).get("NAMA_PERUSAHAAN").asString().isEmpty()){
+                    viewHolder.find(R.id.tv_no_ponsel_supplier, TextView.class).setText(nListArray.get(position).get("NAMA_PERUSAHAAN").asString());
+                }else{
+                    if(nListArray.get(position).get("NO_PONSEL_SUPPLIER").asString().startsWith("62") && !nListArray.get(position).get("NO_PONSEL_SUPPLIER").asString().contains("+")){
+                        viewHolder.find(R.id.tv_no_ponsel_supplier, TextView.class).setText("+" + nListArray.get(position).get("NO_PONSEL_SUPPLIER").asString());
+                    }else{
+                        viewHolder.find(R.id.tv_no_ponsel_supplier, TextView.class).setText("");
+                    }
                 }
+
                 viewHolder.find(R.id.txtPembayaran, TextView.class).setText(nListArray.get(position).get("PEMBAYARAN").asString());
                 viewHolder.find(R.id.txtNoDo, TextView.class).setText(nListArray.get(position).get("NO_DO").asString());
                 viewHolder.find(R.id.txtJatuhTempo, TextView.class).setText(tglInv);

@@ -297,6 +297,19 @@
     <string name="total_hutang_uppercase">TOTAL HUTANG</string>
     <string name="no_do_uppercase">NO. DO</string>
     <string name="no_do_invoice_uppercase">NO. DO / INVOICE</string>
+    <string name="keterangan">Keterangan</string>
+    <string name="unit_hari_uppercase">UNIT / HARI</string>
+    <string name="penjualan_hari_uppercase">PENJUALAN / HARI</string>
+    <string name="margin_part_uppercase">MARGIN PART</string>
+    <string name="hari">Hari</string>
+    <string name="rp_part">Rp. Part</string>
+    <string name="rp_layanan">Rp. Layanan</string>
+    <string name="rp_jasa">Rp. Jasa</string>
+    <string name="rp_total">Rp. Total</string>
+    <string name="jumlah_komisi">Jumlah Komisi</string>
+    <string name="jenis_komisi">Jenis Komisi</string>
+    <string name="komisi_percent">Komisi %</string>
+    <string name="balance_rp_0_uppercase">BALANCE RP. 0</string>
     <string-array name="pola_harga_jual">
         <item>FLEXIBLE</item>
         <item>BELI + MARGIN</item>

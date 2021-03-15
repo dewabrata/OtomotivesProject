@@ -63,7 +63,7 @@ public class BiayaMekanik2Activity extends AppActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AturBiayaMekanik2.class);
+                Intent intent = new Intent(getActivity(), AturBiayaMekanik_Activity.class);
                 intent.putExtra("UMK", umk);
                 startActivityForResult(intent, REQUEST_ATUR);
             }
@@ -90,7 +90,7 @@ public class BiayaMekanik2Activity extends AppActivity {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
                 //Toast.makeText(getActivity(),"HHHHH "+position, Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getActivity(), AturBiayaMekanik2.class);
+                Intent intent = new Intent(getActivity(), AturBiayaMekanik_Activity.class);
                 intent.putExtra("USER", nListArray.get(position).toJson());
                 intent.putExtra("UMK", umk);
                 startActivityForResult(intent, REQUEST_ATUR);

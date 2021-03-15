@@ -29,11 +29,42 @@
             android:orientation="vertical"
             android:padding="5dp">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/paddingSemiLarge">
+
+                <CheckBox
+                    android:id="@+id/cb_layanan_inv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/layanan_uppercase"
+                    android:textAlignment="center"
+                    android:checked="true"
+                    android:background="@drawable/state_textview_clickable_border"
+                    android:padding="10dp"
+                    android:layout_marginEnd="10dp"/>
+
+                <CheckBox
+                    android:id="@+id/cb_part_inv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/part_uppercase"
+                    android:textAlignment="center"
+                    android:checked="true"
+                    android:background="@drawable/state_textview_clickable_border"
+                    android:padding="10dp"/>
+
+            </LinearLayout>
+
             <android.support.design.widget.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="@dimen/paddingSemiLarge">
 
                 <EditText
                     android:id="@+id/et_total_invoice"
@@ -42,7 +73,7 @@
                     android:textSize="14sp"
                     android:enabled="false"
                     android:hint="@string/total_invoice_uppercase"
-                    tools:ignore="LabelFor" />
+                    tools:ignore="Autofill,LabelFor,TextFields" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -59,7 +90,8 @@
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
                     android:enabled="false"
-                    android:hint="@string/no_invoice_uppercase"/>
+                    android:hint="@string/no_invoice_uppercase"
+                    tools:ignore="Autofill,TextFields" />
 
             </android.support.design.widget.TextInputLayout>
 

@@ -28,8 +28,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/tanggal"
                 android:layout_gravity="start"
-                android:textSize="13sp"
-                android:textStyle="bold"
+                android:textSize="12sp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
         </TableRow>
@@ -42,8 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:text="@string/nama_user"
-                android:textSize="13sp"
-                android:textStyle="bold"
+                android:textSize="12sp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
         </TableRow>
@@ -57,7 +55,6 @@
                 android:text="@string/total_bayar"
                 android:layout_gravity="start"
                 android:textSize="12sp"
-                android:textStyle="bold"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
             <TextView
@@ -67,7 +64,6 @@
                 android:text="@string/balance"
                 android:layout_gravity="end"
                 android:textSize="12sp"
-                android:textStyle="bold"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
         </TableRow>
