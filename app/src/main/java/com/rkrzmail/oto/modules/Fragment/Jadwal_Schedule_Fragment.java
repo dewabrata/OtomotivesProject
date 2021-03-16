@@ -247,6 +247,19 @@ public class Jadwal_Schedule_Fragment extends Fragment {
         final String lokasi = spLokasi.getSelectedItem().toString().toUpperCase();
         final String copy = activity.find(R.id.cb_copydata, CheckBox.class).isChecked() ? "Y" : "N";
 
+        if(tanggalList.asArray().isEmpty()){
+            tanggalList.asArray().clear();
+            String[] date = tanggal.split("-");
+            int day = Integer.parseInt(date[2]);
+            int month = Integer.parseInt(date[1]);
+            int year = Integer.parseInt(date[0]);
+            tanggalList.add(Nson.newObject()
+                    .set("TANGGAL", tanggal)
+                    .set("HARI", ParseDateofWeek(day, month, year))
+                    .set("NO_MINGGU", getNoMinggu(year, month, day))
+            );
+        }
+
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -275,11 +288,19 @@ public class Jadwal_Schedule_Fragment extends Fragment {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    activity.showSuccess("Berhasil Menambahkan Schedule");
+                    if (btnSimpan.getText().toString().equals("SIMPAN")) {
+                        activity.showSuccess("Berhasil Menambahkan Schedule");
+                    }else {
+                        activity.showSuccess("Berhasil Update Schedule");
+                    }
                     viewSchedule(userId);
                     setDefault();
                 } else {
-                    activity.showError("Menambahkan data gagal!");
+                    if (btnSimpan.getText().toString().equals("SIMPAN")) {
+                        activity.showError("Menambahkan data gagal!");
+                    }else {
+                        activity.showError("Update data gagal!");
+                    }
                 }
             }
         });
@@ -303,19 +324,19 @@ public class Jadwal_Schedule_Fragment extends Fragment {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
-                args.put("action", "update");
+                args.put("action", "delete");
                 args.put("kategori", "SCHEDULE");
-                args.put("nama", namauser);
-                args.put("tanggal", setFormatDayAndMonthToDb(tanggal));
-                args.put("status", status);
-                args.put("scheduleMulai", DateFormatUtils.formatDate(masuk, "HH:mm", "HH:mm:ss"));
-                args.put("scheduleSelesai", DateFormatUtils.formatDate(selesai, "HH:mm", "HH:mm:ss"));
-                args.put("lokasi", lokasi);
-                args.put("izinTerlambat", izin);
-                args.put("copyData", copy);
-                args.put("userId", userId);
-                args.put("tanggalList", tanggalList.toJson());
                 args.put("scheduleId", idSchedule);
+//                args.put("nama", namauser);
+//                args.put("tanggal", setFormatDayAndMonthToDb(tanggal));
+//                args.put("status", status);
+//                args.put("scheduleMulai", DateFormatUtils.formatDate(masuk, "HH:mm", "HH:mm:ss"));
+//                args.put("scheduleSelesai", DateFormatUtils.formatDate(selesai, "HH:mm", "HH:mm:ss"));
+//                args.put("lokasi", lokasi);
+//                args.put("izinTerlambat", izin);
+//                args.put("copyData", copy);
+//                args.put("userId", userId);
+//                args.put("tanggalList", tanggalList.toJson());
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_SCHEDULE), args));
             }
@@ -323,10 +344,8 @@ public class Jadwal_Schedule_Fragment extends Fragment {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    activity.showSuccess("Berhasil Update Schedule");
-                    viewSchedule(userId);
-                    setDefault();
-
+                    //activity.showSuccess("Berhasil Update Schedule");
+                    insertData();
                 } else {
                     activity.showError("Update data gagal!");
                 }
@@ -336,6 +355,7 @@ public class Jadwal_Schedule_Fragment extends Fragment {
 
     private void setDefault() {
         tv_tanggal.setText("");
+        spUser.setSelection(0);
         sp_status.setSelection(0);
         spLokasi.setSelection(0);
         tvMulai_Kerja.setText("");
