@@ -102,7 +102,7 @@
                             android:textAlignment="center"
                             android:textSize="12sp"
                             android:focusable="true"
-                            android:entries="@array/atur_status" />
+                            />
 
                     </RelativeLayout>
 

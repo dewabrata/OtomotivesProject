@@ -3,14 +3,17 @@ package com.rkrzmail.oto.modules.Fragment;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +45,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -65,13 +69,12 @@ public class Jadwal_Schedule_Fragment extends Fragment {
     private Button btnSimpan;
     private RecyclerView rcSchedule;
     private CheckBox cbCopy;
-
     private AppActivity activity;
     Calendar myCalendar = Calendar.getInstance();
     private AlertDialog alertDialog;
     private View dialogView;
 
-    private String izin = "", tanggalString = "", hari = "", namauser, hari2 = "";
+    private String izin = "", tanggalString = "", hari = "", namauser, hari2 = "", idSchedule="";
     private String userId = "";
     private String status = "";
     private boolean isIzin = false, isSakit = false, isTrue = false, isIzinlamabat = false;
@@ -116,8 +119,9 @@ public class Jadwal_Schedule_Fragment extends Fragment {
         cbCopy = v.findViewById(R.id.cb_copydata);
         rcSchedule = v.findViewById(R.id.recyclerView);
         btnSimpan = v.findViewById(R.id.btn_simpan);
-        setSpUser();
-        setSpLokasi();
+        setSpUser("");
+        setSpLokasi("");
+        setSpStatus("");
 
         sp_status.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -187,7 +191,11 @@ public class Jadwal_Schedule_Fragment extends Fragment {
         btnSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                insertData();
+                if(btnSimpan.getText().toString().equals("SIMPAN")){
+                    insertData();
+                }else {
+                    updateData();
+                }
             }
 
         });
@@ -277,6 +285,55 @@ public class Jadwal_Schedule_Fragment extends Fragment {
         });
     }
 
+    private void updateData() {
+        final String masuk = tvMulai_Kerja.getText().toString().trim();
+        final String selesai = tvSelesai_Kerja.getText().toString().trim();
+        final String tanggal = tv_tanggal.getText().toString().trim();
+        final String status = sp_status.getSelectedItem().toString().toUpperCase();
+        if (status.contains("IZIN TERLAMBAT")) {
+            izin = "Y";
+        }
+        final String lokasi = spLokasi.getSelectedItem().toString().toUpperCase();
+        final String copy = activity.find(R.id.cb_copydata, CheckBox.class).isChecked() ? "Y" : "N";
+
+        MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+
+                args.put("action", "update");
+                args.put("kategori", "SCHEDULE");
+                args.put("nama", namauser);
+                args.put("tanggal", setFormatDayAndMonthToDb(tanggal));
+                args.put("status", status);
+                args.put("scheduleMulai", DateFormatUtils.formatDate(masuk, "HH:mm", "HH:mm:ss"));
+                args.put("scheduleSelesai", DateFormatUtils.formatDate(selesai, "HH:mm", "HH:mm:ss"));
+                args.put("lokasi", lokasi);
+                args.put("izinTerlambat", izin);
+                args.put("copyData", copy);
+                args.put("userId", userId);
+                args.put("tanggalList", tanggalList.toJson());
+                args.put("scheduleId", idSchedule);
+
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_SCHEDULE), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    activity.showSuccess("Berhasil Update Schedule");
+                    viewSchedule(userId);
+                    setDefault();
+
+                } else {
+                    activity.showError("Update data gagal!");
+                }
+            }
+        });
+    }
+
     private void setDefault() {
         tv_tanggal.setText("");
         sp_status.setSelection(0);
@@ -285,6 +342,8 @@ public class Jadwal_Schedule_Fragment extends Fragment {
         tvSelesai_Kerja.setText("");
         cbCopy.setChecked(false);
         cbCopy.setEnabled(false);
+        idSchedule = "";
+        btnSimpan.setText("SIMPAN");
     }
 
     private void viewSchedule(final String item) {
@@ -328,7 +387,7 @@ public class Jadwal_Schedule_Fragment extends Fragment {
 
     }
 
-    private void setSpLokasi() {
+    private void setSpLokasi(final String selection) {
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -349,6 +408,14 @@ public class Jadwal_Schedule_Fragment extends Fragment {
                     ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, lokasiArray.asArray());
                     spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spLokasi.setAdapter(spinnerAdapter);
+                    if (!selection.isEmpty()) {
+                        for (int i = 0; i < spLokasi.getCount(); i++) {
+                            if (spLokasi.getItemAtPosition(i).equals(selection)) {
+                                spLokasi.setSelection(i);
+                                break;
+                            }
+                        }
+                    }
 
                 } else {
                     activity.showInfo("Lokasi Gagal Di Muat");
@@ -358,7 +425,7 @@ public class Jadwal_Schedule_Fragment extends Fragment {
     }
 
     @SuppressLint("NewApi")
-    private void setSpUser() {
+    private void setSpUser(final String user) {
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -387,6 +454,14 @@ public class Jadwal_Schedule_Fragment extends Fragment {
                     ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, userList.asArray());
                     spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spUser.setAdapter(spinnerAdapter);
+                    if (!user.isEmpty()) {
+                        for (int i = 0; i < spUser.getCount(); i++) {
+                            if (spUser.getItemAtPosition(i).equals(user)) {
+                                spUser.setSelection(i);
+                                break;
+                            }
+                        }
+                    }
                 } else {
                     activity.showInfo(result.get("message").asString());
                 }
@@ -410,6 +485,37 @@ public class Jadwal_Schedule_Fragment extends Fragment {
 
             }
         });
+    }
+
+    private void setSpStatus (final String selection) {
+        Resources res = getResources();
+        String[] stringArray = res.getStringArray(R.array.atur_status);
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, stringArray) {
+            @Override
+            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                final View v = super.getDropDownView(position, convertView, parent);
+                v.post(new Runnable() {
+                    @SuppressLint("WrongConstant")
+                    @Override
+                    public void run() {
+                        ((TextView) v.findViewById(android.R.id.text1)).setSingleLine(false);
+                        ((TextView) v.findViewById(android.R.id.text1)).setGravity(Gravity.CENTER);
+                        ((TextView) v.findViewById(android.R.id.text1)).setTextAlignment(Gravity.CENTER);
+                    }
+                });
+                return v;
+            }
+        };
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sp_status.setAdapter(spinnerAdapter);
+        if (!selection.isEmpty()) {
+            for (int in = 0; in < sp_status.getCount(); in++) {
+                if (sp_status.getItemAtPosition(in).toString().contains(selection)) {
+                    sp_status.setSelection(in);
+                    break;
+                }
+            }
+        }
     }
 
     @SuppressLint("NewApi")
@@ -562,7 +668,15 @@ public class Jadwal_Schedule_Fragment extends Fragment {
                 }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(Nson parent, View view, int position) {
-
+                        setDefault();
+                        tv_tanggal.setText(scheduleArray.get(position).get("TANGGAL").asString());
+                        setSpUser(scheduleArray.get(position).get("NAMA_USER").asString());
+                        setSpStatus(scheduleArray.get(position).get("STATUS").asString());
+                        setSpLokasi(scheduleArray.get(position).get("LOKASI").asString());
+                        tvMulai_Kerja.setText(scheduleArray.get(position).get("SCHEDULE_MULAI").asString());
+                        tvSelesai_Kerja.setText(scheduleArray.get(position).get("SCHEDULE_SELESAI").asString());
+                        btnSimpan.setText("UPDATE");
+                        idSchedule = scheduleArray.get(position).get("ID").asString();
                     }
                 })
         );
