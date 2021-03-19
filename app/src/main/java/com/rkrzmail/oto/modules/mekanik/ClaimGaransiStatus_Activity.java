@@ -1,10 +1,16 @@
 package com.rkrzmail.oto.modules.mekanik;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -14,10 +20,13 @@ import android.widget.TextView;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
+import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.srv.NikitaAutoComplete;
+import com.rkrzmail.srv.NsonAutoCompleteAdapter;
 import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
@@ -27,6 +36,7 @@ import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.SET_CLAIM;
 import static com.rkrzmail.utils.APIUrls.SET_REKENING_BANK;
+import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.Tools.setFormatDayAndMonthToDb;
 import static java.nio.file.Files.find;
 
@@ -34,8 +44,12 @@ public class ClaimGaransiStatus_Activity extends AppActivity {
 
     private TextView tvTanggal;
     private Spinner spStatus , spNorek;
-    private EditText etNoclaim, etKeterangan, etResi, etTotalRefund;
+    private EditText etNoclaim, etKeterangan, etResi, etTotalRefund, etBiayaTf;
     private Nson rekeningList = Nson.newArray();
+    private Nson data;
+    private NikitaAutoComplete etBankTerbayar;
+    private String noRek="", namaBank="",idClaim="",totalRefund="",updateOrsave="";
+    private final Nson cekDataList = Nson.newArray();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,10 +74,24 @@ public class ClaimGaransiStatus_Activity extends AppActivity {
         etKeterangan = findViewById(R.id.et_keterangan_claim);
         etResi = findViewById(R.id.et_noresi_claim);
         etTotalRefund = findViewById(R.id.et_totalRefund);
+        etBankTerbayar = findViewById(R.id.et_bankTerbayar_claim);
+        etBiayaTf = findViewById(R.id.et_biayaTf_claim);
         spNorek = findViewById(R.id.sp_norek);
 
+        etBankTerbayar.setEnabled(false);
+        etBiayaTf.setEnabled(false);
+
         setSpRek();
+        loadData();
+        CekData();
+        initAutoCompleteNamaBank();
+        initListener();
+
+    }
+
+    private void initListener(){
         etTotalRefund.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etTotalRefund));
+        etBiayaTf.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etBiayaTf));
 
         spStatus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -79,16 +107,30 @@ public class ClaimGaransiStatus_Activity extends AppActivity {
                     etNoclaim.setEnabled(false);
                     etTotalRefund.setEnabled(false);
                     spNorek.setEnabled(false);
-                }else if (item.equalsIgnoreCase("DITERIMA")){
+                }else if (item.equalsIgnoreCase("TERIMA REFUND")){
                     etTotalRefund.setEnabled(true);
                     spNorek.setEnabled(true);
                     etResi.setEnabled(false);
                     etNoclaim.setEnabled(false);
+                }else if (item.equalsIgnoreCase("BAYAR CLAIM")){
+                    etTotalRefund.setEnabled(true);
+                    spNorek.setEnabled(true);
+                    etResi.setEnabled(false);
+                    etNoclaim.setEnabled(false);
+                    etBankTerbayar.setEnabled(true);
+                    etBiayaTf.setEnabled(true);
+                    if(totalRefund != null || totalRefund != "0"){
+                        etTotalRefund.setText(totalRefund);
+                    }else {
+                        etTotalRefund.setText("");
+                    }
                 }else {
                     etTotalRefund.setEnabled(false);
                     spNorek.setEnabled(false);
                     etResi.setEnabled(false);
                     etNoclaim.setEnabled(false);
+                    etBankTerbayar.setEnabled(false);
+                    etBiayaTf.setEnabled(false);
                 }
             }
 
@@ -105,7 +147,6 @@ public class ClaimGaransiStatus_Activity extends AppActivity {
             }
         });
 
-
         find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,34 +160,45 @@ public class ClaimGaransiStatus_Activity extends AppActivity {
                     if (etNoclaim.getText().toString().isEmpty()){
                         showWarning("No Claim Belum di Pilih");
                         etNoclaim.performClick();
+                    }else {
+                        SimpanData(updateOrsave);
                     }
                 }else if (spStatus.getSelectedItem().toString().equals("KIRIM PART")){
                     if (etResi.getText().toString().isEmpty()){
                         showWarning("No Resi Belum di Pilih");
                         etResi.performClick();
+                    }else {
+                        SimpanData(updateOrsave);
                     }
-                } else if (spStatus.getSelectedItem().toString().equals("DITERIMA")){
+                }else if (spStatus.getSelectedItem().toString().equals("TERIMA REFUND")){
                     if (etTotalRefund.getText().toString().isEmpty()){
                         showWarning("Total Refund Belum di Pilih");
                         etTotalRefund.performClick();
                     }else if (spNorek.getSelectedItem().toString().equals("--PILIH--")){
                         showWarning("Rekening Internal Belum di Pilih");
                         spNorek.performClick();
+                    }else if (etBankTerbayar.getText().toString().isEmpty()) {
+                        showWarning("Rekening Internal Belum di Pilih");
+                        spNorek.performClick();
+                    }else{
+                        SimpanData(updateOrsave);
                     }
                 }else{
-                    SimpanData();
+                    SimpanData(updateOrsave);
                 }
+
             }
 
         });
     }
 
-    private void SimpanData(){
-        final String tanggal = tvTanggal.getText().toString();
-        final String noRek = spNorek.getSelectedItem().toString();
-        if (noRek.contains("--PILIH--")){
-            noRek.replace("--PILIH--", "");
+    private void SimpanData(final String updateOrsimpan){
+        String rek = spNorek.getSelectedItem().toString();
+        if (spNorek.getSelectedItem().toString().contains("--PILIH--")){
+            rek = spNorek.getSelectedItem().toString().replace("--PILIH--", "");
         }
+        final String noRekSp = rek;
+        final String tanggal = tvTanggal.getText().toString();
 
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
@@ -157,13 +209,17 @@ public class ClaimGaransiStatus_Activity extends AppActivity {
 
                 args.put("action", "add");
                 args.put("kategori", "CLAIM");
-                args.put("claimId", etNoclaim.getText().toString());
+                args.put("updateOrsimpan", updateOrsimpan);
+                args.put("claimId", idClaim);
                 args.put("status", spStatus.getSelectedItem().toString());
+                args.put("noClaim", etNoclaim.getText().toString());
                 args.put("tanggal", setFormatDayAndMonthToDb(tanggal));
                 args.put("keterangan", etKeterangan.getText().toString().toUpperCase());
                 args.put("noResi", etResi.getText().toString());
-                args.put("refundRp", etTotalRefund.getText().toString());
-                args.put("rekInternal", noRek);
+                args.put("bankTerbayar", etBankTerbayar.getText().toString().trim());
+                args.put("biayaTransfer", formatOnlyNumber(etBiayaTf.getText().toString()));
+                args.put("refundRp", formatOnlyNumber(etTotalRefund.getText().toString()));
+                args.put("rekInternal", noRekSp);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CLAIM), args));
             }
@@ -172,7 +228,7 @@ public class ClaimGaransiStatus_Activity extends AppActivity {
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     showInfo("Sukses Menyimpan Data");
-                    finish();
+                    startActivity(new Intent(getActivity(),ClaimGaransiPart_Activity.class));
                 } else {
                     showInfo("Gagagl Menyimpan Data");
                 }
@@ -220,12 +276,14 @@ public class ClaimGaransiStatus_Activity extends AppActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (adapterView.getSelectedItem().toString().equals(rekeningList.get(i).get("COMPARISON").asString())) {
-//                    noRek = rekeningList.get(i).get("NO_REKENING").asString();
-//                    namaBank = rekeningList.get(i).get("BANK_NAME").asString();
+                    noRek = rekeningList.get(i).get("NO_REKENING").asString();
+                    namaBank = rekeningList.get(i).get("BANK_NAME").asString();
 //                    offUs = rekeningList.get(i).get("OFF_US").asString();
+                    etBankTerbayar.setEnabled(true);
+                    etBiayaTf.setEnabled(true);
                 } else {
-//                    noRek = "";
-//                    namaBank = "";
+                    noRek = "";
+                    namaBank = "";
 //                    offUs = "";
                 }
             }
@@ -236,4 +294,94 @@ public class ClaimGaransiStatus_Activity extends AppActivity {
             }
         });
     }
+
+    private void initAutoCompleteNamaBank() {
+        etBankTerbayar.setThreshold(3);
+        etBankTerbayar.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
+            @Override
+            public Nson onFindNson(Context context, String bookTitle) {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "AUTO COMPLETE");
+                args.put("search", bookTitle);
+                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_REKENING_BANK), args));
+                if (result.get("data").asArray().isEmpty()) {
+                    return result.get("message");
+                }
+                return result.get("data");
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                if (convertView == null) {
+                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    convertView = inflater.inflate(R.layout.item_suggestion, parent, false);
+                }
+                findView(convertView, R.id.title, TextView.class).setText((getItem(position).get("BANK_NAME").asString()));
+                return convertView;
+            }
+        });
+
+        etBankTerbayar.setLoadingIndicator((android.widget.ProgressBar) findViewById(R.id.progress_bar));
+        etBankTerbayar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
+                String bankName = n.get("BANK_NAME").asString();
+                etBiayaTf.setEnabled(!bankName.equalsIgnoreCase(namaBank));
+                etBankTerbayar.setText(bankName);
+                etBankTerbayar.setSelection(etBankTerbayar.getText().length());
+                if (namaBank.isEmpty() && noRek.isEmpty()) {
+                    viewFocus(spNorek);
+                    TextView errorText = (TextView) spNorek.getSelectedView();
+                    errorText.setError("REKENING INTERNAL BELUM DI PILIH");
+                    errorText.setTextColor(Color.RED);//just to highlight that this is an error
+                }
+            }
+        });
+    }
+
+    private void CekData(){
+        MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
+            Nson result;
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "CEKDATA");
+                args.put("idClaim", idClaim);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CLAIM), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    Integer isUpdate = result.get("data").get(0).get("COUNT").asInteger();
+                    if(isUpdate == 0){
+                        updateOrsave = "SAVE";
+                    }else {
+                        updateOrsave = "UPDATE";
+                    }
+                }
+            }
+        });
+    }
+
+    private void viewFocus(final View view) {
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+                view.setFocusable(true);
+                view.requestFocusFromTouch();
+                view.requestFocus();
+                view.performClick();
+            }
+        });
+    }
+
+    private void loadData(){
+        data = Nson.readJson(getIntentStringExtra(DATA));
+        idClaim = data.get("ID").asString();
+        totalRefund = data.get("TOTAL_REFUND").asString();
+    }
+
 }

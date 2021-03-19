@@ -241,6 +241,59 @@
 
             </LinearLayout>
 
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/tl_bank_terbayar"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.rkrzmail.srv.NikitaAutoComplete
+                        android:id="@+id/et_bankTerbayar_claim"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:padding="@dimen/paddingLarge"
+                        android:inputType="textCapCharacters"
+                        android:hint="@string/bank_terbayar_uppercase"
+                        tools:ignore="Autofill"/>
+
+                </android.support.design.widget.TextInputLayout>
+
+                <ProgressBar
+                    android:id="@+id/progress_bar"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|right"
+                    tools:ignore="RtlHardcoded"
+                    android:layout_marginEnd="10dp"
+                    android:visibility="gone" />
+
+            </FrameLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/tl_biaya_tf"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
+
+                <EditText
+                    android:id="@+id/et_biayaTf_claim"
+                    android:layout_width="match_parent"
+                    android:inputType="numberDecimal"
+                    android:textSize="14sp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/biaya_transfer_uppercase"
+                    tools:ignore="Autofill"/>
+
+            </android.support.design.widget.TextInputLayout>
+
             <Button
                 android:id="@+id/btn_simpan"
                 android:layout_width="wrap_content"

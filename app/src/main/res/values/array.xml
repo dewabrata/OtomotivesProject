@@ -127,6 +127,8 @@
         <item>INFO PELANGGAN</item>
         <item>DITERIMA</item>
         <item>DITOLAK</item>
+        <item>TERIMA REFUND</item>
+        <item>BAYAR CLAIM</item>
     </string-array>
 
     <string-array name="posisi_karyawan">

@@ -30,6 +30,7 @@ import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.SET_CLAIM;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_CLAIM;
+import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
 
 public class ClaimGaransiPart_Activity extends AppActivity {
@@ -67,14 +68,16 @@ public class ClaimGaransiPart_Activity extends AppActivity {
                 viewHolder.find(R.id.tv_tgl_lkk_claim, TextView.class).setText(nListArray.get(position).get("TANGGAL_LKK").asString());
                 viewHolder.find(R.id.tv_nama_part, TextView.class).setText(nListArray.get(position).get("NAMA_PART").asString());
                 viewHolder.find(R.id.tv_noPart_claim, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
-                viewHolder.find(R.id.tv_harga, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_status, TextView.class).setText(nListArray.get(position).get("").asString());
-                viewHolder.find(R.id.tv_keterangan, TextView.class).setText(nListArray.get(position).get("").asString());
+                viewHolder.find(R.id.tv_harga, TextView.class).setText(nListArray.get(position).get("BIAYA_TRANSFER").asString());
+                viewHolder.find(R.id.tv_status, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
+                viewHolder.find(R.id.tv_keterangan, TextView.class).setText(nListArray.get(position).get("KETERANGAN").asString());
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
-                startActivity(new Intent(getActivity(), ClaimGaransiStatus_Activity.class));
+                Intent i = new Intent(getActivity(), ClaimGaransiStatus_Activity.class);
+                i.putExtra(DATA, nListArray.get(position).toJson());
+                startActivity(i);
             }
         }));
         catchData();
