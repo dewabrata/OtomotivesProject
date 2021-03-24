@@ -264,6 +264,13 @@ public class AppActivity extends AppCompatActivity {
         Messagebox.showDialog(getActivity(), tittle, message, "OK", "TIDAK", onClickListenerOK, onClickListenerNO);
     }
 
+    public void showInfoDialog(String tittle, String message, DialogInterface.OnClickListener onClickListenerOK) {
+        if (onClickListenerOK == null) {
+            onClickListenerOK = onClickListenerDismiss;
+        }
+        Messagebox.showDialog(getActivity(), tittle, message, "OK", "", onClickListenerOK, null);
+    }
+
     private final DialogInterface.OnClickListener onClickListenerDismiss = new DialogInterface.OnClickListener() {
         public void onClick(DialogInterface dialog, int which) {
             dialog.dismiss();
@@ -1176,5 +1183,24 @@ public class AppActivity extends AppCompatActivity {
             return;
         showNotification(context, "Info", messageInfo, "NOMOR PONSEL", intent);
     }
+
+    public void viewFocus(final View view) {
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+                view.setFocusable(true);
+                view.requestFocusFromTouch();
+                view.requestFocus();
+                view.performClick();
+            }
+        });
+    }
+
+    public void setErrorSpinner(Spinner errorSpinner, String errorMessage) {
+        TextView tvError = (TextView) errorSpinner.getSelectedView();
+        tvError.setError(errorMessage);
+        viewFocus(tvError);
+    }
+
 
 }

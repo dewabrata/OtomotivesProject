@@ -22,6 +22,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
+import com.naa.data.UtilityAndroid;
 import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
@@ -45,10 +46,12 @@ import java.util.Map;
 
 import in.galaxyofandroid.spinerdialog.SpinnerDialog;
 
+import static com.rkrzmail.utils.APIUrls.JURNAL_KAS;
 import static com.rkrzmail.utils.APIUrls.SET_REKENING_BANK;
 import static com.rkrzmail.utils.APIUrls.VIEW_MST;
 import static com.rkrzmail.utils.APIUrls.VIEW_NOMOR_POLISI;
 import static com.rkrzmail.utils.APIUrls.VIEW_SUGGESTION;
+import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CONTACT;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_REKENING;
 
@@ -66,6 +69,7 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
     private AutoCompleteDialog autoCompleteDialog;
     private DialogInterface dialogInterface;
 
+    private final Nson dataRekeningList = Nson.newArray();
     private List<String> principalList = new ArrayList<>();
     private ArrayList<String> perusahaanList = new ArrayList<>();
     private ArrayAdapter<String> spRekAdapter;
@@ -74,6 +78,7 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
     private String tipeSupplier = "";
     private String tipePembayaran = "";
     private int sizeSupplier = 0;
+    private int lastBalanceKas = 0, lastBalanceKasBank = 0;
     final long[] tglPesanTimeMilis = {0};
 
     private boolean flagValidation = false;
@@ -85,6 +90,7 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
         setContentView(R.layout.activity_atur_terima_part);
         initToolbar();
         initComponent();
+        getLastBalanceKas("");
     }
 
     private void initToolbar() {
@@ -145,8 +151,8 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
                 Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_principal, LinearLayout.class), tipeSupplier.equals("PRINCIPAL") && sizeSupplier > 1);
                 Tools.setViewAndChildrenEnabled(find(R.id.ly_namaSup_terimaPart, LinearLayout.class),
                         !tipeSupplier.equals("PRINCIPAL") &&
-                        !tipeSupplier.equals("--PILIH--") &&
-                        !tipeSupplier.equals("ECOMERCE"));
+                                !tipeSupplier.equals("--PILIH--") &&
+                                !tipeSupplier.equals("ECOMERCE"));
             }
 
             @Override
@@ -236,14 +242,14 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
     }
 
     private void initAutoCompletePerusahaan() {
-        etNamaPerusahaan.setThreshold(6);
+        etNamaPerusahaan.setThreshold(3);
         etNamaPerusahaan.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
             @Override
             public Nson onFindNson(Context context, String bookTitle) {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "PERUSAHAAN");
-                args.put("namaPerusahaan", bookTitle);
+                args.put("namaPerusahaan", bookTitle.replace("PT. ", ""));
                 Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SUGGESTION), args));
 
                 return result.get("data");
@@ -256,12 +262,12 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
                     convertView = inflater.inflate(R.layout.item_suggestion, parent, false);
                 }
                 String jenis;
-                if(!getItem(position).get("NAMA_PERUSAHAAN").asString().isEmpty()){
+                if (!getItem(position).get("NAMA_PERUSAHAAN").asString().isEmpty()) {
                     jenis = getItem(position).get("NAMA_PERUSAHAAN").asString();
-                }else{
+                } else {
                     jenis = getItem(position).get("NAMA_USAHA_TOKO").asString();
                 }
-                if(!getItem(position).get("KOTA_KABUPATEN").asString().isEmpty()){
+                if (!getItem(position).get("KOTA_KABUPATEN").asString().isEmpty()) {
                     jenis = jenis + "- " + getItem(position).get("KOTA_KABUPATEN").asString();
                 }
                 findView(convertView, R.id.title, TextView.class).setText(jenis);
@@ -275,9 +281,9 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Nson nson = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
                 String jenis;
-                if(!nson.get("NAMA_PERUSAHAAN").asString().isEmpty()){
+                if (!nson.get("NAMA_PERUSAHAAN").asString().isEmpty()) {
                     jenis = nson.get("NAMA_PERUSAHAAN").asString();
-                }else{
+                } else {
                     jenis = nson.get("NAMA_USAHA_TOKO").asString();
                 }
                 etNamaPerusahaan.setText(jenis);
@@ -350,13 +356,37 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
                     if (result.size() > 0) {
                         str.add("--PILIH--");
                     }
+                    dataRekeningList.add("");
                     for (int i = 0; i < result.size(); i++) {
+                        dataRekeningList.add(Nson.newObject()
+                                .set("ID", result.get(i).get("ID"))
+                                .set("BANK_NAME", result.get(i).get("BANK_NAME"))
+                                .set("NO_REKENING", result.get(i).get("NO_REKENING").asString())
+                                .set("EDC", result.get(i).get("EDC_ACTIVE"))
+                                .set("OFF_US", result.get(i).get("OFF_US"))
+                                .set("COMPARISON", result.get(i).get("BANK_NAME").asString() + " - " + result.get(i).get("NO_REKENING").asString()));
                         str.add(result.get(i).get("BANK_NAME").asString() + " - " + result.get(i).get("NO_REKENING").asString());
                     }
                     spRekAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, str);
                     spRekAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spRekening.setAdapter(spRekAdapter);
                     spRekAdapter.notifyDataSetChanged();
+                    spRekening.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            String item = adapterView.getSelectedItem().toString();
+                            if (item.equals(dataRekeningList.get(i).get("COMPARISON").asString())) {
+                                String noRek = dataRekeningList.get(i).get("NO_REKENING").asString();
+                                String namaBank = dataRekeningList.get(i).get("BANK_NAME").asString();
+                                getLastBalanceKas(noRek);
+                            }
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+
+                        }
+                    });
                 } else {
                     setSpRek();
                 }
@@ -409,6 +439,7 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
         nson.set("PRINCIPAL", find(R.id.sp_nama_principal, Spinner.class).getSelectedItem().toString().equals("--PILIH--") ? "" : find(R.id.sp_nama_principal, Spinner.class).getSelectedItem().toString());
         nson.set("PERUSAHAAN", etNamaPerusahaan.getText().toString());
         nson.set("NO_TRACE", find(R.id.et_no_trace, EditText.class).getText().toString());
+        nson.set("BALANCE", pembayaran.equals("CASH ON DELIVERY") ? lastBalanceKas : pembayaran.equals("TRANSFER") ? lastBalanceKasBank : 0);
 
         showInfo("Catatkan Detail Part");
         return nson;
@@ -560,6 +591,12 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
                     return;
                 }
 
+                if(etNamaPerusahaan.isEnabled() && etNamaPerusahaan.getText().toString().isEmpty()){
+                    etNamaPerusahaan.setError("NAMA PERUSAHAAN HARUS DI ISI");
+                    viewFocus(etNamaPerusahaan);
+                    return;
+                }
+
                 Intent i = new Intent(AturTerimaPart_Activity.this, AturDetail_TerimaPart_Activity.class);
                 i.putExtra("detail", sendObject().toJson());
                 startActivityForResult(i, TerimaPart_Activity.REQUEST_TERIMA_PART);
@@ -567,17 +604,28 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
         }
     }
 
-    private void viewFocus(final View view) {
-        view.post(new Runnable() {
+    private void getLastBalanceKas(final String noRek) {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
             @Override
             public void run() {
-                view.setFocusable(true);
-                view.requestFocusFromTouch();
-                view.requestFocus();
-                view.performClick();
+                String[] args = new String[3];
+                args[0] = "CID=" + UtilityAndroid.getSetting(getApplicationContext(), "CID", "").trim();
+                args[1] = "noRekeningInternal=" + noRek;
+                result = Nson.readJson(InternetX.getHttpConnectionX(AppApplication.getBaseUrlV4(JURNAL_KAS), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asBoolean()) {
+                    lastBalanceKas = result.get("data").get("BALANCE_KAS").asInteger();
+                    lastBalanceKasBank = result.get("data").get("BALANCE_KAS_BANK").asInteger();
+                }
             }
         });
     }
+
 
     private Calendar parseTglPesan(long tglPesan) {
         Calendar calendar = Calendar.getInstance();

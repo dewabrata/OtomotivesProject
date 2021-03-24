@@ -87,8 +87,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:hint="@string/discount_part_uppercase"
-                    android:visibility="gone">
+                    android:hint="@string/discount_part_uppercase">
 
                     <EditText
                         android:id="@+id/et_discPart_jumlah_harga_part"

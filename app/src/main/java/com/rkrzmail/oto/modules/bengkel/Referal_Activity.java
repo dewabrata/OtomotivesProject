@@ -51,7 +51,7 @@ public class Referal_Activity extends AppActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(new Intent(getActivity(), ReferensikanOtomotives_Activity.class), 10);
+                startActivityForResult(new Intent(getActivity(), AturReferal_Activity.class), 10);
             }
         });
 

@@ -16,7 +16,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -56,6 +55,7 @@ import static com.rkrzmail.utils.ConstUtils.MENUNGGU;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_HISTORY;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_KONFIRMASI;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_TAMBAH_PART_JASA_LAIN;
 import static com.rkrzmail.utils.ConstUtils.RP;
 import static com.rkrzmail.utils.ConstUtils.TAMBAH_PART;
@@ -82,13 +82,15 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
 
     private final Nson partJasaList = Nson.newArray();
     private final Nson keluhanList = Nson.newArray();
-    private Nson n;
+    private Nson data;
 
     private String sisaWaktuPaused = "";
     private String idCheckin = "", mekanik = "", catatanMekanik = "", idMekanikKerja = "", statusDone = "", noHp = "";
     private String totalBiaya = "";
     private String merkLKKWajib = "";
     private boolean isGaransiLKK = false;
+    private boolean isKeluhan = true;
+    private boolean isClaim = false;
 
     private int countClick = 0;
     private int kmKendaraan = 0;
@@ -101,10 +103,13 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
     private boolean isInspeksi = false;
     private boolean isNotWait = false, isKonfirmasiTambahan = false;
     private boolean isDissmissAndStop = false;
-    private boolean isLkk = false;
+    private boolean isLkkWajib = false;
+    private boolean isPersetujuanPart = false;
+    private boolean isHistory = false;
 
     private AlertDialog alertDialog;
     private CountDownTimer cTimer = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,43 +174,45 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
     }
 
     private void loadData() {
-        n = Nson.readJson(getIntentStringExtra(DATA));
+        data = Nson.readJson(getIntentStringExtra(DATA));
 
-        find(R.id.tl_jam_home).setVisibility(n.get("JAM_HOME").asString().isEmpty() | n.get("JAM_HOME") == null ? View.GONE : View.VISIBLE);
-        find(R.id.tl_alamat).setVisibility(n.get("ALAMAT").asString().isEmpty() | n.get("ALAMAT") == null ? View.GONE : View.VISIBLE);
-        find(R.id.tl_no_kunci).setVisibility(n.get("NO_KUNCI").asString().isEmpty() | n.get("NO_KUNCI") == null ? View.GONE : View.VISIBLE);
-        find(R.id.tl_pengambilan).setVisibility(n.get("PENGAMBILAN").asString().isEmpty() | n.get("PENGAMBILAN") == null ? View.GONE : View.VISIBLE);
-        isHplus = n.get("ANTRIAN").asString().equals("H+");
-        isRework = n.get("STATUS_SELESAI").asString().equals("MEKANIK PAUSE");
+        find(R.id.tl_jam_home).setVisibility(data.get("JAM_HOME").asString().isEmpty() | data.get("JAM_HOME") == null ? View.GONE : View.VISIBLE);
+        find(R.id.tl_alamat).setVisibility(data.get("ALAMAT").asString().isEmpty() | data.get("ALAMAT") == null ? View.GONE : View.VISIBLE);
+        find(R.id.tl_no_kunci).setVisibility(data.get("NO_KUNCI").asString().isEmpty() | data.get("NO_KUNCI") == null ? View.GONE : View.VISIBLE);
+        find(R.id.tl_pengambilan).setVisibility(data.get("PENGAMBILAN").asString().isEmpty() | data.get("PENGAMBILAN") == null ? View.GONE : View.VISIBLE);
+        isHplus = data.get("ANTRIAN").asString().equals("H+");
+        isRework = data.get("STATUS_SELESAI").asString().equals("MEKANIK PAUSE");
 
-        merkLKKWajib = n.get("MERK_LKK_WAJIB").asString();
-        totalBiaya = n.get("TOTAL_BIAYA").asString();
-        kmKendaraan = n.get("KM").asInteger();
-        isNotWait = n.get("TIDAK_MENUNGGU").asString().equals("Y") & !n.get("TIDAK_MENUNGGU").asString().isEmpty();
-        isKonfirmasiTambahan = n.get("KONFIRMASI_TAMBAHAN").asString().equals("Y") & !n.get("KONFIRMASI_TAMBAHAN").asString().isEmpty();
+        catatanMekanik = data.get("CATATAN_MEKANIK").asString();
+        merkLKKWajib = data.get("MERK_LKK_WAJIB").asString();
+        totalBiaya = data.get("TOTAL_BIAYA").asString();
+        kmKendaraan = data.get("KM").asInteger();
+        isNotWait = data.get("TIDAK_MENUNGGU").asString().equals("Y") & !data.get("TIDAK_MENUNGGU").asString().isEmpty();
+        isKonfirmasiTambahan = data.get("KONFIRMASI_TAMBAHAN").asString().equals("Y") & !data.get("KONFIRMASI_TAMBAHAN").asString().isEmpty();
         String lamaLayanan = totalWaktuKerja(
-                n.get("WAKTU_LAYANAN_LAMA_HARI").asString(),
-                n.get("WAKTU_LAYANAN_LAMA_JAM").asString(),
-                n.get("WAKTU_LAYANAN_LAMA_MENIT").asString());
-        noHp = n.get("NO_PONSEL").asString();
-        etNoAntrian.setText(n.get("NO_ANTRIAN").asString());
-        etNopol.setText(formatNopol(n.get("NOPOL").asString()));
-        etNoKunci.setText(n.get("NO_KUNCI").asString());
-        etNamaPelanggan.setText(n.get("NAMA_PELANGGAN").asString());
+                data.get("WAKTU_LAYANAN_LAMA_HARI").asString(),
+                data.get("WAKTU_LAYANAN_LAMA_JAM").asString(),
+                data.get("WAKTU_LAYANAN_LAMA_MENIT").asString());
+        noHp = data.get("NO_PONSEL").asString();
+        etNoAntrian.setText(data.get("NO_ANTRIAN").asString());
+        etNopol.setText(formatNopol(data.get("NOPOL").asString()));
+        etNoKunci.setText(data.get("NO_KUNCI").asString());
+        etNamaPelanggan.setText(data.get("NAMA_PELANGGAN").asString());
         etMulai.setText(lamaLayanan);
-        etSelesai.setText(Tools.setFormatDateTimeFromDb(n.get("ESTIMASI_SELESAI").asString(), "yyyy-MM-dd hh:mm", "dd/MM-hh:mm", false));
-        etJenis.setText(n.get("JENIS_KENDARAAN").asString());
-        etLayanan.setText(n.get("LAYANAN").asString());
-        etPengambilan.setText(n.get("PENGAMBILAN").asString());
-        etSisaWaktu.setText(n.get("SISA_WAKTU").asString());
-        idCheckin = n.get(ID).asString();
-        mekanik = n.get("MEKANIK").asString();
-        idMekanikKerja = n.get("MEKANIK_KERJA_ID").asString();
-        sisaWaktuPaused = n.get("SISA_WAKTU").asString();
+        etSelesai.setText(Tools.setFormatDateTimeFromDb(data.get("ESTIMASI_SELESAI").asString(), "yyyy-MM-dd hh:mm", "dd/MM-hh:mm", false));
+        etJenis.setText(data.get("JENIS_KENDARAAN").asString());
+        etLayanan.setText(data.get("LAYANAN").asString());
+        etPengambilan.setText(data.get("PENGAMBILAN").asString());
+        etSisaWaktu.setText(data.get("SISA_WAKTU").asString());
+        idCheckin = data.get(ID).asString();
+        mekanik = data.get("MEKANIK").asString();
+        idMekanikKerja = data.get("MEKANIK_KERJA_ID").asString();
+        sisaWaktuPaused = data.get("SISA_WAKTU").asString();
+        isHistory = !data.get("TOTAL_SERVICE").asString().isEmpty();
 
         find(R.id.cb_tidak_menunggu, CheckBox.class).setChecked(isNotWait);
-        find(R.id.cb_tambahPartJasa, CheckBox.class).setChecked(n.get("KONFIRMASI_TAMBAHAN").asString().equals("Y"));
-        find(R.id.cb_buangPart, CheckBox.class).setChecked(n.get("BUANG_PART").asString().equals("Y"));
+        find(R.id.cb_tambahPartJasa, CheckBox.class).setChecked(data.get("KONFIRMASI_TAMBAHAN").asString().equals("Y"));
+        find(R.id.cb_buangPart, CheckBox.class).setChecked(data.get("BUANG_PART").asString().equals("Y"));
 
         viewLayananPartJasa();
         viewKeluhan();
@@ -354,17 +361,37 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 if (isKm) {
                     if (etEditText.getText().toString().isEmpty()) {
                         showWarning("KM HARUS DI ISI");
+                        viewFocus(etEditText);
                     } else {
                         kmKendaraan = Integer.parseInt(formatOnlyNumber(etEditText.getText().toString()));
                         startWork();
                         alertDialog.dismiss();
                     }
                 } else {
-                    catatanMekanik = etEditText.getText().toString();
-                    alertDialog.dismiss();
-                    if (isDissmissAndStop) {
-                        stopWork();
+                    if(etEditText.getText().toString().isEmpty()){
+                        etEditText.setError("CATATAN MEKANIK HARUS DI ISI");
+                        viewFocus(etEditText);
+                    }else{
+                        catatanMekanik = etEditText.getText().toString();
+                        alertDialog.dismiss();
+                        if (isDissmissAndStop) {
+                            if(isPersetujuanPart){
+                                showInfoDialog("TAMBAH PART - JASA MASIH ADA YG MEMERLUKAN PERSETUJUAN", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.dismiss();
+                                    }
+                                });
+                            }else{
+                                if(isLkkWajib && isGaransiLKK && !isClaim){
+                                    showWarning("ADA PART WAJIB GARANSI YG HARUS DI PROSES");
+                                }else{
+                                    stopWork();
+                                }
+                            }
+                        }
                     }
+
                 }
             }
         });
@@ -429,7 +456,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     keluhanList.asArray().clear();
                     keluhanList.asArray().addAll(result.get("data").asArray());
-                    Log.d("no__", "runUI: " + keluhanList);
+                    isKeluhan = !keluhanList.asArray().isEmpty();
                 } else {
                     showInfo(result.get("message").asString());
                 }
@@ -465,14 +492,11 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     for (int i = 0; i < partJasaList.size(); i++) {
-                        waktuHari += partJasaList.get(i).get("WAKTU_KERJA_HARI").asInteger();
-                        waktuJam += partJasaList.get(i).get("WAKTU_KERJA_JAM").asInteger();
-                        waktuMenit += partJasaList.get(i).get("WAKTU_KERJA_MENIT").asInteger();
+                        if(partJasaList.get(i).get("PERSETUJUAN_PART_JASA").asString().equals("Y")){
+                            isPersetujuanPart = true;
+                        }
                         if (partJasaList.get(i).get("GARANSI_LAYANAN").asString().equals("Y")) {
                             isGaransiLKK = true;
-                        }
-                        if (partJasaList.get(i).get("MERK").asString().equals(merkLKKWajib)) {
-                            isLkk = true;
                         }
                         if (partJasaList.get(i).get("INSPEKSI_PART").asString().equals("Y") ||
                                 partJasaList.get(i).get("INSPEKSI_JASA").asString().equals("Y") ||
@@ -480,6 +504,15 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                                 partJasaList.get(i).get("INSPEKSI_MST_JASA").asString().equals("Y")) {
                             isInspeksi = true;
                         }
+                        if (partJasaList.get(i).get("MERK_PART").asString().equals(merkLKKWajib)) {
+                            isLkkWajib = true;
+                        }
+                        if(partJasaList.get(i).get("CLAIM").asString().equals("Y")){
+                           isClaim = true;
+                        }
+                        waktuHari += partJasaList.get(i).get("WAKTU_KERJA_HARI").asInteger();
+                        waktuJam += partJasaList.get(i).get("WAKTU_KERJA_JAM").asInteger();
+                        waktuMenit += partJasaList.get(i).get("WAKTU_KERJA_MENIT").asInteger();
                     }
                 } else {
                     showInfo(result.get("message").asString());
@@ -594,7 +627,6 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    //showMessageInvalidNotif(getActivity(), result.get("data").get("MESSAGE_INFO").asString(), null);
                     stopTimer();
                     showSuccess("Pekerjaan Selesai");
                     AppApplication.getMessageTrigger();
@@ -674,10 +706,23 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                         showWarning("Catatan Harus di Isi", Toast.LENGTH_LONG);
                         initEditTextDialog(false);
                     } else {
-                        stopWork();
+                        if(isPersetujuanPart){
+                            showInfoDialog("TAMBAH PART - JASA MASIH ADA YG MEMERLUKAN PERSETUJUAN", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            });
+                        }else{
+                            if(isLkkWajib && isGaransiLKK && !isClaim){
+                                showWarning("ADA PART WAJIB GARANSI YG HARUS DI PROSES");
+                            }else{
+                                stopWork();
+                            }
+                        }
                     }
                 } else {
-                    showWarning("Pekerjaan Belum di Mulai");
+                    showWarning("PEKERJAAN BELUM DI MULAI");
                 }
                 break;
             case R.id.imgBtn_start:
@@ -702,7 +747,11 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 initPointLayananDialog();
                 break;
             case R.id.img_btn_keluhan:
-                initKeluhanDialog();
+                if(isKeluhan){
+                    initKeluhanDialog();
+                }else{
+                    showWarning("TIDAK ADA KELUHAN TERSEDIA");
+                }
                 break;
             case R.id.img_btn_lkk:
                 SetDataForClaim();
@@ -724,10 +773,15 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 startActivityForResult(intent, REQUEST_TAMBAH_PART_JASA_LAIN);
                 break;
             case R.id.img_btn_history:
-                intent = new Intent(getActivity(), History_Activity.class);
-                intent.putExtra("ALL", "ALL");
-                intent.putExtra("NOPOL", etNopol.getText().toString().replaceAll(" ", ""));
-                startActivityForResult(intent, REQUEST_HISTORY);
+                if(isHistory){
+                    intent = new Intent(getActivity(), History_Activity.class);
+                    intent.putExtra("ALL", "ALL");
+                    intent.putExtra("NOPOL", etNopol.getText().toString().replaceAll(" ", ""));
+                    startActivityForResult(intent, REQUEST_HISTORY);
+                }else{
+                    showWarning("TIDAK ADA HISTORY TERSEDIA");
+                }
+
                 break;
             case R.id.img_btn_katalog:
                 showInfo("SEDANG DALAM TAHAP PENGEMBANGAN");
@@ -747,20 +801,19 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
     private void SetDataForClaim() {
         Nson nson = Nson.newObject();
         nson.set("IDCHECKIN", idCheckin);
-        nson.set("TANGGAL_CHECKIN", n.get("TANGGAL_CHECKIN").asString());
+        nson.set("TANGGAL_CHECKIN", data.get("TANGGAL_CHECKIN").asString());
         nson.set("NAMA_MEKANIK", mekanik);
-        nson.set("NOPOL", n.get("NOPOL").asString());
-        nson.set("KM", n.get("KM").asString());
-        nson.set("MERK", n.get("MERK").asString());
-        nson.set("VARIAN", n.get("VARIAN").asString());
-        nson.set("KODE_TIPE", n.get("KODE_TIPE").asString());
-        nson.set("TAHUN_PRODUKSI", n.get("TAHUN_PRODUKSI").asString());
-        nson.set("TANGGAL_PEMBELIAN", n.get("TANGGAL_PEMBELIAN").asString());
-
+        nson.set("NOPOL", data.get("NOPOL").asString());
+        nson.set("KM", data.get("KM").asString());
+        nson.set("MERK", data.get("MERK").asString());
+        nson.set("VARIAN", data.get("VARIAN").asString());
+        nson.set("KODE_TIPE", data.get("KODE_TIPE").asString());
+        nson.set("TAHUN_PRODUKSI", data.get("TAHUN_PRODUKSI").asString());
+        nson.set("TANGGAL_PEMBELIAN", data.get("TANGGAL_PEMBELIAN").asString());
 
         Intent i = new Intent(getActivity(), LkkClaimMekanik_Activity.class);
         i.putExtra(DATA, nson.toJson());
-        startActivity(i);
+        startActivityForResult(i, REQUEST_KONFIRMASI);
     }
 
     @Override
@@ -768,11 +821,12 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case REQUEST_DETAIL:
-                    showSuccess("SUKSES MENAMBAHKAN CLAIM PARTS", Toast.LENGTH_LONG);
-                    break;
                 case REQUEST_TAMBAH_PART_JASA_LAIN:
                 case REQUEST_BARCODE:
+                    viewLayananPartJasa();
+                    break;
+                case REQUEST_KONFIRMASI:
+                    showSuccess("GARANSI PART TELAH DI TAMBAHKAN");
                     viewLayananPartJasa();
                     break;
             }

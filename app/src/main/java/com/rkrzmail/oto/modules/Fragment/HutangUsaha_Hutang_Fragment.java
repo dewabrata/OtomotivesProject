@@ -112,7 +112,7 @@ public class HutangUsaha_Hutang_Fragment extends Fragment {
                 if(!hutangList.get(position).get("NAMA_PERUSAHAAN").asString().isEmpty()){
                     perusahaan = hutangList.get(position).get("NAMA_PERUSAHAAN").asString();
                 }else{
-                    perusahaan = hutangList.get(position).get("NAMA_PELANGGAN").asString();
+                    perusahaan = hutangList.get(position).get("NAMA_KREDITUR").asString();
                 }
 
                 viewHolder.find(R.id.tv_tgl_transaksi, TextView.class).setText(tglTransaksi);

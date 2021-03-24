@@ -14,6 +14,7 @@
         android:orientation="vertical">
 
         <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="@style/AppTheme.AppBarOverlay">
@@ -22,7 +23,7 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <ScrollView
+        <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -34,20 +35,40 @@
                 android:padding="5dp">
 
                 <android.support.design.widget.TextInputLayout
-                    android:id="@+id/tl_nama_user"
+                    android:id="@+id/tl_nohp_user"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:helperTextEnabled="true">
 
+                    <EditText
+                        android:id="@+id/et_no_ponsel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/no_ponsel_uppercase"
+                        android:inputType="phone"
+                        android:maxLength="19"
+                        android:textSize="14sp"
+                        tools:ignore="Autofill" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/tl_nama_user"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:helperTextEnabled="true"
+                    android:layout_marginTop="5dp">
 
                     <EditText
                         android:id="@+id/txtNamaKaryawan"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="NAMA"
+                        android:hint="@string/nama_uppercase"
                         android:inputType="textPersonName|textCapSentences"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:ignore="Autofill" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -82,9 +103,10 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
-                        android:text="TANGGAL LAHIR"
+                        android:text="@string/tanggal_lahir_uppercase"
                         android:textColor="@color/grey_900"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textSize="13sp"/>
 
                     <RelativeLayout
                         android:layout_width="0dp"
@@ -122,9 +144,10 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
-                        android:text="KELAMIN"
+                        android:text="@string/kelamin_uppercase"
                         android:textColor="@color/grey_900"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textSize="13sp"/>
 
                     <RelativeLayout
                         android:layout_width="0dp"
@@ -143,25 +166,6 @@
                     </RelativeLayout>
 
                 </LinearLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/tl_nohp_user"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    app:helperTextEnabled="true">
-
-                    <EditText
-                        android:id="@+id/txtNoPonsel"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="NO. PONSEL"
-                        android:inputType="phone"
-                        android:maxLength="19"
-                        android:textSize="14sp" />
-
-                </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/tl_email_user"
@@ -215,9 +219,10 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
-                        android:text="TANGGAL MASUK"
+                        android:text="@string/tanggal_masuk_uppercase"
                         android:textColor="@color/grey_900"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textSize="13sp"/>
 
                     <RelativeLayout
                         android:layout_width="0dp"
@@ -251,12 +256,50 @@
                     android:paddingEnd="@dimen/paddingMedium">
 
                     <TextView
+                        android:id="@+id/posisi"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
-                        android:text="FUNGSI MEKANIK"
+                        android:text="@string/posisi_uppercase"
                         android:textColor="@color/grey_900"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textSize="13sp"/>
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="34dp"
+                        android:layout_weight="6"
+                        android:background="@drawable/background_edittext">
+
+                        <Spinner
+                            android:id="@+id/sp_posisi"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAlignment="center" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/paddingMedium"
+                    android:layout_marginBottom="@dimen/paddingMedium"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/paddingMedium"
+                    android:paddingEnd="@dimen/paddingMedium">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:text="@string/fungsi_mekanik_uppercase"
+                        android:textColor="@color/grey_900"
+                        android:textStyle="bold"
+                        android:textSize="13sp"/>
 
                     <RelativeLayout
                         android:layout_width="0dp"
@@ -286,48 +329,14 @@
                     android:paddingEnd="@dimen/paddingMedium">
 
                     <TextView
-                        android:id="@+id/posisi"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="3"
-                        android:text="POSISI"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold" />
-
-                    <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_height="34dp"
-                        android:layout_weight="6"
-                        android:background="@drawable/background_edittext">
-
-                        <Spinner
-                            android:id="@+id/spinnerPosisi"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:textAlignment="center" />
-
-                    </RelativeLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/paddingMedium"
-                    android:layout_marginBottom="@dimen/paddingMedium"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:paddingStart="@dimen/paddingMedium"
-                    android:paddingEnd="@dimen/paddingMedium">
-
-                    <TextView
                         android:id="@+id/status"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
-                        android:text="STATUS"
+                        android:text="@string/status_uppercase"
                         android:textColor="@color/grey_900"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textSize="13sp"/>
 
                     <RelativeLayout
                         android:layout_width="0dp"
@@ -354,16 +363,18 @@
                     android:gravity="center"
                     android:orientation="horizontal"
                     android:paddingStart="@dimen/paddingMedium"
-                    android:paddingEnd="@dimen/paddingMedium">
+                    android:paddingEnd="@dimen/paddingMedium"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/penggajian"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
-                        android:text="PENGGAJIAN"
+                        android:text="@string/penggajian_uppercase"
                         android:textColor="@color/grey_900"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textSize="13sp"/>
 
                     <RelativeLayout
                         android:layout_width="0dp"
@@ -386,15 +397,17 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp">
+                    android:layout_marginTop="5dp"
+                    android:visibility="gone">
 
                     <EditText
                         android:id="@+id/txtGaji"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="GAJI"
+                        android:hint="@string/gaji_uppercase"
                         android:inputType="numberDecimal"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:ignore="Autofill" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -413,9 +426,10 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
-                        android:text="AKSES APP"
+                        android:text="@string/akses_app_uppercase"
                         android:textColor="@color/grey_900"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textSize="13sp"/>
 
                     <RelativeLayout
                         android:layout_width="0dp"
@@ -432,6 +446,42 @@
                     </RelativeLayout>
 
                 </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/paddingMedium"
+                    android:layout_marginBottom="@dimen/paddingMedium"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/paddingMedium"
+                    android:paddingEnd="@dimen/paddingMedium">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:text="@string/my_code_absen_uppercase"
+                        android:textColor="@color/grey_900"
+                        android:textStyle="bold"
+                        android:textSize="13sp"/>
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="34dp"
+                        android:layout_weight="6"
+                        android:background="@drawable/background_edittext">
+
+                        <Spinner
+                            android:id="@+id/sp_my_code_absen"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAlignment="center" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
 
                 <TableLayout
                     android:layout_width="match_parent"
@@ -481,6 +531,6 @@
                     </TableRow>
                 </TableLayout>
             </LinearLayout>
-        </ScrollView>
+        </android.support.v4.widget.NestedScrollView>
     </LinearLayout>
 </FrameLayout>

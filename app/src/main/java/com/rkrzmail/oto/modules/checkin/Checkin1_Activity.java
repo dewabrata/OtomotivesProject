@@ -82,7 +82,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_checkin1_);
+        setContentView(R.layout.activity_checkin1);
         initComponent();
     }
 
@@ -674,9 +674,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             String antrian = data.getStringExtra("TEXT");
             getDataBarcode(antrian);
             String result = data.getStringExtra("FORMAT");
-        } else if (resultCode == RESULT_OK && requestCode == REQUEST_HISTORY) {
-
-        } else if (resultCode == RESULT_OK && requestCode == REQUEST_NEW_CS) {
+        }else if (resultCode == RESULT_OK && requestCode == REQUEST_NEW_CS) {
             Intent i = new Intent(getActivity(), Checkin3_Activity.class);
             i.putExtra(DATA, Nson.readJson(getIntentStringExtra(data, DATA)).toJson());
             startActivityForResult(i, REQUEST_CHECKIN);
@@ -685,6 +683,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
         }
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -718,7 +717,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 Intent intent = new Intent(getActivity(), History_Activity.class);
                 intent.putExtra("ALL", "ALL");
                 intent.putExtra("NOPOL", etNopol.getText().toString().replaceAll(" ", ""));
-                startActivityForResult(intent, REQUEST_HISTORY);
+                startActivity(intent);
                 break;
         }
     }

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true">
 
@@ -13,32 +14,44 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="10dp">
 
             <LinearLayout
+                android:id="@+id/ly_namaSup_terimaPart"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/border_solid"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:padding="10dp">
+                android:layout_marginBottom="@dimen/paddingMedium"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="150dp"
+                    android:layout_weight="4"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="NO. PONSEL" />
-
-                <TextView
-                    android:id="@+id/tv_kontak_ref"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/icon_kontak"
-                    android:gravity="center"
-                    android:textAlignment="center"
+                    android:text="@string/no_ponsel_uppercase"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
+
+                <RelativeLayout
+                    android:id="@+id/vg_kontak"
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/state_textview_clickable_border">
+
+                    <TextView
+                        android:id="@+id/tv_kontak"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:drawableLeft="@drawable/ic_contact_phone"
+                        android:gravity="center"
+                        android:textStyle="bold"
+                        android:paddingStart="10dp"
+                        tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+                </RelativeLayout>
 
             </LinearLayout>
 
@@ -48,14 +61,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:hint="KONTAK PERSON">
+                android:hint="@string/kontak_person_uppercase">
 
                 <EditText
                     android:id="@+id/et_namaPemilik_ref"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPersonName"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    tools:ignore="Autofill,LabelFor" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -64,14 +78,15 @@
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_marginTop="5dp"
-                android:hint="JABATAN">
+                android:hint="@string/jabatan_uppercase">
 
                 <EditText
                     android:id="@+id/et_jabatan_ref"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
-                    android:inputType="text" />
+                    android:inputType="text"
+                    tools:ignore="Autofill,LabelFor" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -82,14 +97,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:hint="EMAIL">
+                android:hint="@string/email_uppercase">
 
                 <EditText
                     android:id="@+id/et_email_ref"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textEmailAddress"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    tools:ignore="Autofill,LabelFor" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -99,59 +115,85 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:hint="NAMA BENGKEL">
+                android:hint="@string/nama_bengkel_uppercase">
 
                 <EditText
                     android:id="@+id/et_namaBengkel_ref"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPersonName"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    tools:ignore="Autofill" />
 
             </android.support.design.widget.TextInputLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/border_solid"
+                android:layout_marginTop="@dimen/paddingLarge"
+                android:layout_marginBottom="@dimen/paddingMedium"
                 android:gravity="center"
                 android:orientation="horizontal"
-                android:padding="10dp">
+                android:paddingStart="@dimen/paddingMedium"
+                android:paddingEnd="@dimen/paddingMedium">
 
                 <TextView
-                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:text="JENIS KENDARAAN" />
+                    android:text="@string/jenis_kendaraan_uppercase"
+                    android:layout_width="0dp"
+                    android:layout_weight="4"
+                    android:textColor="@color/grey_900"
+                    android:textStyle="bold"
+                    android:textSize="12sp"/>
 
-                <com.rkrzmail.srv.MultiSelectionSpinner
-                    android:id="@+id/sp_kendaraan_ref"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="center" />
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
+
+                    <Spinner
+                        android:id="@+id/sp_jenis_kendaraan"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textAlignment="center" />
+
+                </RelativeLayout>
 
             </LinearLayout>
-
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/border_solid"
+                android:layout_marginTop="@dimen/paddingMedium"
+                android:layout_marginBottom="@dimen/paddingMedium"
                 android:gravity="center"
                 android:orientation="horizontal"
-                android:padding="10dp">
+                android:paddingStart="@dimen/paddingMedium"
+                android:paddingEnd="@dimen/paddingMedium">
 
                 <TextView
-                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:text="BIDANG USAHA" />
+                    android:text="@string/bidang_usaha_uppercase"
+                    android:layout_width="0dp"
+                    android:layout_weight="4"
+                    android:textColor="@color/grey_900"
+                    android:textStyle="bold"
+                    android:textSize="12sp"/>
 
-                <com.rkrzmail.srv.MultiSelectionSpinner
-                    android:id="@+id/sp_usaha_ref"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="center" />
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
+
+                    <com.rkrzmail.srv.MultiSelectionSpinner
+                        android:id="@+id/sp_bidang_usaha"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textAlignment="center" />
+
+                </RelativeLayout>
 
             </LinearLayout>
 
@@ -162,7 +204,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:hint="ALAMAT">
+                android:hint="@string/alamat_uppercase">
 
                 <EditText
                     android:id="@+id/et_alamat_ref"
@@ -172,7 +214,8 @@
                     android:inputType="textCapSentences|textMultiLine"
                     android:maxLength="2000"
                     android:maxLines="4"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    tools:ignore="RtlHardcoded" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -181,30 +224,32 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:hint="KOTA / KAB">
+                android:hint="@string/kota_kabupaten_uppercase">
 
                 <com.rkrzmail.srv.NikitaAutoComplete
                     android:id="@+id/et_kotakab_ref"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:textSize="14sp" />
+                    android:inputType="textCapCharacters"
+                    android:textSize="14sp"
+                    android:padding="15dp"/>
 
             </android.support.design.widget.TextInputLayout>
 
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/paddingLarge"
                 android:layout_marginBottom="10dp"
                 android:stretchColumns="*">
 
-                <TableRow>
+                <TableRow tools:ignore="UselessParent">
 
                     <CheckBox
+                        android:id="@+id/cb_message"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="KIRIM MESSAGE"
+                        android:text="@string/kirim_message_uppercase"
                         android:layout_gravity="center_vertical"/>
 
                     <Button
@@ -213,7 +258,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
                         android:background="@drawable/btn_rounded_accent"
-                        android:text="SIMPAN"
+                        android:text="@string/simpan_uppercase"
                         android:textColor="@android:color/white" />
 
                 </TableRow>

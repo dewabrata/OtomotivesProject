@@ -366,18 +366,6 @@ public class ClaimGaransiStatus_Activity extends AppActivity {
         });
     }
 
-    private void viewFocus(final View view) {
-        view.post(new Runnable() {
-            @Override
-            public void run() {
-                view.setFocusable(true);
-                view.requestFocusFromTouch();
-                view.requestFocus();
-                view.performClick();
-            }
-        });
-    }
-
     private void loadData(){
         data = Nson.readJson(getIntentStringExtra(DATA));
         idClaim = data.get("ID").asString();

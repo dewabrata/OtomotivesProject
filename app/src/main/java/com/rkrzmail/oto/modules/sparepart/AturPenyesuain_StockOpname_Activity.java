@@ -207,6 +207,12 @@ public class AturPenyesuain_StockOpname_Activity extends AppActivity {
                     showWarning("User Saksi Belum di Scan");
                     return;
                 }
+
+                if(find(R.id.et_ket_penyesuaian, EditText.class).getText().toString().isEmpty()){
+                    find(R.id.et_ket_penyesuaian, EditText.class).setError("KETERANGAN HARUS DI ISI");
+                    viewFocus(find(R.id.et_ket_penyesuaian, EditText.class));
+                    return;
+                }
                 setPenyesuaian();
             }
         });

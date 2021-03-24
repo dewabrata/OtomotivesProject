@@ -62,10 +62,10 @@ public class Transaksi_Piutang_Fragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        fragmentView = inflater.inflate(R.layout.activity_list_basic_with_btn, container, false);
+        fragmentView = inflater.inflate(R.layout.fragment_transaksi_piutang, container, false);
         activity = (Piutang_MainTab_Activity) getActivity();
         recyclerView = fragmentView.findViewById(R.id.recyclerView);
-        btnLanjut = fragmentView.findViewById(R.id.btn_simpan);
+        btnLanjut = fragmentView.findViewById(R.id.btn_lanjut);
         swipeRefreshLayout = fragmentView.findViewById(R.id.swiperefresh);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -203,7 +203,7 @@ public class Transaksi_Piutang_Fragment extends Fragment {
 
             @Override
             public int getItemCount() {
-                activity.find(R.id.btn_simpan).setVisibility(transaksiList.size() == 0 ? View.GONE : View.VISIBLE);
+                activity.find(R.id.btn_lanjut).setVisibility(transaksiList.size() == 0 ? View.GONE : View.VISIBLE);
                 return transaksiList.size();
             }
 

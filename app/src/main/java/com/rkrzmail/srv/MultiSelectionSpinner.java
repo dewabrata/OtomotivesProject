@@ -7,7 +7,10 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
@@ -19,7 +22,6 @@ import java.util.List;
 @SuppressLint("AppCompatCustomView")
 public class MultiSelectionSpinner extends Spinner implements
         OnMultiChoiceClickListener {
-
 
     public interface OnMultipleItemsSelectedListener {
         void selectedIndices(List<Integer> indices);
@@ -70,8 +72,7 @@ public class MultiSelectionSpinner extends Spinner implements
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean performClick() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Pilih");
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMultiChoiceItems(_items, mSelectionBool, this);
         _itemsAtStart = getSelectedItemsAsString();
         builder.setPositiveButton("Pilih", new DialogInterface.OnClickListener() {
@@ -94,9 +95,12 @@ public class MultiSelectionSpinner extends Spinner implements
                 }
             }
         });
+
+        builder.create();
         builder.show();
         return true;
     }
+
 
     @Override
     public void setAdapter(SpinnerAdapter adapter) {

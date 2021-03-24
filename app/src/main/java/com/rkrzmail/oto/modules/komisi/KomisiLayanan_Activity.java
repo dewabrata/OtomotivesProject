@@ -69,7 +69,7 @@ public class KomisiLayanan_Activity extends AppActivity {
                     public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                         super.onBindViewHolder(viewHolder, position);
                         viewHolder.find(R.id.tv_layanan_komisiLayanan, TextView.class).setText(nListArray.get(position).get("AKTIVITAS").asString());
-                        viewHolder.find(R.id.tv_nama_komisiLayanan, TextView.class).setText(nListArray.get(position).get("NAMA_LAYANAN").asString());
+                        viewHolder.find(R.id.tv_nama_komisiLayanan, TextView.class).setText(nListArray.get(position).get("JENIS_LAYANAN").asString());
                         viewHolder.find(R.id.tv_komisi_komisiLayanan, TextView.class).setText(NumberFormatUtils.formatPercent(nListArray.get(position).get("KOMISI_PERCENT").asDouble()));
                         viewHolder.find(R.id.tv_status_komisiLayanan, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
                     }

@@ -25,12 +25,12 @@ public class ProfileBengkel_Activity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile_bengkel_);
+        setContentView(R.layout.activity_main_tab_layout);
         initComponent();
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_profile);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Profile Bengkel");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -39,8 +39,8 @@ public class ProfileBengkel_Activity extends AppActivity {
 
     private void initComponent() {
         initToolbar();
-        vpProfile = findViewById(R.id.vp_profile);
-        tabLayout = findViewById(R.id.tablayout_profile);
+        vpProfile = findViewById(R.id.vp);
+        tabLayout = findViewById(R.id.tablayout);
 
         fragments = new ArrayList<>();
         fragments.add(new TabUsaha_Fragment());

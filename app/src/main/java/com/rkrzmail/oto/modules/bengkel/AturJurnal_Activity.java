@@ -204,17 +204,6 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
         etNilaiSisa.setText(" ");*/
     }
 
-    private void viewFocus(final View view) {
-        view.post(new Runnable() {
-            @Override
-            public void run() {
-                view.setFocusable(true);
-                view.requestFocusFromTouch();
-                view.requestFocus();
-                view.performClick();
-            }
-        });
-    }
 
     @SuppressLint("SetTextI18n")
     private void loadData() {

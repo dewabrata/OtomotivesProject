@@ -60,10 +60,22 @@ public class LoginActivity extends AppActivity {
                     showWarning("Nomor Handphone Harus Di isi");
                     find(R.id.user, EditText.class).requestFocus();
                 } else {
-                   requestOtp();
+                    showInfoDialog("KONFIRMASI", "NOMOR PONSEL SUDAH BENAR ? " + "\n" + "\n" + find(R.id.user, EditText.class).getText().toString().replaceAll(" ", ""), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            requestOtp();
+                        }
+                    }, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                            viewFocus(find(R.id.user, EditText.class));
+                        }
+                    });
                 }
             }
         });
+
         if(getSetting("noponsel") != null){
             find(R.id.user, EditText.class).setText(getSetting("noponsel"));
         }

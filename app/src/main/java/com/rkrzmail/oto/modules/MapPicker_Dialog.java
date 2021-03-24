@@ -74,7 +74,7 @@ public class MapPicker_Dialog extends DialogFragment implements OnMapReadyCallba
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_location_peta_picker, container, false);
-        activity = ((ProfileBengkel_Activity) getActivity());
+        activity = ((AppActivity) getActivity());
         assert activity != null;
         locationManager = (LocationManager) activity.getActivity().getSystemService(Context.LOCATION_SERVICE);
 

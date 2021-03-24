@@ -11,11 +11,12 @@ import android.view.ViewGroup;
 
 import com.naa.data.Nson;
 import com.rkrzmail.oto.modules.bengkel.Absensi_MainTab_Activity;
+import com.rkrzmail.oto.modules.bengkel.Billing_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Dashboard_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Pembayaran_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
 import com.rkrzmail.oto.modules.bengkel.Schedule_MainTab_Activity;
-import com.rkrzmail.oto.modules.bengkel.User_MainTab_Activity;
+import com.rkrzmail.oto.modules.bengkel.AturUser_MainTab_Activity;
 import com.rkrzmail.oto.modules.hutang.Hutang_MainTab_Activity;
 import com.rkrzmail.oto.modules.hutang.Piutang_MainTab_Activity;
 import com.rkrzmail.oto.modules.sparepart.LokasiPart_MainTab_Activity;
@@ -226,13 +227,25 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
             return fragment;
         }
 
-        if (context instanceof User_MainTab_Activity) {
+        if (context instanceof AturUser_MainTab_Activity) {
             switch (i) {
                 case 0:
-                    fragment = Fragment.instantiate(context, DaftarUser_User_Fragment.class.getName());
+                    fragment = Fragment.instantiate(context, AturUser_User_Fragment.class.getName());
                     break;
                 case 1:
-                    fragment = Fragment.instantiate(context, GajiUser_User_Fragment.class.getName());
+                    fragment = Fragment.instantiate(context, AturGajiUser_User_Fragment.class.getName());
+                    break;
+            }
+            return fragment;
+        }
+
+        if (context instanceof Billing_MainTab_Activity) {
+            switch (i) {
+                case 0:
+                    fragment = Fragment.instantiate(context, Terbayar_Billing_Fragment.class.getName());
+                    break;
+                case 1:
+                    fragment = Fragment.instantiate(context, Fee_Billing_Fragment.class.getName());
                     break;
             }
             return fragment;
@@ -347,12 +360,21 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
             }
         }
 
-        if (context instanceof User_MainTab_Activity) {
+        if (context instanceof AturUser_MainTab_Activity) {
             switch (position) {
                 case 0:
-                    return "Daftar User";
+                    return "Personal";
                 case 1:
-                    return "Gaji User";
+                    return "Upah";
+            }
+        }
+
+        if (context instanceof Billing_MainTab_Activity) {
+            switch (position) {
+                case 0:
+                    return "Terbayar";
+                case 1:
+                    return "Fee";
             }
         }
         return null;

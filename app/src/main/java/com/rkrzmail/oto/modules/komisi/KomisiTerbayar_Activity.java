@@ -98,11 +98,12 @@ public class KomisiTerbayar_Activity extends AppActivity {
     }
 
     private void viewKomisi(final String cari) {
-        newProses(new Messagebox.DoubleRunnable() {
+        newTask(new Messagebox.DoubleRunnable() {
             Nson result;
 
             @Override
             public void run() {
+                swipeProgress(true);
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "view");
@@ -113,6 +114,7 @@ public class KomisiTerbayar_Activity extends AppActivity {
 
             @Override
             public void runUI() {
+                swipeProgress(false);
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());

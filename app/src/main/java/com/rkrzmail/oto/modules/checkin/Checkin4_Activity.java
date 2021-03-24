@@ -389,9 +389,8 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                String formattedTime = sdf.format(date);
-                waktuAmbil[0] = formattedTime;
-                find(R.id.tv_tgl_ambil, TextView.class).setText(formattedTime);
+                waktuAmbil[0] = sdf.format(date);
+                find(R.id.tv_tgl_ambil, TextView.class).setText(waktuAmbil[0]);
             }
         }, year, month, day);
 
@@ -433,7 +432,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 }
                 String formattedTime = sdf.format(date);
                 waktuAmbil[0] = formattedTime;
-                find(R.id.tv_jam_ambil, TextView.class).setText(formattedTime);
+                find(R.id.tv_jam_ambil, TextView.class).setText(waktuAmbil[0]);
             }
         }, currentHour, currentMinute, true);
 
@@ -643,7 +642,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                     }
                     args.put("waktuambil", tglAmbil[0] + " " + jamAmbil);
                 } else {
-                    args.put("waktuAmbi", "");
+                    args.put("waktuambil", "");
                 }
 
                 args.put("sk", sk);
@@ -657,6 +656,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 args.put("noPonsel", noPonsel);
                 args.put("nopol", nopol);
                 args.put("ttd", ttdPath);
+                args.put("tinggalkanSTNK", find(R.id.cb_tinggalkan_stnk, CheckBox.class).isChecked() ? "Y" : "N");
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
             }

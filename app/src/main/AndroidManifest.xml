@@ -3,20 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.rkrzmail.oto">
 
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-
     <application
         android:name=".AppApplication"
         android:allowBackup="true"
@@ -29,7 +15,10 @@
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,UnusedAttribute"
         tools:replace="android:label,android:appComponentFactory">
-        <activity android:name=".modules.mekanik.ClaimGaransiStatus_Activity"></activity>
+        <activity android:name=".modules.bengkel.AturFeeBilling_Activity"></activity>
+        <activity android:name=".modules.bengkel.Billing_MainTab_Activity" />
+        <activity android:name=".modules.bengkel.DaftarUser_Activity" />
+        <activity android:name=".modules.mekanik.ClaimGaransiStatus_Activity" />
         <activity android:name=".modules.mekanik.ClaimGaransiPart_Activity" />
         <activity
             android:name=".modules.bengkel.Asset_Activity"
@@ -254,11 +243,11 @@
         <activity android:name=".modules.sparepart.PenjualanPart_Activity" />
         <activity android:name=".modules.discount.AturFrekwensiDiscount_Acitivity" />
         <activity android:name=".modules.discount.FrekwensiDiscount_Activity" />
-        <activity android:name=".modules.bengkel.ReferensikanOtomotives_Activity" />
+        <activity android:name=".modules.bengkel.AturReferal_Activity" />
         <activity android:name=".modules.bengkel.Referal_Activity" />
         <activity android:name=".modules.bengkel.RegistrasiBengkel_Activity" />
         <activity android:name=".modules.bengkel.AturUser_Activity" />
-        <activity android:name=".modules.bengkel.User_MainTab_Activity" />
+        <activity android:name=".modules.bengkel.AturUser_MainTab_Activity" />
         <activity android:name=".modules.checkin.KontrolBooking_Activity" />
         <activity android:name=".modules.komisi.AturKomisiJasaLain_Activity" />
         <activity android:name=".modules.komisi.KomisiJasaLain_Activity" />
@@ -339,28 +328,8 @@
             android:name=".modules.sparepart.AturParts_Activity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".gmod.PengambilanPartActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".gmod.DaftarTugasPartActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".gmod.JumlahPartActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".modules.jasa.JasaExternal_Activity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".gmod.JasaLainDetail"
-            android:screenOrientation="portrait" />
-        <activity android:name=".gmod.JasaLainBerkalaActivity" />
-        <activity android:name=".gmod.PartBerkalaActivity" />
-        <activity android:name=".gmod.AturSparepartActivity" />
-        <activity android:name=".gmod.Penampung_ItemActivity" />
-        <activity android:name=".gmod.Lokasi_PersediaanActivity" />
-        <activity android:name=".gmod.PenjualanPartActivity" />
-        <activity android:name=".gmod.Penerimaan_PartAcitivity" />
-        <activity android:name=".gmod.Penampung_Item_DetailActivity" />
         <activity android:name=".gmod.MyCode" />
         <activity
             android:name=".modules.sparepart.LokasiPart_MainTab_Activity"
@@ -409,26 +378,6 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".gmod.LayananActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".gmod.LayananFilterActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".gmod.PendaftaranLayananActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".gmod.PartDetail"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
             android:name=".gmod.Capture"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Dialog" />
@@ -443,46 +392,6 @@
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".gmod.MessageWA"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".gmod.ControlLayanan"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".gmod.KendaraanCari"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".gmod.PersetujuanLayanan"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".gmod.Pendaftaran1"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".gmod.Pendaftaran2"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".gmod.Pendaftaran3"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".gmod.BiayaMekanikActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".gmod.DaftarPenjualanPartActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
@@ -548,5 +457,19 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
     </application>
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
 
 </manifest>

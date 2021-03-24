@@ -211,6 +211,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         tvNamaLayanan.setText(data.get("LAYANAN").asString());
         tvBiayaLayanan.setText(RP + formatRp(formatOnlyNumber(data.get("BIAYA_LAYANAN").asString())));
 
+        find(R.id.btn_history).setEnabled(!data.get("TOTAL_SERVICE").asString().isEmpty());
         find(R.id.cb_tidak_menunggu, CheckBox.class).setChecked(data.get("PELANGGAN_TIDAK_MENUNGGU").asString().equals("Y"));
         find(R.id.cb_tungguConfirm_biaya, CheckBox.class).setChecked(data.get("TUNGGU_KONFIRMASI_BIAYA").asString().equals("Y"));
         find(R.id.cb_konfirm_tambah, CheckBox.class).setChecked(data.get("KONFIRMASI_TAMBAHAN").asString().equals("Y"));
@@ -310,8 +311,9 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         if (keluhanList.size() > 0) {
             Objects.requireNonNull(rvKeluhan.getAdapter()).notifyDataSetChanged();
         }
-        builder.create();
-        alertDialog = builder.show();
+        alertDialog = builder.create();
+        Objects.requireNonNull(alertDialog.getWindow()).getAttributes().windowAnimations = R.style.DialogAnimation;
+        alertDialog.show();
     }
 
     @SuppressLint("SetTextI18n")
@@ -435,6 +437,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     keluhanList.asArray().clear();
                     keluhanList.asArray().addAll(result.get("data").asArray());
+                    find(R.id.btn_keluhan, Button.class).setEnabled(!keluhanList.asArray().isEmpty());
                     Log.d("no__", "runUI: " + keluhanList);
                 } else {
                     showInfo(result.get("message").asString());

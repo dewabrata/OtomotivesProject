@@ -209,24 +209,6 @@ public class AturPembayaranHutang_Activity extends AppActivity implements View.O
         etTotalHutang.setText(RP + NumberFormatUtils.formatRp(String.valueOf(totalHutang)));
     }
 
-    private void viewFocus(final View view) {
-        view.post(new Runnable() {
-            @Override
-            public void run() {
-                view.setFocusable(true);
-                view.requestFocusFromTouch();
-                view.requestFocus();
-                view.performClick();
-            }
-        });
-    }
-
-    private void setErrorSpinner(Spinner errorSpinner, String errorMessage) {
-        TextView tvError = (TextView) errorSpinner.getSelectedView();
-        tvError.setError(errorMessage);
-        viewFocus(tvError);
-    }
-
     private void getDatePicker(final boolean minOrMax) {
         final Calendar cldr = Calendar.getInstance();
         final int day = cldr.get(Calendar.DAY_OF_MONTH);

@@ -43,7 +43,9 @@ import com.rkrzmail.oto.gmod.MyCode;
 import com.rkrzmail.oto.modules.antar_jemput.AntarJemput_Activity;
 import com.rkrzmail.oto.modules.bengkel.Absensi_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Asset_Activity;
+import com.rkrzmail.oto.modules.bengkel.Billing_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Collection_Activity;
+import com.rkrzmail.oto.modules.bengkel.DaftarUser_Activity;
 import com.rkrzmail.oto.modules.bengkel.Dashboard_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Jurnal_Activity;
 import com.rkrzmail.oto.modules.bengkel.Laporan_Activity;
@@ -78,7 +80,6 @@ import com.rkrzmail.oto.modules.sparepart.Spareparts_Activity;
 import com.rkrzmail.oto.modules.sparepart.PartKeluar_Activity;
 import com.rkrzmail.oto.modules.sparepart.HistoryStockOpname_Activity;
 import com.rkrzmail.oto.modules.sparepart.TugasPart_MainTab_Activity;
-import com.rkrzmail.oto.modules.bengkel.User_MainTab_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiJasaLain_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiLayanan_Activity;
 import com.rkrzmail.oto.modules.bengkel.Layanan_Avtivity;
@@ -152,6 +153,7 @@ public class MenuActivity extends AppActivity {
     private final String ANTAR_JEMPUT = "ANTAR JEMPUT";
     public final String LAPORAN = "LAPORAN";
     public final String SCHEDULE = "SCHEDULE";
+    private final String BILLING = "BILLING";
 
     private final String USER = "USER";
     private final String PENGATURAN_USER_LAYANAN = "LAYANAN";
@@ -171,7 +173,6 @@ public class MenuActivity extends AppActivity {
     private final String DISCOUNT_SPOT = "DISCOUNT SPOT";
     private final String DISCOUNT_FREKWENSI = "DISCOUNT FREKWENSI";
 
-    private final String MY_BUSINESS_BILLING = "BILLING";
     private final String MY_BUSINESS_HUTANG = "HUTANG";
     private final String MY_BUSINESS_PIUTANG = "PIUTANG";
     private final String MY_BUSINESS_ASET = "ASET";
@@ -216,8 +217,9 @@ public class MenuActivity extends AppActivity {
                     Intent intent = new Intent(MenuActivity.this, AntarJemput_Activity.class);
                     startActivity(intent);
                 } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_BOOKING) && getAccess(M_BOOKING)) {
-                    Intent intent = new Intent(MenuActivity.this, KontrolBooking_Activity.class);
-                    startActivity(intent);
+                   /* Intent intent = new Intent(MenuActivity.this, KontrolBooking_Activity.class);
+                    startActivity(intent);*/
+                    showInfo("COMING SOON");
                 } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_CHECK_IN) && getAccess(M_CHECK_IN)) {
                     Intent intent = new Intent(MenuActivity.this, Checkin1_Activity.class);
                     startActivity(intent);
@@ -311,7 +313,7 @@ public class MenuActivity extends AppActivity {
         } else if (item.getTitle().toString().equalsIgnoreCase(REFERAL) && getAccess(REFERAL)) {
             Intent intent = new Intent(MenuActivity.this, Referal_Activity.class);
             startActivity(intent);
-        } else if (item.getTitle().toString().equalsIgnoreCase(CHECK_OUT) && getAccess(REFERAL)) {
+        } else if (item.getTitle().toString().equalsIgnoreCase(CHECK_OUT) && getAccess(CHECK_OUT)) {
             Intent intent = new Intent(MenuActivity.this, CheckOut_Activity.class);
             startActivity(intent);
         }
@@ -330,9 +332,9 @@ public class MenuActivity extends AppActivity {
             intent.putExtra("title", "Dashboard");
             intent.putExtra("url", "https://m.otomotives.com/#/piutang?" + getWebUrl());
             startActivity(intent);*/
-        } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_BILLING) && getAccess(MY_BUSINESS)) {
+        } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_PIUTANG) && getAccess(MY_BUSINESS)) {
 
-        } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_PROFILE) && getAccess(PENGATURAN)) {
+        } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_PIUTANG) && getAccess(PENGATURAN)) {
             Intent intent = new Intent(MenuActivity.this, ProfileBengkel_Activity.class);
             startActivity(intent);
         } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_ASET) && getAccess(MY_BUSINESS)) {
@@ -355,7 +357,7 @@ public class MenuActivity extends AppActivity {
         }
         //Pengaturan
         else if (item.getTitle().toString().equalsIgnoreCase(USER) && getAccess(PENGATURAN)) {
-            Intent intent = new Intent(MenuActivity.this, User_MainTab_Activity.class);
+            Intent intent = new Intent(MenuActivity.this, DaftarUser_Activity.class);
             startActivity(intent);
         } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_LAYANAN) && getAccess(PENGATURAN)) {
             Intent intent = new Intent(MenuActivity.this, Layanan_Avtivity.class);
@@ -370,6 +372,9 @@ public class MenuActivity extends AppActivity {
             startActivityForResult(intent, MN_SPAREPART);
         } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_REKENING_BANK) && getAccess(PENGATURAN)) {
             Intent intent = new Intent(MenuActivity.this, RekeningBank_Activity.class);
+            startActivity(intent);
+        }else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_PROFILE) && getAccess(PENGATURAN)) {
+            Intent intent = new Intent(MenuActivity.this, ProfileBengkel_Activity.class);
             startActivity(intent);
         } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_LOKASI_PART) && getAccess(MY_BUSINESS)) {
             Intent intent = new Intent(MenuActivity.this, LokasiPart_MainTab_Activity.class);
@@ -445,7 +450,35 @@ public class MenuActivity extends AppActivity {
             showWarning("ANDA TIDAK MEMILIK AKSES " + DISCOUNT);
         } else if (item.getTitle().toString().equals(PENGATURAN) && !getAccess(KOMISI)) {
             showWarning("ANDA TIDAK MEMILIK AKSES " + KOMISI);
+        }else if (item.getTitle().toString().equals(BILLING) && getAccess(BILLING)) {
+            Intent intent = new Intent(MenuActivity.this, Billing_MainTab_Activity.class);
+            startActivity(intent);
+        }else{
+            if(!getAccess(REFERAL)){
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + REFERAL);
+            }else if(!getAccess(CHECK_OUT)){
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + CHECK_OUT);
+            }else if(!getAccess(MY_BUSINESS)){
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + MY_BUSINESS);
+            }else if(!getAccess(PENGATURAN)){
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + PENGATURAN);
+            }else if(!getAccess(LAPORAN)){
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + LAPORAN);
+            }else if(!getAccess(SCHEDULE)){
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + SCHEDULE);
+            }else if(!getAccess(PART_KELUAR)){
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + PART_KELUAR);
+            }else if(!getAccess(DISCOUNT)){
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + DISCOUNT);
+            }else if(!getAccess(KOMISI)){
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + KOMISI);
+            }else if(!getAccess(SARAN)){
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + SARAN);
+            }else if(!getAccess(BILLING)){
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + BILLING);
+            }
         }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -610,10 +643,11 @@ public class MenuActivity extends AppActivity {
         getMenuInflater().inflate(R.menu.menu, menu);
         SubMenu subMenu;
 
+        menu.add(BILLING);//FREE AKSES
         menu.add(ANTAR_JEMPUT);//FREE AKSES
         menu.add(CHECK_OUT);
         menu.add(KENDARAAN_CUSTOMER);
-        menu.add(LAPORAN);
+        //menu.add(LAPORAN);
         menu.add(PART_KELUAR);
         menu.add(PEMBELIAN_PART);
         menu.add(SCHEDULE);
@@ -624,7 +658,6 @@ public class MenuActivity extends AppActivity {
 
 
         subMenu = menu.addSubMenu(MY_BUSINESS);
-        subMenu.add(MY_BUSINESS_BILLING);
         subMenu.add(MY_BUSINESS_HUTANG);
         subMenu.add(MY_BUSINESS_PIUTANG);
         subMenu.add(MY_BUSINESS_ASET);

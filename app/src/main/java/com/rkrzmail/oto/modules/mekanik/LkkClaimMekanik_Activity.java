@@ -64,8 +64,12 @@ public class LkkClaimMekanik_Activity extends AppActivity {
     private Bitmap bitmapPart, bitmapKtp, bitmapStnk;
     private File fileStnk, fileKtp, filePart;
 
-    private String[] fotoPart = new String[1], fotoStnk = new String[1], fotoKtp = new String[1];
-    private Nson dataSebabList = Nson.newArray(), SebabArray = Nson.newArray(), data;
+    private final String[] fotoPart = {""};
+    private final String[] fotoStnk = {""};
+    private final String[] fotoKtp = {""};
+    private final Nson dataSebabList = Nson.newArray();
+    private final Nson SebabArray = Nson.newArray();
+    private Nson data;
     private String idpart = "", stockBengkel = "", idCheckin = "";
 
 
@@ -103,7 +107,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
 
         setSpinnerFromApi(sp_kondisipart, "nama", "KONDISI PART", "viewmst", "KONDISI");
         setSpSebabKerusakan();
-        Tools.setViewAndChildrenEnabled(find(R.id.ly_lkk_claim, LinearLayout.class), false);
+        disableFields();
 
         data = Nson.readJson(getIntentStringExtra(DATA));
         idCheckin = data.get("IDCHECKIN").asString();
@@ -127,6 +131,10 @@ public class LkkClaimMekanik_Activity extends AppActivity {
         find(R.id.btn_simpan).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                fotoPart[0] = bitmapToBase64(bitmapPart);
+                fotoKtp[0] = bitmapToBase64(bitmapKtp);
+                fotoStnk[0] = bitmapToBase64(bitmapStnk);
+
                 if (et_desc.getText().toString().isEmpty()) {
                     showWarning("DESKRIPSI KERUSAKAN TIDAK BOLEH KOSONG");
                 } else if (et_info.getText().toString().isEmpty()) {
@@ -147,6 +155,12 @@ public class LkkClaimMekanik_Activity extends AppActivity {
                     showWarning("SEBAB KERUSAKAN TIDAK BOLEH KOSONG");
                 } else if (cbClaim.isChecked() && et_nikpemilik.getText().toString().isEmpty()) {
                     showWarning("NIK TIDAK BOLEH KOSONG");
+                } else if (fotoKtp[0].isEmpty() && btn_fotoktp.isEnabled()) {
+                    showWarning("FOTO KTP HARUS DI MASUKKAN");
+                } else if (fotoPart[0].isEmpty() && find(R.id.btn_foto_part, Button.class).isEnabled()) {
+                    showWarning("FOTO PART HARUS DI MASUKKAN");
+                } else if (fotoStnk[0].isEmpty() && btn_fotostnk.isEnabled()) {
+                    showWarning("FOTO STNK HARUS DI MASUKKAN");
                 } else {
                     SimpanData();
                 }
@@ -166,10 +180,10 @@ public class LkkClaimMekanik_Activity extends AppActivity {
         find(R.id.btn_foto_part, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if( find(R.id.btn_foto_part, Button.class).getText().toString().equals("FOTO PART")){
+                if (find(R.id.btn_foto_part, Button.class).getText().toString().equals("FOTO PART")) {
                     setFotoPart();
-                }else{
-                    showDialogPreviewFoto(bitmapPart,  "Foto Part", fotoPart, true);
+                } else {
+                    showDialogPreviewFoto(bitmapPart, "Foto Part", fotoPart, true);
                 }
 
             }
@@ -178,10 +192,10 @@ public class LkkClaimMekanik_Activity extends AppActivity {
         btn_fotostnk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(btn_fotostnk.getText().toString().equals("FOTO STNK")){
+                if (btn_fotostnk.getText().toString().equals("FOTO STNK")) {
                     setFotoStnk();
-                }else{
-                    showDialogPreviewFoto(bitmapStnk,  "Foto STNK", fotoStnk, true);
+                } else {
+                    showDialogPreviewFoto(bitmapStnk, "Foto STNK", fotoStnk, true);
                 }
 
             }
@@ -190,10 +204,10 @@ public class LkkClaimMekanik_Activity extends AppActivity {
         btn_fotoktp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(btn_fotoktp.getText().toString().equals("FOTO KTP")){
+                if (btn_fotoktp.getText().toString().equals("FOTO KTP")) {
                     setFotoKtp();
-                }else{
-                    showDialogPreviewFoto(bitmapKtp,  "Foto KTP", fotoKtp, true);
+                } else {
+                    showDialogPreviewFoto(bitmapKtp, "Foto KTP", fotoKtp, true);
                 }
 
             }
@@ -317,7 +331,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
         Toolbar toolbar = dialogView.findViewById(R.id.toolbar);
         ImageView img = (ImageView) dialogView.findViewById(R.id.img_alert_foto);
         Button btnCancel = dialogView.findViewById(R.id.btn_alert_cancel);
-        Button btnSimpan =  dialogView.findViewById(R.id.btn_alert_save);
+        Button btnSimpan = dialogView.findViewById(R.id.btn_alert_save);
 
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null)
@@ -326,7 +340,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
         if (bitmap != null)
             img.setImageBitmap(bitmap);
 
-        if(isPreview){
+        if (isPreview) {
             btnCancel.setText("Tutup");
             btnSimpan.setText("Foto Ulang");
         }
@@ -334,14 +348,14 @@ public class LkkClaimMekanik_Activity extends AppActivity {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isPreview){
+                if (isPreview) {
                     alertDialog.dismiss();
-                }else{
-                    if(bitmap == bitmapPart){
+                } else {
+                    if (bitmap == bitmapPart) {
                         bitmapPart = null;
-                    }else if(bitmap == bitmapStnk){
+                    } else if (bitmap == bitmapStnk) {
                         bitmapStnk = null;
-                    }else if(bitmap == bitmapKtp){
+                    } else if (bitmap == bitmapKtp) {
                         bitmapStnk = null;
                     }
                     alertDialog.dismiss();
@@ -350,25 +364,25 @@ public class LkkClaimMekanik_Activity extends AppActivity {
             }
         });
 
-       btnSimpan.setOnClickListener(new View.OnClickListener() {
+        btnSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //fileFoto[0] = SaveImage(bitmapPart, "PART");
                 //base64[0] = FileUtility.encodeToStringBase64(fileFoto[0].getAbsolutePath());
-                if(isPreview){
-                    if(bitmap == bitmapPart){
+                if (isPreview) {
+                    if (bitmap == bitmapPart) {
                         setFotoPart();
-                    }else if(bitmap == bitmapStnk){
+                    } else if (bitmap == bitmapStnk) {
                         setFotoStnk();
-                    }else if(bitmap == bitmapKtp){
+                    } else if (bitmap == bitmapKtp) {
                         setFotoKtp();
                     }
-                }else{
-                    if(bitmap == bitmapPart){
+                } else {
+                    if (bitmap == bitmapPart) {
                         find(R.id.btn_foto_part, Button.class).setText("PREVIEW FOTO PART");
-                    }else if(bitmap == bitmapStnk){
+                    } else if (bitmap == bitmapStnk) {
                         btn_fotostnk.setText("PREVIEW FOTO STNK");
-                    }else if(bitmap == bitmapKtp){
+                    } else if (bitmap == bitmapKtp) {
                         btn_fotoktp.setText("PREVIEW FOTO KTP");
                     }
                     if (bitmap != null) {
@@ -387,10 +401,14 @@ public class LkkClaimMekanik_Activity extends AppActivity {
     }
 
     public static String bitmapToBase64(Bitmap bitmap) {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-
-        return Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT);
+        if (bitmap == null) return "";
+        try {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            return Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT);
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     private void SimpanData() {
@@ -413,6 +431,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action ", "add");
+                args.put("kategori", "");
                 args.put("tanggal_checkin", data.get("TANGGAL_CHECKIN").asString());
                 args.put("tanggal_lapor", currentDateTime("yyyy-MM-dd HH:mm:ss"));
                 args.put("nama_mekanik", data.get("NAMA_MEKANIK").asString());
@@ -450,17 +469,19 @@ public class LkkClaimMekanik_Activity extends AppActivity {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    //showInfo("Sukses Menyimpan Data");
-                    setResult(RESULT_OK);
+                    showSuccess("SUKSES MENYIMPAN PART GARANSI");
+                    Intent intent = new Intent();
+                    intent.putExtra("IS_GARANSI_SUCCESS", true);
+                    setResult(RESULT_OK, intent);
                     finish();
                 } else {
-                    showInfo("Gagagl Menyimpan Data");
+                    showError(result.get("message").asString());
                 }
             }
         });
     }
 
-    private void disableFields(){
+    private void disableFields() {
         et_merkpart.setEnabled(false);
         et_nopart.setEnabled(false);
         et_namapart.setEnabled(false);
@@ -480,18 +501,17 @@ public class LkkClaimMekanik_Activity extends AppActivity {
         if (data != null) {
             extras = data.getExtras();
         }
+
         if (resultCode == RESULT_OK && requestCode == REQUEST_CARI_PART) {
             Nson nson = Nson.readJson(getIntentStringExtra(data, PART));
             if (nson.get("GARANSI_LAYANAN").asString().equals("Y")) {
                 disableFields();
-                Tools.setViewAndChildrenEnabled(find(R.id.ly_lkk_claim, LinearLayout.class), true);
                 et_merkpart.setText(nson.get("MERK").asString());
                 et_nopart.setText(nson.get("NO_PART").asString());
                 et_namapart.setText(nson.get("NAMA_PART").asString());
                 idpart = nson.get("PART_ID").asString();
                 stockBengkel = nson.get("STOCK").asString();
             } else {
-                Tools.setViewAndChildrenEnabled(find(R.id.ly_lkk_claim, LinearLayout.class), false);
                 cbClaim.setChecked(false);
                 cbClaim.setEnabled(false);
                 showWarning("BUKAN PART GARANSI LAYANAN");

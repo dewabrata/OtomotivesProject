@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -46,7 +47,8 @@ public class AturKomisiTerbayar_Activity extends AppActivity {
     private Nson userData = Nson.newArray();
     private final Nson balanceList = Nson.newArray();
     private String namaUser = "", userId = "";
-    private int balanceUser = 0;
+    private int balanceUser = 0, komisiID = 0;
+    private int lastBalance = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +78,14 @@ public class AturKomisiTerbayar_Activity extends AppActivity {
 
     @SuppressLint("SetTextI18n")
     private void initListerner() {
+        etJumlahBayar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean isFocus) {
+                if(isFocus && namaUser.equals("--PILIH--")){
+                    setErrorSpinner(spUser, "USER HARUS DI PILIH TERLEBIH DAHULU");
+                }
+            }
+        });
         etJumlahBayar.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -101,11 +111,16 @@ public class AturKomisiTerbayar_Activity extends AppActivity {
                     e.printStackTrace();
                 }
 
-                if (!etBalance.getText().toString().isEmpty()) {
+                if (!etBalance.getText().toString().isEmpty() && !text.isEmpty()) {
                     int balanceAwal = Integer.parseInt(NumberFormatUtils.formatOnlyNumber(etBalance.getText().toString()));
                     int totalBayar = Integer.parseInt(text);
                     int balanceAkhir = balanceAwal - totalBayar;
 
+                    if(totalBayar > balanceAwal){
+                        find(R.id.tl_jumlah_bayar, TextInputLayout.class).setError("JUMLAH BAYAR MELEBIHI BALANCE");
+                    }else{
+                        find(R.id.tl_jumlah_bayar, TextInputLayout.class).setErrorEnabled(false);
+                    }
                     etBalanceAkhir.setText(RP + formatRp(String.valueOf(balanceAkhir)));
                 }
 
@@ -120,6 +135,9 @@ public class AturKomisiTerbayar_Activity extends AppActivity {
             public void onClick(View view) {
                 if (etJumlahBayar.getText().toString().isEmpty()) {
                     etJumlahBayar.setError("JUMLAH BAYAR HARUS DI ISI");
+                }else if(find(R.id.tl_jumlah_bayar, TextInputLayout.class).isErrorEnabled()){
+                    viewFocus(etJumlahBayar);
+                    etJumlahBayar.setError("JUMLAH BAYAR TIDAK VALID");
                 } else {
                     saveData();
                 }
@@ -129,8 +147,15 @@ public class AturKomisiTerbayar_Activity extends AppActivity {
         find(R.id.img_scan_barcode).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getActivity(), BarcodeActivity.class);
-                startActivityForResult(i, REQUEST_BARCODE);
+                if(namaUser.equals("--PILIH--")){
+                    setErrorSpinner(spUser, "USER HARUS DI PILIH TERLEBIH DAHULU");
+                }else if(etJumlahBayar.getText().toString().equals("Rp. 0") || etJumlahBayar.getText().toString().isEmpty()){
+                    viewFocus(etJumlahBayar);
+                    etJumlahBayar.setError("JUMLAH BAYAR HARUS DI ISI");
+                }else{
+                    Intent i = new Intent(getActivity(), BarcodeActivity.class);
+                    startActivityForResult(i, REQUEST_BARCODE);
+                }
             }
         });
     }
@@ -176,6 +201,7 @@ public class AturKomisiTerbayar_Activity extends AppActivity {
                                     if(balanceList.get(j).get("NAMA").asString().equals(namaUser)){
                                         balanceUser = balanceList.get(j).get("BALANCE").asInteger();
                                         etBalance.setText(RP + NumberFormatUtils.formatRp(String.valueOf(balanceUser)));
+                                        komisiID = balanceList.get(j).get("KOMISI_ID").asInteger();
                                         break;
                                     }
                                 }
@@ -218,6 +244,7 @@ public class AturKomisiTerbayar_Activity extends AppActivity {
                                 .set("USER_ID", result.get(i).get("USER_ID").asString())
                                 .set("BALANCE", result.get(i).get("TOTAL_KOMISI").asString())
                                 .set("NAMA", result.get(i).get("NAMA").asString())
+                                .set("KOMISI_ID", result.get(i).get("ID").asString())
                         );
                     }
                 } else {
@@ -241,6 +268,8 @@ public class AturKomisiTerbayar_Activity extends AppActivity {
                 args.put("sisaBalance", NumberFormatUtils.formatOnlyNumber(etBalanceAkhir.getText().toString()));
                 args.put("totalDiBayarkan", NumberFormatUtils.formatOnlyNumber(etJumlahBayar.getText().toString()));
                 args.put("balance", NumberFormatUtils.formatOnlyNumber(etBalanceAkhir.getText().toString()));
+                args.put("namaUser", namaUser);
+                args.put("komisiID", String.valueOf(komisiID));
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(PEMBAYARAN_KOMISI), args));
             }
@@ -252,7 +281,7 @@ public class AturKomisiTerbayar_Activity extends AppActivity {
                     setResult(RESULT_OK);
                     finish();
                 } else {
-                    showError(ERROR_INFO);
+                    showError(result.get("message").asString());
                 }
             }
         });
@@ -266,15 +295,17 @@ public class AturKomisiTerbayar_Activity extends AppActivity {
             MyCode.checkMyCode(this, barcodeResult, new MyCode.RunnableWD() {
                 @Override
                 public void runWD(Nson nson) {
-                    if (nson.get("status").asString().equals("OK")) {
-                        if (nson.get("data").asArray().isEmpty()) {
-                            showWarning("SCAN BARCODE TIDAK VALID", Toast.LENGTH_LONG);
-                            return;
+                    if(!nson.asString().isEmpty()){
+                        if (nson.get("status").asString().equals("OK")) {
+                            if (nson.get("data").asArray().isEmpty()) {
+                                showWarning("SCAN BARCODE TIDAK VALID", Toast.LENGTH_LONG);
+                                return;
+                            }
+                            nson = nson.get("data").get(0);
+                            etUserPenerima.setText(nson.get("NAMA").asString());
+                        } else {
+                            showError(ERROR_INFO);
                         }
-                        nson = nson.get("data").get(0);
-                        etUserPenerima.setText(nson.get("NAMA").asString());
-                    } else {
-                        showError(ERROR_INFO);
                     }
                 }
             });

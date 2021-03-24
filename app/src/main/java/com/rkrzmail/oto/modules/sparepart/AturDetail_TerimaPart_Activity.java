@@ -67,10 +67,13 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
     private RecyclerView rvTerimaPart;
     private AlertDialog alertDialog;
 
-    private Nson partAvailableList = Nson.newArray();
+    private final Nson partAvailableList = Nson.newArray();
+    private Nson data;
     private String scanResult, penempatan, lokasiPart = "", merkPart = "";
     private String kodeFolder = "";
+    private String jenisPembayaran = "";
     private int jumlahAllPart = 0, count = 0, partId;
+    private int lastBalance = 0;
     private long totalAll = 0;
     private boolean isDelete = false;
 
@@ -102,6 +105,10 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
         etHargaBersih = findViewById(R.id.et_hargaBersih_detailTerimaPart);
         etPenempatan = findViewById(R.id.et_penempatan_detailTerimaPart);
 
+        data = Nson.readJson(getIntentStringExtra("detail"));
+        lastBalance = data.get("BALANCE").asInteger();
+        jenisPembayaran = data.get("pembayaran").asString();
+
         Tools.setViewAndChildrenEnabled(find(R.id.ly_lokasi, LinearLayout.class), false);
         initListener();
         initRecylerView();
@@ -119,6 +126,11 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
             public void onClick(View view) {
                 if (nListArray == null) {
                     showWarning("PART TIDAK BOLEH KOSONG", Toast.LENGTH_LONG);
+                    return;
+                }
+                if((jenisPembayaran.equals("TRANSFER") || jenisPembayaran.equals("CASH ON DELIVERY"))
+                        && totalAll > lastBalance){
+                    showWarning("BALANCE KAS " + (jenisPembayaran.equals("CASH ON DELIVERY") ? "" : "BANK") + "TIDAK CUKUP");
                     return;
                 }
                 insertdata();

@@ -163,7 +163,7 @@ public class AturPembayaran_Activity extends AppActivity {
             find(R.id.et_ppn, EditText.class).setText(RP + formatRp(String.valueOf(totalPpn)));
         }
 
-        find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(grandTotal)));
+        find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(grandTotal == 0 ? grandTotal : totalBiaya)));
     }
 
 

@@ -18,53 +18,6 @@
             android:orientation="vertical"
             android:padding="5dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/paddingMedium"
-                android:layout_marginBottom="@dimen/paddingMedium"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingStart="@dimen/paddingMedium"
-                android:paddingEnd="@dimen/paddingMedium">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="3"
-                    android:textColor="@color/grey_900"
-                    android:textStyle="bold"
-                    android:textSize="12sp"
-                    android:layout_height="wrap_content"
-                    android:text="LOKASI LAYANAN" />
-
-                <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_height="34dp"
-                    android:layout_weight="6"
-                    android:background="@drawable/background_edittext">
-
-                    <CheckBox
-                        android:id="@+id/cb_bengkel_discPart"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:paddingStart="20dp"
-                        android:text="BENGKEL"
-                        tools:ignore="RtlSymmetry" />
-
-                    <CheckBox
-                        android:id="@+id/cb_tenda_discPart"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:paddingEnd="20dp"
-                        android:text="TENDA"
-                        tools:ignore="RtlSymmetry" />
-
-                </RelativeLayout>
-
-            </LinearLayout>
-
             <android.support.design.widget.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
@@ -79,8 +32,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"
-                    android:hint="NO PART"
-                    android:textSize="14sp" />
+                    android:hint="@string/no_part_uppercase"
+                    android:textSize="14sp"
+                    tools:ignore="Autofill,TextFields" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -99,89 +53,50 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"
-                    android:hint="NAMA PART"
-                    android:textSize="14sp" />
+                    android:hint="@string/nama_part_uppercase"
+                    android:textSize="14sp"
+                    tools:ignore="Autofill,TextFields" />
 
             </android.support.design.widget.TextInputLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/paddingMedium"
-                android:layout_marginBottom="@dimen/paddingMedium"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingStart="@dimen/paddingMedium"
-                android:paddingEnd="@dimen/paddingMedium">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:text="PEKERJAAN"
-                    android:textColor="@color/grey_900"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-
-                <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_height="34dp"
-                    android:layout_weight="6"
-                    android:background="@drawable/background_edittext">
-
-                    <Spinner
-                        android:id="@+id/sp_pekerjaan_discPart"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:textAlignment="center" />
-
-                </RelativeLayout>
-
-
-            </LinearLayout>
-
-            <LinearLayout
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:orientation="horizontal">
+                app:helperText="Disable"
+                app:helperTextEnabled="true"
+                app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
 
-                <android.support.design.widget.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="wrap_content"
+
+                <EditText
+                    android:id="@+id/et_merk_part"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dp"
-                    android:layout_weight="1">
+                    android:enabled="false"
+                    android:hint="@string/merk_uppercase"
+                    android:textSize="14sp"
+                    tools:ignore="Autofill,TextFields" />
 
-                    <EditText
-                        android:id="@+id/et_discPart_discPart"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="DISCOUNT PART"
-                        android:inputType="number"
-                        android:maxLength="5"
-                        android:textSize="14sp" />
+            </android.support.design.widget.TextInputLayout>
 
-                </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
 
-                <android.support.design.widget.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="wrap_content"
+                <EditText
+                    android:id="@+id/et_discPart_discPart"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:hint="@string/discount_part_uppercase"
+                    android:inputType="numberSigned"
+                    android:maxLength="5"
+                    android:textSize="14sp"
+                    tools:ignore="Autofill" />
 
-                    <EditText
-                        android:id="@+id/et_discJasa_discPart"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="DISCOUNT JASA"
-                        android:inputType="number"
-                        android:maxLength="5"
-                        android:textSize="14sp" />
-
-                </android.support.design.widget.TextInputLayout>
-
-            </LinearLayout>
+            </android.support.design.widget.TextInputLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

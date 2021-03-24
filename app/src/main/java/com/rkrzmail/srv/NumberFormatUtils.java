@@ -177,8 +177,12 @@ public class NumberFormatUtils {
 
     public static String formatRp(String currency) {
         if (!currency.equals("")) {
-            DecimalFormat formatter = new DecimalFormat("###,###,###");
-            return formatter.format(Double.parseDouble(currency));
+            try{
+                DecimalFormat formatter = new DecimalFormat("###,###,###");
+                return formatter.format(Double.parseDouble(currency));
+            }catch (Exception e){
+                return currency;
+            }
         }
         return "0";
     }

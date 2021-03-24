@@ -54,7 +54,7 @@
                                 android:id="@+id/sp_bbm"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:textAlignment="center"/>
+                                android:textAlignment="center" />
 
                         </RelativeLayout>
 
@@ -175,6 +175,15 @@
                         android:text="KONFIRMASI PENAMBAHAN"
                         android:checked="true" />
 
+                    <CheckBox
+                        android:id="@+id/cb_tinggalkan_stnk"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="TINGGALKAN STNK"
+                        android:checked="false" />
+
+
                     <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -204,7 +213,7 @@
                             android:src="@drawable/icon_rework"
                             android:layout_gravity="end|center_vertical"
                             android:layout_marginEnd="@dimen/paddingMedium"
-                            android:backgroundTint="@color/transparent"/>
+                            android:backgroundTint="@color/transparent" />
 
                     </FrameLayout>
 
@@ -219,7 +228,7 @@
                         android:gravity="center"
                         android:layout_marginTop="10dp"
                         android:background="@drawable/background_edittext"
-                        android:padding="10dp"/>
+                        android:padding="10dp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -300,7 +309,7 @@
                             android:textColor="@color/red_800"
                             android:textSize="10sp"
                             android:textStyle="bold"
-                            android:layout_gravity="end"/>
+                            android:layout_gravity="end" />
 
                         <TextView
                             android:id="@+id/tv_waktu_layanan"
@@ -310,7 +319,7 @@
                             android:textSize="10sp"
                             android:textStyle="bold"
                             android:layout_gravity="end"
-                            android:visibility="gone"/>
+                            android:visibility="gone" />
 
                     </LinearLayout>
 
@@ -398,7 +407,7 @@
                         android:textStyle="bold"
                         android:textSize="12sp"
                         android:layout_gravity="end"
-                        android:layout_marginTop="-5dp"/>
+                        android:layout_marginTop="-5dp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -414,7 +423,7 @@
                             android:layout_weight="3"
                             android:textColor="@color/grey_900"
                             android:textStyle="bold"
-                            android:textSize="12sp"/>
+                            android:textSize="12sp" />
 
                         <RelativeLayout
                             android:layout_width="0dp"
@@ -426,7 +435,7 @@
                                 android:id="@+id/sp_namaMekanik_checkin4"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:textAlignment="center"/>
+                                android:textAlignment="center" />
 
                         </RelativeLayout>
 
@@ -561,7 +570,7 @@
 
                 </LinearLayout>
 
-                <include layout="@layout/layout_btn_simpan_hapus"/>
+                <include layout="@layout/layout_btn_simpan_hapus" />
 
             </LinearLayout>
 

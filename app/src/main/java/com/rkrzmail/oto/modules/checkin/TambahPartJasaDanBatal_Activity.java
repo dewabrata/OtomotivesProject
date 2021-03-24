@@ -2,6 +2,7 @@ package com.rkrzmail.oto.modules.checkin;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -451,6 +452,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
 
             @Override
             public void runUI() {
+                AppApplication.getMessageTrigger();
                 if(result.asString().isEmpty()){
                     showError("SEDANG ADA GANGGUAN SERVER, SILAHKAN HUBUNGI SUPPORT. ATAU CHECK KONTROL LAYANAN ", Toast.LENGTH_LONG);
                     finish();

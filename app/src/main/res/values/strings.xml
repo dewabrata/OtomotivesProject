@@ -150,7 +150,6 @@
     <string name="nama_supplier_uppercase">NAMA SUPPLIER</string>
     <string name="nama_ecommerce_uppercase">NAMA ECOMMERCE</string>
     <string name="estimasi_tiba_uppercase">ESTIMASI TIBA</string>
-    <string name="discount_part_uppercase">DISCOUNT PART</string>
     <string name="discount_jasa_uppercase">DISCOUNT JASA</string>
     <string name="jenis_kendaraan_lowercase">Jenis Kendaraan</string>
     <string name="nn_n_dp_uppercase">%DP</string>
@@ -310,6 +309,50 @@
     <string name="jenis_komisi">Jenis Komisi</string>
     <string name="komisi_percent">Komisi %</string>
     <string name="balance_rp_0_uppercase">BALANCE RP. 0</string>
+    <string name="satuan_gaji_uppercase">SATUAN GAJI</string>
+    <string name="upah_satuan_uppercase">UPAH / SATUAN</string>
+    <string name="potongan_alpha_uppercase">POTONGAN ALPHA</string>
+    <string name="potongan_terlambat_jam_uppercase">POTONGAN TERLAMBAT / JAM</string>
+    <string name="my_code_absen_uppercase">MY CODE ABSEN</string>
+    <string name="akses_app_uppercase">AKSES APP</string>
+    <string name="tanggal_lahir_uppercase">TANGGAL LAHIR</string>
+    <string name="kelamin_uppercase">KELAMIN</string>
+    <string name="tanggal_masuk_uppercase">TANGGAL MASUK</string>
+    <string name="fungsi_mekanik_uppercase">FUNGSI MEKANIK</string>
+    <string name="posisi_uppercase">POSISI</string>
+    <string name="penggajian_uppercase">PENGGAJIAN</string>
+    <string name="gaji_uppercase">GAJI</string>
+    <string name="no_ponsel_uppercase">NO. PONSEL</string>
+    <string name="nama_uppercase">NAMA</string>
+    <string name="perhitungan_komisi_uppercase">PERHITUNGAN KOMISI</string>
+    <string name="bulan">Bulan</string>
+    <string name="tanggal_bayar">Tanggal Bayar</string>
+    <string name="rp_total_billing">Rp. Total Billing</string>
+    <string name="cashback">Cashback</string>
+    <string name="rp_total_bayar">Rp. Total Bayar</string>
+    <string name="no_billing">No. Billing</string>
+    <string name="no_bukti_bayar">No. Bukti Bayar</string>
+    <string name="checkin_jual_part">Checkin / Jual Part</string>
+    <string name="total_fee">Total Fee</string>
+    <string name="total_fee_uppercase">TOTAL FEE</string>
+    <string name="cash_back_uppercase">CASH BACK</string>
+    <string name="net_fee_uppercase">NET FEE</string>
+    <string name="rekening_uppercase">REKENING</string>
+    <string name="bayar_fee_uppercase">BAYAR FEE</string>
+    <string name="merk_uppercase">MERK</string>
+    <string name="nama_part_uppercase">NAMA PART</string>
+    <string name="discount_part_uppercase">DISCOUNT PART</string>
+    <string name="no_part_uppercase">NO PART</string>
+    <string name="paket_layanan_uppercase">PAKET LAYANAN</string>
+    <string name="pekerjaan_uppercase">PEKERJAAN</string>
+    <string name="discount_percent_uppercase">DISCOUNT %</string>
+    <string name="selection_uppercase">SELECTION</string>
+    <string name="pilih_uppercase">--PILIH--</string>
+    <string name="paket_layanan">Paket Layanan</string>
+    <string name="kontak_person_uppercase">KONTAK PERSON</string>
+    <string name="kirim_message_uppercase">KIRIM MESSAGE</string>
+    <string name="jabatan_uppercase">JABATAN</string>
+    <string name="email_uppercase">EMAIL</string>
     <string-array name="pola_harga_jual">
         <item>FLEXIBLE</item>
         <item>BELI + MARGIN</item>
@@ -438,9 +481,8 @@
         <item>INDIVIDUAL</item>
     </string-array>
     <string-array name="aktif_tidak_aktif">
-        <item>--PILIH--</item>
-        <item>AKTIF</item>
         <item>TIDAK AKTIF</item>
+        <item>AKTIF</item>
     </string-array>
     <string-array name="jenis_booking">
         <item>--PILIH--</item>

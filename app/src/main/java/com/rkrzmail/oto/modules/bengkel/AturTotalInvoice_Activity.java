@@ -207,7 +207,6 @@ public class AturTotalInvoice_Activity extends AppActivity {
         });
 
         find(R.id.et_no_invoice, EditText.class).setText(noInv);
-        find(R.id.btn_simpan, Button.class).setText("XLS INVOICE");
         find(R.id.btn_simpan).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -220,19 +219,6 @@ public class AturTotalInvoice_Activity extends AppActivity {
             }
         });
     }
-
-    private void viewFocus(final View view) {
-        view.post(new Runnable() {
-            @Override
-            public void run() {
-                view.setFocusable(true);
-                view.requestFocusFromTouch();
-                view.requestFocus();
-                view.performClick();
-            }
-        });
-    }
-
 
     private void getDatePicker() {
         final Calendar cldr = Calendar.getInstance();

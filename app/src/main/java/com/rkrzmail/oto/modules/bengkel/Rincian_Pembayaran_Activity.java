@@ -2,6 +2,7 @@ package com.rkrzmail.oto.modules.bengkel;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -333,6 +334,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
     private void loadDataRincianLayanan(Nson result) {
         result = result.get("data");
         partIdList.asArray().clear();
+        boolean isTinggalkanStnk = false;
         for (int i = 0; i < result.size(); i++) {
             if (!isBatal) {
                 partIdList.add(isDp & result.get(i).get("DP_PART").asInteger() > 0 ?
@@ -363,6 +365,9 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                 isPkp = result.get(i).get("PKP").asString();
             }
 
+            if(result.get(i).get("TINGGALKAN_STNK").asString().equals("Y")){
+                isTinggalkanStnk = true;
+            }
             jumlahPart += result.get(i).get("JUMLAH_SERAH_TERIMA").asInteger();
             dataKendaraanId = result.get(i).get("DATA_KENDARAAN_ID").asInteger();
             noMesin = result.get(i).get("NO_MESIN_PELANGGAN").asString();
@@ -427,6 +432,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         find(R.id.row_biaya_jasa_lain).setVisibility(totalJasa == 0 | isDp ? View.GONE : View.VISIBLE);
         find(R.id.row_biaya_part).setVisibility(totalPart == 0 ? View.GONE : View.VISIBLE);
 
+        find(R.id.cb_tinggalkan_stnk,CheckBox.class).setChecked(isTinggalkanStnk);
         find(R.id.tv_sisa_biaya_dp, TextView.class).setText(RP + formatRp(String.valueOf(sisaBiayaDp)));
         find(R.id.tv_dp_percent, TextView.class).setText(dpPercent + "%");
         find(R.id.tv_total_dp, TextView.class).setText(RP + formatRp(String.valueOf(totalDp)));
@@ -447,6 +453,15 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         find(R.id.tv_harga_derek_transport, TextView.class).setText(RP + formatRp(String.valueOf(biayaDerek)));
         find(R.id.et_ket_tambahan, EditText.class).setText(ket);
         find(R.id.et_catatan, EditText.class).setText(catatanMekanik);
+
+        if(isTinggalkanStnk){
+            showInfoDialog("KEMBALIKAN STNK PELANGGAN", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+        }
     }
 
     private void setDefault() {
@@ -627,12 +642,14 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             tglCheckin = 0;
             showError(e.getMessage());
         }
-        if (tglBayar > tglCheckin) {
-            long dummy = tglBayar - tglCheckin;
-            long maxFree = maxFreePenyimpanan * ONEDAY;
-            if (maxFree < dummy) {
-                int selisih = DAYS((dummy - maxFree));
-                totalBiayaSimpan = biayaSimpanBengkel * selisih;
+        if(maxFreePenyimpanan > 0){
+            if (tglBayar > tglCheckin) {
+                long dummy = tglBayar - tglCheckin;
+                long maxFree = maxFreePenyimpanan * ONEDAY;
+                if (maxFree < dummy) {
+                    int selisih = DAYS((dummy - maxFree));
+                    totalBiayaSimpan = biayaSimpanBengkel * selisih;
+                }
             }
         }
     }

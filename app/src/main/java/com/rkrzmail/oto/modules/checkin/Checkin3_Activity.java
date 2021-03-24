@@ -46,6 +46,7 @@ import com.rkrzmail.srv.NikitaMultipleViewAdapter;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.srv.NsonAutoCompleteAdapter;
+import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
 import java.text.ParseException;
@@ -120,7 +121,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
     private String isOutsource = "";
     private final String noAntrian = "";
     private String discFasilitas = "";
-    private String discLayanan = "";
+    private double discLayanan = 0;
     private String biayaLayanan = "", biayaPergantian = "";
     private String layananId = "";
 
@@ -315,6 +316,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 } catch (Exception e) {
                     showError(e.getMessage());
                 }
+                viewHolder.find(R.id.tv_discount_part, TextView.class).setText(RP + NumberFormatUtils.formatRp(partList.get(position).get("DISCOUNT_PART").asString()));
                 viewHolder.find(R.id.tv_merk_booking3_checkin3, TextView.class).setText(partList.get(position).get("MERK").asString());
                 viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.VISIBLE);
                 viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
@@ -657,12 +659,16 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                             totalHarga = totalHarga - Integer.parseInt(formatOnlyNumber(find(R.id.et_totalBiaya_checkin3, EditText.class).getText().toString()));
                         }
 
+                        discLayanan = dataLayananList.get(i).get("DISCOUNT_LAYANAN").asDouble();
                         totalHarga = Math.max(totalHarga, 0) + Integer.parseInt(formatOnlyNumber(biayaLayanan));
+                        if(discLayanan > 0){
+                            discLayanan = (int) NumberFormatUtils.calculatePercentage(discLayanan, totalHarga);
+                            totalHarga -= discLayanan;
+                        }
                         find(R.id.et_totalBiaya_checkin3, EditText.class).setText(RP + formatRp(String.valueOf(totalHarga)));
                         find(R.id.tv_biayaLayanan_checkin, TextView.class).setText("Rp." + formatRp(biayaLayanan));
 
                         feeNonPaket = dataLayananList.get(i).get("FEE_NON_PAKET").asInteger();
-                        discLayanan = dataLayananList.get(i).get("DISCOUNT_LAYANAN").asString();
                         layananId = dataLayananList.get(i).get("LAYANAN_ID").asString();
                         jenisLayanan = dataLayananList.get(i).get("JENIS_LAYANAN").asString();
                         waktuLayanan = totalWaktuKerja(
@@ -716,6 +722,14 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                     }
                 }
 
+                if(discLayanan > 0){
+                    showInfoDialog("DISCOUNT LAYANAN", "DISCOUNT LAYANAN " + discLayanan + " %", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+                }
                 if (partWajibList.size() > 0) {
                     for (int i = 0; i < partWajibList.size(); i++) {
                         masterPartList.asArray().addAll(partWajibList.get(i).get("PARTS").asArray());
@@ -996,6 +1010,12 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void run() {
                 isSelanjutnya = true;
+                int totalDiscLayanan =  0;
+                if(discLayanan > 0){
+                    totalDiscLayanan = (int) (Integer.parseInt(biayaLayanan) * discLayanan) / 100;
+                    totalDiscLayanan = Integer.parseInt(biayaLayanan) - totalDiscLayanan;
+                }
+
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "add");
@@ -1026,6 +1046,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 args.put("feeNonPaket", String.valueOf(feeNonPaket));
                 args.put("noPonsel", noPonsel);//for message queue
                 args.put("nopol", formatNopol(nopol));
+                args.put("discountLayanan", String.valueOf(totalDiscLayanan));
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
             }

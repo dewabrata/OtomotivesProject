@@ -27,15 +27,13 @@
     <FrameLayout
         android:id="@+id/ly_parts"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="10dp">
+        android:layout_height="match_parent">
 
         <ImageButton
             android:id="@+id/img_delete"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_gravity="end"
-            android:paddingTop="5dp"
             android:paddingEnd="5dp"
             android:background="@android:color/transparent"
             android:tint="@color/grey_80"
@@ -65,7 +63,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:stretchColumns="*"
-                android:padding="@dimen/paddingSemiLarge">
+                android:padding="25dp">
 
                 <TableRow>
 
@@ -75,6 +73,14 @@
                         android:layout_height="wrap_content"
                         android:text="NAMA PART"
                         android:layout_gravity="start"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_discount_part"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                         android:textSize="12sp" />
 

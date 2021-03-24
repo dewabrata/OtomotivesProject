@@ -1,11 +1,12 @@
 package com.rkrzmail.oto.modules.discount;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -14,7 +15,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -28,29 +31,39 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import in.galaxyofandroid.spinerdialog.OnSpinerItemClick;
+import in.galaxyofandroid.spinerdialog.SpinnerDialog;
+
 import static com.rkrzmail.utils.APIUrls.DISCOUNT_LAYANAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_LAYANAN;
+import static com.rkrzmail.utils.APIUrls.VIEW_MST;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 
 public class AturDiscountLayanan_Activity extends AppActivity {
 
-    private Spinner spPekerjaan;
-    private String lokasi;
-    private List<String> listChecked = new ArrayList<>();
-    private ViewGroup layoutCheckBox;
-    private Spinner spLayanan;
-    private List<String> layananList = new ArrayList<>();
-    private Nson dataLayananList = Nson.newArray();
-    private String layanan = "", idLayanan = "";
-    private boolean flagTenda = false, flagBengkel = false, flagMssg = false;
+    private AlertDialog alertDialog;
+    private Button btnPekerjaan, btnLayanan;
+    private SpinnerDialog spDialogLayanan;
+
+    private final Nson pekerjaanSelectedList = Nson.newArray();
+    private final Nson pekerjaanList = Nson.newArray();
+    private final Nson dataLayananList = Nson.newArray();
+    private final ArrayList<String> layananList = new ArrayList<>();
+    boolean[] isSelectedPekerjaanArr = null;
+
+    private int idLayanan = 0;
+    boolean selectAllPekerjaan = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_atur_discount_layanan_);
+        setContentView(R.layout.activity_atur_discount_layanan);
         initToolbar();
         initComponent();
+        loadData();
+        setSpPekerjaan();
+        setSpLayanan();
     }
 
     private void initToolbar() {
@@ -61,87 +74,253 @@ public class AturDiscountLayanan_Activity extends AppActivity {
     }
 
     private void initComponent() {
-        spPekerjaan = findViewById(R.id.sp_pekerjaan_discLayanan);
-        spLayanan = findViewById(R.id.sp_paketLayanan_discLayanan);
-
-        find(R.id.et_discPart_discLayanan, EditText.class).addTextChangedListener(new NumberFormatUtils().percentTextWatcher(find(R.id.et_discPart_discLayanan, EditText.class)));
-
-        try {
-            setSpLayanan();
-            loadData();
-        } catch (Exception e) {
-            Log.d("Exception__", "initComponent: " + e.getMessage());
-        }
-
-        find(R.id.cb_tenda_discLayanan, CheckBox.class).setOnCheckedChangeListener(listener);
-        find(R.id.cb_bengkel_discLayanan, CheckBox.class).setOnCheckedChangeListener(listener);
+        btnPekerjaan = findViewById(R.id.btn_pekerjaan);
+        btnLayanan = findViewById(R.id.btn_layanan);
+        find(R.id.et_disc_layanan, EditText.class).addTextChangedListener(new NumberFormatUtils().percentTextWatcher(find(R.id.et_disc_layanan, EditText.class)));
     }
 
     @SuppressLint("SetTextI18n")
     private void loadData() {
-        final Nson n = Nson.readJson(getIntentStringExtra("data"));
-        Intent i = getIntent();
-        if (n.get("LOKASI").asString().equalsIgnoreCase("TENDA") && n.get("LOKASI").asString().equalsIgnoreCase("BENGKEL")) {
-            flagTenda = true;
-            flagBengkel = true;
-        } else if (n.get("LOKASI").asString().equalsIgnoreCase("TENDA")) {
-            flagTenda = true;
-        } else if (n.get("LOKASI").asString().equalsIgnoreCase("BENGKEL")) {
-            flagBengkel = true;
-        }
-        if (n.get("MESSAGE_PELANGGAN").asString().equalsIgnoreCase("YA")) {
-            flagMssg = true;
-        }
-        if (i.hasExtra(DATA)) {
-            setSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN", n.get("PEKERJAAN").asString());
-            layanan = n.get("NAMA_LAYANAN").asString();
-            setSpStatus(n.get("STATUS").asString());
-            find(R.id.et_discPart_discLayanan, EditText.class).setText(n.get("DISKON").asString());
-            find(R.id.cb_bengkel_discLayanan, CheckBox.class).setChecked(flagBengkel);
-            find(R.id.cb_tenda_discLayanan, CheckBox.class).setChecked(flagTenda);
+        final Nson data = Nson.readJson(getIntentStringExtra(DATA));
+        boolean isUpdate = false;
+        if (!data.asString().isEmpty()) {
+            isUpdate = true;
+            btnLayanan.setEnabled(false);
+            btnPekerjaan.setEnabled(false);
+            btnLayanan.setText(data.get("NAMA_LAYANAN").asString());
+            btnPekerjaan.setText(data.get("PEKERJAAN").asString());
+            find(R.id.et_disc_layanan, EditText.class).setText(data.get("DISCOUNT_LAYANAN").asString());
 
-            find(R.id.btn_hapus_discLayanan, Button.class).setVisibility(View.VISIBLE);
-            find(R.id.btn_hapus_discLayanan, Button.class).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    deleteData(n);
-                }
-            });
-            find(R.id.btn_simpan_discLayanan, Button.class).setText("UPDATE");
-            find(R.id.btn_simpan_discLayanan, Button.class).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    updateData(n);
-                }
-            });
-        } else {
-            setSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN");
-            find(R.id.btn_simpan_discLayanan, Button.class).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    addData();
-                }
-            });
+            String[] splitPekerjaan = data.get("PEKERJAAN").asString().trim().split(", ");
+            for (String s : splitPekerjaan) {
+                pekerjaanSelectedList.add(s.trim());
+            }
         }
+
+        setSpStatus(data.get("STATUS").asString());
+        final boolean finalIsUpdate = isUpdate;
+        find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(finalIsUpdate){
+                    if(find(R.id.et_disc_layanan, EditText.class).getText().toString().equals("0,0%")){
+                        find(R.id.et_disc_layanan, EditText.class).setError("DISCOUNT HARUS DI ISI");
+                        viewFocus(find(R.id.et_disc_layanan, EditText.class));
+                    }else{
+                        saveData(finalIsUpdate, data.get("ID").asInteger());
+                    }
+                }else{
+                    if(btnPekerjaan.getText().toString().equals("--PILIH--") || btnPekerjaan.getText().toString().isEmpty()){
+                        btnPekerjaan.setError("PEKERJAAN HARUS DI PILIH");
+                    }else if(btnLayanan.getText().toString().equals("--PILIH--")){
+                        btnLayanan.setError("LAYANAN HARUS DI PILIH");
+                    }else if(find(R.id.et_disc_layanan, EditText.class).getText().toString().equals("0,0%")){
+                        find(R.id.et_disc_layanan, EditText.class).setError("DISCOUNT HARUS DI ISI");
+                        viewFocus(find(R.id.et_disc_layanan, EditText.class));
+                    }else{
+                        saveData(finalIsUpdate, 0);
+                    }
+                }
+
+            }
+        });
+
     }
 
-    private void addData() {
+    private void setSpPekerjaan() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("nama", "PEKERJAAN");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MST), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equals("OK")) {
+                    result = result.get("data");
+                    pekerjaanSelectedList.add("");
+                    pekerjaanList.add("ALL");
+                    for (int i = 0; i < result.size(); i++) {
+                        pekerjaanList.add(result.get(i).get("PEKERJAAN").asString());
+                    }
+
+                    final List<String> itemsPekerjaan = new ArrayList<>();
+                    itemsPekerjaan.addAll(pekerjaanList.asArray());
+                    isSelectedPekerjaanArr = new boolean[itemsPekerjaan.size()];
+
+                    btnPekerjaan.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //showDialogPekerjaan();
+                            showAlertDialogPekerjaan(itemsPekerjaan.toArray(new String[]{}));
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private void showAlertDialogPekerjaan(final String[] itemArray) {
+        final List<String> selectedList = new ArrayList<>();
+        selectedList.addAll(pekerjaanSelectedList.asArray());
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("PILIH PEKERJAAN")
+                .setMultiChoiceItems(itemArray, isSelectedPekerjaanArr, null)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        pekerjaanSelectedList.asArray().clear();
+                        pekerjaanSelectedList.asArray().addAll(selectedList);
+
+                        StringBuilder pekerjaan = new StringBuilder();
+                        for (int i = 0; i < pekerjaanSelectedList.size(); i++) {
+                            pekerjaan.append(pekerjaanSelectedList.get(i).asString()).append(", ");
+                        }
+
+                        for (int i = 0; i < pekerjaanList.size(); i++) {
+                            if(pekerjaanSelectedList.asArray().contains(pekerjaanList.get(i).asString())){
+                                isSelectedPekerjaanArr[i] = true;
+                            }else{
+                                isSelectedPekerjaanArr[i] = false;
+                            }
+                        }
+
+                        btnPekerjaan.setText(pekerjaan.toString());
+                    }
+                })
+                .setNegativeButton("BATAL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        selectedList.clear();
+                    }
+                });
+
+        alertDialog = builder.create();
+        alertDialog.setCancelable(false);
+        alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        alertDialog.show();
+
+        final ListView listView = alertDialog.getListView();
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                boolean isChecked = listView.isItemChecked(position);
+                String itemSelected = parent.getItemAtPosition(position).toString();
+
+                if (itemSelected.equals("ALL")) {
+                    if (selectAllPekerjaan) {
+                        for (int i = 1; i < itemArray.length; i++) { // we start with first element after "Select all" choice
+                            if (isChecked && !listView.isItemChecked(i)
+                                    || !isChecked && listView.isItemChecked(i)) {
+                                listView.performItemClick(listView, i, 0);
+                            }
+                        }
+                    }
+                } else {
+                    if (!isChecked && listView.isItemChecked(0)) {
+                        selectAllPekerjaan = false;
+                        listView.performItemClick(listView, 0, 0);
+                        selectAllPekerjaan = true;
+                    }
+                }
+
+                try{
+                    if (isChecked) {
+                        selectedList.add(itemSelected);
+                    } else {
+                        if(selectedList.size() > 0){
+                            for (int i = 0; i < selectedList.size(); i++) {
+                                if(!isChecked && selectedList.get(i).equals(itemSelected)){
+                                    selectedList.remove(i);
+                                }
+                            }
+                        }
+                    }
+                }catch (Exception e){
+                    showError(selectedList.toString());
+                }
+
+            }
+        });
+    }
+
+
+    private void initLvPekerjaan(View dialogView) {
+        final ListView listView = dialogView.findViewById(R.id.listview);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.item_multiple_select, pekerjaanList.asArray()) {
+            @NonNull
+            @Override
+            public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View view = convertView;
+                if (convertView == null) {
+                    view = getLayoutInflater().inflate(R.layout.item_multiple_select, parent, false);
+                }
+
+                TextView tvTittle = view.findViewById(R.id.tv_tittle_selection);
+                final CheckBox cbSelect = view.findViewById(R.id.cb_selection);
+                tvTittle.setText(pekerjaanList.get(position).asString());
+                cbSelect.setTag(pekerjaanList.get(position).asString());
+
+                for (int i = 0; i < pekerjaanSelectedList.size(); i++) {
+                    if (pekerjaanSelectedList.get(i).asString().equals(pekerjaanList.get(position).asString())) {
+                        cbSelect.setChecked(true);
+                    }
+                }
+
+                cbSelect.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                        if (b) {
+                            pekerjaanSelectedList.add(pekerjaanList.get(position).asString());
+                            //  onCheckedSelectedListener.getSelectedItem(pekerjaanSelectedList.asArray(), position);
+                        } else {
+                            for (int i = 0; i < pekerjaanSelectedList.size(); i++) {
+                                if (pekerjaanSelectedList.get(i).asString().equals(pekerjaanList.get(position).asString())) {
+                                    pekerjaanSelectedList.remove(i);
+                                }
+                            }
+                            //  onCheckedSelectedListener.removeSelectedItem(pekerjaanSelectedList.asArray(), position);
+                        }
+                    }
+                });
+                return view;
+            }
+        };
+
+        adapter.notifyDataSetChanged();
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+            }
+        });
+    }
+
+    private void saveData(final boolean isUpdate, final int discountID) {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
-                args.put("action", "add");
-                args.put("status", find(R.id.sp_status, Spinner.class).getSelectedItem().toString());
-                args.put("pekerjaan", spPekerjaan.getSelectedItem().toString());
-                args.put("nama", find(R.id.sp_paketLayanan_discLayanan, Spinner.class).getSelectedItem().toString());
-                args.put("diskon", find(R.id.et_discPart_discLayanan, EditText.class).getText().toString());
-                args.put("layananId", idLayanan);
-
-                for(String str : listChecked){
-                    args.put("lokasi", str);
+                if(isUpdate){
+                    args.put("action", "update");
+                    args.put("discountID", String.valueOf(discountID));
+                }else{
+                    args.put("action", "add");
+                    args.put("namaLayanan", btnLayanan.getText().toString());
                 }
+
+                args.put("status", find(R.id.sp_status, Spinner.class).getSelectedItem().toString());
+                args.put("pekerjaan", btnPekerjaan.getText().toString());
+                args.put("diskon", NumberFormatUtils.clearPercent(find(R.id.et_disc_layanan, EditText.class).getText().toString()));
+                args.put("layananID", String.valueOf(idLayanan));
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(DISCOUNT_LAYANAN), args));
             }
@@ -150,37 +329,6 @@ public class AturDiscountLayanan_Activity extends AppActivity {
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     showSuccess("Sukses Menyimpan Aktifitas");
-                    setResult(RESULT_OK);
-                    finish();
-                } else {
-                    showError("Gagal Menyimpan Aktifitas");
-                }
-            }
-        });
-    }
-
-    private void updateData(final Nson id) {
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-
-                args.put("action", "update");
-                args.put("id", id.get("ID").asString());
-                args.put("status", find(R.id.sp_status, Spinner.class).getSelectedItem().toString());
-                args.put("pekerjaan", spPekerjaan.getSelectedItem().toString());
-                args.put("nama", find(R.id.sp_paketLayanan_discLayanan, Spinner.class).getSelectedItem().toString());
-                args.put("diskon", find(R.id.et_discPart_discLayanan, EditText.class).getText().toString());
-                args.put("layananId", idLayanan);
-
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(DISCOUNT_LAYANAN), args));
-            }
-
-            @Override
-            public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    showInfo("Sukses Menyimpan Aktifitas");
                     setResult(RESULT_OK);
                     finish();
                 } else {
@@ -217,29 +365,17 @@ public class AturDiscountLayanan_Activity extends AppActivity {
         });
     }
 
-    CompoundButton.OnCheckedChangeListener listener = new CompoundButton.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            if (isChecked) {
-                listChecked.add(buttonView.getText().toString());
-                Log.d("Disc___", "initComponent: " + listChecked);
-            } else {
-                listChecked.remove(buttonView.getText().toString());
-            }
-        }
-    };
-
-    private void setSpStatus(String status){
+    private void setSpStatus(String status) {
         List<String> statusList = new ArrayList<>();
         statusList.add("TIDAK AKTIF");
         statusList.add("AKTIF");
 
-        ArrayAdapter<String> statusAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, statusList);
+        ArrayAdapter<String> statusAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, statusList);
         statusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         find(R.id.sp_status, Spinner.class).setAdapter(statusAdapter);
-        if(!status.isEmpty()){
+        if (!status.isEmpty()) {
             for (int i = 0; i < find(R.id.sp_status, Spinner.class).getCount(); i++) {
-                if(find(R.id.sp_status, Spinner.class).getItemAtPosition(i).equals(status)){
+                if (find(R.id.sp_status, Spinner.class).getItemAtPosition(i).equals(status)) {
                     find(R.id.sp_status, Spinner.class).setSelection(i);
                     break;
                 }
@@ -255,15 +391,13 @@ public class AturDiscountLayanan_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
-                args.put("spec", "Bengkel");
-                args.put("status", "AKTIF");
+                args.put("spec", "BENGKEL");
+                args.put("layanan", "DISCOUNT LAYANAN");
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_LAYANAN), args));
             }
 
             @Override
             public void runUI() {
-                layananList.add("--PILIH--");
-                dataLayananList.add("");
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     result = result.get("data");
                     for (int i = 0; i < result.size(); i++) {
@@ -272,17 +406,26 @@ public class AturDiscountLayanan_Activity extends AppActivity {
                                 .set("NAMA_LAYANAN", result.get(i).get("NAMA_LAYANAN").asString()));
                         layananList.add(result.get(i).get("NAMA_LAYANAN").asString());
                     }
-                    ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, layananList);
-                    spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spLayanan.setAdapter(spinnerAdapter);
-                    if (!layanan.isEmpty()) {
-                        for (int in = 0; in < spLayanan.getCount(); in++) {
-                            if (spLayanan.getItemAtPosition(in).toString().contains(layanan)) {
-                                spLayanan.setSelection(in);
+
+                    spDialogLayanan = new SpinnerDialog(getActivity(), layananList, "PILIH JENIS LAYANAN");
+                    spDialogLayanan.bindOnSpinerListener(new OnSpinerItemClick() {
+                        @Override
+                        public void onClick(String item, int position) {
+                            if (item.equals(dataLayananList.get(position).get("NAMA_LAYANAN").asString())) {
+                                idLayanan = dataLayananList.get(position).get("ID").asInteger();
+                                btnLayanan.setText(item);
                             }
                         }
-                    }
-                }else{
+                    });
+
+                    btnLayanan.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            spDialogLayanan.showSpinerDialog();
+                        }
+                    });
+
+                } else {
                     Messagebox.showDialog(getActivity(), "Konfirmasi", "Layanan Gagal di Muat, Muat Ulang?", "Ya", "Tidak", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -298,20 +441,6 @@ public class AturDiscountLayanan_Activity extends AppActivity {
 
                     showError(ERROR_INFO);
                 }
-            }
-        });
-
-        spLayanan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if(adapterView.getSelectedItem().toString().equals(dataLayananList.get(i).get("NAMA_LAYANAN").asString())){
-                    idLayanan = dataLayananList.get(i).get("ID").asString();
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
             }
         });
     }

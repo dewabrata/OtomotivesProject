@@ -130,7 +130,7 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
             if (getIntent().getIntExtra("HARGA_LAYANAN", 0) > 0) {
                 discFasilitas = Double.parseDouble(isMasterPartOrParts ?
                         getIntent().getStringExtra(MASTER_PART) : getIntent().getStringExtra(PARTS_UPPERCASE));
-                finalTotal = getIntent().getIntExtra("HARGA_LAYANAN", 0) - calculateDiscFasilitas(discFasilitas,
+                finalTotal = getIntent().getIntExtra("HARGA_LAYANAN", 0) - calculateDisc(discFasilitas,
                         getIntent().getIntExtra("HARGA_LAYANAN", 0));
                 etHargaJual.setText(RP + finalTotal);
             } else {
@@ -148,7 +148,7 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
                     if (Tools.isNumeric(nson.get("HARGA_JUAL").asString())) {
                         if (isDiskon) {
                             finalTotal = Integer.parseInt(nson.get("HARGA_JUAL").asString())
-                                    - calculateDiscFasilitas(
+                                    - calculateDisc(
                                     Integer.parseInt(isMasterPartOrParts ?
                                             getIntent().getStringExtra(MASTER_PART) : getIntent().getStringExtra(PARTS_UPPERCASE)),
                                     Integer.parseInt(nson.get("HARGA_JUAL").asString()));
@@ -171,7 +171,7 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
                 @Override
                 public void onClick(View v) {
                     countClick++;
-                    if(countClick == 1){
+                    if (countClick == 1) {
                         if (find(R.id.ly_hpp_jumlah_harga_part, TextInputLayout.class).getVisibility() == View.VISIBLE) {
                             if (etHargaJual.isEnabled()) {
                                 if (!etHargaJual.getText().toString().isEmpty() && !etHpp.getText().toString().isEmpty()) {
@@ -197,10 +197,10 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
                                     etHargaJual.setError("Harga Jual Flexible, Harus Di isi");
                                 }
                             }
-                        }else {
+                        } else {
                             nextForm(nson);
                         }
-                    }else{
+                    } else {
                         setResult(RESULT_OK);
                         finish();
                     }
@@ -209,7 +209,16 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
         }
     }
 
-    private int calculateDiscFasilitas(double diskon, int harga) {
+    private void showDialogDisc(double discount) {
+        showInfoDialog("DISCOUNT PART", "PART MENDAPATKAN DISCOUNT SEBESAR " + discount + " %", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+    }
+
+    private int calculateDisc(double diskon, int harga) {
         if (diskon > 0 && harga > 0) {
             return (int) (diskon * harga) / 100;
         }
@@ -365,16 +374,11 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
         }
 
         if (!nson.get("DISCOUNT_PART").asString().isEmpty()) {
-            find(R.id.ly_disc_part_jumlah_harga_part).setVisibility(View.VISIBLE);
             if (!nson.get("HARGA_JUAL").asString().isEmpty()) {
-                discPart = calculateDiscFasilitas(nson.get("DISCOUNT_PART").asDouble(), nson.get("HARGA_JUAL").asInteger());
+                discPart = calculateDisc(nson.get("DISCOUNT_PART").asDouble(), nson.get("HARGA_JUAL").asInteger());
             }
-            etDiscPart.setText(RP + formatRp(String.valueOf(discPart)));
-        }
-
-        if (!nson.get("DISCOUNT_JASA_PASANG").asString().isEmpty()) {
-            find(R.id.ly_discJasa_jumlah_harga_part).setVisibility(View.VISIBLE);
-            etDiscJasa.setText(nson.get("DISCOUNT_JASA_PASANG").asString() + " %");
+            //showDialogDisc(nson.get("DISCOUNT_PART").asDouble());
+            etDiscPart.setText(RP + NumberFormatUtils.formatRp(String.valueOf((int) discPart)));
         }
 
         find(R.id.btn_simpan_jumlah_harga_part, Button.class).setOnClickListener(new View.OnClickListener() {
@@ -425,9 +429,9 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
                         }
                     }
                 } else {
-                    if(countClick == 1){
+                    if (countClick == 1) {
                         nextForm(nson);
-                    }else{
+                    } else {
                         setResult(RESULT_OK);
                         finish();
                     }
@@ -501,13 +505,13 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
         sendData.set("BERKALA_BULAN", getBerkalaBulan(berkalaBulan));
         sendData.set("WAKTU_INSPEKSI", find(R.id.et_waktu_set_inspeksi, EditText.class).getText().toString());
         sendData.set("WAKTU_KERJA", find(R.id.et_waktuSet, EditText.class).getText().toString());
-        if(kmKendaraan > 0){
-            if(kmKendaraan < batasanGaransiKm){
+        if (kmKendaraan > 0) {
+            if (kmKendaraan < batasanGaransiKm) {
                 sendData.set("GARANSI", garansiPart);
-            }else{
+            } else {
                 sendData.set("GARANSI", "N");
             }
-        }else{
+        } else {
             sendData.set("GARANSI", "");
         }
 
@@ -606,8 +610,8 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
     }
 
     @SuppressLint("DefaultLocale")
-    private String getBerkalaBulan(int berkalaBulan){
-        if(berkalaBulan == 0) return "";
+    private String getBerkalaBulan(int berkalaBulan) {
+        if (berkalaBulan == 0) return "";
         String nows = currentDateTime("dd/MM/yyyy");
         String[] split = nows.split("/");
 
@@ -615,16 +619,16 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
         int month = Integer.parseInt(split[1]);
         int year = Integer.parseInt(split[2]);
 
-        if(berkalaBulan >= 12){
+        if (berkalaBulan >= 12) {
             berkalaBulan = berkalaBulan - 12;
             year += 1;
         }
 
         month += berkalaBulan;
-        if(month >= 12){
+        if (month >= 12) {
             month -= 12;
             year += 1;
-            if(month >= 12){
+            if (month >= 12) {
                 month -= 12;
                 year += 1;
             }

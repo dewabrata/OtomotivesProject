@@ -142,40 +142,62 @@
             android:orientation="horizontal"
             android:padding="@dimen/paddingSemiLarge">
 
-            <CheckBox
-                android:id="@+id/cb_derek"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:enabled="false"
-                android:text="DEREK"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:textColor="@color/grey_900"
-                android:textSize="10sp" />
+                android:orientation="vertical"
+                android:layout_weight="1">
 
-            <CheckBox
-                android:id="@+id/cb_buangPart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:enabled="false"
-                android:text="BUANG PART BEKAS"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:textColor="@color/grey_900"
-                android:textSize="10sp" />
+                <CheckBox
+                    android:id="@+id/cb_derek"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:text="DEREK"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/grey_900"
+                    android:textSize="10sp" />
 
-            <CheckBox
-                android:id="@+id/cb_antar_jemput"
+                <CheckBox
+                    android:id="@+id/cb_buangPart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:text="BUANG PART BEKAS"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/grey_900"
+                    android:textSize="10sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:enabled="false"
-                android:text="ANTAR - JEMPUT"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:textColor="@color/grey_900"
-                android:textSize="10sp" />
+                android:orientation="vertical"
+                android:layout_weight="1">
+
+                <CheckBox
+                    android:id="@+id/cb_antar_jemput"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:text="ANTAR - JEMPUT"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/grey_900"
+                    android:textSize="10sp" />
+
+                <CheckBox
+                    android:id="@+id/cb_tinggalkan_stnk"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="10sp"
+                    android:text="TINGGALKAN STNK"
+                    android:enabled="false"/>
+
+            </LinearLayout>
 
         </LinearLayout>
+
 
         <LinearLayout
             android:id="@+id/ly_refundDp"

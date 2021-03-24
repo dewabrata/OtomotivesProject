@@ -115,7 +115,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:hint="DESKRIPSI KERUSAKAN"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:inputType="textCapCharacters"/>
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -328,7 +329,8 @@
                         android:layout_height="match_parent"
                         android:enabled="true"
                         android:hint="INFORMASI TAMBAHAN"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:inputType="textCapCharacters"/>
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -355,7 +357,8 @@
                         android:layout_height="match_parent"
                         android:enabled="false"
                         android:hint="NIK PEMILIK"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:inputType="textCapCharacters"/>
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -380,7 +383,8 @@
                         android:layout_height="match_parent"
                         android:enabled="false"
                         android:hint="NO. BUKU GARANSI"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:inputType="textCapCharacters"/>
 
                 </android.support.design.widget.TextInputLayout>
 

@@ -84,7 +84,7 @@ public class AturUser_Activity extends AppActivity {
 
     private void initComponent() {
         spAkses = findViewById(R.id.spinnerAksesApp);
-        spPosisi = findViewById(R.id.spinnerPosisi);
+        spPosisi = findViewById(R.id.sp_posisi);
         spStatus = (Spinner) findViewById(R.id.spinnerStatus);
 
         loadData();
@@ -121,8 +121,8 @@ public class AturUser_Activity extends AppActivity {
                 if (validateFields(find(R.id.ly_user, LinearLayout.class))) {
                     return;
                 }
-                if (find(R.id.txtNoPonsel, TextView.class).getText().toString().isEmpty()) {
-                    find(R.id.txtNoPonsel, TextView.class).setError("No. Ponsel" + ket);
+                if (find(R.id.et_no_ponsel, TextView.class).getText().toString().isEmpty()) {
+                    find(R.id.et_no_ponsel, TextView.class).setError("No. Ponsel" + ket);
                     return;
                 }
 
@@ -185,7 +185,7 @@ public class AturUser_Activity extends AppActivity {
         minEntryEditText(find(R.id.txtNamaKaryawan, EditText.class), 8, find(R.id.tl_nama_user, TextInputLayout.class), "Nama Min. 5 Karakter");
         minEntryEditText(find(R.id.txtAlamat, EditText.class), 20, find(R.id.tl_alamat_user, TextInputLayout.class), "Entry Alamat Min. 20 Karakter");
 
-        find(R.id.txtNoPonsel, EditText.class).addTextChangedListener(new TextWatcher() {
+        find(R.id.et_no_ponsel, EditText.class).addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 if (s.toString().length() == 0) {
@@ -200,11 +200,11 @@ public class AturUser_Activity extends AppActivity {
                 if (counting == 0) {
                     find(R.id.tl_nohp_user, TextInputLayout.class).setErrorEnabled(false);
                 } else if (counting < 4) {
-                    find(R.id.txtNoPonsel, EditText.class).setText("+62 ");
-                    Selection.setSelection(find(R.id.txtNoPonsel, EditText.class).getText(), find(R.id.txtNoPonsel, EditText.class).getText().length());
+                    find(R.id.et_no_ponsel, EditText.class).setText("+62 ");
+                    Selection.setSelection(find(R.id.et_no_ponsel, EditText.class).getText(), find(R.id.et_no_ponsel, EditText.class).getText().length());
                 } else if (counting < 12) {
                     find(R.id.tl_nohp_user, TextInputLayout.class).setError("No. Hp Min. 6 Karakter");
-                    find(R.id.txtNoPonsel, EditText.class).requestFocus();
+                    find(R.id.et_no_ponsel, EditText.class).requestFocus();
                 } else {
                     find(R.id.tl_nohp_user, TextInputLayout.class).setErrorEnabled(false);
                 }
@@ -213,7 +213,7 @@ public class AturUser_Activity extends AppActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 if (dataPonsel.size() > 0) {
-                    String noHp = find(R.id.txtNoPonsel, EditText.class).getText().toString().replaceAll("[^0-9]+", "");
+                    String noHp = find(R.id.et_no_ponsel, EditText.class).getText().toString().replaceAll("[^0-9]+", "");
                     for (String no : dataPonsel) {
                         if (noHp.equalsIgnoreCase(no)) {
                             find(R.id.tl_nohp_user, TextInputLayout.class).setError("No. Hp Sudah Terdaftar");
@@ -288,7 +288,7 @@ public class AturUser_Activity extends AppActivity {
             find(R.id.txtTglLahir, TextView.class).setText(data.get("TANGGAL_LAHIR").asString());
             find(R.id.spinnerKelamin, Spinner.class).setSelection(Tools.getIndexSpinner
                     (find(R.id.spinnerKelamin, Spinner.class), data.get("KELAMIN").asString()));
-            find(R.id.txtNoPonsel, EditText.class).setText(data.get("NO_PONSEL").asString());
+            find(R.id.et_no_ponsel, EditText.class).setText(data.get("NO_PONSEL").asString());
             find(R.id.tl_nohp_user, TextInputLayout.class).setHelperTextEnabled(false);
             find(R.id.txtEmail, EditText.class).setText(data.get("EMAIL").asString());
             find(R.id.txtAlamat, EditText.class).setText(data.get("ALAMAT").asString());
@@ -343,7 +343,7 @@ public class AturUser_Activity extends AppActivity {
                 args.put("nik", find(R.id.txtNik, EditText.class).getText().toString());
                 args.put("tanggallahir", parseTglLahir);
                 args.put("kelamin", find(R.id.spinnerKelamin, Spinner.class).getSelectedItem().toString());
-                args.put("noPonsel", find(R.id.txtNoPonsel, TextView.class).getText().toString().replaceAll("[^0-9]+", ""));
+                args.put("noPonsel", find(R.id.et_no_ponsel, TextView.class).getText().toString().replaceAll("[^0-9]+", ""));
                 args.put("email", find(R.id.txtEmail, EditText.class).getText().toString());
                 args.put("alamat", find(R.id.txtAlamat, EditText.class).getText().toString());
                 args.put("tanggalmasuk", parseTglMasuk);
@@ -369,8 +369,8 @@ public class AturUser_Activity extends AppActivity {
                 } else {
                     if (result.get("message").asString().contains("Duplicate entry")) {
                         showWarning("Nomor Ponsel Sudah Terdaftar di Database", Toast.LENGTH_LONG);
-                        find(R.id.txtNoPonsel, TextView.class).setText("");
-                        find(R.id.txtNoPonsel, TextView.class).requestFocus();
+                        find(R.id.et_no_ponsel, TextView.class).setText("");
+                        find(R.id.et_no_ponsel, TextView.class).requestFocus();
                     } else {
                         showError("Gagal Menambahkan Aktifitas");
                     }
@@ -391,7 +391,7 @@ public class AturUser_Activity extends AppActivity {
                 args.put("action", "update");
                 args.put("idUser", String.valueOf(idUser));
                 args.put("nama", find(R.id.txtNamaKaryawan, EditText.class).getText().toString());
-                args.put("noPonsel", formatOnlyNumber(find(R.id.txtNoPonsel, EditText.class).getText().toString()));
+                args.put("noPonsel", formatOnlyNumber(find(R.id.et_no_ponsel, EditText.class).getText().toString()));
                 args.put("email", find(R.id.txtEmail, EditText.class).getText().toString());
                 args.put("alamat", find(R.id.txtAlamat, EditText.class).getText().toString());
                 args.put("tangalmasuk", parseTglMasuk);

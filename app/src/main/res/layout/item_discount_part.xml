@@ -13,15 +13,28 @@
     android:layout_weight="5"
     android:padding="10dp"
     app:cardElevation="2dp"
-    app:cardCornerRadius="10dp">
+    app:cardCornerRadius="7dp">
 
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="10dp"
+        android:layout_margin="15dp"
         android:stretchColumns="*">
 
         <TableRow>
+
+            <TextView
+                android:id="@+id/tv_namaPart_disc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/nama_part"
+                android:layout_gravity="start"
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+        </TableRow>
+
+        <TableRow android:layout_marginTop="5dp">
 
             <TextView
                 android:id="@+id/tv_noPart_disc"
@@ -29,53 +42,29 @@
                 android:layout_height="wrap_content"
                 android:text="@string/no_part"
                 android:textSize="12sp"
-                android:layout_gravity="start" android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
-
-        </TableRow>
-
-        <TableRow android:layout_marginTop="5dp">
-
-            <TextView
-                android:id="@+id/tv_namaPart_disc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Nama Part"
                 android:layout_gravity="start"
-                android:textSize="12sp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
-
-        </TableRow>
-
-        <TableRow android:layout_marginTop="5dp">
-
-            <TextView
-                android:id="@+id/tv_hpp_disc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Hpp"
-                android:layout_gravity="start"
-                android:textSize="12sp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
             <TextView
-                android:id="@+id/tv_harga_disc"
+                android:id="@+id/tv_merk_part"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Harga Jual"
-                android:layout_gravity="end"
+                android:text="@string/merk"
                 android:textSize="12sp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:layout_gravity="end"/>
 
         </TableRow>
 
-
-        <TableRow android:layout_marginTop="5dp">
+        <TableRow
+            android:visibility="gone"
+            android:layout_marginTop="5dp">
 
             <TextView
                 android:id="@+id/tv_pekerjaan_disc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Pekerjaan"
+                android:text="@string/pekerjaan"
                 android:textSize="12sp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:layout_gravity="start"/>
@@ -94,10 +83,10 @@
                 android:layout_gravity="start"/>
 
             <TextView
-                android:id="@+id/tv_tgl_disc"
+                android:id="@+id/tv_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tanggal"
+                android:text="@string/status"
                 android:textSize="12sp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:layout_gravity="end"/>

@@ -1,5 +1,7 @@
 package com.rkrzmail.oto.modules.discount;
 
+import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -12,22 +14,28 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
+import com.naa.data.Utility;
 import com.naa.utils.InternetX;
 import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.discount.AturDiscountLayanan_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
-import com.rkrzmail.utils.Tools;
+import com.rkrzmail.srv.NumberFormatUtils;
 
 import java.util.Map;
 
@@ -35,11 +43,12 @@ import static com.rkrzmail.utils.APIUrls.DISCOUNT_LAYANAN;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DISCOUNT;
+import static com.rkrzmail.utils.ConstUtils.RP;
 
 public class DiscountLayanan_Activity extends AppActivity {
 
     private RecyclerView rvDiscLayanan;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,18 +76,27 @@ public class DiscountLayanan_Activity extends AppActivity {
         rvDiscLayanan = findViewById(R.id.recyclerView);
         rvDiscLayanan.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvDiscLayanan.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_discount_layanan) {
-            @Override
-            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                super.onBindViewHolder(viewHolder, position);
-                String tglDisc = Tools.setFormatDayAndMonthFromDb(nListArray.get(position).get("TANGGAL").asString());
+                    boolean expandable = true;
 
-                viewHolder.find(R.id.tv_paketLayanan_discLayanan, TextView.class).setText(nListArray.get(position).get("NAMA_LAYANAN").asString());
-                viewHolder.find(R.id.tv_tgl_discLayanan, TextView.class).setText(tglDisc);
-                viewHolder.find(R.id.tv_harga_discLayanan, TextView.class).setText(nListArray.get(position).get("HARGA").asString());
-                viewHolder.find(R.id.tv_pekerjaan_discLayanan, TextView.class).setText(nListArray.get(position).get("PEKERJAAN").asString());
-                viewHolder.find(R.id.tv_disc_discLayanan, TextView.class).setText(nListArray.get(position).get("DISKON").asString());
-            }
-        }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, int position) {
+                        super.onBindViewHolder(viewHolder, position);
+                        String pekerjaan = nListArray.get(position).get("PEKERJAAN").asString();
+                        viewHolder.find(R.id.tv_pekerjaan_discLayanan, TextView.class).setText(pekerjaan);
+                        if (pekerjaan.length() > 20) {
+                        }
+
+                        viewHolder.find(R.id.tv_paketLayanan_discLayanan, TextView.class).setText(nListArray.get(position).get("NAMA_LAYANAN").asString());
+                        viewHolder.find(R.id.tv_status, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
+                        viewHolder.find(R.id.tv_disc_discLayanan, TextView.class).setText(nListArray.get(position).get("DISCOUNT_LAYANAN").asString() + " %");
+                        if (Utility.isNumeric(nListArray.get(position).get("HARGA").asString())) {
+                            viewHolder.find(R.id.tv_harga_discLayanan, TextView.class).setText(RP + NumberFormatUtils.formatRp(nListArray.get(position).get("HARGA").asString()));
+                        } else {
+                            viewHolder.find(R.id.tv_harga_discLayanan, TextView.class).setText(nListArray.get(position).get("HARGA").asString());
+                        }
+                    }
+                }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(Nson parent, View view, int position) {
                         Intent i = new Intent(getActivity(), AturDiscountLayanan_Activity.class);
@@ -91,25 +109,27 @@ public class DiscountLayanan_Activity extends AppActivity {
         find(R.id.swiperefresh, SwipeRefreshLayout.class).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                catchData("");
+                viewData("");
             }
         });
 
-        catchData("");
+        viewData("");
     }
 
 
-    private void catchData(final String nama) {
+    private void viewData(final String nama) {
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
+                swipeProgress(true);
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 args.put("search", nama);
-                swipeProgress(true);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(DISCOUNT_LAYANAN), args));
             }
+
             @Override
             public void runUI() {
                 swipeProgress(false);
@@ -123,7 +143,6 @@ public class DiscountLayanan_Activity extends AppActivity {
             }
         });
     }
-
 
     SearchView mSearchView;
 
@@ -157,7 +176,7 @@ public class DiscountLayanan_Activity extends AppActivity {
             public boolean onQueryTextSubmit(String query) {
                 searchMenu.collapseActionView();
                 //filter(null);
-                catchData(query);
+                viewData(query);
 
                 return true;
             }
@@ -169,7 +188,7 @@ public class DiscountLayanan_Activity extends AppActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK && requestCode == REQUEST_DISCOUNT)
-            catchData("");
+        if (resultCode == RESULT_OK && requestCode == REQUEST_DISCOUNT)
+            viewData("");
     }
 }

@@ -57,7 +57,8 @@ public class AturKomisiPart_Activity extends AppActivity {
     private final List<String> aktivitasList = Arrays.asList(
             "-- PILIH --",
             "BOOKING",
-            "CHECK IN, TAMBAH PART - JASA, JUAL PART",
+            "CHECK IN, TAMBAH PART - JASA",
+            "JUAL PART",
             "SERAH TERIMA PART",
             "PENUGASAN MEKANIK",
             "MEKANIK SELESAI",
