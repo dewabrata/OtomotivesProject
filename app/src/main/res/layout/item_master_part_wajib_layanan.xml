@@ -25,7 +25,7 @@
             android:layout_marginRight="10dp"
             android:layout_marginBottom="4dp"
             android:padding="10dp"
-            app:cardCornerRadius="10dp"
+            app:cardCornerRadius="7dp"
             app:cardElevation="2dp">
 
             <ImageButton
@@ -41,24 +41,25 @@
                 android:visibility="gone"
                 card_view:ignore="ContentDescription,RtlSymmetry" />
 
-
+            <ImageView
+                android:id="@+id/img_check"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_gravity="end"
+                android:visibility="gone"
+                android:background="@android:color/transparent"
+                app:srcCompat="@drawable/ic_checkilist_green_resize"
+                card_view:ignore="ContentDescription" />
 
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:padding="10dp"
+                android:padding="15dp"
                 android:stretchColumns="*">
-
-                <!--            <ImageView-->
-                <!--                android:id="@+id/img_cariPart"-->
-                <!--                android:layout_margin="5dp"-->
-                <!--                android:layout_width="50dp"-->
-                <!--                android:layout_gravity="center"-->
-                <!--                android:layout_height="50dp"-->
-                <!--                app:srcCompat="@drawable/ic_shopping_basket"/>-->
-
 
                 <TableRow>
 

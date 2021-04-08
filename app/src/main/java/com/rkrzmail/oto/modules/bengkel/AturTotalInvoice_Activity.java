@@ -37,6 +37,7 @@ public class AturTotalInvoice_Activity extends AppActivity {
     //NO INVOICE INV/DD-MM/12
     private Nson data;
     private Nson idPembayaranList = Nson.newArray();
+    private final Nson kasPiutangIDList = Nson.newArray();
 
     private StringBuilder idCheckin = new StringBuilder();
     private String namaPelanggan = "";
@@ -76,6 +77,9 @@ public class AturTotalInvoice_Activity extends AppActivity {
     private void initData() {
         data = Nson.readJson(getIntentStringExtra(DATA));
         for (int i = 0; i < data.size(); i++) {
+            if(!data.get(i).get("PIHUTANG_ID").asString().isEmpty()){
+                kasPiutangIDList.add(Nson.newObject().set("KAS_PIUTANG_ID", data.get(i).get("PIHUTANG_ID").asInteger()));
+            }
             totalFeeNonPaket += data.get(i).get("FEE_NON_PAKET").asInteger();
             totalPenggantianPart += data.get(i).get("PENGGANTIAN_PART").asInteger();
             totalGrandTotal += data.get(i).get("GRAND_TOTAL").asInteger();
@@ -267,6 +271,7 @@ public class AturTotalInvoice_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "add");
+                args.put("kasPiutangID", kasPiutangIDList.toJson());
                 args.put("jenis", "TOTAL INVOICE");
                 args.put("noInvoiceLayanan", find(R.id.cb_layanan_inv, CheckBox.class).isChecked() ? noInv : "");
                 args.put("noInvoicePart", find(R.id.cb_part_inv, CheckBox.class).isChecked() ? noInv : "");

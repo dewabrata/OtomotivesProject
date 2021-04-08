@@ -104,6 +104,7 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
     private boolean isPeriode = false;
     private boolean isSetoranTunai = false;
     private boolean isBayarOrBeli = false;
+    private boolean isPembayaranActive = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -209,6 +210,7 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
     private void loadData() {
         Nson data = Nson.readJson(getIntentStringExtra(DATA));
 
+        isPembayaranActive = UtilityAndroid.getSetting(getApplicationContext(), "PEMBAYARAN_ACTIVE", "").equals("Y");
         tvTglTransaksi.setText(data.get("TANGGAL").asString());
         etKet.setText(data.get("KETERANGAN").asString());
         tvKontak.setText(data.get("NAMA_KONTAK").asString() + "\n" + data.get("NO_PONSEL").asString());
@@ -667,10 +669,10 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
                     } else if (noRek.isEmpty() || namaBank.isEmpty()) {
                         viewFocus(spRekInternal);
                         showWarning("REKENING INTERNAL HARUS DI PILIH");
-                    } else if (tipePembayaran.equals("CASH") && (isBayarOrBeli && nominal > lastBalanceKas)) {
+                    } else if (isPembayaranActive && tipePembayaran.equals("CASH") && (isBayarOrBeli && nominal > lastBalanceKas)) {
                         viewFocus(etNominal);
                         etNominal.setError("TOTAL BAYAR MELEBIHI KAS");
-                    } else if ((tipePembayaran.equals("TRANSFER") || tipePembayaran.contains("DEBET")) && (isBayarOrBeli && nominal > lastBalanceKasBank)) {
+                    } else if (isPembayaranActive && (tipePembayaran.equals("TRANSFER") || tipePembayaran.contains("DEBET")) && (isBayarOrBeli && nominal > lastBalanceKasBank)) {
                         viewFocus(etNominal);
                         etNominal.setError("TOTAL BAYAR MELEBIHI KAS BANK");
                     } else {
@@ -710,7 +712,7 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
                         }else if(transaksi.equals("ASET") && etUmurAsset.getText().toString().isEmpty()){
                             viewFocus(etUmurAsset);
                             etUmurAsset.setError("UMUR ASET HARUS DI ISI");
-                        } else if (isBayarOrBeli && nominal > lastBalanceKasBank) {
+                        } else if (isPembayaranActive && isBayarOrBeli && nominal > lastBalanceKasBank) {
                             viewFocus(etNominal);
                             etNominal.setError("TOTAL BAYAR MELEBIHI KAS BANK");
                         } else if (isPeriode && find(R.id.tv_tgl_awal, TextView.class).getText().toString().isEmpty()) {
@@ -729,7 +731,7 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
                         } else if (etNota.getText().toString().isEmpty()) {
                             viewFocus(etNota);
                             etNota.setError("NO NOTA HARUS DI ISI");
-                        } else if (isBayarOrBeli && nominal > lastBalanceKasBank) {
+                        } else if (isPembayaranActive && isBayarOrBeli && nominal > lastBalanceKasBank) {
                             viewFocus(etNominal);
                             etNominal.setError("TOTAL BAYAR MELEBIHI KAS BANK");
                         } else if(transaksi.equals("ASET") && etUmurAsset.getText().toString().isEmpty()){

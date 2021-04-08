@@ -1,7 +1,6 @@
 package com.rkrzmail.oto.modules.Fragment;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -9,28 +8,22 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
 import com.naa.utils.MessageMsg;
@@ -39,7 +32,6 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.MapPicker_Dialog;
-import com.rkrzmail.oto.modules.bengkel.Dashboard_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
 import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.utils.Tools;
@@ -48,26 +40,20 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
-import static com.rkrzmail.utils.APIUrls.SET_CLAIM;
-import static com.rkrzmail.utils.APIUrls.VIEW_DASHBOARD;
-import static com.rkrzmail.utils.APIUrls.VIEW_JENIS_KENDARAAN;
-import static com.rkrzmail.utils.APIUrls.VIEW_MASTER;
 import static com.rkrzmail.utils.APIUrls.VIEW_PROFILE;
-import static com.rkrzmail.utils.Tools.setFormatDayAndMonthToDb;
 
-public class TabUsaha_Fragment extends Fragment implements OnMapReadyCallback, MapPicker_Dialog.GetLocation {
+public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallback, MapPicker_Dialog.GetLocation {
 
     private static final int REQUEST_PHOTO = 80;
     private static final int REQUEST_LOGO = 81;
 
-    private EditText etNamaBengkel, etAlamat, etBadanUsaha, etKotaKab, etNoponsel, etNib, etNpwp, etKodePos, etnoPhoneMessage,
-            etAntrianExpress,etAntrianStandart;
+    private EditText etNamaBengkel, etAlamat, etBadanUsaha, etKotaKab, etNoTelp, etNib, etNpwp, etKodePos, etNoTelpMessage,
+            etMaxAntrianExpress, etMaxAntrianStandart;
     private Spinner spAfiliasi, spPrincial;
     private MultiSelectionSpinner spJenisKendaraan, spMerkKendaraan, spBidangUsaha;
     private CheckBox cbPkp;
@@ -89,7 +75,7 @@ public class TabUsaha_Fragment extends Fragment implements OnMapReadyCallback, M
     private GoogleMap map;
 
 
-    public TabUsaha_Fragment() {
+    public Usaha_Profile_Fragment() {
         // Required empty public constructor
     }
 
@@ -103,15 +89,22 @@ public class TabUsaha_Fragment extends Fragment implements OnMapReadyCallback, M
         return v;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (isVisible()) {
+            viewprofileusaha();
+        }
+    }
+
     private void initComponent(View v) {
-        viewprofileusaha();
         etNamaBengkel = v.findViewById(R.id.et_namaBengkel_usaha);
         etAlamat = v.findViewById(R.id.et_alamat_usaha);
         etKodePos = v.findViewById(R.id.et_kodepos_usaha);
         etBadanUsaha = v.findViewById(R.id.et_namaUsaha_usaha);
         etKotaKab = v.findViewById(R.id.et_kotaKab_usaha);
-        etNoponsel = v.findViewById(R.id.et_noPhone_usaha);
-        etnoPhoneMessage = v.findViewById(R.id.et_noPhone_message);
+        etNoTelp = v.findViewById(R.id.et_no_telp);
+        etNoTelpMessage = v.findViewById(R.id.et_no_telp_message);
         etNib = v.findViewById(R.id.et_nib_usaha);
         etNpwp = v.findViewById(R.id.et_npwp_usaha);
         spAfiliasi = v.findViewById(R.id.sp_afiliasi_usaha);
@@ -119,18 +112,15 @@ public class TabUsaha_Fragment extends Fragment implements OnMapReadyCallback, M
         spJenisKendaraan = v.findViewById(R.id.sp_jenisKendaraan_usaha);
         spBidangUsaha = v.findViewById(R.id.sp_bidangUsaha_usaha);
         spMerkKendaraan = v.findViewById(R.id.sp_merkKendaraan_usaha);
-        Button btnSimpan = v.findViewById(R.id.btn_simpan_usaha);
-        Button btnLokasi = v.findViewById(R.id.btn_lokasi_tambahan);
         cbPkp = v.findViewById(R.id.cb_pkp_usaha);
         uploadLogo = v.findViewById(R.id.imgBtn_upload);
         uploadTampakdepan = v.findViewById(R.id.img_logoDepan_usaha);
-        etAntrianExpress = v.findViewById(R.id.et_maxAntrianExpress);
-        etAntrianStandart = v.findViewById(R.id.et_maxAntrianStandart);
+        etMaxAntrianExpress = v.findViewById(R.id.et_maxAntrianExpress);
+        etMaxAntrianStandart = v.findViewById(R.id.et_maxAntrianStandart);
         tvAntrianExpress = v.findViewById(R.id.ic_AntrianExpress_usaha);
         tvAntrianStandart = v.findViewById(R.id.ic_AntrianStandart_usaha);
-
-        activity.setSpinnerOffline(afiliasiList, spAfiliasi, "");
-        setSpNamaPrincipal("");
+        Button btnSimpan = v.findViewById(R.id.btn_simpan_usaha);
+        Button btnLokasi = v.findViewById(R.id.btn_lokasi_tambahan);
 
         final MapPicker_Dialog mapPicker_dialog = new MapPicker_Dialog();
         mapPicker_dialog.getBengkelLocation(this);
@@ -144,14 +134,14 @@ public class TabUsaha_Fragment extends Fragment implements OnMapReadyCallback, M
         tvAntrianExpress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activity.getTimeHourDialog(etAntrianExpress);
+                activity.getTimeHourDialog(etMaxAntrianExpress);
             }
         });
 
         tvAntrianStandart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activity.getTimeHourDialog(etAntrianStandart);
+                activity.getTimeHourDialog(etMaxAntrianStandart);
             }
         });
 
@@ -194,11 +184,11 @@ public class TabUsaha_Fragment extends Fragment implements OnMapReadyCallback, M
                 args.put("pkp", cbPkp.isChecked() ? "Y" : "N");
                 args.put("afliasi", spAfiliasi.getSelectedItem().toString());
                 args.put("namaPrincipial", spPrincial.getSelectedItem().toString());
-                args.put("noTelp", etNoponsel.getText().toString().toUpperCase());
-                args.put("hpMessage", etnoPhoneMessage.getText().toString().toUpperCase());
+                args.put("noTelp", etNoTelp.getText().toString().toUpperCase());
+                args.put("hpMessage", etNoTelpMessage.getText().toString().toUpperCase());
                 args.put("logo", fotoLogo);
-                args.put("antrianExpres", etAntrianExpress.getText().toString());
-                args.put("antrianStandart", etAntrianStandart.getText().toString());
+                args.put("antrianExpres", etMaxAntrianExpress.getText().toString());
+                args.put("antrianStandart", etMaxAntrianStandart.getText().toString());
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PROFILE), args));
             }
@@ -230,22 +220,33 @@ public class TabUsaha_Fragment extends Fragment implements OnMapReadyCallback, M
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PROFILE), args));
             }
 
+            @SuppressLint("DefaultLocale")
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    result = result.get("data");
-                    for (int i = 0; i < result.size(); i++) {
-                        etNamaBengkel.setText(result.get(i).get("NAMA_BENGKEL").asString());
-                        etAlamat.setText(result.get(i).get("ALAMAT").asString());
-                        etKotaKab.setText(result.get(i).get("KOTA_KABUPATEN").asString());
-                        jenisKendaraanList.add(result.get(i).get("JENIS_KENDARAAN").asString());
-                        merkKendaraanList.add(result.get(i).get("MERK_KENDARAAN").asString());
-                        bidangUsahaList.add(result.get(i).get("KATEGORI_BENGKEL").asString());
+                    result = result.get("data").get(0);
 
-                        setJenisKendaraan(jenisKendaraanList);
-                        setMerkKendaraan(merkKendaraanList);
-                        setSpBidangUsaha(bidangUsahaList);
-                    }
+                    cbPkp.setChecked(result.get("NIB").asString().equals("Y"));
+                    etNpwp.setText(result.get("NPWP").asString());
+                    etNib.setText(result.get("NIB").asString());
+                    etBadanUsaha.setText(result.get("NAMA_USAHA").asString());
+                    etNamaBengkel.setText(result.get("NAMA_BENGKEL").asString());
+                    etAlamat.setText(result.get("ALAMAT").asString());
+                    etKotaKab.setText(result.get("KOTA_KABUPATEN").asString());
+                    etNoTelp.setText(result.get("NO_TELP").asString());
+                    etNoTelpMessage.setText(result.get("HP_MESSAGE").asString());
+                    etMaxAntrianExpress.setText(result.get("MAX_ANTRIAN_EXPRESS_MENIT").asString());
+                    etMaxAntrianStandart.setText(result.get("MAX_ANTRIAN_STANDART_MENIT").asString());
+
+                    jenisKendaraanList.add(result.get("JENIS_KENDARAAN").asString());
+                    merkKendaraanList.add(result.get("MERK_KENDARAAN").asString());
+                    bidangUsahaList.add(result.get("KATEGORI_BENGKEL").asString());
+
+                    activity.setSpinnerOffline(afiliasiList, spAfiliasi, result.get("AFLIASI").asString());
+                    setSpNamaPrincipal(result.get("NAMA_PRINCIPAL").asString());
+                    setJenisKendaraan(jenisKendaraanList);
+                    setMerkKendaraan(merkKendaraanList);
+                    setSpBidangUsaha(bidangUsahaList);
                 } else {
                     activity.showInfo(result.get("message").asString());
                 }
@@ -287,7 +288,7 @@ public class TabUsaha_Fragment extends Fragment implements OnMapReadyCallback, M
                     for (int i = 0; i < result.size(); i++) {
                         principalList.add(result.get(i).get("NAMA"));
                     }
-                    ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, principalList.asArray());
+                    ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(Objects.requireNonNull(getActivity()), android.R.layout.simple_spinner_item, principalList.asArray());
                     spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spPrincial.setAdapter(spinnerAdapter);
                     if (!principal.isEmpty()) {

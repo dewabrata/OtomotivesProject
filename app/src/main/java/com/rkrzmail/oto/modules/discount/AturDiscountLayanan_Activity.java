@@ -15,7 +15,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -26,10 +28,12 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NumberFormatUtils;
+import com.rkrzmail.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import in.galaxyofandroid.spinerdialog.OnSpinerItemClick;
 import in.galaxyofandroid.spinerdialog.SpinnerDialog;
@@ -43,8 +47,10 @@ import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 public class AturDiscountLayanan_Activity extends AppActivity {
 
     private AlertDialog alertDialog;
-    private Button btnPekerjaan, btnLayanan;
+    private Button btnLayanan;
+    private Spinner spPekerjaan;
     private SpinnerDialog spDialogLayanan;
+    private RadioButton rbAll;
 
     private final Nson pekerjaanSelectedList = Nson.newArray();
     private final Nson pekerjaanList = Nson.newArray();
@@ -52,6 +58,7 @@ public class AturDiscountLayanan_Activity extends AppActivity {
     private final ArrayList<String> layananList = new ArrayList<>();
     boolean[] isSelectedPekerjaanArr = null;
 
+    private String pekerjaan = "";
     private int idLayanan = 0;
     boolean selectAllPekerjaan = true;
 
@@ -60,65 +67,85 @@ public class AturDiscountLayanan_Activity extends AppActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_atur_discount_layanan);
         initToolbar();
-        initComponent();
+        serComponent();
         loadData();
-        setSpPekerjaan();
         setSpLayanan();
     }
 
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Discount Layanan");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Discount Layanan");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void initComponent() {
-        btnPekerjaan = findViewById(R.id.btn_pekerjaan);
+    private void serComponent() {
         btnLayanan = findViewById(R.id.btn_layanan);
+        spPekerjaan = findViewById(R.id.sp_pekerjaan);
+        rbAll = findViewById(R.id.rb_all);
         find(R.id.et_disc_layanan, EditText.class).addTextChangedListener(new NumberFormatUtils().percentTextWatcher(find(R.id.et_disc_layanan, EditText.class)));
+        rbAll.setOnClickListener(new View.OnClickListener() {
+            int count = 0;
+            @Override
+            public void onClick(View v) {
+                count++;
+                if(count == 2){
+                    if(rbAll.isChecked()){
+                        rbAll.setChecked(false);
+                        count = 0;
+                    }
+                }
+
+                Tools.setViewAndChildrenEnabled(find(R.id.vg_pekerjaan, LinearLayout.class), !rbAll.isChecked());
+                setSelectionSpinner(rbAll.isChecked() ? "ALL" : "--PILIH--", spPekerjaan);
+            }
+        });
     }
 
     @SuppressLint("SetTextI18n")
     private void loadData() {
         final Nson data = Nson.readJson(getIntentStringExtra(DATA));
-        boolean isUpdate = false;
         if (!data.asString().isEmpty()) {
-            isUpdate = true;
             btnLayanan.setEnabled(false);
-            btnPekerjaan.setEnabled(false);
+            rbAll.setChecked(data.get("PEKERJAAN").asString().equals("ALL"));
+            Tools.setViewAndChildrenEnabled(find(R.id.vg_pekerjaan, LinearLayout.class), !rbAll.isChecked());
             btnLayanan.setText(data.get("NAMA_LAYANAN").asString());
-            btnPekerjaan.setText(data.get("PEKERJAAN").asString());
             find(R.id.et_disc_layanan, EditText.class).setText(data.get("DISCOUNT_LAYANAN").asString());
 
-            String[] splitPekerjaan = data.get("PEKERJAAN").asString().trim().split(", ");
-            for (String s : splitPekerjaan) {
-                pekerjaanSelectedList.add(s.trim());
+            if (data.get("PEKERJAAN").asString().contains(",")) {
+                String[] splitPekerjaan = data.get("PEKERJAAN").asString().trim().split(", ");
+                for (String s : splitPekerjaan) {
+                    pekerjaanSelectedList.add(s.trim());
+                }
+            } else {
+                pekerjaanSelectedList.add(data.get("PEKERJAAN").asString());
             }
         }
 
+        setSpPekerjaan(data.get("PEKERJAAN").asString());
         setSpStatus(data.get("STATUS").asString());
-        final boolean finalIsUpdate = isUpdate;
+        final boolean isUpdate = !data.asString().isEmpty();
+
         find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(finalIsUpdate){
-                    if(find(R.id.et_disc_layanan, EditText.class).getText().toString().equals("0,0%")){
+                if (isUpdate) {
+                    if (find(R.id.et_disc_layanan, EditText.class).getText().toString().equals("0,0%")) {
                         find(R.id.et_disc_layanan, EditText.class).setError("DISCOUNT HARUS DI ISI");
                         viewFocus(find(R.id.et_disc_layanan, EditText.class));
-                    }else{
-                        saveData(finalIsUpdate, data.get("ID").asInteger());
+                    } else {
+                        saveData(true, data.get("ID").asInteger());
                     }
-                }else{
-                    if(btnPekerjaan.getText().toString().equals("--PILIH--") || btnPekerjaan.getText().toString().isEmpty()){
-                        btnPekerjaan.setError("PEKERJAAN HARUS DI PILIH");
-                    }else if(btnLayanan.getText().toString().equals("--PILIH--")){
+                } else {
+                    if (pekerjaan.equals("--PILIH--")) {
+                        setErrorSpinner(spPekerjaan, "PEKERJAAN HARUS DI PILIH");
+                    } else if (btnLayanan.getText().toString().equals("--PILIH--")) {
                         btnLayanan.setError("LAYANAN HARUS DI PILIH");
-                    }else if(find(R.id.et_disc_layanan, EditText.class).getText().toString().equals("0,0%")){
+                    } else if (find(R.id.et_disc_layanan, EditText.class).getText().toString().equals("0,0%")) {
                         find(R.id.et_disc_layanan, EditText.class).setError("DISCOUNT HARUS DI ISI");
                         viewFocus(find(R.id.et_disc_layanan, EditText.class));
-                    }else{
-                        saveData(finalIsUpdate, 0);
+                    } else {
+                        saveData(false, 0);
                     }
                 }
 
@@ -127,7 +154,7 @@ public class AturDiscountLayanan_Activity extends AppActivity {
 
     }
 
-    private void setSpPekerjaan() {
+    private void setSpPekerjaan(final String selection) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -142,13 +169,43 @@ public class AturDiscountLayanan_Activity extends AppActivity {
             public void runUI() {
                 if (result.get("status").asString().equals("OK")) {
                     result = result.get("data");
-                    pekerjaanSelectedList.add("");
+                    pekerjaanList.add("--PILIH--");
                     pekerjaanList.add("ALL");
                     for (int i = 0; i < result.size(); i++) {
                         pekerjaanList.add(result.get(i).get("PEKERJAAN").asString());
                     }
 
-                    final List<String> itemsPekerjaan = new ArrayList<>();
+                    ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, pekerjaanList.asArray()){
+                        @Override
+                        public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                            View view;
+                            if (pekerjaanList.get(position).asString().equals("ALL") || pekerjaanList.get(position).asString().equals("--PILIH--")) {
+                                TextView mTextView = new TextView(getContext());
+                                mTextView.setVisibility(View.GONE);
+                                mTextView.setHeight(0);
+                                view = mTextView;
+                                return view;
+                            } else {
+                                return view = super.getDropDownView(position, null, parent);
+                            }
+                        }
+                    };
+                    spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spPekerjaan.setAdapter(spinnerAdapter);
+                    setSelectionSpinner(selection, spPekerjaan);
+                    spPekerjaan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            pekerjaan = parent.getItemAtPosition(position).toString();
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
+
+                    /*  final List<String> itemsPekerjaan = new ArrayList<>();
                     itemsPekerjaan.addAll(pekerjaanList.asArray());
                     isSelectedPekerjaanArr = new boolean[itemsPekerjaan.size()];
 
@@ -158,7 +215,7 @@ public class AturDiscountLayanan_Activity extends AppActivity {
                             //showDialogPekerjaan();
                             showAlertDialogPekerjaan(itemsPekerjaan.toArray(new String[]{}));
                         }
-                    });
+                    });*/
                 }
             }
         });
@@ -183,14 +240,8 @@ public class AturDiscountLayanan_Activity extends AppActivity {
                         }
 
                         for (int i = 0; i < pekerjaanList.size(); i++) {
-                            if(pekerjaanSelectedList.asArray().contains(pekerjaanList.get(i).asString())){
-                                isSelectedPekerjaanArr[i] = true;
-                            }else{
-                                isSelectedPekerjaanArr[i] = false;
-                            }
+                            isSelectedPekerjaanArr[i] = pekerjaanSelectedList.asArray().contains(pekerjaanList.get(i).asString());
                         }
-
-                        btnPekerjaan.setText(pekerjaan.toString());
                     }
                 })
                 .setNegativeButton("BATAL", new DialogInterface.OnClickListener() {
@@ -229,19 +280,19 @@ public class AturDiscountLayanan_Activity extends AppActivity {
                     }
                 }
 
-                try{
+                try {
                     if (isChecked) {
                         selectedList.add(itemSelected);
                     } else {
-                        if(selectedList.size() > 0){
+                        if (selectedList.size() > 0) {
                             for (int i = 0; i < selectedList.size(); i++) {
-                                if(!isChecked && selectedList.get(i).equals(itemSelected)){
+                                if (selectedList.get(i).equals(itemSelected)) {
                                     selectedList.remove(i);
                                 }
                             }
                         }
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     showError(selectedList.toString());
                 }
 
@@ -309,16 +360,16 @@ public class AturDiscountLayanan_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
-                if(isUpdate){
+                if (isUpdate) {
                     args.put("action", "update");
                     args.put("discountID", String.valueOf(discountID));
-                }else{
+                } else {
                     args.put("action", "add");
                     args.put("namaLayanan", btnLayanan.getText().toString());
                 }
 
                 args.put("status", find(R.id.sp_status, Spinner.class).getSelectedItem().toString());
-                args.put("pekerjaan", btnPekerjaan.getText().toString());
+                args.put("pekerjaan", pekerjaan);
                 args.put("diskon", NumberFormatUtils.clearPercent(find(R.id.et_disc_layanan, EditText.class).getText().toString()));
                 args.put("layananID", String.valueOf(idLayanan));
 
@@ -332,7 +383,7 @@ public class AturDiscountLayanan_Activity extends AppActivity {
                     setResult(RESULT_OK);
                     finish();
                 } else {
-                    showError("Gagal Menyimpan Aktifitas");
+                    showError(result.get("message").asString());
                 }
             }
         });

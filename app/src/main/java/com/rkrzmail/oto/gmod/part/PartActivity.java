@@ -44,7 +44,6 @@ public class PartActivity extends AppActivity {
         parent_view = findViewById(android.R.id.content);
 
         initToolbar();
-        initComponent();
     }
 
     private void initToolbar() {
@@ -79,78 +78,6 @@ public class PartActivity extends AppActivity {
                 }
             }
         });
-    }
-    private void initComponent() {
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setHasFixedSize(true);
-
-        List<People> items = DataGenerator.getPeopleData(this);
-        items.addAll(DataGenerator.getPeopleData(this));
-        items.addAll(DataGenerator.getPeopleData(this));
-
-       /* //set data and list adapter
-        mAdapter = new AdapterListBasic(this, items);
-        recyclerView.setAdapter(mAdapter);
-
-        // on item list clicked
-        mAdapter.setOnItemClickListener(new AdapterListBasic.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, People obj, int position) {
-                Snackbar.make(parent_view, "Item " + obj.name + " clicked", Snackbar.LENGTH_SHORT).show();
-            }
-        });*/
-
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(new NikitaRecyclerAdapter(nListArray,R.layout.part_item){
-            @Override
-            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                viewHolder.find(R.id.txtNoPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
-
-                viewHolder.find(R.id.txtNama, TextView.class).setText(nListArray.get(position).get("NAMA").asString());
-
-                viewHolder.find(R.id.txtKeterangan, TextView.class).setText(nListArray.get(position).get("PEMBUAT").asString());
-
-                viewHolder.find(R.id.txtStock, TextView.class).setText("Stock : " + nListArray.get(position).get("STOCK").asString());
-
-            }
-        }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Nson parent, View view, int position) {
-                //Toast.makeText(getActivity(),"HHHHH "+position, Toast.LENGTH_SHORT).show();
-                /*Intent intent =  new Intent(getActivity(), ControlLayanan.class);
-                intent.putExtra("ID", nListArray.get(position).get("MEKANIK").asInteger());
-                intent.putExtra("DATA", nListArray.get(position).toJson());
-                startActivityForResult(intent, REQUEST_CONTROL);*/
-
-                //Snackbar.make(parent_view, "Item  "+position+"  clicked", Snackbar.LENGTH_SHORT).show();
-
-                if (getIntentStringExtra("x").equalsIgnoreCase("x")) {
-                    Intent intent = new Intent(getActivity(), PartDetail.class);
-                    intent.putExtra("DATA", nListArray.get(position).toJson());
-                    startActivityForResult(intent, REQUEST_DETAIL1);
-                } else if (getIntentStringExtra("y").equalsIgnoreCase("y")) {
-                    Intent intent1 = new Intent(getActivity(), PilihPartActivity.class);
-                    intent1.putExtra("DATA2", nListArray.get(position).toJson());
-//                    intent1.putExtra("y", "y");
-                    startActivityForResult(intent1, REQUEST_DETAIL2);
-                }else if (getIntentStringExtra("z").equalsIgnoreCase("z")) {
-                    Intent intent2 = new Intent(getActivity(), Pendaftaran3.class);
-                    intent2.putExtra("DATA", nListArray.get(position).toJson());
-                    setResult(RESULT_OK, intent2);
-                    finish();
-                }else {
-                    Intent intent3 = new Intent(getActivity(), Lokasi_PersediaanActivity.class);
-                    intent3.putExtra("DATA3", nListArray.get(position).toJson());
-                    setResult(RESULT_OK, intent3);
-                    finish();
-            }
-            }
-        }));
-
-        reload("", "");
     }
 
     @Override

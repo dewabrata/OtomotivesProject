@@ -26,7 +26,9 @@ import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.srv.NumberFormatUtils;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.PEMBAYARAN_KOMISI;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
@@ -119,7 +121,7 @@ public class KomisiUser_Absensi_Fragment extends Fragment {
     }
 
 
-    private void initRvDetail(){
+    private void initRvDetail() {
         rvKomisiDetail = dialogView.findViewById(R.id.recyclerView);
         rvKomisiDetail.setHasFixedSize(true);
         rvKomisiDetail.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -138,14 +140,14 @@ public class KomisiUser_Absensi_Fragment extends Fragment {
         });
     }
 
-    private void initToolbarDetail(){
+    private void initToolbarDetail() {
         Toolbar toolbar = dialogView.findViewById(R.id.toolbar);
         activity.setSupportActionBar(toolbar);
         activity.getSupportActionBar().setTitle("Detail Komisi");
     }
 
     @SuppressLint("InflateParams")
-    private void showDialogDetail(String tglKomisi){
+    private void showDialogDetail(String tglKomisi) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getLayoutInflater();
         dialogView = inflater.inflate(R.layout.activity_list_basic, null);
@@ -163,6 +165,7 @@ public class KomisiUser_Absensi_Fragment extends Fragment {
     private void viewDetailKomisi(final String tanggalKomisi) {
         activity.newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -192,6 +195,7 @@ public class KomisiUser_Absensi_Fragment extends Fragment {
     private void viewKomisi() {
         activity.newTask(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 swipeProgress(true);
@@ -205,13 +209,16 @@ public class KomisiUser_Absensi_Fragment extends Fragment {
             public void runUI() {
                 swipeProgress(false);
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    komisiUserList.asArray().clear();
-                    komisiUserList.asArray().addAll(result.get("data").asArray());
-                    activity.find(R.id.tv_total_balance, TextView.class).setText("BALANCE " + RP + NumberFormatUtils.formatRp(result.get("data").get(0).get("BALANCE").asString()));
-                    rvKomisi.getAdapter().notifyDataSetChanged();
+                    result = result.get("data");
+                    activity.find(R.id.tv_total_balance, TextView.class).setText("BALANCE " + RP + NumberFormatUtils.formatRp(result.get(0).get("BALANCE").asString()));
+                    if (result.size() > 0) {
+                        komisiUserList.asArray().clear();
+                        komisiUserList.asArray().addAll(result.asArray());
+                    }
+                    Objects.requireNonNull(rvKomisi.getAdapter()).notifyDataSetChanged();
                     rvKomisi.scheduleLayoutAnimation();
                 } else {
-                   activity.showError(ERROR_INFO);
+                    activity.showError(ERROR_INFO);
                 }
             }
         });

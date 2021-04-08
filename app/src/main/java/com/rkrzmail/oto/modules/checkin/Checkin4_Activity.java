@@ -35,6 +35,7 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.gmod.Capture;
+import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.FileUtility;
 import com.rkrzmail.utils.Tools;
 import com.squareup.okhttp.Callback;
@@ -49,6 +50,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -61,6 +63,7 @@ import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.ANTRIAN;
 import static com.rkrzmail.utils.APIUrls.ANTRIAN_MULAI;
+import static com.rkrzmail.utils.APIUrls.ROLLBACK_TRANSACTIONS;
 import static com.rkrzmail.utils.APIUrls.SET_CHECKIN;
 import static com.rkrzmail.utils.APIUrls.VIEW_ANTRIAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_MEKANIK;
@@ -91,6 +94,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
     private String jenisAntrian = "";
     private int idAntrian = 0;
     private int waktuPesan = 0;
+    private int checkinID = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,8 +107,17 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
 
     @Override
     public void onBackPressed() {
-        setResult(RESULT_OK);
-        finish();
+        showInfoDialog("KONFIRMASI", "KELUAR DARI CHECKIN ?", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                rollbackCheckin();
+            }
+        }, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
     }
 
     @Override
@@ -158,8 +171,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
     @SuppressLint("SetTextI18n")
     private void initData() {
         getData = Nson.readJson(getIntentStringExtra(DATA));
-        Log.d("coba__", "DATA: " + getData);
-
+        checkinID = getData.get("CHECKIN_ID").asInteger();
         waktuLayananStandartExpress = getData.get("WAKTU_LAYANAN").asString();
         jenisLayanan = getData.get("JENIS_LAYANAN").asString();
         waktuPesan = getData.get("WAKTU_PESAN").asInteger();
@@ -543,6 +555,13 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                     Tools.setViewAndChildrenEnabled(find(R.id.ly_estimasi_selesai, LinearLayout.class), false);
                     find(R.id.tv_disable_estimasi).setVisibility(View.VISIBLE);
                     find(R.id.et_mulaiWaktu_checkin, TextView.class).setText(result.get("waktu_mulai").asString());
+                    if (!waktuLayananStandartExpress.isEmpty()) {
+                        int waktuJam = Integer.parseInt(waktuLayananStandartExpress.substring(3, 5));
+                        int waktuMenit = Integer.parseInt(waktuLayananStandartExpress.substring(6, 8));
+                        find(R.id.et_selesaiWaktu_checkin, TextView.class).setText(totalWaktu(waktuJam, waktuMenit));
+                    } else {
+                        find(R.id.et_selesaiWaktu_checkin, TextView.class).setText(NumberFormatUtils.formatTime(0, 0));
+                    }
                 } else {
                     showWarning(result.get("error").asString());
                 }
@@ -550,32 +569,12 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         });
     }
 
-    private void totalWaktu(Nson result) {
-        Tools.TimePart waktuMulai = null;
-        Tools.TimePart waktuLayanan = Tools.TimePart.parse(waktuLayananStandartExpress);
-
-        Log.d(TAG, "antrian: " + result);
-        result = result.get("data");
-
-        if (result.size() > 0) {
-            result = result.get(0);
-            String estimasi = result.get("ESTIMASI_SELESAI").asString();
-//            String namaMekanik = result.get("MEKANIK").asString();
-//            setSpMekanik(namaMekanik);
-            if (estimasi.length() > 4) {
-                estimasi = estimasi.substring(estimasi.length() - 5);
-                waktuMulai = Tools.TimePart.parse("00:" + estimasi);
-            }
-        } else {
-            waktuMulai = Tools.TimePart.parse("00:" + currentDateTime("hh:mm"));
-        }
-
-        assert waktuMulai != null;
-        find(R.id.et_mulaiWaktu_checkin, TextView.class).setText(waktuMulai.toString().substring(3, 8));
-        Tools.TimePart totalWaktuSelesai = waktuMulai.add(waktuLayanan);
-        find(R.id.et_selesaiWaktu_checkin, TextView.class).setText(totalWaktuSelesai.toString().substring(3, 8));
-        find(R.id.tv_tgl_estimasi_checkin4, TextView.class).setText(currentDateTime());
-        find(R.id.tv_jam_estimasi_checkin4, TextView.class).setText(find(R.id.et_selesaiWaktu_checkin, TextView.class).getText().toString());
+    @SuppressLint({"SimpleDateFormat", "DefaultLocale"})
+    private String totalWaktu(int waktuJam, int waktuMenit) {
+        if(waktuJam == 0 && waktuMenit == 0)  return NumberFormatUtils.formatTime(0, 0);
+        Tools.TimePart timePart = Tools.TimePart.parse("00:" + currentDateTime("HH:mm"));
+        timePart.add(Tools.TimePart.parse(String.format("%02d:%02d:%02d", 0, waktuJam, waktuMenit)));
+        return timePart.toString().substring(3, 8);
     }
 
 
@@ -624,7 +623,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
 
                 args.put("action", "add");
                 args.put("jenisCheckin", "4");
-                args.put("id", getData.get("CHECKIN_ID").asString());
+                args.put("id", String.valueOf(checkinID));
                 args.put("status", isHplusPartKosong ? "TUNGGU DP" : status);
                 args.put("mekanik", namaMekanik);
                 args.put("mekanikId", idMekanik);
@@ -939,6 +938,31 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+    }
+
+    private void rollbackCheckin() {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "ROLLBACK CHECKIN");
+                args.put("checkinID", String.valueOf(checkinID));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ROLLBACK_TRANSACTIONS), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equals("OK")) {
+                    showSuccess("TRANSAKSI BERHASIL DI BATALKAN");
+                    setResult(RESULT_OK);
+                    finish();
+                } else {
+                    showError("TRANSAKSI ERROR, SILAHKAN HUBUNGI ADMINISTRATOR", Toast.LENGTH_LONG);
+                }
+            }
+        });
     }
 
 

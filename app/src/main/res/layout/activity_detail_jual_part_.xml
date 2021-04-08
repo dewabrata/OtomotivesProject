@@ -59,8 +59,8 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:hint="DISCOUNT">
+                android:hint="DISCOUNT"
+                android:layout_marginTop="10dp">
 
                 <EditText
                     android:id="@+id/et_disc_detailPart"

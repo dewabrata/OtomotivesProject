@@ -31,6 +31,7 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.bengkel.RegistrasiBengkel_Activity;
+import com.rkrzmail.oto.modules.bengkel.VerifikasiOtp_Activity;
 import com.valdesekamdem.library.mdtoast.MDToast;
 
 import java.util.ArrayList;
@@ -79,6 +80,10 @@ public class LoginActivity extends AppActivity {
         if(getSetting("noponsel") != null){
             find(R.id.user, EditText.class).setText(getSetting("noponsel"));
         }
+
+        if(getIntent().hasExtra("NO_PONSEL")){
+            find(R.id.user, EditText.class).setText(getIntentStringExtra("NO_PONSEL"));
+        }
     }
 
     private void initComponent() {
@@ -87,7 +92,7 @@ public class LoginActivity extends AppActivity {
         find(R.id.registrasi, TextView.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(getActivity(), RegistrasiBengkel_Activity.class), 10);
+                startActivity(new Intent(getActivity(), VerifikasiOtp_Activity.class));
             }
         });
 

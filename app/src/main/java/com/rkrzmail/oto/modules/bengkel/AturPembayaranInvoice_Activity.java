@@ -48,6 +48,7 @@ public class AturPembayaranInvoice_Activity extends AppActivity {
     private String tipePembayaran = "";
     private Nson rekeningList = Nson.newArray();
 
+    private String jenisTransaksi = "";
     private String namaPelanggan = "";
     private String noInv = "";
     private String namaPrincipal = "";
@@ -56,6 +57,7 @@ public class AturPembayaranInvoice_Activity extends AppActivity {
     private int idPihutang = 0;
     private int totalInvoice = 0;
     private int noInvBerikutnya = 0;
+    private int frekwensi = 0;
     private int
             totalFeeNonPaket = 0, totalPenggantianPart = 0, totalGrandTotal = 0,
             totalTotalDue = 0, totalJasaLain = 0, totalJasaPart = 0,
@@ -190,6 +192,8 @@ public class AturPembayaranInvoice_Activity extends AppActivity {
         Nson data = Nson.readJson(getIntentStringExtra(DATA));
 
         idPihutang =  data.get("PIHUTANG_ID").asInteger();
+        frekwensi = data.get("FREKWENSI").asInteger();
+        jenisTransaksi = data.get("JENIS_TRANSAKSI").asString();
         totalFeeNonPaket = data.get("FEE_NON_PAKET").asInteger();
         totalPenggantianPart = data.get("PENGGANTIAN_PART").asInteger();
         totalGrandTotal = data.get("GRAND_TOTAL").asInteger();
@@ -215,7 +219,12 @@ public class AturPembayaranInvoice_Activity extends AppActivity {
         namaPelanggan = data.get("NAMA_PELANGGAN").asString();
         namaPrincipal = data.get("PRINCIPAL").asString();
 
-        find(R.id.et_total_invoice, EditText.class).setText(RP + formatRp(data.get("JUMLAH_INVOICE").asString()));
+        if(data.get("JUMLAH_INVOICE").asString().isEmpty()){
+            totalInvoice = data.get("GRAND_TOTAL").asInteger();
+        }else{
+            totalInvoice = data.get("JUMLAH_INVOICE").asInteger();
+        }
+        find(R.id.et_total_invoice, EditText.class).setText(RP + formatRp(String.valueOf(totalInvoice)));
         setSpinnerOffline(Arrays.asList("--PILIH--", "CASH", "TRANSFER"), spTipePembayaran, "");
     }
 
@@ -312,7 +321,16 @@ public class AturPembayaranInvoice_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
+                String noPiutangBerikutnya = "";
+                int totalPiutangBerikutnya = 0;
+                if(isTglJatuhTempo){
+                    frekwensi++;
+                    noPiutangBerikutnya = String.valueOf(frekwensi);
+                    totalPiutangBerikutnya = Integer.parseInt(NumberFormatUtils.formatOnlyNumber(find(R.id.et_selisih, EditText.class).getText().toString()));
+                }
+
                 args.put("action", "add");
+                args.put("jenisTransaksi", jenisTransaksi);
                 args.put("jenis", "PEMBAYARAN INVOICE");
                 args.put("idPihutang", String.valueOf(idPihutang));
                 args.put("tglJatuhTempo",
@@ -329,11 +347,11 @@ public class AturPembayaranInvoice_Activity extends AppActivity {
                 args.put("namaBankRekeningInternal", namaBank);
                 args.put("nomorRekeningInternal", noRek);
                 args.put("total", String.valueOf(totalInvoice));
-                args.put("frekwensi", "");
-                args.put("balance", "");
-                args.put("noPiutangBerikutnya", "");
-                args.put("jumlahPiutangBerikutya", "");
-                args.put("typePiutang", "");
+                args.put("frekwensi", String.valueOf(frekwensi));
+                args.put("balance", String.valueOf(totalPiutangBerikutnya));
+                args.put("noPiutangBerikutnya", noPiutangBerikutnya);
+                args.put("jumlahPiutangBerikutya", String.valueOf(totalPiutangBerikutnya));
+                args.put("typePiutang", jenisTransaksi);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(PIUTANG), args));
             }

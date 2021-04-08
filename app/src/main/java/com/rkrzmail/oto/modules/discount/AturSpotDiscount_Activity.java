@@ -89,8 +89,8 @@ public class AturSpotDiscount_Activity extends AppActivity {
         }
         tvNamaPelanggan.setText(data.get("PELANGGAN").asString());
         etTotalBiaya.setText(RP + formatRp(data.get("TOTAL_BIAYA").asString()));
-        etDisc.setText(data.get("").asString());
-        etNet.setText(data.get("").asString());
+        etDisc.setText(data.get("DISCOUNT_SPOT").asString());
+        etNet.setText(data.get("NET_TRANSAKSI").asString());
     }
 
     private void initListener() {
@@ -152,7 +152,7 @@ public class AturSpotDiscount_Activity extends AppActivity {
                 args.put("tanggal", currentDateTime());
                 args.put("nama", tvNamaPelanggan.getText().toString());
                 args.put("transaksi", formatOnlyNumber(etTotalBiaya.getText().toString()));
-                args.put("totaltransaksi", formatOnlyNumber(etTotalFinal.getText().toString()));
+                args.put("totaltransaksi", formatOnlyNumber(etTotalBiaya.getText().toString()));
                 args.put("nettransaksi", formatOnlyNumber(etTotalBiaya.getText().toString()));
                 args.put("diskonlain", formatOnlyNumber(etDisc.getText().toString()));
                 args.put("diskonspot", formatOnlyNumber(etDiscSpot.getText().toString()));

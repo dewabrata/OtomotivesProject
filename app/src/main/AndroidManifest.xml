@@ -3,23 +3,56 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.rkrzmail.oto">
 
+    <uses-permission
+        android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+
     <application
         android:name=".AppApplication"
         android:allowBackup="true"
         android:appComponentFactory="android.support.v4.app.CoreComponentFactory"
         android:icon="@drawable/speed"
         android:label="Bengkel Pro"
+        android:largeHeap="true"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@drawable/speed"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,UnusedAttribute"
         tools:replace="android:label,android:appComponentFactory">
-        <activity android:name=".modules.bengkel.AturFeeBilling_Activity"></activity>
-        <activity android:name=".modules.bengkel.Billing_MainTab_Activity" />
-        <activity android:name=".modules.bengkel.DaftarUser_Activity" />
-        <activity android:name=".modules.mekanik.ClaimGaransiStatus_Activity" />
-        <activity android:name=".modules.mekanik.ClaimGaransiPart_Activity" />
+        <activity android:name=".modules.bengkel.VerifikasiOtp_Activity"></activity>
+        <activity android:name=".modules.sparepart.JumlahPart_Mekanik_Activity" />
+        <activity
+            android:name=".modules.bengkel.AturFeeBilling_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.bengkel.Billing_MainTab_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.bengkel.DaftarUser_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.mekanik.ClaimGaransiStatus_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.mekanik.ClaimGaransiPart_Activity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".modules.bengkel.Asset_Activity"
             android:screenOrientation="portrait" />
@@ -46,9 +79,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".modules.sparepart.PartHome_MainTab_Activity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".modules.bengkel.Dashboard_Activity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".modules.komisi.KomisiTerbayar_Activity"
@@ -457,19 +487,5 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
     </application>
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
 
 </manifest>

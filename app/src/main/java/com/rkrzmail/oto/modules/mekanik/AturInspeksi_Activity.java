@@ -28,6 +28,7 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaMultipleViewAdapter;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.srv.NumberFormatUtils;
 
 import java.util.Map;
 import java.util.Objects;
@@ -35,17 +36,20 @@ import java.util.Objects;
 import static com.rkrzmail.utils.APIUrls.ATUR_INSPEKSI;
 import static com.rkrzmail.utils.APIUrls.VIEW_INSPEKSI;
 import static com.rkrzmail.utils.APIUrls.VIEW_KELUHAN;
+import static com.rkrzmail.utils.APIUrls.VIEW_PERINTAH_KERJA_MEKANIK;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.ID;
+import static com.rkrzmail.utils.ConstUtils.RP;
 import static com.rkrzmail.utils.Tools.removeDuplicates;
 
 public class AturInspeksi_Activity extends AppActivity implements View.OnClickListener {
 
-    private RecyclerView rvPointLayanan, rvKeluhan;
+    private RecyclerView rvPointLayanan, rvKeluhan, rvRekomendasi;
     private AlertDialog alertDialog;
 
-    private Nson keluhanList = Nson.newArray();
+    private final Nson keluhanList = Nson.newArray();
+    private final Nson rekomendasiMekanikList = Nson.newArray();
     private int countClick = 0;
 
     private String idMekanikKerja = "", idCheckin = "";
@@ -78,6 +82,13 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
+    private void initToolbarRekomendasi(View dialogView) {
+        Toolbar toolbar = dialogView.findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Rekomendasi Mekanik");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+    }
+
 
     private void initComponent() {
         rvPointLayanan = findViewById(R.id.recyclerView);
@@ -88,6 +99,7 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
         find(R.id.btn_keluhan).setOnClickListener(this);
         find(R.id.imgBtn_start).setOnClickListener(this);
         find(R.id.imgBtn_stop).setOnClickListener(this);
+        find(R.id.btn_rekomendasi_mekanik).setOnClickListener(this);
     }
 
     private void loadData() {
@@ -135,8 +147,33 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
             }
         });
 
-        builder.create();
-        alertDialog = builder.show();
+        alertDialog = builder.create();
+        if (alertDialog != null) {
+            if (alertDialog.getWindow() != null)
+                alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+            alertDialog = builder.show();
+        }
+    }
+
+    private void initRekomendasiMekanikDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.activity_list_basic, null);
+        builder.setView(dialogView);
+
+        rvRekomendasi = dialogView.findViewById(R.id.recyclerView);
+        initRvRekomendasi();
+        if(rekomendasiMekanikList.size() > 0){
+            rvRekomendasi.getAdapter().notifyDataSetChanged();
+        }
+        initToolbarRekomendasi(dialogView);
+
+        alertDialog = builder.create();
+        if (alertDialog != null) {
+            if (alertDialog.getWindow() != null)
+                alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+            alertDialog = builder.show();
+        }
     }
 
 
@@ -151,9 +188,55 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
         initRecylerviewKeluhan(dialogView);
         Objects.requireNonNull(rvKeluhan.getAdapter()).notifyDataSetChanged();
 
-        builder.create();
-        alertDialog = builder.show();
+        alertDialog = builder.create();
+        if (alertDialog != null) {
+            if (alertDialog.getWindow() != null)
+                alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+            alertDialog = builder.show();
+        }
     }
+
+    private void initRvRekomendasi() {
+        rvRekomendasi.setLayoutManager(new LinearLayoutManager(this));
+        rvRekomendasi.setHasFixedSize(false);
+        rvRekomendasi.setAdapter(new NikitaMultipleViewAdapter(rekomendasiMekanikList, R.layout.item_part_booking3_checkin3, R.layout.item_jasalain_booking_checkin) {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
+                super.onBindViewHolder(viewHolder, position);
+                final int itemType = getItemViewType(position);
+                int no = position + 1;
+
+                viewHolder.find(R.id.view_mark_tambah_jasa).setVisibility(View.GONE);
+                viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.GONE);
+
+                if (itemType == ITEM_VIEW_1) {
+                    viewHolder.find(R.id.tv_namaPart_booking3_checkin3, TextView.class)
+                            .setText(rekomendasiMekanikList.get(position).get("NAMA_PART").asString());
+                    viewHolder.find(R.id.tv_noPart_booking3_checkin3, TextView.class)
+                            .setText(rekomendasiMekanikList.get(position).get("NO_PART").asString());
+                    viewHolder.find(R.id.tv_merk_booking3_checkin3, TextView.class)
+                            .setText(rekomendasiMekanikList.get(position).get("MERK").asString());
+                    viewHolder.find(R.id.tv_jasaNet_booking3_checkin3, TextView.class)
+                            .setText(rekomendasiMekanikList.get(position).get("JUMLAH").asString());
+                    viewHolder.find(R.id.tv_hargaNet_booking3_checkin3, TextView.class)
+                            .setText(RP + NumberFormatUtils.formatRp(rekomendasiMekanikList.get(position).get("HARGA_PART").asString()));
+                    viewHolder.find(R.id.tv_no, TextView.class).setVisibility(View.VISIBLE);
+                    viewHolder.find(R.id.tv_no, TextView.class).setText(no + ". ");
+                } else if (itemType == ITEM_VIEW_2) {
+                    viewHolder.find(R.id.tv_no, TextView.class).setVisibility(View.VISIBLE);
+                    viewHolder.find(R.id.tv_no, TextView.class).setText(no + ". ");
+                    viewHolder.find(R.id.tv_kelompokPart_booking3_checkin3, TextView.class)
+                            .setText(rekomendasiMekanikList.get(position).get("KELOMPOK_PART").asString());
+                    viewHolder.find(R.id.tv_aktifitas_booking3_checkin3, TextView.class)
+                            .setText(rekomendasiMekanikList.get(position).get("AKTIVITAS").asString());
+                    viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class)
+                            .setText(RP + NumberFormatUtils.formatRp(rekomendasiMekanikList.get(position).get("HARGA_JASA_LAIN").asString()));
+                }
+            }
+        });
+    }
+
 
     private void initRecyclerviewPointLayanan() {
         rvPointLayanan.setLayoutManager(new LinearLayoutManager(this));
@@ -245,6 +328,12 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
                         nListArray.add(result.get(i));
                     }
                 }
+                args.remove("detail");
+                args.put("detail", "REKOMENDASI MEKANIK");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PERINTAH_KERJA_MEKANIK), args));
+                result = result.get("data");
+                rekomendasiMekanikList.asArray().clear();
+                rekomendasiMekanikList.asArray().addAll(result.asArray());
             }
 
             @Override
@@ -406,6 +495,9 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
                 break;
             case R.id.btn_keluhan:
                 initKeluhanDialog();
+                break;
+            case R.id.btn_rekomendasi_mekanik:
+                initRekomendasiMekanikDialog();
                 break;
         }
     }

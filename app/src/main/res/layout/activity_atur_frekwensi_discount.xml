@@ -6,6 +6,17 @@
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true">
 
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <include layout="@layout/toolbar" />
+
+    </android.support.design.widget.AppBarLayout>
+
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,61 +31,48 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal"
-                android:background="@drawable/border_solid"
-                android:gravity="center"
-                android:padding="10dp">
-
-                <TextView
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:text="PAKET LAYANAN" />
-
-                <Spinner
-                    android:id="@+id/sp_paketLayanan_freDisc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAlignment="center" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
                 android:layout_marginBottom="@dimen/paddingMedium"
                 android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingStart="@dimen/paddingMedium"
-                android:paddingEnd="@dimen/paddingMedium">
+                android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/txttittle9"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
                     android:layout_weight="3"
-                    android:text="PEKERJAAN"
+                    android:layout_height="wrap_content"
+                    android:text="@string/paket_layanan_uppercase"
                     android:textColor="@color/grey_900"
                     android:textSize="12sp"
                     android:textStyle="bold" />
 
-                <RelativeLayout
+                <Button
+                    android:id="@+id/btn_layanan"
                     android:layout_width="0dp"
                     android:layout_height="34dp"
+                    android:textAlignment="center"
                     android:layout_weight="6"
-                    android:background="@drawable/background_edittext">
-
-                    <Spinner
-                        android:id="@+id/sp_frekwensi"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:textAlignment="center" />
-
-                </RelativeLayout>
+                    android:background="@drawable/state_textview_clickable_border"
+                    android:drawableEnd="@drawable/ic_arrow_drop_down"
+                    android:text="@string/pilih_uppercase"/>
 
             </LinearLayout>
+
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
+
+                <EditText
+                    android:id="@+id/et_frekwensi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/frekwensi_uppercase"
+                    android:inputType="number"
+                    android:maxLines="1"
+                    android:textSize="14sp" />
+
+            </android.support.design.widget.TextInputLayout>
+
 
             <android.support.design.widget.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -97,26 +95,34 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal"
-                android:background="@drawable/border_solid"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="@dimen/paddingMedium"
                 android:gravity="center"
-                android:padding="10dp">
+                android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:text="TANGGAL EFEKTIVE" />
-
-                <TextView
-                    android:id="@+id/tv_tglEffect_freDisc"
                     android:layout_width="0dp"
+                    android:layout_weight="3"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:drawableLeft="@drawable/icon_tanggal"
-                    android:gravity="center"
-                    android:layout_marginStart="10dp"
+                    android:text="@string/status_uppercase"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
+
+                    <Spinner
+                        android:id="@+id/sp_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textAlignment="center"
+                        android:gravity="center"/>
+
+                </RelativeLayout>
 
             </LinearLayout>
 
@@ -124,16 +130,5 @@
 
         </LinearLayout>
     </ScrollView>
-
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <include layout="@layout/toolbar" />
-
-    </android.support.design.widget.AppBarLayout>
-
 
 </android.support.design.widget.CoordinatorLayout>

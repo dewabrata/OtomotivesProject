@@ -1,12 +1,12 @@
 package com.rkrzmail.oto.modules.bengkel;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ import com.rkrzmail.oto.modules.checkin.Checkin2_Activity;
 import com.rkrzmail.srv.NikitaMultipleViewAdapter;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.srv.NumberFormatUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -40,7 +42,9 @@ import java.util.Objects;
 
 
 import static com.rkrzmail.srv.NumberFormatUtils.calculatePercentage;
+import static com.rkrzmail.utils.APIUrls.VIEW_INSPEKSI;
 import static com.rkrzmail.utils.APIUrls.VIEW_PEMBAYARAN;
+import static com.rkrzmail.utils.APIUrls.VIEW_PERINTAH_KERJA_MEKANIK;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.DAYS;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
@@ -56,11 +60,13 @@ import static com.rkrzmail.utils.ConstUtils.RP;
 public class Rincian_Pembayaran_Activity extends AppActivity {
 
     View dialogView;
-    RecyclerView rvDetail, rvPartJualPart;
+    RecyclerView rvDetail, rvPartJualPart, rvRekomendasi;
     AlertDialog alertDialog;
 
     private final Nson partList = Nson.newArray();
     private final Nson partIdList = Nson.newArray();
+    private final Nson rekomendasiMekanikList = Nson.newArray();
+
     private boolean isLayanan = false, isDp = false, isJualPart = false, isMdrOffUs = false, isBatal = false;
     private Nson data;
     private Nson sendData = Nson.newObject();
@@ -107,6 +113,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             mdrCreditCard = 0,
             dpPercent = 0;
     private final double ppn = 0.1;
+    boolean isZero = false;
     private String kodeTipe = "", noRangka = "", noMesin = "";
 
 
@@ -196,6 +203,12 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                 startActivityForResult(i, REQUEST_KONFIRMASI);
             }
         });
+        find(R.id.btn_usulan_mekanik, Button.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initRekomendasiMekanikDialog();
+            }
+        });
         find(R.id.btn_lanjut, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -265,6 +278,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         sendData.set("PELUNASAN_SISA_BIAYA", !isDp & totalDp > 0 ? "Y" : "N");
         sendData.set("TOTAL", isBatal ? 0 : isDp ? totalDp : total1);
         sendData.set("GRAND_TOTAL", total2);
+        sendData.set("IS_ZERO", isZero);
         sendData.set("JUMLAH_PART", jumlahPart);
         sendData.set("HPP", totalHppPart);
 
@@ -302,6 +316,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    defaultValues();
                     nListArray.asArray().clear();
                     partList.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
@@ -318,6 +333,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                     Log.d("partList__", "runUI: " + partList);
                     if (isLayanan || isDp) {
                         loadDataRincianLayanan(result);
+                        viewRekomendasiMekanik();
                     }
                     if (isJualPart) {
                         loadRincianJualPart(result);
@@ -330,6 +346,32 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         });
     }
 
+    private void defaultValues() {
+        total1 = 0;
+        total2 = 0;
+        sisaBiaya = 0;
+        totalDp = 0;
+        totalPart = 0;
+        totalJasa = 0;
+        totalJasaPart = 0;
+        biayaSimpanBengkel = 0;
+        biayaLayanan = 0;
+        biayaDerek = 0;
+        totalBiayaSimpan = 0;
+        sisaBiayaDp = 0;
+        discSpot = 0;
+        discPart = 0;
+        totalHppPart = 0;
+        discJasaPart = 0;
+        discJasa = 0;
+        discLayanan = 0;
+        discFrekwensi = 0;
+        mdrOnUs = 0;
+        mdrOfUs = 0;
+        mdrCreditCard = 0;
+        dpPercent = 0;
+    }
+
     @SuppressLint("SetTextI18n")
     private void loadDataRincianLayanan(Nson result) {
         result = result.get("data");
@@ -340,7 +382,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                 partIdList.add(isDp & result.get(i).get("DP_PART").asInteger() > 0 ?
                         Nson.newObject().set("PART_ID", result.get(i).get("PART_ID").asInteger()) : 0);
                 totalPart += result.get(i).get("HARGA_PART").asInteger();
-                totalHppPart +=  result.get(i).get("HPP").asInteger();
+                totalHppPart += result.get(i).get("HPP").asInteger();
                 totalJasaPart += result.get(i).get("HARGA_JASA_PART").asInteger();
                 totalJasa += result.get(i).get("HARGA_JASA_LAIN").asInteger();
                 totalDp = result.get(i).get("DP").asInteger();
@@ -365,9 +407,10 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                 isPkp = result.get(i).get("PKP").asString();
             }
 
-            if(result.get(i).get("TINGGALKAN_STNK").asString().equals("Y")){
+            if (result.get(i).get("TINGGALKAN_STNK").asString().equals("Y")) {
                 isTinggalkanStnk = true;
             }
+
             jumlahPart += result.get(i).get("JUMLAH_SERAH_TERIMA").asInteger();
             dataKendaraanId = result.get(i).get("DATA_KENDARAAN_ID").asInteger();
             noMesin = result.get(i).get("NO_MESIN_PELANGGAN").asString();
@@ -387,17 +430,12 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         }
 
         parseBiayaSimpan();
-
-        if (discLayanan > 0) {
-            discLayanan = calculatePercentage(discLayanan, biayaLayanan);
-        }
-
         total1 = (int) (
                 biayaLayanan +
                         (totalJasa - discJasa) +
                         (totalJasaPart - discJasaPart) +
                         (totalPart - discPart) +
-                        biayaDerek + totalBiayaSimpan
+                        biayaDerek + totalBiayaSimpan - discLayanan
         );
 
         if (!isDp && totalDp > 0) {
@@ -405,19 +443,21 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             total2 = sisaBiaya;
         }
 
+
         if (discSpot > 0) {
             total2 = total1 - discSpot;
+            isZero = total2 == 0;
         }
 
-        if (total2 == 0) {
+        if (total2 == 0 && !isZero) {
             total2 = total1;
         }
-        if(isDp){
+
+        if (isDp) {
             total2 = totalDp;
         }
 
-
-        find(R.id.row_total_2).setVisibility(total2 == 0 | isDp | total2 == total1 ? View.GONE : View.VISIBLE);
+        find(R.id.row_total_2).setVisibility((total2 == 0 | isDp | total2 == total1 ) && !isZero ? View.GONE : View.VISIBLE);
         find(R.id.row_sisa_biaya).setVisibility(sisaBiaya == 0 | isDp ? View.GONE : View.VISIBLE);
         find(R.id.row_penyimpanan).setVisibility(totalBiayaSimpan == 0 | isDp ? View.GONE : View.VISIBLE);
         find(R.id.row_disc_layanan).setVisibility(discLayanan == 0 | biayaLayanan == 0 | isDp ? View.GONE : View.VISIBLE);
@@ -432,7 +472,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         find(R.id.row_biaya_jasa_lain).setVisibility(totalJasa == 0 | isDp ? View.GONE : View.VISIBLE);
         find(R.id.row_biaya_part).setVisibility(totalPart == 0 ? View.GONE : View.VISIBLE);
 
-        find(R.id.cb_tinggalkan_stnk,CheckBox.class).setChecked(isTinggalkanStnk);
+        find(R.id.cb_tinggalkan_stnk, CheckBox.class).setChecked(isTinggalkanStnk);
         find(R.id.tv_sisa_biaya_dp, TextView.class).setText(RP + formatRp(String.valueOf(sisaBiayaDp)));
         find(R.id.tv_dp_percent, TextView.class).setText(dpPercent + "%");
         find(R.id.tv_total_dp, TextView.class).setText(RP + formatRp(String.valueOf(totalDp)));
@@ -454,7 +494,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         find(R.id.et_ket_tambahan, EditText.class).setText(ket);
         find(R.id.et_catatan, EditText.class).setText(catatanMekanik);
 
-        if(isTinggalkanStnk){
+        if (isTinggalkanStnk) {
             showInfoDialog("KEMBALIKAN STNK PELANGGAN", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -483,6 +523,8 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         for (int i = 0; i < result.size(); i++) {
             totalPart += result.get(i).get("TOTAL").asInteger();
             discPart += result.get(i).get("DISCOUNT").asDouble();
+            totalHppPart += result.get(i).get("HPP").asInteger();
+
             mdrOnUs = result.get(i).get("MDR_ON_US").asDouble();
             mdrOfUs = result.get(i).get("MDR_OFF_US").asDouble();
             mdrCreditCard = result.get(i).get("MDR_KREDIT_CARD").asDouble();
@@ -500,8 +542,8 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             }
         }
 
-        total1 = totalPart - discPart;
-        total2 = total1 - discSpot;
+        total1 = totalPart;
+        total2 = total1 - discSpot - discPart;
 
         find(R.id.tl_ppn).setVisibility(View.GONE);
         find(R.id.tr_disc_part).setVisibility(discPart == 0 ? View.GONE : View.VISIBLE);
@@ -545,6 +587,34 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         alertDialog = builder.show();
     }
 
+    private void initRekomendasiMekanikDialog() {
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.activity_list_basic, null);
+        builder.setView(dialogView);
+
+        rvRekomendasi = dialogView.findViewById(R.id.recyclerView);
+        initRvRekomendasi();
+        if(rekomendasiMekanikList.size() > 0){
+            rvRekomendasi.getAdapter().notifyDataSetChanged();
+        }
+        initToolbarRekomendasi(dialogView);
+
+        alertDialog = builder.create();
+        if (alertDialog != null) {
+            if (alertDialog.getWindow() != null)
+                alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+            alertDialog = builder.show();
+        }
+    }
+
+    private void initToolbarRekomendasi(View dialogView) {
+        Toolbar toolbar = dialogView.findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Rekomendasi Mekanik");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+    }
+
     @SuppressLint("NewApi")
     private void initToolbarDialog() {
         Toolbar toolbar = dialogView.findViewById(R.id.toolbar);
@@ -552,6 +622,48 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         Objects.requireNonNull(getSupportActionBar()).setTitle("Part & Jasa");
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
+
+    private void initRvRekomendasi() {
+        rvRekomendasi.setLayoutManager(new LinearLayoutManager(this));
+        rvRekomendasi.setHasFixedSize(false);
+        rvRekomendasi.setAdapter(new NikitaMultipleViewAdapter(rekomendasiMekanikList, R.layout.item_part_booking3_checkin3, R.layout.item_jasalain_booking_checkin) {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
+                super.onBindViewHolder(viewHolder, position);
+                final int itemType = getItemViewType(position);
+                int no = position + 1;
+
+                viewHolder.find(R.id.view_mark_tambah_jasa).setVisibility(View.GONE);
+                viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.GONE);
+
+                if (itemType == ITEM_VIEW_1) {
+                    viewHolder.find(R.id.tv_namaPart_booking3_checkin3, TextView.class)
+                            .setText(rekomendasiMekanikList.get(position).get("NAMA_PART").asString());
+                    viewHolder.find(R.id.tv_noPart_booking3_checkin3, TextView.class)
+                            .setText(rekomendasiMekanikList.get(position).get("NO_PART").asString());
+                    viewHolder.find(R.id.tv_merk_booking3_checkin3, TextView.class)
+                            .setText(rekomendasiMekanikList.get(position).get("MERK").asString());
+                    viewHolder.find(R.id.tv_jasaNet_booking3_checkin3, TextView.class)
+                            .setText(rekomendasiMekanikList.get(position).get("JUMLAH").asString());
+                    viewHolder.find(R.id.tv_hargaNet_booking3_checkin3, TextView.class)
+                            .setText(RP + NumberFormatUtils.formatRp(rekomendasiMekanikList.get(position).get("HARGA_PART").asString()));
+                    viewHolder.find(R.id.tv_no, TextView.class).setVisibility(View.VISIBLE);
+                    viewHolder.find(R.id.tv_no, TextView.class).setText(no + ". ");
+                } else if (itemType == ITEM_VIEW_2) {
+                    viewHolder.find(R.id.tv_no, TextView.class).setVisibility(View.VISIBLE);
+                    viewHolder.find(R.id.tv_no, TextView.class).setText(no + ". ");
+                    viewHolder.find(R.id.tv_kelompokPart_booking3_checkin3, TextView.class)
+                            .setText(rekomendasiMekanikList.get(position).get("KELOMPOK_PART").asString());
+                    viewHolder.find(R.id.tv_aktifitas_booking3_checkin3, TextView.class)
+                            .setText(rekomendasiMekanikList.get(position).get("AKTIVITAS").asString());
+                    viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class)
+                            .setText(RP + NumberFormatUtils.formatRp(rekomendasiMekanikList.get(position).get("HARGA_JASA_LAIN").asString()));
+                }
+            }
+        });
+    }
+
 
     @SuppressLint("SetTextI18n")
     private void initRecylerviewPartPembelian() {
@@ -628,6 +740,32 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         });
     }
 
+    @SuppressLint("NewApi")
+    private void viewRekomendasiMekanik() {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+
+                args.put("action", "view");
+                args.put("id", idCheckin);
+                args.put("detail", "REKOMENDASI MEKANIK");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PERINTAH_KERJA_MEKANIK), args));
+                result = result.get("data");
+                rekomendasiMekanikList.asArray().clear();
+                rekomendasiMekanikList.asArray().addAll(result.asArray());
+            }
+
+            @Override
+            public void runUI() {
+
+            }
+        });
+    }
+
+
     private void parseBiayaSimpan() {
         long tglBayar;
         long tglCheckin;
@@ -642,7 +780,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             tglCheckin = 0;
             showError(e.getMessage());
         }
-        if(maxFreePenyimpanan > 0){
+        if (maxFreePenyimpanan > 0) {
             if (tglBayar > tglCheckin) {
                 long dummy = tglBayar - tglCheckin;
                 long maxFree = maxFreePenyimpanan * ONEDAY;

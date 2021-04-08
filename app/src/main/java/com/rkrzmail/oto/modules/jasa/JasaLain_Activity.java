@@ -77,6 +77,7 @@ public class JasaLain_Activity extends AppActivity {
         if (getIntent().hasExtra("NEW")) {
             isAvail = true;
         }
+
         rvJasa = findViewById(R.id.recyclerView);
         rvJasa.setLayoutManager(new LinearLayoutManager(this));
         rvJasa.setHasFixedSize(true);
@@ -106,10 +107,10 @@ public class JasaLain_Activity extends AppActivity {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
                 Intent intent = new Intent(getActivity(), BiayaJasa_Activity.class);
+                intent.putExtra("IS_USULAN_MEKANIK", getIntent().getBooleanExtra("IS_USULAN_MEKANIK", false));
                 intent.putExtra("KM", getIntentIntegerExtra("KM"));
                 intent.putExtra(DATA, parent.get(position).toJson());
                 intent.putExtra(JASA_LAIN, Nson.readJson(getIntentStringExtra(JASA_LAIN)).toJson());
-                Log.d("JASA_LAIN_CLASS", "JASA : " + parent);
                 startActivityForResult(intent, REQUEST_BIAYA);
 
             }
@@ -135,6 +136,7 @@ public class JasaLain_Activity extends AppActivity {
                 args.put("action", "view");
                 args.put("flag", "ALL");
                 args.put("search", cari);
+                args.put("kendaraanID", String.valueOf(getIntentIntegerExtra("KENDARAAN_ID")));
                 if(isCari){
                     args.remove("search");
                     args.put("cari", cari);

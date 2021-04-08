@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -106,5 +107,16 @@ public class DateFormatUtils {
 
         return String.format("%02d:%02d:%02d", Integer.parseInt(result[0]), Integer.parseInt(result[1]), Integer.parseInt(result[2]));
     }
+
+    @SuppressLint({"DefaultLocale", "SimpleDateFormat"})
+    public static String parseTimeMillis(long totalWaktu) {
+        if (totalWaktu == 0) return NumberFormatUtils.formatTime(0, 0);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(totalWaktu);
+
+        return new SimpleDateFormat("HH:mm:ss").format(calendar.getTime());
+    }
+
 
 }

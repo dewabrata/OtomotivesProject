@@ -2,14 +2,21 @@ package com.rkrzmail.oto.modules.discount;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -19,13 +26,16 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
 import com.rkrzmail.srv.NumberFormatUtils;
+import com.rkrzmail.utils.Tools;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.ATUR_DISKON_PART;
+import static com.rkrzmail.utils.APIUrls.VIEW_MST;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_BENGKEL;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
@@ -33,7 +43,11 @@ import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
 public class AturDiscountPart_Activity extends AppActivity {
 
     private EditText etDiscPart, etNoPart, etNamaPart, etMerk;
+    private Spinner spPekerjaan;
+    private RadioButton rbAll;
 
+    private String pekerjaan = "";
+    private final Nson pekerjaanList = Nson.newArray();
     private int partID = 0;
 
     @Override
@@ -58,6 +72,8 @@ public class AturDiscountPart_Activity extends AppActivity {
         etNoPart = findViewById(R.id.et_noPart_discPart);
         etNamaPart = findViewById(R.id.et_namaPart_discPart);
         etMerk = findViewById(R.id.et_merk_part);
+        rbAll = findViewById(R.id.rb_all);
+        spPekerjaan = findViewById(R.id.sp_pekerjaan);
 
         etDiscPart.addTextChangedListener(new NumberFormatUtils().percentTextWatcher(etDiscPart));
         find(R.id.btn_search, ImageButton.class).setOnClickListener(new View.OnClickListener() {
@@ -66,6 +82,23 @@ public class AturDiscountPart_Activity extends AppActivity {
                 Intent i = new Intent(getActivity(), CariPart_Activity.class);
                 i.putExtra(CARI_PART_BENGKEL, "");
                 startActivityForResult(i, REQUEST_CARI_PART);
+            }
+        });
+
+        rbAll.setOnClickListener(new View.OnClickListener() {
+            int count = 0;
+            @Override
+            public void onClick(View v) {
+                count++;
+                if(count == 2){
+                    if(rbAll.isChecked()){
+                        rbAll.setChecked(false);
+                        count = 0;
+                    }
+                }
+
+                Tools.setViewAndChildrenEnabled(find(R.id.vg_pekerjaan, LinearLayout.class), !rbAll.isChecked());
+                setSelectionSpinner(rbAll.isChecked() ? "ALL" : "--PILIH--", spPekerjaan);
             }
         });
     }
@@ -77,14 +110,19 @@ public class AturDiscountPart_Activity extends AppActivity {
         final Nson data = Nson.readJson(getIntentStringExtra(DATA));
         if (!data.asString().isEmpty()) {
             isUpdate = true;
+            rbAll.setChecked(data.get("PEKERJAAN").asString().equals("ALL"));
+            Tools.setViewAndChildrenEnabled(find(R.id.vg_pekerjaan, LinearLayout.class), !rbAll.isChecked());
+
             etDiscPart.setText(data.get("DISCOUNT_PART").asString());
             etNamaPart.setText(data.get("NAMA_PART").asString());
             etNoPart.setText(data.get("NO_PART").asString());
             etMerk.setText(data.get("MERK").asString());
         }
 
+        setSpPekerjaan(data.get("PEKERJAAN").asString());
         setSpinnerOffline(statusList, find(R.id.sp_status, Spinner.class), data.get("STATUS").asString());
         final boolean finalIsUpdate = isUpdate;
+
         find(R.id.btn_simpan_discPart, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,7 +131,7 @@ public class AturDiscountPart_Activity extends AppActivity {
                         etDiscPart.setError("DISCOUNT PART HARUS DI ISI");
                         viewFocus(etDiscPart);
                     }else{
-                        saveData(finalIsUpdate, data.get("ID").asInteger());
+                        saveData(true, data.get("ID").asInteger());
                     }
                 } else {
                     if (etNoPart.getText().toString().isEmpty() ||
@@ -104,13 +142,80 @@ public class AturDiscountPart_Activity extends AppActivity {
                        etDiscPart.setError("DISCOUNT PART HARUS DI ISI");
                        viewFocus(etDiscPart);
                     }else{
-                        saveData(finalIsUpdate, 0);
+                        saveData(false, 0);
                     }
                 }
             }
         });
 
     }
+
+    private void setSpPekerjaan(final String selection) {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("nama", "PEKERJAAN");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MST), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equals("OK")) {
+                    result = result.get("data");
+                    pekerjaanList.add("--PILIH--");
+                    pekerjaanList.add("ALL");
+                    for (int i = 0; i < result.size(); i++) {
+                        pekerjaanList.add(result.get(i).get("PEKERJAAN").asString());
+                    }
+
+                    ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, pekerjaanList.asArray()){
+                        @Override
+                        public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                            View view;
+                            if (pekerjaanList.get(position).asString().equals("ALL") || pekerjaanList.get(position).asString().equals("--PILIH--")) {
+                                TextView mTextView = new TextView(getContext());
+                                mTextView.setVisibility(View.GONE);
+                                mTextView.setHeight(0);
+                                view = mTextView;
+                                return view;
+                            } else {
+                                return view = super.getDropDownView(position, null, parent);
+                            }
+                        }
+                    };
+                    spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spPekerjaan.setAdapter(spinnerAdapter);
+                    setSelectionSpinner(selection, spPekerjaan);
+                    spPekerjaan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            pekerjaan = parent.getItemAtPosition(position).toString();
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
+                    /*  final List<String> itemsPekerjaan = new ArrayList<>();
+                    itemsPekerjaan.addAll(pekerjaanList.asArray());
+                    isSelectedPekerjaanArr = new boolean[itemsPekerjaan.size()];
+
+                    btnPekerjaan.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //showDialogPekerjaan();
+                            showAlertDialogPekerjaan(itemsPekerjaan.toArray(new String[]{}));
+                        }
+                    });*/
+                }
+            }
+        });
+    }
+
 
 
     private void saveData(final boolean isUpdate, final int discPartID) {
@@ -131,6 +236,7 @@ public class AturDiscountPart_Activity extends AppActivity {
                     args.put("partid", String.valueOf(partID));
                 }
 
+                args.put("pekerjaan", pekerjaan);
                 args.put("status", find(R.id.sp_status, Spinner.class).getSelectedItem().toString());
                 args.put("diskonpart", etDiscPart.getText().toString());
 

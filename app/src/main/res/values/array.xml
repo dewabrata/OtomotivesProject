@@ -81,7 +81,7 @@
     <string-array name="atur_layanan">
         <item>--PILIH--</item>
         <item>PAKET LAYANAN</item>
-        <item>AFTER SALES SERVICES</item>
+        <item>AFTER SALES SERVIS</item>
         <item>RECALL</item>
         <item>OTOMOTIVES</item>
         <item>PERAWATAN LAINYA</item>
@@ -174,8 +174,9 @@
         <item>MY BUSINESS</item>
         <item>PENGATURAN</item>
         <item>DISCOUNT</item>
+        <item>DISCOUNT SPOT</item>
         <item>KOMISI</item>
-        <item>LAPORAN</item>
+        <item>USER</item>
     </string-array>
 
     <string-array name="status_layanan">
@@ -254,12 +255,19 @@
     </string-array>
 
     <string-array name="status_part_kosong">
-        <item>--PILIH--</item>
         <item>ORDER</item>
         <item>TERLAMBAT</item>
         <item>TERIMA</item>
         <item>TIDAK TERSEDIA</item>
         <item>BATAL KARENA BENGKEL</item>
+    </string-array>
+
+    <string-array name="status_out_source">
+        <item>--PILIH--</item>
+        <item>ORDER</item>
+        <item>TERLAMBAT</item>
+        <item>SELESAI</item>
+        <item>GANTI PART</item>
     </string-array>
 
     <string-array name="tipe_supplier">

@@ -37,6 +37,7 @@ public class JumlahPart_JualPart_Activity extends AppActivity {
 
     private String idLokasiPart = "";
     private boolean isJual, isPartKosong = false;
+    private double discPart = 0;
     private int hppPart = 0;
 
     @Override
@@ -181,7 +182,12 @@ public class JumlahPart_JualPart_Activity extends AppActivity {
 
             }
 
-            etDisc.setText(getData.get("DISCOUNT").asString());
+            if (!getData.get("DISCOUNT_PART").asString().isEmpty()) {
+                if (!getData.get("HARGA_JUAL").asString().isEmpty()) {
+                    discPart = NumberFormatUtils.calculatePercentage(getData.get("DISCOUNT_PART").asDouble(), getData.get("HARGA_JUAL").asInteger());
+                }
+                etDisc.setText(RP + NumberFormatUtils.formatRp(String.valueOf((int) discPart)));
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

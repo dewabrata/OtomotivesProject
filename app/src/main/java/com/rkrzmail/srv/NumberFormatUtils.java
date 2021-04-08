@@ -1,6 +1,7 @@
 package com.rkrzmail.srv;
 
 
+import android.annotation.SuppressLint;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -177,11 +178,23 @@ public class NumberFormatUtils {
 
     public static String formatRp(String currency) {
         if (!currency.equals("")) {
-            try{
+            try {
                 DecimalFormat formatter = new DecimalFormat("###,###,###");
                 return formatter.format(Double.parseDouble(currency));
-            }catch (Exception e){
+            } catch (Exception e) {
                 return currency;
+            }
+        }
+        return "0";
+    }
+
+    public static String formatRp(int values) {
+        if (values== 0) {
+            try {
+                DecimalFormat formatter = new DecimalFormat("###,###,###");
+                return formatter.format(values);
+            } catch (Exception e) {
+                return String.valueOf(values);
             }
         }
         return "0";
@@ -229,4 +242,22 @@ public class NumberFormatUtils {
         return 0;
     }
 
+    public static String formatOnlyCharacter(String text) {
+        if (text.isEmpty())
+            return "";
+        else
+            return text.replaceAll("[^a-zA-Z]", "");
+    }
+
+    @SuppressLint("DefaultLocale")
+    public static String formatTime(int hours, int minutes) {
+        if (hours == 0 && minutes == 0) return String.format("%02d:%02d", 0, 0);
+        else return String.format("%02d:%02d", hours, minutes);
+    }
+
+    @SuppressLint("DefaultLocale")
+    public static String formatTime(int day, int hour, int minute) {
+        if (hour == 0 && minute == 0) return String.format("%02d:%02d:%02d", 0, 0, 0);
+        else return String.format("%02d:%02d:%02d", day, hour, minute);
+    }
 }

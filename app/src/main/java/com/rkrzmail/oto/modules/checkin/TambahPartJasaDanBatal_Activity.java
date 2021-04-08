@@ -2,7 +2,6 @@ package com.rkrzmail.oto.modules.checkin;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.Application;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -18,9 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -37,9 +34,11 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.gmod.Capture;
 import com.rkrzmail.oto.modules.jasa.JasaLain_Activity;
 import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
+import com.rkrzmail.oto.modules.sparepart.JumlahPart_Mekanik_Activity;
 import com.rkrzmail.oto.modules.sparepart.JumlahPart_Checkin_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
@@ -53,6 +52,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.ATUR_KONTROL_LAYANAN;
+import static com.rkrzmail.utils.APIUrls.ATUR_PERINTAH_KERJA_MEKANIK;
 import static com.rkrzmail.utils.ConstUtils.BATAL_PART;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
 import static com.rkrzmail.utils.ConstUtils.DATA;
@@ -61,7 +61,6 @@ import static com.rkrzmail.utils.ConstUtils.ESTIMASI_WAKTU;
 import static com.rkrzmail.utils.ConstUtils.ID;
 import static com.rkrzmail.utils.ConstUtils.JASA_LAIN;
 import static com.rkrzmail.utils.ConstUtils.PART;
-import static com.rkrzmail.utils.ConstUtils.PARTS_UPPERCASE;
 import static com.rkrzmail.utils.ConstUtils.PERMISSION_REQUEST_CODE;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CODE_SIGN;
@@ -72,6 +71,7 @@ import static com.rkrzmail.utils.ConstUtils.RUANG_PART;
 import static com.rkrzmail.utils.ConstUtils.TAMBAH_PART;
 import static com.rkrzmail.utils.ConstUtils.TIDAK_MENUNGGU;
 import static com.rkrzmail.utils.ConstUtils.TOTAL_BIAYA;
+import static com.rkrzmail.utils.ConstUtils.USULAN_MEKANIK;
 
 public class TambahPartJasaDanBatal_Activity extends AppActivity implements View.OnClickListener {
 
@@ -99,6 +99,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
     private boolean isWait = false, isPartKosong = false, isBatal = false, isTambah = false, isNotWait = false;
     private boolean isSign = false;
     private boolean isKonfirmasiTambah = false;
+    private boolean isUsulanMekanik = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,8 +141,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
         nopol = getIntentStringExtra("NOPOL");
         noPonsel = getIntentStringExtra("NO_PONSEL");
         kmKendaraan = getIntentIntegerExtra("KM");
-        Log.d(TAG, "initData: " + idCheckin);
-        totalBiaya = Integer.parseInt(getIntentStringExtra(TOTAL_BIAYA));
+        totalBiaya = Integer.parseInt(NumberFormatUtils.formatOnlyNumber(getIntentStringExtra(TOTAL_BIAYA)));
         find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));
         layanan = getIntentStringExtra("LAYANAN");
 
@@ -185,7 +185,18 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
             if (partList.size() > 0) {
                 rvJasaLain.getAdapter().notifyDataSetChanged();
             }
+        }else if(getIntent().hasExtra(USULAN_MEKANIK)){
+            isUsulanMekanik = true;
+            setGoneUsulanMekanik();
         }
+    }
+
+    private void setGoneUsulanMekanik(){
+        find(R.id.tl_total_setelah_tambah).setVisibility(View.GONE);
+        find(R.id.tl_total_akhir).setVisibility(View.GONE);
+        find(R.id.ly_waktu_estimasi).setVisibility(View.GONE);
+        find(R.id.ly_not_konfirmasi_tambah).setVisibility(View.GONE);
+        find(R.id.ly_menunggu).setVisibility(View.GONE);
     }
 
     public void getTimePicker(final EditText editText) {
@@ -411,6 +422,34 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
         alertDialog.show();
     }
 
+    private void saveDataUsulanMekanik(){
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "add");
+                args.put("aktivitas", "USULAN MEKANIK");
+                args.put("partList", partList.toJson());
+                args.put("jasaList", jasaList.toJson());
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_PERINTAH_KERJA_MEKANIK), args));
+            }
+
+            @Override
+            public void runUI() {
+                if(result.get("status").asString().equals("OK")){
+                    showSuccess("USULAN PART & JASA BERHASIL DI TAMBAHKAN");
+                    Intent intent = new Intent();
+                    intent.putExtra("IS_USULAN", 1);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }else{
+                    showError(result.get("message").asString());
+                }
+            }
+        });
+    }
+
     private void updateTambahOrBatal() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
@@ -491,6 +530,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
         switch (v.getId()) {
             case R.id.btn_jasa_lain:
                 i = new Intent(getActivity(), JasaLain_Activity.class);
+                i.putExtra("IS_USULAN_MEKANIK", isUsulanMekanik);
                 startActivityForResult(i, REQUEST_JASA_LAIN);
                 break;
             case R.id.btn_part:
@@ -500,17 +540,26 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                 break;
             case R.id.btn_simpan:
                 countClick++;
-                if (isWait && !isSign) {
-                    showWarning("TANDA TANGAN BELUM TERISI");
-                } else if (find(R.id.ly_not_konfirmasi_tambah).getVisibility() == View.VISIBLE &&
-                        find(R.id.et_tgl_estimasi, EditText.class).getText().toString().isEmpty() &&
-                        find(R.id.et_jam_estimasi, EditText.class).getText().toString().isEmpty()) {
-                    showWarning("ESTIMASI SELSAI BELUM TERISI");
-                } else if (partList.asArray().isEmpty() && jasaList.asArray().isEmpty()) {
-                    showWarning("PART DAN JASA BELUM DI TAMBAHKAN");
-                } else {
-                    showDialogKonfirmasi();
+                if(isUsulanMekanik){
+                    if (partList.asArray().isEmpty() && jasaList.asArray().isEmpty()) {
+                        showWarning("PART DAN JASA BELUM DI TAMBAHKAN");
+                    }else{
+                        saveDataUsulanMekanik();
+                    }
+                }else{
+                    if (isWait && !isSign) {
+                        showWarning("TANDA TANGAN BELUM TERISI");
+                    } else if (find(R.id.ly_not_konfirmasi_tambah).getVisibility() == View.VISIBLE &&
+                            find(R.id.et_tgl_estimasi, EditText.class).getText().toString().isEmpty() &&
+                            find(R.id.et_jam_estimasi, EditText.class).getText().toString().isEmpty()) {
+                        showWarning("ESTIMASI SELSAI BELUM TERISI");
+                    } else if (partList.asArray().isEmpty() && jasaList.asArray().isEmpty()) {
+                        showWarning("PART DAN JASA BELUM DI TAMBAHKAN");
+                    } else {
+                        showDialogKonfirmasi();
+                    }
                 }
+
                 break;
             case R.id.img_btn_kalender_konfirmasi:
                 getDatePicker(find(R.id.et_tgl_konfirmasi, EditText.class));
@@ -612,11 +661,17 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                     if(stock == 0){
                         dialogIgnoreStock();
                     }else{
-                        i = new Intent(getActivity(), JumlahPart_Checkin_Activity.class);
-                        i.putExtra("KM", kmKendaraan);
-                        i.putExtra(DATA, dataAccept.toJson());
-                        i.putExtra(TAMBAH_PART, "");
-                        i.putExtra("KM", kmKendaraan);
+                        if(isUsulanMekanik){
+                            i = new Intent(getActivity(), JumlahPart_Mekanik_Activity.class);
+                            i.putExtra(DATA, dataAccept.toJson());
+                        }else{
+                            i = new Intent(getActivity(), JumlahPart_Checkin_Activity.class);
+                            i.putExtra("KM", kmKendaraan);
+                            i.putExtra(DATA, dataAccept.toJson());
+                            i.putExtra(TAMBAH_PART, "");
+                            i.putExtra("KM", kmKendaraan);
+                        }
+
                         startActivityForResult(i, REQUEST_HARGA_PART);
                     }
 
@@ -630,17 +685,20 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
 
                         totalBiaya += Integer.parseInt(formatOnlyNumber(dataAccept.get("NET").asString()));
                         totalTambah += Integer.parseInt(formatOnlyNumber(dataAccept.get("NET").asString()));
-
-                        totalWaktuLayanan(Tools.TimePart.parse(dataAccept.get("WAKTU_KERJA").asString()));
-                        totalWaktuLayanan(Tools.TimePart.parse(dataAccept.get("WAKTU_INSPEKSI").asString()));
+                        if(!isUsulanMekanik){
+                            totalWaktuLayanan(Tools.TimePart.parse(dataAccept.get("WAKTU_KERJA").asString()));
+                            totalWaktuLayanan(Tools.TimePart.parse(dataAccept.get("WAKTU_INSPEKSI").asString()));
+                        }
                     } catch (Exception e) {
                         showWarning(PART + e.getMessage(), Toast.LENGTH_LONG);
                     }
                     break;
             }
 
+            if(isUsulanMekanik){
+                find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));
+            }
             find(R.id.et_total_tambah_or_batal, EditText.class).setText(RP + formatRp(String.valueOf(totalTambah)));
-            //find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));
             find(R.id.et_total_akhir, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));
         }
     }

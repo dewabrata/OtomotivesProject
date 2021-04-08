@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.naa.data.Nson;
+import com.naa.data.UtilityAndroid;
 import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
@@ -75,7 +76,9 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
     private int jumlahAllPart = 0, count = 0, partId;
     private int lastBalance = 0;
     private long totalAll = 0;
+
     private boolean isDelete = false;
+    private boolean isPembayaranActive = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +109,7 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
         etPenempatan = findViewById(R.id.et_penempatan_detailTerimaPart);
 
         data = Nson.readJson(getIntentStringExtra("detail"));
+        isPembayaranActive = UtilityAndroid.getSetting(getApplicationContext(), "PEMBAYARAN_ACTIVE", "").equals("Y");
         lastBalance = data.get("BALANCE").asInteger();
         jenisPembayaran = data.get("pembayaran").asString();
 
@@ -128,7 +132,7 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
                     showWarning("PART TIDAK BOLEH KOSONG", Toast.LENGTH_LONG);
                     return;
                 }
-                if((jenisPembayaran.equals("TRANSFER") || jenisPembayaran.equals("CASH ON DELIVERY"))
+                if(isPembayaranActive && (jenisPembayaran.equals("TRANSFER") || jenisPembayaran.equals("CASH ON DELIVERY"))
                         && totalAll > lastBalance){
                     showWarning("BALANCE KAS " + (jenisPembayaran.equals("CASH ON DELIVERY") ? "" : "BANK") + "TIDAK CUKUP");
                     return;

@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:descendantFocusability="beforeDescendants"
-    android:focusableInTouchMode="true"
-    android:layout_height="match_parent">
+    android:focusableInTouchMode="true">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -28,8 +28,8 @@
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight="3"
                     android:layout_height="wrap_content"
+                    android:layout_weight="3"
                     android:text="@string/paket_layanan_uppercase"
                     android:textColor="@color/grey_900"
                     android:textSize="12sp"
@@ -39,11 +39,11 @@
                     android:id="@+id/btn_layanan"
                     android:layout_width="0dp"
                     android:layout_height="34dp"
-                    android:textAlignment="center"
                     android:layout_weight="6"
                     android:background="@drawable/state_textview_clickable_border"
                     android:drawableEnd="@drawable/ic_arrow_drop_down"
-                    android:text="@string/pilih_uppercase"/>
+                    android:text="@string/pilih_uppercase"
+                    android:textAlignment="center" />
 
             </LinearLayout>
 
@@ -57,23 +57,41 @@
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight="3"
                     android:layout_height="wrap_content"
+                    android:layout_weight="3"
                     android:text="@string/pekerjaan_uppercase"
                     android:textColor="@color/grey_900"
                     android:textSize="12sp"
                     android:textStyle="bold" />
 
-                <Button
-                    android:id="@+id/btn_pekerjaan"
+                <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_height="34dp"
-                    android:textAlignment="center"
+                    android:layout_height="wrap_content"
                     android:layout_weight="6"
-                    android:background="@drawable/state_textview_clickable_border"
-                    android:drawableEnd="@drawable/ic_arrow_drop_down"
-                    android:padding="5dp"
-                    android:text="@string/pilih_uppercase"/>
+                    android:orientation="vertical">
+
+                    <RadioButton
+                        android:id="@+id/rb_all"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/all_uppercase" />
+
+                    <RelativeLayout
+                        android:id="@+id/vg_pekerjaan"
+                        android:layout_width="match_parent"
+                        android:layout_height="34dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/state_textview_clickable_border">
+
+                        <Spinner
+                            android:id="@+id/sp_pekerjaan"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAlignment="center" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -104,8 +122,8 @@
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight="3"
                     android:layout_height="wrap_content"
+                    android:layout_weight="3"
                     android:text="@string/status_uppercase"
                     android:textColor="@color/grey_900"
                     android:textSize="12sp"
@@ -121,8 +139,8 @@
                         android:id="@+id/sp_status"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:textAlignment="center"
-                        android:gravity="center"/>
+                        android:gravity="center"
+                        android:textAlignment="center" />
 
                 </RelativeLayout>
 

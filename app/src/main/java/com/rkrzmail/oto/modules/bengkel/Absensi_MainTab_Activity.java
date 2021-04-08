@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.ABSEN;
+import static com.rkrzmail.utils.APIUrls.WEB_LOGIN;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
 
@@ -122,6 +123,26 @@ public class Absensi_MainTab_Activity extends AppActivity {
         });
     }
 
+    private void webLogin(final String qrCode){
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("qr", qrCode);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(WEB_LOGIN), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    showSuccess(result.get("data").get("MESSAGE").asString());
+                }
+            }
+        });
+    }
+
     private String getDayOfWeek() {
         Calendar c = Calendar.getInstance();
         int day = c.get(Calendar.DAY_OF_WEEK);
@@ -151,22 +172,25 @@ public class Absensi_MainTab_Activity extends AppActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_BARCODE) {
             String barcodeResult = data != null ? data.getStringExtra("TEXT").replace("\n", "").trim() : "";
-            MyCode.checkMyCode(this, barcodeResult, new MyCode.RunnableWD() {
-                @Override
-                public void runWD(Nson nson) {
-                    if (nson.get("status").asString().equals("OK")) {
-                        if (nson.get("data").asArray().isEmpty()) {
-                            showError("Silahkan Refresh Barcode Anda!");
-                            return;
+            if(barcodeResult.contains("WEB")){
+                webLogin(barcodeResult);
+            }else {
+                MyCode.checkMyCode(this, barcodeResult, new MyCode.RunnableWD() {
+                    @Override
+                    public void runWD(Nson nson) {
+                        if (nson.get("status").asString().equals("OK")) {
+                            if (nson.get("data").asArray().isEmpty()) {
+                                showError("SILAHKAN REFRESH BARCODE ANDA!");
+                            }else{
+                                nson = nson.get("data").get(0);
+                                absenUser(nson.get("USERID").asString());
+                            }
+                        } else {
+                            showError(ERROR_INFO);
                         }
-                        nson = nson.get("data").get(0);
-                        absenUser(nson.get("USERID").asString());
-                        Log.d("Barcode__", "onActivityResult: " + nson);
-                    } else {
-                        showError(ERROR_INFO);
                     }
-                }
-            });
+                });
+            }
         }
     }
 }

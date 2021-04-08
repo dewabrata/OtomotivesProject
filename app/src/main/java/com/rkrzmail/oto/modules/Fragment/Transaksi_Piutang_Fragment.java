@@ -79,12 +79,12 @@ public class Transaksi_Piutang_Fragment extends Fragment {
         btnLanjut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(transaksiMarkList.size() > 0){
+                if (transaksiMarkList.size() > 0) {
                     Intent intent = new Intent(getActivity(), AturTotalInvoice_Activity.class);
                     intent.putExtra("TOTAL_INV", totalInvoice);
                     intent.putExtra(DATA, transaksiMarkList.toJson());
                     startActivityForResult(intent, REQUEST_DETAIL);
-                }else {
+                } else {
                     activity.showWarning("BELUM ADA TRANSAKSI DI PILIH");
                 }
             }
@@ -129,76 +129,78 @@ public class Transaksi_Piutang_Fragment extends Fragment {
             @SuppressLint("SetTextI18n")
             @Override
             public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
-                //super.onBindViewHolder(viewHolder, position);
-                viewHolder.find(R.id.cb_mark_transaksi, CheckBox.class).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                        if (b) {
-                            if (transaksiMarkList.size() > 0) {
-                                if (!transaksiMarkList.get(0).get("PRINCIPAL").asString().isEmpty() &&
-                                        transaksiMarkList.get(0).get("PRINCIPAL").asString().equals(transaksiList.get(position).get("PRINCIPAL").asString())) {
-                                    viewHolder.find(R.id.cb_mark_transaksi, CheckBox.class).setChecked(true);
-                                    totalInvoice += transaksiList.get(position).get("JUMLAH_INVOICE").asInteger();
-                                    transaksiMarkList.add(transaksiList.get(position));
-                                } else if (!transaksiMarkList.get(0).get("NAMA_PELANGGAN").asString().isEmpty() &&
-                                        transaksiMarkList.get(0).get("NAMA_PELANGGAN").asString().equals(transaksiList.get(position).get("NAMA_PELANGGAN").asString())) {
-                                    viewHolder.find(R.id.cb_mark_transaksi, CheckBox.class).setChecked(true);
-                                    totalInvoice += transaksiList.get(position).get("JUMLAH_INVOICE").asInteger();
-                                    transaksiMarkList.add(transaksiList.get(position));
-                                } else {
-                                    viewHolder.find(R.id.cb_mark_transaksi, CheckBox.class).setChecked(false);
-                                    activity.showWarning("TIDAK BISA MEMILIH NAMA PELANGGAN / NAMA PRINCIPAL YG BERBEDA", Toast.LENGTH_LONG);
-                                }
-                            } else {
-                                viewHolder.find(R.id.cb_mark_transaksi, CheckBox.class).setChecked(true);
-                                totalInvoice += transaksiList.get(position).get("JUMLAH_INVOICE").asInteger();
-                                transaksiMarkList.add(transaksiList.get(position));
-                            }
+                int totalTransaksi, totalLayanan, totalJasa, totalPart;
+                String tgl = DateFormatUtils.formatDate(transaksiList.get(position).get("TANGGAL_PEMBAYARAN").asString(), "yyyy-MM-dd", "dd/MM");
+                if (transaksiList.get(position).get("FEE_NON_PAKET").asInteger() == 0 &&
+                        transaksiList.get(position).get("PENGGANTIAN_PART").asInteger() == 0) {
+                    totalLayanan = transaksiList.get(position).get("BIAYA_LAYANAN_NET").asInteger();
+                    totalJasa = transaksiList.get(position).get("BIAYA_JASA_LAIN_NET").asInteger();
+                    totalPart = transaksiList.get(position).get("HARGA_PART_NET").asInteger();
+                } else {
+                    totalLayanan = transaksiList.get(position).get("FEE_NON_PAKET").asInteger();
+                    totalJasa = 0;
+                    totalPart = transaksiList.get(position).get("PENGGANTIAN_PART").asInteger();
+                }
 
-                        } else{
-                            compoundButton.setChecked(false);
-                            if(totalInvoice > 0) totalInvoice -= transaksiList.get(position).get("JUMLAH_INVOICE").asInteger();
-                            for (int i = 0; i < transaksiMarkList.size(); i++) {
-                                if (transaksiMarkList.get(i).get("ID").asInteger() == transaksiList.get(position).get("ID").asInteger()) {
-                                    transaksiMarkList.remove(i);
-                                }
+                if (transaksiList.get(position).get("JUMLAH_INVOICE").asString().isEmpty()) {
+                    totalTransaksi = transaksiList.get(position).get("GRAND_TOTAL").asInteger();
+                } else {
+                    totalTransaksi = transaksiList.get(position).get("JUMLAH_INVOICE").asInteger();
+                }
+
+                viewHolder.find(R.id.cb_mark_transaksi, CheckBox.class).setChecked(false);
+                viewHolder.find(R.id.cardView).setOnClickListener(new View.OnClickListener() {
+                    int count = 0;
+                    @Override
+                    public void onClick(View v) {
+                        count++;
+                        if (count == 1) {
+                            viewHolder.find(R.id.cb_mark_transaksi, CheckBox.class).setChecked(true);
+                        }else if(count == 2){
+                            if (viewHolder.find(R.id.cb_mark_transaksi, CheckBox.class).isChecked()) {
+                                viewHolder.find(R.id.cb_mark_transaksi, CheckBox.class).setChecked(false);
+                                count = 0;
                             }
                         }
+
+                        getDataByPosition(
+                                viewHolder.find(R.id.cb_mark_transaksi, CheckBox.class).isChecked(),
+                                position,
+                                viewHolder.find(R.id.cb_mark_transaksi, CheckBox.class)
+                        );
+
                     }
                 });
 
-                String tgl = DateFormatUtils.formatDate(transaksiList.get(position).get("TANGGAL_PEMBAYARAN").asString(), "yyyy-MM-dd", "dd/MM");
-                int totalTransaksi = transaksiList.get(position).get("JUMLAH_INVOICE").asInteger();
-
-                viewHolder.find(R.id.tv_total_transaksi, TextView.class).setText(RP + NumberFormatUtils.formatRp(String.valueOf(totalTransaksi)));
-                viewHolder.find(R.id.tv_tgl_transaksi, TextView.class).setText(tgl);
-                viewHolder.find(R.id.tv_nopol, TextView.class).setText(activity.formatNopol(transaksiList.get(position).get("NOPOL").asString()));
-                viewHolder.find(R.id.tv_jenis_kendaraan, TextView.class).setText(transaksiList.get(position).get("JENIS_KENDARAAN").asString());
-                viewHolder.find(R.id.tv_layanan, TextView.class).setText(transaksiList.get(position).get("LAYANAN").asString());
-
-                if(transaksiList.get(position).get("PRINCIPAL").asString().isEmpty()){
+                if (transaksiList.get(position).get("PRINCIPAL").asString().isEmpty()) {
                     viewHolder.find(R.id.tv_nama_customer, TextView.class).setText(transaksiList.get(position).get("NAMA_PELANGGAN").asString());
-                }else{
-                    viewHolder.find(R.id.tv_nama_customer, TextView.class).setText(transaksiList.get(position).get("NAMA_PELANGGAN").asString() + "\n" + transaksiList.get(position).get("PRINCIPAL").asString());
-                }
-
-                if (transaksiList.get(position).get("FEE_NON_PAKET").asInteger() == 0 || transaksiList.get(position).get("FEE_NON_PAKET").asString().isEmpty()) {
-                    viewHolder.find(R.id.tv_biaya_layanan, TextView.class).setText(RP + NumberFormatUtils.formatRp(transaksiList.get(position).get("BIAYA_LAYANAN_NET").asString()));
-                    viewHolder.find(R.id.tv_part, TextView.class).setText(RP + NumberFormatUtils.formatRp(transaksiList.get(position).get("HARGA_PART_NET").asString()));
-                    viewHolder.find(R.id.tv_jasa_lain, TextView.class).setText(RP + NumberFormatUtils.formatRp(transaksiList.get(position).get("BIAYA_JASA_LAIN_NET").asString()));
                 } else {
-                    viewHolder.find(R.id.tv_biaya_layanan, TextView.class).setText(RP + NumberFormatUtils.formatRp(transaksiList.get(position).get("FEE_NON_PAKET").asString()));
-                    viewHolder.find(R.id.tv_part, TextView.class).setText(RP + NumberFormatUtils.formatRp(transaksiList.get(position).get("PENGGANTIAN_PART").asString()));
-                    viewHolder.find(R.id.tv_jasa_lain, TextView.class).setText(RP + NumberFormatUtils.formatRp(transaksiList.get(position).get("").asString()));
+                    if (transaksiList.get(position).get("NAMA_PELANGGAN").asString().isEmpty()) {
+                        viewHolder.find(R.id.tv_nama_customer, TextView.class).setText(transaksiList.get(position).get("PRINCIPAL").asString());
+                    } else {
+                        viewHolder.find(R.id.tv_nama_customer, TextView.class).setText(transaksiList.get(position).get("NAMA_PELANGGAN").asString() + "\n" + transaksiList.get(position).get("PRINCIPAL").asString());
+                    }
                 }
-
-                if(transaksiList.get(position).get("NO_MESIN").asString().isEmpty() && transaksiList.get(position).get("KODE_TIPE").asString().isEmpty()){
+                if (transaksiList.get(position).get("NO_MESIN").asString().isEmpty() && transaksiList.get(position).get("KODE_TIPE").asString().isEmpty()) {
                     viewHolder.find(R.id.row_no_mesin, TableRow.class).setVisibility(View.GONE);
                     viewHolder.find(R.id.row_kode_tipe, TableRow.class).setVisibility(View.GONE);
-                }else{
+                } else {
                     viewHolder.find(R.id.tv_no_mesin, TextView.class).setText(transaksiList.get(position).get("NO_MESIN").asString());
                     viewHolder.find(R.id.tv_kode_tipe, TextView.class).setText(transaksiList.get(position).get("KODE_TIPE").asString());
                 }
+                if (transaksiList.get(position).get("JENIS_KENDARAAN").asString().isEmpty()) {
+                    viewHolder.find(R.id.row_jenis_kendaraan, TableRow.class).setVisibility(View.GONE);
+                } else {
+                    viewHolder.find(R.id.tv_jenis_kendaraan, TextView.class).setText(transaksiList.get(position).get("JENIS_KENDARAAN").asString());
+                }
+
+                viewHolder.find(R.id.tv_biaya_layanan, TextView.class).setText(RP + NumberFormatUtils.formatRp(String.valueOf(totalLayanan)));
+                viewHolder.find(R.id.tv_part, TextView.class).setText(RP + NumberFormatUtils.formatRp(String.valueOf(totalPart)));
+                viewHolder.find(R.id.tv_jasa_lain, TextView.class).setText(RP + NumberFormatUtils.formatRp(String.valueOf(totalJasa)));
+                viewHolder.find(R.id.tv_total_transaksi, TextView.class).setText(RP + NumberFormatUtils.formatRp(String.valueOf(totalTransaksi)));
+                viewHolder.find(R.id.tv_tgl_transaksi, TextView.class).setText(tgl);
+                viewHolder.find(R.id.tv_nopol, TextView.class).setText(activity.formatNopol(transaksiList.get(position).get("NOPOL").asString()));
+                viewHolder.find(R.id.tv_layanan, TextView.class).setText(transaksiList.get(position).get("LAYANAN").asString());
             }
 
             @Override
@@ -206,8 +208,44 @@ public class Transaksi_Piutang_Fragment extends Fragment {
                 activity.find(R.id.btn_lanjut).setVisibility(transaksiList.size() == 0 ? View.GONE : View.VISIBLE);
                 return transaksiList.size();
             }
-
         });
+    }
+
+    private void getDataByPosition(boolean isChecked, int position, CheckBox checkBox){
+        int jumlahInvoice;
+        if (transaksiList.get(position).get("JUMLAH_INVOICE").asString().isEmpty()) {
+            jumlahInvoice = transaksiList.get(position).get("GRAND_TOTAL").asInteger();
+        } else {
+            jumlahInvoice = transaksiList.get(position).get("JUMLAH_INVOICE").asInteger();
+        }
+        if (isChecked) {
+            if (transaksiMarkList.size() > 0) {
+                if (!transaksiMarkList.get(0).get("PRINCIPAL").asString().isEmpty() &&
+                        transaksiMarkList.get(0).get("PRINCIPAL").asString().equals(transaksiList.get(position).get("PRINCIPAL").asString())) {
+                    totalInvoice += jumlahInvoice;
+                    transaksiMarkList.add(transaksiList.get(position));
+                } else if (!transaksiMarkList.get(0).get("NAMA_PELANGGAN").asString().isEmpty() &&
+                        transaksiMarkList.get(0).get("NAMA_PELANGGAN").asString().equals(transaksiList.get(position).get("NAMA_PELANGGAN").asString())) {
+                    totalInvoice += jumlahInvoice;
+                    transaksiMarkList.add(transaksiList.get(position));
+                } else {
+                    checkBox.setChecked(false);
+                    activity.showWarning("TIDAK BISA MEMILIH NAMA PELANGGAN / NAMA PRINCIPAL YG BERBEDA", Toast.LENGTH_LONG);
+                }
+            } else {
+                totalInvoice += jumlahInvoice;
+                transaksiMarkList.add(transaksiList.get(position));
+            }
+
+        } else {
+            if (totalInvoice > 0)
+                totalInvoice -= jumlahInvoice;
+            for (int i = 0; i < transaksiMarkList.size(); i++) {
+                if (transaksiMarkList.get(i).get("TRANSAKSI_ID").asInteger() == transaksiList.get(position).get("TRANSAKSI_ID").asInteger()) {
+                    transaksiMarkList.remove(i);
+                }
+            }
+        }
     }
 
     private void viewTransaksi() {
@@ -229,8 +267,8 @@ public class Transaksi_Piutang_Fragment extends Fragment {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     transaksiList.asArray().clear();
                     transaksiMarkList.asArray().clear();
-                    totalInvoice = 0;
                     transaksiList.asArray().addAll(result.get("data").asArray());
+                    totalInvoice = 0;
                     recyclerView.getAdapter().notifyDataSetChanged();
                 } else {
                     activity.showInfo(result.get("message").asString());

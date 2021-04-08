@@ -146,8 +146,8 @@ public class AturStockOpname_Activity extends AppActivity {
             public void afterTextChanged(Editable editable) {
                 String text = editable.toString();
                 etPending.setText("0");
-                if(text.isEmpty()) return;
-                if(!etPending.getText().toString().isEmpty()){
+                if (text.isEmpty()) return;
+                if (!etPending.getText().toString().isEmpty()) {
 //                    int opname = Integer.parseInt(text);
 //                    int pending = Integer.parseInt(etPending.getText().toString());
 //                    etPending.setText(String.valueOf(opname + pending));
@@ -159,9 +159,12 @@ public class AturStockOpname_Activity extends AppActivity {
     private void loadData() {
         if (getData.get("PENDING_STOCK").asInteger() > 0) {
             showInfo("PART PENDING, STOCK OPNAME DI TUNDA", Toast.LENGTH_LONG);
+            finish();
+           /*
             intent = new Intent(getActivity(), CariPart_Activity.class);
             intent.putExtra(CARI_PART_TERALOKASIKAN, "");
             startActivityForResult(intent, REQUEST_CARI_PART);
+            */
             return;
         }
 

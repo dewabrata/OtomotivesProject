@@ -177,7 +177,6 @@ public class MenuActivity extends AppActivity {
     private final String MY_BUSINESS_PIUTANG = "PIUTANG";
     private final String MY_BUSINESS_ASET = "ASET";
     private final String MY_BUSINESS_CUSTOMER = "CUSTOMER";//tambahan
-    private final String MY_BUSINESS_PAYROLL = "PAYROLL";//tambahan
     private final String MY_BUSINESS_LOKASI_PART = "LOKASI PARTS";
     private final String MY_BUSINESS_CLAIM_STATUS = "STATUS CLAIM";
 
@@ -346,9 +345,7 @@ public class MenuActivity extends AppActivity {
             startActivity(intent);*/
         } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_CUSTOMER) && getAccess(MY_BUSINESS)) {
 
-        } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_PAYROLL) && getAccess(MY_BUSINESS)) {
-
-        } else if (item.getTitle().toString().equalsIgnoreCase(LAPORAN) && getAccess(LAPORAN)) {
+        }  else if (item.getTitle().toString().equalsIgnoreCase(LAPORAN) && getAccess(LAPORAN)) {
             Intent intent = new Intent(MenuActivity.this, Laporan_Activity.class);
             startActivity(intent);
         } else if (item.getTitle().toString().equalsIgnoreCase(SCHEDULE) && getAccess(SCHEDULE)) {
@@ -356,7 +353,7 @@ public class MenuActivity extends AppActivity {
             startActivity(intent);
         }
         //Pengaturan
-        else if (item.getTitle().toString().equalsIgnoreCase(USER) && getAccess(PENGATURAN)) {
+        else if (item.getTitle().toString().equalsIgnoreCase(USER) && getAccess(USER)) {
             Intent intent = new Intent(MenuActivity.this, DaftarUser_Activity.class);
             startActivity(intent);
         } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_LAYANAN) && getAccess(PENGATURAN)) {
@@ -401,7 +398,7 @@ public class MenuActivity extends AppActivity {
         } else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_PART) && getAccess(DISCOUNT)) {
             Intent intent = new Intent(MenuActivity.this, DiscountPart_Activity.class);
             startActivity(intent);
-        } else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_SPOT) && getAccess(DISCOUNT)) {
+        } else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_SPOT) && getAccess(DISCOUNT_SPOT)) {
             Intent intent = new Intent(MenuActivity.this, DiscountSpot_Activity.class);
             startActivity(intent);
         }
@@ -442,18 +439,7 @@ public class MenuActivity extends AppActivity {
         } else if (item.getTitle().toString().equalsIgnoreCase(SARAN)) {
             Intent intent = new Intent(MenuActivity.this, SaranActivity.class);
             startActivity(intent);
-        } else if (item.getTitle().toString().equals(PENGATURAN) && !getAccess(PENGATURAN)) {
-            showWarning("ANDA TIDAK MEMILIK AKSES " + PENGATURAN);
-        } else if (item.getTitle().toString().equals(PENGATURAN) && !getAccess(MY_BUSINESS)) {
-            showWarning("ANDA TIDAK MEMILIK AKSES " + MY_BUSINESS);
-        } else if (item.getTitle().toString().equals(PENGATURAN) && !getAccess(DISCOUNT)) {
-            showWarning("ANDA TIDAK MEMILIK AKSES " + DISCOUNT);
-        } else if (item.getTitle().toString().equals(PENGATURAN) && !getAccess(KOMISI)) {
-            showWarning("ANDA TIDAK MEMILIK AKSES " + KOMISI);
-        }else if (item.getTitle().toString().equals(BILLING) && getAccess(BILLING)) {
-            Intent intent = new Intent(MenuActivity.this, Billing_MainTab_Activity.class);
-            startActivity(intent);
-        }else{
+        } else{
             if(!getAccess(REFERAL)){
                 showWarning("ANDA TIDAK MEMILIKI AKSES " + REFERAL);
             }else if(!getAccess(CHECK_OUT)){
@@ -462,8 +448,8 @@ public class MenuActivity extends AppActivity {
                 showWarning("ANDA TIDAK MEMILIKI AKSES " + MY_BUSINESS);
             }else if(!getAccess(PENGATURAN)){
                 showWarning("ANDA TIDAK MEMILIKI AKSES " + PENGATURAN);
-            }else if(!getAccess(LAPORAN)){
-                showWarning("ANDA TIDAK MEMILIKI AKSES " + LAPORAN);
+            }else if(!getAccess(DISCOUNT_SPOT)){
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + DISCOUNT_SPOT);
             }else if(!getAccess(SCHEDULE)){
                 showWarning("ANDA TIDAK MEMILIKI AKSES " + SCHEDULE);
             }else if(!getAccess(PART_KELUAR)){
@@ -476,6 +462,8 @@ public class MenuActivity extends AppActivity {
                 showWarning("ANDA TIDAK MEMILIKI AKSES " + SARAN);
             }else if(!getAccess(BILLING)){
                 showWarning("ANDA TIDAK MEMILIKI AKSES " + BILLING);
+            }else if(!getAccess(USER)){
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + USER);
             }
         }
 
@@ -656,13 +644,11 @@ public class MenuActivity extends AppActivity {
         menu.add(USER);
         menu.add(DISCOUNT_SPOT);
 
-
         subMenu = menu.addSubMenu(MY_BUSINESS);
         subMenu.add(MY_BUSINESS_HUTANG);
         subMenu.add(MY_BUSINESS_PIUTANG);
         subMenu.add(MY_BUSINESS_ASET);
         subMenu.add(MY_BUSINESS_CUSTOMER);
-        subMenu.add(MY_BUSINESS_PAYROLL);
         subMenu.add(MY_BUSINESS_LOKASI_PART);
         subMenu.add(MY_BUSINESS_CLAIM_STATUS);
 

@@ -128,7 +128,7 @@ public class CariPart_Activity extends AppActivity {
         } else if (isPartCheckin) {
             initRecylerViewCarPartClaim();
             cariPartCheckin("");
-        }else if(isPartOto){
+        } else if (isPartOto) {
             initRecylerViewCariPartOto();
             cariPart("");
         } else {
@@ -213,7 +213,7 @@ public class CariPart_Activity extends AppActivity {
                         viewHolder.find(R.id.tv_cari_merkPart, TextView.class).setText(nListArray.get(position).get("MERK").asString());
                         viewHolder.find(R.id.tv_cari_namaPart, TextView.class).setText(nListArray.get(position).get("NAMA_PART").asString());
                         viewHolder.find(R.id.tv_cari_noPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
-                        viewHolder.find(R.id.tv_cari_het, TextView.class).setText(RP +  NumberFormatUtils.formatRp(nListArray.get(position).get("HET").asString()));
+                        viewHolder.find(R.id.tv_cari_het, TextView.class).setText(RP + NumberFormatUtils.formatRp(nListArray.get(position).get("HET").asString()));
                     }
                 }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                     @Override
@@ -248,6 +248,12 @@ public class CariPart_Activity extends AppActivity {
                         viewHolder.find(R.id.tv_cari_stockPart, TextView.class).setText(partLokasiPart.get(position).get("STOCK_RUANG_PART").asString());
                         viewHolder.find(R.id.tv_cari_hpp, TextView.class).setText((partLokasiPart.get(position).get("KODE").asString()));
                         viewHolder.find(R.id.tv_cari_harga_part, TextView.class).setText(RP + NumberFormatUtils.formatRp(partLokasiPart.get(position).get("HARGA_JUAL").asString()));
+
+                        if (!partLokasiPart.get(position).get("FREKWENSI_PART_TO_KENDARAAN").asString().isEmpty()) {
+                            viewHolder.find(R.id.img_check).setVisibility(View.VISIBLE);
+                        } else {
+                            viewHolder.find(R.id.img_check).setVisibility(View.GONE);
+                        }
 
                         if (!partLokasiPart.get(position).get("LOKASI").asString().equals("*")) {
                             viewHolder.find(R.id.tv_cari_pending, TextView.class).setText(partLokasiPart.get(position).get("LOKASI").asString());
@@ -392,6 +398,9 @@ public class CariPart_Activity extends AppActivity {
                 args.put("spec", "Bengkel");
                 args.put("search", cari);
                 args.put("lokasi", getIntentStringExtra(CARI_PART_LOKASI));
+                args.put("kendaraanID", String.valueOf(getIntentIntegerExtra("KENDARAAN_ID")));
+                args.put("layananID", getIntentStringExtra("LAYANAN_ID"));
+                args.put("pekerjaan", getIntentStringExtra("PEKERJAAN"));
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SPAREPART), args));
             }

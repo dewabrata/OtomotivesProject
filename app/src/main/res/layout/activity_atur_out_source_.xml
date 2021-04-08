@@ -27,202 +27,147 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
             android:orientation="vertical"
-            android:padding="10sp">
+            android:padding="10dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="100dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="4"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="TANGGAL"
+                    android:text="@string/status_uppercase"
                     android:textColor="@color/grey_900"
-                    android:textSize="15sp"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
 
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
+
+                    <Spinner
+                        android:id="@+id/sp_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textAlignment="center"
+                        android:gravity="center"/>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ly_estimasi_selesai"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/paddingSemiLarge"
+                android:gravity="center"
+                android:orientation="horizontal">
+
                 <TextView
-                    android:id="@+id/tv_tglOutS_outS"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:drawableStart="@drawable/icon_tanggal"
-                    android:gravity="center"
+                    android:layout_weight="4"
+                    android:text="@string/estimasi_selesai_uppercase"
                     android:textColor="@color/grey_900"
-                    android:textSize="15sp"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/state_textview_clickable_border">
+
+                    <TextView
+                        android:id="@+id/tv_tgl_estimasi"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="3dp"
+                        android:gravity="center"
+                        android:textAlignment="center"
+                        android:drawablePadding="10dp"
+                        android:layout_marginBottom="3dp"
+                        android:textColor="@color/grey_900"
+                        android:drawableStart="@drawable/icon_tanggal" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:drawablePadding="5dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginStart="10dp"
+                        android:textColor="@color/grey_900"
+                        android:layout_marginEnd="10dp"
+                        android:text="-" />
+
+                    <TextView
+                        android:id="@+id/tv_jam_estimasi"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:drawablePadding="10dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginTop="3dp"
+                        android:gravity="center"
+                        android:layout_marginEnd="5dp"
+                        android:textAlignment="center"
+                        android:textColor="@color/grey_900"
+                        android:layout_marginBottom="3dp"
+                        android:drawableEnd="@drawable/icon_jam" />
+
+                </RelativeLayout>
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/paddingSemiLarge"
+                android:layout_marginBottom="@dimen/paddingMedium"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="200dp"
+                    android:layout_weight="4"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="NO. POLISI"
+                    android:text="@string/nama_supplier_uppercase"
                     android:textColor="@color/grey_900"
-                    android:textSize="15sp"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
 
-                <Spinner
-                    android:id="@+id/sp_nopol_outS"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAlignment="center" />
+                <RelativeLayout
+                    android:id="@+id/vg_kontak"
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/state_textview_clickable_border">
 
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/tv_nama_supplier"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:drawableLeft="@drawable/ic_contact_phone"
+                        android:gravity="center"
+                        android:textStyle="bold"
+                        android:paddingStart="5dp"
+                        tools:ignore="RtlHardcoded,RtlSymmetry" />
 
-
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:hint="TANGGAL CHECKIN">
-
-
-                <EditText
-                    android:id="@+id/et_tglCheckin_outS"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:enabled="false"
-                    android:textSize="14sp" />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:hint="LAYANAN">
-
-                <EditText
-                    android:id="@+id/et_layanan_outS"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:enabled="false"
-                    android:textSize="14sp" />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <LinearLayout
-                android:id="@+id/ly_namaSup_terimaPart"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="SUPPLIER"
-                    android:textColor="@color/grey_900"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tv_supplier_outS"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:drawableLeft="@drawable/ic_contact_phone"
-                    android:gravity="center"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="NAMA JASA OUT"
-                    android:textColor="@color/grey_900"
-                    android:textStyle="bold" />
-
-                <com.rkrzmail.srv.MultiSelectionSpinner
-                    android:id="@+id/sp_namaJasa_outS"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAlignment="center" />
-
-            </LinearLayout>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerView_outS"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:padding="5dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="TANGGAL SELESAI"
-                    android:textColor="@color/grey_900"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tv_tglSelesai_outS"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:drawableStart="@drawable/icon_tanggal"
-                    android:gravity="center"
-                    android:textColor="@color/grey_900"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="KONDISI PART"
-                    android:textColor="@color/grey_900"
-                    android:textStyle="bold" />
-
-                <Spinner
-                    android:id="@+id/sp_kondisiPart_outS"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAlignment="center"
-                    android:entries="@array/kondisi_part"/>
+                </RelativeLayout>
 
             </LinearLayout>
 
@@ -230,80 +175,161 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:hint="TOTAL BIAYA">
+                android:layout_marginTop="@dimen/paddingSemiLarge">
 
                 <EditText
-                    android:id="@+id/et_totalBiaya_outS"
+                    android:id="@+id/et_biaya_outsource"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="numberDecimal"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:hint="@string/biaya_oursource_uppercase"
+                    tools:ignore="Autofill" />
 
             </android.support.design.widget.TextInputLayout>
 
             <LinearLayout
+                android:id="@+id/layout_pembayaran"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/paddingSemiLarge"
+                android:gravity="center"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="200dp"
+                    android:id="@+id/textView41"
+                    android:layout_width="0dp"
+                    android:layout_weight="4"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="PEMBAYARAN"
+                    android:text="@string/pembayaran_uppercase"
                     android:textColor="@color/grey_900"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
 
-                <Spinner
-                    android:id="@+id/sp_pembayaran_outS"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAlignment="center"
-                    android:entries="@array/pembayaran_bengkel"/>
+                <RelativeLayout
+                    android:id="@+id/vg_pembayaran"
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/state_textview_clickable_border"
+                    android:layout_gravity="center"
+                    android:gravity="center">
+
+                    <Spinner
+                        android:id="@+id/sp_pembayaran"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:entries="@array/pembayaran"
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:textAlignment="center" />
+
+                </RelativeLayout>
 
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ly_norek"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/paddingSemiLarge">
 
                 <TextView
-                    android:layout_width="120dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="4"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="NO. REKENING KARTU"
+                    android:text="@string/rekening_internal_uppercase"
                     android:textColor="@color/grey_900"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
 
-                <Spinner
-                    android:id="@+id/sp_noRek_outS"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAlignment="center" />
+
+                <RelativeLayout
+                    android:id="@+id/vg_no_rek"
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/state_textview_clickable_border">
+
+                    <Spinner
+                        android:id="@+id/sp_rek_internal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textAlignment="center" />
+
+                </RelativeLayout>
 
             </LinearLayout>
 
-            <Button
-                android:id="@+id/btn_simpan_outS"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/ly_tgl_jatuh_tempo"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/btn_rounded_accent"
-                android:text="@string/simpan_uppercase"
-                android:textColor="@android:color/white" />
+                android:layout_marginTop="@dimen/paddingSemiLarge"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="3.8"
+                    android:text="@string/tanggal_jatuh_tempo_uppercase"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:layout_marginEnd="10dp" />
+
+                <RelativeLayout
+                    android:id="@+id/vg_tgl_jatuh_tempo"
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/state_textview_clickable_border">
+
+                    <TextView
+                        android:id="@+id/tv_tgl_jatuh_tempo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="3dp"
+                        android:gravity="center"
+                        android:textAlignment="center"
+                        android:drawablePadding="10dp"
+                        android:layout_marginBottom="3dp"
+                        android:textColor="@color/grey_900"
+                        android:drawableStart="@drawable/icon_tanggal" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/paddingSemiLarge">
+
+                <EditText
+                    android:id="@+id/et_keterangan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textCapCharacters"
+                    android:textSize="14sp"
+                    android:hint="@string/keterangan_uppercase"
+                    tools:ignore="Autofill" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <include layout="@layout/layout_btn_simpan_hapus"/>
 
         </LinearLayout>
 
-
     </ScrollView>
-
 
 </android.support.design.widget.CoordinatorLayout>

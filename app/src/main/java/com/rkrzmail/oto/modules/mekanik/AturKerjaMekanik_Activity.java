@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -61,6 +62,7 @@ import static com.rkrzmail.utils.ConstUtils.RP;
 import static com.rkrzmail.utils.ConstUtils.TAMBAH_PART;
 import static com.rkrzmail.utils.ConstUtils.TIDAK_MENUNGGU;
 import static com.rkrzmail.utils.ConstUtils.TOTAL_BIAYA;
+import static com.rkrzmail.utils.ConstUtils.USULAN_MEKANIK;
 
 public class AturKerjaMekanik_Activity extends AppActivity implements View.OnClickListener {
 
@@ -95,6 +97,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
     private int countClick = 0;
     private int kmKendaraan = 0;
     private int waktuHari = 0, waktuJam = 0, waktuMenit = 0;
+    private int usulanMekanik = 0;
 
     private boolean isRework = false;
     private boolean isStart = false;
@@ -106,6 +109,9 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
     private boolean isLkkWajib = false;
     private boolean isPersetujuanPart = false;
     private boolean isHistory = false;
+    private boolean isOutsource = false;
+    private boolean isKondisiBaik = false;
+    private boolean isUsulanMekanik = false;
 
     private AlertDialog alertDialog;
     private CountDownTimer cTimer = null;
@@ -117,6 +123,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
         setContentView(R.layout.activity_detail_kerja_mekanik);
         initToolbar();
         initComponent();
+        loadData();
     }
 
     private void initToolbar() {
@@ -155,8 +162,6 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
         //EditText etCatatanMekanik = findViewById(R.id.et_catatan_mekanik);
         etSisaWaktu = findViewById(R.id.et_sisa_waktu);
         etPengambilan = findViewById(R.id.et_pengambilan);
-
-        loadData();
 
         imgNote.setOnClickListener(this);
         find(R.id.img_btn_keluhan).setOnClickListener(this);
@@ -337,22 +342,41 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
         TextInputLayout tlEt = dialogView.findViewById(R.id.tl_edit_text);
         final EditText etEditText = dialogView.findViewById(R.id.et_edit_text);
         Button btnSimpan = dialogView.findViewById(R.id.btn_simpan);
+        Button btnPartJasa = dialogView.findViewById(R.id.btn_part_jasa);
+        final CheckBox cbKondisiBaik =  dialogView.findViewById(R.id.cb_kondisi_baik);
 
         if (isKm) {
             tlEt.setHint("KM");
             etEditText.setText("");
             etEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
             builder.setCancelable(false);
+            btnPartJasa.setVisibility(View.GONE);
+            cbKondisiBaik.setVisibility(View.GONE);
         } else {
+            btnPartJasa.setVisibility(View.VISIBLE);
+            cbKondisiBaik.setVisibility(View.VISIBLE);
             tlEt.setHint("CATATAN MEKANIK");
             etEditText.setText(catatanMekanik);
             etEditText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
-            if (isDissmissAndStop) {
-                builder.setCancelable(false);
-            } else {
-                builder.setCancelable(true);
-            }
-
+            builder.setCancelable(!isDissmissAndStop);
+            cbKondisiBaik.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    isKondisiBaik = isChecked;
+                }
+            });
+            btnPartJasa.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    isUsulanMekanik = true;
+                    Intent intent = new Intent(getActivity(), TambahPartJasaDanBatal_Activity.class);
+                    intent.putExtra("CHECKIN_ID", idCheckin);
+                    intent.putExtra("NO_PONSEL", noHp);
+                    intent.putExtra(TOTAL_BIAYA, "0");
+                    intent.putExtra(USULAN_MEKANIK, "");
+                    startActivityForResult(intent, REQUEST_TAMBAH_PART_JASA_LAIN);
+                }
+            });
         }
 
         btnSimpan.setOnClickListener(new View.OnClickListener() {
@@ -368,25 +392,32 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                         alertDialog.dismiss();
                     }
                 } else {
-                    if(etEditText.getText().toString().isEmpty()){
+                    if (!isKondisiBaik && etEditText.getText().toString().isEmpty() && usulanMekanik == 0) {
                         etEditText.setError("CATATAN MEKANIK HARUS DI ISI");
                         viewFocus(etEditText);
-                    }else{
-                        catatanMekanik = etEditText.getText().toString();
+                    } else {
+                        if(isKondisiBaik){
+                            catatanMekanik = cbKondisiBaik.getText().toString() + ", ";
+                        }
+                        catatanMekanik += etEditText.getText().toString().isEmpty() ? "" : etEditText.getText().toString();
                         alertDialog.dismiss();
                         if (isDissmissAndStop) {
-                            if(isPersetujuanPart){
+                            if (isPersetujuanPart) {
                                 showInfoDialog("TAMBAH PART - JASA MASIH ADA YG MEMERLUKAN PERSETUJUAN", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         dialogInterface.dismiss();
                                     }
                                 });
-                            }else{
-                                if(isLkkWajib && isGaransiLKK && !isClaim){
+                            } else {
+                                if (isLkkWajib && isGaransiLKK && !isClaim) {
                                     showWarning("ADA PART WAJIB GARANSI YG HARUS DI PROSES");
-                                }else{
-                                    stopWork();
+                                } else {
+                                    if(isOutsource){
+                                        showWarning("JASA OUTSOURCE SEDANG BERLANGSUNG");
+                                    }else{
+                                        stopWork();
+                                    }
                                 }
                             }
                         }
@@ -426,13 +457,17 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
         View dialogView = inflater.inflate(R.layout.activity_list_basic, null);
         builder.setView(dialogView);
 
-        SwipeRefreshLayout swipeRefreshLayout = dialogView.findViewById(R.id.swiperefresh);
-        swipeRefreshLayout.setEnabled(false);
-        initToolbarPointLayanan(dialogView);
-        initRecyclerviewPointLayanan(dialogView);
-        Objects.requireNonNull(rvPointLayanan.getAdapter()).notifyDataSetChanged();
+        try{
+            SwipeRefreshLayout swipeRefreshLayout = dialogView.findViewById(R.id.swiperefresh);
+            swipeRefreshLayout.setEnabled(false);
+            initToolbarPointLayanan(dialogView);
+            initRecyclerviewPointLayanan(dialogView);
+            Objects.requireNonNull(rvPointLayanan.getAdapter()).notifyDataSetChanged();
+        }catch (Exception e){
+            showError(e.getMessage());
+        }
 
-        builder.create();
+        alertDialog = builder.create();
         alertDialog = builder.show();
     }
 
@@ -492,7 +527,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     for (int i = 0; i < partJasaList.size(); i++) {
-                        if(partJasaList.get(i).get("PERSETUJUAN_PART_JASA").asString().equals("Y")){
+                        if (partJasaList.get(i).get("PERSETUJUAN_PART_JASA").asString().equals("Y")) {
                             isPersetujuanPart = true;
                         }
                         if (partJasaList.get(i).get("GARANSI_LAYANAN").asString().equals("Y")) {
@@ -507,12 +542,20 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                         if (partJasaList.get(i).get("MERK_PART").asString().equals(merkLKKWajib)) {
                             isLkkWajib = true;
                         }
-                        if(partJasaList.get(i).get("CLAIM").asString().equals("Y")){
-                           isClaim = true;
+                        if (partJasaList.get(i).get("CLAIM").asString().equals("Y")) {
+                            isClaim = true;
+                        }
+
+                        if (partJasaList.get(i).get("OUTSOURCE").asString().equals("Y") && !partJasaList.get(i).get("STATUS_OUTSOURCE").asString().equals("SELESAI")) {
+                            isOutsource = true;
                         }
                         waktuHari += partJasaList.get(i).get("WAKTU_KERJA_HARI").asInteger();
                         waktuJam += partJasaList.get(i).get("WAKTU_KERJA_JAM").asInteger();
                         waktuMenit += partJasaList.get(i).get("WAKTU_KERJA_MENIT").asInteger();
+                    }
+
+                    if(isGaransiLKK){
+                        showNotification(getActivity(), "LKK CLAIM", formatNopol(etNopol.getText().toString()), "MEKANIK", null);
                     }
                 } else {
                     showInfo(result.get("message").asString());
@@ -706,18 +749,22 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                         showWarning("Catatan Harus di Isi", Toast.LENGTH_LONG);
                         initEditTextDialog(false);
                     } else {
-                        if(isPersetujuanPart){
+                        if (isPersetujuanPart) {
                             showInfoDialog("TAMBAH PART - JASA MASIH ADA YG MEMERLUKAN PERSETUJUAN", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     dialogInterface.dismiss();
                                 }
                             });
-                        }else{
-                            if(isLkkWajib && isGaransiLKK && !isClaim){
+                        } else {
+                            if (isLkkWajib && isGaransiLKK && !isClaim) {
                                 showWarning("ADA PART WAJIB GARANSI YG HARUS DI PROSES");
-                            }else{
-                                stopWork();
+                            } else {
+                                if(isOutsource){
+                                    showWarning("JASA OUTSOURCE SEDANG BERLANGSUNG");
+                                }else{
+                                    stopWork();
+                                }
                             }
                         }
                     }
@@ -747,9 +794,9 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 initPointLayananDialog();
                 break;
             case R.id.img_btn_keluhan:
-                if(isKeluhan){
+                if (isKeluhan) {
                     initKeluhanDialog();
-                }else{
+                } else {
                     showWarning("TIDAK ADA KELUHAN TERSEDIA");
                 }
                 break;
@@ -773,12 +820,12 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 startActivityForResult(intent, REQUEST_TAMBAH_PART_JASA_LAIN);
                 break;
             case R.id.img_btn_history:
-                if(isHistory){
+                if (isHistory) {
                     intent = new Intent(getActivity(), History_Activity.class);
                     intent.putExtra("ALL", "ALL");
                     intent.putExtra("NOPOL", etNopol.getText().toString().replaceAll(" ", ""));
                     startActivityForResult(intent, REQUEST_HISTORY);
-                }else{
+                } else {
                     showWarning("TIDAK ADA HISTORY TERSEDIA");
                 }
 
@@ -822,6 +869,13 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_TAMBAH_PART_JASA_LAIN:
+                    if(isUsulanMekanik){
+                        isUsulanMekanik = false;
+                        usulanMekanik = data.getIntExtra("IS_USULAN", 0);
+                    }else{
+                        viewLayananPartJasa();
+                    }
+                    break;
                 case REQUEST_BARCODE:
                     viewLayananPartJasa();
                     break;

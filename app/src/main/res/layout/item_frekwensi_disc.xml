@@ -13,7 +13,7 @@
     android:layout_weight="5"
     android:padding="10dp"
     app:cardElevation="2dp"
-    app:cardCornerRadius="10dp">
+    app:cardCornerRadius="7dp">
 
 
     <TableLayout
@@ -29,15 +29,19 @@
                 android:id="@+id/tv_paketLayanan_freDisc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Paket Layanan"
-                android:textStyle="bold" />
+                android:text="@string/paket_layanan"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp"
+                android:layout_gravity="start"/>
 
             <TextView
                 android:id="@+id/tv_frekwensi_freDisc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Frekwensi"
-                android:textStyle="bold" />
+                android:text="@string/frekwensi"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp"
+                android:layout_gravity="end"/>
 
         </TableRow>
 
@@ -47,15 +51,19 @@
                 android:id="@+id/tv_disc_freDisc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Discount"
-                android:textStyle="bold" />
+                android:text="@string/discount"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp"
+                android:layout_gravity="start"/>
 
             <TextView
-                android:id="@+id/tv_tgl_freDisc"
+                android:id="@+id/tv_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tanggal"
-                android:textStyle="bold" />
+                android:text="@string/status"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp"
+                android:layout_gravity="end"/>
 
 
         </TableRow>

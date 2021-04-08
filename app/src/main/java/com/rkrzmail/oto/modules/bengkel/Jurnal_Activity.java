@@ -100,14 +100,20 @@ public class Jurnal_Activity extends AppActivity {
                 String tglJurnal = DateFormatUtils.formatDate(nListArray.get(position).get("TANGGAL").asString(), "yyyy-MM-dd", "dd/MM/yyyy");
 
                 viewHolder.find(R.id.tv_tgl_jurnal, TextView.class).setText(tglJurnal);
-                viewHolder.find(R.id.tv_keterangan, TextView.class).setText(nListArray.get(position).get("KETERANGAN").asString());
                 viewHolder.find(R.id.tv_transaksi_jurnal, TextView.class).setText(nListArray.get(position).get("TRANSAKSI").asString());
-                viewHolder.find(R.id.tv_nama_perusahaan, TextView.class).setText(nListArray.get(position).get("NAMA_PERUSAHAAN").asString());
+                if(nListArray.get(position).get("NAMA_PERUSAHAAN").asString().isEmpty()){
+                    viewHolder.find(R.id.row_nama_perusahaan).setVisibility(View.GONE);
+                }else{
+                    viewHolder.find(R.id.tv_nama_perusahaan, TextView.class).setText(nListArray.get(position).get("NAMA_PERUSAHAAN").asString());
+                }
+                if(nListArray.get(position).get("KETERANGAN").asString().isEmpty()){
+                    viewHolder.find(R.id.row_keterangan).setVisibility(View.GONE);
+                }else{
+                    viewHolder.find(R.id.tv_keterangan, TextView.class).setText(nListArray.get(position).get("KETERANGAN").asString());
+                }
                 viewHolder.find(R.id.tv_nominal_jurnal, TextView.class).setText(RP + NumberFormatUtils.formatRp(nListArray.get(position).get("NOMINAL").asString()));
                 viewHolder.find(R.id.tv_pembayaran_jurnal, TextView.class).setText(nListArray.get(position).get("PEMBAYARAN").asString());
                 viewHolder.find(R.id.tv_aktifitas_jurnal, TextView.class).setText(nListArray.get(position).get("AKTIVITAS").asString());
-
-                //
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override

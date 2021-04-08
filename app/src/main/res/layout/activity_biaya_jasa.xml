@@ -19,6 +19,24 @@
             android:padding="5dp">
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/tl_keterangan"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
+
+                <EditText
+                    android:id="@+id/et_keterangan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/keterangan_uppercase"
+                    android:textSize="14sp"
+                    tools:ignore="Autofill,TextFields" />
+
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.design.widget.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -237,9 +255,14 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="10dp"
-            android:stretchColumns="*">
+            android:stretchColumns="2"
+            android:layout_gravity="center"
+            android:gravity="center">
 
-            <TableRow tools:ignore="UselessParent">
+            <TableRow
+                android:layout_gravity="center"
+                android:gravity="center"
+                tools:ignore="UselessParent">
 
                 <CheckBox
                     android:id="@+id/cb_outsource"
@@ -247,11 +270,18 @@
                     android:layout_height="wrap_content"
                     android:text="OUTSOURCE"/>
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    />
+
                 <Button
                     android:id="@+id/btn_simpan_biayaJasa"
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/btn_rounded_accent"
+                    android:layout_gravity="end"
                     android:text="@string/simpan_uppercase"
                     android:textColor="@android:color/white" />
 

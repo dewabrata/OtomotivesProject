@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    tools:context=".modules.Fragment.TabUsaha_Fragment">
+    tools:context=".modules.Fragment.Usaha_Profile_Fragment">
 
 
     <android.support.v4.widget.NestedScrollView
@@ -378,7 +378,7 @@
                 android:hint="@string/no_telp_uupercase">
 
                 <EditText
-                    android:id="@+id/et_noPhone_usaha"
+                    android:id="@+id/et_no_telp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
@@ -396,7 +396,7 @@
                 android:hint="@string/no_ponselmsg_uupercase">
 
                 <EditText
-                    android:id="@+id/et_noPhone_message"
+                    android:id="@+id/et_no_telp_message"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"

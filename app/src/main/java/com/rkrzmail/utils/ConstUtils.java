@@ -9,7 +9,7 @@ public class ConstUtils {
 
     public static String PRINT_BUKTI_BAYAR(String params, boolean isCheckin) {
         return isCheckin ?
-                "https://otomotives.com/internalapp/report/bukti_bayar/" + params :
+                "https://otomotives.com/internaldev/report/bukti_bayar/" + params :
                 "https://otomotives.com/internaldev/report/bukti_beli_part/" + params;
     }
 
@@ -36,6 +36,7 @@ public class ConstUtils {
     //CONST STRING
     public static final String BENGKEL = "BENGKEL";
     public static final String BATAL_PART = "BATAL_PART";
+    public static final String USULAN_MEKANIK = "USULAN_MEKANIK";
     public static final String TAMBAH_PART = "TAMBAH_PART";
     public static final String ID = "ID";
     public static final String TOTAL_BIAYA = "TOTAL_BIAYA";

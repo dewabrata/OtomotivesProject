@@ -15,6 +15,28 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <Button
+        android:id="@+id/btn_part_jasa"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:ignore="ContentDescription"
+        android:drawableTop="@drawable/ic_tambah_part_resize"
+        android:background="@drawable/state_textview_clickable"
+        android:layout_gravity="center"
+        android:text="@string/part_jasa_uppercase"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"/>
+
+    <CheckBox
+        android:id="@+id/cb_kondisi_baik"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/kondisi_baik_uppercase"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="@dimen/paddingSemiLarge"
+        android:layout_marginEnd="@dimen/paddingSemiLarge"/>
+
+
     <android.support.design.widget.TextInputLayout
         android:id="@+id/tl_edit_text"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -32,7 +54,7 @@
             android:layout_gravity="top|left"
             android:textSize="14sp"
             android:maxLines="5"
-            tools:ignore="RtlHardcoded" />
+            tools:ignore="Autofill,LabelFor,RtlHardcoded,TextFields" />
 
     </android.support.design.widget.TextInputLayout>
 

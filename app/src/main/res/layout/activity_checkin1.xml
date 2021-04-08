@@ -249,26 +249,48 @@
 
             </LinearLayout>
 
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginRight="10dp"
+                android:layout_gravity="center"
+                android:gravity="center">
 
-                <com.rkrzmail.srv.NikitaAutoComplete
-                    android:id="@+id/et_km_checkin1"
-                    android:layout_width="match_parent"
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="KM"
-                    android:inputType="number"
-                    android:maxLength="10"
-                    android:singleLine="true"
-                    android:textSize="14sp"
-                    android:padding="15dp" />
+                    android:layout_weight="2"
+                    android:layout_marginEnd="10dp">
 
-            </android.support.design.widget.TextInputLayout>
+                    <com.rkrzmail.srv.NikitaAutoComplete
+                        android:id="@+id/et_km_checkin1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/km_uppercase"
+                        android:inputType="number"
+                        android:maxLength="10"
+                        android:singleLine="true"
+                        android:textSize="14sp"
+                        android:padding="15dp" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <Button
+                    android:id="@+id/btn_foto_km"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:drawableStart="@drawable/icon_camera_unfill"
+                    android:text="@string/km_uppercase"
+                    android:padding="10dp"
+                    android:textColor="@android:color/white"
+                    android:background="@drawable/btn_rounded_accent"/>
+
+            </LinearLayout>
 
             <Button
                 android:id="@+id/btn_lanjut_checkin1"

@@ -9,9 +9,9 @@ import android.view.animation.AccelerateInterpolator;
 
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.Fragment.TabSchedule_Fragment;
-import com.rkrzmail.oto.modules.Fragment.TabTambahan_Fragment;
-import com.rkrzmail.oto.modules.Fragment.TabUsaha_Fragment;
+import com.rkrzmail.oto.modules.Fragment.Schedule_Profile_Fragment;
+import com.rkrzmail.oto.modules.Fragment.Tambahan_Profile_Fragment;
+import com.rkrzmail.oto.modules.Fragment.Usaha_Profile_Fragment;
 import com.rkrzmail.oto.modules.Fragment.FragmentsAdapter;
 
 import java.util.ArrayList;
@@ -43,9 +43,9 @@ public class ProfileBengkel_Activity extends AppActivity {
         tabLayout = findViewById(R.id.tablayout);
 
         fragments = new ArrayList<>();
-        fragments.add(new TabUsaha_Fragment());
-        fragments.add(new TabTambahan_Fragment());
-        fragments.add(new TabSchedule_Fragment());
+        fragments.add(new Usaha_Profile_Fragment());
+        fragments.add(new Tambahan_Profile_Fragment());
+        fragments.add(new Schedule_Profile_Fragment());
 
         FragmentsAdapter fragmentsAdapter = new FragmentsAdapter(getSupportFragmentManager(), getActivity(), fragments);
 

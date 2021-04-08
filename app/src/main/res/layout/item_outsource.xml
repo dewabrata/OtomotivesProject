@@ -13,7 +13,7 @@
     android:layout_weight="5"
     android:padding="10dp"
     app:cardElevation="2dp"
-    app:cardCornerRadius="10dp">
+    app:cardCornerRadius="7dp">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -23,71 +23,99 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:padding="10dp"
+            android:padding="15dp"
             android:stretchColumns="*">
 
             <TableRow>
 
                 <TextView
-                    android:id="@+id/tv_nopol_outS"
+                    android:id="@+id/tv_tgl_outsource"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="No. Polisi"
-                    android:textStyle="bold" />
+                    android:text="@string/tanggal_outsource"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="start"/>
 
                 <TextView
-                    android:id="@+id/tv_tglCheckin_outS"
+                    android:id="@+id/tv_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tanggal Checkin"
-                    android:textStyle="bold" />
+                    android:text="@string/status"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="end"/>
+
 
             </TableRow>
 
             <TableRow android:layout_marginTop="@dimen/spacing_medium">
 
                 <TextView
-                    android:id="@+id/tv_tglOutS_outS"
+                    android:id="@+id/tv_nopol"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tanggal Outsource"
-                    android:textStyle="bold" />
+                    android:text="@string/no_polisi"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="start"/>
 
                 <TextView
-                    android:id="@+id/tv_tglSelesai_outS"
+                    android:id="@+id/tv_supplier"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tanggal Selesai"
-                    android:textStyle="bold" />
+                    android:text="@string/supplier"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="end"/>
 
             </TableRow>
 
             <TableRow android:layout_marginTop="@dimen/spacing_medium">
 
                 <TextView
-                    android:id="@+id/tv_supplier_outS"
+                    android:id="@+id/tv_kelompok_part"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Supplier"
-                    android:textStyle="bold" />
+                    android:text="@string/kelompok_part"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="start"/>
 
             </TableRow>
 
             <TableRow android:layout_marginTop="@dimen/spacing_medium">
 
                 <TextView
-                    android:id="@+id/tv_biaya_outS"
+                    android:id="@+id/tv_aktivitas_jasa"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Biaya"
-                    android:textStyle="bold" />
+                    android:text="@string/aktifitas"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="start"/>
+
+            </TableRow>
+
+            <TableRow android:layout_marginTop="@dimen/spacing_medium">
 
                 <TextView
-                    android:id="@+id/tv_pembayaran_outS"
+                    android:id="@+id/tv_harga_jasa_lain"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Pembayaran"
-                    android:textStyle="bold" />
+                    android:text="@string/harga_jasa"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="start"/>
+
+                <TextView
+                    android:id="@+id/tv_biaya"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/rp_total_biaya"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="end"/>
 
             </TableRow>
 

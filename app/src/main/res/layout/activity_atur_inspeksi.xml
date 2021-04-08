@@ -28,13 +28,31 @@
             android:orientation="vertical"
             android:padding="@dimen/paddingSemiLarge">
 
-            <Button
-                android:id="@+id/btn_keluhan"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/keluhan_uppercase"
-                android:background="@drawable/btn_rounded_accent"
-                android:textColor="@android:color/white"/>
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_keluhan"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/keluhan_uppercase"
+                    android:background="@drawable/btn_rounded_accent"
+                    android:textColor="@android:color/white"/>
+
+                <Button
+                    android:id="@+id/btn_rekomendasi_mekanik"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/usulan_mekanik_uppercase"
+                    android:background="@drawable/btn_rounded_accent"
+                    android:textColor="@android:color/white"/>
+
+
+            </LinearLayout>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerView"

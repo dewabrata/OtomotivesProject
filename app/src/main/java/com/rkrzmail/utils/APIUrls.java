@@ -2,6 +2,9 @@ package com.rkrzmail.utils;
 
 public class APIUrls {
 
+    public static final String WEB_LOGIN = "wloginm";
+    public static final String DISCOUNT_FREKWENSI = "aturdiskonfrekwensi";
+    public static final String ROLLBACK_TRANSACTIONS = "rollbackTransactions";
     public static final String FEE_BILLING = "billing";
     public static final String BIAYA_MEKANIK = "aturbiayamekanik";
     public static final String JURNAL = "jurnal";

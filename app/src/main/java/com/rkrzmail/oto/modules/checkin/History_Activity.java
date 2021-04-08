@@ -28,6 +28,7 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaMultipleViewAdapter;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
@@ -35,17 +36,19 @@ import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.VIEW_KELUHAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_KONTROL_LAYANAN;
+import static com.rkrzmail.utils.APIUrls.VIEW_PERINTAH_KERJA_MEKANIK;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.RP;
 
 public class History_Activity extends AppActivity {
 
-    private RecyclerView rvHistory, rvPartJasa, rvKeluhan;
+    private RecyclerView rvHistory, rvPartJasa, rvKeluhan, rvRekomendasi;
     private AlertDialog alertDialog;
-    private LinearLayout lyKeluhan, lyPartJasa;
+    private LinearLayout lyKeluhan, lyPartJasa, lyRekomendasi;
 
-    private Nson partJasaList = Nson.newArray();
-    private Nson keluhanList = Nson.newArray();
+    private final Nson partJasaList = Nson.newArray();
+    private final Nson keluhanList = Nson.newArray();
+    private final Nson rekomendasiMekanikList = Nson.newArray();
 
     private String catatanMekanik = "";
     private boolean isAll = false;
@@ -106,10 +109,12 @@ public class History_Activity extends AppActivity {
 
         lyKeluhan = dialogView.findViewById(R.id.ly_keluhan);
         lyPartJasa = dialogView.findViewById(R.id.ly_part_jasa);
+        lyRekomendasi = dialogView.findViewById(R.id.ly_rekomendasi);
 
         initToolbarDetail(dialogView);
         initRvPartJasa(dialogView);
         initRecylerviewKeluhan(dialogView);
+        initRvRekomendasi(dialogView);
         viewKeluhan(idCheckin);
     }
 
@@ -118,6 +123,7 @@ public class History_Activity extends AppActivity {
         rvPartJasa.setLayoutManager(new LinearLayoutManager(this));
         rvPartJasa.setHasFixedSize(true);
         rvPartJasa.setAdapter(new NikitaMultipleViewAdapter(partJasaList, R.layout.item_part_booking3_checkin3, R.layout.item_jasalain_booking_checkin) {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                 super.onBindViewHolder(viewHolder, position);
@@ -222,6 +228,49 @@ public class History_Activity extends AppActivity {
         rvHistory.setAdapter(nikitaRecyclerAdapter);
     }
 
+    private void initRvRekomendasi(View dialogView) {
+        rvRekomendasi = dialogView.findViewById(R.id.rv_rekomendasi);
+        rvRekomendasi.setLayoutManager(new LinearLayoutManager(this));
+        rvRekomendasi.setHasFixedSize(false);
+        rvRekomendasi.setAdapter(new NikitaMultipleViewAdapter(rekomendasiMekanikList, R.layout.item_part_booking3_checkin3, R.layout.item_jasalain_booking_checkin) {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
+                super.onBindViewHolder(viewHolder, position);
+                final int itemType = getItemViewType(position);
+                int no = position + 1;
+
+                viewHolder.find(R.id.view_mark_tambah_jasa).setVisibility(View.GONE);
+                viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.GONE);
+
+                if (itemType == ITEM_VIEW_1) {
+                    viewHolder.find(R.id.tv_namaPart_booking3_checkin3, TextView.class)
+                            .setText(rekomendasiMekanikList.get(position).get("NAMA_PART").asString());
+                    viewHolder.find(R.id.tv_noPart_booking3_checkin3, TextView.class)
+                            .setText(rekomendasiMekanikList.get(position).get("NO_PART").asString());
+                    viewHolder.find(R.id.tv_merk_booking3_checkin3, TextView.class)
+                            .setText(rekomendasiMekanikList.get(position).get("MERK").asString());
+                    viewHolder.find(R.id.tv_jasaNet_booking3_checkin3, TextView.class)
+                            .setText(rekomendasiMekanikList.get(position).get("JUMLAH").asString());
+                    viewHolder.find(R.id.tv_hargaNet_booking3_checkin3, TextView.class)
+                            .setText(RP + NumberFormatUtils.formatRp(rekomendasiMekanikList.get(position).get("HARGA_PART").asString()));
+                    viewHolder.find(R.id.tv_no, TextView.class).setVisibility(View.VISIBLE);
+                    viewHolder.find(R.id.tv_no, TextView.class).setText(no + ". ");
+                } else if (itemType == ITEM_VIEW_2) {
+                    viewHolder.find(R.id.tv_no, TextView.class).setVisibility(View.VISIBLE);
+                    viewHolder.find(R.id.tv_no, TextView.class).setText(no + ". ");
+                    viewHolder.find(R.id.tv_kelompokPart_booking3_checkin3, TextView.class)
+                            .setText(rekomendasiMekanikList.get(position).get("KELOMPOK_PART").asString());
+                    viewHolder.find(R.id.tv_aktifitas_booking3_checkin3, TextView.class)
+                            .setText(rekomendasiMekanikList.get(position).get("AKTIVITAS").asString());
+                    viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class)
+                            .setText(RP + NumberFormatUtils.formatRp(rekomendasiMekanikList.get(position).get("HARGA_JASA_LAIN").asString()));
+                }
+            }
+        });
+    }
+
+
     private void viewHistoryAll(final String nopol) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
@@ -283,7 +332,6 @@ public class History_Activity extends AppActivity {
     private void viewPartJasa(final String idCheckin) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
-
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -293,30 +341,41 @@ public class History_Activity extends AppActivity {
                 args.put("idCheckin", idCheckin);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_KONTROL_LAYANAN), args));
+                partJasaList.asArray().clear();
+                partJasaList.asArray().addAll(result.get("data").asArray());
+
+                args.remove("action");
+                args.remove("detail");
+                args.put("action", "view");
+                args.put("detail", "REKOMENDASI MEKANIK");
+                args.put("id", idCheckin);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PERINTAH_KERJA_MEKANIK), args));
+                rekomendasiMekanikList.asArray().clear();
+                rekomendasiMekanikList.asArray().addAll(result.get("data").asArray());
             }
 
             @Override
             public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    partJasaList.asArray().clear();
-                    partJasaList.asArray().addAll(result.get("data").asArray());
+                if (keluhanList.asArray().isEmpty())
+                    lyKeluhan.setVisibility(View.GONE);
 
-                    if (keluhanList.asArray().isEmpty())
-                        lyKeluhan.setVisibility(View.GONE);
+                if (partJasaList.asArray().isEmpty())
+                    lyPartJasa.setVisibility(View.GONE);
 
-                    if (partJasaList.asArray().isEmpty())
-                        lyPartJasa.setVisibility(View.GONE);
+                if(rekomendasiMekanikList.asArray().isEmpty()){
+                    lyRekomendasi.setVisibility(View.GONE);
+                }
 
-                    rvPartJasa.getAdapter().notifyDataSetChanged();
-                    rvKeluhan.getAdapter().notifyDataSetChanged();
+                rvPartJasa.getAdapter().notifyDataSetChanged();
+                rvKeluhan.getAdapter().notifyDataSetChanged();
+                rvRekomendasi.getAdapter().notifyDataSetChanged();
 
-                    if (alertDialog != null) {
-                        if (alertDialog.getWindow() != null)
-                            alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+                if (alertDialog != null) {
+                    if (alertDialog.getWindow() != null)
+                        alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
 
-                        alertDialog.show();
+                    alertDialog.show();
 
-                    }
                 }
             }
         });

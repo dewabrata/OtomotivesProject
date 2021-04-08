@@ -97,6 +97,9 @@
     <string name="foto_ktp">FOTO KTP</string>
 
     <string name="foto_stnk">FOTO STNK</string>
+    <string name="verifikasi_info">
+        Untuk Mendaftar Bengkel Pro, Kamu Harus Memverifikasi No. Ponsel yang Valid
+    </string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="mekanik">Mekanik</string>
@@ -298,7 +301,7 @@
     <string name="no_do_invoice_uppercase">NO. DO / INVOICE</string>
     <string name="keterangan">Keterangan</string>
     <string name="unit_hari_uppercase">UNIT / HARI</string>
-    <string name="penjualan_hari_uppercase">PENJUALAN / HARI</string>
+    <string name="rp_hari_uppercase">Rp. / HARI</string>
     <string name="margin_part_uppercase">MARGIN PART</string>
     <string name="hari">Hari</string>
     <string name="rp_part">Rp. Part</string>
@@ -353,6 +356,32 @@
     <string name="kirim_message_uppercase">KIRIM MESSAGE</string>
     <string name="jabatan_uppercase">JABATAN</string>
     <string name="email_uppercase">EMAIL</string>
+    <string name="estimasi_selesai_uppercase">ESTIMASI SELESAI</string>
+    <string name="biaya_oursource_uppercase">BIAYA OURSOURCE</string>
+    <string name="estimasi_selesai">Estimasi Selesai</string>
+    <string name="tanggal_outsource">Tanggal Outsource</string>
+    <string name="supplier">Supplier</string>
+    <string name="di_tinggal_uppercase">DI TINGGAL</string>
+    <string name="rp_checkin_rata_rata">Rp. / CHECKIN</string>
+    <string name="rp_jual_part_rata_rata">Rp. / JUAL PART</string>
+    <string name="kelompok_part">Kelompok Part</string>
+    <string name="pendapatan">Pendapatan</string>
+    <string name="harga_jasa">Harga Jasa</string>
+    <string name="checkin_uppercase">CHECKIN</string>
+    <string name="bulan_uppercase">BULAN</string>
+    <string name="frekwensi">Frekwensi</string>
+    <string name="frekwensi_uppercase">FREKWENSI</string>
+    <string name="all_uppercase">ALL</string>
+    <string name="nama_layanan_uppercase">NAMA LAYANAN</string>
+    <string name="km_uppercase">KM</string>
+    <string name="kondisi_baik_uppercase">KONDISI BAIK</string>
+    <string name="kondisi_part_uppercase">KONDISI PART</string>
+    <string name="rekomendasi_mekanik_uppercase">REKOMENDASI MEKANIK</string>
+    <string name="usulan_mekanik_uppercase">USULAN MEKANIK</string>
+    <string name="data_pelanggan">Pelanggan</string>
+    <string name="kendaraan">Kendaraan</string>
+    <string name="verifikasi_uppercase">VERIFIKASI</string>
+    <string name="refresh_otp_uppercase">REFRESH OTP</string>
     <string-array name="pola_harga_jual">
         <item>FLEXIBLE</item>
         <item>BELI + MARGIN</item>

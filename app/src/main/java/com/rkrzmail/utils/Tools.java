@@ -421,16 +421,17 @@ public class Tools {
 
     @SuppressLint("SimpleDateFormat")
     public static String formatDate(String value, String pattern){
-        if(value.isEmpty()) return "";
+        if(value.isEmpty()) return value;
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        Date tgl = new Date();
+        Date tgl;
         try {
             tgl = sdf.parse(value);
         } catch (ParseException e) {
-            e.printStackTrace();
+            return value;
         }
-        //yyyy-MM-dd HH:mm:ss
+
         sdf = new SimpleDateFormat(pattern);
+        assert tgl != null;
         return sdf.format(tgl);
     }
 

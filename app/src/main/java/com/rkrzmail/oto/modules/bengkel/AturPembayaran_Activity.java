@@ -163,7 +163,8 @@ public class AturPembayaran_Activity extends AppActivity {
             find(R.id.et_ppn, EditText.class).setText(RP + formatRp(String.valueOf(totalPpn)));
         }
 
-        find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(grandTotal == 0 ? grandTotal : totalBiaya)));
+        boolean isZero = nson.get("IS_ZERO").asBoolean();
+        find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(grandTotal == 0 && !isZero ? grandTotal : totalBiaya)));
     }
 
 
@@ -528,6 +529,7 @@ public class AturPembayaran_Activity extends AppActivity {
                 args.put("nopol", formatNopol(data.get("NOPOL").asString()));
                 args.put("partIdList", partIdList == null ? "" : partIdList.toJson());
                 args.put("partsList", getIntentStringExtra("PART_LIST"));
+                args.put("googleReview", find(R.id.cb_google_review, CheckBox.class).isChecked() ? "Y" : "N");
 
                 args.put("idJualPart", String.valueOf(idJualPart));
                 args.put("idCheckin", String.valueOf(idCheckin));

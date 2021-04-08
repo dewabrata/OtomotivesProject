@@ -4,6 +4,6 @@
     <item
         android:drawable="@drawable/ic_camera_unfill"
         android:width="25dp"
-        android:height="25dp" />
+        android:height="20dp" />
 
 </layer-list>

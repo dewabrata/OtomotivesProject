@@ -72,7 +72,6 @@ public class Status_PartKosong_Activity extends AppActivity {
     private void initComponent(){
         spStatus = findViewById(R.id.sp_status);
         spTipeSupplier = findViewById(R.id.sp_tipe_supplier);
-        viewStatusPartKosong();
         setSpinnerOffline(Arrays.asList(getResources().getStringArray(R.array.status_part_kosong)), spStatus, "");
         setSpinnerOffline(Arrays.asList(getResources().getStringArray(R.array.tipe_supplier_2)), spTipeSupplier, "");
         initListener();
@@ -91,28 +90,6 @@ public class Status_PartKosong_Activity extends AppActivity {
         partId = nson.get("LAYANAN").asString();
         idPartKosong = nson.get("PART_KOSONG_ID").asString();
         jumlahRequest = nson.get("JUMLAH_PART_KOSONG").asString();
-    }
-
-    private void viewStatusPartKosong(){
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
-
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "delete");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_TUGAS_PART), args));
-            }
-
-            @Override
-            public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-
-                } else {
-                    showError(result.get("message").asString());
-                }
-            }
-        });
     }
 
     private void initListener(){
@@ -196,21 +173,17 @@ public class Status_PartKosong_Activity extends AppActivity {
             @Override
             public void onClick(View v) {
                 if(spStatus.getSelectedItem().toString().equals("--PILIH--")){
-                    spStatus.requestFocus();
-                    spStatus.performClick();
-                    showWarning("Status Belum di Pilih");
+                    setErrorSpinner(spStatus, "STATUS HARUS DI PILIH");
                 }else if(isOrder && spTipeSupplier.getSelectedItem().toString().equals("--PILIH--")){
-                    spTipeSupplier.requestFocus();
-                    spTipeSupplier.performClick();
-                    showWarning("Tipe Supplier Belum di Pilih");
+                    setErrorSpinner(spTipeSupplier, "Tipe Supplier Belum di Pilih");
                 }else if(isOrder && spTipeSupplier.getSelectedItem().toString().equals("ECOMMERCE") &&  find(R.id.et_nama_ecommerce, EditText.class).getText().toString().isEmpty()){
-                    find(R.id.et_nama_ecommerce, EditText.class).setError("Nama Ecommerce Harus Di Pilih");
+                    find(R.id.et_nama_ecommerce, EditText.class).setError("NAMA ECOMMERCE HARUS DI PILIH");
+                    viewFocus(find(R.id.et_nama_ecommerce, EditText.class));
                 }else if(isOrder && find(R.id.tv_estimasi, TextView.class).getText().toString().isEmpty()){
-                    showWarning("Tanggal Belum Di Masukkan");
-                    find(R.id.tv_estimasi, TextView.class).performClick();
+                    find(R.id.tv_estimasi, TextView.class).setError("TANGGAL ESTIMASI HARUS DI PILIH");
+                    viewFocus(find(R.id.tv_estimasi, TextView.class));
                 }else{
                     updatePartKosong();
-
                 }
             }
         });

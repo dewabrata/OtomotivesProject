@@ -4,17 +4,14 @@ import android.annotation.SuppressLint;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.Fragment.Absen_Absensi_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Dashboard_Angka_Fragment;
-import com.rkrzmail.oto.modules.Fragment.Dashboard_Keuangan_Fragment;
+import com.rkrzmail.oto.modules.Fragment.Dashboard_Statistik_Fragment;
 import com.rkrzmail.oto.modules.Fragment.FragmentsAdapter;
-import com.rkrzmail.oto.modules.Fragment.Schedule_Absensi_Fragment;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -47,7 +44,7 @@ public class Dashboard_MainTab_Activity extends AppActivity {
 
         final ArrayList<Fragment> fragments = new ArrayList<>();
         fragments.add(new Dashboard_Angka_Fragment());
-        fragments.add(new Dashboard_Keuangan_Fragment());
+        fragments.add(new Dashboard_Statistik_Fragment());
 
         pagerAdapter = new FragmentsAdapter(getSupportFragmentManager(), this, fragments);
         vpDashboard.setAdapter(pagerAdapter);

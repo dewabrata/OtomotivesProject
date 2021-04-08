@@ -400,17 +400,6 @@ public class LkkClaimMekanik_Activity extends AppActivity {
         alertDialog.show();
     }
 
-    public static String bitmapToBase64(Bitmap bitmap) {
-        if (bitmap == null) return "";
-        try {
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-            return Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT);
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
     private void SimpanData() {
         final String nik = et_nikpemilik.getText().toString().toUpperCase();
         final String descKerusakan = et_desc.getText().toString().toUpperCase();

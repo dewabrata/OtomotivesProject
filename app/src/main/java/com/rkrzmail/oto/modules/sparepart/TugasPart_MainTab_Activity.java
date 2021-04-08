@@ -17,7 +17,7 @@ import android.view.MenuItem;
 import com.naa.data.Nson;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.Fragment.BatalPart_TugasPart_Fragment;
+import com.rkrzmail.oto.modules.Fragment.OutSource_TugasPart_Fragment;
 import com.rkrzmail.oto.modules.Fragment.PartKosong_TugasPart_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Permintaan_TugasPart_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Tersedia_TugasPart_Fragment;
@@ -51,14 +51,13 @@ public class TugasPart_MainTab_Activity extends AppActivity {
         initToolbar();
         ViewPager vpTugasParts = findViewById(R.id.vp);
         TabLayout tabLayoutTugasParts = findViewById(R.id.tablayout);
-        tabLayoutTugasParts.setTabMode(TabLayout.MODE_SCROLLABLE);
 
         final ArrayList<Fragment> fragments = new ArrayList<>();
         fragments.add(new Permintaan_TugasPart_Fragment());
         fragments.add(new Tersedia_TugasPart_Fragment());
         //fragments.add(new BatalPart_TugasPart_Fragment());
         fragments.add(new PartKosong_TugasPart_Fragment());
-        fragments.add(new OutSource_Activity());
+        fragments.add(new OutSource_TugasPart_Fragment());
 
         FragmentsAdapter pagerAdapter = new FragmentsAdapter(getSupportFragmentManager(), this, fragments);
         vpTugasParts.setAdapter(pagerAdapter);

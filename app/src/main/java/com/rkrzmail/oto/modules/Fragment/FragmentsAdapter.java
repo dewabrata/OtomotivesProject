@@ -20,7 +20,6 @@ import com.rkrzmail.oto.modules.bengkel.AturUser_MainTab_Activity;
 import com.rkrzmail.oto.modules.hutang.Hutang_MainTab_Activity;
 import com.rkrzmail.oto.modules.hutang.Piutang_MainTab_Activity;
 import com.rkrzmail.oto.modules.sparepart.LokasiPart_MainTab_Activity;
-import com.rkrzmail.oto.modules.sparepart.OutSource_Activity;
 import com.rkrzmail.oto.modules.sparepart.PartHome_MainTab_Activity;
 import com.rkrzmail.oto.modules.sparepart.TugasPart_MainTab_Activity;
 
@@ -80,13 +79,13 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
         if (context instanceof ProfileBengkel_Activity) {
             switch (i) {
                 case 0:
-                    fragment = Fragment.instantiate(context, TabUsaha_Fragment.class.getName());
+                    fragment = Fragment.instantiate(context, Usaha_Profile_Fragment.class.getName());
                     break;
                 case 1:
-                    fragment = Fragment.instantiate(context, TabTambahan_Fragment.class.getName());
+                    fragment = Fragment.instantiate(context, Tambahan_Profile_Fragment.class.getName());
                     break;
                 case 2:
-                    fragment = Fragment.instantiate(context, TabSchedule_Fragment.class.getName());
+                    fragment = Fragment.instantiate(context, Schedule_Profile_Fragment.class.getName());
                     break;
 
             }
@@ -123,7 +122,7 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
                     fragment = Fragment.instantiate(context, PartKosong_TugasPart_Fragment.class.getName());
                     break;
                 case 3:
-                    fragment = Fragment.instantiate(context, OutSource_Activity.class.getName());
+                    fragment = Fragment.instantiate(context, OutSource_TugasPart_Fragment.class.getName());
                     break;
             }
         }
@@ -167,7 +166,7 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
                     fragment = Fragment.instantiate(context, Dashboard_Angka_Fragment.class.getName());
                     break;
                 case 1:
-                    fragment = Fragment.instantiate(context, Dashboard_Keuangan_Fragment.class.getName());
+                    fragment = Fragment.instantiate(context, Dashboard_Statistik_Fragment.class.getName());
                     break;
             }
             return fragment;
@@ -283,15 +282,13 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
         if(context instanceof  TugasPart_MainTab_Activity){
             switch (position){
                 case 0:
-                    return "Permintaan Part";
+                    return "Permintaan";
                 case 1:
-                    return "Part Tersedia";
-//                case 2:
-//                    return "Part Batal";
+                    return "Tersedia";
                 case 2:
-                    return "Part Kosong";
+                    return "Kosong";
                 case 3:
-                    return "OutSource";
+                    return "Out";
             }
         }
         if (context instanceof Pembayaran_MainTab_Activity) {
@@ -321,7 +318,7 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
                 case 0:
                     return "Angka";
                 case 1:
-                    return "Keuangan";
+                    return "Statistik";
             }
         }
 

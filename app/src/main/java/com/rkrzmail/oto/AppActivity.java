@@ -39,6 +39,7 @@ import android.text.Editable;
 import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.style.UnderlineSpan;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -75,6 +76,7 @@ import com.rkrzmail.utils.Tools;
 import com.valdesekamdem.library.mdtoast.MDToast;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -230,7 +232,11 @@ public class AppActivity extends AppCompatActivity {
 
     public int getIntentIntExtra(Intent intent, String key) {
         if (intent != null) {
-            return intent.getIntExtra(key, 0);
+            try{
+                return intent.getIntExtra(key, 0);
+            }catch (Exception e){
+                return 0;
+            }
         } else {
             return 0;
         }
@@ -821,6 +827,18 @@ public class AppActivity extends AppCompatActivity {
         });
     }
 
+    public void setSelectionSpinner(String selection, Spinner spinner){
+        if (!selection.isEmpty()) {
+            for (int in = 0; in < spinner.getCount(); in++) {
+                if (spinner.getItemAtPosition(in).toString().contains(selection)) {
+                    spinner.setSelection(in);
+                    break;
+                }
+            }
+        }
+    }
+
+
     public void setSpinnerOffline(List listItem, Spinner spinner, String selection) {
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, listItem);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -1200,6 +1218,17 @@ public class AppActivity extends AppCompatActivity {
         TextView tvError = (TextView) errorSpinner.getSelectedView();
         tvError.setError(errorMessage);
         viewFocus(tvError);
+    }
+
+    public String bitmapToBase64(Bitmap bitmap) {
+        if (bitmap == null) return "";
+        try {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            return Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT);
+        } catch (Exception e) {
+            return "";
+        }
     }
 
 

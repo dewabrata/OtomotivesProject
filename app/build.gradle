@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 30
     defaultConfig {
-        applicationId "com.rkrzmail.oto"
+        applicationId "com.otomotives.bengkelpro"
         minSdkVersion 23
-        targetSdkVersion 28
-        versionCode 1
+        targetSdkVersion 30
+        versionCode 3
         versionName "1.0"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -82,6 +82,8 @@ dependencies {
     implementation 'com.squareup.okhttp:okhttp:2.6.0'
     //searchable spinner
     implementation 'com.github.MdFarhanRaja:SearchableSpinner:2.0'
+    //expandable layout
+    implementation 'com.github.cachapa:ExpandableLayout:2.9.2'
 
 }
 

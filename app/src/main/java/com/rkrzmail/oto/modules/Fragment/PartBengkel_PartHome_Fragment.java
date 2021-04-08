@@ -192,13 +192,14 @@ public class PartBengkel_PartHome_Fragment extends Fragment implements SearchLis
                 viewHolder.find(R.id.tv_cari_namaPart, TextView.class).setText(partList.get(position).get("NAMA_PART").asString());
                 viewHolder.find(R.id.tv_cari_noPart, TextView.class).setText(partList.get(position).get("NO_PART").asString());
                 viewHolder.find(R.id.tv_cari_stockPart, TextView.class).setText(partList.get(position).get("STOCK_RUANG_PART").asString());
+                //pola harga jual
+                viewHolder.find(R.id.tv_cari_hpp, TextView.class).setText((partList.get(position).get("POLA_HARGA_JUAL").asString()));
+                viewHolder.find(R.id.img_check).setVisibility(View.GONE);
 
                 if (partList.get(position).get("HARGA_JUAL").asString().equals("FLEXIBLE")) {
                     viewHolder.find(R.id.tv_cari_harga_part, TextView.class).setText("");
-                    viewHolder.find(R.id.tv_cari_hpp, TextView.class).setText(RP + NumberFormatUtils.formatRp(partList.get(position).get("HPP").asString()));
                 } else {
                     viewHolder.find(R.id.tv_cari_harga_part, TextView.class).setText(RP + NumberFormatUtils.formatRp(partList.get(position).get("HARGA_JUAL").asString()));
-                    viewHolder.find(R.id.tv_cari_hpp, TextView.class).setText("");
                 }
                 if (!partList.get(position).get("LOKASI").asString().equals("*")) {
                     viewHolder.find(R.id.tv_cari_pending, TextView.class).setText(partList.get(position).get("LOKASI").asString());

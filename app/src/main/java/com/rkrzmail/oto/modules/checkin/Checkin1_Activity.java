@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
@@ -45,7 +47,7 @@ import static com.rkrzmail.utils.APIUrls.VIEW_PELANGGAN;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CHECKIN;
-import static com.rkrzmail.utils.ConstUtils.REQUEST_HISTORY;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_KONFIRMASI;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_NEW_CS;
 
 public class Checkin1_Activity extends AppActivity implements View.OnClickListener {
@@ -78,6 +80,8 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
     private boolean keyDel = false, isNoHp = false, isNamaValid = false;
     private boolean availHistory = false;
     private String tanggalBeliKendaraan = "";
+    private final String[] base64fotoKM = {""};
+    private Bitmap kmBitmap = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +116,12 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             }
         });
 
+        find(R.id.btn_foto_km).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveToCamera();
+            }
+        });
 
         setSpinnerFromApi(spPekerjaan, "nama", "PEKERJAAN", "viewmst", "PEKERJAAN");
         initAutoCompleteNopol();
@@ -128,6 +138,20 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 etNoPonsel.setText("");
             }
         });
+    }
+
+    private void moveToCamera() {
+        if (!checkPermission()) {
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(intent, REQUEST_KONFIRMASI);
+        } else {
+            if (checkPermission()) {
+                requestPermissionAndContinue();
+            } else {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(intent, REQUEST_KONFIRMASI);
+            }
+        }
     }
 
     private void initLokasiPenugasan() {
@@ -557,6 +581,10 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 args.put("asalData", "");//dateKendaraan
                 args.put("type", kendaraan);//dateKendaraan
                 args.put("kodeTipe", kodeTipe);
+                args.put("tanggalbeli", tanggalBeliKendaraan);
+                if(!km.isEmpty()){
+                    args.put("fotoKm", base64fotoKM[0]);
+                }
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
             }
@@ -567,15 +595,16 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     Nson nson = Nson.newObject();
 
                     nson.set("CHECKIN_ID", result.get("data").get("CHECKIN_ID").asString());
-                    int idKendaraan;
+                    int idDataKendaraan;
                     if (result.get("data").containsKey("DATA_KENDARAAN_ID")) {
-                        idKendaraan = result.get("data").get("DATA_KENDARAAN_ID").asInteger();
+                        idDataKendaraan = result.get("data").get("DATA_KENDARAAN_ID").asInteger();
                     } else {
-                        idKendaraan = result.get("data").get("DATA_KENDARAAN_ID_UPDATE").asInteger();
+                        idDataKendaraan = result.get("data").get("DATA_KENDARAAN_ID_UPDATE").asInteger();
                     }
 
+                    nson.set("KENDARAAN_ID", kendaraanId);
                     nson.set("KODE_TIPE", kodeTipe);
-                    nson.set("DATA_KENDARAAN_ID", idKendaraan);
+                    nson.set("DATA_KENDARAAN_ID", idDataKendaraan);
                     nson.set("kendaraan", kendaraan);
                     nson.set("model", modelKendaraan);
                     nson.set("merk", merkKendaraan);
@@ -678,7 +707,15 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             Intent i = new Intent(getActivity(), Checkin3_Activity.class);
             i.putExtra(DATA, Nson.readJson(getIntentStringExtra(data, DATA)).toJson());
             startActivityForResult(i, REQUEST_CHECKIN);
-        } else {
+        } else if (resultCode == RESULT_OK && requestCode == REQUEST_KONFIRMASI) {
+            Bundle extras = null;
+            if (data != null) {
+                extras = data.getExtras();
+            }
+            kmBitmap = (Bitmap) (extras != null ? extras.get("data") : null);
+            base64fotoKM[0] = bitmapToBase64(kmBitmap);
+        }
+        else {
             finish();
         }
     }
@@ -710,7 +747,11 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     spPekerjaan.performClick();
                     showWarning("Pekerjaan Harus Di Pilih");
                 } else {
-                    setSelanjutnya();
+                    if(!etKm.getText().toString().isEmpty() && kmBitmap == null){
+                        showWarning("PENGISIAN KM HARUS MENYERTAKAN FOTO", Toast.LENGTH_LONG);
+                    }else{
+                        setSelanjutnya();
+                    }
                 }
                 break;
             case R.id.btn_history_checkin1:

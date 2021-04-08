@@ -70,7 +70,6 @@ public class AturParts_Activity extends AppActivity {
         final Nson aturParts = Nson.readJson(getIntentStringExtra("atur_part")); //EDIT PART
         final Nson addParts = Nson.readJson(getIntentStringExtra("data")); //ADD PART
 
-        find(R.id.tl_waktuGanti_part).setVisibility(View.VISIBLE);
         find(R.id.sp_lokasiPart, Spinner.class).setEnabled(false);
         //isParts = true for aturParts, isParts = false for addParts
         if (getIntent().hasExtra("atur_part")) {

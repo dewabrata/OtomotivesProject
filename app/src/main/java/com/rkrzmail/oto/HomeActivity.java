@@ -117,8 +117,7 @@ public class HomeActivity extends MenuActivity{
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (nPopulate.get(position).get("id").asInteger() == MN_CHECKIN){
-                    Intent intent =  new Intent(HomeActivity.this, LayananActivity.class);
-                    startActivity(intent);
+
                 }else if (nPopulate.get(position).get("id").asInteger() == MN_PART){
                     Intent intent =  new Intent(HomeActivity.this, PartActivity.class);
                     startActivity(intent);
@@ -133,25 +132,13 @@ public class HomeActivity extends MenuActivity{
 //                    Intent intent = new Intent(HomeActivity.this, BiayaMekanikActivity.class);
 //                    startActivity(intent);
 //                }
-                else if (nPopulate.get(position).get("id").asInteger() == MN_JUAL_PART) {
-                    Intent intent = new Intent(HomeActivity.this, DaftarPenjualanPartActivity.class);
-                    startActivity(intent);
 
-                } else if (nPopulate.get(position).get("id").asInteger() == MN_MESSAGE_PenerimaanPart) {
-                    Intent intent = new Intent(HomeActivity.this, Penerimaan_PartAcitivity.class);
-                    startActivity(intent);
-
-                }
 //                else if (nPopulate.get(position).get("id").asInteger() == MN_STOCK_OPNAME) {
 //                    Intent intent = new Intent(HomeActivity.this, Stock_OpnameActivity.class);
 //                    startActivity(intent);
 //
 //                }
-                else if (nPopulate.get(position).get("id").asInteger() == MN_TUGAS_PART) {
-                    Intent intent = new Intent(HomeActivity.this, DaftarTugasPartActivity.class);
-                    startActivity(intent);
 
-                }
 //                else if (nPopulate.get(position).get("id").asInteger() == MN_KOMISI_KARYAWAN) {
 //                    Intent intent = new Intent(HomeActivity.this, Komisi_Karyawan_Activity.class);
 //                    startActivity(intent);

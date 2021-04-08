@@ -11,7 +11,7 @@
     android:layout_marginRight="7dp"
     android:layout_marginBottom="4dp"
     android:padding="10dp"
-    app:cardCornerRadius="10dp"
+    app:cardCornerRadius="7dp"
     app:cardElevation="2dp">
 
     <LinearLayout
@@ -26,7 +26,9 @@
             android:layout_gravity="center"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
-            android:checked="false"/>
+            android:backgroundTintMode="multiply"
+            android:buttonTint="@color/grey_600"
+            android:enabled="false"/>
 
         <TableLayout
             android:layout_width="match_parent"
@@ -68,7 +70,9 @@
 
             </TableRow>
 
-            <TableRow android:layout_marginTop="5dp">
+            <TableRow
+                android:id="@+id/row_jenis_kendaraan"
+                android:layout_marginTop="5dp">
 
                 <TextView
                     android:id="@+id/tv_jenis_kendaraan"

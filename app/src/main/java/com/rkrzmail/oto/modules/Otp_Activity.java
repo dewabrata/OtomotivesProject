@@ -21,6 +21,8 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.MenuActivity;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.bengkel.RegistrasiBengkel_Activity;
+import com.rkrzmail.utils.APIUrls;
 
 import java.util.Map;
 
@@ -31,6 +33,7 @@ public class Otp_Activity extends AppActivity {
 
     private char[] otp;
     private String one, two, three, four, five, six;
+    private boolean isRegist = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +41,9 @@ public class Otp_Activity extends AppActivity {
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         setContentView(R.layout.activity_otp);
+
+        isRegist = getIntent().hasExtra("REGISTRASI");
+
         find(R.id.et1, EditText.class).addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -174,8 +180,13 @@ public class Otp_Activity extends AppActivity {
                 stringBuilder.append(((EditText)findViewById(R.id.et5)).getText().toString());
                 stringBuilder.append(((EditText)findViewById(R.id.et6)).getText().toString());
                 String dummy = stringBuilder.toString();
+
                 if (dummy.length()==6){
-                    login(dummy);
+                    if(isRegist){
+                        checkOtpRegistasi(dummy);
+                    }else{
+                        login(dummy);
+                    }
                 }else{
                     showError("Lengkapi Request OTP");
                 }
@@ -218,15 +229,6 @@ public class Otp_Activity extends AppActivity {
         });
     }
 
-    private String formatPhone(String phone) {
-        if (phone.startsWith("+62")) {
-            phone = phone.substring(1);
-        } else if (phone.startsWith("0")) {
-            phone = "62" + phone.substring(1);
-        }
-        phone = Utility.replace(phone," ","");
-        return phone.trim();
-    }
     private void login(final String otp) {
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             String sResult;
@@ -256,6 +258,7 @@ public class Otp_Activity extends AppActivity {
                         setSetting("MEKANIK", "FALSE");
                     }
                     setSetting("L", "L");
+                    setSetting("PEMBAYARAN_ACTIVE", nson.get("PEMBAYARAN_ACTIVE").asString());
                     setSetting("NAMA_BENGKEL", nson.get("NAMA_BENGKEL").asString());
                     setSetting("JENIS_KENDARAAN", nson.get("JENIS_KENDARAAN").asString().trim());
                     setSetting("result", nson.toJson());
@@ -264,7 +267,6 @@ public class Otp_Activity extends AppActivity {
                     setSetting("NAMA_USER", nson.get("NAMA_USER").asString());
                     setSetting("TIPE_USER", nson.get("TIPE_USER").asString());
                     setSetting("ACCESS_MENU", nson.get("AKSES_APP").asString());
-                    setSetting("JENIS_KENDARAAN_BENGKEL", nson.get("JENIS_KENDARAAN_BENGKEL").asString());
                     setSetting("MERK_KENDARAAN_BENGKEL", nson.get("MERK_KENDARAAN").asString());
                     setSetting("KATEGORI_BENGKEL", nson.get("KATEGORI_BENGKEL").asString());
                     setSetting("USER_ID", nson.get("USER_ID").asString());
@@ -277,6 +279,34 @@ public class Otp_Activity extends AppActivity {
                     finish();
                 } else {
                     showError(nson.get("error").asString());
+                }
+            }
+        });
+    }
+
+    private void checkOtpRegistasi(final String kodeOtp){
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "checkOtp");
+                args.put("nohp",   getIntentStringExtra("NO_PONSEL"));
+                args.put("otp", kodeOtp);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(APIUrls.SET_REGISTRASI), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    showSuccess("Silahkan Lanjutkan Pendaftaran!");
+                    Intent intent = new Intent(getActivity(), RegistrasiBengkel_Activity.class);
+                    intent.putExtra("NO_PONSEL", getIntentStringExtra("NO_PONSEL"));
+                    startActivity(intent);
+                    finish();
+                } else {
+                    showError("Gagal Request OTP");
                 }
             }
         });

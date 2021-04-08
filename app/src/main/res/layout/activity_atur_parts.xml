@@ -145,6 +145,7 @@
                     android:layout_marginRight="10dp"
                     app:helperText="Disable"
                     app:helperTextEnabled="true"
+                    android:visibility="gone"
                     app:helperTextTextAppearance="@style/TextAppearance.Design.HelperText.">
 
 

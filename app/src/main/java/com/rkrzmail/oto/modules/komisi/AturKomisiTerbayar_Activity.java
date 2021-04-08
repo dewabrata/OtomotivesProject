@@ -64,7 +64,7 @@ public class AturKomisiTerbayar_Activity extends AppActivity {
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Komisi Terbayar");
+        getSupportActionBar().setTitle("Pembayaran Komisi");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -167,8 +167,8 @@ public class AturKomisiTerbayar_Activity extends AppActivity {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("nama", "USER");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MASTER), args));
+                args.put("action", "USER KOMISI");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(PEMBAYARAN_KOMISI), args));
             }
 
             @Override

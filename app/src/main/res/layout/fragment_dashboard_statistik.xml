@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_weight="4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:text="@string/bulan_uppercase"
+                android:textColor="@color/grey_900"
+                android:textStyle="bold"
+                android:layout_gravity="center" />
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="38dp"
+                android:layout_weight="6"
+                android:background="@drawable/state_textview_clickable_border"
+                android:padding="@dimen/spacing_medium">
+
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/paddingLarge">
+
+            <TextView
+                android:layout_weight="4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:text="@string/periode_uppercase"
+                android:textColor="@color/grey_900"
+                android:textStyle="bold"
+                android:layout_gravity="center" />
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="38dp"
+                android:layout_weight="6"
+                android:background="@drawable/state_textview_clickable_border"
+                android:padding="@dimen/spacing_medium">
+
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_tampilkan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/tampilkan_uppercase"
+            android:layout_gravity="end"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/btn_rounded_accent"
+            android:textColor="@android:color/white" />
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <GridView
+                    android:id="@+id/gridView"
+                    android:layout_width="match_parent"
+                    android:layout_height="500dp"
+                    android:gravity="center"
+                    android:horizontalSpacing="3dp"
+                    android:numColumns="2"
+                    android:stretchMode="columnWidth"
+                    android:verticalSpacing="3dp"
+                    android:isScrollContainer="false"
+                    android:scrollbars="vertical"
+                    android:scrollingCache="true"
+                    android:scrollIndicators="start"
+                    android:smoothScrollbar="true"
+                    android:fastScrollEnabled="true"
+                    tools:listitem="@layout/item_dashboard_statistik"
+                    android:nestedScrollingEnabled="true"
+                    tools:ignore="NestedScrolling" />
+
+
+            </LinearLayout>
+
+        </android.support.v4.widget.NestedScrollView>
+
+    </LinearLayout>
+
+
+</LinearLayout>

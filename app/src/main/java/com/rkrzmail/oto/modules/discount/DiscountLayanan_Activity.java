@@ -83,10 +83,11 @@ public class DiscountLayanan_Activity extends AppActivity {
                     public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, int position) {
                         super.onBindViewHolder(viewHolder, position);
                         String pekerjaan = nListArray.get(position).get("PEKERJAAN").asString();
-                        viewHolder.find(R.id.tv_pekerjaan_discLayanan, TextView.class).setText(pekerjaan);
-                        if (pekerjaan.length() > 20) {
+                        String[] pekerjaanSplit = pekerjaan.split(",");
+                        if(pekerjaanSplit.length == 1){
+                            pekerjaan = pekerjaan.replace(",", "");
                         }
-
+                        viewHolder.find(R.id.tv_pekerjaan_discLayanan, TextView.class).setText(pekerjaan);
                         viewHolder.find(R.id.tv_paketLayanan_discLayanan, TextView.class).setText(nListArray.get(position).get("NAMA_LAYANAN").asString());
                         viewHolder.find(R.id.tv_status, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
                         viewHolder.find(R.id.tv_disc_discLayanan, TextView.class).setText(nListArray.get(position).get("DISCOUNT_LAYANAN").asString() + " %");

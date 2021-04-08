@@ -1,34 +1,63 @@
 {
   "project_info": {
-    "project_number": "547026467553",
-    "firebase_url": "https://otomotives-3e56e-default-rtdb.firebaseio.com",
-    "project_id": "otomotives-3e56e",
-    "storage_bucket": "otomotives-3e56e.appspot.com"
+    "project_number": "529965357148",
+    "firebase_url": "https://otomotives-15d6e.firebaseio.com",
+    "project_id": "otomotives-15d6e",
+    "storage_bucket": "otomotives-15d6e.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:547026467553:android:33f92f944abc994b4015a0",
+        "mobilesdk_app_id": "1:529965357148:android:9c2f93978d5bd6acce6e99",
         "android_client_info": {
-          "package_name": "com.rkrzmail.oto"
+          "package_name": "com.otomotives.bengkelpro"
         }
       },
       "oauth_client": [
         {
-          "client_id": "547026467553-b3bna5j11of02fdt5g6u51iqlsmlknns.apps.googleusercontent.com",
+          "client_id": "529965357148-n4ea5phvoqk471h4f1ljs890fnkl3aku.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAA-CxZM4Hj7IAMjxtfI8Fx1LreG30lhEI"
+          "current_key": "AIzaSyBWf6nYb0iCRy8qqyp4bRnVUXsP418oPLE"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "547026467553-b3bna5j11of02fdt5g6u51iqlsmlknns.apps.googleusercontent.com",
+              "client_id": "529965357148-n4ea5phvoqk471h4f1ljs890fnkl3aku.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:529965357148:android:d75baed695a85cdc",
+        "android_client_info": {
+          "package_name": "com.rkrzmail.oto"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "529965357148-n4ea5phvoqk471h4f1ljs890fnkl3aku.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWf6nYb0iCRy8qqyp4bRnVUXsP418oPLE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "529965357148-n4ea5phvoqk471h4f1ljs890fnkl3aku.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

@@ -27,10 +27,10 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.LoginActivity;
 import com.rkrzmail.oto.modules.MapPicker_Dialog;
 import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.srv.NikitaAutoComplete;
-import com.rkrzmail.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +70,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_registrasi_bengkel_);
+        setContentView(R.layout.activity_registrasi_bengkel);
         initToolbar();
         initComponent();
     }
@@ -82,6 +82,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    @SuppressLint("SetTextI18n")
     private void initComponent() {
         etKodeRef = findViewById(R.id.et_kodeRef_regist);
         etAlamat = findViewById(R.id.et_alamat_regist);
@@ -100,6 +101,11 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
         minEntryEditText(etAlamat, 20, find(R.id.tl_alamat_regist, TextInputLayout.class), "Entry Alamat Min. 20 Karakter");
         getNoPonsel();
         setSpKendaraan();
+
+        if (getIntent().hasExtra("NO_PONSEL")) {
+            etNoPonsel.setEnabled(false);
+            etNoPonsel.setText("+" + getIntentStringExtra("NO_PONSEL"));
+        }
 
         etNoPonsel.addTextChangedListener(new TextWatcher() {
             @Override
@@ -190,7 +196,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
         find(R.id.btn_check_regist, Button.class).setOnClickListener(this);
     }
 
-    private void setSpKendaraan(){
+    private void setSpKendaraan() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -208,7 +214,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                     List<String> kendaraanList = new ArrayList<>();
                     kendaraanList.add("--PILIH--");
                     for (int i = 0; i < result.size(); i++) {
-                        if(!kendaraanList.contains(result.get(i).get("TYPE").asString())){
+                        if (!kendaraanList.contains(result.get(i).get("TYPE").asString())) {
                             kendaraanList.add(result.get(i).get("TYPE").asString());
                         }
                     }
@@ -231,7 +237,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                             } else {
                                 count++;
                             }
-                            if(i != 0){
+                            if (i != 0) {
                                 setSpBidangUsaha();
                                 setSpMerkKendaraan(spKendaraan.getItemAtPosition(i).toString());
                             }
@@ -242,7 +248,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
 
                         }
                     });
-                }else{
+                } else {
                     setSpKendaraan();
                 }
             }
@@ -279,12 +285,12 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     showSuccess("Registrasi Berhasil");
-                    Intent i = new Intent();
+                    Intent i = new Intent(getActivity(), LoginActivity.class);
                     i.putExtra("NO_PONSEL", etNoPonsel.getText().toString().replaceAll("[^0-9]+", ""));
-                    setResult(RESULT_OK, i);
+                    startActivity(i);
                     finish();
                 } else {
-                    if (result.get("message").asString().contains("Duplicate entry")) {
+                    if (result.get("message").asString().toLowerCase().contains("duplicate")) {
                         showError("No Ponsel Sudah Terdaftar");
                         etNoPonsel.setText("");
                         etNoPonsel.requestFocus();
@@ -380,9 +386,10 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
         }
     }
 
-    private void setSpMerkKendaraan(final String jenisKendaraan){
+    private void setSpMerkKendaraan(final String jenisKendaraan) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ly_rincian_layanan"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:id="@+id/ly_rincian_layanan">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,9 +16,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
+            android:layout_weight="1"
             android:background="@drawable/btn_rounded_accent"
             android:text="@string/jasa_dan_part"
-            android:layout_weight="1.5"
             android:textColor="@android:color/white" />
 
         <Button
@@ -26,25 +26,44 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
+            android:layout_weight="1"
             android:background="@drawable/btn_rounded_accent"
-            android:text="Data Pelanggan"
-            android:layout_weight="2"
-            android:textSize="12sp"
-            android:textColor="@android:color/white" />
+            android:text="@string/data_pelanggan"
+            android:textColor="@android:color/white"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp">
 
         <Button
             android:id="@+id/btn_data_kendaraan"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
+            android:layout_weight="1"
             android:background="@drawable/btn_rounded_accent"
-            android:text="Data Kendaraan"
-            android:layout_weight="2"
-            android:textSize="12sp"
-            android:textColor="@android:color/white" />
+            android:text="@string/kendaraan"
+            android:textColor="@android:color/white"
+            android:textSize="12sp" />
 
+        <Button
+            android:id="@+id/btn_usulan_mekanik"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_weight="1"
+            android:background="@drawable/btn_rounded_accent"
+            android:text="@string/usulan_mekanik_uppercase"
+            android:textColor="@android:color/white"
+            android:textSize="12sp" />
 
     </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -145,8 +164,8 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <CheckBox
                     android:id="@+id/cb_derek"
@@ -173,8 +192,8 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <CheckBox
                     android:id="@+id/cb_antar_jemput"
@@ -190,9 +209,9 @@
                     android:id="@+id/cb_tinggalkan_stnk"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="10sp"
+                    android:enabled="false"
                     android:text="TINGGALKAN STNK"
-                    android:enabled="false"/>
+                    android:textSize="10sp" />
 
             </LinearLayout>
 
@@ -288,8 +307,8 @@
                 android:id="@+id/table_layanan"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:stretchColumns="*"
-                android:padding="@dimen/paddingMedium">
+                android:padding="@dimen/paddingMedium"
+                android:stretchColumns="*">
 
                 <TableRow
                     android:id="@+id/row_layanan"

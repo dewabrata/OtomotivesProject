@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Build;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatDelegate;
 import android.telephony.TelephonyManager;
@@ -48,16 +50,16 @@ public class AppApplication extends Application {
     }
 
     public static String getBaseUrl(String name) {
-        return "http://otomotives.com/api/" + name;
+        return "https://otomotives.com/api/" + name;
     }
 
     public static String getBaseUrlV2(String name) {
-        return "http://otomotives.com/api/v2/apitest/" + name;
+        return "https://otomotives.com/api/v2/apitest/" + name;
     }
 
     //production
     public static String getBaseUrlV3(String name) {
-        return "http://otomotives.com/api/v3/" + name;
+        return "https://otomotives.com/api/v3/" + name;
     }
 
     public static String getBaseUrlV4(String name) {//ready for antrian
@@ -75,7 +77,7 @@ public class AppApplication extends Application {
     MyAccount,
     http://202.56.171.19:8185/loyaltyui/menu/account*/
 
-    public static void getMessageTrigger(){
+    public static void getMessageTrigger() {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -103,15 +105,19 @@ public class AppApplication extends Application {
         }
     }
 
+    @SuppressLint("HardwareIds")
     public HashMap<String, String> getArgsData() {
         HashMap<String, String> hashtable = new HashMap();
 
         //hashtable.put("userId", UtilityAndroid.getSetting(getApplicationContext(), "USER_ID", ""));
+        hashtable.put("merkKendaraanBengkel", UtilityAndroid.getSetting(getApplicationContext(), "MERK_KENDARAAN_BENGKEL", ""));
+        hashtable.put("bidangUsahaBengkel", UtilityAndroid.getSetting(getApplicationContext(), "KATEGORI_BENGKEL", ""));
         hashtable.put("user", UtilityAndroid.getSetting(getApplicationContext(), "user", ""));
         hashtable.put("session", UtilityAndroid.getSetting(getApplicationContext(), "session", ""));
         hashtable.put("namaUser", UtilityAndroid.getSetting(getApplicationContext(), "NAMA_USER", ""));
         hashtable.put("CID", UtilityAndroid.getSetting(getApplicationContext(), "CID", "").trim());
         hashtable.put("FCM", UtilityAndroid.getSetting(getApplicationContext(), "FCMID", ""));
+        hashtable.put("jenisKendaraan", UtilityAndroid.getSetting(getApplicationContext(), "JENIS_KENDARAAN", ""));
         hashtable.put("date", Utility.NowOnlyDate());
         hashtable.put("dateTime", Utility.NowDateTime());
         hashtable.put("time", Utility.NowTime());
@@ -141,10 +147,10 @@ public class AppApplication extends Application {
             hashtable.put("simsn", "");
             hashtable.put("line", "");
         } else {
-            hashtable.put("imei", String.valueOf(mTelephonyMgr.getDeviceId()));
+           /* hashtable.put("imei", String.valueOf(mTelephonyMgr.getDeviceId()));
             hashtable.put("imsi", String.valueOf(mTelephonyMgr.getSubscriberId()));
             hashtable.put("simsn", String.valueOf(mTelephonyMgr.getSimSerialNumber()));
-            hashtable.put("line", String.valueOf(mTelephonyMgr.getLine1Number()));
+            hashtable.put("line", String.valueOf(mTelephonyMgr.getLine1Number()));*/
         }
 
 

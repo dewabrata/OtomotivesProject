@@ -43,7 +43,7 @@ import static com.rkrzmail.utils.APIUrls.VIEW_PROFILE;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TabSchedule_Fragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
+public class Schedule_Profile_Fragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
 
     private CheckBox cbSeninJumat, cbJumat, cbSabtu, cbMingu, cbLibur;
     private TextView tvBukaSJ, tvTutupSJ, tvBukaJ, tvTutupJ, tvBukaSab, tvTutupSab, tvBukaM, tvTutupM, tvBukaL, tvTutupL;
@@ -54,7 +54,7 @@ public class TabSchedule_Fragment extends Fragment implements View.OnClickListen
     private AppActivity activity;
     private LinearLayout lySj, lyJ, lySab, lyM, lyLib, frameSchedule;
 
-    public TabSchedule_Fragment() {
+    public Schedule_Profile_Fragment() {
         // Required empty public constructor
     }
 

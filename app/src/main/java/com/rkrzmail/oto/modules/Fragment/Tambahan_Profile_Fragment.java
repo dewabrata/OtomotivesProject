@@ -51,7 +51,7 @@ import static com.rkrzmail.utils.ConstUtils.RP;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TabTambahan_Fragment extends Fragment {
+public class Tambahan_Profile_Fragment extends Fragment {
 
     private Spinner spBooking, spFreesimpan;
     private MultiSelectionSpinner spFasilitas, spMerkLkkWajib, spLuarBengkel;
@@ -76,7 +76,7 @@ public class TabTambahan_Fragment extends Fragment {
             "EMERGENCY",
             "DEREK");
 
-    public TabTambahan_Fragment() {
+    public Tambahan_Profile_Fragment() {
         // Required empty public constructor
     }
 
