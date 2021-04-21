@@ -509,18 +509,19 @@
                     android:orientation="horizontal">
 
                     <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="55dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="54dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_weight="1"
                         android:gravity="center"
-                        android:padding="2dp">
+                        android:padding="2dp"
+                        android:background="@drawable/state_textview_clickable_border"
+                        tools:ignore="NestedWeights">
 
                         <Spinner
                             android:id="@+id/sp_freesimpanan_tambahan"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="@drawable/border_solid"
                             android:entries="@array/number"
                             android:gravity="center"
                             android:textAlignment="center"
@@ -532,10 +533,10 @@
 
                     <android.support.design.widget.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:hint="Biaya">
+                        android:hint="@string/biaya_uppercase">
 
                         <EditText
                             android:id="@+id/et_freesimpanan_tambahan"

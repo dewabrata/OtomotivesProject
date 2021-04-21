@@ -412,7 +412,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:enabled="false"
-                        android:hint="SEBELUM"
+                        android:hint="MULAI"
                         android:inputType="numberDecimal"
                         android:textSize="14sp" />
 

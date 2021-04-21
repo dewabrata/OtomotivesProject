@@ -20,6 +20,7 @@ import com.naa.data.Nson;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.TimePicker_Dialog;
 import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
@@ -51,6 +52,8 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
     private int stock = 0, countClick = 0;
     private int berkalaKm = 0, berkalaBulan = 0, kmKendaraan = 0, batasanGaransiKm = 0, batasanGaransiBulan = 0;
     private int biayaMekanik1 = 0, biayaMekanik2 = 0, biayaMekanik3 = 0;
+
+    private boolean isMekanik1 = false, isMekanik2 = false, isMekanik3 = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -408,12 +411,6 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
                     return;
                 }
 
-                if (etBiayaJasa.getText().toString().isEmpty()) {
-                    etBiayaJasa.setError("Biaya Jasa Tidak Boleh Kosong");
-                    etBiayaJasa.requestFocus();
-                    return;
-                }
-
                 if (!isPartKosong && find(R.id.tl_jumlah_part, TextInputLayout.class).isHelperTextEnabled()) {
                     etJumlah.setError("Jumlah Part Melebihi Stock");
                     etJumlah.requestFocus();
@@ -474,10 +471,13 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
         int biaya = 0;
         if (data.get("JENIS_MEKANIK").asInteger() == 1) {
             biaya = totalKerjaMenit * biayaMekanik1 / 60;
+            isMekanik1 = true;
         } else if (data.get("JENIS_MEKANIK").asInteger() == 2) {
             biaya = totalKerjaMenit * biayaMekanik2 / 60;
+            isMekanik2 = true;
         } else if (data.get("JENIS_MEKANIK").asInteger() == 3) {
             biaya = totalKerjaMenit * biayaMekanik3 / 60;
+            isMekanik3 = true;
         }
 
         return biaya;
@@ -664,10 +664,47 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
                 }
                 break;
             case R.id.btn_img_waktu_kerja:
-                getTimesDialog(find(R.id.et_waktuSet, EditText.class));
+                getWaktuKerja();
                 break;
         }
     }
+
+    private void getWaktuKerja() {
+        TimePicker_Dialog timePickerDialog = new TimePicker_Dialog();
+        timePickerDialog.show(getSupportFragmentManager(), "TimePicker");
+        timePickerDialog.getTimes(new TimePicker_Dialog.OnClickDialog() {
+            @SuppressLint({"DefaultLocale", "SetTextI18n"})
+            @Override
+            public void getTime(int day, int hours, int minutes) {
+                find(R.id.et_waktuSet, EditText.class).setText(String.format("%02d", day) + ":" + String.format("%02d", hours) + ":" + String.format("%02d", minutes));
+                Nson nson = Nson.newObject();
+                nson.set("RATA2_WAKTU_KERJA_HARI", day);
+                nson.set("RATA2_WAKTU_KERJA_JAM", hours);
+                nson.set("RATA2_WAKTU_KERJA_MENIT", minutes);
+
+                if(isMekanik1){
+                    nson.set("JENIS_MEKANIK", 1);
+                }else{
+                    if(isMekanik2){
+                        nson.set("JENIS_MEKANIK", 2);
+                    }else{
+                        if(isMekanik3){
+                            nson.set("JENIS_MEKANIK", 3);
+                        }
+                    }
+                }
+
+                int biaya = calculateBiayaMekanik(nson);
+                etBiayaJasa.setText(RP + NumberFormatUtils.formatRp(biaya));
+            }
+
+            @Override
+            public void getYear(int year) {
+
+            }
+        });
+    }
+
 
     @SuppressLint("DefaultLocale")
     private String getBerkalaBulan(int berkalaBulan) {

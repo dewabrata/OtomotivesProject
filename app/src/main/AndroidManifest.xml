@@ -36,7 +36,8 @@
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,UnusedAttribute"
         tools:replace="android:label,android:appComponentFactory">
-        <activity android:name=".modules.bengkel.VerifikasiOtp_Activity"></activity>
+        <activity android:name=".modules.bengkel.Billing_Activity" />
+        <activity android:name=".modules.bengkel.VerifikasiOtp_Activity" />
         <activity android:name=".modules.sparepart.JumlahPart_Mekanik_Activity" />
         <activity
             android:name=".modules.bengkel.AturFeeBilling_Activity"
@@ -274,7 +275,7 @@
         <activity android:name=".modules.discount.AturFrekwensiDiscount_Acitivity" />
         <activity android:name=".modules.discount.FrekwensiDiscount_Activity" />
         <activity android:name=".modules.bengkel.AturReferal_Activity" />
-        <activity android:name=".modules.bengkel.Referal_Activity" />
+        <activity android:name=".modules.bengkel.Referal_MainTab_Activity" />
         <activity android:name=".modules.bengkel.RegistrasiBengkel_Activity" />
         <activity android:name=".modules.bengkel.AturUser_Activity" />
         <activity android:name=".modules.bengkel.AturUser_MainTab_Activity" />

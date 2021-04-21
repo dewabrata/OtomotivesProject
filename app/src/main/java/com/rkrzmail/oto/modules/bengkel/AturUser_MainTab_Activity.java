@@ -15,6 +15,7 @@ import com.rkrzmail.oto.modules.Fragment.FragmentsAdapter;
 import com.rkrzmail.oto.modules.Fragment.AturGajiUser_User_Fragment;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class AturUser_MainTab_Activity extends AppActivity {
 
@@ -37,7 +38,7 @@ public class AturUser_MainTab_Activity extends AppActivity {
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("User");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("User");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }

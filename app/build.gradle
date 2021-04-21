@@ -7,7 +7,7 @@ android {
         applicationId "com.otomotives.bengkelpro"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode 3
+        versionCode 6
         versionName "1.0"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -30,13 +30,20 @@ dependencies {
     implementation 'com.journeyapps:zxing-android-embedded:3.5.0'
 
     // google support library ---------------------------------------------------------------------
+    //noinspection GradleCompatible
     implementation 'com.android.support:appcompat-v7:28.0.0'
+    //noinspection GradleCompatible
     implementation 'com.android.support:design:28.0.0'
     //implementation group: 'com.google.android.material', name: 'material', version: '1.1.0-alpha05'
+    //noinspection GradleCompatible
     implementation 'com.android.support:cardview-v7:28.0.0'
+    //noinspection GradleCompatible
     implementation 'com.android.support:recyclerview-v7:28.0.0'
+    //noinspection GradleCompatible
     implementation 'com.android.support:support-v4:28.0.0'
+    //noinspection GradleCompatible
     implementation 'com.android.support:support-v13:28.0.0'
+    //noinspection GradleCompatible
     implementation 'com.android.support:support-vector-drawable:28.0.0'
 
     // google maps library ------------------------------------------------------------------------

@@ -77,7 +77,7 @@ public class Spareparts_Activity extends AppActivity {
         recyclerView.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_spareparts) {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                String stock = nListArray.get(position).get("STOCK").asString();
+                String stock = nListArray.get(position).get("TOTAL_STOCK").asString();
 
                 viewHolder.find(R.id.txtNamaPart, TextView.class).setText(nListArray.get(position).get("NAMA_PART").asString());
                 viewHolder.find(R.id.txtNoPart, TextView.class).setText(nListArray.get(position).get("NO_PART").asString());
@@ -87,7 +87,7 @@ public class Spareparts_Activity extends AppActivity {
                 } else {
                     viewHolder.find(R.id.txtHargaJual, TextView.class).setText(nListArray.get(position).get("HARGA_JUAL").asString());
                 }
-                viewHolder.find(R.id.tv_pending_spareparts, TextView.class).setText(nListArray.get(position).get("PENDING").asString());
+                viewHolder.find(R.id.tv_pending_spareparts, TextView.class).setText(nListArray.get(position).get("TOTAL_PENDING").asString());
                 viewHolder.find(R.id.tv_stockMin_spareparts, TextView.class).setText(nListArray.get(position).get("STOCK_MINIMUM").asString());
                 viewHolder.find(R.id.txtMerk, TextView.class).setText(nListArray.get(position).get("MERK").asString());
 

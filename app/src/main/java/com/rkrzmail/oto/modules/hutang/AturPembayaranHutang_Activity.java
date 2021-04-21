@@ -480,6 +480,7 @@ public class AturPembayaranHutang_Activity extends AppActivity implements View.O
                 args.put("jumlahHutangBerikutnya", isHutangBerikutnya ? String.valueOf(selisih) : "");
                 args.put("idKasHutang", String.valueOf(idKasHutang));
                 args.put("selesih", String.valueOf(selisih));
+                args.put("tglJatuhTempo", DateFormatUtils.formatDateToDatabase(tvTglJatuhTempo.getText().toString()));
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(HUTANG), args));
             }

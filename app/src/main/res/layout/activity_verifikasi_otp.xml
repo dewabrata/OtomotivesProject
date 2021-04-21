@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".modules.bengkel.VerifikasiOtp_Activity"
-    android:gravity="center">
-    
+    android:gravity="center"
+    tools:context=".modules.bengkel.VerifikasiOtp_Activity">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -17,125 +16,131 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="@color/colorPrimary"/>
+            android:background="@color/colorPrimary" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="@android:color/white"/>
+            android:background="@android:color/white" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="50dp"
-        android:layout_marginBottom="20dp">
+        android:layout_marginBottom="20dp"
+        android:orientation="vertical">
 
         <ImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@drawable/ic_phone_message"
+            android:src="@drawable/ic_check_ox"
             tools:ignore="ContentDescription" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/verifikasi_uppercase"
-            android:textSize="20sp"
-            android:textColor="@android:color/white"
             android:layout_gravity="center"
-            android:gravity="center"
             android:layout_marginTop="20dp"
-            android:textStyle="bold"/>
+            android:gravity="center"
+            android:text="@string/verifikasi_uppercase"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
 
     <android.support.design.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="350dp"
         android:layout_gravity="center"
         android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
         android:layout_marginTop="20dp"
-        app:cardElevation="20dp"
-        app:cardCornerRadius="10dp">
+        android:layout_marginEnd="20dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="20dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:layout_gravity="center"
             android:gravity="center"
+            android:orientation="vertical"
             android:padding="10dp">
 
-            <android.support.design.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                app:cardElevation="10dp">
-
-                <EditText
-                    android:id="@+id/et_no_ponsel"
-                    android:padding="15dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@android:color/transparent"
-                    android:textColor="@android:color/black"
-                    android:hint="@string/no_ponsel_uppercase"
-                    android:inputType="phone"/>
-
-            </android.support.design.card.MaterialCardView>
-
+            <CheckBox
+                android:id="@+id/cb_aggree"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="0.6"
+                android:text="@string/verifikasi_info2" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_weight="0.6"
                 android:text="@string/verifikasi_info"
+                android:textColor="@android:color/black"
                 android:textSize="14sp"
-                android:layout_marginTop="15dp"
-                android:textAlignment="center"
-                android:gravity="center"
-                android:textColor="@android:color/black" />
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"/>
+
+            <android.support.design.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="20dp"
+                app:cardElevation="10dp">
+
+                <EditText
+                    android:id="@+id/et_no_ponsel"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:hint="@string/no_ponsel_uppercase"
+                    android:inputType="phone"
+                    android:padding="15dp"
+                    android:textColor="@android:color/black" />
+
+            </android.support.design.card.MaterialCardView>
+
 
             <TextView
                 android:id="@+id/tv_timer_refresh"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0"
-                android:layout_weight="0"
                 android:layout_marginBottom="5dp"
-                android:textSize="15sp"
-                android:textColor="@android:color/black"
+                android:layout_weight="0"
                 android:background="@drawable/state_textview_clickable"
-                android:visibility="gone"/>
+                android:text="0"
+                android:textColor="@android:color/black"
+                android:textSize="15sp"
+                android:visibility="gone" />
 
             <android.support.design.card.MaterialCardView
                 android:id="@+id/cv_refresh_otp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                app:cardElevation="10dp"
                 android:layout_gravity="center"
-                android:layout_weight="0"
+                android:layout_marginTop="10dp"
                 android:layout_marginBottom="20dp"
-                app:contentPadding="5dp"
+                android:layout_weight="0"
                 android:background="@drawable/state_textview_clickable"
-                android:visibility="gone">
+                android:visibility="gone"
+                app:cardElevation="10dp"
+                app:contentPadding="5dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:padding="10dp"
                     android:text="@string/refresh_otp_uppercase"
-                    android:textColor="@android:color/black"
-                    android:padding="10dp" />
+                    android:textColor="@android:color/black" />
 
 
             </android.support.design.card.MaterialCardView>
@@ -144,9 +149,9 @@
                 android:id="@+id/btn_lanjut"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom|center"
+                android:layout_gravity="bottom|end"
                 android:background="@drawable/btn_rounded_accent"
-                android:text="@string/lanjut_uppercase"
+                android:text="@string/registrasi_uppercase"
                 android:textColor="@android:color/white" />
 
         </LinearLayout>

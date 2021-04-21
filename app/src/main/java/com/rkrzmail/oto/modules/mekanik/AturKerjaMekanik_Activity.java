@@ -34,6 +34,7 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.gmod.MyCode;
 import com.rkrzmail.oto.modules.checkin.History_Activity;
+import com.rkrzmail.oto.modules.checkin.KontrolLayanan_Activity;
 import com.rkrzmail.oto.modules.checkin.TambahPartJasaDanBatal_Activity;
 import com.rkrzmail.srv.NikitaMultipleViewAdapter;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
@@ -113,7 +114,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
     private boolean isKondisiBaik = false;
     private boolean isUsulanMekanik = false;
 
-    private AlertDialog alertDialog;
+    private AlertDialog alertDialog, alertDialogCatatan;
     private CountDownTimer cTimer = null;
 
 
@@ -392,7 +393,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                         alertDialog.dismiss();
                     }
                 } else {
-                    if (!isKondisiBaik && etEditText.getText().toString().isEmpty() && usulanMekanik == 0) {
+                    if ((!isKondisiBaik && !isUsulanMekanik) && etEditText.getText().toString().isEmpty()) {
                         etEditText.setError("CATATAN MEKANIK HARUS DI ISI");
                         viewFocus(etEditText);
                     } else {
@@ -427,7 +428,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
             }
         });
 
-        builder.create();
+        alertDialog = builder.create();
         alertDialog = builder.show();
     }
 
@@ -555,7 +556,9 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                     }
 
                     if(isGaransiLKK){
-                        showNotification(getActivity(), "LKK CLAIM", formatNopol(etNopol.getText().toString()), "MEKANIK", null);
+                        Intent intent = new Intent(getActivity(), KontrolLayanan_Activity.class);
+                        intent.putExtra("NOPOL", etNopol.getText().toString());
+                        showNotification(getActivity(), "LKK CLAIM", formatNopol(etNopol.getText().toString()), "MEKANIK", intent);
                     }
                 } else {
                     showInfo(result.get("message").asString());
@@ -744,7 +747,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 break;
             case R.id.imgBtn_stop:
                 if (isStop) {
-                    if (catatanMekanik.isEmpty()) {
+                    if ((!isKondisiBaik && usulanMekanik == 0) && catatanMekanik.isEmpty()) {
                         isDissmissAndStop = true;
                         showWarning("Catatan Harus di Isi", Toast.LENGTH_LONG);
                         initEditTextDialog(false);
@@ -804,6 +807,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 SetDataForClaim();
                 break;
             case R.id.img_btn_tambah_part:
+                isUsulanMekanik = false;
                 intent = new Intent(getActivity(), TambahPartJasaDanBatal_Activity.class);
                 intent.putExtra("CHECKIN_ID", idCheckin);
                 intent.putExtra("NO_PONSEL", noHp);
@@ -870,7 +874,6 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
             switch (requestCode) {
                 case REQUEST_TAMBAH_PART_JASA_LAIN:
                     if(isUsulanMekanik){
-                        isUsulanMekanik = false;
                         usulanMekanik = data.getIntExtra("IS_USULAN", 0);
                     }else{
                         viewLayananPartJasa();

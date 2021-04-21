@@ -34,6 +34,7 @@ public class AturBiayaMekanik_Activity extends AppActivity {
         setContentView(R.layout.activity_atur_biaya_mekanik);
         initToolbar();
         initComponent();
+        viewUMK();
         viewBiayaMekanik();
     }
 
@@ -120,7 +121,6 @@ public class AturBiayaMekanik_Activity extends AppActivity {
                     if (!result.asArray().isEmpty()) {
                         result = result.get(0);
                         biayaMekanikID = result.get("ID").asInteger();
-                        umk = result.get("UMK").asInteger();
                         upahPerJam = result.get("UPAH_MINIM").asInteger();
                         if(upahPerJam == 0){
                             upahPerJam = umk / average;

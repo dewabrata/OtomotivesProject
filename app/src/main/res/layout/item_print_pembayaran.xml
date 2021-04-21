@@ -11,7 +11,7 @@
     android:layout_marginRight="7dp"
     android:layout_marginBottom="4dp"
     android:padding="10dp"
-    app:cardCornerRadius="10dp"
+    app:cardCornerRadius="7dp"
     app:cardElevation="2dp">
 
     <TableLayout
@@ -28,8 +28,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:text="Nama Pelanggan"
-                android:textSize="12sp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp" />
+
             <TextView
                 android:id="@+id/tv_no_bukti_bayar"
                 android:layout_width="wrap_content"

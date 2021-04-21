@@ -411,7 +411,7 @@ public class AturUser_User_Fragment extends Fragment {
                 args.put("gaji", NumberFormatUtils.formatOnlyNumber(activity.find(R.id.txtGaji, EditText.class).getText().toString()));
                 args.put("mekanik", find(R.id.sp_fungsiMekanik, Spinner.class).getSelectedItem().toString());
                 args.put("akses", aksesApp);
-                args.put("myCodeAbsen", spMycode.getSelectedItem().toString());
+                args.put("myCodeAbsen", spMycode.getSelectedItem().toString().equals("YA") ? "Y" : "N");
                 if (args.containsValue("--PILIH--")) {
                     args.values().remove("--PILIH--");
                 }

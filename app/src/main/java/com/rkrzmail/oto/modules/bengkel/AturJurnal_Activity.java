@@ -19,8 +19,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -47,8 +45,6 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
-import org.w3c.dom.Text;
-
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -61,7 +57,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import in.galaxyofandroid.spinerdialog.OnSpinerItemClick;
@@ -70,7 +65,6 @@ import in.galaxyofandroid.spinerdialog.SpinnerDialog;
 import static com.rkrzmail.utils.APIUrls.JURNAL;
 import static com.rkrzmail.utils.APIUrls.JURNAL_AKTIVITAS;
 import static com.rkrzmail.utils.APIUrls.JURNAL_KAS;
-import static com.rkrzmail.utils.APIUrls.JURNAL_KAS_BANK;
 import static com.rkrzmail.utils.APIUrls.JURNAL_PEMBAYARAN;
 import static com.rkrzmail.utils.APIUrls.JURNAL_PERIODE;
 import static com.rkrzmail.utils.APIUrls.JURNAL_TRANSAKSI;
@@ -109,7 +103,7 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_atur_jurnal_);
+        setContentView(R.layout.activity_atur_jurnal);
         initToolbar();
         initComponent();
         loadData();
@@ -581,6 +575,12 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
 
     }
 
+    private Calendar getFirstDayOfMonth(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        return  calendar;
+    }
+
     public void getDatePickerDialog(final boolean minOrMax) {
         final Calendar cldr = Calendar.getInstance();
         final int day = cldr.get(Calendar.DAY_OF_MONTH);
@@ -605,10 +605,13 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
             }
         }, year, month, day);
 
-        if (minOrMax)
+        if (minOrMax){
+            datePickerDialog.setMinDate(getFirstDayOfMonth());
             datePickerDialog.setMaxDate(cldr);
-        else
+        } else{
             datePickerDialog.setMinDate(cldr);
+        }
+
         datePickerDialog.show(getFragmentManager(), "Datepickerdialog");
     }
 

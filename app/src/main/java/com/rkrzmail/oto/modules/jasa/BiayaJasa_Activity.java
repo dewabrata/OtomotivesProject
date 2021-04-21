@@ -141,10 +141,7 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
         find(R.id.btn_simpan_biayaJasa).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (etBiaya.getText().toString().isEmpty() || etBiaya.getText().toString().equals("Rp. 0")) {
-                    etBiaya.setError("BIAYA JASA HARUS DI ISI");
-                    viewFocus(etBiaya);
-                } else if (!isUsulanMekanik && etWaktuKerja.getText().toString().equals(getResources().getString(R.string._00_00_00)) &&
+               if (!isUsulanMekanik && etWaktuKerja.getText().toString().equals(getResources().getString(R.string._00_00_00)) &&
                         etWaktuDefault.getText().toString().equals(getResources().getString(R.string._00_00_00))) {
                     etWaktuKerja.setError("WAKTU KERJA HARUS DI ISI");
                     viewFocus(etWaktuKerja);

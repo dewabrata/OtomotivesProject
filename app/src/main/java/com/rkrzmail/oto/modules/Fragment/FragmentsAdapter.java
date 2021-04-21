@@ -15,6 +15,7 @@ import com.rkrzmail.oto.modules.bengkel.Billing_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Dashboard_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Pembayaran_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
+import com.rkrzmail.oto.modules.bengkel.Referal_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Schedule_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.AturUser_MainTab_Activity;
 import com.rkrzmail.oto.modules.hutang.Hutang_MainTab_Activity;
@@ -250,6 +251,18 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
             return fragment;
         }
 
+        if (context instanceof Referal_MainTab_Activity) {
+            switch (i) {
+                case 0:
+                    fragment = Fragment.instantiate(context, Referal_Referal_Fragment.class.getName());
+                    break;
+                case 1:
+                    fragment = Fragment.instantiate(context, BonusReferal_Referal_Fragment.class.getName());
+                    break;
+            }
+            return fragment;
+        }
+
         return fragment;
     }
 
@@ -372,6 +385,15 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
                     return "Terbayar";
                 case 1:
                     return "Fee";
+            }
+        }
+
+        if (context instanceof Referal_MainTab_Activity) {
+            switch (position) {
+                case 0:
+                    return "Referal";
+                case 1:
+                    return "Bonus";
             }
         }
         return null;

@@ -2,6 +2,11 @@ package com.rkrzmail.utils;
 
 public class APIUrls {
 
+    public static final String CHECK_REFFERAL = "referal/check_refferal";
+    public static final String SAVE_REFFERAL = "referal";
+    public static final String BONUS_REFFERAL = "referal/bonus_refferal";
+    public static final String REFERAL = "referal/refferal";
+    public static final String MST_REK_OTO_V4 = "master_data/rekening_oto";
     public static final String WEB_LOGIN = "wloginm";
     public static final String DISCOUNT_FREKWENSI = "aturdiskonfrekwensi";
     public static final String ROLLBACK_TRANSACTIONS = "rollbackTransactions";

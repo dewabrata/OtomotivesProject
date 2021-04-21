@@ -1,5 +1,6 @@
 package com.rkrzmail.oto;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -26,6 +27,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -99,6 +101,8 @@ import static com.rkrzmail.utils.APIUrls.VIEW_LOKASI_PART;
 import static com.rkrzmail.utils.APIUrls.VIEW_SPAREPART;
 import static com.rkrzmail.utils.APIUrls.VIEW_SUGGESTION;
 import static com.rkrzmail.utils.ConstUtils.PERMISSION_REQUEST_CODE;
+import static com.rkrzmail.utils.ConstUtils.PICK_IMAGE_CAMERA;
+import static com.rkrzmail.utils.ConstUtils.PICK_IMAGE_GALLERY;
 
 
 public class AppActivity extends AppCompatActivity {
@@ -232,9 +236,9 @@ public class AppActivity extends AppCompatActivity {
 
     public int getIntentIntExtra(Intent intent, String key) {
         if (intent != null) {
-            try{
+            try {
                 return intent.getIntExtra(key, 0);
-            }catch (Exception e){
+            } catch (Exception e) {
                 return 0;
             }
         } else {
@@ -622,7 +626,7 @@ public class AppActivity extends AppCompatActivity {
                 result = Tools.removeDuplicates(result);
                 isJasaLain[0] = api.equals(VIEW_JASA_LAIN) & result.get(0).get("AKTIVITAS").asString().toLowerCase().contains(bookTitle.toLowerCase());
                 isNoPart[0] = (
-                                api.equals(VIEW_SPAREPART) | api.equals(VIEW_SUGGESTION) |
+                        api.equals(VIEW_SPAREPART) | api.equals(VIEW_SUGGESTION) |
                                 api.equals(VIEW_LOKASI_PART) |
                                 api.equals(SET_STOCK_OPNAME) | api.equals(VIEW_CARI_PART_SUGGESTION)
                 ) & result.get(0).get("NO_PART").asString().toLowerCase().contains(bookTitle.toLowerCase()) |
@@ -827,7 +831,7 @@ public class AppActivity extends AppCompatActivity {
         });
     }
 
-    public void setSelectionSpinner(String selection, Spinner spinner){
+    public void setSelectionSpinner(String selection, Spinner spinner) {
         if (!selection.isEmpty()) {
             for (int in = 0; in < spinner.getCount(); in++) {
                 if (spinner.getItemAtPosition(in).toString().contains(selection)) {
@@ -926,6 +930,7 @@ public class AppActivity extends AppCompatActivity {
             @Override
             public void getTime(int day, int hours, int minutes) {
                 ddHHmm.setText(String.format("%02d", day) + ":" + String.format("%02d", hours) + ":" + String.format("%02d", minutes));
+
             }
 
             @Override
@@ -1228,6 +1233,39 @@ public class AppActivity extends AppCompatActivity {
             return Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT);
         } catch (Exception e) {
             return "";
+        }
+    }
+
+    public void getImage() {
+        try {
+            PackageManager pm = getPackageManager();
+            int hasPerm = pm.checkPermission(Manifest.permission.CAMERA, getPackageName());
+            if (hasPerm == PackageManager.PERMISSION_GRANTED) {
+                final CharSequence[] options = {"Take Photo", "Choose From Gallery", "Cancel"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Select Option");
+                builder.setItems(options, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) {
+                        if (options[item].equals("Take Photo")) {
+                            dialog.dismiss();
+                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            startActivityForResult(intent, PICK_IMAGE_CAMERA);
+                        } else if (options[item].equals("Choose From Gallery")) {
+                            dialog.dismiss();
+                            Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            startActivityForResult(pickPhoto, PICK_IMAGE_GALLERY);
+                        } else if (options[item].equals("Cancel")) {
+                            dialog.dismiss();
+                        }
+                    }
+                });
+                builder.show();
+            } else
+                showError("IZINKAN AKSES CAMERA DI PENGATURAN");
+        } catch (Exception e) {
+            showError("IZINKAN AKSES CAMERA DI PENGATURAN");
+            e.printStackTrace();
         }
     }
 

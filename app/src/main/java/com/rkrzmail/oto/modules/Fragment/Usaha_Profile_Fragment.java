@@ -1,15 +1,23 @@
 package com.rkrzmail.oto.modules.Fragment;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,18 +42,24 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.MapPicker_Dialog;
 import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
 import com.rkrzmail.srv.MultiSelectionSpinner;
-import com.rkrzmail.utils.Tools;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
 import static com.rkrzmail.utils.APIUrls.VIEW_PROFILE;
+import static com.rkrzmail.utils.ConstUtils.PICK_IMAGE_CAMERA;
+import static com.rkrzmail.utils.ConstUtils.PICK_IMAGE_GALLERY;
 
 public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallback, MapPicker_Dialog.GetLocation {
 
@@ -57,14 +71,19 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
     private Spinner spAfiliasi, spPrincial;
     private MultiSelectionSpinner spJenisKendaraan, spMerkKendaraan, spBidangUsaha;
     private CheckBox cbPkp;
-    private ImageView uploadLogo, uploadTampakdepan;
     private TextView tvAntrianExpress, tvAntrianStandart;
+    private AlertDialog alertDialog;
+    private Button btnLogo, btnTampakDepan;
 
-    private String fotoLogo = "", fotoTampakDepan = "";
+    private Bitmap bitmapLogo = null, bitmapTampakDepan = null;
+    private String fotoLogoBase64 = "", fotoTampakDepanBase64 = "";
     private String latitude = "", longitude = "";
     private Nson principalList = Nson.newArray();
     private AppActivity activity;
+    private Nson getData;
 
+    private boolean isLoadBitmapLogo = false, isLoadBitmapDepan = false;
+    private boolean isLogo = false, isTampakDepan = false;
 
     private final List<String> afiliasiList = Arrays.asList(
             "--PILIH--",
@@ -76,24 +95,32 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
 
 
     public Usaha_Profile_Fragment() {
-        // Required empty public constructor
     }
+
+    public Usaha_Profile_Fragment newIntasnce(Nson data){
+        this.getData = data;
+        Bundle args = new Bundle();
+        args.putString("DATA", data.toJson());
+        Usaha_Profile_Fragment usahaProfileFragment = new Usaha_Profile_Fragment();
+        usahaProfileFragment.setArguments(args);
+        return usahaProfileFragment;
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_tab_usaha_bengkel, container, false);
         activity = ((ProfileBengkel_Activity) getActivity());
         initComponent(v);
+        initData();
         return v;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (isVisible()) {
-            viewprofileusaha();
+        if(isVisible()){
         }
     }
 
@@ -113,12 +140,12 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
         spBidangUsaha = v.findViewById(R.id.sp_bidangUsaha_usaha);
         spMerkKendaraan = v.findViewById(R.id.sp_merkKendaraan_usaha);
         cbPkp = v.findViewById(R.id.cb_pkp_usaha);
-        uploadLogo = v.findViewById(R.id.imgBtn_upload);
-        uploadTampakdepan = v.findViewById(R.id.img_logoDepan_usaha);
         etMaxAntrianExpress = v.findViewById(R.id.et_maxAntrianExpress);
         etMaxAntrianStandart = v.findViewById(R.id.et_maxAntrianStandart);
         tvAntrianExpress = v.findViewById(R.id.ic_AntrianExpress_usaha);
         tvAntrianStandart = v.findViewById(R.id.ic_AntrianStandart_usaha);
+        btnLogo = v.findViewById(R.id.btn_logo_depan);
+        btnTampakDepan = v.findViewById(R.id.btn_tampak_depan);
         Button btnSimpan = v.findViewById(R.id.btn_simpan_usaha);
         Button btnLokasi = v.findViewById(R.id.btn_lokasi_tambahan);
 
@@ -145,17 +172,29 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
             }
         });
 
-        uploadTampakdepan.setOnClickListener(new View.OnClickListener() {
+        btnLogo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getImageFromAlbum(REQUEST_PHOTO);
+                if (btnLogo.getText().toString().equals("PREVIEW LOGO")) {
+                    showDialogPreviewFoto(bitmapLogo, "Logo Bengkel", new String[]{}, true);
+                } else {
+                    isLogo = true;
+                    isTampakDepan = false;
+                    getImage();
+                }
             }
         });
 
-        uploadLogo.setOnClickListener(new View.OnClickListener() {
+        btnTampakDepan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getImageFromAlbum(REQUEST_LOGO);
+                if (btnTampakDepan.getText().toString().equals("PREVIEW TAMPAK DEPAN")) {
+                    showDialogPreviewFoto(bitmapTampakDepan, "Tampak Depan Bengkel", new String[]{}, true);
+                } else {
+                    isLogo = false;
+                    isTampakDepan = true;
+                    getImage();
+                }
             }
         });
 
@@ -167,6 +206,77 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
         });
     }
 
+    private Bitmap decodeBase64ToBitmap(String base64){
+        byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+    }
+
+    private void initData() {
+        if (activity != null) {
+            ((ProfileBengkel_Activity) getActivity()).getDataUsaha(new ProfileBengkel_Activity.UsahaData() {
+                @SuppressLint("SetTextI18n")
+                @Override
+                public void getData(Nson nson) {
+                    String logoBase64, depanBase64;
+                    try{
+                        logoBase64 = nson.get("LOGO_IMG").asString()
+                                .replace("data:image/;base64,", "")
+                                .replace("data:image/png;base64,", "");
+                    }catch (Exception e){
+                        logoBase64 = "";
+                    }
+                    try{
+                        depanBase64 = nson.get("DEPAN_IMG").asString()
+                                .replace("data:image/;base64,", "")
+                                .replace("data:image/png;base64,", "");
+                    }catch (Exception e){
+                        depanBase64 = "";
+                    }
+                    if (!logoBase64.isEmpty()) {
+                        isLoadBitmapLogo = true;
+                        bitmapLogo = decodeBase64ToBitmap(logoBase64);
+                        btnLogo.setText("PREVIEW LOGO");
+                    }
+                    if (!depanBase64.isEmpty()) {
+                        isLoadBitmapDepan = true;
+                        bitmapTampakDepan = decodeBase64ToBitmap(depanBase64);
+                        btnTampakDepan.setText("PREVIEW TAMPAK DEPAN");
+                    }
+
+                    etKodePos.setText(nson.get("KODE_POS").asString());
+                    cbPkp.setChecked(nson.get("PKP").asString().equals("Y"));
+                    etNpwp.setText(nson.get("NPWP").asString());
+                    etNib.setText(nson.get("NIB").asString());
+                    etBadanUsaha.setText(nson.get("KATEGORI_BENGKEL").asString());
+                    etNamaBengkel.setText(nson.get("NAMA_BENGKEL").asString());
+                    etAlamat.setText(nson.get("ALAMAT").asString());
+                    etKotaKab.setText(nson.get("KOTA_KABUPATEN").asString());
+                    etNoTelp.setText(nson.get("NO_TELP").asString());
+                    etNoTelpMessage.setText(nson.get("HP_MESSAGE").asString());
+                    etMaxAntrianExpress.setText(nson.get("MAX_ANTRIAN_EXPRESS_MENIT").asString());
+                    etMaxAntrianStandart.setText(nson.get("MAX_ANTRIAN_STANDART_MENIT").asString());
+
+                    List<String> jenisKendaraanList = new ArrayList<>(), merkKendaraanList = new ArrayList<>(),
+                            bidangUsahaList = new ArrayList<>();
+                    jenisKendaraanList.add(nson.get("JENIS_KENDARAAN").asString());
+                    merkKendaraanList.add(nson.get("MERK_KENDARAAN").asString());
+                    bidangUsahaList.add(nson.get("KATEGORI_BENGKEL").asString());
+
+                    activity.setSpinnerOffline(afiliasiList, spAfiliasi, nson.get("AFLIASI").asString());
+                    setSpNamaPrincipal(nson.get("NAMA_PRINCIPAL").asString());
+                    setJenisKendaraan(jenisKendaraanList);
+                    setMerkKendaraan(merkKendaraanList);
+                    setSpBidangUsaha(bidangUsahaList);
+                }
+            });
+        }
+    }
+
     private void saveData() {
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result;
@@ -175,6 +285,17 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
+                String latLong = latitude + ", " + longitude;
+                String afliasi = spAfiliasi.getSelectedItem().toString();
+                if(afliasi.contains("--PILIH--")){
+                    afliasi = afliasi
+                            .replace("--PILIH--", "")
+                            .replace("--PILIH--,", "");
+                }
+                String principal = spPrincial.getSelectedItem().toString();
+                if(principal.contains("--PILIH--")){
+                    principal = principal.replace("--PILIH--", "");
+                }
                 args.put("action", "update");
                 args.put("kategori", "USAHA");
                 args.put("kodePos", etKodePos.getText().toString().toUpperCase());
@@ -182,13 +303,15 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
                 args.put("nib", etNib.getText().toString().toUpperCase());
                 args.put("npwp", etNpwp.getText().toString().toUpperCase());
                 args.put("pkp", cbPkp.isChecked() ? "Y" : "N");
-                args.put("afliasi", spAfiliasi.getSelectedItem().toString());
-                args.put("namaPrincipial", spPrincial.getSelectedItem().toString());
+                args.put("afliasi", afliasi);
+                args.put("namaPrincipial", principal);
                 args.put("noTelp", etNoTelp.getText().toString().toUpperCase());
                 args.put("hpMessage", etNoTelpMessage.getText().toString().toUpperCase());
-                args.put("logo", fotoLogo);
+                args.put("fotoLogo", fotoLogoBase64);
+                args.put("fotoTampakDepan", fotoTampakDepanBase64);
                 args.put("antrianExpres", etMaxAntrianExpress.getText().toString());
                 args.put("antrianStandart", etMaxAntrianStandart.getText().toString());
+                args.put("petaLokasi", latLong);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PROFILE), args));
             }
@@ -196,59 +319,10 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    activity.showInfo("Sukses Menyimpan Data");
+                    activity.showSuccess("Sukses Menyimpan Data");
                     activity.setResult(RESULT_OK);
                 } else {
-                    activity.showInfo("Gagagl Menyimpan Data");
-                }
-            }
-        });
-    }
-
-    private void viewprofileusaha() {
-        MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
-            List<String> jenisKendaraanList = new ArrayList<>(), merkKendaraanList = new ArrayList<>(),
-                    bidangUsahaList = new ArrayList<>();
-            Nson result;
-
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-
-                args.put("action", "view");
-
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PROFILE), args));
-            }
-
-            @SuppressLint("DefaultLocale")
-            @Override
-            public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    result = result.get("data").get(0);
-
-                    cbPkp.setChecked(result.get("NIB").asString().equals("Y"));
-                    etNpwp.setText(result.get("NPWP").asString());
-                    etNib.setText(result.get("NIB").asString());
-                    etBadanUsaha.setText(result.get("NAMA_USAHA").asString());
-                    etNamaBengkel.setText(result.get("NAMA_BENGKEL").asString());
-                    etAlamat.setText(result.get("ALAMAT").asString());
-                    etKotaKab.setText(result.get("KOTA_KABUPATEN").asString());
-                    etNoTelp.setText(result.get("NO_TELP").asString());
-                    etNoTelpMessage.setText(result.get("HP_MESSAGE").asString());
-                    etMaxAntrianExpress.setText(result.get("MAX_ANTRIAN_EXPRESS_MENIT").asString());
-                    etMaxAntrianStandart.setText(result.get("MAX_ANTRIAN_STANDART_MENIT").asString());
-
-                    jenisKendaraanList.add(result.get("JENIS_KENDARAAN").asString());
-                    merkKendaraanList.add(result.get("MERK_KENDARAAN").asString());
-                    bidangUsahaList.add(result.get("KATEGORI_BENGKEL").asString());
-
-                    activity.setSpinnerOffline(afiliasiList, spAfiliasi, result.get("AFLIASI").asString());
-                    setSpNamaPrincipal(result.get("NAMA_PRINCIPAL").asString());
-                    setJenisKendaraan(jenisKendaraanList);
-                    setMerkKendaraan(merkKendaraanList);
-                    setSpBidangUsaha(bidangUsahaList);
-                } else {
-                    activity.showInfo(result.get("message").asString());
+                    activity.showError("Gagagl Menyimpan Data");
                 }
             }
         });
@@ -314,32 +388,181 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
         }
     }
 
+    public void getImage() {
+        try {
+            PackageManager pm = getContext().getPackageManager();
+            int hasPerm = pm.checkPermission(Manifest.permission.CAMERA, getContext().getPackageName());
+            if (hasPerm == PackageManager.PERMISSION_GRANTED) {
+                final CharSequence[] options = {"Kamera", "Gallery", "Cancel"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Select Option");
+                builder.setItems(options, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) {
+                        if (options[item].equals("Kamera")) {
+                            dialog.dismiss();
+                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            startActivityForResult(intent, PICK_IMAGE_CAMERA);
+                        } else if (options[item].equals("Gallery")) {
+                            dialog.dismiss();
+                            Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            startActivityForResult(pickPhoto, PICK_IMAGE_GALLERY);
+                        } else if (options[item].equals("Cancel")) {
+                            dialog.dismiss();
+                        }
+                    }
+                });
+                builder.show();
+            } else
+                activity.showError("IZINKAN AKSES CAMERA DI PENGATURAN");
+        } catch (Exception e) {
+            activity.showError("IZINKAN AKSES CAMERA DI PENGATURAN");
+            e.printStackTrace();
+        }
+    }
+
+
+    @SuppressLint("SetTextI18n")
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == REQUEST_LOGO) {
-            final Uri imageUri = data.getData();
+        if (requestCode == PICK_IMAGE_CAMERA) {
+            activity.showSuccess("");
             try {
-                InputStream imageStream = activity.getContentResolver().openInputStream(imageUri);
-                Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                selectedImage = Tools.getResizedBitmap(selectedImage, 400);
-                fotoLogo = getRealPathFromURI(imageUri);
-                uploadLogo.setImageBitmap(selectedImage);
-            } catch (FileNotFoundException f) {
-                activity.showError("Fail" + f.getMessage());
+                Uri selectedImage = data.getData();
+                Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                if (isLogo) {
+                    bitmapLogo = bitmap;
+                    fotoLogoBase64 = activity.bitmapToBase64(bitmapLogo);
+                    btnLogo.setText("PREVIEW LOGO");
+                } else {
+                    if (isTampakDepan) {
+                        bitmapTampakDepan = bitmap;
+                        fotoTampakDepanBase64 = activity.bitmapToBase64(bitmapTampakDepan);
+                        btnTampakDepan.setText("PREVIEW TAMPAK DEPAN");
+                    }
+                }
+
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
+
+                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+                File destination = new File(Environment.getExternalStorageDirectory() + "/" +
+                        getString(R.string.app_name), "IMG_" + timeStamp + ".jpg");
+                FileOutputStream fo;
+                try {
+                    destination.createNewFile();
+                    fo = new FileOutputStream(destination);
+                    fo.write(bytes.toByteArray());
+                    fo.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } else if (resultCode == RESULT_OK && requestCode == REQUEST_PHOTO) {
-            final Uri imageUri = data.getData();
+        } else if (requestCode == PICK_IMAGE_GALLERY) {
+            Uri selectedImage = data.getData();
             try {
-                InputStream imageStream = activity.getContentResolver().openInputStream(imageUri);
-                Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                selectedImage = Tools.getResizedBitmap(selectedImage, 400);
-                fotoTampakDepan = getRealPathFromURI(imageUri);
-                uploadTampakdepan.setImageBitmap(selectedImage);
-            } catch (FileNotFoundException f) {
-                activity.showError("Fail" + f.getMessage());
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), selectedImage);
+                if (isLogo) {
+                    bitmapLogo = bitmap;
+                    fotoLogoBase64 = activity.bitmapToBase64(bitmapLogo);
+                    btnLogo.setText("PREVIEW LOGO");
+                } else {
+                    if (isTampakDepan) {
+                        bitmapTampakDepan = bitmap;
+                        fotoTampakDepanBase64 = activity.bitmapToBase64(bitmapTampakDepan);
+                        btnTampakDepan.setText("PREVIEW TAMPAK DEPAN");
+                    }
+                }
+
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void showDialogPreviewFoto(final Bitmap bitmap, String toolbarTittle, final String[] base64, final boolean isPreview) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.layout_alert_camera, null);
+        builder.setView(dialogView);
+
+        Toolbar toolbar = dialogView.findViewById(R.id.toolbar);
+        ImageView img = (ImageView) dialogView.findViewById(R.id.img_alert_foto);
+        Button btnCancel = dialogView.findViewById(R.id.btn_alert_cancel);
+        Button btnSimpan = dialogView.findViewById(R.id.btn_alert_save);
+
+        activity.setSupportActionBar(toolbar);
+        if (activity.getSupportActionBar() != null)
+            activity.getSupportActionBar().setTitle(toolbarTittle);
+
+        if (bitmap != null)
+            img.setImageBitmap(bitmap);
+
+        if (isPreview) {
+            btnCancel.setText("Tutup");
+            btnSimpan.setText("Foto Ulang");
+        }
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isPreview) {
+                    alertDialog.dismiss();
+                } else {
+                    if (bitmap == bitmapLogo) {
+                        if (!isLoadBitmapLogo) {
+                            bitmapLogo = null;
+                        }
+                    } else if (bitmap == bitmapTampakDepan) {
+                        if (!isLoadBitmapDepan) {
+                            bitmapTampakDepan = null;
+                        }
+                    }
+                    alertDialog.dismiss();
+                }
+
+            }
+        });
+
+        btnSimpan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isPreview) {
+                    if (bitmap == bitmapLogo) {
+                        isLogo = true;
+                        isTampakDepan = false;
+                        getImage();
+                    } else if (bitmap == bitmapTampakDepan) {
+                        isLogo = false;
+                        isTampakDepan = true;
+                        getImage();
+                    }
+                } else {
+                    if (bitmap == bitmapLogo) {
+                        btnLogo.setText("PREVIEW LOGO");
+                    } else if (bitmap == bitmapTampakDepan) {
+                        btnTampakDepan.setText("PREVIEW TAMPAK DEPAN");
+                    }
+                    if (bitmap != null) {
+                        base64[0] = activity.bitmapToBase64(bitmap);
+                    }
+                    activity.showInfo("SUKSES MENYIMPAN FOTO");
+                    alertDialog.dismiss();
+                }
+            }
+        });
+
+        alertDialog = builder.create();
+        if (alertDialog.getWindow() != null)
+            alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        alertDialog.show();
     }
 
     public String getRealPathFromURI(Uri uri) {
@@ -360,4 +583,5 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
         this.latitude = latitude;
         this.longitude = longitude;
     }
+
 }

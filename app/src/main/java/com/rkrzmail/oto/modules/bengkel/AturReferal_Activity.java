@@ -9,36 +9,49 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.text.Html;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
+import com.naa.data.Utility;
+import com.naa.data.UtilityAndroid;
 import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.srv.DateFormatUtils;
 import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.srv.NikitaAutoComplete;
+import com.rkrzmail.srv.NumberFormatUtils;
+import com.squareup.okhttp.FormEncodingBuilder;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
+import static com.rkrzmail.utils.APIUrls.JURNAL;
+import static com.rkrzmail.utils.APIUrls.SAVE_REFFERAL;
 import static com.rkrzmail.utils.APIUrls.VIEW_MASTER;
 import static com.rkrzmail.utils.APIUrls.VIEW_MST;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CONTACT;
 
 public class AturReferal_Activity extends AppActivity implements View.OnClickListener {
 
-    private EditText etNamaPemilik, etEmail, etNamaBengkel, etAlamat;
+    private EditText etKontakPerson, etNamaBengkel, etAlamat, etJabatan;
     private NikitaAutoComplete etKotaKab;
     private TextView tvKontak;
     private Spinner spKendaraan;
@@ -65,47 +78,34 @@ public class AturReferal_Activity extends AppActivity implements View.OnClickLis
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Referensikan Otomotives");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Referensikan Otomotives");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initComponent() {
         etAlamat = findViewById(R.id.et_alamat_ref);
-        etEmail = findViewById(R.id.et_email_ref);
         etKotaKab = findViewById(R.id.et_kotakab_ref);
         etNamaBengkel = findViewById(R.id.et_namaBengkel_ref);
-        etNamaPemilik = findViewById(R.id.et_namaPemilik_ref);
+        etKontakPerson = findViewById(R.id.et_namaPemilik_ref);
         tvKontak = findViewById(R.id.tv_kontak);
         spBidangUsaha = findViewById(R.id.sp_bidang_usaha);
         spKendaraan = findViewById(R.id.sp_jenis_kendaraan);
+        etJabatan = findViewById(R.id.et_jabatan_ref);
+
+        String aggrement = "Setuju dengan <font color=#F44336><u> Syarat & kondisi </u></font> Refferal Bengkel Pro";
+        find(R.id.tv_setuju_regist, TextView.class).setText(Html.fromHtml(aggrement));
+        find(R.id.tv_setuju_regist, TextView.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showInfo("Show Aggrement");
+            }
+        });
 
         remakeAutoCompleteMaster(etKotaKab, "DAERAH", "KOTA_KAB");
-        minEntryEditText(etNamaPemilik, 5, find(R.id.tl_cp, TextInputLayout.class), "Panjang Nama Min. 5 Karakter");
+        minEntryEditText(etKontakPerson, 5, find(R.id.tl_cp, TextInputLayout.class), "Panjang Nama Min. 5 Karakter");
         minEntryEditText(etNamaBengkel, 8, find(R.id.tl_namaBengkel, TextInputLayout.class), "Nama Bengkel Min. 5 Karakter");
         minEntryEditText(etAlamat, 20, find(R.id.tl_alamat, TextInputLayout.class), "Alamat Min. 20 Karakter");
 
-        etEmail.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                if (s.toString().length() == 0) {
-                    find(R.id.tl_email, TextInputLayout.class).setErrorEnabled(false);
-                }
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (!s.toString().contains("@") || !s.toString().contains(".com")) {
-                    find(R.id.tl_email, TextInputLayout.class).setError("Email Tidak Valid");
-                } else {
-                    find(R.id.tl_email, TextInputLayout.class).setErrorEnabled(false);
-                }
-            }
-        });
         find(R.id.btn_simpan_ref, Button.class).setOnClickListener(this);
         tvKontak.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("IntentReset")
@@ -123,14 +123,14 @@ public class AturReferal_Activity extends AppActivity implements View.OnClickLis
         });
     }
 
-    private void setSpKendaraan(){
+    private void setSpKendaraan() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("nama", "BENGKEL");
+                args.put("nama", "JENIS_KENDARAAN");
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MST), args));
             }
 
@@ -141,9 +141,7 @@ public class AturReferal_Activity extends AppActivity implements View.OnClickLis
                     List<String> kendaraanList = new ArrayList<>();
                     kendaraanList.add("--PILIH--");
                     for (int i = 0; i < result.size(); i++) {
-                        if(!kendaraanList.contains(result.get(i).get("TYPE").asString())){
-                            kendaraanList.add(result.get(i).get("TYPE").asString());
-                        }
+                        kendaraanList.add(result.get(i).get("TYPE").asString());
                     }
                     ArrayAdapter<String> kendaraanAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, kendaraanList);
                     kendaraanAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -163,7 +161,7 @@ public class AturReferal_Activity extends AppActivity implements View.OnClickLis
                                 isKategori = false;
                             }
 
-                            if(i != 0){
+                            if (i != 0) {
                                 setSpBidangUsaha();
                             }
                         }
@@ -173,7 +171,7 @@ public class AturReferal_Activity extends AppActivity implements View.OnClickLis
 
                         }
                     });
-                }else{
+                } else {
                     setSpKendaraan();
                 }
             }
@@ -221,24 +219,67 @@ public class AturReferal_Activity extends AppActivity implements View.OnClickLis
         });
     }
 
+    private String formatPhone(String phone) {
+        if (phone.startsWith("+62")) {
+            phone = phone.substring(1);
+        } else if (phone.startsWith("0")) {
+            phone = "62" + phone.substring(1);
+        }
+        phone = Utility.replace(phone," ","");
+        return phone.trim();
+    }
 
 
     private void saveData() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+            Response response;
             @Override
             public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("regristrasi"), args));
+                RequestBody formBody = new FormEncodingBuilder()
+                        .add("cid", UtilityAndroid.getSetting(getApplicationContext(), "CID", "").trim())
+                        .add("no_ponsel_referee", UtilityAndroid.getSetting(getApplicationContext(), "user", ""))
+                        .add("no_ponsel", NumberFormatUtils.formatOnlyNumber(formatPhone(tvKontak.getText().toString())))
+                        .add("kontak_person", etKontakPerson.getText().toString())
+                        .add("jabatan", etJabatan.getText().toString())
+                        .add("nama_bengkel", etNamaBengkel.getText().toString())
+                        .add("jenis_kendaraan", spKendaraan.getSelectedItem().toString())
+                        .add("bidang_usaha", spBidangUsaha.getSelectedItemsAsString())
+                        .add("alamat", etAlamat.getText().toString())
+                        .add("kota_kab", etKotaKab.getText().toString())
+                        .build();
+                try {
+                    Request request = new Request.Builder()
+                            .url(AppApplication.getBaseUrlV4(SAVE_REFFERAL))
+                            .post(formBody)
+                            .build();
+                    OkHttpClient client = new OkHttpClient();
+                    response = client.newCall(request).execute();
+                } catch (final Exception e) {
+                    e.printStackTrace();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showError(e.getMessage());
+                        }
+                    });
+                }
             }
 
             @Override
             public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                if (response.isSuccessful()) {
+                    try {
+                        result = Nson.readJson(response.body().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    AppApplication.getMessageTrigger();
+                    showSuccess("SUKSES MENYIMPAN AKTIVITAS");
                     setResult(RESULT_OK);
                     finish();
                 } else {
-                    showInfo("Registrasi Gagal, Silahkan Cek Data Anda Kembali");
+                    showWarning(response.body().toString());
                 }
             }
         });
@@ -246,13 +287,35 @@ public class AturReferal_Activity extends AppActivity implements View.OnClickLis
 
     private void componentValidation() {
         String namaBengkel = etNamaBengkel.getText().toString();
-        String namaPemilik = etNamaPemilik.getText().toString();
+        String kontakPerson = etKontakPerson.getText().toString();
         String alamat = etAlamat.getText().toString();
-        String email = etEmail.getText().toString();
-        String ponsel = tvKontak.getText().toString();
+        String kontak = tvKontak.getText().toString();
         String kotaKab = etKotaKab.getText().toString();
-        if (namaBengkel.isEmpty() && namaPemilik.isEmpty() && alamat.isEmpty() && email.isEmpty() && ponsel.isEmpty() && kotaKab.isEmpty()) {
-            showInfo("Silahkan Lengkapi Data Anda");
+
+        if (kontak.isEmpty()) {
+            tvKontak.setError("KONTAK HARUS DI MASUKKAN");
+            viewFocus(tvKontak);
+        } else if (kontakPerson.isEmpty()) {
+            etKontakPerson.setError("KONTAK PERSON HARUS DI ISI");
+            viewFocus(etKontakPerson);
+        } else if (etJabatan.getText().toString().isEmpty()) {
+            etJabatan.setError("JABATAN HARUS DI ISI");
+            viewFocus(etJabatan);
+        } else if (namaBengkel.isEmpty()) {
+            etNamaBengkel.setError("NAMA BENGKEL HARUS DI ISI");
+            viewFocus(etNamaBengkel);
+        } else if (spKendaraan.getSelectedItem().toString().equals("--PILIH--")) {
+            setErrorSpinner(spKendaraan, "JENIS KENDARAAN HARUS DI PILIH");
+        } else if (spBidangUsaha.getSelectedItemsAsString().isEmpty()) {
+            showWarning("BIDANG USAHA HARUS DI PILIH");
+        } else if (alamat.isEmpty()) {
+            etAlamat.setError("ALAMAT HARUS DI ISI");
+            viewFocus(etAlamat);
+        } else if (kotaKab.isEmpty()) {
+            etKotaKab.setError("KOTA/KAB HARUS DI ISI");
+            viewFocus(etKotaKab);
+        } else if (!find(R.id.cb_setuju_regist, CheckBox.class).isChecked()) {
+            showWarning("SEUJUTUI SYARAT DAM KETENTUAN REFFERAL");
         } else {
             saveData();
         }
@@ -270,7 +333,7 @@ public class AturReferal_Activity extends AppActivity implements View.OnClickLis
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUEST_CONTACT){
+        if (requestCode == REQUEST_CONTACT) {
             if (resultCode == RESULT_OK) {
                 Uri contactData = data.getData();
                 Cursor cursor = managedQuery(contactData, null, null, null, null);

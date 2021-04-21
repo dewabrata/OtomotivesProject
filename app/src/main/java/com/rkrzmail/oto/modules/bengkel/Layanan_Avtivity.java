@@ -7,16 +7,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -30,7 +33,9 @@ import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
+import java.util.Objects;
 
+import static com.rkrzmail.utils.APIUrls.VIEW_LAYANAN;
 import static com.rkrzmail.utils.ConstUtils.ADD;
 import static com.rkrzmail.utils.ConstUtils.EDIT;
 
@@ -38,26 +43,34 @@ public class Layanan_Avtivity extends AppActivity {
 
     private static final String TAG = "Layanan_Activity";
     private RecyclerView rvLayanan;
+    private LinearLayout lyContainerFilter;
+    private BottomSheetBehavior filterBottomSheet;
+
+    private String sortBy = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_basic_with_fab);
+        setContentView(R.layout.activity_list_with_filter);
         initToolbar();
         initComponent();
+        initFilterBottomSheet();
+        initSortByJenisLayanan();
     }
 
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Layanan");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Layanan");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.animate().translationY(-toolbar.getBottom()).setInterpolator(new AccelerateInterpolator()).start();
     }
 
     private void initComponent() {
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah);
-        fab.setOnClickListener(new View.OnClickListener() {
+        lyContainerFilter = findViewById(R.id.ly_container_filter_layanan);
+        find(R.id.ly_container_filter_kontrol_layanan).setVisibility(View.GONE);
+        find(R.id.fab_tambah).setVisibility(View.VISIBLE);
+        find(R.id.fab_tambah).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getActivity(), AturLayanan_Activity.class);
@@ -112,29 +125,135 @@ public class Layanan_Avtivity extends AppActivity {
             }
         }));
 
-        catchData("");
+        viewLayanan("", "");
+        find(R.id.swiperefresh, SwipeRefreshLayout.class).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                viewLayanan("", "");
+            }
+        });
+
+        find(R.id.btn_filter).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (filterBottomSheet.getState() != BottomSheetBehavior.STATE_EXPANDED) {
+                    filterBottomSheet.setState(BottomSheetBehavior.STATE_EXPANDED);
+                } else {
+                    filterBottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                }
+            }
+        });
+
+        find(R.id.img_btn_close).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                filterBottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            }
+        });
     }
 
-    private void catchData(final String nama) {
+    private void initFilterBottomSheet() {
+        filterBottomSheet = BottomSheetBehavior.from(lyContainerFilter);
+        filterBottomSheet.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View view, int newState) {
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_HIDDEN:
+
+                        break;
+
+                    case BottomSheetBehavior.STATE_EXPANDED: {
+
+                    }
+                    break;
+
+                    case BottomSheetBehavior.STATE_COLLAPSED: {
+                        find(R.id.view_blur).setVisibility(View.GONE);
+                    }
+                    break;
+
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                        break;
+
+                    case BottomSheetBehavior.STATE_SETTLING:
+                        break;
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View view, float slideOffset) {
+                find(R.id.view_blur).setVisibility(View.VISIBLE);
+                find(R.id.view_blur).setAlpha(slideOffset);
+            }
+        });
+    }
+
+    private void initSortByJenisLayanan() {
+        final Nson jenisLayananList = Nson.newArray();
+        jenisLayananList.add(Nson.newObject().set("tittle", "ALL"));
+        jenisLayananList.add(Nson.newObject().set("tittle", "PAKET LAYANAN"));
+        jenisLayananList.add(Nson.newObject().set("tittle", "AFTER SALES SERVIS"));
+
+        RecyclerView recyclerView = findViewById(R.id.rv_jenis_layanan);
+        recyclerView.setHasFixedSize(false);
+        RecyclerView.LayoutManager layoutManager = new StaggeredGridLayoutManager
+                (
+                        1,
+                        StaggeredGridLayoutManager.HORIZONTAL
+                );
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(new NikitaRecyclerAdapter(jenisLayananList, R.layout.item_sort_by) {
+            @Override
+            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
+                super.onBindViewHolder(viewHolder, position);
+                if(sortBy.isEmpty()){
+                    viewHolder.find(R.id.img_check_selected).setVisibility(jenisLayananList.get(position).get("tittle").asString().equals("ALL") ? View.VISIBLE : View.GONE);
+                }else{
+                    viewHolder.find(R.id.img_check_selected).setVisibility(sortBy.equals(jenisLayananList.get(position).get("tittle").asString()) ? View.VISIBLE : View.GONE);
+                }
+                viewHolder.find(R.id.tv_tittle_sort_by, TextView.class).setText(jenisLayananList.get(position).get("tittle").asString());
+                viewHolder.find(R.id.ly_container_status).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        sortBy = jenisLayananList.get(position).get("tittle").asString();
+                        if (filterBottomSheet.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                            filterBottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                        }
+                        if (jenisLayananList.get(position).get("tittle").asString().equals("ALL")) {
+                            viewLayanan("", "");
+                        } else {
+                            viewLayanan("", jenisLayananList.get(position).get("tittle").asString());
+                        }
+                        notifyDataSetChanged();
+                    }
+                });
+            }
+        });
+    }
+
+    private void viewLayanan(final String search, final String sortBy) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
             @Override
             public void run() {
+                swipeProgress(true);
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 args.put("spec", "Bengkel");
-                args.put("search", nama);
+                args.put("search", search);
                 args.put("status", "TIDAK AKTIF");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewlayanan"), args));
+                args.put("sortBy", sortBy);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_LAYANAN), args));
             }
 
             @Override
             public void runUI() {
+                swipeProgress(false);
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
-                    rvLayanan.getAdapter().notifyDataSetChanged();
+                    Objects.requireNonNull(rvLayanan.getAdapter()).notifyDataSetChanged();
 
                 } else {
                     Log.d(TAG, result.get("status").asString());
@@ -149,7 +268,7 @@ public class Layanan_Avtivity extends AppActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == 10) {
-                catchData("");
+                viewLayanan("", "");
             }
         }
     }
@@ -185,7 +304,7 @@ public class Layanan_Avtivity extends AppActivity {
             public boolean onQueryTextSubmit(String query) {
                 searchMenu.collapseActionView();
                 //filter(null);
-                catchData(query);
+                viewLayanan(query, "");
                 return true;
             }
         };

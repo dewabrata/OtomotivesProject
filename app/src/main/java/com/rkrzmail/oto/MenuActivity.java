@@ -43,7 +43,7 @@ import com.rkrzmail.oto.gmod.MyCode;
 import com.rkrzmail.oto.modules.antar_jemput.AntarJemput_Activity;
 import com.rkrzmail.oto.modules.bengkel.Absensi_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Asset_Activity;
-import com.rkrzmail.oto.modules.bengkel.Billing_MainTab_Activity;
+import com.rkrzmail.oto.modules.bengkel.Billing_Activity;
 import com.rkrzmail.oto.modules.bengkel.Collection_Activity;
 import com.rkrzmail.oto.modules.bengkel.DaftarUser_Activity;
 import com.rkrzmail.oto.modules.bengkel.Dashboard_MainTab_Activity;
@@ -65,7 +65,6 @@ import com.rkrzmail.oto.modules.mekanik.PerintahKerjaMekanik_Activity;
 import com.rkrzmail.oto.modules.sparepart.MenungguPart_Activity;
 import com.rkrzmail.oto.modules.bengkel.Pembayaran_MainTab_Activity;
 import com.rkrzmail.oto.modules.checkin.KontrolLayanan_Activity;
-import com.rkrzmail.oto.modules.checkin.KontrolBooking_Activity;
 import com.rkrzmail.oto.modules.discount.DiscountLayanan_Activity;
 import com.rkrzmail.oto.modules.checkin.CheckOut_Activity;
 import com.rkrzmail.oto.modules.sparepart.AturParts_Activity;
@@ -73,7 +72,7 @@ import com.rkrzmail.oto.modules.sparepart.DetailCariPart_Activity;
 import com.rkrzmail.oto.modules.discount.DiscountPart_Activity;
 import com.rkrzmail.oto.modules.discount.FrekwensiDiscount_Activity;
 import com.rkrzmail.oto.modules.discount.DiscountSpot_Activity;
-import com.rkrzmail.oto.modules.bengkel.Referal_Activity;
+import com.rkrzmail.oto.modules.bengkel.Referal_MainTab_Activity;
 import com.rkrzmail.oto.modules.sparepart.PartHome_MainTab_Activity;
 import com.rkrzmail.oto.modules.sparepart.PenjualanPart_Activity;
 import com.rkrzmail.oto.modules.sparepart.Spareparts_Activity;
@@ -310,7 +309,7 @@ public class MenuActivity extends AppActivity {
         if (id == R.id.action_settings) {
             return true;
         } else if (item.getTitle().toString().equalsIgnoreCase(REFERAL) && getAccess(REFERAL)) {
-            Intent intent = new Intent(MenuActivity.this, Referal_Activity.class);
+            Intent intent = new Intent(MenuActivity.this, Referal_MainTab_Activity.class);
             startActivity(intent);
         } else if (item.getTitle().toString().equalsIgnoreCase(CHECK_OUT) && getAccess(CHECK_OUT)) {
             Intent intent = new Intent(MenuActivity.this, CheckOut_Activity.class);
@@ -438,6 +437,9 @@ public class MenuActivity extends AppActivity {
             });
         } else if (item.getTitle().toString().equalsIgnoreCase(SARAN)) {
             Intent intent = new Intent(MenuActivity.this, SaranActivity.class);
+            startActivity(intent);
+        } else if (item.getTitle().toString().equalsIgnoreCase(BILLING) && getAccess(BILLING)) {
+            Intent intent = new Intent(MenuActivity.this, Billing_Activity.class);
             startActivity(intent);
         } else{
             if(!getAccess(REFERAL)){

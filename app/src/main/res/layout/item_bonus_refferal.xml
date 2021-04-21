@@ -62,32 +62,43 @@
         <TableRow android:layout_marginTop="5dp">
 
             <TextView
-                android:id="@+id/tv_kode_ref"
+                android:id="@+id/tv_tgl_aktif"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/kode_referal"
+                android:text="@string/tanggal_aktif"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:textSize="12sp"
                 android:textColor="@color/grey_800" />
+
+            <TextView
+                android:id="@+id/tv_jumlah_fee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/jumlah_fee"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp"
+                android:textColor="@color/grey_800"
+                android:layout_gravity="end"/>
+
 
         </TableRow>
 
         <TableRow android:layout_marginTop="5dp">
 
             <TextView
-                android:id="@+id/tv_tanggal"
+                android:id="@+id/tv_jumlah_bonus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/tanggal"
+                android:text="@string/jumlah_bonus"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:textSize="12sp"
                 android:textColor="@color/grey_800"/>
 
             <TextView
-                android:id="@+id/tv_status"
+                android:id="@+id/tv_tgl_transfer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/status"
+                android:text="@string/tanggal_transfer"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:textSize="12sp"
                 android:textColor="@color/grey_800"

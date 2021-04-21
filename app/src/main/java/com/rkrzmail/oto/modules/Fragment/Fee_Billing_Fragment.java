@@ -122,7 +122,6 @@ public class Fee_Billing_Fragment extends Fragment {
                 super.onBindViewHolder(viewHolder, position);
                 viewHolder.find(R.id.tv_tanggal, TextView.class).setText(detailFeeList.get(position).get("").asString());
                 viewHolder.find(R.id.tv_no_bukti_bayar, TextView.class).setText(detailFeeList.get(position).get("").asString());
-                viewHolder.find(R.id.tv_jenis_transaksi, TextView.class).setText(RP + NumberFormatUtils.formatRp(detailFeeList.get(position).get("").asString()));
                 viewHolder.find(R.id.tv_total_transaksi, TextView.class).setText(RP + NumberFormatUtils.formatRp(detailFeeList.get(position).get("").asString()));
                 viewHolder.find(R.id.tv_total_fee, TextView.class).setText(RP + NumberFormatUtils.formatRp(detailFeeList.get(position).get("").asString()));
             }

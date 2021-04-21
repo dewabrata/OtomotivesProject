@@ -653,7 +653,7 @@ public class Tools {
     }
 
     public static String getmonth(int month) {
-        if (month == 0 || String.valueOf(month) == null || String.valueOf(month).isEmpty()) return "";
+        if (month == 0 || String.valueOf(month).isEmpty()) return "";
             switch (month) {
                 case 1:
                     return "Januari";
@@ -691,6 +691,48 @@ public class Tools {
                 case 12:
                     return "Desember";
             }
+        return "January";
+    }
+
+    public static String getBulanByEnglishName(String month){
+        if(month.isEmpty()) return "";
+        switch (month) {
+            case "January":
+                return "Januari";
+
+            case "February":
+                return "Februari";
+
+            case "March":
+                return "Maret";
+
+            case "April":
+                return "April";
+
+            case "May":
+                return "Mei";
+
+            case "June":
+                return "Juni";
+
+            case "July":
+                return "Juli";
+
+            case "August":
+                return "Agustus";
+
+            case "September":
+                return "September";
+
+            case "October":
+                return "Oktober";
+
+            case "November":
+                return "November";
+
+            case "December":
+                return "Desember";
+        }
         return "January";
     }
 

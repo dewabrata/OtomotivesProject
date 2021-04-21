@@ -1,11 +1,19 @@
 package com.rkrzmail.utils;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.RectF;
+import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -15,6 +23,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
+import static com.rkrzmail.utils.ConstUtils.PICK_IMAGE_CAMERA;
+import static com.rkrzmail.utils.ConstUtils.PICK_IMAGE_GALLERY;
 
 public class FileUtility {
 
@@ -78,10 +89,10 @@ public class FileUtility {
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 fileOutputStream.write(buffer, 0, bytesRead);
             }
-            File file=new File(filePath
+            File file = new File(filePath
                     + fileName);
-            if(file.exists())
-                Log.d("","Ada");
+            if (file.exists())
+                Log.d("", "Ada");
             fileOutputStream.close();
             fileOutputStream.flush();
             fileOutputStream.close();
@@ -240,4 +251,5 @@ public class FileUtility {
             return;
         }
     }
+
 }

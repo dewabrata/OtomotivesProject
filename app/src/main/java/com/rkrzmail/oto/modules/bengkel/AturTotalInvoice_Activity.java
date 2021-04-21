@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -19,6 +20,7 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.DateFormatUtils;
 import com.rkrzmail.srv.NumberFormatUtils;
+import com.rkrzmail.utils.Tools;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.text.ParseException;
@@ -46,6 +48,7 @@ public class AturTotalInvoice_Activity extends AppActivity {
     private String tglBayar = "";
     private String namaBank = "", noRek = "", tipePemabayaran = "";
     private String jenisTransaksi = "";
+    private String jenisPiutang = "";
 
     private int totalInvPart = 0, totalInvLayanan = 0;
     private int totalInvoice = 0;
@@ -76,37 +79,43 @@ public class AturTotalInvoice_Activity extends AppActivity {
     @SuppressLint("SetTextI18n")
     private void initData() {
         data = Nson.readJson(getIntentStringExtra(DATA));
+        int count = 0;
         for (int i = 0; i < data.size(); i++) {
+            count++;
+            jenisPiutang = data.get(i).get("JENIS_PIUTANG").asString();
             if(!data.get(i).get("PIHUTANG_ID").asString().isEmpty()){
                 kasPiutangIDList.add(Nson.newObject().set("KAS_PIUTANG_ID", data.get(i).get("PIHUTANG_ID").asInteger()));
             }
-            totalFeeNonPaket += data.get(i).get("FEE_NON_PAKET").asInteger();
-            totalPenggantianPart += data.get(i).get("PENGGANTIAN_PART").asInteger();
-            totalGrandTotal += data.get(i).get("GRAND_TOTAL").asInteger();
-            totalTotalDue += data.get(i).get("TOTAL_DUE").asInteger();
-            totalPPN += data.get(i).get("PPN").asInteger();
-            totalPembayaran += data.get(i).get("JUMLAH_PEMBAYARAN").asInteger();
-            totalBiaya += data.get(i).get("TOTAL_BIAYA").asInteger();
+            if(data.get(i).get("JENIS_PIUTANG").asString().equals("INVOICE")){
+                totalGrandTotal += data.get(i).get("GRAND_TOTAL").asInteger();
+                totalTotalDue += data.get(i).get("TOTAL_DUE").asInteger();
+                totalPPN += data.get(i).get("PPN").asInteger();
+                totalPembayaran += data.get(i).get("JUMLAH_PEMBAYARAN").asInteger();
+                totalBiaya += data.get(i).get("TOTAL_BIAYA").asInteger();
 
-            totalJasaLain += data.get(i).get("BIAYA_JASA_LAIN").asInteger();
-            totalDiscJasaLain += data.get(i).get("DISCOUNT_JASA_LAIN").asInteger();
-            netJasaLain += data.get(i).get("BIAYA_JASA_LAIN_NET").asInteger();
+                totalJasaLain += data.get(i).get("BIAYA_JASA_LAIN").asInteger();
+                totalDiscJasaLain += data.get(i).get("DISCOUNT_JASA_LAIN").asInteger();
+                netJasaLain += data.get(i).get("BIAYA_JASA_LAIN_NET").asInteger();
 
-            totalHargaPart += data.get(i).get("HARGA_PART").asInteger();
-            totalDiscPart += data.get(i).get("DISCOUNT_PART").asInteger();
-            netPart += data.get(i).get("HARGA_PART_NET").asInteger();
-            totalJasaPart += data.get(i).get("BIAYA_JASA_PART").asInteger();
-            totalDiscJasaPart += data.get(i).get("DISCOUNT_JASA_PART").asInteger();
-            netJasaPart += data.get(i).get("BIAYA_JASA_PART_NET").asInteger();
+                totalHargaPart += data.get(i).get("HARGA_PART").asInteger();
+                totalDiscPart += data.get(i).get("DISCOUNT_PART").asInteger();
+                netPart += data.get(i).get("HARGA_PART_NET").asInteger();
+                totalJasaPart += data.get(i).get("BIAYA_JASA_PART").asInteger();
+                totalDiscJasaPart += data.get(i).get("DISCOUNT_JASA_PART").asInteger();
+                netJasaPart += data.get(i).get("BIAYA_JASA_PART_NET").asInteger();
 
-            totalDiscLayanan += data.get(i).get("DISCOUNT_LAYANAN").asInteger();
-            totalLayanan += data.get(i).get("BIAYA_LAYANAN").asInteger();
-            netLayanan += data.get(i).get("BIAYA_LAYANAN_NET").asInteger();
+                totalDiscLayanan += data.get(i).get("DISCOUNT_LAYANAN").asInteger();
+                totalLayanan += data.get(i).get("BIAYA_LAYANAN").asInteger();
+                netLayanan += data.get(i).get("BIAYA_LAYANAN_NET").asInteger();
+            }else{
+                totalFeeNonPaket += data.get(i).get("FEE_NON_PAKET").asInteger();
+                totalPenggantianPart += data.get(i).get("PENGGANTIAN_PART").asInteger();
+            }
 
             tipePemabayaran = data.get(i).get("TIPE_PEMBAYARAN").asString();
             namaBank = data.get(i).get("BANK_REK_INTERNAL").asString();
             noRek = data.get(i).get("NO_REK_INTERNAL").asString();
-            tglBayar = data.get(i).get("TANGGA_PEMBAYARAN").asString();
+            tglBayar = data.get(i).get("TANGGAL_PEMBAYARAN").asString();
 
             if (idCheckin.length() > 0) idCheckin.append("-");
 
@@ -118,9 +127,10 @@ public class AturTotalInvoice_Activity extends AppActivity {
                     .set("PEMBAYARAN_ID", data.get(i).get("PEMBAYARAN_ID").asString())
             );
         }
-
-        final String cid = UtilityAndroid.getSetting(getApplicationContext(), "CID", "").substring(UtilityAndroid.getSetting(getApplicationContext(), "CID", "").length() - 4);
+        namaPelanggan = count > 1 ? "" : namaPelanggan;
         totalInvoice = getIntentIntegerExtra("TOTAL_INV");
+        final String cid = UtilityAndroid.getSetting(getApplicationContext(), "CID", "").substring(UtilityAndroid.getSetting(getApplicationContext(), "CID", "").length() - 4);
+        final String kodeTransaksi;
 
         find(R.id.et_total_invoice, EditText.class).setText(RP + NumberFormatUtils.formatRp(String.valueOf(totalInvoice)));
         find(R.id.tv_tgl_jatuh_tempo, TextView.class).setOnClickListener(new View.OnClickListener() {
@@ -130,85 +140,91 @@ public class AturTotalInvoice_Activity extends AppActivity {
             }
         });
 
-        if(jenisTransaksi.equals("JUAL PART")){
-            noInv = "INV" + "/" + currentDateTime("ddMMyyyy") + "/" + cid + "/" + jenisTransaksi + "-" + totalInvoice + "/PART";
-            find(R.id.cb_part_inv, CheckBox.class).setEnabled(true);
-        }else{
-            if(totalFeeNonPaket > 0){
-                noInv = "INV" + "/" + currentDateTime("ddMMyyyy") + "/" + cid + "/" + jenisTransaksi + "-" + totalInvoice + "/LAYANAN";
-                find(R.id.cb_layanan_inv, CheckBox.class).setChecked(true);
-                find(R.id.cb_layanan_inv, CheckBox.class).setEnabled(true);
-            }else{
-                find(R.id.cb_layanan_inv, CheckBox.class).setChecked(false);
-                find(R.id.cb_layanan_inv, CheckBox.class).setEnabled(false);
-            }
-
-            if(totalPenggantianPart > 0){
-                if(noInv.isEmpty()){
-                    noInv = "INV" + "/" + currentDateTime("ddMMyyyy") + "/" + cid + "/" + jenisTransaksi + "-" + totalInvoice + "/PART";
-                }else{
-                    noInv += "-PART";
-                }
-                find(R.id.cb_part_inv, CheckBox.class).setChecked(true);
+        if(jenisPiutang.equals("AFTER SALES SERVIS")){
+            if(jenisTransaksi.equals("JUAL PART")){
+                kodeTransaksi = "J";
+                noInv = "INV" + "/" + currentDateTime("ddMMyyyy") + "/" + cid + "/" + kodeTransaksi + "-" + totalInvoice + "/P";
                 find(R.id.cb_part_inv, CheckBox.class).setEnabled(true);
             }else{
-                find(R.id.cb_part_inv, CheckBox.class).setChecked(false);
-                find(R.id.cb_part_inv, CheckBox.class).setEnabled(false);
-            }
-        }
-
-
-        find(R.id.cb_layanan_inv, CheckBox.class).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b){
-                    totalInvoice += totalFeeNonPaket;
-                    noInv = "INV" + "/" + currentDateTime("ddMMyyyy") + "/" + cid + "/" + jenisTransaksi + "-" + totalInvoice + "/LAYANAN";
-                    if(find(R.id.cb_part_inv, CheckBox.class).isChecked()){
-                        noInv += "-PART";
-                    }
+                kodeTransaksi = jenisTransaksi.equals("CHECKIN") ? "C" : "P";
+                if(totalFeeNonPaket > 0){
+                    noInv = "INV" + "/" + currentDateTime("ddMMyyyy") + "/" + cid + "/" + kodeTransaksi + "-" + totalInvoice + "/L";
+                    find(R.id.cb_layanan_inv, CheckBox.class).setChecked(true);
+                    find(R.id.cb_layanan_inv, CheckBox.class).setEnabled(true);
                 }else{
-                    totalInvoice -= totalFeeNonPaket;
-                    noInv = "INV" + "/" + currentDateTime("ddMMyyyy") + "/" + cid + "/" + jenisTransaksi + "-" + totalInvoice + "/LAYANAN";
-                    if(find(R.id.cb_part_inv, CheckBox.class).isChecked()){
-                        noInv += "-PART";
-                    }
-                    if(noInv.contains("-PART")){
-                        noInv = noInv.replace("/LAYANAN-", "/");
-                    }else{
-                        noInv = noInv.replace("/LAYANAN", "");
-                    }
+                    find(R.id.cb_layanan_inv, CheckBox.class).setChecked(false);
+                    find(R.id.cb_layanan_inv, CheckBox.class).setEnabled(false);
                 }
-                find(R.id.et_total_invoice, EditText.class).setText(RP + NumberFormatUtils.formatRp(String.valueOf(totalInvoice)));
-                find(R.id.et_no_invoice, EditText.class).setText(noInv);
-            }
-        });
 
-        find(R.id.cb_part_inv, CheckBox.class).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b){
-                    totalInvoice += totalPenggantianPart;
+                if(totalPenggantianPart > 0){
                     if(noInv.isEmpty()){
-                        noInv = "INV" + "/" + currentDateTime("ddMMyyyy") + "/" + cid + "/" + jenisTransaksi + "-" + totalInvoice + "/PART";
+                        noInv = "INV" + "/" + currentDateTime("ddMMyyyy") + "/" + cid + "/" + kodeTransaksi + "-" + totalInvoice + "/P";
                     }else{
-                        if(!noInv.contains("/LAYANAN")){
-                            noInv = "INV" + "/" + currentDateTime("ddMMyyyy") + "/" + cid + "/" + jenisTransaksi + "-" + totalInvoice + "/PART";
+                        noInv += "-P";
+                    }
+                    find(R.id.cb_part_inv, CheckBox.class).setChecked(true);
+                    find(R.id.cb_part_inv, CheckBox.class).setEnabled(true);
+                }else{
+                    find(R.id.cb_part_inv, CheckBox.class).setChecked(false);
+                    find(R.id.cb_part_inv, CheckBox.class).setEnabled(false);
+                }
+            }
+
+
+            find(R.id.cb_layanan_inv, CheckBox.class).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    if(b){
+                        totalInvoice += totalFeeNonPaket;
+                        noInv = "INV" + "/" + currentDateTime("ddMMyyyy") + "/" + cid + "/" + kodeTransaksi + "-" + totalInvoice + "/L";
+                        if(find(R.id.cb_part_inv, CheckBox.class).isChecked()){
+                            noInv += "-P";
+                        }
+                    }else{
+                        totalInvoice -= totalFeeNonPaket;
+                        noInv = "INV" + "/" + currentDateTime("ddMMyyyy") + "/" + cid + "/" + kodeTransaksi + "-" + totalInvoice + "/L";
+                        if(find(R.id.cb_part_inv, CheckBox.class).isChecked()){
+                            noInv += "-P";
+                        }
+                        if(noInv.contains("-P")){
+                            noInv = noInv.replace("/L-", "/");
                         }else{
-                            noInv = "INV" + "/" + currentDateTime("ddMMyyyy") + "/" + cid + "/" + jenisTransaksi + "-" + totalInvoice +  "/LAYANAN-PART";
+                            noInv = noInv.replace("/L", "");
                         }
                     }
-                }else{
-                    totalInvoice -= totalPenggantianPart;
-                    noInv = "INV" + "/" + currentDateTime("ddMMyyyy") + "/" + cid + "/" + jenisTransaksi + "-" + totalInvoice;
-                    if(find(R.id.cb_layanan_inv, CheckBox.class).isChecked()){
-                        noInv += "/LAYANAN";
-                    }
+                    find(R.id.et_total_invoice, EditText.class).setText(RP + NumberFormatUtils.formatRp(String.valueOf(totalInvoice)));
+                    find(R.id.et_no_invoice, EditText.class).setText(noInv);
                 }
-                find(R.id.et_total_invoice, EditText.class).setText(RP + NumberFormatUtils.formatRp(String.valueOf(totalInvoice)));
-                find(R.id.et_no_invoice, EditText.class).setText(noInv);
-            }
-        });
+            });
+
+            find(R.id.cb_part_inv, CheckBox.class).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    if(b){
+                        totalInvoice += totalPenggantianPart;
+                        if(noInv.isEmpty()){
+                            noInv = "INV" + "/" + currentDateTime("ddMMyyyy") + "/" + cid + "/" + kodeTransaksi + "-" + totalInvoice + "/P";
+                        }else{
+                            if(!noInv.contains("/L")){
+                                noInv = "INV" + "/" + currentDateTime("ddMMyyyy") + "/" + cid + "/" + kodeTransaksi + "-" + totalInvoice + "/P";
+                            }else{
+                                noInv = "INV" + "/" + currentDateTime("ddMMyyyy") + "/" + cid + "/" + kodeTransaksi + "-" + totalInvoice +  "/L-P";
+                            }
+                        }
+                    }else{
+                        totalInvoice -= totalPenggantianPart;
+                        noInv = "INV" + "/" + currentDateTime("ddMMyyyy") + "/" + cid + "/" + kodeTransaksi + "-" + totalInvoice;
+                        if(find(R.id.cb_layanan_inv, CheckBox.class).isChecked()){
+                            noInv += "/L";
+                        }
+                    }
+                    find(R.id.et_total_invoice, EditText.class).setText(RP + NumberFormatUtils.formatRp(String.valueOf(totalInvoice)));
+                    find(R.id.et_no_invoice, EditText.class).setText(noInv);
+                }
+            });
+        }else{
+            noInv = "INV" + "/" + currentDateTime("ddMMyyyy") + "/" + cid  + "-" + totalInvoice ;
+        }
 
         find(R.id.et_no_invoice, EditText.class).setText(noInv);
         find(R.id.btn_simpan).setOnClickListener(new View.OnClickListener() {
@@ -292,9 +308,9 @@ public class AturTotalInvoice_Activity extends AppActivity {
                 args.put("jasaLain", String.valueOf(totalJasaLain));
                 args.put("discJasaLain", String.valueOf(totalDiscJasaLain));
                 args.put("netJasaLain", String.valueOf(netJasaLain));
-                args.put("totalDue", "");//String.valueOf(totalTotalDue)
-                args.put("ppn", "");//String.valueOf(totalPPN)
-                args.put("grandTotal", String.valueOf(totalGrandTotal));
+                args.put("totalDue", jenisPiutang.equals("AFTER SALES SERVIS") ? String.valueOf(totalInvoice) : String.valueOf(totalTotalDue));
+                args.put("ppn", String.valueOf(totalPPN));
+                args.put("grandTotal",  jenisPiutang.equals("AFTER SALES SERVIS") ? String.valueOf(totalInvoice) : String.valueOf(totalGrandTotal));
                 args.put("idPembayaranList", idPembayaranList.toJson());
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(PIUTANG), args));

@@ -98,7 +98,13 @@
 
     <string name="foto_stnk">FOTO STNK</string>
     <string name="verifikasi_info">
-        Untuk Mendaftar Bengkel Pro, Kamu Harus Memverifikasi No. Ponsel yang Valid
+        otomotives.com akan memvalidasi No. ponsel Anda dengan OTP melalui Whatsapp. Registrasi hanya akan dilanjutkan untuk No. ponsel yang valid.
+    </string>
+    <string name="verifikasi_info2">
+        Anda adalah pemilik atau pihak yang dapat mewakli bengkel secara hukum
+    </string>
+    <string name="nilai_unik_keterangan">
+        Jangan melakukan pembayaran setelah batas Waktu Nilai Unik terlewati
     </string>
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -133,7 +139,8 @@
     <string name="total_biaya_uppercase">TOTAL BIAYA</string>
     <string name="discount_lain">DISCOUNT LAIN</string>
     <string name="net_transaksi">NET TRANSAKSI</string>
-    <string name="total_transaksi">TOTAL TRANSAKSI</string>
+    <string name="total_transaksi_uppercase">TOTAL TRANSAKSI</string>
+    <string name="total_transaksi">Total Transaksi</string>
     <string name="nama_pelanggan_uppercase">NAMA PELANGGAN</string>
     <string name="transaksi">Transaksi</string>
     <string name="spot_disc">Spot Disc</string>
@@ -382,6 +389,25 @@
     <string name="kendaraan">Kendaraan</string>
     <string name="verifikasi_uppercase">VERIFIKASI</string>
     <string name="refresh_otp_uppercase">REFRESH OTP</string>
+    <string name="registrasi_uppercase">REGISTRASI</string>
+    <string name="logo_uppercase">LOGO</string>
+    <string name="tampak_depan_uppercase">DEPAN</string>
+    <string name="hpp_uppercase">HPP</string>
+    <string name="transfer_ke_uppercase">TRANSFER KE</string>
+    <string name="detail_fee_uppercase">DETAIL FEE</string>
+    <string name="buat_nilai_unik_uppercase">BUAT NILAI UNIK</string>
+    <string name="nilai_unik_uppercase">NILAI UNIK</string>
+    <string name="batas_waktu_uppercase">BATAS WAKTU</string>
+    <string name="dd_mm_yyyy">DD/MM/YYYY</string>
+    <string name="hh_mm">HH:MM</string>
+    <string name="ok_uppercase">OK</string>
+    <string name="jenis_layanan_uppercase">JENIS LAYANAN</string>
+    <string name="nama_bengkel">Nama Bengkel</string>
+    <string name="kode_referal">Kode Referal</string>
+    <string name="tanggal_aktif">Tanggal Aktif</string>
+    <string name="jumlah_fee">Jumlah Fee</string>
+    <string name="jumlah_bonus">Jumlah Bonus</string>
+    <string name="tanggal_transfer">Tanggal Transfer</string>
     <string-array name="pola_harga_jual">
         <item>FLEXIBLE</item>
         <item>BELI + MARGIN</item>

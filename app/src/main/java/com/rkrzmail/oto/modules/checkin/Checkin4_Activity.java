@@ -608,7 +608,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
         final String jam = find(R.id.et_lamaWaktu_checkin, EditText.class).getText().toString().substring(3, 5);
         final String menit = find(R.id.et_lamaWaktu_checkin, EditText.class).getText().toString().substring(6, 8);
         String estimasiSebelum = find(R.id.et_mulaiWaktu_checkin, TextView.class).getText().toString();
-        estimasiSebelum = estimasiSebelum.isEmpty() ? currentDateTime() + " " + currentDateTime("HH:mm") : estimasiSebelum;
+        estimasiSebelum = estimasiSebelum.isEmpty() ? currentDateTime("HH:mm") : estimasiSebelum;
         final String estimasiSelesai = find(R.id.et_selesaiWaktu_checkin, TextView.class).getText().toString();
         final String noPonsel = getData.get("noPonsel").asString();
         final String nopol = getData.get("nopol").asString();
@@ -647,7 +647,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 args.put("sk", sk);
                 args.put("waktuLayananHari", hari);
                 args.put("waktuLayananJam", jam);
-                args.put("waktuLayananHMenit", menit);
+                args.put("waktuLayananMenit", menit);
                 args.put("estimasiSebelum", finalEstimasiSebelum);
                 args.put("estimasiSelesai", estimasiSelesai);
                 args.put("keterangan", find(R.id.et_ket_checkin4, EditText.class).getText().toString());

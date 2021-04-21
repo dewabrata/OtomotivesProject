@@ -1099,7 +1099,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                         finish();
                     } else {
                         nson.set("TOTAL", find(R.id.et_totalBiaya_checkin3, EditText.class).getText().toString());
-                        nson.set("WAKTU_LAYANAN", find(R.id.tv_waktu_layanan, TextView.class).getText().toString().replace("Total Waktu Layanan : ", ""));
+                        nson.set("WAKTU_LAYANAN", waktuLayanan);
                         nson.set("LOKASI_LAYANAN", lokasiLayananList.toJson());
                         nson.set("PART_KOSONG", isPartKosong2);
                         nson.set("OUTSOURCE", isOutsource);

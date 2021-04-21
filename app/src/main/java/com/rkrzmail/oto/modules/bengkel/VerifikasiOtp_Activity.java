@@ -11,6 +11,7 @@ import android.text.Selection;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -51,6 +52,9 @@ public class VerifikasiOtp_Activity extends AppActivity {
                 if (find(R.id.et_no_ponsel, EditText.class).getText().toString().isEmpty() ||
                         find(R.id.et_no_ponsel, EditText.class).getText().toString().length() <= 13) {
                     find(R.id.et_no_ponsel, EditText.class).setError("NO. PONSEL HARUS DI ISI");
+                } else if (!find(R.id.cb_aggree, CheckBox.class).isChecked()) {
+                    viewFocus(find(R.id.cb_aggree, CheckBox.class));;
+                    showWarning("PERSETUJUAN HARUS DI SETUJUI");
                 } else {
                     requestOtp();
                 }
@@ -108,8 +112,8 @@ public class VerifikasiOtp_Activity extends AppActivity {
         });
     }
 
-    private void setTimerRefresh(){
-        refreshOtpTimer =  new CountDownTimer(IDDLE_REFRESH, 1000) {
+    private void setTimerRefresh() {
+        refreshOtpTimer = new CountDownTimer(IDDLE_REFRESH, 1000) {
             @SuppressLint("DefaultLocale")
             @Override
             public void onTick(long timer) {
@@ -148,9 +152,9 @@ public class VerifikasiOtp_Activity extends AppActivity {
                     startActivity(intent);
                     finish();
                 } else {
-                    if(result.get("message").asString().toLowerCase().contains("duplicate")){
+                    if (result.get("message").asString().toLowerCase().contains("duplicate")) {
                         showError("NO PONSEL YANG ANDA MASUKKAN TELAH MENDAFTAR");
-                    }else{
+                    } else {
                         showError(result.get("message").asString());
                     }
                 }

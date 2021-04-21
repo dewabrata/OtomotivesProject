@@ -75,7 +75,7 @@ public class AturParts_Activity extends AppActivity {
         if (getIntent().hasExtra("atur_part")) {
             isParts = true;
             //find(R.id.et_hpp_part, EditText.class).setEnabled(false);
-            find(R.id.et_stockTersedia_part, EditText.class).setEnabled(false);
+            find(R.id.tl_stock).setVisibility(View.GONE);
             find(R.id.btn_hapus, Button.class).setVisibility(View.VISIBLE);
             find(R.id.btn_hapus, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override

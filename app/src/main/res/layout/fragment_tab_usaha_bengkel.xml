@@ -71,7 +71,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
-                        android:inputType="textCapSentences"
+                        android:inputType="number"
                         android:padding="@dimen/spacing_large"/>
 
                 </android.support.design.widget.TextInputLayout>
@@ -274,7 +274,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:layout_weight="1"
+                    android:layout_weight="4"
                     android:hint="@string/npwp_uppercase">
 
                     <EditText
@@ -289,9 +289,10 @@
 
                 <CheckBox
                     android:id="@+id/cb_pkp_usaha"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:layout_weight="1"
                     android:text="PKP" />
 
             </LinearLayout>
@@ -495,51 +496,50 @@
             </LinearLayout>
 
 
-
-            <TableLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:stretchColumns="*">
+                android:orientation="horizontal">
 
-                <TableRow>
+                <Button
+                    android:id="@+id/btn_tampak_depan"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:drawableStart="@drawable/icon_camera_unfill"
+                    android:text="@string/tampak_depan_uppercase"
+                    android:padding="10dp"
+                    android:textColor="@android:color/white"
+                    android:background="@drawable/btn_rounded_accent"
+                    tools:ignore="ButtonStyle" />
 
-                    <ImageView
-                        android:id="@+id/imgBtn_upload"
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        android:layout_gravity="start|center_vertical"
-                        android:background="@drawable/border_solid"
-                        android:padding="10dp"
-                        android:scaleType="fitXY"
-                        android:layout_weight="1"
-                        app:srcCompat="@drawable/ic_data" />
+                <Button
+                    android:id="@+id/btn_logo_depan"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:drawableStart="@drawable/icon_camera_unfill"
+                    android:text="@string/logo_uppercase"
+                    android:padding="10dp"
+                    android:textColor="@android:color/white"
+                    android:background="@drawable/btn_rounded_accent"
+                    tools:ignore="ButtonStyle" />
 
+            </LinearLayout>
 
-                    <ImageView
-                        android:id="@+id/img_logoDepan_usaha"
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        android:layout_gravity="start|center_vertical"
-                        android:background="@drawable/border_solid"
-                        android:padding="10dp"
-                        android:scaleType="fitXY"
-                        android:layout_marginLeft="15dp"
-                        android:layout_weight="1"
-                        app:srcCompat="@drawable/ic_data" />
+            <Button
+                android:id="@+id/btn_simpan_usaha"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:background="@drawable/btn_rounded_accent"
+                android:text="@string/simpan_uppercase"
+                android:textColor="@android:color/white"
+                tools:ignore="ButtonStyle"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"/>
 
-                    <Button
-                        android:id="@+id/btn_simpan_usaha"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:layout_weight="1"
-                        android:background="@drawable/btn_rounded_accent"
-                        android:text="@string/simpan_uppercase"
-                        android:textColor="@android:color/white" />
-                </TableRow>
-
-            </TableLayout>
 
         </LinearLayout>
 

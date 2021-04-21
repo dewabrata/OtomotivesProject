@@ -2,10 +2,8 @@ package com.rkrzmail.oto.modules.Fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,11 +12,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -32,7 +28,6 @@ import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,8 +37,6 @@ import static android.app.Activity.RESULT_OK;
 import static android.support.constraint.Constraints.TAG;
 import static com.rkrzmail.srv.NumberFormatUtils.clearPercent;
 import static com.rkrzmail.srv.NumberFormatUtils.formatOnlyNumber;
-import static com.rkrzmail.srv.NumberFormatUtils.getPercentFilter;
-import static com.rkrzmail.srv.NumberFormatUtils.setPercentage;
 import static com.rkrzmail.utils.APIUrls.VIEW_JENIS_KENDARAAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_PROFILE;
 import static com.rkrzmail.utils.ConstUtils.RP;
@@ -55,10 +48,10 @@ public class Tambahan_Profile_Fragment extends Fragment {
 
     private Spinner spBooking, spFreesimpan;
     private MultiSelectionSpinner spFasilitas, spMerkLkkWajib, spLuarBengkel;
-    private EditText etHomeKm, etEmergencyKm, etJemputKm, etMinLainnya, etMinDerek, etKapasitas, etDerekKm, etFreeBiaya,
-            etDp,etOnus,etOffus,etkreditus,etAntrianExpress,etAntrianStandart,etMaxHome,etMaxEmg,etMaxDerek,etMaxJemput;
+    private EditText etBiayaHomeKm, etBiayaEmergencyKm, etBiayaJemputKm, etBiayaMinLainnya, etBiayaMinDerek, etKapasitas, etBiayaDerekKm, etFreeBiayaSimpan,
+            etDp, etOnus, etOffus, etkreditus, etAntrianExpress, etAntrianStandart, etMaxHome, etMaxEmg, etMaxDerek, etMaxJemput;
     private Button btnSimpan;
-    private CheckBox cbOnlineBengkel,cbOnlinePelanggan;
+    private CheckBox cbOnlineBengkel, cbOnlinePelanggan;
     private LinearLayout lyLayanan, lyTambahan, lyEntryMax, lyEntryKm;
     private AppActivity activity;
 
@@ -90,7 +83,16 @@ public class Tambahan_Profile_Fragment extends Fragment {
         initComponent(v);
         validation();
         initListener();
+        initData();
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(isVisible()){
+
+        }
     }
 
     private void initComponent(View v) {
@@ -99,14 +101,14 @@ public class Tambahan_Profile_Fragment extends Fragment {
         spBooking = v.findViewById(R.id.sp_booking_tambahan);
         spFreesimpan = v.findViewById(R.id.sp_freesimpanan_tambahan);
         spLuarBengkel = v.findViewById(R.id.sp_luarbengkel);
-        etHomeKm = v.findViewById(R.id.et_homeKm_tambahan);
-        etEmergencyKm = v.findViewById(R.id.et_emgKm_tambahan);
-        etJemputKm = v.findViewById(R.id.et_jemputKm_tambahan);
-        etDerekKm = v.findViewById(R.id.et_derekKm_tambahan);
-        etMinLainnya = v.findViewById(R.id.et_minLainnya_tambahan);
-        etMinDerek = v.findViewById(R.id.et_minDerek_tambahan);
+        etBiayaHomeKm = v.findViewById(R.id.et_homeKm_tambahan);
+        etBiayaEmergencyKm = v.findViewById(R.id.et_emgKm_tambahan);
+        etBiayaJemputKm = v.findViewById(R.id.et_jemputKm_tambahan);
+        etBiayaDerekKm = v.findViewById(R.id.et_derekKm_tambahan);
+        etBiayaMinLainnya = v.findViewById(R.id.et_minLainnya_tambahan);
+        etBiayaMinDerek = v.findViewById(R.id.et_minDerek_tambahan);
         etKapasitas = v.findViewById(R.id.et_kapasitas_tambahan);
-        etFreeBiaya = v.findViewById(R.id.et_freesimpanan_tambahan);
+        etFreeBiayaSimpan = v.findViewById(R.id.et_freesimpanan_tambahan);
         etDp = v.findViewById(R.id.et_downpayment_tambahan);
         etOnus = v.findViewById(R.id.et_onUs_tambahan);
         etOffus = v.findViewById(R.id.et_offUs_tambahan);
@@ -120,22 +122,74 @@ public class Tambahan_Profile_Fragment extends Fragment {
         lyTambahan = v.findViewById(R.id.ly_tambahan);
         cbOnlineBengkel = v.findViewById(R.id.cbPartOnlineBengkel_tambahan);
         cbOnlinePelanggan = v.findViewById(R.id.cbPartOnlinePelanggan_tambahan);
-
-
-        setSpFasilitas();
-        setSpMerkLkkWajib();
-        setSpLuarBengkel();
-
     }
 
-    private void initListener(){
-        etHomeKm.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etHomeKm));
-        etDerekKm.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etDerekKm));
-        etEmergencyKm.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etEmergencyKm));
-        etJemputKm.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etJemputKm));
-        etMinDerek.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etMinDerek));
-        etMinLainnya.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etMinLainnya));
-        etFreeBiaya.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etFreeBiaya));
+    private void initData() {
+        if (activity != null) {
+            ((ProfileBengkel_Activity) getActivity()).getDataTambahan(new ProfileBengkel_Activity.TambahanData() {
+                @SuppressLint("SetTextI18n")
+                @Override
+                public void getData(Nson nson) {
+                    etMaxHome.setText(nson.get("MAX_RADIUS_HOME").asString());
+                    etMaxEmg.setText(nson.get("MAX_RADIUS_EMERGENCY").asString());
+                    etMaxJemput.setText(nson.get("MAX_RADIUS_ANTAR_JEMPUT").asString());
+                    etMaxDerek.setText(nson.get("MAX_RADIUS_DEREK").asString());
+                    etKapasitas.setText(nson.get("KAPASITAS_SIMPAN").asString());
+                    etFreeBiayaSimpan.setText(RP + NumberFormatUtils.formatRp(nson.get("BIAYA_PENYIMPANAN").asString()));
+                    etDp.setText(nson.get("DP_PERSEN").asString() + " %");
+                    etOnus.setText(nson.get("MDR_ON_US").asString());
+                    etOffus.setText(nson.get("MDR_OFF_US").asString());
+                    etkreditus.setText(nson.get("MDR_KREDIT_CARD").asString());
+                    etBiayaDerekKm.setText(nson.get("").asString());
+                    etBiayaEmergencyKm.setText(nson.get("BIAYA_TRANSPORT_KM_EMERGENCY").asString());
+                    etBiayaHomeKm.setText(nson.get("BIAYA_TRANSPORT_KM_HOME").asString());
+                    etBiayaJemputKm.setText(nson.get("BIAYA_TRANSPORT_KM_ANTAR_JEMPUT").asString());
+                    etBiayaMinDerek.setText(nson.get("BIAYA_TRANSPORT_MIN_DEREK").asString());
+                    etBiayaMinLainnya.setText(nson.get("BIAYA_TRANSPORT_MIN_LAINNYA").asString());
+                    cbOnlineBengkel.setChecked(nson.get("JUAL_PART_OL_BENGKEL").asString().equals("Y"));
+                    cbOnlinePelanggan.setChecked(nson.get("JUAL_PART_OL_PELANGGAN").asString().equals("Y"));
+
+                    List<String> loadFasilitas = new ArrayList<>(), listLkkWajib = new ArrayList<>();
+                    if(nson.get("MERK_LKK_WAJIB").asString().contains(",")){
+                        String[] splitLkkWajib = nson.get("MERK_LKK_WAJIB").asString().trim().split(", ");
+                        listLkkWajib.addAll(Arrays.asList(splitLkkWajib));
+                    }else{
+                        listLkkWajib.add(nson.get("MERK_LKK_WAJIB").asString());
+                    }
+
+                    if(nson.get("FASILITAS_PELANGGAN").asString().contains(",")){
+                        String[] splitFasilitas = nson.get("FASILITAS_PELANGGAN").asString().trim().split(", ");
+                        loadFasilitas.addAll(Arrays.asList(splitFasilitas));
+                    }else{
+                        loadFasilitas.add(nson.get("FASILITAS_PELANGGAN").asString());
+                    }
+
+                    if(loadFasilitas.size() > 0){
+                        setSpFasilitas(loadFasilitas);
+                    }else{
+                        setSpFasilitas(null);
+                    }
+                    if(listLkkWajib.size() > 0){
+                        setSpMerkLkkWajib(listLkkWajib);
+                    }else{
+                        setSpMerkLkkWajib(null);
+                    }
+
+                    activity.setSpinnerOffline(Arrays.asList(getResources().getStringArray(R.array.number)), spFreesimpan, nson.get("MAX_FREE_PENYIMPANAN").asString());
+                    setSpLuarBengkel();
+                }
+            });
+        }
+    }
+
+    private void initListener() {
+        etBiayaHomeKm.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etBiayaHomeKm));
+        etBiayaDerekKm.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etBiayaDerekKm));
+        etBiayaEmergencyKm.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etBiayaEmergencyKm));
+        etBiayaJemputKm.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etBiayaJemputKm));
+        etBiayaMinDerek.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etBiayaMinDerek));
+        etBiayaMinLainnya.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etBiayaMinLainnya));
+        etFreeBiayaSimpan.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etFreeBiayaSimpan));
         etOnus.addTextChangedListener(new NumberFormatUtils().percentTextWatcher(etOnus));
         etOffus.addTextChangedListener(new NumberFormatUtils().percentTextWatcher(etOffus));
         etkreditus.addTextChangedListener(new NumberFormatUtils().percentTextWatcher(etkreditus));
@@ -249,8 +303,8 @@ public class Tambahan_Profile_Fragment extends Fragment {
 
     }
 
-    private void setSpFasilitas(){
-        spFasilitas.setItems(fasilitasList);
+    private void setSpFasilitas(List<String> loadItem) {
+        spFasilitas.setItems(fasilitasList, loadItem);
         spFasilitas.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
             @Override
             public void selectedIndices(List<Integer> indices) {
@@ -264,7 +318,7 @@ public class Tambahan_Profile_Fragment extends Fragment {
         });
     }
 
-    private void setSpLuarBengkel(){
+    private void setSpLuarBengkel() {
         spLuarBengkel.setItems(luarlist);
         spLuarBengkel.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
             @Override
@@ -279,9 +333,10 @@ public class Tambahan_Profile_Fragment extends Fragment {
         });
     }
 
-    private void setSpMerkLkkWajib(){
+    private void setSpMerkLkkWajib(final List<String> loadItem) {
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -304,7 +359,7 @@ public class Tambahan_Profile_Fragment extends Fragment {
                     allMerkList.addAll(merkMotorList);
                     allMerkList.addAll(merkMobilList);
                     Log.d(TAG, "runUI: " + allMerkList);
-                    spMerkLkkWajib.setItems(allMerkList);
+                    spMerkLkkWajib.setItems(allMerkList, loadItem);
 //                    if (count > 0) {
 //                        spJuallPartOnline.setItems(allMerkList);
 //                        //spMerkKendaraan.setSelection(allMerkList, false);
@@ -333,15 +388,17 @@ public class Tambahan_Profile_Fragment extends Fragment {
     }
 
     private void saveData() {
-        final String spFree = spFreesimpan.getSelectedItem().toString();
-        if (spFree.contains("--PILIH--")) {
-            spFree.replace("--PILIH--", "");
-        }
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
+
+                String spFree = spFreesimpan.getSelectedItem().toString();
+                if (spFree.contains("--PILIH--")) {
+                    spFree = spFree.replace("--PILIH--", "");
+                }
 
                 args.put("action", "update");
                 args.put("kategori", "TAMBAHAN");
@@ -352,22 +409,22 @@ public class Tambahan_Profile_Fragment extends Fragment {
                 args.put("maxRadiusEmg", etMaxEmg.getText().toString());
                 args.put("maxRadiusJemput", etMaxJemput.getText().toString());
                 args.put("maxRadiusDerek", etMaxDerek.getText().toString());
-                args.put("biayaMinDerek", formatOnlyNumber(etMinDerek.getText().toString()));
-                args.put("biayaMinLainnya", formatOnlyNumber(etMinLainnya.getText().toString()));
-                args.put("biayaKmHome", formatOnlyNumber(etHomeKm.getText().toString()));
-                args.put("biayaKmEmg", formatOnlyNumber(etEmergencyKm.getText().toString()));
-                args.put("biayaKmJemput", formatOnlyNumber(etJemputKm.getText().toString()));
-                args.put("biayaKmDerek", formatOnlyNumber(etDerekKm.getText().toString()));
+                args.put("biayaMinDerek", formatOnlyNumber(etBiayaMinDerek.getText().toString()));
+                args.put("biayaMinLainnya", formatOnlyNumber(etBiayaMinLainnya.getText().toString()));
+                args.put("biayaKmHome", formatOnlyNumber(etBiayaHomeKm.getText().toString()));
+                args.put("biayaKmEmg", formatOnlyNumber(etBiayaEmergencyKm.getText().toString()));
+                args.put("biayaKmJemput", formatOnlyNumber(etBiayaJemputKm.getText().toString()));
+                args.put("biayaKmDerek", formatOnlyNumber(etBiayaDerekKm.getText().toString()));
                 args.put("kapasitasSimpan", etKapasitas.getText().toString().toUpperCase());
                 args.put("freeSimpan", spFree);
-                args.put("freeBiaya", formatOnlyNumber(etFreeBiaya.getText().toString()));
+                args.put("freeBiaya", formatOnlyNumber(etFreeBiayaSimpan.getText().toString()));
                 args.put("dpPersen", etDp.getText().toString().toUpperCase());
                 args.put("mdrOnUs", clearPercent(etOnus.getText().toString().toUpperCase()));
                 args.put("mdrOffUs", clearPercent(etOffus.getText().toString().toUpperCase()));
                 args.put("mdrKredit", clearPercent(etkreditus.getText().toString().toUpperCase()));
                 args.put("jualPartOlBengkel", cbOnlineBengkel.isChecked() ? "Y" : "N");
                 args.put("jualPartOlPelanggan", cbOnlinePelanggan.isChecked() ? "Y" : "N");
-                args.put("merkLkkWajib", spMerkLkkWajib.getSelectedItemsAsString());
+                args.put("merkLkkWajib", spMerkLkkWajib.getSelectedItem().toString());
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PROFILE), args));
             }
@@ -393,8 +450,8 @@ public class Tambahan_Profile_Fragment extends Fragment {
                     Tools.setViewAndChildrenEnabled(lyTambahan, false);
                 } else {
                     Tools.setViewAndChildrenEnabled(lyTambahan, true);
-                    etMinLainnya.setEnabled(false);
-                    etMinDerek.setEnabled(false);
+                    etBiayaMinLainnya.setEnabled(false);
+                    etBiayaMinDerek.setEnabled(false);
                 }
             }
 
@@ -404,17 +461,18 @@ public class Tambahan_Profile_Fragment extends Fragment {
             }
         });
 
-        if(!etMaxDerek.getText().toString().isEmpty() && (!etMaxEmg.getText().toString().isEmpty() ||
-                !etMaxJemput.getText().toString().isEmpty() || !etMaxHome.getText().toString().isEmpty())){
-            etMinLainnya.setEnabled(true);
-            etMinDerek.setEnabled(true);
-        }else if (!etMaxEmg.getText().toString().isEmpty() || !etMaxJemput.getText().toString().isEmpty() ||
-                !etMaxHome.getText().toString().isEmpty()){
-            etMinLainnya.setEnabled(true);
-            etMinDerek.setEnabled(false);
-        }else if (!etMaxDerek.getText().toString().isEmpty()) {
-            etMinLainnya.setEnabled(false);
-            etMinDerek.setEnabled(true);
+        if (!etMaxDerek.getText().toString().isEmpty() && (!etMaxEmg.getText().toString().isEmpty() ||
+                !etMaxJemput.getText().toString().isEmpty() || !etMaxHome.getText().toString().isEmpty())) {
+            etBiayaMinLainnya.setEnabled(true);
+            etBiayaMinDerek.setEnabled(true);
+        } else if (!etMaxEmg.getText().toString().isEmpty() || !etMaxJemput.getText().toString().isEmpty() ||
+                !etMaxHome.getText().toString().isEmpty()) {
+            etBiayaMinLainnya.setEnabled(true);
+            etBiayaMinDerek.setEnabled(false);
+        } else if (!etMaxDerek.getText().toString().isEmpty()) {
+            etBiayaMinLainnya.setEnabled(false);
+            etBiayaMinDerek.setEnabled(true);
         }
     }
+
 }

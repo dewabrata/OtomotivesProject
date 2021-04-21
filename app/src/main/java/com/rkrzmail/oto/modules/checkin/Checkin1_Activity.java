@@ -715,9 +715,6 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             kmBitmap = (Bitmap) (extras != null ? extras.get("data") : null);
             base64fotoKM[0] = bitmapToBase64(kmBitmap);
         }
-        else {
-            finish();
-        }
     }
 
     @SuppressLint("NonConstantResourceId")

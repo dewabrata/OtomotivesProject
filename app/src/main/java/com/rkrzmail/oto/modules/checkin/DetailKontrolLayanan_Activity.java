@@ -198,7 +198,13 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 data.get("WAKTU_KERJA_HARI").asString(),
                 data.get("WAKTU_KERJA_JAM").asString(),
                 data.get("WAKTU_KERJA_MENIT").asString()));
-        etEstimasiSelesai.setText(Tools.setFormatDateTimeFromDb(data.get("ESTIMASI_SELESAI").asString(), "yyyy-MM-dd hh:mm", "dd/MM-hh:mm", false));
+        String estimasiSelesai;
+        if((jenisAntrian.equals("STANDART") || jenisAntrian.equals("EXPRESS")) && data.get("PELANGGAN_TIDAK_MENUNGGU").asString().equals("N")){
+            estimasiSelesai = data.get("ESTIMASI_SELESAI").asString();
+        }else{
+            estimasiSelesai = Tools.setFormatDateTimeFromDb(data.get("ESTIMASI_SELESAI").asString(), "yyyy-MM-dd hh:mm", "dd/MM-hh:mm", false);
+        }
+        etEstimasiSelesai.setText(estimasiSelesai);
         try {
             String[] waktuAmbil = data.get("WAKTU_AMBIL").asString().split(" ");
             tvTglAmbil.setText(waktuAmbil[0]);

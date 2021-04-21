@@ -189,7 +189,7 @@ public class NumberFormatUtils {
     }
 
     public static String formatRp(int values) {
-        if (values== 0) {
+        if (values > 0) {
             try {
                 DecimalFormat formatter = new DecimalFormat("###,###,###");
                 return formatter.format(values);
