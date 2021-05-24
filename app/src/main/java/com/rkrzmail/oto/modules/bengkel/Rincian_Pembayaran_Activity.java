@@ -760,7 +760,9 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
 
             @Override
             public void runUI() {
-
+                if(rekomendasiMekanikList.size() == 0){
+                    find(R.id.btn_usulan_mekanik, Button.class).setEnabled(false);
+                }
             }
         });
     }

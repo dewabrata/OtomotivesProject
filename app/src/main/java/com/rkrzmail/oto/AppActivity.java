@@ -109,6 +109,7 @@ public class AppActivity extends AppCompatActivity {
 
 
     public void swipeProgress(final boolean show) {
+        if(find(R.id.swiperefresh, SwipeRefreshLayout.class) == null) return;
         if (!show) {
             find(R.id.swiperefresh, SwipeRefreshLayout.class).setRefreshing(show);
             return;
@@ -737,6 +738,10 @@ public class AppActivity extends AppCompatActivity {
     }
 
     public void setMultiSelectionSpinnerFromApi(final MultiSelectionSpinner spinner, final String params, final String arguments, final String api, final MultiSelectionSpinner.OnMultipleItemsSelectedListener listener, final String... jsonObject) {
+        if(!Tools.isNetworkAvailable(getActivity())){
+            showWarning("TIDAK ADA KONEKSI INTERNET");
+            return;
+        }
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -767,6 +772,10 @@ public class AppActivity extends AppCompatActivity {
     }
 
     public void setSpinnerFromApi(final Spinner spinner, final String params, final String arguments, final String api, final String jsonObject) {
+        if(!Tools.isNetworkAvailable(getActivity())){
+            showWarning("TIDAK ADA KONEKSI INTERNET");
+            return;
+        }
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -794,6 +803,10 @@ public class AppActivity extends AppCompatActivity {
     }
 
     public void setSpinnerFromApi(final Spinner spinner, final String params, final String arguments, final String api, final String jsonObject, final String selection) {
+        if(!Tools.isNetworkAvailable(getActivity())){
+            showWarning("TIDAK ADA KONEKSI INTERNET");
+            return;
+        }
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -856,6 +869,21 @@ public class AppActivity extends AppCompatActivity {
             }
         }
     }
+
+    public void setSpinnerOffline(Nson listItem, Spinner spinner, String selection) {
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, listItem.asArray());
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerAdapter);
+        if (!selection.isEmpty()) {
+            for (int in = 0; in < spinner.getCount(); in++) {
+                if (spinner.getItemAtPosition(in).toString().contains(selection)) {
+                    spinner.setSelection(in);
+                    break;
+                }
+            }
+        }
+    }
+
 
     private EditText getAllEditText(ViewGroup v, boolean isEmpty) {
         EditText invalid = null;

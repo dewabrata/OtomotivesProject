@@ -43,8 +43,8 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:text="@string/satuan_gaji_uppercase"
+                    android:layout_weight="4"
+                    android:text="NAMA E-WALLET"
                     android:textColor="@color/grey_900"
                     android:textStyle="bold"
                     android:textSize="13sp" />
@@ -57,7 +57,7 @@
                     android:background="@drawable/background_edittext">
 
                     <Spinner
-                        android:id="@+id/sp_satuan_gaji"
+                        android:id="@+id/sp_nama_wallet"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:textAlignment="center" />
@@ -68,7 +68,6 @@
 
 
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/tl_nama_user"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -76,26 +75,17 @@
                 android:layout_marginTop="10dp">
 
                 <EditText
-                    android:id="@+id/et_upah_satuan"
+                    android:id="@+id/et_nama_merchant"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/upah_satuan_uppercase"
-                    android:inputType="numberSigned"
+                    android:hint="@string/nama_merchant_uppercase"
+                    android:inputType="textCapCharacters"
                     android:textSize="14sp"
                     tools:ignore="Autofill" />
 
             </android.support.design.widget.TextInputLayout>
 
-            <CheckBox
-                android:id="@+id/cb_potongan_alpha"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/potongan_alpha_uppercase"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp" />
-
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/tl_nohp_user"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -103,24 +93,16 @@
                 app:helperTextEnabled="true">
 
                 <EditText
-                    android:id="@+id/et_potongan_jam"
+                    android:id="@+id/et_merchant_id"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/potongan_terlambat_jam_uppercase"
-                    android:inputType="phone"
+                    android:hint="MERCHANT ID"
+                    android:inputType="numberSigned"
                     android:maxLength="19"
                     android:textSize="14sp"
                     tools:ignore="Autofill" />
 
             </android.support.design.widget.TextInputLayout>
-
-            <CheckBox
-                android:id="@+id/cb_perhitungan_komisi"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/perhitungan_komisi_uppercase"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -135,8 +117,8 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:text="@string/nama_bank_uppercase"
+                    android:layout_weight="4"
+                    android:text="@string/rekening_internal_uppercase"
                     android:textColor="@color/grey_900"
                     android:textStyle="bold"
                     android:textSize="13sp" />
@@ -148,10 +130,9 @@
                     android:background="@drawable/background_edittext">
 
                     <Spinner
-                        android:id="@+id/sp_nama_bank"
+                        android:id="@+id/sp_rekening_internal"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:entries="@array/status"
                         android:textAlignment="center" />
 
                 </RelativeLayout>
@@ -162,7 +143,8 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="5dp"
+                android:visibility="gone">
 
                 <EditText
                     android:id="@+id/et_no_rekening"
@@ -171,7 +153,8 @@
                     android:hint="@string/no_rekening_uppercase"
                     android:inputType="numberDecimal"
                     android:textSize="14sp"
-                    tools:ignore="Autofill" />
+                    tools:ignore="Autofill"
+                    android:enabled="false"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -179,7 +162,8 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="5dp"
+                android:visibility="gone">
 
                 <EditText
                     android:id="@+id/et_nama_rekening"
@@ -188,12 +172,42 @@
                     android:hint="@string/nama_rekening_uppercase"
                     android:inputType="textCapCharacters"
                     android:textSize="14sp"
-                    tools:ignore="Autofill" />
+                    tools:ignore="Autofill"
+                    android:enabled="false"/>
 
             </android.support.design.widget.TextInputLayout>
 
-            <include layout="@layout/layout_btn_simpan_hapus" />
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
+                <Button
+                    android:id="@+id/btn_foto_qris"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/btn_rounded_accent"
+                    android:text="@string/foto_qris_uppercase"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/btn_simpan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="0dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/btn_rounded_accent"
+                    android:textColor="@android:color/white"
+                    android:text="SIMPAN" />
+
+            </RelativeLayout>
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>

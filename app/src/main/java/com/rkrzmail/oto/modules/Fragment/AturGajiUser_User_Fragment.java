@@ -147,22 +147,8 @@ public class AturGajiUser_User_Fragment extends Fragment {
         btnSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(satuanGaji.equals("--PILIH--")){
-                    setErrorSpinner(spSatuanGaji, "SATUAN GAJI HARUS DI PILIH");
-                }else if(etUpah.getText().toString().equals("Rp. 0") || etUpah.getText().toString().isEmpty()){
-                    etUpah.setError("UPAH SATUAN HARUS DI ISI");
-                    viewFocus(etUpah);
-                }else if(namaBank.equals("--PILIH--")){
-                    setErrorSpinner(spNamaBank, "NAMA BANK HARUS DI PILIH");
-                }else if(etNamaRek.getText().toString().isEmpty()){
-                    etNamaRek.setError("UPAH SATUAN HARUS DI ISI");
-                    viewFocus(etNamaRek);
-                }else if(etNoRek.getText().toString().isEmpty()){
-                    etNoRek.setError("UPAH SATUAN HARUS DI ISI");
-                    viewFocus(etNoRek);
-                }else{
-                    saveData(finalIsUpdate);
-                }
+                //if rekening fill gaji must fill
+                saveData(finalIsUpdate);
             }
         });
     }

@@ -77,6 +77,8 @@
 
         <include layout="@layout/dialog_sort_by_layanan"/>
 
+        <include layout="@layout/dialog_sort_by_saldo"/>
+
     </android.support.design.widget.CoordinatorLayout>
 
     <android.support.design.widget.FloatingActionButton

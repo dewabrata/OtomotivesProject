@@ -3,11 +3,13 @@ package com.rkrzmail.oto.modules.bengkel;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,12 +19,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.naa.data.Nson;
+import com.naa.data.UtilityAndroid;
 import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
@@ -39,6 +43,8 @@ import java.util.Map;
 import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.ATUR_PEMBAYARAN;
+import static com.rkrzmail.utils.APIUrls.GET_QRIS_IMAGE;
+import static com.rkrzmail.utils.APIUrls.JURNAL_KAS;
 import static com.rkrzmail.utils.APIUrls.SET_REKENING_BANK;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.RP;
@@ -52,6 +58,8 @@ public class AturPembayaran_Activity extends AppActivity {
     private Nson partIdList;
     private String nominalDonasi = "";
     private String jenis = "";
+    private String namaMerchant = "";
+    String namaEwallet = "";
     private String
             tipePembayaran = "",
             noRek = "",
@@ -63,7 +71,7 @@ public class AturPembayaran_Activity extends AppActivity {
     private double ppn = 0.1;
     private double
             mdrOnUs = 0,
-            mdrOfUs = 0,
+            mdrOffUs = 0,
             mdrKreditCard = 0;
     private int
             idCheckin = 0,
@@ -88,16 +96,20 @@ public class AturPembayaran_Activity extends AppActivity {
             isMdrKreditCard = false,
             isMdrBank = false,
             isPpn = false,
-            isPelunasanSisaBiaya = false;
+            isPelunasanSisaBiaya = false,
+            isEwallet = false;
+
+    private Bitmap bitmapQris = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_atur_pembayaran_);
+        setContentView(R.layout.activity_atur_pembayaran);
         initToolbar();
         initComponent();
         initData();
         initListener();
+        getQrisImage();
     }
 
     @SuppressLint("NewApi")
@@ -150,7 +162,7 @@ public class AturPembayaran_Activity extends AppActivity {
         find(R.id.cb_pemilik, CheckBox.class).setChecked(nson.get("PEMILIK").asString().equals("Y"));
 
         isPelunasanSisaBiaya = nson.get("PELUNASAN_SISA_BIAYA").asString().equals("Y");
-        mdrOfUs = nson.get("MDR_OFF_US").asDouble();
+        mdrOffUs = nson.get("MDR_OFF_US").asDouble();
         mdrOnUs = nson.get("MDR_ON_US").asDouble();
         mdrKreditCard = nson.get("MDR_KREDIT_CARD").asDouble();
         grandTotal = nson.get("GRAND_TOTAL").asInteger();
@@ -230,6 +242,7 @@ public class AturPembayaran_Activity extends AppActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 tipePembayaran = parent.getItemAtPosition(position).toString();
+                isEwallet = parent.getItemAtPosition(position).toString().equals("E-WALLET");
 
                 if (tipePembayaran.equals("CASH")) {
                     if (!isDp) {
@@ -240,7 +253,7 @@ public class AturPembayaran_Activity extends AppActivity {
                     find(R.id.et_noTrack, EditText.class).setEnabled(false);
                     find(R.id.et_namaBankEpay).setEnabled(false);
                     find(R.id.et_totalBayar, EditText.class).setEnabled(true);
-                }else if(tipePembayaran.equals("INVOICE")){
+                } else if (tipePembayaran.equals("INVOICE")) {
                     find(R.id.et_totalBayar, EditText.class).setEnabled(false);
                     find(R.id.et_totalBayar, EditText.class).setText(RP + "0");
                 } else {
@@ -256,7 +269,7 @@ public class AturPembayaran_Activity extends AppActivity {
                     } else {
                         isMdrKreditCard = tipePembayaran.equals("KREDIT");
                         grandTotal = grandTotal == totalBiaya ? totalPpn + totalBiaya : grandTotal;
-                        totalMdrOffUs = (int) (((mdrOfUs / 100) * grandTotal));
+                        totalMdrOffUs = (int) (((mdrOffUs / 100) * grandTotal));
                         totalMdrOnUs = (int) (((mdrOnUs / 100) * grandTotal));
                         totalMdrKreditCard = (int) (((mdrKreditCard / 100) * grandTotal));
 
@@ -344,10 +357,10 @@ public class AturPembayaran_Activity extends AppActivity {
                                 int donasi1 = donasi2 > 500 && donasi2 < 1000 ? donasi2 - 500 : donasi2;
                                 if (donasi2 == 0) {
                                     saveData();
-                                }else {
-                                    if(donasi2 == 500){
+                                } else {
+                                    if (donasi2 == 500) {
                                         showDialogDonasi(RP + formatRp(String.valueOf(donasi1)), "", donasi2);
-                                    }else{
+                                    } else {
                                         showDialogDonasi(RP + formatRp(String.valueOf(donasi1)), RP + formatRp(String.valueOf(donasi2)), donasi2);
 
                                     }
@@ -385,6 +398,13 @@ public class AturPembayaran_Activity extends AppActivity {
                         }
                         break;
                 }
+            }
+        });
+
+        find(R.id.btn_qris).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialogPreviewQris();
             }
         });
     }
@@ -459,6 +479,7 @@ public class AturPembayaran_Activity extends AppActivity {
             public Nson onFindNson(Context context, String bookTitle) {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "AUTO COMPLETE");
+                args.put("isEwallet", isEwallet ? "Y" : "N");
                 args.put("search", bookTitle);
                 Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_REKENING_BANK), args));
                 if (result.get("data").asArray().isEmpty()) {
@@ -485,10 +506,15 @@ public class AturPembayaran_Activity extends AppActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
-                String bankName = n.get("BANK_NAME").asString();
-                find(R.id.et_namaBankEpay, NikitaAutoComplete.class).setText(bankName);
+                String bankNameOrEpay = n.get("BANK_NAME").asString();
+                if (isEwallet) {
+                    bankNameOrEpay = n.get("NAMA_EWALLET").asString();
+                } else {
+                    bankNameOrEpay = n.get("BANK_NAME").asString();
+                }
+                find(R.id.et_namaBankEpay, NikitaAutoComplete.class).setText(bankNameOrEpay);
                 find(R.id.et_namaBankEpay, NikitaAutoComplete.class).setSelection(find(R.id.et_namaBankEpay, NikitaAutoComplete.class).getText().length());
-                viewBankBengkel(bankName);
+                viewBankBengkel(bankNameOrEpay);
 
             }
         });
@@ -498,6 +524,7 @@ public class AturPembayaran_Activity extends AppActivity {
         final Nson data = Nson.readJson(getIntentStringExtra(DATA));
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -574,10 +601,10 @@ public class AturPembayaran_Activity extends AppActivity {
                         args.put("bankRekInternal", namaBank);
                         args.put("noRekInternal", noRek);
                         args.put("keterangan", "Transfer");
-                    }else if(tipePembayaran.equals("INVOICE")){
+                    } else if (tipePembayaran.equals("INVOICE")) {
                         args.put("totalDue", "0");
                         args.put("totalBayar", "0");
-                    }else {
+                    } else {
                         if (tipePembayaran.equals("KREDIT")) {
                             args.put("keterangan", "Kredit");
                         } else {
@@ -655,7 +682,11 @@ public class AturPembayaran_Activity extends AppActivity {
         });
     }
 
-    private void viewBankBengkel(final String namaBank) {
+    private void setDisabledEwallet(boolean isEnable) {
+        spNoRek.setEnabled(isEnable);
+    }
+
+    private void viewBankBengkel(final String namaBankOrEwallet) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -663,6 +694,7 @@ public class AturPembayaran_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
+                args.put("isEwallet", isEwallet ? "Y" : "N");
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_REKENING_BANK), args));
             }
 
@@ -675,21 +707,33 @@ public class AturPembayaran_Activity extends AppActivity {
                     bankEdc = "";
 
                     if (result.size() > 0) {
-                        for (int i = 0; i < result.size(); i++) {
-                            if (result.get(i).get("BANK_NAME").asString().equals(namaBank)) {
+                        if (isEwallet) {
+                            result = result.get(0);
+                            mdrOnUs = result.get("MDR_ON_US").asDouble();
+                            mdrOffUs = result.get("MDR_OFF_US").asDouble();
+
+                            if (result.get("NAMA_EWALLET").asString().equals(namaBankOrEwallet)) {
                                 isOnUs = true;
-                                bankEdc = result.get(i).get("BANK_NAME").asString();
-                                break;
                             } else {
-                                if (result.get(i).get("OFF_US").asString().equals("Y")) {
-                                    isOffUs = true;
-                                    bankEdc = result.get(i).get("BANK_NAME").asString();
-                                }
-                            }
-                            if (i == (result.size() - 1) && (!isOffUs && !isOnUs)) {
-                                showWarning("Anda tidak memiliki EDC OFF US!", Toast.LENGTH_LONG);
-                                notMdr = true;
                                 isOffUs = true;
+                            }
+                        } else {
+                            for (int i = 0; i < result.size(); i++) {
+                                if (result.get(i).get("BANK_NAME").asString().equals(namaBankOrEwallet)) {
+                                    isOnUs = true;
+                                    bankEdc = result.get(i).get("BANK_NAME").asString();
+                                    break;
+                                } else {
+                                    if (result.get(i).get("OFF_US").asString().equals("Y")) {
+                                        isOffUs = true;
+                                        bankEdc = result.get(i).get("BANK_NAME").asString();
+                                    }
+                                }
+                                if (i == (result.size() - 1) && (!isOffUs && !isOnUs)) {
+                                    showWarning("Anda tidak memiliki EDC ON US!", Toast.LENGTH_LONG);
+                                    notMdr = true;
+                                    isOffUs = true;
+                                }
                             }
                         }
                     } else {
@@ -697,39 +741,124 @@ public class AturPembayaran_Activity extends AppActivity {
                         isOnUs = false;
                     }
 
-                    if (!notMdr) {
-                        int finalMdrRp = 0;
-                        double finalMdrPercent = 0;
-                        if (isMdrKreditCard) {
-                            finalMdrPercent = mdrKreditCard;
-                            finalMdrRp = totalMdrKreditCard;
-                        } else {
-                            if (isOffUs) {
-                                showInfo("Anda Menggunakan EDC OFF US");
-                                finalMdrPercent = mdrOfUs;
-                                finalMdrRp = totalMdrOffUs;
-                            }
-                            if (isOnUs) {
-                                showInfo("Anda Menggunakan EDC ON US");
-                                finalMdrPercent = mdrOnUs;
-                                finalMdrRp = totalMdrOnUs;
-                            }
+                    double finalMdrPercent = 0;
+                    int finalMdrRp = 0;
+
+                    if (isEwallet) {
+                        totalMdrOffUs = (int) (((mdrOffUs / 100) * grandTotal));
+                        totalMdrOnUs = (int) (((mdrOnUs / 100) * grandTotal));
+                        if (isOffUs) {
+                            showInfo("Anda Menggunakan EDC OFF US");
+                            finalMdrPercent = mdrOffUs;
+                            finalMdrRp = totalMdrOffUs;
+                        }
+                        if (isOnUs) {
+                            showInfo("Anda Menggunakan EDC ON US");
+                            finalMdrPercent = mdrOnUs;
+                            finalMdrRp = totalMdrOnUs;
                         }
 
                         isMdrBank = true;
                         totalDue = isDp ? finalMdrRp + totalDp : finalMdrRp + grandTotal;
-                        find(R.id.et_percent_disc_merc, EditText.class).setText(finalMdrPercent + "%");
-                        find(R.id.et_rp_disc_merc, EditText.class).setText(RP + formatRp(String.valueOf(finalMdrRp)));
-                        find(R.id.et_grandTotal, EditText.class).setText(RP + formatRp(String.valueOf(totalDue)));
-                        find(R.id.et_totalBayar, EditText.class).setText(RP + formatRp(String.valueOf(totalDue)));
+                    } else {
+                        if (!notMdr) {
+                            if (isMdrKreditCard) {
+                                finalMdrPercent = mdrKreditCard;
+                                finalMdrRp = totalMdrKreditCard;
+                            } else {
+                                if (isOffUs) {
+                                    showInfo("Anda Menggunakan EDC OFF US");
+                                    finalMdrPercent = mdrOffUs;
+                                    finalMdrRp = totalMdrOffUs;
+                                }
+                                if (isOnUs) {
+                                    showInfo("Anda Menggunakan EDC ON US");
+                                    finalMdrPercent = mdrOnUs;
+                                    finalMdrRp = totalMdrOnUs;
+                                }
+                            }
+
+                            isMdrBank = true;
+                            totalDue = isDp ? finalMdrRp + totalDp : finalMdrRp + grandTotal;
+                        }
                     }
+
+                    find(R.id.et_percent_disc_merc, EditText.class).setText(finalMdrPercent + "%");
+                    find(R.id.et_rp_disc_merc, EditText.class).setText(RP + formatRp(String.valueOf(finalMdrRp)));
+                    find(R.id.et_grandTotal, EditText.class).setText(RP + formatRp(String.valueOf(totalDue)));
+                    find(R.id.et_totalBayar, EditText.class).setText(RP + formatRp(String.valueOf(totalDue)));
                 } else {
                     showError(result.get("message").asString(), Toast.LENGTH_LONG);
-                    if (result.get("message").asString().equals("DATA SUDAH DI MASUKKAN")) {
-                        finish();
-                    }
                 }
             }
         });
     }
+
+    private void getQrisImage() {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                String[] args = new String[3];
+                args[0] = "CID=" + UtilityAndroid.getSetting(getApplicationContext(), "CID", "").trim();
+                result = Nson.readJson(InternetX.getHttpConnectionX(AppApplication.getBaseUrlV4(GET_QRIS_IMAGE), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asBoolean()) {
+                    result = result.get("data");
+                    namaMerchant = result.get("NAMA_MERCHANT").asString();
+                    if (!result.get("QRIS_IMAGE").asString().isEmpty()) {
+                        String base64String = result.get("QRIS_IMAGE").asString();
+                        byte[] decodedString = Base64.decode(base64String, Base64.DEFAULT);
+                        bitmapQris = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                    }
+                } else {
+                    showInfo("GAGAL");
+                }
+            }
+        });
+
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void showDialogPreviewQris() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.layout_alert_camera, null);
+        builder.setView(dialogView);
+        alertDialog = builder.create();
+
+        Toolbar toolbar = dialogView.findViewById(R.id.toolbar);
+        TextView tvTittle = dialogView.findViewById(R.id.tv_tittle_img);
+        ImageView img = (ImageView) dialogView.findViewById(R.id.img_alert_foto);
+        Button btnCancel = dialogView.findViewById(R.id.btn_alert_cancel);
+        Button btnSimpan = dialogView.findViewById(R.id.btn_alert_save);
+
+        tvTittle.setVisibility(View.VISIBLE);
+        btnSimpan.setVisibility(View.GONE);
+        tvTittle.setText(namaMerchant);
+
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle("Qris");
+
+        if (bitmapQris != null)
+            img.setImageBitmap(bitmapQris);
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+
+
+        if (alertDialog.getWindow() != null)
+            alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        alertDialog.show();
+    }
+
 }

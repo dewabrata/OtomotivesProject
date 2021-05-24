@@ -91,15 +91,18 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
     private String idCheckin = "", mekanik = "", catatanMekanik = "", idMekanikKerja = "", statusDone = "", noHp = "";
     private String totalBiaya = "";
     private String merkLKKWajib = "";
-    private boolean isGaransiLKK = false;
-    private boolean isKeluhan = true;
-    private boolean isClaim = false;
+    private String layananId = "";
+    private String pekerjaan = "";
 
+    private int kendaraanID = 0;
     private int countClick = 0;
     private int kmKendaraan = 0;
     private int waktuHari = 0, waktuJam = 0, waktuMenit = 0;
     private int usulanMekanik = 0;
 
+    private boolean isGaransiLKK = false;
+    private boolean isKeluhan = true;
+    private boolean isClaim = false;
     private boolean isRework = false;
     private boolean isStart = false;
     private boolean isStop = false;
@@ -182,6 +185,9 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
     private void loadData() {
         data = Nson.readJson(getIntentStringExtra(DATA));
 
+        kendaraanID = data.get("KENDARAAN_ID").asInteger();
+        layananId = data.get("LAYANAN_ID").asString();
+        pekerjaan = data.get("PEKERJAAN").asString();
         find(R.id.tl_jam_home).setVisibility(data.get("JAM_HOME").asString().isEmpty() | data.get("JAM_HOME") == null ? View.GONE : View.VISIBLE);
         find(R.id.tl_alamat).setVisibility(data.get("ALAMAT").asString().isEmpty() | data.get("ALAMAT") == null ? View.GONE : View.VISIBLE);
         find(R.id.tl_no_kunci).setVisibility(data.get("NO_KUNCI").asString().isEmpty() | data.get("NO_KUNCI") == null ? View.GONE : View.VISIBLE);
@@ -344,7 +350,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
         final EditText etEditText = dialogView.findViewById(R.id.et_edit_text);
         Button btnSimpan = dialogView.findViewById(R.id.btn_simpan);
         Button btnPartJasa = dialogView.findViewById(R.id.btn_part_jasa);
-        final CheckBox cbKondisiBaik =  dialogView.findViewById(R.id.cb_kondisi_baik);
+        final CheckBox cbKondisiBaik = dialogView.findViewById(R.id.cb_kondisi_baik);
 
         if (isKm) {
             tlEt.setHint("KM");
@@ -371,6 +377,9 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 public void onClick(View v) {
                     isUsulanMekanik = true;
                     Intent intent = new Intent(getActivity(), TambahPartJasaDanBatal_Activity.class);
+                    intent.putExtra("LAYANAN_ID", layananId);
+                    intent.putExtra("KENDARAAN_ID", kendaraanID);
+                    intent.putExtra("PEKERJAAN", pekerjaan);
                     intent.putExtra("CHECKIN_ID", idCheckin);
                     intent.putExtra("NO_PONSEL", noHp);
                     intent.putExtra(TOTAL_BIAYA, "0");
@@ -397,7 +406,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                         etEditText.setError("CATATAN MEKANIK HARUS DI ISI");
                         viewFocus(etEditText);
                     } else {
-                        if(isKondisiBaik){
+                        if (isKondisiBaik) {
                             catatanMekanik = cbKondisiBaik.getText().toString() + ", ";
                         }
                         catatanMekanik += etEditText.getText().toString().isEmpty() ? "" : etEditText.getText().toString();
@@ -414,9 +423,9 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                                 if (isLkkWajib && isGaransiLKK && !isClaim) {
                                     showWarning("ADA PART WAJIB GARANSI YG HARUS DI PROSES");
                                 } else {
-                                    if(isOutsource){
+                                    if (isOutsource) {
                                         showWarning("JASA OUTSOURCE SEDANG BERLANGSUNG");
-                                    }else{
+                                    } else {
                                         stopWork();
                                     }
                                 }
@@ -458,13 +467,13 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
         View dialogView = inflater.inflate(R.layout.activity_list_basic, null);
         builder.setView(dialogView);
 
-        try{
+        try {
             SwipeRefreshLayout swipeRefreshLayout = dialogView.findViewById(R.id.swiperefresh);
             swipeRefreshLayout.setEnabled(false);
             initToolbarPointLayanan(dialogView);
             initRecyclerviewPointLayanan(dialogView);
             Objects.requireNonNull(rvPointLayanan.getAdapter()).notifyDataSetChanged();
-        }catch (Exception e){
+        } catch (Exception e) {
             showError(e.getMessage());
         }
 
@@ -527,6 +536,10 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    isClaim = false;
+                    isGaransiLKK = false;
+                    isOutsource = false;
+
                     for (int i = 0; i < partJasaList.size(); i++) {
                         if (partJasaList.get(i).get("PERSETUJUAN_PART_JASA").asString().equals("Y")) {
                             isPersetujuanPart = true;
@@ -555,7 +568,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                         waktuMenit += partJasaList.get(i).get("WAKTU_KERJA_MENIT").asInteger();
                     }
 
-                    if(isGaransiLKK){
+                    if (isGaransiLKK) {
                         Intent intent = new Intent(getActivity(), KontrolLayanan_Activity.class);
                         intent.putExtra("NOPOL", etNopol.getText().toString());
                         showNotification(getActivity(), "LKK CLAIM", formatNopol(etNopol.getText().toString()), "MEKANIK", intent);
@@ -763,9 +776,9 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                             if (isLkkWajib && isGaransiLKK && !isClaim) {
                                 showWarning("ADA PART WAJIB GARANSI YG HARUS DI PROSES");
                             } else {
-                                if(isOutsource){
+                                if (isOutsource) {
                                     showWarning("JASA OUTSOURCE SEDANG BERLANGSUNG");
-                                }else{
+                                } else {
                                     stopWork();
                                 }
                             }
@@ -809,6 +822,9 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
             case R.id.img_btn_tambah_part:
                 isUsulanMekanik = false;
                 intent = new Intent(getActivity(), TambahPartJasaDanBatal_Activity.class);
+                intent.putExtra("LAYANAN_ID", layananId);
+                intent.putExtra("KENDARAAN_ID", kendaraanID);
+                intent.putExtra("PEKERJAAN", pekerjaan);
                 intent.putExtra("CHECKIN_ID", idCheckin);
                 intent.putExtra("NO_PONSEL", noHp);
                 intent.putExtra(TOTAL_BIAYA, formatOnlyNumber(totalBiaya));
@@ -873,9 +889,10 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_TAMBAH_PART_JASA_LAIN:
-                    if(isUsulanMekanik){
+                    if (isUsulanMekanik) {
+                        assert data != null;
                         usulanMekanik = data.getIntExtra("IS_USULAN", 0);
-                    }else{
+                    } else {
                         viewLayananPartJasa();
                     }
                     break;
@@ -883,6 +900,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                     viewLayananPartJasa();
                     break;
                 case REQUEST_KONFIRMASI:
+                    showSuccess(String.valueOf(kmKendaraan));
                     showSuccess("GARANSI PART TELAH DI TAMBAHKAN");
                     viewLayananPartJasa();
                     break;

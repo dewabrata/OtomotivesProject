@@ -357,6 +357,13 @@ public class AturUser_User_Fragment extends Fragment {
     }
 
     private void setSpAkses(List<String> loadFrom) {
+        if(loadFrom == null){
+            loadFrom = new ArrayList<>();
+            loadFrom.add("PARTS");
+            loadFrom.add("ABSENSI");
+            loadFrom.add("REFFERAL");
+            loadFrom.add("SARAN");
+        };
         spAkses.setItems(aksesArr, loadFrom);
         //spAkses.setSelectionMatch(aksesArr, loadFrom);
         spAkses.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
@@ -460,9 +467,8 @@ public class AturUser_User_Fragment extends Fragment {
                 args.put("penggajian", find(R.id.spinnerPenggajian, Spinner.class).getSelectedItem().toString());
                 args.put("gaji", NumberFormatUtils.formatOnlyNumber(activity.find(R.id.txtGaji, EditText.class).getText().toString()));
                 args.put("akses", aksesApp);
-                args.put("myCodeAbsen", spMycode.getSelectedItem().toString());
+                args.put("myCodeAbsen", spMycode.getSelectedItem().toString().equals("YA") ? "Y" : "N");
                 args.put("jenisTab", "PERSONAL");
-
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(KARYAWAN), args));
             }

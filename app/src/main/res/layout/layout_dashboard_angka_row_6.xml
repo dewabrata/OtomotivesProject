@@ -151,7 +151,7 @@
                 tools:ignore="RtlSymmetry">
 
                 <TextView
-                    android:id="@+id/tv_total_part_online"
+                    android:id="@+id/tv_total_pending"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/default_rp_uppercase"
@@ -162,7 +162,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text="@string/part_online_uppercase"
+                    android:text="@string/pending_uppercase"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                     android:textSize="12sp" />
 
@@ -178,7 +178,7 @@
                 tools:ignore="RtlSymmetry">
 
                 <TextView
-                    android:id="@+id/tv_dbPiutang"
+                    android:id="@+id/tv_total_part_online"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/default_rp_uppercase"
@@ -189,7 +189,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text="@string/piutang_uppercase"
+                    android:text="@string/part_online_uppercase"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                     android:textSize="12sp" />
 
@@ -214,6 +214,32 @@
                 tools:ignore="RtlSymmetry">
 
                 <TextView
+                    android:id="@+id/tv_dbPiutang"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/default_rp_uppercase"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/piutang_uppercase"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:gravity="center"
+                tools:ignore="RtlSymmetry">
+
+                <TextView
                     android:id="@+id/tv_dbStockpart"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -226,30 +252,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:text="@string/stock_part_uppercase"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textSize="12sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:paddingEnd="50dp"
-                tools:ignore="RtlSymmetry">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                     android:textSize="12sp" />
 

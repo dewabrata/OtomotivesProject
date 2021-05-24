@@ -88,7 +88,11 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
     private String layanan = "";
     private String nopol = "";
     private String noPonsel = "";
+    private String layananId = "";
+    private String pekerjaan = "";
+
     // private Nson idCheckinDetailList = Nson.newArray();
+    private int kendaraanID = 0;
     private int totalBiaya = 0;
     private int totalTambah = 0;
     private int totalBatal = 0, countBatal = 0;
@@ -144,6 +148,9 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
         totalBiaya = Integer.parseInt(NumberFormatUtils.formatOnlyNumber(getIntentStringExtra(TOTAL_BIAYA)));
         find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));
         layanan = getIntentStringExtra("LAYANAN");
+        layananId = getIntentStringExtra("LAYANAN_ID");
+        kendaraanID = getIntentIntegerExtra("KENDARAAN_ID");
+        pekerjaan = getIntentStringExtra("PEKERJAAN");
 
         if (getIntent().hasExtra(TAMBAH_PART)) {
             isTambah = true;
@@ -531,11 +538,16 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
             case R.id.btn_jasa_lain:
                 i = new Intent(getActivity(), JasaLain_Activity.class);
                 i.putExtra("IS_USULAN_MEKANIK", isUsulanMekanik);
+                i.putExtra("KENDARAAN_ID", kendaraanID);
+                i.putExtra("KM", kmKendaraan);
                 startActivityForResult(i, REQUEST_JASA_LAIN);
                 break;
             case R.id.btn_part:
                 i = new Intent(getActivity(), CariPart_Activity.class);
                 i.putExtra(CARI_PART_LOKASI, RUANG_PART);
+                i.putExtra("LAYANAN_ID", layananId);
+                i.putExtra("KENDARAAN_ID", kendaraanID);
+                i.putExtra("PEKERJAAN", pekerjaan);
                 startActivityForResult(i, REQUEST_CARI_PART);
                 break;
             case R.id.btn_simpan:

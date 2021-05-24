@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
+import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.sparepart.AturOutSource_Activity;
@@ -38,6 +39,8 @@ public class OutSource_TugasPart_Fragment extends Fragment {
     private RecyclerView recyclerView;
     private Nson nListArray = Nson.newArray();
 
+    private AppActivity activity;
+
     public OutSource_TugasPart_Fragment() {
     }
 
@@ -45,6 +48,8 @@ public class OutSource_TugasPart_Fragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_list_basic, container, false);
+        activity = (TugasPart_MainTab_Activity) getActivity();
+
         initHideToolbar(view);
         recyclerView = view.findViewById(R.id.recyclerView);
         initRv();
@@ -72,7 +77,7 @@ public class OutSource_TugasPart_Fragment extends Fragment {
                     @Override
                     public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
                         super.onBindViewHolder(viewHolder, position);
-                        viewHolder.find(R.id.tv_nopol, TextView.class).setText(nListArray.get(position).get("NOPOL").asString());
+                        viewHolder.find(R.id.tv_nopol, TextView.class).setText(activity.formatNopol(nListArray.get(position).get("NOPOL").asString()));
                         viewHolder.find(R.id.tv_status, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
                         viewHolder.find(R.id.tv_tgl_outsource, TextView.class).setText(nListArray.get(position).get("TANGGAL_OUTSOURCE").asString());
                         viewHolder.find(R.id.tv_kelompok_part, TextView.class).setText(nListArray.get(position).get("KELOMPOK_PART").asString());

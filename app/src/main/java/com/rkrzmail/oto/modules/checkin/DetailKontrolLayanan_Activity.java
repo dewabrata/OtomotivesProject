@@ -1,15 +1,18 @@
 package com.rkrzmail.oto.modules.checkin;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -195,9 +198,9 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         etSisa.setText(RP + formatRp(data.get("SISA").asString()));
         etEstimasiSebelum.setText(data.get("ESTIMASI_SEBELUM").asString());
         etEstimasiLama.setText(totalWaktuKerja(
-                data.get("WAKTU_KERJA_HARI").asString(),
-                data.get("WAKTU_KERJA_JAM").asString(),
-                data.get("WAKTU_KERJA_MENIT").asString()));
+                data.get("WAKTU_LAYANAN_LAMA_HARI").asString(),
+                data.get("WAKTU_LAYANAN_LAMA_JAM").asString(),
+                data.get("WAKTU_LAYANAN_LAMA_MENIT").asString()));
         String estimasiSelesai;
         if((jenisAntrian.equals("STANDART") || jenisAntrian.equals("EXPRESS")) && data.get("PELANGGAN_TIDAK_MENUNGGU").asString().equals("N")){
             estimasiSelesai = data.get("ESTIMASI_SELESAI").asString();
@@ -489,7 +492,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                                     .set("DETAIL_ID", detailCheckinList.get(i).get("CHECKIN_DETAIL_ID").asString())
                                     .set("PART_ID", detailCheckinList.get(i).get("PART_ID").asInteger())
                                     .set("JUMLAH", detailCheckinList.get(i).get("JUMLAH").asInteger())
-                                    .set("LOKASI_PART_ID", detailCheckinList.get(i).get("JUMLAH").asInteger())
+                                    .set("LOKASI_PART_ID", detailCheckinList.get(i).get("LOKASI_PART_ID").asInteger())
                                     .set("NET", detailCheckinList.get(i).get("NET").asInteger())
                             );
                         }
@@ -593,7 +596,6 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             aktifitasList.add("PENUGASAN MEKANIK");
         } else if (etStatus.getText().toString().equals("BATAL PART")
                 || etStatus.getText().toString().equals("MEKANIK SELESAI")
-                || etStatus.getText().toString().equals("PELAYANAN SELESAI")
                 || etStatus.getText().toString().equals("PERINTAH ANTAR")
                 || etStatus.getText().toString().equals("REFUND DP")) {
 
@@ -618,7 +620,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 etStatus.getText().toString().equals("INVOICE") ||
                 etStatus.getText().toString().equals("EPAY")) {
             aktifitasList.add("CHECK OUT");
-        } else if (isKonfirmasiTambahan) {
+        } else if (isKonfirmasiTambahan && !etStatus.getText().toString().contains("SELESAI")) {
             aktifitasList.add("BATAL BENGKEL");
             aktifitasList.add("BATAL PELANGGAN");
             aktifitasList.add("TAMBAH PART - JASA OKAY");
@@ -643,6 +645,10 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             aktifitasList.add("BATAL PELANGGAN");
             aktifitasList.add("KURANGI PART - JASA");
             aktifitasList.add("GANTI MEKANIK");
+        }else if(etStatus.getText().toString().contains("SELESAI")) {
+            isKonfirmasiTambahan = false;
+            aktifitasList.add("TAMBAH PART - JASA");
+            aktifitasList.add("KURANGI PART - JASA");
         }
 
         ArrayAdapter<String> aktifitasAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, aktifitasList);
@@ -668,6 +674,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                     intent.putExtra("NO_PONSEL", noPonsel);
                     intent.putExtra("KONFIRMASI DATA", "Data Kendaraan");
                     intent.putExtra("MERK", merkKendaraan);
+                    intent.putExtra("NOPOL", etNopol.getText().toString().replaceAll(" ", ""));
                     startActivityForResult(intent, REQUEST_NEW_CS);
                 }
 
@@ -676,10 +683,10 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 }
                 if (status.equals("KURANGI PART - JASA")) {
                     isKurangi = true;
-                    rvDetail.getAdapter().notifyDataSetChanged();
+                    Objects.requireNonNull(rvDetail.getAdapter()).notifyDataSetChanged();
                 } else {
                     isKurangi = false;
-                    rvDetail.getAdapter().notifyDataSetChanged();
+                    Objects.requireNonNull(rvDetail.getAdapter()).notifyDataSetChanged();
                 }
                 if (status.equals("CHECKIN")) {
                     setNoAntrian(jenisAntrian);
@@ -717,7 +724,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
 
     private void moveWa() {
         Messagebox.showDialog(getActivity(),
-                "Konfirmasi", "Message Pelanggan ?", "Ya", "Tidak", new DialogInterface.OnClickListener() {
+                "Konfirmasi", "Message Pelanggan ?", "WhatsApp", "Telephone", new DialogInterface.OnClickListener() {
                     @SuppressLint("SetTextI18n")
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -728,9 +735,26 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 }, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
+                        int PERMISSION_ALL = 1;
+                        String[] PERMISSIONS = {
+                                Manifest.permission.CALL_PHONE
+                        };
+                        if (!hasPermissions(PERMISSIONS)) {
+                            ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, PERMISSION_ALL);
+                        }
+                        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + formatOnlyNumber(noPonsel)));
+                        startActivity(intent);
                     }
                 });
+    }
+
+    public boolean hasPermissions(String... permissions) {
+        for (String permission : permissions) {
+            if (ActivityCompat.checkSelfPermission(getActivity(), permission) != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @SuppressLint("NewApi")

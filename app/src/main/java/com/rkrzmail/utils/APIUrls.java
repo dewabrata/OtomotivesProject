@@ -2,6 +2,14 @@ package com.rkrzmail.utils;
 
 public class APIUrls {
 
+    public static final String GET_QRIS_IMAGE = "rekening/qris_image";
+    public static final String GET_BANK_BY_CID = "rekening/rekening_bank";
+    public static final String GET_NAMA_BANK_BY_CID = "rekening/nama_bank_bengkel";
+    public static final String MST_EWALLET = "master_data/rekening_ewallet";
+    public static final String GET_EWALLET = "rekening/rekening_ewallet";
+    public static final String ENTRY_EWALLET = "rekening/entry_ewallet";
+    public static final String SAVE_SALDO = "saldo/entry_saldo";
+    public static final String SALDO = "saldo";
     public static final String CHECK_REFFERAL = "referal/check_refferal";
     public static final String SAVE_REFFERAL = "referal";
     public static final String BONUS_REFFERAL = "referal/bonus_refferal";
@@ -62,7 +70,7 @@ public class APIUrls {
     public static final String ATUR_PEMBAYARAN = "aturpembayaran";
     public static final String ATUR_INSPEKSI = "aturinspeksi";
     public static final String SET_LOGIN = "login";
-    public static final String SET_CHECKIN = "checkin" ;
+    public static final String SET_CHECKIN = "checkin";
     public static final String ANTRIAN = "antrian";
     public static final String ANTRIAN_MULAI = "antrian/waktu_mulai";
     public static final String SET_REKENING_BANK = "setrekeningbank";

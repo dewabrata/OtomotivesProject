@@ -1,5 +1,6 @@
 package com.rkrzmail.oto;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +10,8 @@ import com.naa.data.UtilityAndroid;
 import com.rkrzmail.oto.modules.LoginActivity;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
@@ -45,7 +48,12 @@ public class MainActivity extends AppActivity {
         find(R.id.id).postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (getSetting("L").equalsIgnoreCase("L")){
+                Calendar calendar = Calendar.getInstance();
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                String tgl = simpleDateFormat.format(calendar.getTime());
+                String[] splitTgl = tgl.split("-");
+
+                if (getSetting("L").equalsIgnoreCase("L") && !splitTgl[2].equals("07")){
                     //login
                     Intent intent = new Intent(getActivity(), MenuActivity.class);
                     startActivity(intent);

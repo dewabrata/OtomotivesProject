@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -24,6 +25,7 @@ import com.rkrzmail.oto.modules.Fragment.Absen_Absensi_Fragment;
 import com.rkrzmail.oto.modules.Fragment.KomisiUser_Absensi_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Schedule_Absensi_Fragment;
 import com.rkrzmail.oto.modules.Fragment.FragmentsAdapter;
+import com.rkrzmail.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -87,6 +89,10 @@ public class Absensi_MainTab_Activity extends AppActivity {
     }
 
     private void absenUser(final String myCodeUser) {
+        if(!Tools.isNetworkAvailable(getActivity())){
+            showWarning("TIDAK ADA KONEKSI INTERNET", Toast.LENGTH_LONG);
+            return;
+        }
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -124,6 +130,10 @@ public class Absensi_MainTab_Activity extends AppActivity {
     }
 
     private void webLogin(final String qrCode){
+        if(!Tools.isNetworkAvailable(getActivity())){
+            showWarning("TIDAK ADA KONEKSI INTERNET", Toast.LENGTH_LONG);
+            return;
+        }
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 

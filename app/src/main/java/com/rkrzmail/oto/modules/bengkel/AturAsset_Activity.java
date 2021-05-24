@@ -38,6 +38,7 @@ import com.squareup.okhttp.Response;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.ASSET;
 import static com.rkrzmail.utils.APIUrls.ATUR_KONTROL_LAYANAN;
@@ -71,7 +72,7 @@ public class AturAsset_Activity extends AppActivity implements View.OnClickListe
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Update Status Aset");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Update Status Aset");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 

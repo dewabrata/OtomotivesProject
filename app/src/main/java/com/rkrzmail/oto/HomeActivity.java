@@ -39,7 +39,7 @@ import com.rkrzmail.oto.modules.sparepart.LokasiPart_MainTab_Activity;
 import com.rkrzmail.oto.gmod.part.PartActivity;
 import com.rkrzmail.oto.gmod.part.PartSearchActivity;
 import com.rkrzmail.oto.modules.mekanik.Schedule_Activity;
-import com.rkrzmail.oto.modules.bengkel.RekeningBank_Activity;
+import com.rkrzmail.oto.modules.bengkel.RekeningBank_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Tenda_Activity;
 import com.rkrzmail.oto.modules.sparepart.TerimaPart_Activity;
 
@@ -189,7 +189,7 @@ public class HomeActivity extends MenuActivity{
                     Intent intent = new Intent(HomeActivity.this, DiscountPart_Activity.class);
                     startActivity(intent);
                 } else if ((nPopulate.get(position).get("id").asInteger() == MN_REKENING)) {
-                    Intent intent = new Intent(HomeActivity.this, RekeningBank_Activity.class);
+                    Intent intent = new Intent(HomeActivity.this, RekeningBank_MainTab_Activity.class);
                     startActivity(intent);
                 } else if ((nPopulate.get(position).get("id").asInteger() == MN_BOOKING)) {
                     /*Intent intent = new Intent(HomeActivity.this, Booking1A_Activity.class);

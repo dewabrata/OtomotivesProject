@@ -7,25 +7,16 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.Build;
-import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatDelegate;
 import android.telephony.TelephonyManager;
-import android.util.Log;
-import android.view.View;
-import android.widget.ImageView;
-
 
 import com.naa.data.Utility;
 import com.naa.data.UtilityAndroid;
 import com.naa.utils.InternetX;
-import com.naa.utils.MessageMsg;
-import com.naa.utils.Messagebox;
 
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -58,18 +49,22 @@ public class AppApplication extends Application {
     }
 
     //production
-    public static String getBaseUrlV3(String name) {
+    /*public static String getBaseUrlV3(String name) {
         return "https://otomotives.com/api/v3/" + name;
     }
 
     public static String getBaseUrlV4(String name) {//ready for antrian
         return "https://otomotives.com/api/v4/" + name;
-    }
+    }*/
 
     //dev
-//    public static String getBaseUrlV3(String name) {
-//        return "http://otomotives.com/api/dev/" + name;
-//    }
+   public static String getBaseUrlV3(String name) {
+        return BuildConfig.getBaseUrlV3 + name;
+    }
+
+    public static String getBaseUrlV4(String name) {
+        return BuildConfig.getBaseUrlV4 + name;
+    }
 
     /*Mas Brahma, ni link nya :
     Pengajuan,

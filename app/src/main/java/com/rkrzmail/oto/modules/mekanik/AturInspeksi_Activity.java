@@ -494,10 +494,16 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
                 startWork();
                 break;
             case R.id.btn_keluhan:
-                initKeluhanDialog();
+                if(keluhanList.size() == 0)
+                    showInfo("KELUHAN PELANGGAN TIDAK TERSEDIA");
+                else
+                    initKeluhanDialog();
                 break;
             case R.id.btn_rekomendasi_mekanik:
-                initRekomendasiMekanikDialog();
+                if(rekomendasiMekanikList.size() == 0)
+                    showInfo("REKOMENDASI MEKANIK TIDAK TERSEDIA");
+                else
+                    initRekomendasiMekanikDialog();
                 break;
         }
     }

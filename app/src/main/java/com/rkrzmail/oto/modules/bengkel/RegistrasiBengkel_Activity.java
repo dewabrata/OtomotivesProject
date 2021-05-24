@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Html;
@@ -51,23 +52,29 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
     private static final int REQUEST_REFEREAL = 56;
     private static final int REQUEST_MAPS = 57;
     private static final String TAG = "REHIST___";
-    private EditText etKodeRef, etKontakPerson, etNoPonsel, etEmail, etNamaBengkel, etAlamat, etJabatan;
+    private EditText etKontakPerson, etNoPonsel, etEmail, etNamaBengkel, etAlamat, etJabatan;
     private MultiSelectionSpinner spBidangUsaha, spMerkKendaraan;
-    private Spinner spKendaraan;
+    private Spinner spKendaraan, spKodeRefferal;
     private NikitaAutoComplete etKotaKab;
+
     private String[] itemsMerk;
     private String typeKendaraan, bidangUsaha = "";
     private boolean isKategori, isRegist = false;
 
     private String latitude = "", longitude = "";
+    private String noPonselReferee = "";
+    private String kodeRefferal = "";
 
+    private final List<String> motorList = new ArrayList<>();
+    private final List<String> mobilList = new ArrayList<>();
+    private final List<String> allList = new ArrayList<>();
+    private final List<String> noHpList = new ArrayList<>();
+    private final List<String> merkMotorList = new ArrayList<>();
+    private final List<String> merkMobilList = new ArrayList<>();
+    private final List<String> allMerkList = new ArrayList<>();
 
-    private List<String> motorList = new ArrayList<>(),
-            mobilList = new ArrayList<>(),
-            allList = new ArrayList<>(),
-            noHpList = new ArrayList<>(),
-            merkMotorList = new ArrayList<>(),
-            merkMobilList = new ArrayList<>(), allMerkList = new ArrayList<>();
+    private StringBuilder merkBuilder = new StringBuilder();
+    private StringBuilder bidangUsahaBuilder = new StringBuilder();
 
     private int count = 0;
 
@@ -88,7 +95,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
 
     @SuppressLint("SetTextI18n")
     private void initComponent() {
-        etKodeRef = findViewById(R.id.et_kodeRef_regist);
+        spKodeRefferal = findViewById(R.id.sp_kode_refferal);
         etAlamat = findViewById(R.id.et_alamat_regist);
         etEmail = findViewById(R.id.et_email_regist);
         etKotaKab = findViewById(R.id.et_kotakab_regist);
@@ -100,6 +107,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
         etJabatan = findViewById(R.id.et_jabatan_regist);
         spMerkKendaraan = findViewById(R.id.sp_merkKendaraan_regist);
 
+        etNoPonsel.setText("6281381768836");
         minEntryEditText(etKontakPerson, 5, find(R.id.tl_cp_regist, TextInputLayout.class), "Panjang Nama Min. 5 Karakter");
         minEntryEditText(etNamaBengkel, 8, find(R.id.tl_namaBengkel_regist, TextInputLayout.class), "Nama Bengkel Min. 5 Karakter");
         minEntryEditText(etAlamat, 20, find(R.id.tl_alamat_regist, TextInputLayout.class), "Entry Alamat Min. 20 Karakter");
@@ -110,7 +118,6 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
             etNoPonsel.setEnabled(false);
             etNoPonsel.setText("+" + getIntentStringExtra("NO_PONSEL"));
         }
-
         etNoPonsel.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -196,7 +203,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
 
         Log.d(TAG, "initComponent: " + motorList.size());
         find(R.id.btn_simpan_regist, Button.class).setOnClickListener(this);
-        find(R.id.btn_check_regist, Button.class).setOnClickListener(this);
+        getRefferal();
     }
 
     private void setSpKendaraan(final String selection) {
@@ -224,9 +231,9 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                     ArrayAdapter<String> kendaraanAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, kendaraanList);
                     kendaraanAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spKendaraan.setAdapter(kendaraanAdapter);
-                    if(!selection.isEmpty()){
+                    if (!selection.isEmpty()) {
                         for (int i = 0; i < spKendaraan.getCount(); i++) {
-                            if(spKendaraan.getItemAtPosition(i).toString().equals(selection)){
+                            if (spKendaraan.getItemAtPosition(i).toString().equals(selection)) {
                                 spKendaraan.setSelection(i);
                                 break;
                             }
@@ -273,22 +280,25 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                //nama, nohp, email, namabengkel, jenis, kategori, alamat, daerah, lokasi
+
                 args.put("action", "add");
                 args.put("nohp", etNoPonsel.getText().toString().replaceAll("[^0-9]+", ""));
                 args.put("nama", etKontakPerson.getText().toString());
                 args.put("email", etEmail.getText().toString());
                 args.put("nama_bengkel", etNamaBengkel.getText().toString());
                 args.put("jenis", spKendaraan.getSelectedItem().toString().trim());
-                //args.put("jabatan", etJabatan.getText().toString());
-                args.put("kategori", spBidangUsaha.getSelectedItem().toString().trim());
+                args.put("kategori", spBidangUsaha.getSelectedItemsAsString());
                 args.put("persetujuan", find(R.id.cb_setuju_regist, CheckBox.class).isChecked() ? "YA" : "TIDAK");
                 args.put("alamat", etAlamat.getText().toString());
                 args.put("daerah", etKotaKab.getText().toString());
                 args.put("merk_kendaraan", spMerkKendaraan.getSelectedItemsAsString());
                 args.put("tanggal_regist", currentDateTime());
                 args.put("tanggal_aktif", currentDateTime());
-                //args.put("lokasi", tvLokasi.getText().toString());
+                args.put("kodeRefferal", kodeRefferal);
+                args.put("noPonselReferee", noPonselReferee);
+                args.put("latitudeLokasi", latitude);
+                args.put("longitudeLokasi", longitude);
+
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_REGISTRASI), args));
             }
 
@@ -391,9 +401,6 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                 saveData();
 
                 break;
-            case R.id.btn_check_regist:
-                checkReferral();
-                break;
         }
     }
 
@@ -414,9 +421,9 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
             public void runUI() {
                 for (int i = 0; i < result.get("data").size(); i++) {
                     if (result.get("data").get(i).get("TYPE").asString().equalsIgnoreCase("MOTOR")) {
-                        merkMotorList.add(result.get("data").get(i).get("MERK") + " - " + result.get("data").get(i).get("TYPE"));
+                        merkMotorList.add(result.get("data").get(i).get("MERK").asString());
                     } else if (result.get("data").get(i).get("TYPE").asString().equalsIgnoreCase("MOBIL")) {
-                        merkMobilList.add(result.get("data").get(i).get("MERK") + " - " + result.get("data").get(i).get("TYPE"));
+                        merkMobilList.add(result.get("data").get(i).get("MERK").asString());
                     }
                 }
 
@@ -431,7 +438,12 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
 
                         @Override
                         public void selectedStrings(List<String> strings) {
-
+                            if(strings.size() > 0){
+                                merkBuilder = new StringBuilder();
+                                for (int i = 0; i < strings.size(); i++) {
+                                    merkBuilder.append(strings.get(i)).append(", ");
+                                }
+                            }
                         }
                     });
                 } catch (Exception e) {
@@ -442,7 +454,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
         });
     }
 
-    private void checkReferral(){
+    private void getRefferal() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -450,7 +462,6 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
             public void run() {
                 String[] args = new String[3];
                 args[0] = "CID=" + NumberFormatUtils.formatOnlyNumber(etNoPonsel.getText().toString());
-                args[1] = "noReferal=" + etKodeRef.getText().toString();
                 result = Nson.readJson(InternetX.getHttpConnectionX(AppApplication.getBaseUrlV4(CHECK_REFFERAL), args));
             }
 
@@ -458,17 +469,88 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
             public void runUI() {
                 if (result.get("status").asBoolean()) {
                     result = result.get("data");
-                    etKontakPerson.setText(result.get("KONTAK_PERSON").asString());
-                    etJabatan.setText(result.get("JABATAN").asString());
-                    etNamaBengkel.setText(result.get("NAMA_BENGKEL").asString());
-                    etAlamat.setText(result.get("ALAMAT").asString());
-                    etKotaKab.setText(result.get("KOTA/KAB").asString());
+                    final Nson dataRefferalList = Nson.newArray();
+                    List<String> kodeList = new ArrayList<>();
+                    kodeList.add("--PILIH--");
+                    dataRefferalList.add("");
+                    if (result.size() > 0) {
+                        for (int i = 0; i < result.size(); i++) {
+                            if(kodeList.size() > 0){
+                                for (int j = 0; j < kodeList.size(); j++) {
+                                    String referee = result.get(i).get("NAMA_REFEREE").asString() + " - " + result.get(i).get("NO_PONSEL_REFEREE").asString();
+                                    if(!kodeList.get(i).equals(referee)){
+                                        kodeList.add(result.get(i).get("NAMA_REFEREE").asString() + " - " + result.get(i).get("NO_PONSEL_REFEREE").asString());
+                                        dataRefferalList.add(Nson.newObject()
+                                                .set("COMPARISON", result.get(i).get("NAMA_REFEREE").asString() + " - " + result.get(i).get("NO_PONSEL_REFEREE").asString())
+                                                .set("NO_REFERRAL", result.get(i).get("NO_REFERRAL").asString())
+                                                .set("NO_PONSEL_REFEREE", result.get(i).get("NO_PONSEL_REFEREE").asString())
+                                                .set("KONTAK_PERSON", result.get(i).get("KONTAK_PERSON").asString())
+                                                .set("JABATAN", result.get(i).get("JABATAN").asString())
+                                                .set("NAMA_BENGKEL", result.get(i).get("NAMA_BENGKEL").asString())
+                                                .set("ALAMAT", result.get(i).get("ALAMAT").asString())
+                                                .set("KOTA_KAB", result.get(i).get("KOTA_KAB").asString())
+                                                .set("BIDANG_USAHA", result.get(i).get("BIDANG_USAHA").asString())
+                                                .set("JENIS_KENDARAAN", result.get(i).get("JENIS_KENDARAAN").asString())
+                                        );
+                                        break;
+                                    }
+                                }
+                            }else{
+                                dataRefferalList.add(Nson.newObject()
+                                        .set("COMPARISON", result.get(i).get("NAMA_REFEREE").asString() + " - " + result.get(i).get("NO_PONSEL_REFEREE").asString())
+                                        .set("NO_REFERRAL", result.get(i).get("NO_REFERRAL").asString())
+                                        .set("NO_PONSEL_REFEREE", result.get(i).get("NO_PONSEL_REFEREE").asString())
+                                        .set("KONTAK_PERSON", result.get(i).get("KONTAK_PERSON").asString())
+                                        .set("JABATAN", result.get(i).get("JABATAN").asString())
+                                        .set("NAMA_BENGKEL", result.get(i).get("NAMA_BENGKEL").asString())
+                                        .set("ALAMAT", result.get(i).get("ALAMAT").asString())
+                                        .set("KOTA_KAB", result.get(i).get("KOTA_KAB").asString())
+                                        .set("BIDANG_USAHA", result.get(i).get("BIDANG_USAHA").asString())
+                                        .set("JENIS_KENDARAAN", result.get(i).get("JENIS_KENDARAAN").asString())
+                                );
+                                kodeList.add(result.get(i).get("NAMA_REFEREE").asString() + " - " + result.get(i).get("NO_PONSEL_REFEREE").asString());
+                            }
+                        }
+                    }
 
-                    String bidangUsaha = result.get("BIDANG_USAHA").asString();
-                    String[] biidangUsahaSplit =  bidangUsaha.split(",");
-                    List<String> selectionBidangUsaha = new ArrayList<>(Arrays.asList(biidangUsahaSplit));
-                    setSpKendaraan(result.get("JENIS_KENDARAAN").asString());
-                    setSpBidangUsaha(selectionBidangUsaha);
+                    setSpinnerOffline(kodeList, spKodeRefferal, "");
+                    spKodeRefferal.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            String reff = parent.getItemAtPosition(position).toString();
+                            if(position != 0 && reff.equals(dataRefferalList.get(position).get("COMPARISON").asString())){
+                                kodeRefferal = dataRefferalList.get(position).get("NO_REFERRAL").asString();
+                                noPonselReferee = dataRefferalList.get(position).get("NO_PONSEL_REFEREE").asString();
+                                etKontakPerson.setText(dataRefferalList.get(position).get("KONTAK_PERSON").asString());
+                                etJabatan.setText(dataRefferalList.get(position).get("JABATAN").asString());
+                                etNamaBengkel.setText(dataRefferalList.get(position).get("NAMA_BENGKEL").asString());
+                                etAlamat.setText(dataRefferalList.get(position).get("ALAMAT").asString());
+                                etKotaKab.setText(dataRefferalList.get(position).get("KOTA_KAB").asString());
+
+                                String bidangUsaha = dataRefferalList.get(position).get("BIDANG_USAHA").asString();
+                                String[] biidangUsahaSplit = bidangUsaha.split(",");
+                                List<String> selectionBidangUsaha = new ArrayList<>(Arrays.asList(biidangUsahaSplit));
+                                setSpKendaraan(dataRefferalList.get(position).get("JENIS_KENDARAAN").asString());
+                                setSpBidangUsaha(selectionBidangUsaha);
+                            }else{
+                                noPonselReferee = "";
+                                etKontakPerson.setText("");
+                                etJabatan.setText("");
+                                etNamaBengkel.setText("");
+                                etAlamat.setText("");
+                                etKotaKab.setText("");
+                                setSpKendaraan("");
+                                setSpBidangUsaha(null);
+                            }
+
+
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
                 }
             }
         });
@@ -496,13 +578,13 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                     }
                 }
                 try {
-                    if(selectionList != null){
-                        if(isKategori){
+                    if (selectionList != null) {
+                        if (isKategori) {
                             spBidangUsaha.setItems(motorList, selectionList);
-                        }else{
+                        } else {
                             spBidangUsaha.setItems(mobilList, selectionList);
                         }
-                    }else{
+                    } else {
                         spBidangUsaha.setItems(isKategori ? motorList : mobilList);
                     }
 
@@ -514,6 +596,12 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
 
                         @Override
                         public void selectedStrings(List<String> strings) {
+                            if(strings.size() > 0){
+                                bidangUsahaBuilder = new StringBuilder();
+                                for (int i = 0; i < strings.size(); i++) {
+                                    bidangUsahaBuilder.append(strings.get(i)).append(", ");
+                                }
+                            }
 
                         }
                     });

@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.data.UtilityAndroid;
@@ -272,6 +273,10 @@ public class History_Activity extends AppActivity {
 
 
     private void viewHistoryAll(final String nopol) {
+        if(!Tools.isNetworkAvailable(getActivity())){
+            showWarning("TIDAK ADA KONEKSI INTERNET", Toast.LENGTH_LONG);
+            return;
+        }
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 

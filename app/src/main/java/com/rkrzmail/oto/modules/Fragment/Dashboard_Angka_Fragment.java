@@ -21,6 +21,7 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.bengkel.Dashboard_MainTab_Activity;
 import com.rkrzmail.srv.NumberFormatUtils;
+import com.rkrzmail.utils.Tools;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.text.ParseException;
@@ -43,7 +44,7 @@ public class Dashboard_Angka_Fragment extends Fragment {
     private TextView
             tvTglMulai, tvTglAkhir, tvHariKerja, tvRPLayanan, tvRPJualPart,
             tvRPBatal, tvRpPenjualanHarian, tvUnitHarian, tvPercentMarginPartHarian,
-            tvRataRataCheckin, tvRataRataJualPart;
+            tvRataRataCheckin, tvRataRataJualPart, tvPending, tvPartKosong, tvClaim, tvOutsource;
     private View fragmentView;
 
     private Nson pembayaranList = Nson.newArray();
@@ -52,14 +53,15 @@ public class Dashboard_Angka_Fragment extends Fragment {
     private AppActivity activity;
     private String tanggalAkhir = "", tglAwal = "", totLayanan = "", totPart = "", totJasapart = "", totJasalain = "",
             totLainnya = "", totDiscount = "", totalPenjualan = "", totDownpayment = "", totIncome = "", totBiaya = "", totHpp = "",
-            totMargin = "", totKas = "", totBank = "", totPiutang = "", totColeection = "", totStockpart = "", totHutang = "";
+            totMargin = "", totKas = "", totPiutang = "", totColeection = "", totStockpart = "", totHutang = "";
     private int totalHariKerja = 0, jumlahLayanan = 0, totalJualPart = 0,
             totalTidakMenunggu = 0, totalMenunggu = 0, totalProgress = 0,
             totalSelesai = 0, totalSaldoEpay = 0, totalPartOnline = 0, totalAsset = 0,
             totalPendapatanLain = 0, totalDonasi = 0, totalPenjualanHarian = 0,
-            totalRataRataCheckin = 0, totalRataRataJualPart = 0;
+            totalRataRataCheckin = 0, totalRataRataJualPart = 0, totalOutsource = 0,
+            totalClaim = 0, totalPartKosong = 0;
 
-    private double totalPercentMarginPartHarian = 0, totalUnitHarian = 0;
+    private double totalPercentMarginPartHarian = 0, totalUnitHarian = 0, totalPending = 0,  totalKasBank = 0;
 
     public Dashboard_Angka_Fragment() {
 
@@ -115,6 +117,10 @@ public class Dashboard_Angka_Fragment extends Fragment {
         tvPercentMarginPartHarian = fragmentView.findViewById(R.id.tv_total_margin_harian);
         tvRataRataJualPart = fragmentView.findViewById(R.id.tv_rata_rata_jual_part);
         tvRataRataCheckin = fragmentView.findViewById(R.id.tv_rata_rata_checkin);
+        tvPending = fragmentView.findViewById(R.id.tv_total_pending);
+        tvClaim = fragmentView.findViewById(R.id.tv_total_claim);
+        tvPartKosong = fragmentView.findViewById(R.id.tv_total_part_kosong);
+        tvOutsource = fragmentView.findViewById(R.id.tv_total_outsource);
 
         lyDasboard.setVisibility(GONE);
 
@@ -162,6 +168,10 @@ public class Dashboard_Angka_Fragment extends Fragment {
 
     @SuppressLint("NewApi")
     private void viewDashboard(final AppActivity activity) {
+        if(!Tools.isNetworkAvailable(getActivity())){
+            activity.showWarning("TIDAK ADA KONEKSI INTERNET");
+            return;
+        }
         activity.newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -182,6 +192,10 @@ public class Dashboard_Angka_Fragment extends Fragment {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     result = result.get("data").get(0);
 
+                    totalOutsource = result.get("TOTAL_OUTSOURCE").asInteger();
+                    totalClaim = result.get("TOTAL_CLAIM").asInteger();
+                    totalPartKosong = result.get("TOTAL_PART_KOSONG").asInteger();
+                    totalPending =  NumberFormatUtils.format2NumberDecimal(result.get("TOTAL_PENDING").asInteger());
                     totalRataRataCheckin = result.get("RATA_RATA_CHECKIN").asInteger();
                     totalRataRataJualPart = result.get("RATA_RATA_JUAL_PART").asInteger();
                     totalPenjualanHarian = result.get("TOTAL_PENJUALAN_HARIAN").asInteger();
@@ -212,7 +226,7 @@ public class Dashboard_Angka_Fragment extends Fragment {
                     totHpp = result.get("TOTAL_HPP").asString();
                     totMargin = result.get("TOTAL_MARGIN").asString();
                     totKas = result.get("TOTAL_KAS").asString();
-                    totBank = result.get("TOTAL_KAS_BANK").asString();
+                    totalKasBank = NumberFormatUtils.format2NumberDecimal(result.get("TOTAL_KAS_BANK").asDouble());
                     totPiutang = result.get("TOTAL_PIUTANG").asString();
                     totColeection = result.get("TOTAL_COLLECTION").asString();
                     totStockpart = result.get("TOTAL_STOCK_PART").asString();
@@ -229,6 +243,10 @@ public class Dashboard_Angka_Fragment extends Fragment {
 
     @SuppressLint("SetTextI18n")
     private void setValuedashboard() {
+        tvClaim.setText(activity.setUnderline(String.valueOf(totalClaim)));
+        tvPartKosong.setText(activity.setUnderline(String.valueOf(totalPartKosong)));
+        tvOutsource.setText(activity.setUnderline(String.valueOf(totalOutsource)));
+        tvPending.setText(activity.setUnderline(RP + NumberFormatUtils.formatRpDecimal(String.valueOf(totalPending))));
         tvRataRataCheckin.setText(activity.setUnderline(RP + NumberFormatUtils.formatRp(String.valueOf(totalRataRataCheckin))));
         tvRataRataJualPart.setText(activity.setUnderline(RP + NumberFormatUtils.formatRp(String.valueOf(totalRataRataJualPart))));
         tvRPLayanan.setText(activity.setUnderline(String.valueOf(jumlahLayanan)));
@@ -262,7 +280,7 @@ public class Dashboard_Angka_Fragment extends Fragment {
         activity.find(R.id.tv_dbHpppart, TextView.class).setText(activity.setUnderline(RP + activity.formatRp(totHpp)));
         activity.find(R.id.tv_dbMargin, TextView.class).setText(activity.setUnderline(RP + activity.formatRp(totMargin)));
         activity.find(R.id.tv_dbKas, TextView.class).setText(activity.setUnderline(RP + activity.formatRp(totKas)));
-        activity.find(R.id.tv_dbBank, TextView.class).setText(activity.setUnderline(RP + activity.formatRp(totBank)));
+        activity.find(R.id.tv_dbBank, TextView.class).setText(activity.setUnderline(RP + NumberFormatUtils.formatRpDecimal(String.valueOf(totalKasBank))));
         activity.find(R.id.tv_dbPiutang, TextView.class).setText(activity.setUnderline(RP + activity.formatRp(totPiutang)));
         activity.find(R.id.tv_dbColeection, TextView.class).setText(activity.setUnderline(RP + activity.formatRp(totColeection)));
         activity.find(R.id.tv_dbStockpart, TextView.class).setText(activity.setUnderline(RP + activity.formatRp(totStockpart)));

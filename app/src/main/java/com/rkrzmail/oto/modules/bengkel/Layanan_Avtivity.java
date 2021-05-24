@@ -68,8 +68,11 @@ public class Layanan_Avtivity extends AppActivity {
 
     private void initComponent() {
         lyContainerFilter = findViewById(R.id.ly_container_filter_layanan);
+
+        find(R.id.ly_container_filter_saldo).setVisibility(View.GONE);
         find(R.id.ly_container_filter_kontrol_layanan).setVisibility(View.GONE);
         find(R.id.fab_tambah).setVisibility(View.VISIBLE);
+
         find(R.id.fab_tambah).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,6 +109,7 @@ public class Layanan_Avtivity extends AppActivity {
                      lokasiLayanan += nListArray.get(position).get("LOKASI_LAYANAN_BENGKEL").asString();
                  }
 
+                viewHolder.find(R.id.tv_keterangan, TextView.class).setText(nListArray.get(position).get("KETERANGAN_LAYANAN").asString());
                 viewHolder.find(R.id.tv_jenis_layanan, TextView.class).setText(nListArray.get(position).get("JENIS_LAYANAN").asString());
                 viewHolder.find(R.id.tv_nama_layanan, TextView.class).setText(nListArray.get(position).get("NAMA_LAYANAN").asString());
                 viewHolder.find(R.id.tv_lokasi_layanan, TextView.class).setText(lokasiLayanan);
@@ -232,6 +236,10 @@ public class Layanan_Avtivity extends AppActivity {
     }
 
     private void viewLayanan(final String search, final String sortBy) {
+        if(!Tools.isNetworkAvailable(getActivity())){
+            showWarning("TIDAK ADA KONEKSI INTERNET");
+            return;
+        }
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -261,6 +269,15 @@ public class Layanan_Avtivity extends AppActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (filterBottomSheet.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+            filterBottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -294,7 +311,7 @@ public class Layanan_Avtivity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        adapterSearchView(mSearchView, "spec", "viewlayanan", "NAMA_LAYANAN", "");
+        adapterSearchView(mSearchView, "spec", "viewlayanan", "VARIAN", "");
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
 

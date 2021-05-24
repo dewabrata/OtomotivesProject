@@ -108,7 +108,6 @@ public class Terbayar_Billing_Fragment extends Fragment {
                 viewHolder.find(R.id.tv_total_billing, TextView.class).setText(RP + NumberFormatUtils.formatRp(terbayarList.get(position).get("").asString()));
                 viewHolder.find(R.id.tv_cashback, TextView.class).setText(RP + NumberFormatUtils.formatRp(terbayarList.get(position).get("").asString()));
                 viewHolder.find(R.id.tv_total_bayar, TextView.class).setText(RP + NumberFormatUtils.formatRp(terbayarList.get(position).get("").asString()));
-                viewHolder.find(R.id.tv_no_billing, TextView.class).setText(terbayarList.get(position).get("").asString());
 
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {

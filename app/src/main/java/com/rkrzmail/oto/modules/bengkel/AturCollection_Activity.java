@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -23,6 +24,7 @@ import com.rkrzmail.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.ATUR_COLLECTION;
 import static com.rkrzmail.utils.APIUrls.SET_REKENING_BANK;
@@ -50,7 +52,7 @@ public class AturCollection_Activity extends AppActivity {
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Collection");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Collection");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -143,6 +145,9 @@ public class AturCollection_Activity extends AppActivity {
     }
 
     private void saveData() {
+        if(!Tools.isNetworkAvailable(getActivity())){
+            showWarning("TIDAK ADA KONEKSI INTERNET", Toast.LENGTH_LONG);
+        }
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 

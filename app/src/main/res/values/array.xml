@@ -177,6 +177,7 @@
         <item>DISCOUNT SPOT</item>
         <item>KOMISI</item>
         <item>USER</item>
+        <item>SALDO</item>
     </string-array>
 
     <string-array name="status_layanan">
@@ -317,6 +318,7 @@
         <item>DEBET</item>
         <item>KREDIT</item>
         <item>INVOICE</item>
+        <item>E-WALLET</item>
     </string-array>
 
     <string-array name="aktivitas_usaha">

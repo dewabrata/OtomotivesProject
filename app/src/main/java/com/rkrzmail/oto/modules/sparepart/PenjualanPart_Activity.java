@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -22,6 +23,7 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.bengkel.Billing_Activity;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
@@ -46,6 +48,13 @@ public class PenjualanPart_Activity extends AppActivity {
         setContentView(R.layout.activity_list_basic_with_fab);
         initToolbar();
         initComponent();
+
+        if(getSetting("STATUS_BENGKEL").equals("BATAL") || getSetting("STATUS_BENGKEL").equals("NON AKTIVE")){
+            Intent intent = new Intent(getActivity(), Billing_Activity.class);
+            showNotification(getActivity(), "Billing", "Billing Belum Terbayar", "CHECKIN", intent);
+            showWarning("ANDA TIDAK BISA MELAKUKAN TRANSAKSI!");
+            find(R.id.fab_tambah).setEnabled(false);
+        }
     }
 
     @SuppressLint("NewApi")

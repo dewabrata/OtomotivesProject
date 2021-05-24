@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -157,27 +158,18 @@ public class AturStockOpname_Activity extends AppActivity {
     }
 
     private void loadData() {
-        if (getData.get("PENDING_STOCK").asInteger() > 0) {
-            showInfo("PART PENDING, STOCK OPNAME DI TUNDA", Toast.LENGTH_LONG);
-            finish();
-           /*
-            intent = new Intent(getActivity(), CariPart_Activity.class);
-            intent.putExtra(CARI_PART_TERALOKASIKAN, "");
-            startActivityForResult(intent, REQUEST_CARI_PART);
-            */
-            return;
-        }
-
         stockBeforeOpname = getData.get("STOCK_RUANG_PART").asInteger();
-        viewLokasiPart(getData, getData.get("LOKASI").asString());
         idLokasiPart = getData.get("LOKASI_PART_ID").asInteger();
+        partId = getData.get("PART_ID").asString();
+
+        viewLokasiPart(getData, getData.get("LOKASI").asString());
+        find(R.id.cb_clear_pending, CheckBox.class).setEnabled(getData.get("PENDING_STOCK").asInteger() > 0);
         noFolder.setText(getData.get("KODE").asString());
         noPart.setText(getData.get("NO_PART").asString());
         namaPart.setText(getData.get("NAMA_PART").asString());
         etMerk.setText(getData.get("MERK").asString());
         etStock.setText(getData.get("STOCK_RUANG_PART").asString());
         etPending.setText(getData.get("PENDING_STOCK").asString());
-        partId = getData.get("PART_ID").asString();
     }
 
     private void saveData(final Nson penyesuaianNson) {
@@ -206,6 +198,8 @@ public class AturStockOpname_Activity extends AppActivity {
                 args.put("lokasi", find(R.id.sp_lokasi_stockOpname, Spinner.class).getSelectedItem().toString());
                 args.put("opname", etJumlahOpname.getText().toString());
                 args.put("no_folder", noFolder.getText().toString());
+                args.put("isClearPending", find(R.id.cb_clear_pending, CheckBox.class).isChecked() ? "Y" : "N");
+
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_STOCK_OPNAME), args));
             }
 

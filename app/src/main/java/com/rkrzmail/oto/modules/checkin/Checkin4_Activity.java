@@ -100,6 +100,9 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkin4_);
+        if(!Tools.isNetworkAvailable(getActivity())){
+            showWarning("TIDAK ADA KONEKSI INTERNET", Toast.LENGTH_LONG);
+        }
         initComponent();
         initToolbar();
         ttd = null;

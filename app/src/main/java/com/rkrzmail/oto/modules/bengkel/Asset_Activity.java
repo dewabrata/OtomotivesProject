@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.data.UtilityAndroid;
@@ -27,6 +28,7 @@ import com.rkrzmail.srv.DateFormatUtils;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.srv.NumberFormatUtils;
+import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 
@@ -86,6 +88,10 @@ public class Asset_Activity extends AppActivity {
 
 
     private void viewAsset(final String search) {
+        if(!Tools.isNetworkAvailable(getActivity())){
+            showWarning("TIDAK ADA KONEKSI INTERNET", Toast.LENGTH_LONG);
+            return;
+        }
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 

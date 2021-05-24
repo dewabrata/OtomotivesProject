@@ -188,6 +188,18 @@ public class NumberFormatUtils {
         return "0";
     }
 
+    public static String formatRpDecimal(String currency) {
+        if (!currency.equals("")) {
+            try {
+                DecimalFormat formatter = new DecimalFormat("###,###,###.##");
+                return formatter.format(Double.parseDouble(currency));
+            } catch (Exception e) {
+                return currency;
+            }
+        }
+        return "0";
+    }
+
     public static String formatRp(int values) {
         if (values > 0) {
             try {
@@ -259,5 +271,15 @@ public class NumberFormatUtils {
     public static String formatTime(int day, int hour, int minute) {
         if (hour == 0 && minute == 0) return String.format("%02d:%02d:%02d", 0, 0, 0);
         else return String.format("%02d:%02d:%02d", day, hour, minute);
+    }
+
+    public static double format2NumberDecimal(double value){
+        if(value == 0) return 0;
+        try{
+            return Double.parseDouble(new DecimalFormat("##.####").format(value));
+        }catch (NumberFormatException exception){
+            exception.printStackTrace();
+        }
+        return 0;
     }
 }

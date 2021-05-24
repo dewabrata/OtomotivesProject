@@ -13,7 +13,7 @@
     android:layout_weight="5"
     android:padding="10dp"
     app:cardElevation="2dp"
-    app:cardCornerRadius="10dp">
+    app:cardCornerRadius="7dp">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -30,21 +30,47 @@
 
             <TableRow>
 
+
                 <TextView
-                    android:id="@+id/tv_bulan"
+                    android:id="@+id/tv_tanggal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/bulan"
+                    android:text="@string/tanggal"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                     android:textColor="@color/grey_900"
                     android:textSize="12sp"
                     android:layout_gravity="start" />
 
                 <TextView
-                    android:id="@+id/tv_tgl_bayar"
+                    android:id="@+id/tv_akun"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/tanggal_bayar"
+                    android:text="@string/akun"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:layout_gravity="end" />
+
+
+            </TableRow>
+
+            <TableRow android:layout_marginTop="@dimen/spacing_medium">
+
+                <TextView
+                    android:id="@+id/tv_nama_bank"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/nama_bank"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:layout_gravity="start" />
+
+                <TextView
+                    android:id="@+id/tv_no_rek"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No. Rekening"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                     android:textColor="@color/grey_900"
                     android:textSize="12sp"
@@ -52,48 +78,24 @@
 
             </TableRow>
 
+
             <TableRow android:layout_marginTop="@dimen/spacing_medium">
 
                 <TextView
-                    android:id="@+id/tv_total_billing"
+                    android:id="@+id/tv_saldo_akhir"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/rp_total_billing"
+                    android:text="@string/saldo_akhir"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                     android:textColor="@color/grey_900"
                     android:textSize="12sp"
                     android:layout_gravity="start" />
 
                 <TextView
-                    android:id="@+id/tv_cashback"
+                    android:id="@+id/tv_saldo_disesuaikan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/cashback"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textColor="@color/grey_900"
-                    android:textSize="12sp"
-                    android:layout_gravity="end" />
-
-            </TableRow>
-
-
-            <TableRow android:layout_marginTop="@dimen/spacing_medium">
-
-                <TextView
-                    android:id="@+id/tv_total_bayar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/rp_total_bayar"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textColor="@color/grey_900"
-                    android:textSize="12sp"
-                    android:layout_gravity="start" />
-
-                <TextView
-                    android:id="@+id/tv_bank_oto"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/bank_oto"
+                    android:text="Saldo di Sesuaikan"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                     android:textColor="@color/grey_900"
                     android:textSize="12sp"

@@ -16,6 +16,7 @@ import com.rkrzmail.oto.modules.bengkel.Dashboard_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Pembayaran_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
 import com.rkrzmail.oto.modules.bengkel.Referal_MainTab_Activity;
+import com.rkrzmail.oto.modules.bengkel.RekeningBank_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Schedule_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.AturUser_MainTab_Activity;
 import com.rkrzmail.oto.modules.hutang.Hutang_MainTab_Activity;
@@ -124,6 +125,9 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
                     break;
                 case 3:
                     fragment = Fragment.instantiate(context, OutSource_TugasPart_Fragment.class.getName());
+                    break;
+                case 4:
+                    fragment = Fragment.instantiate(context, StatusClaim_TugasPart_Fragment.class.getName());
                     break;
             }
         }
@@ -263,6 +267,18 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
             return fragment;
         }
 
+        if (context instanceof RekeningBank_MainTab_Activity) {
+            switch (i) {
+                case 0:
+                    fragment = Fragment.instantiate(context, RekeningBank_Rekening_Fragment.class.getName());
+                    break;
+                case 1:
+                    fragment = Fragment.instantiate(context, EWallet_Rekening_Fragment.class.getName());
+                    break;
+            }
+            return fragment;
+        }
+
         return fragment;
     }
 
@@ -302,6 +318,8 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
                     return "Kosong";
                 case 3:
                     return "Out";
+                case 4:
+                    return "Claim";
             }
         }
         if (context instanceof Pembayaran_MainTab_Activity) {
@@ -394,6 +412,14 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
                     return "Referal";
                 case 1:
                     return "Bonus";
+            }
+        }
+        if (context instanceof RekeningBank_MainTab_Activity) {
+            switch (position) {
+                case 0:
+                    return "Bank";
+                case 1:
+                    return "Wallet";
             }
         }
         return null;

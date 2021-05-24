@@ -50,6 +50,7 @@ import com.rkrzmail.oto.modules.bengkel.Dashboard_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Jurnal_Activity;
 import com.rkrzmail.oto.modules.bengkel.Laporan_Activity;
 import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
+import com.rkrzmail.oto.modules.bengkel.Saldo_Activity;
 import com.rkrzmail.oto.modules.bengkel.SaranActivity;
 import com.rkrzmail.oto.modules.bengkel.Schedule_MainTab_Activity;
 import com.rkrzmail.oto.modules.checkin.Checkin1_Activity;
@@ -83,7 +84,7 @@ import com.rkrzmail.oto.modules.komisi.KomisiJasaLain_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiLayanan_Activity;
 import com.rkrzmail.oto.modules.bengkel.Layanan_Avtivity;
 import com.rkrzmail.oto.modules.sparepart.LokasiPart_MainTab_Activity;
-import com.rkrzmail.oto.modules.bengkel.RekeningBank_Activity;
+import com.rkrzmail.oto.modules.bengkel.RekeningBank_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Tenda_Activity;
 import com.rkrzmail.oto.modules.sparepart.TerimaPart_Activity;
 
@@ -144,7 +145,7 @@ public class MenuActivity extends AppActivity {
     public static final int MN_KOMISI_PART = 43;
 
     private final String SARAN = "SARAN";
-    private final String REFERAL = "REFERAL";
+    private final String REFFERAL = "REFFERAL";
     private final String CHECK_OUT = "CHECK OUT";
     private final String COLLECTION = "COLLECTION";
     private final String PART_KELUAR = "PART KELUAR";
@@ -153,12 +154,13 @@ public class MenuActivity extends AppActivity {
     public final String LAPORAN = "LAPORAN";
     public final String SCHEDULE = "SCHEDULE";
     private final String BILLING = "BILLING";
+    private final String SALDO = "SALDO";
 
     private final String USER = "USER";
     private final String PENGATURAN_USER_LAYANAN = "LAYANAN";
     private final String PENGATURAN_USER_BIAYA_MEKANIK = "BIAYA MEKANIK";
     private final String PENGATURAN_USER_SPAREPARTS = "SPAREPARTS";
-    private final String PENGATURAN_USER_REKENING_BANK = "REKENING BANK";
+    private final String PENGATURAN_USER_REKENING = "REKENING";
     private final String PENGATURAN_USER_TENDA = "TENDA";
     private final String PENGATURAN_PROFILE = "PROFILE BENGKEL";
 
@@ -308,7 +310,7 @@ public class MenuActivity extends AppActivity {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             return true;
-        } else if (item.getTitle().toString().equalsIgnoreCase(REFERAL) && getAccess(REFERAL)) {
+        } else if (item.getTitle().toString().equalsIgnoreCase(REFFERAL) && getAccess(REFFERAL)) {
             Intent intent = new Intent(MenuActivity.this, Referal_MainTab_Activity.class);
             startActivity(intent);
         } else if (item.getTitle().toString().equalsIgnoreCase(CHECK_OUT) && getAccess(CHECK_OUT)) {
@@ -366,8 +368,8 @@ public class MenuActivity extends AppActivity {
             Intent intent = new Intent(MenuActivity.this, Spareparts_Activity.class);
             intent.putExtra("flag", "atur_sparepart");
             startActivityForResult(intent, MN_SPAREPART);
-        } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_REKENING_BANK) && getAccess(PENGATURAN)) {
-            Intent intent = new Intent(MenuActivity.this, RekeningBank_Activity.class);
+        } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_REKENING) && getAccess(PENGATURAN)) {
+            Intent intent = new Intent(MenuActivity.this, RekeningBank_MainTab_Activity.class);
             startActivity(intent);
         }else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_PROFILE) && getAccess(PENGATURAN)) {
             Intent intent = new Intent(MenuActivity.this, ProfileBengkel_Activity.class);
@@ -441,9 +443,12 @@ public class MenuActivity extends AppActivity {
         } else if (item.getTitle().toString().equalsIgnoreCase(BILLING) && getAccess(BILLING)) {
             Intent intent = new Intent(MenuActivity.this, Billing_Activity.class);
             startActivity(intent);
+        } else if (item.getTitle().toString().equalsIgnoreCase(SALDO) && getAccess(SALDO)) {
+            Intent intent = new Intent(MenuActivity.this, Saldo_Activity.class);
+            startActivity(intent);
         } else{
-            if(!getAccess(REFERAL)){
-                showWarning("ANDA TIDAK MEMILIKI AKSES " + REFERAL);
+            if(!getAccess(REFFERAL)){
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + REFFERAL);
             }else if(!getAccess(CHECK_OUT)){
                 showWarning("ANDA TIDAK MEMILIKI AKSES " + CHECK_OUT);
             }else if(!getAccess(MY_BUSINESS)){
@@ -466,6 +471,8 @@ public class MenuActivity extends AppActivity {
                 showWarning("ANDA TIDAK MEMILIKI AKSES " + BILLING);
             }else if(!getAccess(USER)){
                 showWarning("ANDA TIDAK MEMILIKI AKSES " + USER);
+            }else if(!getAccess(SALDO)){
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + SALDO);
             }
         }
 
@@ -633,7 +640,8 @@ public class MenuActivity extends AppActivity {
         getMenuInflater().inflate(R.menu.menu, menu);
         SubMenu subMenu;
 
-        menu.add(BILLING);//FREE AKSES
+        menu.add(BILLING);
+        menu.add(SALDO);
         menu.add(ANTAR_JEMPUT);//FREE AKSES
         menu.add(CHECK_OUT);
         menu.add(KENDARAAN_CUSTOMER);
@@ -641,7 +649,7 @@ public class MenuActivity extends AppActivity {
         menu.add(PART_KELUAR);
         menu.add(PEMBELIAN_PART);
         menu.add(SCHEDULE);
-        menu.add(REFERAL);
+        menu.add(REFFERAL);
         menu.add(SARAN);
         menu.add(USER);
         menu.add(DISCOUNT_SPOT);
@@ -658,7 +666,7 @@ public class MenuActivity extends AppActivity {
         subMenu.add(PENGATURAN_USER_LAYANAN);
         subMenu.add(PENGATURAN_USER_BIAYA_MEKANIK);
         subMenu.add(PENGATURAN_USER_SPAREPARTS);
-        subMenu.add(PENGATURAN_USER_REKENING_BANK);
+        subMenu.add(PENGATURAN_USER_REKENING);
         subMenu.add(PENGATURAN_USER_TENDA);
         subMenu.add(PENGATURAN_PROFILE);
 

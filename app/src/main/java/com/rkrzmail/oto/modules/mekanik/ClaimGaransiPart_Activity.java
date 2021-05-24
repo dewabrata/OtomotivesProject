@@ -41,7 +41,7 @@ public class ClaimGaransiPart_Activity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_claim_garansi_part_);
+        setContentView(R.layout.activity_list_basic);
         initToolbar();
         initComponent();
     }
@@ -55,7 +55,7 @@ public class ClaimGaransiPart_Activity extends AppActivity {
     }
 
     private void initComponent() {
-        rvClaimGaransi = findViewById(R.id.recyclerViewClaimGaransiPart);
+        rvClaimGaransi = findViewById(R.id.recyclerView);
         rvClaimGaransi.setLayoutManager(new LinearLayoutManager(this));
         rvClaimGaransi.setHasFixedSize(true);
         rvClaimGaransi.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_claimgaransi_part) {

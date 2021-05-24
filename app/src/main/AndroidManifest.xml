@@ -18,24 +18,40 @@
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+
 
     <application
         android:name=".AppApplication"
         android:allowBackup="true"
         android:appComponentFactory="android.support.v4.app.CoreComponentFactory"
-        android:icon="@drawable/speed"
-        android:label="Bengkel Pro"
+        android:icon="${app_icon}"
+        android:label="${app_label_name}"
         android:largeHeap="true"
         android:requestLegacyExternalStorage="true"
-        android:roundIcon="@drawable/speed"
+        android:roundIcon="${app_icon}"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,UnusedAttribute"
         tools:replace="android:label,android:appComponentFactory">
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            tools:replace="android:authorities">
+
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
+        <activity android:name=".modules.bengkel.Atur_Saldo_Activity" />
+        <activity android:name=".modules.bengkel.Saldo_Activity" />
         <activity android:name=".modules.bengkel.Billing_Activity" />
         <activity android:name=".modules.bengkel.VerifikasiOtp_Activity" />
         <activity android:name=".modules.sparepart.JumlahPart_Mekanik_Activity" />
@@ -290,7 +306,7 @@
         <activity android:name=".modules.discount.DiscountLayanan_Activity" />
         <activity android:name=".modules.bengkel.DeskripsiLayanan_Activiy" />
         <activity android:name=".modules.bengkel.AturRekening_Activity" />
-        <activity android:name=".modules.bengkel.RekeningBank_Activity" />
+        <activity android:name=".modules.bengkel.RekeningBank_MainTab_Activity" />
         <activity android:name=".modules.discount.AturDiscountPart_Activity" />
         <activity android:name=".modules.discount.DiscountPart_Activity" />
         <activity android:name=".modules.discount.AturSpotDiscount_Activity" />
@@ -379,16 +395,6 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".modules.CheckinActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".modules.DaftarkanPelayananActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
             android:name=".modules.BarcodeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
@@ -445,16 +451,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/GoogleMapsApi" />
-
-        <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.rkrzmail.oto.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_path" />
-        </provider>
 
         <receiver android:name="com.rkrzmail.srv.OtoReceiver">
             <intent-filter>

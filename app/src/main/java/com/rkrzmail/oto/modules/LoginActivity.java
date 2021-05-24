@@ -92,7 +92,9 @@ public class LoginActivity extends AppActivity {
         find(R.id.registrasi, TextView.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), VerifikasiOtp_Activity.class));
+                startActivity(new Intent(getActivity(), RegistrasiBengkel_Activity.class));
+
+              //  startActivity(new Intent(getActivity(), VerifikasiOtp_Activity.class));
             }
         });
 
@@ -257,6 +259,8 @@ public class LoginActivity extends AppActivity {
             int readContactPermision = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
             int WritePermision = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
             int readPhonePermision = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
+            int callPhonePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE);
+
             List<String> listPermissionsNeeded = new ArrayList<>();
             if (permissionCamera != PackageManager.PERMISSION_GRANTED) {
                 listPermissionsNeeded.add(Manifest.permission.CAMERA);
@@ -276,6 +280,9 @@ public class LoginActivity extends AppActivity {
             if (readPhonePermision != PackageManager.PERMISSION_GRANTED) {
                 listPermissionsNeeded.add(Manifest.permission.READ_PHONE_STATE);
             }
+            if (callPhonePermission != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(Manifest.permission.CALL_PHONE);
+            }
             if (!listPermissionsNeeded.isEmpty()) {
                 ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[0]), REQUEST_ID_MULTIPLE_PERMISSIONS);
             }
@@ -293,6 +300,7 @@ public class LoginActivity extends AppActivity {
             perms.put(Manifest.permission.WRITE_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
             perms.put(Manifest.permission.READ_PHONE_STATE, PackageManager.PERMISSION_GRANTED);
             perms.put(Manifest.permission.READ_CONTACTS, PackageManager.PERMISSION_GRANTED);
+
             if (grantResults.length > 0) {
                 for (int i = 0; i < permissions.length; i++)
                     perms.put(permissions[i], grantResults[i]);

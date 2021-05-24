@@ -201,7 +201,7 @@
                             android:id="@+id/et_namaBankEpay"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:hint="@string/nama_bank_uppercase"
+                            android:hint="@string/bank_e_wallet_uppercase"
                             android:inputType="textCapCharacters"
                             android:textSize="14sp"
                             android:enabled="false"
@@ -313,6 +313,34 @@
 
                 </android.support.design.widget.TextInputLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp">
+
+                    <Button
+                        android:id="@+id/btn_qris"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="QRIS"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/btn_rounded_accent"
+                        android:textColor="@android:color/white" />
+
+                    <Button
+                        android:id="@+id/btn_foto_qris"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="FOTO"
+                        android:background="@drawable/btn_rounded_accent"
+                        android:textColor="@android:color/white" />
+
+
+                </LinearLayout>
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/tl_totalBayar"
@@ -334,26 +362,6 @@
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
-                    android:id="@+id/tl_noTrack"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_medium"
-                    android:textAlignment="center">
-
-                    <EditText
-                        android:id="@+id/et_noTrack"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:enabled="false"
-                        android:hint="NO. TRACE"
-                        android:inputType="number"
-                        android:textSize="14sp" />
-
-                </android.support.design.widget.TextInputLayout>
-
-
-                <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -368,6 +376,25 @@
                         android:enabled="false"
                         android:hint="KEMBALIAN"
                         android:inputType="numberDecimal"
+                        android:textSize="14sp" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/tl_noTrack"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_medium"
+                    android:textAlignment="center">
+
+                    <EditText
+                        android:id="@+id/et_noTrack"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:enabled="false"
+                        android:hint="NO. TRACE"
+                        android:inputType="number"
                         android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>

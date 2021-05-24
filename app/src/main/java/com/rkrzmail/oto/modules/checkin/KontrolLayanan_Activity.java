@@ -22,6 +22,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -77,7 +78,9 @@ public class KontrolLayanan_Activity extends AppActivity {
     private void initComponent() {
         rvKontrolLayanan = findViewById(R.id.recyclerView);
         lyContainerFilter = findViewById(R.id.ly_container_filter_kontrol_layanan);
+
         find(R.id.ly_container_filter_layanan).setVisibility(View.GONE);
+        find(R.id.ly_container_filter_saldo).setVisibility(View.GONE);
 
         if (getIntent().hasExtra("NOPOL")) {
             viewKontrolLayanan(getIntentStringExtra("NOPOL"), "");
@@ -350,6 +353,10 @@ public class KontrolLayanan_Activity extends AppActivity {
     }
 
     private void viewKontrolLayanan(final String cari, final String sortBy) {
+        if(!Tools.isNetworkAvailable(getActivity())){
+            showWarning("TIDAK ADA KONEKSI INTERNET", Toast.LENGTH_LONG);
+            return;
+        }
         newTask(new Messagebox.DoubleRunnable() {
             Nson result;
 

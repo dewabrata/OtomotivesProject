@@ -23,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +35,8 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.BarcodeActivity;
+import com.rkrzmail.oto.modules.bengkel.Billing_Activity;
+import com.rkrzmail.oto.modules.bengkel.Billing_MainTab_Activity;
 import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NsonAutoCompleteAdapter;
 import com.rkrzmail.utils.Tools;
@@ -87,6 +90,17 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkin1);
+        if(!Tools.isNetworkAvailable(getActivity())){
+            showWarning("TIDAK ADA KONEKSI INTERNET", Toast.LENGTH_LONG);
+        }
+
+        if(getSetting("STATUS_BENGKEL").equals("BATAL") || getSetting("STATUS_BENGKEL").equals("NON AKTIVE")){
+            Intent intent = new Intent(getActivity(), Billing_Activity.class);
+            showNotification(getActivity(), "Billing", "Billing Belum Terbayar", "CHECKIN", intent);
+            showWarning("ANDA TIDAK BISA MELAKUKAN TRANSAKSI!");
+            Tools.setViewAndChildrenEnabled(find(R.id.ly_checkin1, LinearLayout.class), false);
+        }
+
         initComponent();
     }
 
@@ -106,7 +120,6 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
         etNamaPelanggan = findViewById(R.id.et_namaPelanggan_checkin1);
         etKm = findViewById(R.id.et_km_checkin1);
         spPekerjaan = findViewById(R.id.sp_pekerjaan_checkin1);
-
 
         find(R.id.imgBarcode_checkin1, ImageButton.class).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -545,6 +558,10 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
     }
 
     private void setSelanjutnya() {
+        if(!Tools.isNetworkAvailable(getActivity())){
+            showWarning("TIDAK ADA KONEKSI INTERNET", Toast.LENGTH_LONG);
+            return;
+        }
         final String nopol = etNopol.getText().toString().replaceAll(" ", "").toUpperCase();
         final String namaPelanggan = etNamaPelanggan.getText().toString().toUpperCase();
         final String km = etKm.getText().toString();

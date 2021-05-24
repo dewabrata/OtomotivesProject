@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -60,6 +61,9 @@ public class Checkin2_Activity extends AppActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkin2);
+        if(!Tools.isNetworkAvailable(getActivity())){
+            showWarning("TIDAK ADA KONEKSI INTERNET", Toast.LENGTH_LONG);
+        }
         initComponent();
     }
 
@@ -313,7 +317,6 @@ public class Checkin2_Activity extends AppActivity {
                     args.put("isKonfirmasi", "Y");
                 }
 
-
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
             }
 
@@ -351,6 +354,7 @@ public class Checkin2_Activity extends AppActivity {
                 args.put("action", "KONFIRMASI DATA");
                 args.put("checkinId", getIntentStringExtra(ID));
                 args.put("noPonsel", noHp);
+                args.put("noPolisi", getIntentStringExtra("NOPOL"));
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_NOMOR_POLISI), args));
             }
 

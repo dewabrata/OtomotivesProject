@@ -23,6 +23,7 @@ import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.ConstUtils;
+import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 import java.util.Objects;
@@ -74,12 +75,14 @@ public class Billing_Activity extends AppActivity {
             @Override
             public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
                 super.onBindViewHolder(viewHolder, position);
-                viewHolder.find(R.id.tv_bulan, TextView.class).setText(terbayarList.get(position).get("").asString());
-                viewHolder.find(R.id.tv_tgl_bayar, TextView.class).setText(terbayarList.get(position).get("").asString());
-                viewHolder.find(R.id.tv_total_billing, TextView.class).setText(RP + NumberFormatUtils.formatRp(terbayarList.get(position).get("").asString()));
-                viewHolder.find(R.id.tv_cashback, TextView.class).setText(RP + NumberFormatUtils.formatRp(terbayarList.get(position).get("").asString()));
-                viewHolder.find(R.id.tv_total_bayar, TextView.class).setText(RP + NumberFormatUtils.formatRp(terbayarList.get(position).get("").asString()));
-                viewHolder.find(R.id.tv_no_billing, TextView.class).setText(terbayarList.get(position).get("").asString());
+                viewHolder.find(R.id.tv_bulan, TextView.class).setText(terbayarList.get(position).get("BULAN").asString());
+                viewHolder.find(R.id.tv_tgl_bayar, TextView.class).setText(terbayarList.get(position).get("TANGGAL_BAYAR").asString());
+                viewHolder.find(R.id.tv_total_billing, TextView.class).setText(RP + NumberFormatUtils.formatRp(terbayarList.get(position).get("TOTAL_FEE").asString()));
+                viewHolder.find(R.id.tv_cashback, TextView.class).setText(RP + NumberFormatUtils.formatRp(terbayarList.get(position).get("CASHBACK").asString()));
+                viewHolder.find(R.id.tv_total_bayar, TextView.class).setText(RP + NumberFormatUtils.formatRp(terbayarList.get(position).get("NOMINAL").asString()));
+
+                String bankOto = terbayarList.get(position).get("NAMA_BANK").asString() + " - "  + terbayarList.get(position).get("REKENING_BANK").asString();
+                viewHolder.find(R.id.tv_bank_oto, TextView.class).setText(bankOto);
 
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
@@ -92,6 +95,10 @@ public class Billing_Activity extends AppActivity {
 
 
     private void viewBilling() {
+        if(!Tools.isNetworkAvailable(getActivity())){
+            showWarning("TIDAK ADA KONEKSI INTERNET");
+            return;
+        }
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 

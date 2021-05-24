@@ -14,34 +14,44 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="10dp">
 
-            <android.support.design.widget.TextInputLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:hint="KODE REFERAL">
+                android:layout_marginTop="@dimen/paddingMedium"
+                android:layout_marginBottom="@dimen/paddingMedium"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/paddingMedium"
+                android:paddingEnd="@dimen/paddingMedium">
 
-                <EditText
-                    android:id="@+id/et_kodeRef_regist"
-                    android:layout_width="match_parent"
+                <TextView
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:inputType="text" />
+                    android:text="@string/pemberi_referensi_uppercase"
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:textColor="@color/grey_900"
+                    android:textStyle="bold"
+                    android:textSize="12sp"/>
 
-            </android.support.design.widget.TextInputLayout>
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
 
-            <Button
-                android:id="@+id/btn_check_regist"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="CHECK"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/btn_rounded_accent"
-                android:textColor="@android:color/white"/>
+                    <Spinner
+                        android:id="@+id/sp_kode_refferal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textAlignment="center" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/tl_cp_regist"
@@ -57,7 +67,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
-                    android:inputType="textPersonName|textCapSentences" />
+                    android:inputType="textCapCharacters" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -73,7 +83,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
-                    android:inputType="textPersonName|textCapSentences" />
+                    android:inputType="textCapCharacters" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -253,7 +263,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="top|left"
                     android:textSize="14sp"
-                    android:inputType="textMultiLine|textCapSentences" />
+                    android:inputType="textMultiLine|textCapCharacters" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -273,7 +283,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
-                        android:inputType="textCapSentences"
+                        android:inputType="textCapCharacters"
                         android:padding="@dimen/spacing_large"/>
 
                 </android.support.design.widget.TextInputLayout>

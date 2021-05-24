@@ -203,8 +203,9 @@ public class AturPembayaranHutang_Activity extends AppActivity implements View.O
         }catch (Exception e) {
             e.printStackTrace();
         }
-        tglHutangTimeMilis = dateHutang.getTime();
-
+        if(dateHutang != null){
+            tglHutangTimeMilis = dateHutang.getTime();
+        }
         etNoInvoice.setText(noInvoice);
         etTotalHutang.setText(RP + NumberFormatUtils.formatRp(String.valueOf(totalHutang)));
     }

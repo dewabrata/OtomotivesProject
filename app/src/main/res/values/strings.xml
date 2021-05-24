@@ -408,6 +408,27 @@
     <string name="jumlah_fee">Jumlah Fee</string>
     <string name="jumlah_bonus">Jumlah Bonus</string>
     <string name="tanggal_transfer">Tanggal Transfer</string>
+    <string name="bank_oto">Bank Oto</string>
+    <string name="akun">Akun</string>
+    <string name="nama_bank">Nama Bank</string>
+    <string name="saldo_akhir">Saldo Akhir</string>
+    <string name="akun_uppercase">AKUN</string>
+    <string name="rekening_epay_uppercase">REKENING / E-WALLET</string>
+    <string name="saldo_akhir_uppercase">SALDO AKHIR</string>
+    <string name="saldo_di_sesuaikan_uppercase">SALDO DI SESUAIKAN</string>
+    <string name="jenis_akun_uppercase">JENIS AKUN</string>
+    <string name="max_garansi_uppercase">MAX GARANSI</string>
+    <string name="kode_refferal_uppercase">KODE REFFERAL</string>
+    <string name="part_kosong_uppercase">PART KOSONG</string>
+    <string name="pending_uppercase">PENDING</string>
+    <string name="outsource_uppercase">OUTSOURCE</string>
+    <string name="claim_uppercase">CLAIM</string>
+    <string name="clear_pending_uppercase">CLEAR PENDING</string>
+    <string name="nama_merchant_uppercase">NAMA MERCHANT</string>
+    <string name="foto_qris_uppercase">FOTO QRIS</string>
+    <string name="bank_e_wallet_uppercase">BANK / E-WALLET</string>
+    <string name="pemberi_referensi_uppercase">PEMBERI REFERENSI</string>
+    <string name="tittle">Tittle</string>
     <string-array name="pola_harga_jual">
         <item>FLEXIBLE</item>
         <item>BELI + MARGIN</item>

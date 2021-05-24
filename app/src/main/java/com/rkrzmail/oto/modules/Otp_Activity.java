@@ -257,7 +257,9 @@ public class Otp_Activity extends AppActivity {
                     }else{
                         setSetting("MEKANIK", "FALSE");
                     }
+
                     setSetting("L", "L");
+                    setSetting("STATUS_BENGKEL", nson.get("STATUS_BENGKEL").asString());
                     setSetting("PEMBAYARAN_ACTIVE", nson.get("PEMBAYARAN_ACTIVE").asString());
                     setSetting("NAMA_BENGKEL", nson.get("NAMA_BENGKEL").asString());
                     setSetting("JENIS_KENDARAAN", nson.get("JENIS_KENDARAAN").asString().trim());
@@ -273,6 +275,8 @@ public class Otp_Activity extends AppActivity {
                     setSetting("userId", nson.get("USER_ID").asString());
                     setSetting("session", nson.get("token").asString());
                     setSetting("user", formatOnlyNumber(  getIntentStringExtra("user") ));
+                    setSetting("POSISI", nson.get("POSISI").asString());
+
                     Intent intent = new Intent(getActivity(), MenuActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);

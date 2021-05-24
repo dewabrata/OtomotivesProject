@@ -137,20 +137,21 @@ public class MultiSelectionSpinner extends Spinner implements
         if(listChecked != null){
             for (int j = 0; j < _items.length;j++) {
                 for (int i = 0; i < listChecked.size(); i++) {
-                    if (_items[j].equals(listChecked.get(i)) && !listChecked.get(i).equals("--PILIH--")) {
+                    String item = listChecked.get(i);
+                    if (item.equals(_items[j])) {
                         mSelectionBool[j] = true;
                         mSelectionAtStartBool[j] = true;
-                        Log.d("okkk__", "setItems: " + _items[j]);
                     }
                 }
             }
-            simple_adapter.add(buildSelectedItemString());
         }else{
             Arrays.fill(mSelectionBool, false);
             mSelectionBool[0] = true;
             mSelectionAtStartBool[0] = true;
         }
 
+        simple_adapter.clear();
+        simple_adapter.add(buildSelectedItemString());
     }
 
     public void setSelection(String[] selection) {
@@ -251,11 +252,8 @@ public class MultiSelectionSpinner extends Spinner implements
             boolean foundOne = false;
             for (int i = 0; i < _items.length; ++i) {
                 if (mSelectionBool[i] && !_items[i].equals("--PILIH--")) {
-                    if (foundOne) {
-                        sb.append(", ");
-                    }
                     foundOne = true;
-                    sb.append(_items[i]);
+                    sb.append(_items[i]).append(", ");
                 }
             }
             return sb.toString();
