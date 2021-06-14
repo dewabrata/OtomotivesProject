@@ -105,6 +105,12 @@ public class AppApplication extends Application {
         HashMap<String, String> hashtable = new HashMap();
 
         //hashtable.put("userId", UtilityAndroid.getSetting(getApplicationContext(), "USER_ID", ""));
+        if(!UtilityAndroid.getSetting(getApplicationContext(), "MERK_KENDARAAN_ARRAY", "").isEmpty()){
+            hashtable.put("merkKendaraanArray", UtilityAndroid.getSetting(getApplicationContext(), "MERK_KENDARAAN_BENGKEL", ""));
+        }
+        if(!UtilityAndroid.getSetting(getApplicationContext(), "BIDANG_USAHA_ARRAY", "").isEmpty()){
+            hashtable.put("bidangUsahaArray", UtilityAndroid.getSetting(getApplicationContext(), "BIDANG_USAHA_ARRAY", ""));
+        }
         hashtable.put("merkKendaraanBengkel", UtilityAndroid.getSetting(getApplicationContext(), "MERK_KENDARAAN_BENGKEL", ""));
         hashtable.put("bidangUsahaBengkel", UtilityAndroid.getSetting(getApplicationContext(), "KATEGORI_BENGKEL", ""));
         hashtable.put("user", UtilityAndroid.getSetting(getApplicationContext(), "user", ""));

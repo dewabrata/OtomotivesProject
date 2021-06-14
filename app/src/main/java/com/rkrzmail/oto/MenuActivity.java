@@ -6,11 +6,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.IntentSender;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -32,6 +34,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.play.core.appupdate.AppUpdateInfo;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.InstallState;
+import com.google.android.play.core.install.InstallStateUpdatedListener;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.InstallStatus;
+import com.google.android.play.core.install.model.UpdateAvailability;
+import com.google.android.play.core.tasks.OnSuccessListener;
 import com.naa.data.Nson;
 import com.naa.data.UtilityAndroid;
 import com.naa.utils.InternetX;
@@ -104,6 +115,9 @@ public class MenuActivity extends AppActivity {
     Nson nPopulate = Nson.newArray();
     Nson dataBengkel = Nson.newObject();
     Nson mekanikMenuArray = Nson.newArray();
+    AppUpdateManager appUpdateManager;
+
+    public static final int REQUEST_APP_UPDATE = 2819;
     public final int MN_CHECKIN = 3;
     public final int MN_PART = 4;
     public final int MN_PART_SEARCH = 5;
@@ -191,6 +205,7 @@ public class MenuActivity extends AppActivity {
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         setContentView(R.layout.activity_main);
 
+        initAppUpdate();
         initBrodcastReceiver();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         Drawable iconOto = getResources().getDrawable(R.drawable.icon_oto);
@@ -250,7 +265,7 @@ public class MenuActivity extends AppActivity {
                 } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_MENUNGGU) && getAccess(M_MENUNGGU)) {
                     Intent intent = new Intent(MenuActivity.this, MenungguPart_Activity.class);
                     startActivity(intent);
-                } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_MY_CODE) && getAccess(M_MY_CODE)) {
+                } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_MY_CODE)) {
                     Intent intent = new Intent(MenuActivity.this, MyCode.class);
                     startActivity(intent);
                 } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_PART) && getAccess(M_PART)) {
@@ -268,7 +283,7 @@ public class MenuActivity extends AppActivity {
                 } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_TUGAS_PARTS) && getAccess(M_TUGAS_PARTS)) {
                     Intent intent = new Intent(MenuActivity.this, TugasPart_MainTab_Activity.class);
                     startActivity(intent);
-                } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_ABSENSI) && getAccess(M_ABSENSI)) {
+                } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_ABSENSI)) {
                     Intent intent = new Intent(MenuActivity.this, Absensi_MainTab_Activity.class);
                     startActivity(intent);
                 } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_COLLECTION) && getAccess(M_COLLECTION)) {
@@ -279,7 +294,65 @@ public class MenuActivity extends AppActivity {
                 }
             }
         });
-        // banner();
+    }
+
+    InstallStateUpdatedListener installStateUpdatedListener = new InstallStateUpdatedListener() {
+        @Override
+        public void onStateUpdate(@NonNull InstallState state) {
+            if (state.installStatus() == InstallStatus.DOWNLOADED){
+                popupSnackbarForCompleteUpdate();
+            } else if (state.installStatus() == InstallStatus.INSTALLED){
+                if (appUpdateManager != null){
+                    appUpdateManager.unregisterListener(installStateUpdatedListener);
+                }
+            } else {
+                Log.i("UPDATE__", "InstallStateUpdatedListener: state: " + state.installStatus());
+            }
+        }
+    };
+
+
+    private void initAppUpdate() {
+        appUpdateManager = AppUpdateManagerFactory.create(getActivity());
+        appUpdateManager.registerListener(installStateUpdatedListener);
+        appUpdateManager.getAppUpdateInfo().addOnSuccessListener(new OnSuccessListener<AppUpdateInfo>() {
+            @Override
+            public void onSuccess(AppUpdateInfo appUpdateInfo) {
+                if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                        && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
+                    try {
+                        appUpdateManager.startUpdateFlowForResult(
+                                appUpdateInfo, AppUpdateType.FLEXIBLE, getActivity(), REQUEST_APP_UPDATE);
+                    } catch (IntentSender.SendIntentException e) {
+                        e.printStackTrace();
+                    }
+                } else if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
+                    popupSnackbarForCompleteUpdate();
+                } else {
+                    Log.e("update_app", "checkForAppUpdateAvailability: something else");
+                }
+            }
+        });
+    }
+
+    private void popupSnackbarForCompleteUpdate() {
+        Snackbar snackbar =
+                Snackbar.make(
+                        findViewById(R.id.container_menu),
+                        "New app is ready!",
+                        Snackbar.LENGTH_INDEFINITE);
+
+        snackbar.setAction("Install", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (appUpdateManager != null) {
+                    appUpdateManager.completeUpdate();
+                }
+            }
+        });
+
+        snackbar.setActionTextColor(getResources().getColor(R.color.colorPrimary));
+        snackbar.show();
     }
 
     private void initBrodcastReceiver() {
@@ -310,7 +383,7 @@ public class MenuActivity extends AppActivity {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             return true;
-        } else if (item.getTitle().toString().equalsIgnoreCase(REFFERAL) && getAccess(REFFERAL)) {
+        } else if (item.getTitle().toString().equalsIgnoreCase(REFFERAL)) {
             Intent intent = new Intent(MenuActivity.this, Referal_MainTab_Activity.class);
             startActivity(intent);
         } else if (item.getTitle().toString().equalsIgnoreCase(CHECK_OUT) && getAccess(CHECK_OUT)) {
@@ -346,7 +419,7 @@ public class MenuActivity extends AppActivity {
             startActivity(intent);*/
         } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_CUSTOMER) && getAccess(MY_BUSINESS)) {
 
-        }  else if (item.getTitle().toString().equalsIgnoreCase(LAPORAN) && getAccess(LAPORAN)) {
+        } else if (item.getTitle().toString().equalsIgnoreCase(LAPORAN) && getAccess(LAPORAN)) {
             Intent intent = new Intent(MenuActivity.this, Laporan_Activity.class);
             startActivity(intent);
         } else if (item.getTitle().toString().equalsIgnoreCase(SCHEDULE) && getAccess(SCHEDULE)) {
@@ -371,7 +444,7 @@ public class MenuActivity extends AppActivity {
         } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_REKENING) && getAccess(PENGATURAN)) {
             Intent intent = new Intent(MenuActivity.this, RekeningBank_MainTab_Activity.class);
             startActivity(intent);
-        }else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_PROFILE) && getAccess(PENGATURAN)) {
+        } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_PROFILE) && getAccess(PENGATURAN)) {
             Intent intent = new Intent(MenuActivity.this, ProfileBengkel_Activity.class);
             startActivity(intent);
         } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_LOKASI_PART) && getAccess(MY_BUSINESS)) {
@@ -446,32 +519,28 @@ public class MenuActivity extends AppActivity {
         } else if (item.getTitle().toString().equalsIgnoreCase(SALDO) && getAccess(SALDO)) {
             Intent intent = new Intent(MenuActivity.this, Saldo_Activity.class);
             startActivity(intent);
-        } else{
-            if(!getAccess(REFFERAL)){
-                showWarning("ANDA TIDAK MEMILIKI AKSES " + REFFERAL);
-            }else if(!getAccess(CHECK_OUT)){
+        } else {
+             if (!getAccess(CHECK_OUT)) {
                 showWarning("ANDA TIDAK MEMILIKI AKSES " + CHECK_OUT);
-            }else if(!getAccess(MY_BUSINESS)){
+            } else if (!getAccess(MY_BUSINESS)) {
                 showWarning("ANDA TIDAK MEMILIKI AKSES " + MY_BUSINESS);
-            }else if(!getAccess(PENGATURAN)){
+            } else if (!getAccess(PENGATURAN)) {
                 showWarning("ANDA TIDAK MEMILIKI AKSES " + PENGATURAN);
-            }else if(!getAccess(DISCOUNT_SPOT)){
+            } else if (!getAccess(DISCOUNT_SPOT)) {
                 showWarning("ANDA TIDAK MEMILIKI AKSES " + DISCOUNT_SPOT);
-            }else if(!getAccess(SCHEDULE)){
+            } else if (!getAccess(SCHEDULE)) {
                 showWarning("ANDA TIDAK MEMILIKI AKSES " + SCHEDULE);
-            }else if(!getAccess(PART_KELUAR)){
+            } else if (!getAccess(PART_KELUAR)) {
                 showWarning("ANDA TIDAK MEMILIKI AKSES " + PART_KELUAR);
-            }else if(!getAccess(DISCOUNT)){
+            } else if (!getAccess(DISCOUNT)) {
                 showWarning("ANDA TIDAK MEMILIKI AKSES " + DISCOUNT);
-            }else if(!getAccess(KOMISI)){
+            } else if (!getAccess(KOMISI)) {
                 showWarning("ANDA TIDAK MEMILIKI AKSES " + KOMISI);
-            }else if(!getAccess(SARAN)){
-                showWarning("ANDA TIDAK MEMILIKI AKSES " + SARAN);
-            }else if(!getAccess(BILLING)){
+            } else if (!getAccess(BILLING)) {
                 showWarning("ANDA TIDAK MEMILIKI AKSES " + BILLING);
-            }else if(!getAccess(USER)){
+            } else if (!getAccess(USER)) {
                 showWarning("ANDA TIDAK MEMILIKI AKSES " + USER);
-            }else if(!getAccess(SALDO)){
+            } else if (!getAccess(SALDO)) {
                 showWarning("ANDA TIDAK MEMILIKI AKSES " + SALDO);
             }
         }
@@ -660,7 +729,7 @@ public class MenuActivity extends AppActivity {
         subMenu.add(MY_BUSINESS_ASET);
         subMenu.add(MY_BUSINESS_CUSTOMER);
         subMenu.add(MY_BUSINESS_LOKASI_PART);
-        subMenu.add(MY_BUSINESS_CLAIM_STATUS);
+       // subMenu.add(MY_BUSINESS_CLAIM_STATUS);
 
         subMenu = menu.addSubMenu(PENGATURAN);
         subMenu.add(PENGATURAN_USER_LAYANAN);
@@ -798,11 +867,16 @@ public class MenuActivity extends AppActivity {
                 Intent i = new Intent(getActivity(), AturParts_Activity.class);
                 i.putExtra(PART, getIntentStringExtra(data, PART));
                 startActivityForResult(i, 112);
-            }
-            if (requestCode == REQUEST_DETAIL) {
+            } else if (requestCode == REQUEST_DETAIL) {
                 Intent i = new Intent(getActivity(), DetailCariPart_Activity.class);
                 i.putExtra(PART, Nson.readJson(getIntentStringExtra(data, PART)).toJson());
                 startActivityForResult(i, 109);
+            }else if(requestCode == REQUEST_APP_UPDATE){
+                showSuccess("Aplikasi Berhasil di Update", Toast.LENGTH_LONG);
+            }
+        }else{
+            if(requestCode == REQUEST_APP_UPDATE){
+                showError("Aplikasi Gagal di Update", Toast.LENGTH_LONG);
             }
         }
     }

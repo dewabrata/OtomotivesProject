@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -25,10 +26,14 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.bengkel.AturUser_MainTab_Activity;
 import com.rkrzmail.srv.NumberFormatUtils;
+import com.rkrzmail.utils.Tools;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.KARYAWAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_MST;
@@ -40,9 +45,10 @@ public class AturGajiUser_User_Fragment extends Fragment {
     private View fragmentView;
     private AppActivity activity;
     private Spinner spSatuanGaji, spNamaBank;
-    private EditText etUpah, etPotongan, etNoRek, etNamaRek;
+    private EditText etUpah, etPotongan, etNoRek, etNamaRek, etTglGaji;
     private Button btnSimpan;
     private CheckBox cbAlpha, cbKomisi;
+    private RelativeLayout rlTglGaji;
 
     private int userID = 0;
     private String satuanGaji = "";
@@ -86,6 +92,7 @@ public class AturGajiUser_User_Fragment extends Fragment {
         etPotongan = fragmentView.findViewById(R.id.et_potongan_jam);
         etUpah = fragmentView.findViewById(R.id.et_upah_satuan);
         cbKomisi = fragmentView.findViewById(R.id.cb_perhitungan_komisi);
+        etTglGaji = fragmentView.findViewById(R.id.et_tgl_gaji);
     }
 
     private void setComponent() {
@@ -93,7 +100,7 @@ public class AturGajiUser_User_Fragment extends Fragment {
         boolean isUpdate = false;
         final List<String> satuanList = Arrays.asList("--PILIH--", "JAM", "HARI", "BULAN");
 
-        if(!data.asString().isEmpty()){
+        if (!data.asString().isEmpty()) {
             userID = data.get("ID").asInteger();
             isUpdate = true;
             cbKomisi.setChecked(data.get("PERHITUNGAN_KOMISI").asString().equals("Y"));
@@ -102,9 +109,10 @@ public class AturGajiUser_User_Fragment extends Fragment {
             etPotongan.setText(data.get("POTONGAN_TERLAMBAT").asString());
             etNamaRek.setText(data.get("NAMA_REKENING").asString());
             etNoRek.setText(data.get("NO_REKENING").asString());
+            etTglGaji.setText(data.get("TANGGAL_GAJI").asString());
             activity.setSpinnerOffline(satuanList, spSatuanGaji, data.get("SATUAN_UPAH").asString());
             activity.setSpinnerFromApi(spNamaBank, "nama", "NAMA BANK", VIEW_MST, "BANK_NAME", data.get("NAMA_BANK").asString());
-        }else{
+        } else {
             activity.setSpinnerOffline(satuanList, spSatuanGaji, "");
             activity.setSpinnerFromApi(spNamaBank, "nama", "NAMA BANK", VIEW_MST, "BANK_NAME", "");
         }
@@ -117,10 +125,11 @@ public class AturGajiUser_User_Fragment extends Fragment {
                 satuanGaji = adapterView.getItemAtPosition(i).toString();
                 cbAlpha.setEnabled(satuanGaji.equals("BULAN"));
                 etPotongan.setEnabled(!satuanGaji.equals("JAM"));
-                if(satuanGaji.equals("BULAM")){
+                etTglGaji.setEnabled(satuanGaji.equals("BULAN"));
+                if (satuanGaji.equals("BULAM")) {
                     cbAlpha.setChecked(false);
                 }
-                if(satuanGaji.equals("JAM")){
+                if (satuanGaji.equals("JAM")) {
                     etPotongan.setText("");
                 }
             }
@@ -163,7 +172,7 @@ public class AturGajiUser_User_Fragment extends Fragment {
                 args.put("action", isUpdate ? "update" : "add");
                 args.put("satuanUpah", satuanGaji);
                 args.put("upahSatuan", etUpah.getText().toString());
-                args.put("potonganAlpha", cbAlpha.isChecked()? "Y" : "N");
+                args.put("potonganAlpha", cbAlpha.isChecked() ? "Y" : "N");
                 args.put("potonganTerlambat", NumberFormatUtils.formatOnlyNumber(etPotongan.getText().toString()));
                 args.put("namaRekening", etNoRek.getText().toString());
                 args.put("namaBank", namaBank);
@@ -171,6 +180,7 @@ public class AturGajiUser_User_Fragment extends Fragment {
                 args.put("idUser", String.valueOf(userID));
                 args.put("perhitunganKomisi", cbKomisi.isChecked() ? "Y" : "N");
                 args.put("jenisTab", "UPAH");
+                args.put("tanggalGaji", etTglGaji.getText().toString());
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(KARYAWAN), args));
             }
 

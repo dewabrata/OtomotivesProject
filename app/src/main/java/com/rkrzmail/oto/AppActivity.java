@@ -907,7 +907,7 @@ public class AppActivity extends AppCompatActivity {
 
     public boolean validateFields(ViewGroup viewGroup) {
         EditText emptyText = getAllEditText(viewGroup, false);
-        if (emptyText != null) {
+        if (emptyText != null && emptyText.getVisibility() == View.VISIBLE) {
             emptyText.setError("Harus di isi");
             emptyText.requestFocus();
         }

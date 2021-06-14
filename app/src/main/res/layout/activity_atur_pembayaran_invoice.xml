@@ -41,7 +41,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
                     android:enabled="false"
-                    android:hint="@string/total_invoice_uppercase"
+                    android:hint="@string/total_piutang_uppercase"
                     tools:ignore="LabelFor" />
 
             </android.support.design.widget.TextInputLayout>
@@ -160,6 +160,66 @@
                 </RelativeLayout>
 
             </LinearLayout>
+
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:id="@+id/tl_no_hutang">
+
+                <EditText
+                    android:id="@+id/et_no_hutang"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:hint="@string/no_nominal_hutang_uppercase"
+                    tools:ignore="Autofill"
+                    android:editable="false"
+                    android:drawableEnd="@drawable/ic_arrow_down" />
+
+            </android.support.design.widget.TextInputLayout>
+
+
+
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp">
+
+                <EditText
+                    android:id="@+id/et_total_hutang"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:inputType="numberSigned"
+                    android:enabled="false"
+                    android:hint="@string/total_hutang_uppercase"
+                    tools:ignore="Autofill" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp">
+
+                <EditText
+                    android:id="@+id/et_nama_kreditur"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:enabled="false"
+                    android:hint="@string/nama_kreditur_uppercase"
+                    tools:ignore="Autofill" />
+
+            </android.support.design.widget.TextInputLayout>
+
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/tl_total_bayar"

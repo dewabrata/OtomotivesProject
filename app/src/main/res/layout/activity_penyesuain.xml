@@ -55,10 +55,11 @@
                     android:textStyle="bold" />
 
                 <RelativeLayout
+                    android:id="@+id/rl_sebab_penyesuaian"
                     android:layout_width="0dp"
                     android:layout_height="34dp"
                     android:layout_weight="6"
-                    android:background="@drawable/background_edittext">
+                    android:background="@drawable/state_textview_clickable_border">
 
                     <Spinner
                         android:id="@+id/sp_sebab_penyesuaian"
@@ -89,10 +90,11 @@
                     android:textStyle="bold" />
 
                 <RelativeLayout
+                    android:id="@+id/rl_lokasi_part"
                     android:layout_width="0dp"
                     android:layout_height="34dp"
                     android:layout_weight="6"
-                    android:background="@drawable/background_edittext">
+                    android:background="@drawable/state_textview_clickable_border">
 
                     <Spinner
                         android:id="@+id/sp_lokasi_stockOpname"
@@ -132,7 +134,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="top|left"
                     android:hint="KETERANGAN"
-                    android:inputType="textCapSentences|textMultiLine"
+                    android:inputType="textCapCharacters|textMultiLine"
                     android:maxLines="10"
                     android:textSize="14sp"
                     tools:ignore="RtlHardcoded" />

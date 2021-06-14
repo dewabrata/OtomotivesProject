@@ -331,7 +331,7 @@
                         android:textColor="@android:color/white" />
 
                     <Button
-                        android:id="@+id/btn_foto_qris"
+                        android:id="@+id/btn_foto_bukti"
                         android:layout_height="wrap_content"
                         android:layout_width="0dp"
                         android:layout_weight="1"

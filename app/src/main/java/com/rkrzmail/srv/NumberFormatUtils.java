@@ -143,7 +143,7 @@ public class NumberFormatUtils {
                     text = setPercentage(text);
                     editText.setFilters(getPercentFilter());
                     editText.setText(text);
-                    editText.setSelection(text.length() - 1);
+                    editText.setSelection(text.length());
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -158,9 +158,9 @@ public class NumberFormatUtils {
         if (values.isEmpty()) return "0";
 
         values = formatOnlyNumber(values);
-        double percentValue = Double.parseDouble(values) / 1000;
-        NumberFormat percentageFormat = NumberFormat.getPercentInstance();
-        percentageFormat.setMinimumFractionDigits(1);
+        double percentValue = (Double.parseDouble(values) / 100);
+        NumberFormat percentageFormat = new DecimalFormat("#0.00");
+        //percentageFormat.setMinimumFractionDigits(2);
         return percentageFormat.format(percentValue);
     }
 

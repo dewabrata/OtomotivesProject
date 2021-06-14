@@ -1,0 +1,486 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="@string/periode_uppercase"
+            android:textColor="@color/grey_900"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ic_mulaitgl"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="1"
+                    android:drawableStart="@drawable/icon_tanggal"
+                    android:textStyle="bold"
+                    tools:ignore="NestedWeights" />
+
+                <TextView
+                    android:id="@+id/ic_selesaitgl"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="1"
+                    android:drawableEnd="@drawable/icon_tanggal"
+                    android:enabled="false"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/background_edittext"
+                android:orientation="horizontal"
+                android:padding="@dimen/paddingMedium">
+
+                <TextView
+                    android:id="@+id/tv_mulaitgl"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:hint="@string/dd_mm_yy_uppercase"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginRight="3dp"
+                    android:text="-"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tv_selesaitgl"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:enabled="false"
+                    android:gravity="center"
+                    android:hint="@string/dd_mm_yy_uppercase"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_tampilkan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/btn_rounded_accent"
+        android:text="@string/tampilkan_uppercase"
+        android:textColor="@android:color/white" />
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_expand_transaksi_harian"
+                    style="@style/TextAppearance.AppCompat.Medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#00b300"
+                    android:drawableEnd="@drawable/ic_arrow_down"
+                    android:elevation="6dp"
+                    android:foreground="?selectableItemBackground"
+                    android:gravity="start"
+                    android:padding="15dp"
+                    android:text="TRANSAKSI HARIAN"
+                    android:textColor="#fff"
+                    android:textStyle="bold" />
+
+                <net.cachapa.expandablelayout.ExpandableLayout
+                    android:id="@+id/expand_transaksi_harian"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    app:el_duration="500"
+                    app:el_expanded="false">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/box_shadow"
+                            android:orientation="horizontal"
+                            android:padding="10dp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="30dp"
+                                android:layout_weight="6"
+                                android:clipToPadding="false"
+                                android:elevation="4dp"
+                                android:gravity="start|center"
+                                android:text="@string/hari_uppercase"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textColor="@color/grey_900"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/tv_total_hari_kerja"
+                                android:layout_width="0dp"
+                                android:layout_height="30dp"
+                                android:layout_weight="4"
+                                android:clipToPadding="false"
+                                android:elevation="4dp"
+                                android:gravity="end|center"
+                                android:text="@string/default_number"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textColor="@color/grey_900"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:background="@drawable/box_shadow"
+                            android:orientation="horizontal"
+                            android:padding="10dp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="30dp"
+                                android:layout_weight="6"
+                                android:clipToPadding="false"
+                                android:elevation="4dp"
+                                android:gravity="start|center"
+                                android:text="@string/checkin_uppercase"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textColor="@color/grey_900"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="30dp"
+                                android:layout_weight="4"
+                                android:clipToPadding="false"
+                                android:elevation="4dp"
+                                android:gravity="end|center"
+                                android:text="@string/default_number"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textColor="@color/grey_900"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:background="@drawable/box_shadow"
+                            android:orientation="horizontal"
+                            android:padding="10dp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="30dp"
+                                android:layout_weight="6"
+                                android:clipToPadding="false"
+                                android:elevation="4dp"
+                                android:gravity="start|center"
+                                android:text="@string/jual_part_uppercase"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textColor="@color/grey_900"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="30dp"
+                                android:layout_weight="4"
+                                android:clipToPadding="false"
+                                android:elevation="4dp"
+                                android:gravity="end|center"
+                                android:text="@string/default_number"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textColor="@color/grey_900"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:background="@drawable/box_shadow"
+                            android:orientation="horizontal"
+                            android:padding="10dp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="30dp"
+                                android:layout_weight="6"
+                                android:clipToPadding="false"
+                                android:elevation="4dp"
+                                android:gravity="start|center"
+                                android:text="@string/batal_uppercase"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textColor="@color/grey_900"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="30dp"
+                                android:layout_weight="4"
+                                android:clipToPadding="false"
+                                android:elevation="4dp"
+                                android:gravity="end|center"
+                                android:text="@string/default_number"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textColor="@color/grey_900"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </net.cachapa.expandablelayout.ExpandableLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_expand_proses"
+                    style="@style/TextAppearance.AppCompat.Medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#00b300"
+                    android:drawableEnd="@drawable/ic_arrow_down"
+                    android:elevation="6dp"
+                    android:foreground="?selectableItemBackground"
+                    android:gravity="start"
+                    android:padding="15dp"
+                    android:text="PROSES PELANGGAN"
+                    android:textColor="#fff"
+                    android:textStyle="bold" />
+
+                <net.cachapa.expandablelayout.ExpandableLayout
+                    android:id="@+id/expand_proses"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    app:el_duration="500"
+                    app:el_expanded="false">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/box_shadow"
+                            android:orientation="horizontal"
+                            android:padding="10dp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="30dp"
+                                android:layout_weight="6"
+                                android:clipToPadding="false"
+                                android:elevation="4dp"
+                                android:gravity="start|center"
+                                android:text="@string/di_tinggal_uppercase"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textColor="@color/grey_900"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="30dp"
+                                android:layout_weight="4"
+                                android:clipToPadding="false"
+                                android:elevation="4dp"
+                                android:gravity="end|center"
+                                android:text="@string/default_number"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textColor="@color/grey_900"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:background="@drawable/box_shadow"
+                            android:orientation="horizontal"
+                            android:padding="10dp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="30dp"
+                                android:layout_weight="6"
+                                android:clipToPadding="false"
+                                android:elevation="4dp"
+                                android:gravity="start|center"
+                                android:text="MENUNGGU"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textColor="@color/grey_900"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="30dp"
+                                android:layout_weight="4"
+                                android:clipToPadding="false"
+                                android:elevation="4dp"
+                                android:gravity="end|center"
+                                android:text="@string/default_number"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textColor="@color/grey_900"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:background="@drawable/box_shadow"
+                            android:orientation="horizontal"
+                            android:padding="10dp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="30dp"
+                                android:layout_weight="6"
+                                android:clipToPadding="false"
+                                android:elevation="4dp"
+                                android:gravity="start|center"
+                                android:text="@string/proses_uppercase"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textColor="@color/grey_900"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="30dp"
+                                android:layout_weight="4"
+                                android:clipToPadding="false"
+                                android:elevation="4dp"
+                                android:gravity="end|center"
+                                android:text="@string/default_number"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textColor="@color/grey_900"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:background="@drawable/box_shadow"
+                            android:orientation="horizontal"
+                            android:padding="10dp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="30dp"
+                                android:layout_weight="6"
+                                android:clipToPadding="false"
+                                android:elevation="4dp"
+                                android:gravity="start|center"
+                                android:text="@string/selesai_uppercase"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textColor="@color/grey_900"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="30dp"
+                                android:layout_weight="4"
+                                android:clipToPadding="false"
+                                android:elevation="4dp"
+                                android:gravity="end|center"
+                                android:text="@string/default_number"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textColor="@color/grey_900"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </net.cachapa.expandablelayout.ExpandableLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+    
+</LinearLayout>

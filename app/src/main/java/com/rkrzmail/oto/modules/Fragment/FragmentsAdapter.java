@@ -180,20 +180,17 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
         if (context instanceof PartHome_MainTab_Activity) {
             switch (i) {
                 case 0:
-                    //fragment = Fragment.instantiate(context, PartBengkel_PartHome_Fragment.class.getName());
-                    //break;
-                    return PartBengkel_PartHome_Fragment.newInstance(searchQueryText, "BENGKEL", tabPosition);
+                    fragment = Fragment.instantiate(context, PartBengkel_PartHome_Fragment.class.getName());
+                    break;
                 case 1:
-                    //fragment = Fragment.instantiate(context, PartOto_PartHome_Fragment.class.getName());
-                    //break;
-                    return AlertPart_PartHome_Fragment.newInstance(searchQueryText, "ALERT", tabPosition);
+                    fragment = Fragment.instantiate(context, AlertPart_PartHome_Fragment.class.getName());
+                    break;
                 case 2:
-                    //fragment = Fragment.instantiate(context, PartOto_PartHome_Fragment.class.getName());
-                    //break;
-                    return PartOto_PartHome_Fragment.newInstance(searchQueryText, "OTO", tabPosition);
+                    fragment = Fragment.instantiate(context, PartOto_PartHome_Fragment.class.getName());
+                    break;
 
             }
-            return null;
+            return fragment;
         }
         if (context instanceof Schedule_MainTab_Activity) {
             switch (i) {
@@ -409,7 +406,7 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
         if (context instanceof Referal_MainTab_Activity) {
             switch (position) {
                 case 0:
-                    return "Referal";
+                    return "Referral";
                 case 1:
                     return "Bonus";
             }

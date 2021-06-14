@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <include layout="@layout/toolbar" />
-X
+
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.widget.NestedScrollView
@@ -160,10 +160,17 @@ X
 
                 <include layout="@layout/layout_dashboard_tugas_part" />
 
+                <include layout="@layout/layout_dashboard_belanja_part" />
+
                 <include layout="@layout/layout_dashboard_angka_row_6" />
 
                 <include layout="@layout/layout_dashboard_angka_row_7" />
 
+                <include layout="@layout/layout_dasboard_hutang" />
+
+                <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"/>
 
             </LinearLayout>
 

@@ -54,7 +54,7 @@ public class Referal_MainTab_Activity extends AppActivity {
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Referal");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Referral");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 

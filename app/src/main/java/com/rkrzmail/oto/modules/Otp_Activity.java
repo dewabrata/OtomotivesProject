@@ -1,15 +1,22 @@
 package com.rkrzmail.oto.modules;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -22,18 +29,26 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.MenuActivity;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.bengkel.RegistrasiBengkel_Activity;
+import com.rkrzmail.oto.modules.sparepart.JumlahPart_Checkin_Activity;
+import com.rkrzmail.srv.NikitaRecyclerAdapter;
+import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.utils.APIUrls;
 
 import java.util.Map;
 
 import static com.rkrzmail.utils.APIUrls.SET_LOGIN;
 import static com.rkrzmail.utils.APIUrls.VIEW_DATA_BENGKEL;
+import static com.rkrzmail.utils.ConstUtils.MASTER_PART;
+import static com.rkrzmail.utils.ConstUtils.PARTS_UPPERCASE;
+import static com.rkrzmail.utils.ConstUtils.PART_WAJIB;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_HARGA_PART;
 
 public class Otp_Activity extends AppActivity {
 
     private char[] otp;
     private String one, two, three, four, five, six;
     private boolean isRegist = false;
+    private Nson bengkelList = Nson.newArray();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -258,36 +273,53 @@ public class Otp_Activity extends AppActivity {
                         setSetting("MEKANIK", "FALSE");
                     }
 
-                    setSetting("L", "L");
-                    setSetting("STATUS_BENGKEL", nson.get("STATUS_BENGKEL").asString());
-                    setSetting("PEMBAYARAN_ACTIVE", nson.get("PEMBAYARAN_ACTIVE").asString());
-                    setSetting("NAMA_BENGKEL", nson.get("NAMA_BENGKEL").asString());
-                    setSetting("JENIS_KENDARAAN", nson.get("JENIS_KENDARAAN").asString().trim());
                     setSetting("result", nson.toJson());
-                    setSetting("CID", nson.get("CID").asString());
-                    viewDataBengkel();
+                    //user
                     setSetting("NAMA_USER", nson.get("NAMA_USER").asString());
                     setSetting("TIPE_USER", nson.get("TIPE_USER").asString());
                     setSetting("ACCESS_MENU", nson.get("AKSES_APP").asString());
-                    setSetting("MERK_KENDARAAN_BENGKEL", nson.get("MERK_KENDARAAN").asString());
-                    setSetting("KATEGORI_BENGKEL", nson.get("KATEGORI_BENGKEL").asString());
                     setSetting("USER_ID", nson.get("USER_ID").asString());
                     setSetting("userId", nson.get("USER_ID").asString());
+                    setSetting("POSISI", nson.get("POSISI").asString());
                     setSetting("session", nson.get("token").asString());
                     setSetting("user", formatOnlyNumber(  getIntentStringExtra("user") ));
-                    setSetting("POSISI", nson.get("POSISI").asString());
+                    //bengkel
+                    if(nson.get("BENGKEL").asArray().size() > 1 && nson.get("TIPE_USER").asString().equals("ADMIN")){
+                        bengkelList.asArray().addAll(nson.get("BENGKEL").asArray());
+                        initDialogSelectBengkel();
+                    }else{
+                        nson = nson.get("BENGKEL").get(0);
+                        setSetting("CID", nson.get("CID").asString());
+                        setSetting("STATUS_BENGKEL", nson.get("STATUS_BENGKEL").asString());
+                        setSetting("PEMBAYARAN_ACTIVE", nson.get("PEMBAYARAN_ACTIVE").asString());
+                        setSetting("NAMA_BENGKEL", nson.get("NAMA_BENGKEL").asString());
+                        setSetting("JENIS_KENDARAAN", nson.get("JENIS_KENDARAAN").asString().trim());
+                        setSetting("MERK_KENDARAAN_BENGKEL", nson.get("MERK_KENDARAAN").asString());
+                        setSetting("KATEGORI_BENGKEL", nson.get("KATEGORI_BENGKEL").asString());
+                        setSetting("MAX_ANTRIAN_EXPRESS_MENIT", nson.get("MAX_ANTRIAN_EXPRESS_MENIT").asString());
+                        setSetting("MAX_ANTRIAN_STANDART_MENIT", nson.get("MAX_ANTRIAN_STANDART_MENIT").asString());
+                        setSetting("DP_PERSEN", nson.get("DP_PERSEN").asString());
+                        if(nson.get("BIDANG_USAHA").size() > 0){
+                            setSetting("BIDANG_USAHA_ARRAY", nson.get("BIDANG_USAHA").toJson());
+                        }
+                        if(nson.get("MERK_KENDARAAN_BENGKEL").size() > 0){
+                            setSetting("MERK_KENDARAAN_ARRAY", nson.get("MERK_KENDARAAN_BENGKEL").toJson());
+                        }
+                        setSetting("L", "L");
 
-                    Intent intent = new Intent(getActivity(), MenuActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
+                        Intent intent = new Intent(getActivity(), MenuActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish();
+                    }
+
                 } else {
                     showError(nson.get("error").asString());
                 }
             }
         });
     }
-
+    
     private void checkOtpRegistasi(final String kodeOtp){
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
@@ -316,6 +348,62 @@ public class Otp_Activity extends AppActivity {
         });
     }
 
+    private void initDialogSelectBengkel(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_selection_bengkel, null);
+        builder.setView(dialogView);
+        AlertDialog alertDialog = builder.create();
+        
+        initRvBengkel(dialogView);
+        if (alertDialog.getWindow() != null)
+            alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        alertDialog.show();
+        alertDialog.setCancelable(false);
+    }
+    
+    private void initRvBengkel(View dialogView){
+        RecyclerView rvBengkel = dialogView.findViewById(R.id.recyclerView);
+        rvBengkel.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvBengkel.setHasFixedSize(false);
+        rvBengkel.setAdapter(new NikitaRecyclerAdapter(bengkelList, R.layout.item_selection_bengkel) {
+            @Override
+            public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
+                super.onBindViewHolder(viewHolder, position);
+                //viewHolder.find(R.id.img_logo_bengkel, ImageView.class);
+                viewHolder.find(R.id.tv_nama_bengkel, TextView.class).setText(bengkelList.get(position).get("NAMA_BENGKEL").asString());
+                viewHolder.find(R.id.tv_tgl_registrasi, TextView.class).setText(bengkelList.get(position).get("TANGGAL_REGISTRASI").asString());
+            }
+        }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Nson parent, View view, int position) {
+                setSetting("MERK_KENDARAAN_BENGKEL", parent.get(position).get("MERK_KENDARAAN").asString());
+                setSetting("KATEGORI_BENGKEL", parent.get(position).get("KATEGORI_BENGKEL").asString());
+                setSetting("MAX_ANTRIAN_EXPRESS_MENIT", parent.get(position).get("MAX_ANTRIAN_EXPRESS_MENIT").asString());
+                setSetting("MAX_ANTRIAN_STANDART_MENIT", parent.get(position).get("MAX_ANTRIAN_STANDART_MENIT").asString());
+                setSetting("DP_PERSEN", parent.get(position).get("DP_PERSEN").asString());
+                setSetting("STATUS_BENGKEL", parent.get(position).get("STATUS_BENGKEL").asString());
+                setSetting("PEMBAYARAN_ACTIVE", parent.get(position).get("PEMBAYARAN_ACTIVE").asString());
+                setSetting("NAMA_BENGKEL", parent.get(position).get("NAMA_BENGKEL").asString());
+                setSetting("JENIS_KENDARAAN", parent.get(position).get("JENIS_KENDARAAN").asString().trim());
+                setSetting("CID", parent.get(position).get("CID").asString());
+                if(parent.get(position).get("BIDANG_USAHA").size() > 0){
+                    setSetting("BIDANG_USAHA_ARRAY", parent.get(position).get("BIDANG_USAHA").toJson());
+                }
+                if(parent.get(position).get("MERK_KENDARAAN_BENGKEL").size() > 0){
+                    setSetting("MERK_KENDARAAN_ARRAY", parent.get(position).get("MERK_KENDARAAN_BENGKEL").asString());
+                }
+                setSetting("L", "L");
+
+                Intent intent = new Intent(getActivity(), MenuActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+            }
+        }));
+    }
+
+
     private void clearAndSetFocus(final EditText editText, final EditText editText2){
         editText.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -325,28 +413,6 @@ public class Otp_Activity extends AppActivity {
                     editText2.requestFocus();
                 }
                 return false;
-            }
-        });
-    }
-
-    private void viewDataBengkel(){
-        newTask(new Messagebox.DoubleRunnable() {
-            Nson result;
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "Data Bengkel");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_DATA_BENGKEL), args));
-                if(result.get("status").asString().equalsIgnoreCase("OK")) {
-                    result = result.get("data").get(0);
-                    setSetting("MAX_ANTRIAN_EXPRESS_MENIT", result.get("MAX_ANTRIAN_EXPRESS_MENIT").asString());
-                    setSetting("MAX_ANTRIAN_STANDART_MENIT", result.get("MAX_ANTRIAN_STANDART_MENIT").asString());
-                    setSetting("DP_PERSEN", result.get("DP_PERSEN").asString());
-                }
-            }
-            @Override
-            public void runUI() {
-
             }
         });
     }

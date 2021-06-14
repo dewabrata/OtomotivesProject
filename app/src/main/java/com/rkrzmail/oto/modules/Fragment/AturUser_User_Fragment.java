@@ -2,25 +2,31 @@ package com.rkrzmail.oto.modules.Fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,16 +47,22 @@ import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.KARYAWAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_MST;
 import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_FOTO;
 import static com.rkrzmail.utils.ConstUtils.RP;
 
 public class AturUser_User_Fragment extends Fragment {
@@ -74,9 +86,13 @@ public class AturUser_User_Fragment extends Fragment {
     private List<String> aksesArr = new ArrayList<>();
     private String noPonsel, posisi = "", status = "", penggajian = "", fungsiMekanik = "", mycode = "";
     private String fotoUser = "";
-    private boolean isClickDrawable = false, isPosisi, isAksesApp;
+    private boolean isPosisi, isAksesApp;
     boolean isUpdate = false;
     private int idUser = 0;
+    private String fotoBase64 = "";
+
+    private Bitmap bitmapFoto;
+    private AlertDialog alertDialog;
 
     public AturUser_User_Fragment() {
 
@@ -162,7 +178,6 @@ public class AturUser_User_Fragment extends Fragment {
             fungsiMekanik = data.get("FUNGSI_MEKANIK").asString();
             idUser = data.get("ID").asInteger();
 
-            find(R.id.txtGaji, TextView.class).setText(RP + NumberFormatUtils.formatRp(data.get("GAJI").asString()));
             find(R.id.tblSimpan, Button.class).setText("Update");
 
             String[] splitAkses = data.get("AKSES_APP").asString().trim().split(", ");
@@ -183,7 +198,6 @@ public class AturUser_User_Fragment extends Fragment {
         activity.setSpinnerOffline(listStatus, spStatus, status);
         activity.setSpinnerOffline(Arrays.asList("--PILIH--", "YA", "TIDAK"), spMycode, mycode);
         activity.setSpinnerOffline(listFungsiMekanik, find(R.id.sp_fungsiMekanik, Spinner.class), fungsiMekanik);
-        activity.setSpinnerOffline(listPenggajian, find(R.id.spinnerPenggajian, Spinner.class), penggajian);
     }
 
 
@@ -192,8 +206,8 @@ public class AturUser_User_Fragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String item = adapterView.getItemAtPosition(i).toString();
-                find(R.id.sp_fungsiMekanik, Spinner.class).setEnabled(item.equals("MEKANIK"));
-                if(item.equals("MEKANIK")){
+                find(R.id.sp_fungsiMekanik, Spinner.class).setEnabled(!item.contains("MEKANIK"));
+                if (item.contains("MEKANIK") && !find(R.id.sp_fungsiMekanik, Spinner.class).isEnabled()) {
                     find(R.id.sp_fungsiMekanik, Spinner.class).setSelection(1);
                 }
             }
@@ -219,8 +233,7 @@ public class AturUser_User_Fragment extends Fragment {
         find(R.id.imgBtn_upload, ImageView.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isClickDrawable = true;
-                getImageFromAlbum();
+                getImagePickOrCamera();
             }
         });
 
@@ -240,46 +253,30 @@ public class AturUser_User_Fragment extends Fragment {
                     return;
                 }
                 if (activity.find(R.id.spinnerStatus, Spinner.class).getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
-                    activity.showWarning("Silahkan Pilih Status");
-                    find(R.id.spinnerStatus, Spinner.class).requestFocus();
-                    find(R.id.spinnerStatus, Spinner.class).performClick();
-                    return;
-                }
-                if (activity.find(R.id.spinnerPenggajian, Spinner.class).getSelectedItem().toString().equalsIgnoreCase("--PILIH")) {
-                    activity.showWarning("Silahkan Pilih Penggajian");
-                    find(R.id.spinnerPenggajian, Spinner.class).requestFocus();
-                    find(R.id.spinnerPenggajian, Spinner.class).performClick();
+                    activity.setErrorSpinner(find(R.id.spinnerStatus, Spinner.class), "STATUS HARUS DI PILIH");
                     return;
                 }
 
                 if (spAkses.getSelectedItemsAsString().isEmpty()) {
-                    activity.showWarning("Silahkan Pilih Posisi");
+                    activity.showWarning("POSISI HARUS DI PILIH");
                     spAkses.performClick();
+                    return;
+                }
+
+                if (spPosisi.getSelectedItem().toString().equals("--PILIH--")) {
+                    activity.setErrorSpinner(spPosisi, "POSISI HARUS DI PILIH");
                     return;
                 }
 
                 if (isUpdate) {
                     updateData();
                 } else {
-                    if (activity.validateFields(activity.find(R.id.ly_user, LinearLayout.class))) {
-                        return;
-                    }
-                    if (!isClickDrawable) {
+                    if (bitmapFoto == null) {
                         activity.showWarning("Silahkan Masukkan Foto");
                         return;
                     }
                     if (activity.find(R.id.spinnerKelamin, Spinner.class).getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
-                        activity.showWarning("Silahkan Pilih Posisi");
-                        find(R.id.spinnerKelamin, Spinner.class).performClick();
-                        return;
-                    }
-                    if (activity.find(R.id.spinnerStatus, Spinner.class).getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
-                        activity.showWarning("Silahkan Pilih Status");
-                        find(R.id.spinnerStatus, Spinner.class).performClick();
-                        return;
-                    }
-                    if (activity.find(R.id.tl_nohp_user, TextInputLayout.class).isHelperTextEnabled()) {
-                        activity.showWarning("Silahkan Lengkapi Validasi Form");
+                        activity.setErrorSpinner(find(R.id.spinnerKelamin, Spinner.class), "KELAMIN HARUS DI PILIH");
                         return;
                     }
                     addData();
@@ -290,9 +287,25 @@ public class AturUser_User_Fragment extends Fragment {
     }
 
     private void initTextWatcher() {
-        find(R.id.txtGaji, TextView.class).addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(find(R.id.txtGaji, EditText.class)));
         activity.minEntryEditText(find(R.id.txtNamaKaryawan, EditText.class), 8, find(R.id.tl_nama_user, TextInputLayout.class), "Nama Min. 5 Karakter");
         activity.minEntryEditText(find(R.id.txtAlamat, EditText.class), 20, find(R.id.tl_alamat_user, TextInputLayout.class), "Entry Alamat Min. 20 Karakter");
+
+        find(R.id.et_no_ponsel, EditText.class).setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                        actionId == EditorInfo.IME_ACTION_DONE ||
+                        event != null &&
+                                event.getAction() == KeyEvent.ACTION_DOWN &&
+                                event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    if (event == null || !event.isShiftPressed()) {
+                        activity.showInfo("dome");
+                        return true; // consume.
+                    }
+                }
+                return false;
+            }
+        });
 
         find(R.id.et_no_ponsel, EditText.class).addTextChangedListener(new TextWatcher() {
             @Override
@@ -311,9 +324,6 @@ public class AturUser_User_Fragment extends Fragment {
                 } else if (counting < 4) {
                     find(R.id.et_no_ponsel, EditText.class).setText("+62 ");
                     Selection.setSelection(activity.find(R.id.et_no_ponsel, EditText.class).getText(), find(R.id.et_no_ponsel, EditText.class).getText().length());
-                } else if (counting < 12) {
-                    find(R.id.tl_nohp_user, TextInputLayout.class).setError("No. Hp Min. 6 Karakter");
-                    find(R.id.et_no_ponsel, EditText.class).requestFocus();
                 } else {
                     find(R.id.tl_nohp_user, TextInputLayout.class).setErrorEnabled(false);
                 }
@@ -321,7 +331,12 @@ public class AturUser_User_Fragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (dataPonsel.size() > 0) {
+                if (find(R.id.et_no_ponsel, EditText.class).getText().toString().length() < 13) {
+                    find(R.id.tl_nohp_user, TextInputLayout.class).setError("No. Hp Min. 6 Karakter");
+                    find(R.id.et_no_ponsel, EditText.class).requestFocus();
+                }
+
+                if (dataPonsel.size() > 0 && !isUpdate) {
                     String noHp = find(R.id.et_no_ponsel, EditText.class).getText().toString().replaceAll("[^0-9]+", "");
                     for (String no : dataPonsel) {
                         if (noHp.equalsIgnoreCase(no)) {
@@ -357,15 +372,7 @@ public class AturUser_User_Fragment extends Fragment {
     }
 
     private void setSpAkses(List<String> loadFrom) {
-        if(loadFrom == null){
-            loadFrom = new ArrayList<>();
-            loadFrom.add("PARTS");
-            loadFrom.add("ABSENSI");
-            loadFrom.add("REFFERAL");
-            loadFrom.add("SARAN");
-        };
         spAkses.setItems(aksesArr, loadFrom);
-        //spAkses.setSelectionMatch(aksesArr, loadFrom);
         spAkses.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
             @Override
             public void selectedIndices(List<Integer> indices) {
@@ -379,14 +386,14 @@ public class AturUser_User_Fragment extends Fragment {
         });
     }
 
-    private void getImageFromAlbum() {
-        try {
-            Intent i = new Intent(Intent.ACTION_PICK);
-            i.setType("image/*");
-            startActivityForResult(i, REQUEST_PHOTO);
-        } catch (Exception exp) {
-            Log.i("Error", exp.toString());
-        }
+    private void getImagePickOrCamera() {
+        final List<Intent> intents = new ArrayList<>();
+        intents.add(new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI));
+        intents.add(new Intent(MediaStore.ACTION_IMAGE_CAPTURE));
+
+        Intent result = Intent.createChooser(intents.remove(0), null);
+        result.putExtra(Intent.EXTRA_INITIAL_INTENTS, intents.toArray(new Parcelable[]{}));
+        startActivityForResult(result, REQUEST_FOTO);
     }
 
     private void addData() {
@@ -414,8 +421,6 @@ public class AturUser_User_Fragment extends Fragment {
                 args.put("tanggalmasuk", parseTglMasuk);
                 args.put("posisi", spPosisi.getSelectedItem().toString());
                 args.put("status", find(R.id.spinnerStatus, Spinner.class).getSelectedItem().toString());
-                args.put("penggajian", find(R.id.spinnerPenggajian, Spinner.class).getSelectedItem().toString());
-                args.put("gaji", NumberFormatUtils.formatOnlyNumber(activity.find(R.id.txtGaji, EditText.class).getText().toString()));
                 args.put("mekanik", find(R.id.sp_fungsiMekanik, Spinner.class).getSelectedItem().toString());
                 args.put("akses", aksesApp);
                 args.put("myCodeAbsen", spMycode.getSelectedItem().toString().equals("YA") ? "Y" : "N");
@@ -464,11 +469,11 @@ public class AturUser_User_Fragment extends Fragment {
                 args.put("tangalmasuk", parseTglMasuk);
                 args.put("posisi", spPosisi.getSelectedItem().toString());
                 args.put("status", find(R.id.spinnerStatus, Spinner.class).getSelectedItem().toString());
-                args.put("penggajian", find(R.id.spinnerPenggajian, Spinner.class).getSelectedItem().toString());
-                args.put("gaji", NumberFormatUtils.formatOnlyNumber(activity.find(R.id.txtGaji, EditText.class).getText().toString()));
                 args.put("akses", aksesApp);
                 args.put("myCodeAbsen", spMycode.getSelectedItem().toString().equals("YA") ? "Y" : "N");
                 args.put("jenisTab", "PERSONAL");
+                args.put("mekanik", find(R.id.sp_fungsiMekanik, Spinner.class).getSelectedItem().toString());
+
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(KARYAWAN), args));
             }
@@ -508,28 +513,110 @@ public class AturUser_User_Fragment extends Fragment {
         });
     }
 
-    public String getRealPathFromURI(Uri uri) {
-        Cursor cursor = activity.getContentResolver().query(uri, null, null, null, null);
-        cursor.moveToFirst();
-        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-        return cursor.getString(idx);
+    @SuppressLint("SetTextI18n")
+    private void showDialogPreviewFoto(final boolean isPreview) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity.getActivity());
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.layout_alert_camera, null);
+        builder.setView(dialogView);
+        alertDialog = builder.create();
+
+        Toolbar toolbar = dialogView.findViewById(R.id.toolbar);
+        ImageView img = (ImageView) dialogView.findViewById(R.id.img_alert_foto);
+        Button btnCancel = dialogView.findViewById(R.id.btn_alert_cancel);
+        Button btnSimpan = dialogView.findViewById(R.id.btn_alert_save);
+
+        activity.setSupportActionBar(toolbar);
+        if (activity.getSupportActionBar() != null)
+            activity.getSupportActionBar().setTitle("Preview Qris");
+
+        if (bitmapFoto != null)
+            img.setImageBitmap(bitmapFoto);
+
+        if (isPreview) {
+            btnCancel.setText("Tutup");
+            btnSimpan.setText("Foto Ulang");
+        }
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isPreview) {
+                    alertDialog.dismiss();
+                } else {
+                    if (bitmapFoto != null) {
+                        bitmapFoto = null;
+                    }
+                    alertDialog.dismiss();
+                }
+
+            }
+        });
+
+        btnSimpan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isPreview) {
+                    getImagePickOrCamera();
+                } else {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (bitmapFoto != null) {
+                                fotoBase64 = activity.bitmapToBase64(bitmapFoto);
+                            }
+                        }
+                    });
+
+                    activity.showSuccess("BERHASIL MENYIMPAN FOTO");
+                    alertDialog.dismiss();
+                }
+            }
+        });
+
+        if (alertDialog.getWindow() != null)
+            alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        alertDialog.show();
+    }
+
+
+    private void getImageUri(final Uri imageUri, final Bundle imgBundle) {
+        activity.newProses(new Messagebox.DoubleRunnable() {
+            @Override
+            public void run() {
+                if (imageUri != null) {
+                    try {
+                        bitmapFoto = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), imageUri);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    bitmapFoto = (Bitmap) (imgBundle != null ? imgBundle.get("data") : null);
+                }
+            }
+
+            @Override
+            public void runUI() {
+                showDialogPreviewFoto(false);
+            }
+        });
     }
 
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_PHOTO) {
-            final Uri imageUri = data.getData();
-            try {
-                InputStream imageStream = activity.getContentResolver().openInputStream(imageUri);
-                Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                selectedImage = Tools.getResizedBitmap(selectedImage, 400);
-                fotoUser = getRealPathFromURI(imageUri);
-                find(R.id.imgBtn_upload, ImageView.class).setImageBitmap(selectedImage);
-            } catch (FileNotFoundException f) {
-                activity.showError("Fail" + f.getMessage());
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_FOTO) {
+            if (alertDialog != null && alertDialog.isShowing())
+                alertDialog.dismiss();
+            Bundle extras = null;
+            Uri imageUri = null;
+            if (data != null) {
+                extras = data.getExtras();
+                if (extras == null)
+                    imageUri = data.getData();
             }
+            getImageUri(imageUri, extras);
         }
     }
 }

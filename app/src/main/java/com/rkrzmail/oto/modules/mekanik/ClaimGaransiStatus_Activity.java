@@ -86,7 +86,6 @@ public class ClaimGaransiStatus_Activity extends AppActivity {
         CekData();
         initAutoCompleteNamaBank();
         initListener();
-
     }
 
     private void initListener(){

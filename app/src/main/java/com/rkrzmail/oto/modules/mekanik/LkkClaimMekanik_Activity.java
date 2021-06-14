@@ -451,6 +451,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
                 args.put("partTerpakaiBulan3", "");
                 args.put("partTerpakaiBulan2", "");
                 args.put("partTerpakaiBulan1 ", "");
+                args.put("checkinID", getIntentStringExtra("CHECKIN_ID"));
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CLAIM), args));
             }

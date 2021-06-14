@@ -52,10 +52,10 @@
         <TableRow android:layout_marginTop="5dp">
 
             <TextView
-                android:id="@+id/tv_keterangan"
+                android:id="@+id/tv_varian_kendaraan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Keterangan Layanan"
+                android:text="Varian Kendaraan"
                 android:layout_gravity="start"
                 android:textColor="@color/grey_900"
                 android:textSize="12sp"

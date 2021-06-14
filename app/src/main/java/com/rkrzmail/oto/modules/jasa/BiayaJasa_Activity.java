@@ -75,7 +75,18 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
             find(R.id.ly_waktu_kerja).setVisibility(View.GONE);
             find(R.id.cb_outsource).setVisibility(View.GONE);
         }
+
         find(R.id.tl_keterangan).setVisibility(isUsulanMekanik ? View.VISIBLE : View.GONE);
+
+        biayaMekanik1 = data.get("BIAYA_MEKANIK_1").asInteger();
+        biayaMekanik2 = data.get("BIAYA_MEKANIK_2").asInteger();
+        biayaMekanik3 = data.get("BIAYA_MEKANIK_3").asInteger();
+        String waktuDefault = String.format("%02d:%02d:%02d",
+                data.get("RATA2_WAKTU_KERJA_HARI").asInteger(),
+                data.get("RATA2_WAKTU_KERJA_JAM").asInteger(),
+                data.get("RATA2_WAKTU_KERJA_MENIT").asInteger());
+        int biayaJasa = calculateBiayaMekanik(data);
+        etBiaya.setText(RP + NumberFormatUtils.formatRp(String.valueOf(biayaJasa)));
 
         if (getIntent().hasExtra(JASA_LAIN)) {
             initAvailJasa(data);
@@ -91,15 +102,7 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
             } else {
                 inspeksi = "N";
             }
-            biayaMekanik1 = data.get("BIAYA_MEKANIK_1").asInteger();
-            biayaMekanik2 = data.get("BIAYA_MEKANIK_2").asInteger();
-            biayaMekanik3 = data.get("BIAYA_MEKANIK_3").asInteger();
-            String waktuDefault = String.format("%02d:%02d:%02d",
-                    data.get("RATA2_WAKTU_KERJA_HARI").asInteger(),
-                    data.get("RATA2_WAKTU_KERJA_JAM").asInteger(),
-                    data.get("RATA2_WAKTU_KERJA_MENIT").asInteger());
 
-            int biayaJasa = calculateBiayaMekanik(data);
             int kmKendaraan = getIntentIntegerExtra("KM");
             jasaId = data.get(ID).asInteger();
 
@@ -112,7 +115,7 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
 
             etAktivitas.setEnabled(false);
             etWaktuDefault.setText(waktuDefault);
-            etBiaya.setText(RP + NumberFormatUtils.formatRp(String.valueOf(biayaJasa)));
+
             etKelompokPart.setText(data.get("KELOMPOK_PART").asString());
             etAktivitas.setText(data.get("AKTIVITAS").asString());
         } else if (getIntent().hasExtra("jasa_berkala")) {

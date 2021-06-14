@@ -49,6 +49,7 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
 
     private String idLokasiPart = "", hpp = "";
     private String inspeksi = "", garansiPart = "";
+    private String waktuPesan = "";
     private int stock = 0, countClick = 0;
     private int berkalaKm = 0, berkalaBulan = 0, kmKendaraan = 0, batasanGaransiKm = 0, batasanGaransiBulan = 0;
     private int biayaMekanik1 = 0, biayaMekanik2 = 0, biayaMekanik3 = 0;
@@ -81,8 +82,8 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
         etJumlah = findViewById(R.id.et_jumlah_jumlah_harga_part);
         etBiayaJasa = findViewById(R.id.et_jasa_jumlah_harga_part);
 
-        initListener();
         initData();
+        initListener();
     }
 
     @SuppressLint({"SetTextI18n", "DefaultLocale"})
@@ -110,8 +111,8 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
             stock = nson.get("STOCK").asInteger();
             hpp = nson.get("HPP").asString();
             idLokasiPart = nson.get("LOKASI_PART_ID").asString();
-
-            initPartKosongValidation(nson, true);
+            if(stock == 0)
+                initPartKosongValidation(nson, true);
 
             boolean isMasterPartOrParts;
             boolean isDiskon = false;
@@ -260,11 +261,11 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (!isPartWajib && !isPartKosong) {
+                if (!isPartKosong) {
                     String text = editable.toString();
                     if (!text.isEmpty()) {
                         int jumlah = Integer.parseInt(text);
-                        if (jumlah > stock) {
+                        if (jumlah > stock && !isPartKosong) {
                             find(R.id.tl_jumlah_part, TextInputLayout.class).setErrorEnabled(true);
                             find(R.id.tl_jumlah_part, TextInputLayout.class).setError("Jumlah Melebihi Stock Tersedia");
                         } else {
@@ -293,6 +294,7 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
     }
 
     private void initPartKosongValidation(final Nson nson, final boolean isPartWajib) {
+        waktuPesan = nson.get("WAKTU_PESAN_HARI").asString();
         if (stock == 0) {
             if (isPartWajib) {
                 showWarning("Part Wajib Layanan Stock Kosong!");
@@ -323,7 +325,6 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             if (!isPartWajib) {
-                                isPartKosong = false;
                                 Intent i = new Intent(getActivity(), CariPart_Activity.class);
                                 i.putExtra(CARI_PART_LOKASI, RUANG_PART);
                                 startActivityForResult(i, REQUEST_CARI_PART);
@@ -335,12 +336,6 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
                     });
         }
 
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        isPartKosong = false;
     }
 
     @SuppressLint({"SetTextI18n", "DefaultLocale"})
@@ -365,7 +360,7 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
         etBiayaJasa.setText(RP + NumberFormatUtils.formatRp(String.valueOf(calculateBiayaMekanik(nson))));
         if (stock == 0) {
             isPartKosong = true;
-            initPartKosongValidation(nson, false);
+            if(!isTambahPart) initPartKosongValidation(nson, false);
         }
 
         if (nson.get("FINAL_INS").asString().equals("Y") && !nson.get("FINAL_INS").asString().isEmpty()) {
@@ -591,7 +586,7 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
         sendData.set("WAKTU_INSPEKSI_MENIT", inspeksiMenit);
         sendData.set("JASA_EXTERNAL", "");
         sendData.set("HPP", hpp);
-        sendData.set("WAKTU_PESAN", etWaktuPesan.getText().toString());
+        sendData.set("WAKTU_PESAN", waktuPesan);
         sendData.set("NET", totalHarga);
 
         Intent i = new Intent();

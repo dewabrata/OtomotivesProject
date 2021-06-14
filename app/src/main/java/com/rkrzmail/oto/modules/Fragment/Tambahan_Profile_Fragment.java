@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
 import static android.support.constraint.Constraints.TAG;
@@ -83,7 +84,6 @@ public class Tambahan_Profile_Fragment extends Fragment {
         initComponent(v);
         validation();
         initListener();
-        initData();
         return v;
     }
 
@@ -91,7 +91,7 @@ public class Tambahan_Profile_Fragment extends Fragment {
     public void onResume() {
         super.onResume();
         if(isVisible()){
-
+            initData();
         }
     }
 
@@ -126,7 +126,7 @@ public class Tambahan_Profile_Fragment extends Fragment {
 
     private void initData() {
         if (activity != null) {
-            ((ProfileBengkel_Activity) getActivity()).getDataTambahan(new ProfileBengkel_Activity.TambahanData() {
+            ((ProfileBengkel_Activity) Objects.requireNonNull(getActivity())).getDataTambahan(new ProfileBengkel_Activity.TambahanData() {
                 @SuppressLint("SetTextI18n")
                 @Override
                 public void getData(Nson nson) {

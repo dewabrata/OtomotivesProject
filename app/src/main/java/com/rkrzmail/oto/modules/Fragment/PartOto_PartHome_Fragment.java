@@ -3,6 +3,8 @@ package com.rkrzmail.oto.modules.Fragment;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
@@ -14,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -23,6 +26,7 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.sparepart.PartHome_MainTab_Activity;
+import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NikitaRecyclerAdapter;
 import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.srv.NsonAutoCompleteAdapter;
@@ -30,124 +34,46 @@ import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.srv.SearchListener;
 
 import java.util.Map;
+import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.VIEW_SPAREPART;
+import static com.rkrzmail.utils.APIUrls.VIEW_SUGGESTION;
 import static com.rkrzmail.utils.ConstUtils.RP;
 
-public class PartOto_PartHome_Fragment extends Fragment implements SearchListener.ISearch, SearchListener.ISearchAutoComplete {
+public class PartOto_PartHome_Fragment extends Fragment {
 
     private RecyclerView rvPart;
     private AppActivity activity;
+    private View fragmentView;
+    SwipeRefreshLayout swipeRefreshLayout;
+    private NikitaAutoComplete etSearch;
+    private ImageView imgSubmit;
 
     private final Nson partList = Nson.newArray();
-    private SearchListener.IFragmentListener iFragmentListener = null;
-    private String searchQuery = "";
-    private String searchTag = "";
-    private int tabPosition = 0;
-
-    private SearchView.SearchAutoComplete searchAutoComplete = null;
-    private boolean isVisible;
-    private boolean isStarted;
 
     public PartOto_PartHome_Fragment() {
-    }
-
-    public static PartOto_PartHome_Fragment newInstance(String query, String tag, int tabPosition) {
-        PartOto_PartHome_Fragment fragment = new PartOto_PartHome_Fragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(PartHome_MainTab_Activity.SEARCH_PART, query);
-        bundle.putString(PartHome_MainTab_Activity.SEARCH_TAG, tag);
-        bundle.putInt(PartHome_MainTab_Activity.TAB_POSITION, tabPosition);
-        fragment.setArguments(bundle);
-        return fragment;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         activity = ((PartHome_MainTab_Activity) getActivity());
-        View view = inflater.inflate(R.layout.activity_list_basic, container, false);
-        SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.swiperefresh);
-        swipeRefreshLayout.setEnabled(false);
-        initHideToolbar(view);
-        initRecylerviewPart(view);
-        iFragmentListener = (SearchListener.IFragmentListener) activity;
-        return view;
-    }
+        fragmentView = inflater.inflate(R.layout.layout_recylerview_with_search_box, container, false);
+        swipeRefreshLayout = fragmentView.findViewById(R.id.swiperefresh);
+        etSearch = fragmentView.findViewById(R.id.et_search);
+        imgSubmit = fragmentView.findViewById(R.id.img_submit_search);
 
-    private void initHideToolbar(View view) {
-        AppBarLayout appBarLayout = view.findViewById(R.id.appbar);
-        appBarLayout.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onTextQuery(String text, int tabPosition) {
-        if(tabPosition == 2){
-            viewALLPart(text);
-        }else{
-            viewALLPart("");
-        }
-    }
-
-    @Override
-    public void attachAdapter(SearchView.SearchAutoComplete searchAutoComplete, int tabPosition) {
-        if(tabPosition == 2){
-            try{
-                this.searchAutoComplete = searchAutoComplete;
-                this.searchAutoComplete.setTag("OTO");
-                this.searchAutoComplete.setAdapter(autoCompleteAdapter());
-                this.searchAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(i)));
-                        String object = n.get("NAMA_PART").asString();
-
-                        activity.find(R.id.search_src_text, SearchView.SearchAutoComplete.class).setText(object);
-                        activity.find(R.id.search_src_text, SearchView.SearchAutoComplete.class).setTag(String.valueOf(adapterView.getItemAtPosition(i)));
-                    }
-                });
-            }catch (Exception e){
-                e.printStackTrace();
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                viewALLPart("");
             }
-        }
-    }
+        });
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        isStarted = true;
-    }
+        initRecylerviewPart();
+        initAutoCompleteSearch();
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        isStarted = false;
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (getArguments() != null) {
-            searchQuery = (String) getArguments().get(PartHome_MainTab_Activity.SEARCH_PART);
-            searchTag = (String) getArguments().get(PartHome_MainTab_Activity.SEARCH_TAG);
-            tabPosition = (Integer) getArguments().getInt(PartHome_MainTab_Activity.TAB_POSITION, 0);
-        }
-
-        isVisible = isVisibleToUser;
-        if (isStarted && isVisible) {
-            iFragmentListener.addiSearch(PartOto_PartHome_Fragment.this, PartOto_PartHome_Fragment.this);
-            if (searchTag != null && searchTag.equals("OTO")) {
-                if (searchQuery != null) {
-                    onTextQuery(searchQuery, tabPosition);
-                }
-            }
-        } else {
-            if(iFragmentListener != null){
-                iFragmentListener.removeISearch(PartOto_PartHome_Fragment.this, PartOto_PartHome_Fragment.this);
-            }
-            searchQuery = "";
-        }
+        return fragmentView;
     }
 
 
@@ -155,16 +81,12 @@ public class PartOto_PartHome_Fragment extends Fragment implements SearchListene
     public void onResume() {
         super.onResume();
         if (isVisible()) {
-            if (searchQuery != null) {
-                onTextQuery(searchQuery, tabPosition);
-            } else {
-                viewALLPart("");
-            }
+           viewALLPart("");
         }
     }
 
-    private void initRecylerviewPart(View view) {
-        rvPart = view.findViewById(R.id.recyclerView);
+    private void initRecylerviewPart() {
+        rvPart = fragmentView.findViewById(R.id.recyclerView);
         rvPart.setHasFixedSize(true);
         rvPart.setLayoutManager(new LinearLayoutManager(getContext()));
         rvPart.setAdapter(new NikitaRecyclerAdapter(partList, R.layout.item_cari_part_oto) {
@@ -186,12 +108,26 @@ public class PartOto_PartHome_Fragment extends Fragment implements SearchListene
         );
     }
 
+    private void swipeProgress(final boolean show) {
+        if (!show) {
+            swipeRefreshLayout.setRefreshing(show);
+            return;
+        }
+        swipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeRefreshLayout.setRefreshing(show);
+            }
+        });
+    }
+
     public void viewALLPart(final String cari) {
         activity.newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
             @Override
             public void run() {
+                swipeProgress(true);
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "view");
@@ -203,6 +139,7 @@ public class PartOto_PartHome_Fragment extends Fragment implements SearchListene
 
             @Override
             public void runUI() {
+                swipeProgress(false);
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     result = result.get("data");
                     partList.asArray().clear();
@@ -215,40 +152,78 @@ public class PartOto_PartHome_Fragment extends Fragment implements SearchListene
         });
     }
 
-    private NsonAutoCompleteAdapter autoCompleteAdapter() {
-        return new NsonAutoCompleteAdapter(getActivity()) {
-            Nson result;
-            boolean isNoPart;
+    public <T extends View> T findView(View v, int id, Class<? super T> s) {
+        return (T) v.findViewById(id);
+    }
+
+    private void initAutoCompleteSearch() {
+        final boolean[] isNoPart = new boolean[1];
+        etSearch.setThreshold(0);
+        etSearch.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
 
             @Override
             public Nson onFindNson(Context context, String bookTitle) {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-
-                args.put("action", "view");
+                args.put("action", "Sparepart");
                 args.put("search", bookTitle);
-
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SPAREPART), args));
+                args.put("jenis", "partOto");
+                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SUGGESTION), args));
                 result = result.get("data");
-                isNoPart = result.get(0).get("NO_PART").asString().contains(bookTitle);
+                isNoPart[0] = result.get(0).get("NO_PART").asString().toLowerCase().contains(bookTitle.toLowerCase());
                 return result;
             }
 
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 if (convertView == null) {
-                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    LayoutInflater inflater = (LayoutInflater) Objects.requireNonNull(getActivity()).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     convertView = inflater.inflate(R.layout.item_suggestion, parent, false);
                 }
                 String search;
-                if (isNoPart) {
+                if (isNoPart[0]) {
                     search = getItem(position).get("NO_PART").asString();
                 } else {
                     search = getItem(position).get("NAMA_PART").asString();
                 }
-                activity.findView(convertView, R.id.title, TextView.class).setText(search);
+                findView(convertView, R.id.title, TextView.class).setText(search);
                 return convertView;
             }
-        };
+        });
+
+        etSearch.setLoadingIndicator((android.widget.ProgressBar) fragmentView.findViewById(R.id.pb_search));
+        etSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Nson data = Nson.readJson(String.valueOf(parent.getItemAtPosition(position)));
+                String object;
+                if (isNoPart[0]) {
+                    object = data.get("NO_PART").asString();
+                } else {
+                    object = data.get("NAMA_PART").asString();
+                }
+                etSearch.setText("");
+                viewALLPart(object);
+            }
+        });
+
+        imgSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!etSearch.getText().toString().isEmpty()) {
+                    viewALLPart(etSearch.getText().toString());
+                } else {
+                    imgSubmit.setVisibility(View.GONE);
+                    etSearch.setError("Pencarian Harus di Isi");
+                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            etSearch.setError(null);
+                            imgSubmit.setVisibility(View.VISIBLE);
+                        }
+                    }, 2000);
+                }
+            }
+        });
     }
 
 }

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.naa.data.UtilityAndroid;
@@ -20,14 +21,16 @@ public class MainActivity extends AppActivity {
 
     private String[] aksesApp;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        find(R.id.tv_app_version, TextView.class).setText("App Version " + BuildConfig.VERSION_NAME);
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         //Log.i("Firebase", refreshedToken);
-        if (String.valueOf(refreshedToken).length()>=13){
+        if (String.valueOf(refreshedToken).length() >= 13) {
             UtilityAndroid.setSetting(this, "FCMID", refreshedToken);
         }
 
@@ -36,7 +39,9 @@ public class MainActivity extends AppActivity {
             GifDrawable gifDrawable = new GifDrawable(getResources().openRawResource(R.raw.spash1));
             gifView.setImageDrawable(gifDrawable);
 
-        }catch (Exception e){}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
 //        RotateAnimation anim = new RotateAnimation(0f, 350f, 15f, 15f);
@@ -53,18 +58,18 @@ public class MainActivity extends AppActivity {
                 String tgl = simpleDateFormat.format(calendar.getTime());
                 String[] splitTgl = tgl.split("-");
 
-                if (getSetting("L").equalsIgnoreCase("L") && !splitTgl[2].equals("07")){
+                if (getSetting("L").equalsIgnoreCase("L")) {
                     //login
                     Intent intent = new Intent(getActivity(), MenuActivity.class);
                     startActivity(intent);
-                }else{
+                } else {
                     //menu
                     Intent intent = new Intent(getActivity(), LoginActivity.class);
                     startActivity(intent);
                 }
                 finish();
             }
-        },2000);
+        }, 2000);
     }
 
     @Override

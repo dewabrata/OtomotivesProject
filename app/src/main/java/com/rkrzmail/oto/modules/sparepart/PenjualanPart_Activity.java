@@ -14,7 +14,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -31,6 +30,8 @@ import com.rkrzmail.utils.Tools;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 import static com.rkrzmail.utils.ConstUtils.RP;
 
 public class PenjualanPart_Activity extends AppActivity {
@@ -68,11 +69,11 @@ public class PenjualanPart_Activity extends AppActivity {
     private void initComponent() {
         initRecylerviewUsaha();
         initRecylerviewPelanggan();
-        catchData("");
+        viewData("");
         find(R.id.swiperefresh, SwipeRefreshLayout.class).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                catchData("");
+                viewData("");
             }
         });
         find(R.id.fab_tambah).setOnClickListener(new View.OnClickListener() {
@@ -105,7 +106,14 @@ public class PenjualanPart_Activity extends AppActivity {
                 viewHolder.find(R.id.tv_noPhone_jualPart, TextView.class).setText("XXXXXXXX" + noHp);
                 viewHolder.find(R.id.tv_harga_jualPart, TextView.class).setText(RP + formatRp(pelangganList.get(position).get("TOTAL").asString()));
             }
-        });
+        }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Nson parent, View view, int position) {
+                Intent intent = new Intent(getActivity(), DetailJualPart_Activity.class);
+                intent.putExtra(DATA,  parent.get(position).toJson());
+                startActivityForResult(intent, REQUEST_DETAIL);
+            }
+        }));
     }
 
     private void initRecylerviewUsaha() {
@@ -137,11 +145,18 @@ public class PenjualanPart_Activity extends AppActivity {
                 viewHolder.find(R.id.tv_harga_jualPart, TextView.class).setText(RP + formatRp(usahaList.get(position).get("TOTAL").asString()));
                 viewHolder.find(R.id.tv_noPhone_jualPart, TextView.class).setText("XXXXXXXX" + noHp);
             }
-        });
+        }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Nson parent, View view, int position) {
+                Intent intent = new Intent(getActivity(), DetailJualPart_Activity.class);
+                intent.putExtra(DATA,  parent.get(position).toJson());
+                startActivityForResult(intent, REQUEST_DETAIL);
+            }
+        }));
     }
 
-    private void catchData(final String cari) {
-        newTask(new Messagebox.DoubleRunnable() {
+    private void viewData(final String cari) {
+        newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
             @Override
@@ -210,7 +225,7 @@ public class PenjualanPart_Activity extends AppActivity {
             public boolean onQueryTextSubmit(String query) {
                 searchMenu.collapseActionView();
                 //filter(null);
-                catchData(query);
+                viewData(query);
                 return true;
             }
         };
@@ -222,7 +237,9 @@ public class PenjualanPart_Activity extends AppActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_PENJUALAN) {
-            catchData("");
+            viewData("");
+        }else{
+            viewData("");
         }
     }
 }

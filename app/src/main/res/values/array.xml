@@ -152,14 +152,11 @@
         <item>MEKANIK</item>
         <item>TUGAS PARTS</item>
         <item>INSPEKSI</item>
-        <item>MY CODE</item>
         <item>JUAL PARTS</item>
         <item>TERIMA PARTS</item>
         <item>STOCK OPNAME</item>
-        <item>PARTS</item>
         <item>BOOKING</item>
         <item>COLLECTION</item>
-        <item>ABSENSI</item>
         <item>DASHBOARD</item>
         <item>JURNAL</item>
         <item>ANTAR JEMPUT</item>
@@ -169,8 +166,6 @@
         <item>PART KELUAR</item>
         <item>PEMBELIAN PART</item>
         <item>SCHEDULE</item>
-        <item>REFFERAL</item>
-        <item>SARAN</item>
         <item>MY BUSINESS</item>
         <item>PENGATURAN</item>
         <item>DISCOUNT</item>

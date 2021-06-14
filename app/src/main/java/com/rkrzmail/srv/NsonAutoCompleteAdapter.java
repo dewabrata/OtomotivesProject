@@ -47,7 +47,7 @@ public class NsonAutoCompleteAdapter extends BaseAdapter implements Filterable {
 
     @Override
     public Filter getFilter() {
-        Filter filter = new Filter() {
+        return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults filterResults = new FilterResults();
@@ -71,7 +71,6 @@ public class NsonAutoCompleteAdapter extends BaseAdapter implements Filterable {
                     notifyDataSetInvalidated();
                 }
             }};
-        return filter;
     }
 
     /**

@@ -24,6 +24,8 @@ import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
+import net.cachapa.expandablelayout.ExpandableLayout;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -44,7 +46,8 @@ public class Dashboard_Angka_Fragment extends Fragment {
     private TextView
             tvTglMulai, tvTglAkhir, tvHariKerja, tvRPLayanan, tvRPJualPart,
             tvRPBatal, tvRpPenjualanHarian, tvUnitHarian, tvPercentMarginPartHarian,
-            tvRataRataCheckin, tvRataRataJualPart, tvPending, tvPartKosong, tvClaim, tvOutsource;
+            tvRataRataCheckin, tvRataRataJualPart, tvPending, tvPartKosong, tvClaim, tvOutsource,
+            tvBelanjaPart, tvHutangKomisi, tvHutangPPN;
     private View fragmentView;
 
     private Nson pembayaranList = Nson.newArray();
@@ -59,7 +62,8 @@ public class Dashboard_Angka_Fragment extends Fragment {
             totalSelesai = 0, totalSaldoEpay = 0, totalPartOnline = 0, totalAsset = 0,
             totalPendapatanLain = 0, totalDonasi = 0, totalPenjualanHarian = 0,
             totalRataRataCheckin = 0, totalRataRataJualPart = 0, totalOutsource = 0,
-            totalClaim = 0, totalPartKosong = 0;
+            totalClaim = 0, totalPartKosong = 0, totalBelanjaPart = 0,
+            totalHutangKomisi = 0, totalHutangPPN = 0;
 
     private double totalPercentMarginPartHarian = 0, totalUnitHarian = 0, totalPending = 0,  totalKasBank = 0;
 
@@ -85,6 +89,7 @@ public class Dashboard_Angka_Fragment extends Fragment {
                              Bundle savedInstanceState) {
         fragmentView = inflater.inflate(R.layout.fragment_dashboard_angka, container, false);
         activity = ((Dashboard_MainTab_Activity) getActivity());
+        //expandLayout();
         initHideToolbar();
         initComponent();
         return fragmentView;
@@ -97,6 +102,36 @@ public class Dashboard_Angka_Fragment extends Fragment {
 //            viewDashboard((Dashboard_MainTab_Activity) Objects.requireNonNull(getActivity()));
 //        }
 //    }
+
+    private void expandLayout(){
+        final ExpandableLayout expandTransaksiHarian = fragmentView.findViewById(R.id.expand_transaksi_harian);
+        final ExpandableLayout expandProses = fragmentView.findViewById(R.id.expand_proses);
+
+        final TextView tvTransaksiHarian = fragmentView.findViewById(R.id.tv_expand_transaksi_harian);
+        final TextView tvProses = fragmentView.findViewById(R.id.tv_expand_proses);
+
+        tvProses.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(expandProses.isExpanded()){
+                    expandProses.collapse();
+                }else{
+                    expandProses.expand();
+                }
+            }
+        });
+
+        tvTransaksiHarian.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(expandTransaksiHarian.isExpanded()){
+                    expandTransaksiHarian.collapse();
+                }else{
+                    expandTransaksiHarian.expand();
+                }
+            }
+        });
+    }
 
     private void initHideToolbar() {
         AppBarLayout appBarLayout = fragmentView.findViewById(R.id.appbar);
@@ -121,6 +156,9 @@ public class Dashboard_Angka_Fragment extends Fragment {
         tvClaim = fragmentView.findViewById(R.id.tv_total_claim);
         tvPartKosong = fragmentView.findViewById(R.id.tv_total_part_kosong);
         tvOutsource = fragmentView.findViewById(R.id.tv_total_outsource);
+        tvBelanjaPart = fragmentView.findViewById(R.id.tv_total_belanja_part);
+        tvHutangKomisi = fragmentView.findViewById(R.id.tv_total_hutang_komisi);
+        tvHutangPPN = fragmentView.findViewById(R.id.tv_total_hutang_ppn);
 
         lyDasboard.setVisibility(GONE);
 
@@ -192,6 +230,9 @@ public class Dashboard_Angka_Fragment extends Fragment {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     result = result.get("data").get(0);
 
+                    totalHutangPPN = result.get("TOTAL_HUTANG_PPN").asInteger();
+                    totalHutangKomisi = result.get("TOTAL_HUTANG_KOMISI").asInteger();
+                    totalBelanjaPart = result.get("TOTAL_BELANJA_PART").asInteger();
                     totalOutsource = result.get("TOTAL_OUTSOURCE").asInteger();
                     totalClaim = result.get("TOTAL_CLAIM").asInteger();
                     totalPartKosong = result.get("TOTAL_PART_KOSONG").asInteger();
@@ -226,7 +267,7 @@ public class Dashboard_Angka_Fragment extends Fragment {
                     totHpp = result.get("TOTAL_HPP").asString();
                     totMargin = result.get("TOTAL_MARGIN").asString();
                     totKas = result.get("TOTAL_KAS").asString();
-                    totalKasBank = NumberFormatUtils.format2NumberDecimal(result.get("TOTAL_KAS_BANK").asDouble());
+                    totalKasBank = result.get("TOTAL_KAS_BANK").asDouble();
                     totPiutang = result.get("TOTAL_PIUTANG").asString();
                     totColeection = result.get("TOTAL_COLLECTION").asString();
                     totStockpart = result.get("TOTAL_STOCK_PART").asString();
@@ -243,6 +284,9 @@ public class Dashboard_Angka_Fragment extends Fragment {
 
     @SuppressLint("SetTextI18n")
     private void setValuedashboard() {
+        tvBelanjaPart.setText(activity.setUnderline(RP + NumberFormatUtils.formatRpDecimal(String.valueOf(totalBelanjaPart))));
+        tvHutangPPN.setText(activity.setUnderline(RP + NumberFormatUtils.formatRpDecimal(String.valueOf(totalHutangPPN))));
+        tvHutangKomisi.setText(activity.setUnderline(RP + NumberFormatUtils.formatRpDecimal(String.valueOf(totalHutangKomisi))));
         tvClaim.setText(activity.setUnderline(String.valueOf(totalClaim)));
         tvPartKosong.setText(activity.setUnderline(String.valueOf(totalPartKosong)));
         tvOutsource.setText(activity.setUnderline(String.valueOf(totalOutsource)));

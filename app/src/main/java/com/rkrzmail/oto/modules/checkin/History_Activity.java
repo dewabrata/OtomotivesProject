@@ -356,7 +356,7 @@ public class History_Activity extends AppActivity {
                 args.put("id", idCheckin);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PERINTAH_KERJA_MEKANIK), args));
                 rekomendasiMekanikList.asArray().clear();
-                rekomendasiMekanikList.asArray().addAll(result.get("data").asArray());
+              //  rekomendasiMekanikList.asArray().addAll(result.get("data").asArray());
             }
 
             @Override
@@ -373,7 +373,7 @@ public class History_Activity extends AppActivity {
 
                 rvPartJasa.getAdapter().notifyDataSetChanged();
                 rvKeluhan.getAdapter().notifyDataSetChanged();
-                rvRekomendasi.getAdapter().notifyDataSetChanged();
+               // rvRekomendasi.getAdapter().notifyDataSetChanged();
 
                 if (alertDialog != null) {
                     if (alertDialog.getWindow() != null)

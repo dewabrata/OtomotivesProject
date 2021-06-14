@@ -176,13 +176,13 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
     private long totalBulanSewa(String tglAwal, String tglAkhir) {
         if (tglAwal.isEmpty() && tglAkhir.isEmpty()) return 0;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/uuuu");
-        try{
+        try {
             long totalBulan = ChronoUnit.MONTHS.between(
                     YearMonth.from(LocalDate.parse(tglAwal, formatter)),
                     YearMonth.from(LocalDate.parse(tglAkhir, formatter))
             );
             return totalBulan;
-        }catch (DateTimeParseException e){
+        } catch (DateTimeParseException e) {
             showWarning(e.getMessage());
             return 0;
         }
@@ -247,9 +247,7 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
                             aktivitasList.add(result.get(i).get("AKTIVITAS").asString());
                         }
                     }
-                    ArrayAdapter<String> aktivitasAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, aktivitasList);
-                    aktivitasAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spAktivitas.setAdapter(aktivitasAdapter);
+                    setSpinnerOffline(aktivitasList, spAktivitas, selection);
                     spAktivitas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -277,14 +275,6 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
 
                         }
                     });
-                    if (!selection.isEmpty()) {
-                        for (int i = 0; i < spAktivitas.getCount(); i++) {
-                            if (spAktivitas.getItemAtPosition(i).toString().equals(selection)) {
-                                spAktivitas.setSelection(i);
-                                break;
-                            }
-                        }
-                    }
                 }
             }
         });
@@ -575,10 +565,10 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
 
     }
 
-    private Calendar getFirstDayOfMonth(){
+    private Calendar getFirstDayOfMonth() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.DAY_OF_MONTH, 1);
-        return  calendar;
+        return calendar;
     }
 
     public void getDatePickerDialog(final boolean minOrMax) {
@@ -605,10 +595,10 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
             }
         }, year, month, day);
 
-        if (minOrMax){
+        if (minOrMax) {
             datePickerDialog.setMinDate(getFirstDayOfMonth());
             datePickerDialog.setMaxDate(cldr);
-        } else{
+        } else {
             datePickerDialog.setMinDate(cldr);
         }
 
@@ -712,7 +702,7 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
                                 etBankTerbayar.getText().toString().isEmpty()) {
                             viewFocus(etBiayaTf);
                             etBiayaTf.setError("BIAYA TF HARUS DI ISI UNTUK BANK BERBEDA");
-                        }else if(transaksi.equals("ASET") && etUmurAsset.getText().toString().isEmpty()){
+                        } else if (transaksi.equals("ASET") && etUmurAsset.getText().toString().isEmpty()) {
                             viewFocus(etUmurAsset);
                             etUmurAsset.setError("UMUR ASET HARUS DI ISI");
                         } else if (isPembayaranActive && isBayarOrBeli && nominal > lastBalanceKasBank) {
@@ -737,7 +727,7 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
                         } else if (isPembayaranActive && isBayarOrBeli && nominal > lastBalanceKasBank) {
                             viewFocus(etNominal);
                             etNominal.setError("TOTAL BAYAR MELEBIHI KAS BANK");
-                        } else if(transaksi.equals("ASET") && etUmurAsset.getText().toString().isEmpty()){
+                        } else if (transaksi.equals("ASET") && etUmurAsset.getText().toString().isEmpty()) {
                             viewFocus(etUmurAsset);
                             etUmurAsset.setError("UMUR ASET HARUS DI ISI");
                         } else {
@@ -749,10 +739,10 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
                     } else if (isPeriode && find(R.id.tv_tgl_akhir, TextView.class).getText().toString().isEmpty()) {
                         viewFocus(find(R.id.tv_tgl_akhir, TextView.class));
                         find(R.id.tv_tgl_akhir, TextView.class).setError("TOTAL BAYAR MELEBIHI KAS BANK");
-                    }else if(transaksi.equals("ASET") && etUmurAsset.getText().toString().isEmpty()){
+                    } else if (transaksi.equals("ASET") && etUmurAsset.getText().toString().isEmpty()) {
                         viewFocus(etUmurAsset);
                         etUmurAsset.setError("UMUR ASET HARUS DI ISI");
-                    }  else {
+                    } else {
                         saveDataUsingBody();
                     }
                 }

@@ -60,6 +60,14 @@ public class HutangLain_Hutang_Fragment extends Fragment {
         swipeRefreshLayout = fragmentView.findViewById(R.id.swiperefresh);
         initHideToolbar();
         initRvHutang();
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                viewHutang();
+            }
+        });
+
         return fragmentView;
     }
 
@@ -101,7 +109,11 @@ public class HutangLain_Hutang_Fragment extends Fragment {
                 String tgl = DateFormatUtils.formatDate(hutangList.get(position).get("CREATED_DATE").asString(), "yyyy-MM-dd HH:mm:ss", "dd/MM");
                 viewHolder.find(R.id.tv_tanggal, TextView.class).setText(tgl);
                 viewHolder.find(R.id.tv_tipe_kewajiban, TextView.class).setText(hutangList.get(position).get("TIPE_KEWAJIBAN").asString());
-                viewHolder.find(R.id.tv_bayar_sebelumnya, TextView.class).setText(RP + NumberFormatUtils.formatRp(hutangList.get(position).get("").asString()));
+                if(hutangList.get(position).get("TIPE_KEWAJIBAN").asString().equals("DONASI")){
+                    viewHolder.find(R.id.tv_bayar_sebelumnya, TextView.class).setText(RP + NumberFormatUtils.formatRp(hutangList.get(position).get("NOMINAL").asString()));
+                }else{
+                    viewHolder.find(R.id.tv_bayar_sebelumnya, TextView.class).setText(RP + NumberFormatUtils.formatRp(hutangList.get(position).get("").asString()));
+                }
                 viewHolder.find(R.id.tv_total, TextView.class).setText(RP + NumberFormatUtils.formatRp(hutangList.get(position).get("TOTAL_HUTANG").asString()));
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
@@ -109,6 +121,7 @@ public class HutangLain_Hutang_Fragment extends Fragment {
             public void onItemClick(Nson parent, View view, int position) {
                 Intent intent = new Intent(getActivity(), AturPembayaranHutang_Activity.class);
                 intent.putExtra(DATA, parent.get(position).toJson());
+                intent.putExtra("HUTANG_LAIN", true);
                 startActivityForResult(intent, REQUEST_DETAIL);
             }
         }));

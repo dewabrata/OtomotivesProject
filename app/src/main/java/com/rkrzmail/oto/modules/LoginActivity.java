@@ -94,7 +94,7 @@ public class LoginActivity extends AppActivity {
             public void onClick(View v) {
                 startActivity(new Intent(getActivity(), RegistrasiBengkel_Activity.class));
 
-              //  startActivity(new Intent(getActivity(), VerifikasiOtp_Activity.class));
+             // startActivity(new Intent(getActivity(), VerifikasiOtp_Activity.class));
             }
         });
 

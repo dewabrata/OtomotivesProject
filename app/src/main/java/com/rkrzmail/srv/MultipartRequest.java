@@ -69,7 +69,7 @@ public class MultipartRequest {
 
             strResponse = response.body().string();
         } catch (Exception e) {
-            Log.e("Exception", e.getMessage());
+            e.printStackTrace();
         } finally {
             requestBody = null;
             request = null;

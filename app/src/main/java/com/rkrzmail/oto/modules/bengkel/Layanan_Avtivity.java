@@ -109,7 +109,7 @@ public class Layanan_Avtivity extends AppActivity {
                      lokasiLayanan += nListArray.get(position).get("LOKASI_LAYANAN_BENGKEL").asString();
                  }
 
-                viewHolder.find(R.id.tv_keterangan, TextView.class).setText(nListArray.get(position).get("KETERANGAN_LAYANAN").asString());
+                viewHolder.find(R.id.tv_varian_kendaraan, TextView.class).setText(nListArray.get(position).get("VARIAN").asString());
                 viewHolder.find(R.id.tv_jenis_layanan, TextView.class).setText(nListArray.get(position).get("JENIS_LAYANAN").asString());
                 viewHolder.find(R.id.tv_nama_layanan, TextView.class).setText(nListArray.get(position).get("NAMA_LAYANAN").asString());
                 viewHolder.find(R.id.tv_lokasi_layanan, TextView.class).setText(lokasiLayanan);

@@ -52,16 +52,27 @@ public class PerintahKerjaMekanik_Activity extends AppActivity {
         rvKerjaMekanik = findViewById(R.id.recyclerView);
         rvKerjaMekanik.setLayoutManager(new LinearLayoutManager(this));
         rvKerjaMekanik.setAdapter(new NikitaRecyclerAdapter(nListArray, R.layout.item_kerja_mekanik) {
+                    @SuppressLint("SetTextI18n")
                     @Override
                     public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, final int position) {
                         super.onBindViewHolder(viewHolder, position);
 
-                        viewHolder.find(R.id.tv_jenis_kerjaMekanik, TextView.class).setText(nListArray.get(position).get("JENIS_KENDARAAN").asString());
-                        viewHolder.find(R.id.tv_nopol_kerjaMekanik, TextView.class).setText(formatNopol(nListArray.get(position).get("NOPOL").asString()));
-                        viewHolder.find(R.id.tv_layanan_kerjaMekanik, TextView.class).setText(nListArray.get(position).get("LAYANAN").asString());
-                        viewHolder.find(R.id.tv_namaP_kerjaMekanik, TextView.class).setText(nListArray.get(position).get("NAMA_PELANGGAN").asString());
-                        viewHolder.find(R.id.tv_noAntrian_kerjaMekanik, TextView.class).setText(nListArray.get(position).get("NO_ANTRIAN").asString());
-                        viewHolder.find(R.id.tv_no_kunci, TextView.class).setText(nListArray.get(position).get("NO_KUNCI").asString());
+                        viewHolder.find(R.id.tv_jenis_kerjaMekanik, TextView.class)
+                                .setText(nListArray.get(position).get("JENIS_KENDARAAN").asString());
+                        viewHolder.find(R.id.tv_nopol_kerjaMekanik, TextView.class)
+                                .setText(formatNopol(nListArray.get(position).get("NOPOL").asString()));
+                        viewHolder.find(R.id.tv_layanan_kerjaMekanik, TextView.class)
+                                .setText(nListArray.get(position).get("LAYANAN").asString());
+                        viewHolder.find(R.id.tv_namaP_kerjaMekanik, TextView.class)
+                                .setText(nListArray.get(position).get("NAMA_PELANGGAN").asString());
+                        viewHolder.find(R.id.tv_noAntrian_kerjaMekanik, TextView.class)
+                                .setText(nListArray.get(position).get("NO_ANTRIAN").asString());
+                        viewHolder.find(R.id.tv_no_kunci, TextView.class)
+                                .setText(nListArray.get(position).get("NO_KUNCI").asString());
+                        viewHolder.find(R.id.tv_tidak_menunggu, TextView.class)
+                                .setText(nListArray.get(position).get("TIDAK_MENUNGGU").asString().equals("Y") ? "TIDAK MENUNGGU" : "MENUNGGU");
+                        viewHolder.find(R.id.tv_estimasi_selesai, TextView.class)
+                                .setText(nListArray.get(position).get("ESTIMASI_SELESAI").asString());
 
                     }
                 }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {

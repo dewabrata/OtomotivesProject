@@ -61,55 +61,6 @@ public class LokasiPart_MainTab_Activity extends AppActivity {
         //tabLayout.addOnTabSelectedListener();
     }
 
-    SearchView mSearchView;
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_part, menu);
-
-        // Get the SearchView and set the searchable configuration
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        mSearchView = new SearchView(getSupportActionBar().getThemedContext());
-        mSearchView.setQueryHint("Cari Part"); /// YOUR HINT MESSAGE
-        mSearchView.setMaxWidth(Integer.MAX_VALUE);
-
-        final MenuItem searchMenu = menu.findItem(R.id.action_search);
-        searchMenu.setActionView(mSearchView);
-        searchMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-
-        adapterSearchView(mSearchView, "search", "viewlokasipart", "NAMA_PART", "");
-
-        //SearchView searchView = (SearchView)  menu.findItem(R.id.action_search).setActionView(mSearchView);
-        // Assumes current activity is the searchable activity
-        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        mSearchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
-
-        SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
-            public boolean onQueryTextChange(String newText) {
-                //filter(newText);
-                return true;
-            }
-
-            public boolean onQueryTextSubmit(String query) {
-
-                List<Fragment> fragments = getSupportFragmentManager().getFragments();
-                for (Fragment fragment : fragments) {
-                    if (fragment instanceof PartTeralokasikan_Fragment) {
-                        ((PartTeralokasikan_Fragment) fragment).initComponent(query);
-                        break;
-                    }else if(fragment instanceof PartNonLokasi_Fragment){
-                        ((PartNonLokasi_Fragment) fragment).initComponent(query);
-                        break;
-                    }
-                }
-
-                return false;
-            }
-        };
-
-        mSearchView.setOnQueryTextListener(queryTextListener);
-        return true;
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

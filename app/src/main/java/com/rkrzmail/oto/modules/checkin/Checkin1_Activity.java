@@ -42,6 +42,7 @@ import com.rkrzmail.srv.NsonAutoCompleteAdapter;
 import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
+import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.SET_CHECKIN;
 import static com.rkrzmail.utils.APIUrls.VIEW_JENIS_KENDARAAN;
@@ -75,7 +76,8 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             tglBeli = "",
             kodeTipe = "",
             alamat = "",
-            kotaKab = "";
+            kotaKab = "",
+            warna = "";
     private int expiredGaransiHari = 0, expiredGaransiKm = 0;
     private String isGaransiHari = "";
     private int kendaraanId = 0;
@@ -107,7 +109,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Check-In");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Check-In");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -133,6 +135,13 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void onClick(View v) {
                 moveToCamera();
+            }
+        });
+
+        find(R.id.img_clear_jenis_kendaraan).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                etJenisKendaraan.setText("");
             }
         });
 
@@ -407,8 +416,9 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 etNoPonsel.setTag(nomor);
                 etNoPonsel.setText("XXXXXXXX" + nomor);
                 etNamaPelanggan.setText(n.get("NAMA_PELANGGAN").asString());
+                find(R.id.et_kode_pos, EditText.class).setText(n.get("KODE_POS").asString());
+                find(R.id.et_email, EditText.class).setText(n.get("EMAIL").asString());
 
-                find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
                 find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
                 find(R.id.img_clear, ImageButton.class).setVisibility(View.GONE);
 
@@ -461,6 +471,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 noHp = n.get("NO_PONSEL").asString();
                 alamat = n.get("ALAMAT").asString();
                 kotaKab = n.get("KOTA_KAB").asString();
+                warna = n.get("WARNA").asString();
 
                 if (!noHp.isEmpty())
                     isNoHp = true;
@@ -478,6 +489,8 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     nomor = nomor.substring(nomor.length() - 4);
                 }
 
+                find(R.id.et_kode_pos, EditText.class).setText(n.get("KODE_POS").asString());
+                find(R.id.et_email, EditText.class).setText(n.get("EMAIL").asString());
                 etNopol.setText(formatNopol(n.get("NO_POLISI").asString()));
                 etNoPonsel.setTag(nomor);
                 etNoPonsel.setText("XXXXXXXX" + nomor);
@@ -490,7 +503,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     find(R.id.cb_pemilik_checkin1, CheckBox.class).setChecked(true);
                 }
 
-                etJenisKendaraan.setEnabled(merkKendaraan.isEmpty() || varianKendaraan.isEmpty());
+                //etJenisKendaraan.setEnabled(merkKendaraan.isEmpty() || varianKendaraan.isEmpty());
                 find(R.id.tl_nohp, TextInputLayout.class).setErrorEnabled(false);
                 find(R.id.img_clear, ImageButton.class).setVisibility(View.GONE);
             }
@@ -499,6 +512,31 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
     }
 
     private void initAutoCompleteKendaraan() {
+        etJenisKendaraan.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                etJenisKendaraan.removeTextChangedListener(this);
+                int textLength = s.toString().length();
+                if(textLength == 0){
+                    find(R.id.img_clear_jenis_kendaraan).setVisibility(View.GONE);
+                    return;
+                }else{
+                    find(R.id.img_clear_jenis_kendaraan).setVisibility(View.VISIBLE);
+                }
+                etJenisKendaraan.addTextChangedListener(this);
+            }
+        });
+
         etJenisKendaraan.setThreshold(3);
         etJenisKendaraan.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
             @Override
@@ -538,7 +576,6 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                     etJenisKendaraan.requestFocus();
                     return;
                 }
-                //stringBuilder.append(n.get("MODEL").asString()).append(" ");
 
                 kendaraanId = n.get("ID").asInteger();
                 merkKendaraan = n.get("MERK").asString();
@@ -602,6 +639,8 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 if(!km.isEmpty()){
                     args.put("fotoKm", base64fotoKM[0]);
                 }
+                args.put("email", find(R.id.et_email, EditText.class).getText().toString());
+                args.put("kodePos", find(R.id.et_kode_pos, EditText.class).getText().toString());
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
             }
@@ -619,6 +658,7 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                         idDataKendaraan = result.get("data").get("DATA_KENDARAAN_ID_UPDATE").asInteger();
                     }
 
+                    nson.set("WARNA", warna);
                     nson.set("KENDARAAN_ID", kendaraanId);
                     nson.set("KODE_TIPE", kodeTipe);
                     nson.set("DATA_KENDARAAN_ID", idDataKendaraan);
@@ -742,9 +782,9 @@ public class Checkin1_Activity extends AppActivity implements View.OnClickListen
                 if (etNopol.getText().toString().isEmpty()) {
                     etNopol.setError("Harus Di Isi");
                     etNopol.requestFocus();
-                } else if (etJenisKendaraan.getText().toString().isEmpty() || etJenisKendaraan.getText().toString().equals(" ")) {
-                    etJenisKendaraan.setError("Harus Di Isi");
-                    etJenisKendaraan.requestFocus();
+                } else if (etJenisKendaraan.getText().toString().isEmpty() || etJenisKendaraan.getText().toString().equals(" ") || varianKendaraan.isEmpty()) {
+                    etJenisKendaraan.setError("Jenis Kendaraan Belum Lengkap");
+                    viewFocus(etJenisKendaraan);
                 } else if (kendaraanId == 0) {
                     showWarning("Kendaraan Harus di isi dari Suggestion", Toast.LENGTH_LONG);
                     etJenisKendaraan.requestFocus();

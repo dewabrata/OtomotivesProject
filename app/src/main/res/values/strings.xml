@@ -244,7 +244,7 @@
     <string name="asset_uppercase">ASSET</string>
     <string name="part_online_uppercase">PART ONLINE</string>
     <string name="dp_part_uppercase">DP PART</string>
-    <string name="saldo_epay_uppercase">SALDO EPAY</string>
+    <string name="saldo_epay_uppercase">E-WALLET</string>
     <string name="donasi_uppercase">DONASI</string>
     <string name="nama_pelanggan_or_principal">Nama Pelanggan / Principal</string>
     <string name="biaya_layanan">Biaya Layanan</string>
@@ -429,6 +429,17 @@
     <string name="bank_e_wallet_uppercase">BANK / E-WALLET</string>
     <string name="pemberi_referensi_uppercase">PEMBERI REFERENSI</string>
     <string name="tittle">Tittle</string>
+    <string name="total_piutang_uppercase">TOTAL PIUTANG</string>
+    <string name="nama_kreditur_uppercase">NAMA KREDITUR</string>
+    <string name="no_nominal_hutang_uppercase">NO / NOMINAL HUTANG</string>
+    <string name="belanja_part_uppercase">BELANJA PART</string>
+    <string name="hutang_komisi_uppercase">HUTANG KOMISI</string>
+    <string name="hutang_ppn_uppercase">HUTANG PPN</string>
+    <string name="menunggu">Menunggu</string>
+    <string name="link_google_bisnis_uppercase">LINK GOOGLE BISNIS</string>
+    <string name="tanggal_gaji_uppercase">TAMGGAL GAJI</string>
+    <string name="kode_pos_uppercase">KODE POS</string>
+    <string name="tanggal_registrasi">Tanggal Registrasi</string>
     <string-array name="pola_harga_jual">
         <item>FLEXIBLE</item>
         <item>BELI + MARGIN</item>

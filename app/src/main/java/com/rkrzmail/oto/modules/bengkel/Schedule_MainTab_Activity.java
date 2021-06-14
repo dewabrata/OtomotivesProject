@@ -52,7 +52,7 @@ public class Schedule_MainTab_Activity extends AppActivity {
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Absen");
+            Objects.requireNonNull(getSupportActionBar()).setTitle("Schedule");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 

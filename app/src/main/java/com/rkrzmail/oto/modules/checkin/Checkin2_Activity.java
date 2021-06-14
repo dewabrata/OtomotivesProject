@@ -105,6 +105,8 @@ public class Checkin2_Activity extends AppActivity {
             etNorangka.setVisibility(View.GONE);
             find(R.id.et_alamat, EditText.class).setText(readCheckin.get("ALAMAT").asString());
             etKotaKab.setText(readCheckin.get("KOTA").asString());
+            etWarna.setText(readCheckin.get("WARNA").asString());
+            noHp = readCheckin.get("noPonsel").asString();
         }
 
         initListener();

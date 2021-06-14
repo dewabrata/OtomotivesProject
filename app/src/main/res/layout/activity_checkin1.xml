@@ -37,9 +37,9 @@
                         android:hint="NO. POLISI"
                         android:inputType="textCapCharacters"
                         android:maxLength="12"
-                        android:textSize="14sp"
                         android:padding="15dp"
-                        android:singleLine="true" />
+                        android:singleLine="true"
+                        android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -69,37 +69,56 @@
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp">
 
                 <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="10dp">
+                   >
 
                     <com.rkrzmail.srv.NikitaAutoComplete
                         android:id="@+id/et_jenisKendaraan_checkin1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="JENIS KENDARAAN"
+                        android:hint="@string/jenis_kendaraan_uppercase"
                         android:inputType="textCapCharacters"
-                        android:singleLine="true"
                         android:maxLength="35"
-                        android:textSize="14sp"
-                        android:padding="15dp" />
+                        android:padding="15dp"
+                        android:singleLine="true"
+                        android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
-                <ProgressBar
-                    android:id="@+id/pb_kendaraan_checkin"
-                    style="?android:attr/progressBarStyleSmall"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|right"
-                    android:layout_marginRight="20dp"
-                    android:visibility="gone" />
+                    android:orientation="horizontal"
+                    android:padding="10dp"
+                    tools:ignore="RtlHardcoded">
+
+                    <ProgressBar
+                        android:id="@+id/pb_kendaraan_checkin"
+                        style="?android:attr/progressBarStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="5dp"
+                        tools:ignore="RtlHardcoded"
+                        android:visibility="gone"/>
+
+                    <ImageView
+                        android:id="@+id/img_clear_jenis_kendaraan"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_close"
+                        android:tint="@android:color/black" />
+
+                </LinearLayout>
 
             </FrameLayout>
 
@@ -122,18 +141,18 @@
                         android:hint="NAMA PELANGGAN"
                         android:inputType="textCapCharacters|textPersonName"
                         android:maxLength="30"
-                        android:textSize="14sp"
-                        android:padding="15dp" />
+                        android:padding="15dp"
+                        android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_gravity="end"
                     android:layout_marginTop="15dp"
-                    android:layout_marginEnd="20dp">
+                    android:layout_marginEnd="20dp"
+                    android:orientation="horizontal">
 
                     <ImageButton
                         android:id="@+id/img_clear"
@@ -141,8 +160,8 @@
                         android:layout_height="35dp"
                         android:background="@android:color/transparent"
                         android:tint="@color/grey_80"
-                        app:srcCompat="@drawable/ic_close"
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/ic_close" />
 
                     <ProgressBar
                         android:id="@+id/pb_namaPelanggan"
@@ -150,8 +169,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical|right"
-                        tools:ignore="RtlHardcoded"
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        tools:ignore="RtlHardcoded" />
 
                 </LinearLayout>
 
@@ -183,8 +202,8 @@
                             android:hint="NO. PONSEL"
                             android:inputType="phone"
                             android:maxLength="19"
-                            android:textSize="14sp"
-                            android:padding="15dp" />
+                            android:padding="15dp"
+                            android:textSize="14sp" />
 
                     </android.support.design.widget.TextInputLayout>
 
@@ -194,8 +213,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical|right"
-                        android:visibility="gone"
-                        android:layout_marginRight="20dp" />
+                        android:layout_marginRight="20dp"
+                        android:visibility="gone" />
 
                 </FrameLayout>
 
@@ -210,6 +229,44 @@
                     android:text="PEMILIK" />
 
             </LinearLayout>
+
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp">
+
+                <EditText
+                    android:id="@+id/et_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/email_uppercase"
+                    android:textSize="14sp"
+                    android:inputType="textEmailAddress"
+                    tools:ignore="LabelFor" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp">
+
+                <EditText
+                    android:id="@+id/et_kode_pos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/kode_pos_uppercase"
+                    android:textSize="14sp"
+                    android:inputType="numberSigned"
+                    tools:ignore="LabelFor" />
+
+            </android.support.design.widget.TextInputLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -252,19 +309,19 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_gravity="center"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:layout_marginEnd="10dp">
+                    android:layout_marginEnd="10dp"
+                    android:layout_weight="2">
 
                     <com.rkrzmail.srv.NikitaAutoComplete
                         android:id="@+id/et_km_checkin1"
@@ -273,9 +330,9 @@
                         android:hint="@string/km_uppercase"
                         android:inputType="number"
                         android:maxLength="10"
+                        android:padding="15dp"
                         android:singleLine="true"
-                        android:textSize="14sp"
-                        android:padding="15dp" />
+                        android:textSize="14sp" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -284,11 +341,11 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:background="@drawable/btn_rounded_accent"
                     android:drawableStart="@drawable/icon_camera_unfill"
-                    android:text="@string/km_uppercase"
                     android:padding="10dp"
-                    android:textColor="@android:color/white"
-                    android:background="@drawable/btn_rounded_accent"/>
+                    android:text="@string/km_uppercase"
+                    android:textColor="@android:color/white" />
 
             </LinearLayout>
 
@@ -324,10 +381,10 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="right|center_vertical"
-                android:padding="5dp"
-                app:srcCompat="@drawable/barcode"
                 android:layout_marginEnd="5dp"
                 android:backgroundTint="@color/transparent"
+                android:padding="5dp"
+                app:srcCompat="@drawable/barcode"
                 tools:ignore="ContentDescription,RtlHardcoded,UnusedAttribute" />
 
         </FrameLayout>

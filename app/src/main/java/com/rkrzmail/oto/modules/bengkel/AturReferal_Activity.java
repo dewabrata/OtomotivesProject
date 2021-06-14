@@ -57,6 +57,7 @@ public class AturReferal_Activity extends AppActivity implements View.OnClickLis
     private Spinner spKendaraan;
     private MultiSelectionSpinner spBidangUsaha;
 
+    private StringBuilder bidangUsahaBuilder = new StringBuilder();
     private String typeKendaraan;
     private boolean isKategori = false;
     private List<String> motorList = new ArrayList<>(),
@@ -185,19 +186,22 @@ public class AturReferal_Activity extends AppActivity implements View.OnClickLis
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("nama", "BENGKEL");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MASTER), args));
+                args.put("nama", "bidangUsaha");
+                if(motorList.size() == 0 && mobilList.size() == 0){
+                    result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MASTER), args));
+                    result = result.get("data");
+                    for (int i = 0; i < result.size(); i++) {
+                        if (result.get(i).get("JENIS_KENDARAAN").asString().equalsIgnoreCase("MOTOR")) {
+                            motorList.add(result.get(i).get("BIDANG_USAHA").asString());
+                        } else if (result.get(i).get("JENIS_KENDARAAN").asString().equalsIgnoreCase("MOBIL")) {
+                            mobilList.add(result.get(i).get("BIDANG_USAHA").asString());
+                        }
+                    }
+                }
             }
 
             @Override
             public void runUI() {
-                for (int i = 0; i < result.get("data").size(); i++) {
-                    if (result.get("data").get(i).get("TYPE").asString().equalsIgnoreCase("MOTOR")) {
-                        motorList.add(result.get("data").get(i).get("KATEGORI") + " - " + result.get("data").get(i).get("TYPE"));
-                    } else if (result.get("data").get(i).get("TYPE").asString().equalsIgnoreCase("MOBIL")) {
-                        mobilList.add(result.get("data").get(i).get("KATEGORI") + " - " + result.get("data").get(i).get("TYPE"));
-                    }
-                }
                 try {
                     spBidangUsaha.setItems(isKategori ? motorList : mobilList);
                     spBidangUsaha.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
@@ -208,12 +212,16 @@ public class AturReferal_Activity extends AppActivity implements View.OnClickLis
 
                         @Override
                         public void selectedStrings(List<String> strings) {
-
+                            if(strings.size() > 0){
+                                bidangUsahaBuilder = new StringBuilder();
+                                for (int i = 0; i < strings.size(); i++) {
+                                    bidangUsahaBuilder.append(strings.get(i)).append(", ");
+                                }
+                            }
                         }
                     });
                 } catch (Exception e) {
                     e.printStackTrace();
-                    showInfo("Perlu di Muat Ulang Bidang Usaha");
                 }
             }
         });
@@ -244,7 +252,7 @@ public class AturReferal_Activity extends AppActivity implements View.OnClickLis
                         .add("jabatan", etJabatan.getText().toString())
                         .add("nama_bengkel", etNamaBengkel.getText().toString())
                         .add("jenis_kendaraan", spKendaraan.getSelectedItem().toString())
-                        .add("bidang_usaha", spBidangUsaha.getSelectedItemsAsString())
+                        .add("bidang_usaha", bidangUsahaBuilder.toString())
                         .add("alamat", etAlamat.getText().toString())
                         .add("kota_kab", etKotaKab.getText().toString())
                         .build();

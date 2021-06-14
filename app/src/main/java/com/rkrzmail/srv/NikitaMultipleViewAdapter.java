@@ -33,13 +33,24 @@ public class NikitaMultipleViewAdapter extends RecyclerView.Adapter<NikitaViewHo
 
     @Override
     public final int getItemViewType(int position) {
-        if(nson.get(position).get("PARENT VIEW TYPE").asInteger() == ITEM_VIEW_1) {
-            return ITEM_VIEW_1;
-        }else if (nson.get(position).get("PARENT VIEW TYPE").asInteger() == ITEM_VIEW_2){
-            return ITEM_VIEW_2;
+        if(!nson.get("PART").asString().isEmpty() || !nson.get("JASA_LAIN").asString().isEmpty()){
+            if(nson.get("PART").get(position).get("PARENT VIEW TYPE") != null && nson.get(position).get("PARENT VIEW TYPE").asInteger() == ITEM_VIEW_1) {
+                return ITEM_VIEW_1;
+            }else if (nson.get("JASA_LAIN").get(position).get("PARENT VIEW TYPE") != null && nson.get(position).get("PARENT VIEW TYPE").asInteger() == ITEM_VIEW_2){
+                return ITEM_VIEW_2;
+            }else{
+                return position;
+            }
         }else{
-            return position;
+            if(nson.get(position).get("PARENT VIEW TYPE") != null && nson.get(position).get("PARENT VIEW TYPE").asInteger() == ITEM_VIEW_1) {
+                return ITEM_VIEW_1;
+            }else if (nson.get(position).get("PARENT VIEW TYPE") != null && nson.get(position).get("PARENT VIEW TYPE").asInteger() == ITEM_VIEW_2){
+                return ITEM_VIEW_2;
+            }else{
+                return position;
+            }
         }
+
     }
 
     @Override

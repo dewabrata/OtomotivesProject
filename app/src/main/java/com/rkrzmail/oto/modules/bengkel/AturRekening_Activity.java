@@ -46,7 +46,7 @@ public class AturRekening_Activity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_atur_rekening_);
+        setContentView(R.layout.activity_atur_rekening);
         initComponent();
     }
 

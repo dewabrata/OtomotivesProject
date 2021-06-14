@@ -112,6 +112,8 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
     private String jenisAntrian = "", noPonsel = "";
     private String merkKendaraan = "";
     private String waktuEstimasi = "", tglEstimasi = "";
+    private String jenisKendaraan = "";
+
 
     private int totalTambahPart = 0;
     private int totalBiaya = 0;
@@ -186,6 +188,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         merkKendaraan = data.get("NO_PONSEL").asString();
         isEstimasi = data.get("STATUS").asString().equals("LAYANAN ESTIMASI") & !data.get("STATUS").asString().isEmpty();
         kmKendaraan = data.get("KM").asInteger();
+        jenisKendaraan = data.get("JENIS_KENDARAAN").asString();
 
         find(R.id.et_catatan_mekanik, EditText.class).setText(data.get("CATATAN_MEKANIK").asString());
         etNoAntrian.setText(data.get("NO_ANTRIAN").asString());
@@ -455,7 +458,6 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         });
     }
 
-
     @SuppressLint("SetTextI18n")
     private void getDetailCheckin(final String id) {
         newProses(new Messagebox.DoubleRunnable() {
@@ -590,10 +592,12 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         aktifitasList.add("MESSAGE PELANGGAN");
         aktifitasList.add("DATA KENDARAAN");
         if (etStatus.getText().toString().equals("CHECKIN ANTRIAN") ||
-                (etStatus.getText().toString().contains("DP, ANTRIAN") && !etStatus.getText().toString().equals("TUNGGU DP"))) {
+                (etStatus.getText().toString().contains("DP, ANTRIAN") &&
+                        !etStatus.getText().toString().equals("TUNGGU DP"))) {
             aktifitasList.add("BATAL BENGKEL");
             aktifitasList.add("BATAL PELANGGAN");
             aktifitasList.add("PENUGASAN MEKANIK");
+            aktifitasList.add("TAMBAH PART - JASA");
         } else if (etStatus.getText().toString().equals("BATAL PART")
                 || etStatus.getText().toString().equals("MEKANIK SELESAI")
                 || etStatus.getText().toString().equals("PERINTAH ANTAR")
@@ -679,7 +683,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 }
 
                 if (status.equals("MESSAGE PELANGGAN")) {
-                    moveWa();
+                    pelangganInfo();
                 }
                 if (status.equals("KURANGI PART - JASA")) {
                     isKurangi = true;
@@ -697,6 +701,9 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 if (status.equals("TAMBAH PART - JASA")) { //|| status.equals("TAMBAH PART - JASA MSG") || status.equals("TAMBAH PART - JASA OK")
                     Intent intent = new Intent(getActivity(), TambahPartJasaDanBatal_Activity.class);
                     //intent.putExtra(ID, dataDetailList.toJson());
+                    intent.putExtra("JENIS_KENDARAAN", jenisKendaraan);
+                    intent.putExtra("ESTIMASI_SELESAI", etEstimasiSelesai.getText().toString());
+                    intent.putExtra("NAMA_PELANGGAN", etNamaPelanggan.getText().toString());
                     intent.putExtra("KM", kmKendaraan);
                     intent.putExtra("CHECKIN_ID", idCheckin);
                     intent.putExtra(TOTAL_BIAYA, formatOnlyNumber(etTotal.getText().toString()));
@@ -722,7 +729,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         });
     }
 
-    private void moveWa() {
+    private void pelangganInfo() {
         Messagebox.showDialog(getActivity(),
                 "Konfirmasi", "Message Pelanggan ?", "WhatsApp", "Telephone", new DialogInterface.OnClickListener() {
                     @SuppressLint("SetTextI18n")
@@ -742,7 +749,9 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                         if (!hasPermissions(PERMISSIONS)) {
                             ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, PERMISSION_ALL);
                         }
-                        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + formatOnlyNumber(noPonsel)));
+
+                        noPonsel = !noPonsel.contains("+") ? "+" + noPonsel : noPonsel;
+                        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + noPonsel));
                         startActivity(intent);
                     }
                 });

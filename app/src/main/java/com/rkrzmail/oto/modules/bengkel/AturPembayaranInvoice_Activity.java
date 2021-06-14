@@ -6,6 +6,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -28,12 +29,16 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import in.galaxyofandroid.spinerdialog.OnSpinerItemClick;
+import in.galaxyofandroid.spinerdialog.SpinnerDialog;
+
+import static com.rkrzmail.utils.APIUrls.HUTANG;
 import static com.rkrzmail.utils.APIUrls.PIUTANG;
 import static com.rkrzmail.utils.APIUrls.SET_REKENING_BANK;
 import static com.rkrzmail.utils.ConstUtils.DATA;
@@ -41,12 +46,16 @@ import static com.rkrzmail.utils.ConstUtils.RP;
 
 public class AturPembayaranInvoice_Activity extends AppActivity {
 
-    private Spinner spNoRek, spTipePembayaran;
+    private Spinner spNoRek, spTipePembayaran, spNominalHutang;
+    private SpinnerDialog spDialogNoHutang;
 
+    private boolean isInvPart = false;
     private boolean isTglJatuhTempo = false;
+    private boolean isOffSet = false;
     private String noRek = "", namaBank = "";
     private String tipePembayaran = "";
     private Nson rekeningList = Nson.newArray();
+    private final Nson dataHutangList = Nson.newArray();
 
     private String jenisTransaksi = "";
     private String namaPelanggan = "";
@@ -54,6 +63,7 @@ public class AturPembayaranInvoice_Activity extends AppActivity {
     private String namaPrincipal = "";
     private String tglBayar = "";
     private String tipePemabayaran = "";
+    private int idHutang = 0;
     private int idPihutang = 0;
     private int totalInvoice = 0;
     private int noInvBerikutnya = 0;
@@ -85,6 +95,22 @@ public class AturPembayaranInvoice_Activity extends AppActivity {
     private void initComponent() {
         spNoRek = findViewById(R.id.sp_norek);
         spTipePembayaran = findViewById(R.id.sp_tipe_pembayaran);
+        // spNominalHutang = findViewById(R.id.sp_no_hutang);
+        find(R.id.et_no_hutang).setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    if (dataHutangList.size() > 0) {
+                        spDialogNoHutang.showSpinerDialog();
+                    } else {
+                        showWarning("Tidak Ada Data Hutang Tersedia");
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
         find(R.id.tv_tgl_bayar).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -125,7 +151,7 @@ public class AturPembayaranInvoice_Activity extends AppActivity {
                 totalInv = NumberFormatUtils.formatOnlyNumber(totalInv);
                 text = NumberFormatUtils.formatOnlyNumber(text);
 
-                if(!text.isEmpty()){
+                if (!text.isEmpty()) {
                     int totalBayar = Integer.parseInt(text);
                     int totalTagihan = Integer.parseInt(totalInv);
                    /* if (totalBayar < totalTagihan) {
@@ -133,19 +159,38 @@ public class AturPembayaranInvoice_Activity extends AppActivity {
                     } else {
                         find(R.id.tl_total_bayar, TextInputLayout.class).setErrorEnabled(false);
                     }*/
-
-                    int selisih = totalBayar - Integer.parseInt(totalInv);
+                    int totalHutang = Integer.parseInt(NumberFormatUtils.formatOnlyNumber(find(R.id.et_total_hutang, EditText.class).getText().toString()));
+                    int selisih = isOffSet ? totalBayar - totalHutang : totalBayar - Integer.parseInt(totalInv);
                     //selisih = selisih > totalBayar ? 0 : selisih;
-                    isTglJatuhTempo = selisih > 5000;
+                    isTglJatuhTempo = isOffSet ? selisih < 0 : selisih > 5000;
                     find(R.id.et_selisih, EditText.class).setText(RP + formatRp(String.valueOf(selisih)));
                 }
             }
         });
 
         spTipePembayaran.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 tipePembayaran = adapterView.getItemAtPosition(i).toString();
+                isOffSet = tipePembayaran.equals("OFF SET HUTANG");
+                find(R.id.et_no_hutang, EditText.class).setEnabled(isOffSet);
+                find(R.id.et_total_bayar, EditText.class).setEnabled(!isOffSet);
+
+                if (tipePembayaran.equals("OFF SET HUTANG")) {
+                    if (dataHutangList.size() == 0) {
+                        spTipePembayaran.setSelection(0);
+                        showWarning("Data Hutang Tidak Tersedia");
+                        spTipePembayaran.performClick();
+                    }
+                } else {
+                    find(R.id.et_no_hutang, EditText.class).setText("");
+                    find(R.id.et_total_hutang, EditText.class).setText("");
+                    find(R.id.et_total_bayar, EditText.class).setText("");
+                    find(R.id.et_selisih, EditText.class).setText("");
+
+                }
+
                 if (tipePembayaran.equals("CASH")) {
                     spNoRek.setSelection(0);
                     spNoRek.setEnabled(false);
@@ -167,17 +212,20 @@ public class AturPembayaranInvoice_Activity extends AppActivity {
         find(R.id.btn_simpan).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (tipePembayaran.equals("--PILIH--")) {
-                    showWarning("TIPE PEMBAYARAN HARUS DI PILIH", Toast.LENGTH_LONG);
+                //int selisih = Integer.parseInt(NumberFormatUtils.formatOnlyNumber(find(R.id.et_selisih, EditText.class).getText().toString()));
+                if (find(R.id.tv_tgl_bayar, TextView.class).getText().toString().isEmpty()) {
+                    find(R.id.tv_tgl_bayar, TextView.class).performClick();
+                    showWarning("TANGGAL BAYAR HARUS DI INPUT");
+                } else if (tipePembayaran.equals("--PILIH--")) {
+                    setErrorSpinner(spTipePembayaran, "TIPE PEMBAYARAN BELUM DI PILIH");
                 } else {
                     if (tipePembayaran.equals("TRANSFER") && spNoRek.getSelectedItem().toString().equals("--PILIH--")) {
-                        showWarning("Rekening Internal Belum di Pilih");
-                        spNoRek.performClick();
+                        setErrorSpinner(spNoRek, "REKENING INTERNAL BELUM DI PILIH");
                     } else {
                         if (find(R.id.et_total_bayar, EditText.class).getText().toString().isEmpty() ||
                                 formatOnlyNumber(find(R.id.et_total_bayar, EditText.class).getText().toString()).equals("0") ||
                                 find(R.id.tl_total_bayar, TextInputLayout.class).isErrorEnabled()) {
-                            find(R.id.et_total_bayar, EditText.class).setError("TOTAL  BAYAR HARUS DI ISI");
+                            find(R.id.et_total_bayar, EditText.class).setError("TOTAL BAYAR HARUS DI ISI");
                         } else {
                             saveData();
                         }
@@ -191,7 +239,7 @@ public class AturPembayaranInvoice_Activity extends AppActivity {
     private void initData() {
         Nson data = Nson.readJson(getIntentStringExtra(DATA));
 
-        idPihutang =  data.get("PIHUTANG_ID").asInteger();
+        idPihutang = data.get("PIHUTANG_ID").asInteger();
         frekwensi = data.get("FREKWENSI").asInteger();
         jenisTransaksi = data.get("JENIS_TRANSAKSI").asString();
         totalFeeNonPaket = data.get("FEE_NON_PAKET").asInteger();
@@ -218,14 +266,25 @@ public class AturPembayaranInvoice_Activity extends AppActivity {
         tglBayar = data.get("TANGGA_PEMBAYARAN").asString();
         namaPelanggan = data.get("NAMA_PELANGGAN").asString();
         namaPrincipal = data.get("PRINCIPAL").asString();
+        isInvPart = !data.get("NO_INVOICE_PART").asString().isEmpty();
 
-        if(data.get("JUMLAH_INVOICE").asString().isEmpty()){
+        if (data.get("JUMLAH_INVOICE").asString().isEmpty()) {
             totalInvoice = data.get("GRAND_TOTAL").asInteger();
-        }else{
+        } else {
             totalInvoice = data.get("JUMLAH_INVOICE").asInteger();
         }
+
+        find(R.id.et_nama_kreditur, EditText.class).setText(data.get("NAMA_CUSTOMER").asString());
+        //find(R.id.et_total_hutang, EditText.class).setText(RP + formatRp(String.valueOf(totalInvoice)));
         find(R.id.et_total_invoice, EditText.class).setText(RP + formatRp(String.valueOf(totalInvoice)));
-        setSpinnerOffline(Arrays.asList("--PILIH--", "CASH", "TRANSFER"), spTipePembayaran, "");
+        List<String> tipePembayaranLit = new ArrayList<>();
+        tipePembayaranLit.add("--PILIH--");
+        tipePembayaranLit.add("CASH");
+        tipePembayaranLit.add("TRANSFER");
+        tipePembayaranLit.add("OFF SET HUTANG");
+
+        setSpinnerOffline(tipePembayaranLit, spTipePembayaran, "");
+        setSpDialogNoHutang();
     }
 
     private void getDatePicker(final boolean isTglBayar) {
@@ -257,6 +316,52 @@ public class AturPembayaranInvoice_Activity extends AppActivity {
         else
             datePickerDialog.setMinDate(cldr);
         datePickerDialog.show(getFragmentManager(), "Datepickerdialog");
+    }
+
+    private void setSpDialogNoHutang() {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "view");
+                args.put("jenis", "nominalHutangUsaha");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(HUTANG), args));
+            }
+
+            @Override
+            public void runUI() {
+                result = result.get("data");
+                ArrayList<String> noHutangList = new ArrayList<>();
+                if (result.size() > 0) {
+                    for (int i = 0; i < result.size(); i++) {
+                        noHutangList.add(result.get(i).get("JUMLAH").asString() + " - " + result.get(i).get("NO_INVOICE").asString());
+                        dataHutangList.add(Nson.newObject()
+                                .set("HUTANG_ID", result.get(i).get("ID"))
+                                .set("TOTAL_HUTANG", result.get(i).get("JUMLAH"))
+                                .set("NO_INVOICE", result.get(i).get("NO_INVOICE"))
+                                .set("COMPARISON", result.get(i).get("JUMLAH").asString() + " - " + result.get(i).get("NO_INVOICE").asString())
+                        );
+                    }
+                }
+
+                spDialogNoHutang = new SpinnerDialog(getActivity(), noHutangList, "Pilih No Hutang", R.style.DialogAnimations_SmileWindow, "Tutup");
+                spDialogNoHutang.setCancellable(true); // for cancellable
+                spDialogNoHutang.setShowKeyboard(false); // for open keyboard by default
+                spDialogNoHutang.bindOnSpinerListener(new OnSpinerItemClick() {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void onClick(String item, int position) {
+                        idHutang = dataHutangList.get(position).get("HUTANG_ID").asInteger();
+                        int totalHutang = dataHutangList.get(position).get("TOTAL_HUTANG").asInteger();
+                        find(R.id.et_no_hutang, EditText.class).setText(item);
+                        find(R.id.et_total_hutang, EditText.class).setText(RP + NumberFormatUtils.formatRp(totalHutang));
+                        find(R.id.et_total_bayar, EditText.class).setText(RP + NumberFormatUtils.formatRp(totalInvoice));
+                    }
+                });
+            }
+        });
     }
 
     public void setSpRek() {
@@ -323,10 +428,25 @@ public class AturPembayaranInvoice_Activity extends AppActivity {
 
                 String noPiutangBerikutnya = "";
                 int totalPiutangBerikutnya = 0;
-                if(isTglJatuhTempo){
+                int selisih = Integer.parseInt(NumberFormatUtils.formatOnlyNumber(find(R.id.et_selisih, EditText.class).getText().toString()));
+                int jumlahHutang = Integer.parseInt(NumberFormatUtils.formatOnlyNumber(find(R.id.et_total_hutang, EditText.class).getText().toString()));
+                int jumlahPembayaran = Integer.parseInt(NumberFormatUtils.formatOnlyNumber(find(R.id.et_total_bayar, EditText.class).getText().toString()));
+                int totalBayarHutang = 0;
+
+                if (tipePembayaran.equals("OFF SET HUTANG")) {
+                    if (jumlahPembayaran < jumlahHutang) { // inv lunas, hutang belum lunas
+                        //jumlahPembayaran = totalInvoice; // inv lunas
+                        totalBayarHutang = jumlahHutang - jumlahPembayaran;
+                    } else if (jumlahPembayaran > jumlahHutang) { //inv belum lunas, hutang lunas
+                        totalBayarHutang = jumlahHutang; //hutang lunas
+                        jumlahPembayaran = jumlahHutang; //inv belum lunas (-hutang)
+                    }
+                }
+
+                if (isTglJatuhTempo && !isOffSet) {
                     frekwensi++;
                     noPiutangBerikutnya = String.valueOf(frekwensi);
-                    totalPiutangBerikutnya = Integer.parseInt(NumberFormatUtils.formatOnlyNumber(find(R.id.et_selisih, EditText.class).getText().toString()));
+                    totalPiutangBerikutnya = selisih;
                 }
 
                 args.put("action", "add");
@@ -343,7 +463,7 @@ public class AturPembayaranInvoice_Activity extends AppActivity {
                                 .getText()
                                 .toString(), "dd/MM/yyyy", "yyyy-MM-dd"));
                 args.put("tipePembayaran", tipePembayaran);
-                args.put("jumlahPembayaran", NumberFormatUtils.formatOnlyNumber(find(R.id.et_total_bayar, EditText.class).getText().toString()));
+                args.put("jumlahPembayaran", String.valueOf(jumlahPembayaran));
                 args.put("namaBankRekeningInternal", namaBank);
                 args.put("nomorRekeningInternal", noRek);
                 args.put("total", String.valueOf(totalInvoice));
@@ -352,6 +472,13 @@ public class AturPembayaranInvoice_Activity extends AppActivity {
                 args.put("noPiutangBerikutnya", noPiutangBerikutnya);
                 args.put("jumlahPiutangBerikutya", String.valueOf(totalPiutangBerikutnya));
                 args.put("typePiutang", jenisTransaksi);
+                args.put("hutangID", String.valueOf(idHutang));
+                args.put("totalBayarHutang", String.valueOf(isOffSet ? totalBayarHutang : 0));
+                args.put("isPiutangBerikutnya", jumlahPembayaran == jumlahHutang &&
+                        !find(R.id.tv_tgl_jatuh_tempo, TextView.class)
+                                .getText()
+                                .toString().isEmpty() ? "Y" : "N");
+                args.put("isHutangBerikutnya", jumlahPembayaran < jumlahHutang ? "Y" : "N");
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(PIUTANG), args));
             }

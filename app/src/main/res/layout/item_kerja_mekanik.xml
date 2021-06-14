@@ -12,8 +12,8 @@
     android:layout_marginBottom="4dp"
     android:layout_weight="5"
     android:padding="10dp"
-    app:cardElevation="2dp"
-    app:cardCornerRadius="10dp">
+    app:cardCornerRadius="7dp"
+    app:cardElevation="2dp">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -32,19 +32,19 @@
                     android:id="@+id/tv_noAntrian_kerjaMekanik"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="start"
                     android:text="No. Antrian / Jam / Home"
-                    android:textSize="12sp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:layout_gravity="start"/>
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/tv_layanan_kerjaMekanik"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="end"
                     android:text="Layanan"
-                    android:textSize="12sp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:layout_gravity="end"/>
+                    android:textSize="12sp" />
 
             </TableRow>
 
@@ -54,19 +54,19 @@
                     android:id="@+id/tv_jenis_kerjaMekanik"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Jenis"
                     android:layout_gravity="start"
-                    android:textSize="12sp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+                    android:text="Jenis"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/tv_nopol_kerjaMekanik"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/no_polisi"
                     android:layout_gravity="end"
-                    android:textSize="12sp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+                    android:text="@string/no_polisi"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textSize="12sp" />
 
             </TableRow>
 
@@ -76,23 +76,47 @@
                     android:id="@+id/tv_namaP_kerjaMekanik"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Nama Pelanggan"
-                    android:textSize="12sp"
                     android:layout_gravity="start"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+                    android:text="Nama Pelanggan"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/tv_no_kunci"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="No Kunci"
-                    android:textSize="12sp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                     android:layout_gravity="end"
+                    android:text="No Kunci"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textSize="12sp"
                     card_view:ignore="RtlSymmetry" />
 
+            </TableRow>
+
+            <TableRow android:layout_marginTop="@dimen/paddingMedium">
+
+                <TextView
+                    android:id="@+id/tv_tidak_menunggu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:paddingEnd="30dp"
+                    android:text="@string/menunggu"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textSize="12sp"
+                    card_view:ignore="RtlSymmetry" />
+
+                <TextView
+                    android:id="@+id/tv_estimasi_selesai"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:text="@string/estimasi_selesai"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textSize="12sp" />
 
             </TableRow>
+
 
         </TableLayout>
 

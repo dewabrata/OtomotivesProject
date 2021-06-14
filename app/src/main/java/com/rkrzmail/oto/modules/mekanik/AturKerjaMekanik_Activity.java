@@ -302,17 +302,20 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                     viewHolder.find(R.id.tv_hargaNet_booking3_checkin3, TextView.class)
                             .setText(RP + formatRp(partJasaList.get(position).get("HARGA_PART").asString()));
                 } else {
-                    viewHolder.find(R.id.tv_kelompokPart_booking3_checkin3, TextView.class)
-                            .setText(partJasaList.get(position).get("KELOMPOK_PART").asString());
-                    viewHolder.find(R.id.tv_aktifitas_booking3_checkin3, TextView.class)
-                            .setText(partJasaList.get(position).get("AKTIVITAS").asString());
-                    if (partJasaList.get(position).get("HARGA_JASA_LAIN") == null) {
-                        viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class).setVisibility(View.GONE);
-                    } else {
-                        viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class)
-                                .setText(RP + formatRp(partJasaList.get(position).get("HARGA_JASA_LAIN").asString()));
+                    try{
+                        viewHolder.find(R.id.tv_kelompokPart_booking3_checkin3, TextView.class)
+                                .setText(partJasaList.get(position).get("KELOMPOK_PART").asString());
+                        viewHolder.find(R.id.tv_aktifitas_booking3_checkin3, TextView.class)
+                                .setText(partJasaList.get(position).get("AKTIVITAS").asString());
+                        if (partJasaList.get(position).get("HARGA_JASA_LAIN") == null) {
+                            viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class).setVisibility(View.GONE);
+                        } else {
+                            viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class)
+                                    .setText(RP + formatRp(partJasaList.get(position).get("HARGA_JASA_LAIN").asString()));
+                        }
+                    }catch (Exception e){
+                        showError(e.getMessage());
                     }
-
                 }
             }
         });
@@ -377,11 +380,18 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 public void onClick(View v) {
                     isUsulanMekanik = true;
                     Intent intent = new Intent(getActivity(), TambahPartJasaDanBatal_Activity.class);
+                    intent.putExtra("NOPOL", etNopol.getText().toString());
+                    intent.putExtra("KM", kmKendaraan);
+                    intent.putExtra("NAMA_PELANGGAN", etNamaPelanggan.getText().toString());
+                    intent.putExtra("LAYANAN", etLayanan.getText().toString());
+                    intent.putExtra("ESTIMASI_SELESAI", etSelesai.getText().toString());
+                    intent.putExtra("JENIS_KENDARAAN", etJenis.getText().toString());
                     intent.putExtra("LAYANAN_ID", layananId);
                     intent.putExtra("KENDARAAN_ID", kendaraanID);
                     intent.putExtra("PEKERJAAN", pekerjaan);
                     intent.putExtra("CHECKIN_ID", idCheckin);
                     intent.putExtra("NO_PONSEL", noHp);
+                    intent.putExtra("isUsulan", true);
                     intent.putExtra(TOTAL_BIAYA, "0");
                     intent.putExtra(USULAN_MEKANIK, "");
                     startActivityForResult(intent, REQUEST_TAMBAH_PART_JASA_LAIN);
@@ -466,6 +476,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.activity_list_basic, null);
         builder.setView(dialogView);
+        alertDialog = builder.create();
 
         try {
             SwipeRefreshLayout swipeRefreshLayout = dialogView.findViewById(R.id.swiperefresh);
@@ -477,7 +488,8 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
             showError(e.getMessage());
         }
 
-        alertDialog = builder.create();
+        if (alertDialog.getWindow() != null)
+            alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
         alertDialog = builder.show();
     }
 
@@ -831,6 +843,10 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 intent.putExtra(TAMBAH_PART, "");
                 intent.putExtra("NOPOL", etNopol.getText().toString());
                 intent.putExtra("KM", kmKendaraan);
+                intent.putExtra("NAMA_PELANGGAN", etNamaPelanggan.getText().toString());
+                intent.putExtra("LAYANAN", etLayanan.getText().toString());
+                intent.putExtra("ESTIMASI_SELESAI", etSelesai.getText().toString());
+                intent.putExtra("JENIS_KENDARAAN", etJenis.getText().toString());
                 if (isNotWait) {
                     intent.putExtra(TIDAK_MENUNGGU, TIDAK_MENUNGGU);
                 } else {
@@ -880,6 +896,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
 
         Intent i = new Intent(getActivity(), LkkClaimMekanik_Activity.class);
         i.putExtra(DATA, nson.toJson());
+        i.putExtra("CHECKIN_ID", idCheckin);
         startActivityForResult(i, REQUEST_KONFIRMASI);
     }
 

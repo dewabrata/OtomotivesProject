@@ -117,7 +117,14 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Tambah Part - Jasa Lain");
+        if (getIntent().hasExtra(USULAN_MEKANIK)) {
+            isUsulanMekanik = true;
+            setGoneUsulanMekanik();
+            Objects.requireNonNull(getSupportActionBar()).setTitle("Usulan Part - Jasa Lain");
+        }else{
+            Objects.requireNonNull(getSupportActionBar()).setTitle("Tambah Part - Jasa Lain");
+        }
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -146,11 +153,17 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
         noPonsel = getIntentStringExtra("NO_PONSEL");
         kmKendaraan = getIntentIntegerExtra("KM");
         totalBiaya = Integer.parseInt(NumberFormatUtils.formatOnlyNumber(getIntentStringExtra(TOTAL_BIAYA)));
-        find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));
         layanan = getIntentStringExtra("LAYANAN");
         layananId = getIntentStringExtra("LAYANAN_ID");
         kendaraanID = getIntentIntegerExtra("KENDARAAN_ID");
         pekerjaan = getIntentStringExtra("PEKERJAAN");
+
+        find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));
+        find(R.id.tv_nama_pelanggan, TextView.class).setText(getIntentStringExtra("NAMA_PELANGGAN"));
+        find(R.id.tv_nopol, TextView.class).setText(nopol);
+        find(R.id.tv_jenis, TextView.class).setText(getIntentStringExtra("JENIS_KENDARAAN"));
+        find(R.id.tv_layanan, TextView.class).setText(getIntentStringExtra("LAYANAN"));
+        find(R.id.tv_estimasi_selesai, TextView.class).setText(getIntentStringExtra("ESTIMASI_SELESAI"));
 
         if (getIntent().hasExtra(TAMBAH_PART)) {
             isTambah = true;
@@ -192,13 +205,10 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
             if (partList.size() > 0) {
                 rvJasaLain.getAdapter().notifyDataSetChanged();
             }
-        }else if(getIntent().hasExtra(USULAN_MEKANIK)){
-            isUsulanMekanik = true;
-            setGoneUsulanMekanik();
         }
     }
 
-    private void setGoneUsulanMekanik(){
+    private void setGoneUsulanMekanik() {
         find(R.id.tl_total_setelah_tambah).setVisibility(View.GONE);
         find(R.id.tl_total_akhir).setVisibility(View.GONE);
         find(R.id.ly_waktu_estimasi).setVisibility(View.GONE);
@@ -256,9 +266,9 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
     }
 
     private void initRecylerViewPart() {
-        if(isKonfirmasi){
+        if (isKonfirmasi) {
             rvPart = dialogView.findViewById(R.id.recyclerView);
-        }else{
+        } else {
             rvPart = findViewById(R.id.rv_part);
         }
         rvPart.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -278,7 +288,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                 viewHolder.find(R.id.tv_jasaNet_booking3_checkin3, TextView.class).setText(
                         RP + formatRp(partList.get(position).get("HARGA_JASA").asString()));
 
-                viewHolder.find(R.id.tv_merk_booking3_checkin3, TextView.class).setText(partList.get(position).get("MERK").asString());
+                viewHolder.find(R.id.tv_merk_booking3_checkin3, TextView.class).setVisibility(View.GONE);
                 viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.VISIBLE);
                 viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -289,8 +299,10 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                                 totalBatal += Integer.parseInt(formatOnlyNumber(partList.get(position).get("HARGA_PART").asString()));
                                 totalBatal += Integer.parseInt(formatOnlyNumber(partList.get(position).get("HARGA_JASA").asString()));
 
-                                totalBiaya -= Integer.parseInt(formatOnlyNumber(partList.get(position).get("NET").asString()));;
-                                totalTambah -= Integer.parseInt(formatOnlyNumber(partList.get(position).get("NET").asString()));;
+                                totalBiaya -= Integer.parseInt(formatOnlyNumber(partList.get(position).get("NET").asString()));
+                                ;
+                                totalTambah -= Integer.parseInt(formatOnlyNumber(partList.get(position).get("NET").asString()));
+                                ;
 
                                 find(R.id.et_total_tambah_or_batal, EditText.class).setText(RP + formatRp(String.valueOf(totalTambah)));
                                 find(R.id.et_total_akhir, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));
@@ -312,9 +324,9 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
     }
 
     private void initRecylerviewJasaLain() {
-        if(isKonfirmasi){
+        if (isKonfirmasi) {
             rvJasaLain = dialogView.findViewById(R.id.recyclerView2);
-        }else{
+        } else {
             rvJasaLain = findViewById(R.id.rv_jasa_lain);
         }
 
@@ -341,8 +353,10 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                             public void onClick(DialogInterface dialog, int which) {
                                 totalBatal += Integer.parseInt(formatOnlyNumber(jasaList.get(position).get("HARGA_JASA").asString()));
 
-                                totalBiaya -= Integer.parseInt(formatOnlyNumber(jasaList.get(position).get("NET").asString()));;
-                                totalTambah -= Integer.parseInt(formatOnlyNumber(jasaList.get(position).get("NET").asString()));;
+                                totalBiaya -= Integer.parseInt(formatOnlyNumber(jasaList.get(position).get("NET").asString()));
+                                ;
+                                totalTambah -= Integer.parseInt(formatOnlyNumber(jasaList.get(position).get("NET").asString()));
+                                ;
 
                                 find(R.id.et_total_tambah_or_batal, EditText.class).setText(RP + formatRp(String.valueOf(totalTambah)));
                                 find(R.id.et_total_akhir, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));
@@ -379,7 +393,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
     }
 
     @SuppressLint("SetTextI18n")
-    private void showDialogKonfirmasi(){
+    private void showDialogKonfirmasi() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
         dialogView = inflater.inflate(R.layout.dialog_konfirmasi_part_jasa, null);
@@ -402,9 +416,9 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
         btnLanjut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(countClick == 1){
+                if (countClick == 1) {
                     updateTambahOrBatal();
-                }else{
+                } else {
                     setResult(RESULT_OK);
                     finish();
                 }
@@ -429,9 +443,10 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
         alertDialog.show();
     }
 
-    private void saveDataUsulanMekanik(){
+    private void saveDataUsulanMekanik() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -444,13 +459,13 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
 
             @Override
             public void runUI() {
-                if(result.get("status").asString().equals("OK")){
+                if (result.get("status").asString().equals("OK")) {
                     showSuccess("USULAN PART & JASA BERHASIL DI TAMBAHKAN");
                     Intent intent = new Intent();
                     intent.putExtra("IS_USULAN", 1);
                     setResult(RESULT_OK, intent);
                     finish();
-                }else{
+                } else {
                     showError(result.get("message").asString());
                 }
             }
@@ -461,6 +476,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             String konfirmasiTambah = "";
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -470,6 +486,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                 args.put("nopol", nopol);
                 args.put("noPonsel", noPonsel);
                 args.put("idCheckin", idCheckin);
+                args.put("isPartKosong", isPartKosong ? "Y" : "N");
                 if (isTambah) {
                     args.put("aktivitas", "TAMBAH PART - JASA");
                     //args.put("detailId", idCheckinDetail);
@@ -499,13 +516,13 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
             @Override
             public void runUI() {
                 AppApplication.getMessageTrigger();
-                if(result.asString().isEmpty()){
+                if (result.asString().isEmpty()) {
                     showError("SEDANG ADA GANGGUAN SERVER, SILAHKAN HUBUNGI SUPPORT. ATAU CHECK KONTROL LAYANAN ", Toast.LENGTH_LONG);
                     finish();
                     return;
                 }
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    if(konfirmasiTambah.equals("N")){
+                    if (konfirmasiTambah.equals("N")) {
                         Intent intent = new Intent(getActivity(), KontrolLayanan_Activity.class);
                         intent.putExtra("NOPOL", nopol);
                         showNotification(getActivity(), "Tambah Part - Jasa", formatNopol(nopol), "CHECKIN", intent);
@@ -552,13 +569,13 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                 break;
             case R.id.btn_simpan:
                 countClick++;
-                if(isUsulanMekanik){
+                if (isUsulanMekanik) {
                     if (partList.asArray().isEmpty() && jasaList.asArray().isEmpty()) {
                         showWarning("PART DAN JASA BELUM DI TAMBAHKAN");
-                    }else{
+                    } else {
                         saveDataUsulanMekanik();
                     }
-                }else{
+                } else {
                     if (isWait && !isSign) {
                         showWarning("TANDA TANGAN BELUM TERISI");
                     } else if (find(R.id.ly_not_konfirmasi_tambah).getVisibility() == View.VISIBLE &&
@@ -669,35 +686,34 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                     break;
                 case REQUEST_CARI_PART:
                     dataAccept = Nson.readJson(getIntentStringExtra(data, PART));
-                    int stock = dataAccept.get("STOCK_RUANG_PART").asInteger();
-                    if(stock == 0){
-                        dialogIgnoreStock();
-                    }else{
-                        if(isUsulanMekanik){
-                            i = new Intent(getActivity(), JumlahPart_Mekanik_Activity.class);
-                            i.putExtra(DATA, dataAccept.toJson());
-                        }else{
-                            i = new Intent(getActivity(), JumlahPart_Checkin_Activity.class);
-                            i.putExtra("KM", kmKendaraan);
-                            i.putExtra(DATA, dataAccept.toJson());
-                            i.putExtra(TAMBAH_PART, "");
-                            i.putExtra("KM", kmKendaraan);
-                        }
-
-                        startActivityForResult(i, REQUEST_HARGA_PART);
+                    isPartKosong = false;
+                    if (isUsulanMekanik) {
+                        i = new Intent(getActivity(), JumlahPart_Mekanik_Activity.class);
+                        i.putExtra(DATA, dataAccept.toJson());
+                    } else {
+                        i = new Intent(getActivity(), JumlahPart_Checkin_Activity.class);
+                        i.putExtra("KM", kmKendaraan);
+                        i.putExtra(DATA, dataAccept.toJson());
+                        i.putExtra(TAMBAH_PART, "");
+                        i.putExtra("KM", kmKendaraan);
                     }
+                    i.putExtra("LAYANAN_ID", layananId);
+                    i.putExtra("KENDARAAN_ID", kendaraanID);
+                    startActivityForResult(i, REQUEST_HARGA_PART);
 
                     break;
                 case REQUEST_HARGA_PART:
                     try {
                         dataAccept = Nson.readJson(getIntentStringExtra(data, DATA));
+                        if(data != null && data.getStringExtra("PART_KOSONG").equals("Y"))
+                            isPartKosong = true;
                         dataAccept.set("CHECKIN_ID", idCheckin);
                         partList.add(dataAccept);
                         Objects.requireNonNull(rvPart.getAdapter()).notifyDataSetChanged();
 
                         totalBiaya += Integer.parseInt(formatOnlyNumber(dataAccept.get("NET").asString()));
                         totalTambah += Integer.parseInt(formatOnlyNumber(dataAccept.get("NET").asString()));
-                        if(!isUsulanMekanik){
+                        if (!isUsulanMekanik) {
                             totalWaktuLayanan(Tools.TimePart.parse(dataAccept.get("WAKTU_KERJA").asString()));
                             totalWaktuLayanan(Tools.TimePart.parse(dataAccept.get("WAKTU_INSPEKSI").asString()));
                         }
@@ -707,7 +723,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                     break;
             }
 
-            if(isUsulanMekanik){
+            if (isUsulanMekanik) {
                 find(R.id.et_total_biaya, EditText.class).setText(RP + formatRp(String.valueOf(totalBiaya)));
             }
             find(R.id.et_total_tambah_or_batal, EditText.class).setText(RP + formatRp(String.valueOf(totalTambah)));
@@ -715,7 +731,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
         }
     }
 
-    private void dialogIgnoreStock(){
+    private void dialogIgnoreStock() {
         Messagebox.showDialog(getActivity(), "Konfirmasi", "PART KOSNG TIDAK BISA TAMBAH", "Ya", null, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -725,7 +741,7 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                 i.putExtra(TAMBAH_PART, "Y");
                 startActivityForResult(i, REQUEST_CARI_PART);
             }
-        },null);
+        }, null);
 
     }
 }

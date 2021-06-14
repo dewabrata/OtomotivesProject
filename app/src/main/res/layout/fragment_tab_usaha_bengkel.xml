@@ -39,7 +39,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="7dp"
                 android:hint="@string/alamat_uppercase">
 
                 <EditText
@@ -63,7 +63,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="7dp"
                     android:hint="KODE POS">
 
                     <com.rkrzmail.srv.NikitaAutoComplete
@@ -121,7 +121,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/paddingMedium"
+                android:layout_marginTop="15dp"
                 android:layout_marginBottom="@dimen/paddingMedium"
                 android:gravity="center"
                 android:orientation="horizontal"
@@ -249,7 +249,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="7dp"
                 android:hint="@string/nib_uppercase">
 
                 <EditText
@@ -267,13 +267,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginTop="7dp">
 
                 <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
                     android:layout_weight="4"
                     android:hint="@string/npwp_uppercase">
 
@@ -300,7 +300,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/paddingMedium"
+                android:layout_marginTop="15dp"
                 android:layout_marginBottom="@dimen/paddingMedium"
                 android:gravity="center"
                 android:orientation="horizontal"
@@ -359,7 +359,7 @@
                     android:layout_weight="6"
                     android:background="@drawable/background_edittext">
 
-                    <Spinner
+                    <com.rkrzmail.srv.MultiSelectionSpinner
                         android:id="@+id/sp_namaPrincial_usaha"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -393,7 +393,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="7dp"
                 android:hint="@string/no_ponselmsg_uupercase">
 
                 <EditText
@@ -407,6 +407,25 @@
 
             </android.support.design.widget.TextInputLayout>
 
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp">
+
+                <EditText
+                    android:id="@+id/et_google_bisnis"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="text|textMultiLine"
+                    android:singleLine="true"
+                    android:textSize="14sp"
+                    android:hint="@string/link_google_bisnis_uppercase"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -414,7 +433,8 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="150dp"
+                    android:layout_weight="3"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="MAX ANTRIAN EXPRESS"
@@ -422,30 +442,30 @@
                     android:textSize="12sp"
                     android:textStyle="bold" />
 
-                <TextView
+                <ImageView
                     android:id="@+id/ic_AntrianExpress_usaha"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:layout_marginRight="5dp"
-                    android:background="@drawable/icon_jam"
-                    android:textStyle="bold" />
+                    android:src="@drawable/icon_jam" />
 
                 <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
-                    android:layout_weight="1">
+                    android:layout_weight="2">
 
                     <EditText
                         android:id="@+id/et_maxAntrianExpress"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
                         android:inputType="text"
                         android:singleLine="true"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:editable="false"
+                        android:hint="JJ:MM"/>
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -458,7 +478,8 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="150dp"
+                    android:layout_weight="3"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="MAX ANTRIAN STANDART"
@@ -466,30 +487,30 @@
                     android:textSize="12sp"
                     android:textStyle="bold" />
 
-                <TextView
+                <ImageView
                     android:id="@+id/ic_AntrianStandart_usaha"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:layout_marginRight="5dp"
-                    android:background="@drawable/icon_jam"
-                    android:textStyle="bold" />
+                    android:src="@drawable/icon_jam" />
 
                 <android.support.design.widget.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
-                    android:layout_weight="1">
+                    android:layout_weight="2">
 
                     <EditText
                         android:id="@+id/et_maxAntrianStandart"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
                         android:inputType="text"
                         android:singleLine="true"
-                        android:textSize="14sp" />
+                        android:editable="false"
+                        android:textSize="14sp"
+                        android:hint="JJ:MM"/>
 
                 </android.support.design.widget.TextInputLayout>
 

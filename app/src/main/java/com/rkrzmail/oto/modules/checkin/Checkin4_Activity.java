@@ -38,25 +38,15 @@ import com.rkrzmail.oto.gmod.Capture;
 import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.FileUtility;
 import com.rkrzmail.utils.Tools;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.HttpUrl;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -65,7 +55,6 @@ import static com.rkrzmail.utils.APIUrls.ANTRIAN;
 import static com.rkrzmail.utils.APIUrls.ANTRIAN_MULAI;
 import static com.rkrzmail.utils.APIUrls.ROLLBACK_TRANSACTIONS;
 import static com.rkrzmail.utils.APIUrls.SET_CHECKIN;
-import static com.rkrzmail.utils.APIUrls.VIEW_ANTRIAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_MEKANIK;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.ONEDAY;
@@ -99,7 +88,7 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_checkin4_);
+        setContentView(R.layout.activity_checkin4);
         if(!Tools.isNetworkAvailable(getActivity())){
             showWarning("TIDAK ADA KONEKSI INTERNET", Toast.LENGTH_LONG);
         }
@@ -110,10 +99,10 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
 
     @Override
     public void onBackPressed() {
-        showInfoDialog("KONFIRMASI", "KELUAR DARI CHECKIN ?", new DialogInterface.OnClickListener() {
+        showInfoDialog("KONFIRMASI", "Kembali Ke Halaman Sebelumnya?", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                rollbackCheckin();
+                Checkin4_Activity.super.onBackPressed();
             }
         }, new DialogInterface.OnClickListener() {
             @Override
@@ -659,6 +648,8 @@ public class Checkin4_Activity extends AppActivity implements View.OnClickListen
                 args.put("nopol", nopol);
                 args.put("ttd", ttdPath);
                 args.put("tinggalkanSTNK", find(R.id.cb_tinggalkan_stnk, CheckBox.class).isChecked() ? "Y" : "N");
+                args.put("partbook", getIntentStringExtra("PART_LIST"));
+                args.put("jasabook", getIntentStringExtra("JASA_LIST"));
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_CHECKIN), args));
             }

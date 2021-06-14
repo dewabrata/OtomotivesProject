@@ -150,7 +150,7 @@ public class HistoryStockOpname_Activity extends AppActivity {
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         mSearchView = new SearchView(getSupportActionBar().getThemedContext());
-        mSearchView.setQueryHint("Cari No. DO"); /// YOUR HINT MESSAGE
+        mSearchView.setQueryHint("Cari Part"); /// YOUR HINT MESSAGE
         mSearchView.setMaxWidth(Integer.MAX_VALUE);
 
         final MenuItem searchMenu = menu.findItem(R.id.action_search);

@@ -3,9 +3,12 @@ package com.rkrzmail.oto.modules.bengkel;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -47,6 +50,7 @@ import static com.rkrzmail.utils.APIUrls.GET_QRIS_IMAGE;
 import static com.rkrzmail.utils.APIUrls.JURNAL_KAS;
 import static com.rkrzmail.utils.APIUrls.SET_REKENING_BANK;
 import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_KONFIRMASI;
 import static com.rkrzmail.utils.ConstUtils.RP;
 
 public class AturPembayaran_Activity extends AppActivity {
@@ -97,8 +101,10 @@ public class AturPembayaran_Activity extends AppActivity {
             isMdrBank = false,
             isPpn = false,
             isPelunasanSisaBiaya = false,
-            isEwallet = false;
+            isEwallet = false,
+            isLoadEwallet = false;
 
+    private String fotoBuktiBase64 = "";
     private Bitmap bitmapQris = null;
 
     @Override
@@ -109,7 +115,6 @@ public class AturPembayaran_Activity extends AppActivity {
         initComponent();
         initData();
         initListener();
-        getQrisImage();
     }
 
     @SuppressLint("NewApi")
@@ -168,6 +173,11 @@ public class AturPembayaran_Activity extends AppActivity {
         grandTotal = nson.get("GRAND_TOTAL").asInteger();
         totalBiaya = isDp ? totalDp : nson.get("TOTAL").asInteger();
 
+        if(nson.get("IS_EWALLET").asBoolean()){
+            getQrisImage();
+            isLoadEwallet = true;
+        }
+
         if (nson.get("PKP").asString().equals("Y") && !isDp) {
             totalPpn = (int) (ppn * totalBiaya);
             grandTotal += totalPpn;
@@ -209,9 +219,7 @@ public class AturPembayaran_Activity extends AppActivity {
                 }
 
                 ArrayList<String> newStr = Tools.removeDuplicates(str);
-                ArrayAdapter adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, newStr);
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spNoRek.setAdapter(adapter);
+                setSpinnerOffline(newStr, spNoRek, "");
             }
         });
 
@@ -243,6 +251,15 @@ public class AturPembayaran_Activity extends AppActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 tipePembayaran = parent.getItemAtPosition(position).toString();
                 isEwallet = parent.getItemAtPosition(position).toString().equals("E-WALLET");
+
+                if(!isLoadEwallet && tipePembayaran.equals("E-WALLET")){
+                    showWarning("Rekening E-WALLET Belum di Daftarkan");
+                    spTipePembayaran.setSelection(0);
+                    spTipePembayaran.performClick();
+                }
+
+                find(R.id.btn_qris).setEnabled(isEwallet);
+                find(R.id.btn_foto_bukti).setEnabled(isEwallet || tipePembayaran.equals("TRANSFER"));
 
                 if (tipePembayaran.equals("CASH")) {
                     if (!isDp) {
@@ -401,12 +418,37 @@ public class AturPembayaran_Activity extends AppActivity {
             }
         });
 
+        find(R.id.btn_foto_bukti).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveToCamera();
+            }
+        });
+
         find(R.id.btn_qris).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialogPreviewQris();
+                if(bitmapQris != null){
+                    showDialogPreviewQris();
+                }else{
+                    showWarning("Foto QRIS Belum di Masukkan");
+                }
             }
         });
+    }
+
+    private void moveToCamera() {
+        if (!checkPermission()) {
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(intent, REQUEST_KONFIRMASI);
+        } else {
+            if (checkPermission()) {
+                requestPermissionAndContinue();
+            } else {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(intent, REQUEST_KONFIRMASI);
+            }
+        }
     }
 
     private void setBlankCash() {
@@ -495,7 +537,7 @@ public class AturPembayaran_Activity extends AppActivity {
                     LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     convertView = inflater.inflate(R.layout.item_suggestion, parent, false);
                 }
-                findView(convertView, R.id.title, TextView.class).setText((getItem(position).get("BANK_NAME").asString()));
+                findView(convertView, R.id.title, TextView.class).setText(isEwallet ? (getItem(position).get("NAMA_EWALLET").asString()) : (getItem(position).get("BANK_NAME").asString()));
                 return convertView;
             }
         });
@@ -575,6 +617,8 @@ public class AturPembayaran_Activity extends AppActivity {
                 args.put("ppn", String.valueOf(totalPpn));
                 args.put("transaksi", jenis);
                 args.put("kembalian", formatOnlyNumber(find(R.id.et_kembalian, EditText.class).getText().toString()));
+                args.put("fotoBukti", fotoBuktiBase64);
+
                 if (tipePembayaran.equals("CASH")) {
                     int totalPlusDonasi = grandTotal + (!nominalDonasi.isEmpty() ? Integer.parseInt(nominalDonasi) : 0);
                     args.put("debit", String.valueOf(totalPlusDonasi));
@@ -748,12 +792,12 @@ public class AturPembayaran_Activity extends AppActivity {
                         totalMdrOffUs = (int) (((mdrOffUs / 100) * grandTotal));
                         totalMdrOnUs = (int) (((mdrOnUs / 100) * grandTotal));
                         if (isOffUs) {
-                            showInfo("Anda Menggunakan EDC OFF US");
+                           // showInfo("Anda Menggunakan EDC OFF US");
                             finalMdrPercent = mdrOffUs;
                             finalMdrRp = totalMdrOffUs;
                         }
                         if (isOnUs) {
-                            showInfo("Anda Menggunakan EDC ON US");
+                           // showInfo("Anda Menggunakan EDC ON US");
                             finalMdrPercent = mdrOnUs;
                             finalMdrRp = totalMdrOnUs;
                         }
@@ -815,8 +859,6 @@ public class AturPembayaran_Activity extends AppActivity {
                         byte[] decodedString = Base64.decode(base64String, Base64.DEFAULT);
                         bitmapQris = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                     }
-                } else {
-                    showInfo("GAGAL");
                 }
             }
         });
@@ -861,4 +903,18 @@ public class AturPembayaran_Activity extends AppActivity {
         alertDialog.show();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_KONFIRMASI) {
+                Bundle extras = null;
+                if (data != null) {
+                    extras = data.getExtras();
+                }
+                bitmapQris = (Bitmap) (extras != null ? extras.get("data") : null);
+                fotoBuktiBase64 = bitmapToBase64(bitmapQris);
+            }
+        }
+    }
 }

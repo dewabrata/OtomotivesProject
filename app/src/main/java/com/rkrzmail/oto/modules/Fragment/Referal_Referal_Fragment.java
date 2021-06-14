@@ -121,7 +121,7 @@ public class Referal_Referal_Fragment extends Fragment {
                 swipeProgress(true);
                 String[] args = new String[3];
                 args[0] = "CID=" + UtilityAndroid.getSetting(getContext(), "CID", "").trim();
-                args[0] = "userRefferee=" + UtilityAndroid.getSetting(getContext(), "user", "").trim();
+                args[1] = "userRefferee=" + UtilityAndroid.getSetting(getContext(), "user", "").trim();
                 result = Nson.readJson(InternetX.getHttpConnectionX(AppApplication.getBaseUrlV4(REFERAL), args));
             }
 

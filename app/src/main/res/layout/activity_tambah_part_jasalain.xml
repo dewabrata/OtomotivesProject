@@ -32,6 +32,87 @@
                 android:orientation="vertical"
                 android:padding="@dimen/paddingMedium">
 
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="5dp"
+                    app:cardElevation="3dp"
+                    app:cardPreventCornerOverlap="true"
+                    app:cardUseCompatPadding="true"
+                    android:layout_marginBottom="10dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/paddingSemiLarge">
+
+                        <TextView
+                            android:id="@+id/tv_nama_pelanggan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/nama_pelanggan"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                            android:textColor="@color/grey_900"
+                            android:textSize="12sp" />
+
+                        <TableLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:stretchColumns="*">
+
+                            <TableRow android:layout_marginTop="@dimen/paddingMedium">
+
+                                <TextView
+                                    android:id="@+id/tv_nopol"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/no_polisi"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                    android:textColor="@color/grey_900"
+                                    android:textSize="12sp" />
+
+                                <TextView
+                                    android:id="@+id/tv_layanan"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="end"
+                                    android:text="@string/layanan"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                    android:textColor="@color/grey_900"
+                                    android:textSize="12sp" />
+
+                            </TableRow>
+
+                            <TableRow android:layout_marginTop="@dimen/paddingMedium">
+
+                                <TextView
+                                    android:id="@+id/tv_jenis"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/jenis_kendaraan_lowercase"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                    android:textColor="@color/grey_900"
+                                    android:textSize="12sp" />
+
+                                <TextView
+                                    android:id="@+id/tv_estimasi_selesai"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="end"
+                                    android:text="@string/estimasi_selesai"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                    android:textColor="@color/grey_900"
+                                    android:textSize="12sp" />
+
+                            </TableRow>
+
+                        </TableLayout>
+
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+
                 <LinearLayout
                     android:id="@+id/ly_btn_part_jasa"
                     android:layout_width="match_parent"

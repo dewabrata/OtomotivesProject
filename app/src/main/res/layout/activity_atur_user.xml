@@ -38,8 +38,7 @@
                     android:id="@+id/tl_nohp_user"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:helperTextEnabled="true">
+                    android:layout_height="wrap_content">
 
                     <EditText
                         android:id="@+id/et_no_ponsel"
@@ -354,62 +353,6 @@
                     </RelativeLayout>
 
                 </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/paddingMedium"
-                    android:layout_marginBottom="@dimen/paddingMedium"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:paddingStart="@dimen/paddingMedium"
-                    android:paddingEnd="@dimen/paddingMedium"
-                    android:visibility="gone">
-
-                    <TextView
-                        android:id="@+id/penggajian"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="3"
-                        android:text="@string/penggajian_uppercase"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"
-                        android:textSize="13sp"/>
-
-                    <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_height="34dp"
-                        android:layout_weight="6"
-                        android:background="@drawable/background_edittext">
-
-                        <Spinner
-                            android:id="@+id/spinnerPenggajian"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:entries="@array/penggajian"
-                            android:textAlignment="center" />
-
-                    </RelativeLayout>
-
-                </LinearLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:visibility="gone">
-
-                    <EditText
-                        android:id="@+id/txtGaji"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/gaji_uppercase"
-                        android:inputType="numberDecimal"
-                        android:textSize="14sp"
-                        tools:ignore="Autofill" />
-
-                </android.support.design.widget.TextInputLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"

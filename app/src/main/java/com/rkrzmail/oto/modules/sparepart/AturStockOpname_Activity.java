@@ -61,6 +61,7 @@ public class AturStockOpname_Activity extends AppActivity {
 
     private boolean isPenyesuaian = false;
     private int stockBeforeOpname = 0;
+    private int oldLokasiID = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -188,6 +189,8 @@ public class AturStockOpname_Activity extends AppActivity {
                     args.put("user_saksi", penyesuaianNson.get("USER_SAKSI").asString());
                     args.put("stock_beda", String.valueOf(stockBeda));
                     args.put("penyesuaian", penyesuaianNson.get("PENYESUAIAN").asString());
+                    args.put("lokasiIdNew", penyesuaianNson.get("NEW_LOKASI_ID").asString());
+                    args.put("lokasiIdOld", String.valueOf(oldLokasiID));
                 }
                 args.put("stockBeforeOpname", String.valueOf(stockBeforeOpname));
                 args.put("id_lokasi_part", String.valueOf(idLokasiPart));
@@ -259,7 +262,7 @@ public class AturStockOpname_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("flag", "TERALOKASI");
-                args.put("lokasi", "RUANG PART");
+                args.put("lokasi", lokasi);
                 args.put("partid", data.get("PART_ID").asString());
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_LOKASI_PART), args));
             }
@@ -269,12 +272,14 @@ public class AturStockOpname_Activity extends AppActivity {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     result = result.get("data");
                     List<String> lokasiList = new ArrayList<>();
-                    List<String> idList = new ArrayList<>();
                     for (int i = 0; i < result.size(); i++) {
                         if (result.get(i).get("PART_ID").asInteger() == data.get("PART_ID").asInteger()) {
                             lokasiList.add(result.get(i).get("LOKASI").asString());
-                            idList.add(result.get(i).get("ID").asString());
-                            lokasiArray.add(Nson.newObject().set("LOKASI", result.get(i).get("LOKASI")).set("KODE", result.get(i).get("KODE")));
+                            lokasiArray.add(Nson.newObject()
+                                    .set("LOKASI_PART_ID", result.get(i).get("ID"))
+                                    .set("LOKASI", result.get(i).get("LOKASI"))
+                                    .set("KODE", result.get(i).get("KODE"))
+                            );
                         }
                     }
 
@@ -291,7 +296,7 @@ public class AturStockOpname_Activity extends AppActivity {
                     find(R.id.sp_lokasi_stockOpname, Spinner.class).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+                            oldLokasiID = lokasiArray.get(position).get("LOKASI_PART_ID").asInteger();
                         }
 
                         @Override

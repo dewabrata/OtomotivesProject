@@ -2,6 +2,10 @@ package com.rkrzmail.utils;
 
 public class APIUrls {
 
+    public static final String GET_HISTORY_POINT_LAYANAN = "mekanik/history_point_layanan";
+    public static final String GET_HISTORY_USULAN_MEKANIK = "mekanik/history_usulan_mekanik";
+    public static final String GET_LOGO_BENGKEL = "bengkel/logo_bengkel";
+    public static final String GET_FOTO_DEPAN_BENGKEL = "bengkel/tampak_depan_bengkel";
     public static final String GET_QRIS_IMAGE = "rekening/qris_image";
     public static final String GET_BANK_BY_CID = "rekening/rekening_bank";
     public static final String GET_NAMA_BANK_BY_CID = "rekening/nama_bank_bengkel";

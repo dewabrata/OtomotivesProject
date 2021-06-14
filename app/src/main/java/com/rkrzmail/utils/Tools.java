@@ -336,7 +336,11 @@ public class Tools {
             e.printStackTrace();
         }
         sdf = new SimpleDateFormat("yyyy-MM-dd");
-        return sdf.format(tgl);
+        if (tgl != null) {
+            return sdf.format(tgl);
+        }else{
+            return "";
+        }
     }
 
     @SuppressLint("SimpleDateFormat")

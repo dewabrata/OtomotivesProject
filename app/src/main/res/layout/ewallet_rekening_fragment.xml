@@ -139,6 +139,64 @@
 
             </LinearLayout>
 
+             <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/paddingMedium"
+                android:layout_marginBottom="@dimen/paddingMedium"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/paddingMedium"
+                android:paddingEnd="@dimen/paddingMedium">
+
+                 <TextView
+                     android:layout_width="0dp"
+                     android:layout_height="wrap_content"
+                     android:layout_weight="4"
+                     android:text="MDR"
+                     android:textColor="@color/grey_900"
+                     android:textStyle="bold"
+                     android:textSize="13sp" />
+
+                 <android.support.design.widget.TextInputLayout
+                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                     android:layout_width="wrap_content"
+                     android:layout_weight="2.4"
+                     android:layout_height="wrap_content"
+                     android:layout_marginEnd="5dp">
+
+                     <EditText
+                         android:id="@+id/et_mdr_on_us"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:hint="ON US"
+                         android:inputType="numberDecimal"
+                         android:textSize="14sp"
+                         tools:ignore="Autofill" />
+
+                 </android.support.design.widget.TextInputLayout>
+
+                 <android.support.design.widget.TextInputLayout
+                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                     android:layout_width="wrap_content"
+                     android:layout_weight="2.4"
+                     android:layout_height="wrap_content"
+                     android:layout_marginStart="5dp">
+
+                     <EditText
+                         android:id="@+id/et_mdr_off_us"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:hint="OFF US"
+                         android:inputType="numberDecimal"
+                         android:textSize="14sp"
+                         tools:ignore="Autofill" />
+
+                 </android.support.design.widget.TextInputLayout>
+
+
+             </LinearLayout>
+
             <android.support.design.widget.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"

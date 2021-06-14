@@ -99,12 +99,21 @@ public class Transaksi_Pembayaran_Fragment extends Fragment {
                 int viewType = getItemViewType(position);
 
                 if (viewType == ITEM_VIEW_1) {
-                    viewHolder.find(R.id.tv_jenis_kendaraan, TextView.class).setText(pembayaranList.get(position).get("JENIS_KENDARAAN").asString());
-                    viewHolder.find(R.id.tv_nama_pelanggan, TextView.class).setText(pembayaranList.get(position).get("NAMA_PELANGGAN").asString());
-                    viewHolder.find(R.id.tv_nopol, TextView.class).setText(activity.formatNopol(pembayaranList.get(position).get("NOPOL").asString()));
-                    viewHolder.find(R.id.tv_layanan, TextView.class).setText(pembayaranList.get(position).get("LAYANAN").asString());
-                    viewHolder.find(R.id.tv_no_ponsel, TextView.class).setText(pembayaranList.get(position).get("NO_PONSEL").asString());
-                    viewHolder.find(R.id.tv_no_kunci, TextView.class).setText(pembayaranList.get(position).get("NO_KUNCI").asString());
+                    viewHolder.find(R.id.tv_jenis_kendaraan, TextView.class)
+                            .setText(pembayaranList.get(position).get("JENIS_KENDARAAN").asString());
+                    viewHolder.find(R.id.tv_nama_pelanggan, TextView.class)
+                            .setText(pembayaranList.get(position).get("NAMA_PELANGGAN").asString());
+                    viewHolder.find(R.id.tv_nopol, TextView.class)
+                            .setText(activity.formatNopol(pembayaranList.get(position).get("NOPOL").asString()));
+                    viewHolder.find(R.id.tv_layanan, TextView.class)
+                            .setText(pembayaranList.get(position).get("LAYANAN").asString());
+                    viewHolder.find(R.id.tv_no_ponsel, TextView.class)
+                            .setText(pembayaranList.get(position).get("NO_PONSEL").asString());
+                    viewHolder.find(R.id.tv_no_kunci, TextView.class)
+                            .setText(pembayaranList.get(position).get("NO_KUNCI").asString());
+                    viewHolder.find(R.id.tv_tidak_menunggu, TextView.class)
+                            .setText(pembayaranList.get(position).get("PELANGGAN_TIDAK_MENUNGGU").asString().equals("Y") ? "TIDAK MENUNGGU" : "MENUNGGU");
+
                     viewHolder.find(R.id.cv_pembayaran_checkin, CardView.class).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {

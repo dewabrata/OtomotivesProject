@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.utils.Messagebox;
@@ -43,7 +42,7 @@ public class JumlahPart_JualPart_Activity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail_jual_part_);
+        setContentView(R.layout.activity_atur_detail_jual_part);
         initToolbar();
         initComponent();
     }

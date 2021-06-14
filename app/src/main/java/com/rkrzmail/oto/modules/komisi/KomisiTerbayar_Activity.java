@@ -28,6 +28,7 @@ import com.rkrzmail.srv.NikitaViewHolder;
 import com.rkrzmail.srv.NumberFormatUtils;
 
 import java.util.Map;
+import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.KOMISI_PART;
 import static com.rkrzmail.utils.APIUrls.PEMBAYARAN_KOMISI;
@@ -51,7 +52,7 @@ public class KomisiTerbayar_Activity extends AppActivity {
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Komisi Terbayar");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Komisi Terbayar");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 

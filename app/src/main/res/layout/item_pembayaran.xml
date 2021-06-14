@@ -38,16 +38,6 @@
                     android:textSize="12sp"
                     android:layout_gravity="start"/>
 
-                <TextView
-                    android:id="@+id/tv_no_kunci"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="No Kunci"
-                    android:textSize="12sp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:layout_gravity="end"
-                    card_view:ignore="RtlSymmetry" />
-
 
             </TableRow>
 
@@ -58,6 +48,30 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="No. Ponsel"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/grey_900"
+                    android:textSize="12sp"
+                    android:layout_gravity="start"/>
+
+                <TextView
+                    android:id="@+id/tv_no_kunci"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No Kunci"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="end"
+                    card_view:ignore="RtlSymmetry" />
+
+            </TableRow>
+
+            <TableRow android:layout_marginTop="@dimen/spacing_medium">
+
+                <TextView
+                    android:id="@+id/tv_jenis_kendaraan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/jenis_kendaraan_lowercase"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                     android:textColor="@color/grey_900"
                     android:textSize="12sp"
@@ -78,10 +92,10 @@
             <TableRow android:layout_marginTop="@dimen/spacing_medium">
 
                 <TextView
-                    android:id="@+id/tv_jenis_kendaraan"
+                    android:id="@+id/tv_tidak_menunggu"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/jenis_kendaraan_lowercase"
+                    android:text="@string/menunggu"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                     android:textColor="@color/grey_900"
                     android:textSize="12sp"
@@ -97,7 +111,9 @@
                     android:textSize="12sp"
                     android:layout_gravity="end"/>
 
+
             </TableRow>
+
 
         </TableLayout>
 

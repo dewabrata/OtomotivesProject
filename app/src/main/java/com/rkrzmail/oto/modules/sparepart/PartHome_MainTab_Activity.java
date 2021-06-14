@@ -31,7 +31,7 @@ import java.util.Objects;
 import static com.rkrzmail.utils.APIUrls.VIEW_CARI_PART_SUGGESTION;
 import static com.rkrzmail.utils.APIUrls.VIEW_SPAREPART;
 
-public class PartHome_MainTab_Activity extends AppActivity implements SearchView.OnQueryTextListener, SearchListener.IFragmentListener, TabLayout.BaseOnTabSelectedListener {
+public class PartHome_MainTab_Activity extends AppActivity {
 
     public static final String SEARCH_PART = "SEARCH PART";
     public static final String SEARCH_TAG = "SEARCH TAG";
@@ -79,81 +79,5 @@ public class PartHome_MainTab_Activity extends AppActivity implements SearchView
         vpPart.setAdapter(pagerAdapter);
         vpPart.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabPart));
         tabPart.setupWithViewPager(vpPart);
-        tabPart.addOnTabSelectedListener(this);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_part, menu);
-
-        try {
-            SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-            mSearchView = new SearchView(getSupportActionBar().getThemedContext());
-            mSearchView.setQueryHint("Cari Part");
-            mSearchView.setMaxWidth(Integer.MAX_VALUE);
-
-            final MenuItem searchMenu = menu.findItem(R.id.action_search);
-            searchMenu.setActionView(mSearchView);
-            searchMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-
-            mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-            mSearchView.setSubmitButtonEnabled(true);
-            mSearchView.setOnQueryTextListener(this);
-        } catch (Exception e) {
-            showError(e.getMessage());
-        }
-
-        final SearchView.SearchAutoComplete searchAutoComplete = mSearchView.findViewById(R.id.search_src_text);
-        searchAutoComplete.setDropDownBackgroundResource(R.drawable.bg_radius_white);
-
-        for (SearchListener.ISearchAutoComplete autoComplete : searchAutoCompleteArrayList) {
-            autoComplete.attachAdapter(searchAutoComplete, tabPosition);
-        }
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String queryText) {
-        this.queryText = queryText;
-        pagerAdapter.setTextQueryChanged(queryText, tabPosition);
-
-        for (SearchListener.ISearch searchLocal : iSearch) {
-            searchLocal.onTextQuery(queryText, tabPosition);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String s) {
-        return false;
-    }
-
-    @Override
-    public void addiSearch(SearchListener.ISearch iSearch, SearchListener.ISearchAutoComplete autoComplete) {
-        this.iSearch.add(iSearch);
-        this.searchAutoCompleteArrayList.add(autoComplete);
-    }
-
-    @Override
-    public void removeISearch(SearchListener.ISearch iSearch, SearchListener.ISearchAutoComplete autoComplete) {
-        this.iSearch.remove(iSearch);
-        this.searchAutoCompleteArrayList.remove(autoComplete);
-    }
-
-    @Override
-    public void onTabSelected(TabLayout.Tab tab) {
-        tabPosition = tab.getPosition();
-        vpPart.setCurrentItem(tab.getPosition());
-    }
-
-    @Override
-    public void onTabUnselected(TabLayout.Tab tab) {
-
-    }
-
-    @Override
-    public void onTabReselected(TabLayout.Tab tab) {
-
     }
 }

@@ -136,12 +136,6 @@ public class AturUser_Activity extends AppActivity {
                     find(R.id.spinnerStatus, Spinner.class).performClick();
                     return;
                 }
-                if (find(R.id.spinnerPenggajian, Spinner.class).getSelectedItem().toString().equalsIgnoreCase("--PILIH")) {
-                    showWarning("Silahkan Pilih Penggajian");
-                    find(R.id.spinnerPenggajian, Spinner.class).requestFocus();
-                    find(R.id.spinnerPenggajian, Spinner.class).performClick();
-                    return;
-                }
 
                 if (spAkses.getSelectedItemsAsString().isEmpty()) {
                     showWarning("Silahkan Pilih Posisi");
@@ -181,7 +175,6 @@ public class AturUser_Activity extends AppActivity {
     }
 
     private void initTextWatcher() {
-        find(R.id.txtGaji, TextView.class).addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(find(R.id.txtGaji, EditText.class)));
         minEntryEditText(find(R.id.txtNamaKaryawan, EditText.class), 8, find(R.id.tl_nama_user, TextInputLayout.class), "Nama Min. 5 Karakter");
         minEntryEditText(find(R.id.txtAlamat, EditText.class), 20, find(R.id.tl_alamat_user, TextInputLayout.class), "Entry Alamat Min. 20 Karakter");
 
@@ -301,7 +294,6 @@ public class AturUser_Activity extends AppActivity {
             fungsiMekanik = data.get("FUNGSI_MEKANIK").asString();
             idUser = data.get("ID").asInteger();
 
-            find(R.id.txtGaji, TextView.class).setText(RP + NumberFormatUtils.formatRp(data.get("GAJI").asString()));
             find(R.id.tblSimpan, Button.class).setText("Update");
 
             String[] splitAkses = data.get("AKSES_APP").asString().trim().split(", ");
@@ -321,7 +313,6 @@ public class AturUser_Activity extends AppActivity {
         setSpinnerFromApi(spPosisi, "nama", "POSISI", "viewmst", "NAMA", posisi);
         setSpinnerOffline(listStatus, spStatus, status);
         setSpinnerOffline(listFungsiMekanik, find(R.id.sp_fungsiMekanik, Spinner.class), fungsiMekanik);
-        setSpinnerOffline(listPenggajian, find(R.id.spinnerPenggajian, Spinner.class), penggajian);
     }
 
     private void addData() {
@@ -349,8 +340,6 @@ public class AturUser_Activity extends AppActivity {
                 args.put("tanggalmasuk", parseTglMasuk);
                 args.put("posisi", spPosisi.getSelectedItem().toString());
                 args.put("status", find(R.id.spinnerStatus, Spinner.class).getSelectedItem().toString());
-                args.put("penggajian", find(R.id.spinnerPenggajian, Spinner.class).getSelectedItem().toString());
-                args.put("gaji", formatOnlyNumber(find(R.id.txtGaji, EditText.class).getText().toString()));
                 args.put("mekanik", find(R.id.sp_fungsiMekanik, Spinner.class).getSelectedItem().toString());
                 args.put("akses", aksesApp);
                 if (args.containsValue("--PILIH--")) {
@@ -397,8 +386,6 @@ public class AturUser_Activity extends AppActivity {
                 args.put("tangalmasuk", parseTglMasuk);
                 args.put("posisi", spPosisi.getSelectedItem().toString());
                 args.put("status", find(R.id.spinnerStatus, Spinner.class).getSelectedItem().toString());
-                args.put("penggajian", find(R.id.spinnerPenggajian, Spinner.class).getSelectedItem().toString());
-                args.put("gaji", formatOnlyNumber(find(R.id.txtGaji, EditText.class).getText().toString()));
                 args.put("akses", aksesApp);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(KARYAWAN), args));

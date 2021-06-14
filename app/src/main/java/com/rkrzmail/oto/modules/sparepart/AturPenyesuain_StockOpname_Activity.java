@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
+import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
@@ -28,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 
 import static com.rkrzmail.utils.APIUrls.ATUR_TUGAS_PART;
+import static com.rkrzmail.utils.APIUrls.SET_STOCK_OPNAME;
+import static com.rkrzmail.utils.APIUrls.VIEW_LOKASI_PART;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.PENYESUAIAN;
@@ -39,23 +42,27 @@ public class AturPenyesuain_StockOpname_Activity extends AppActivity {
     boolean isStockLebih = false;
     boolean isStockKurang = false;
     private boolean isView = false;
+    private int jumlahLokasi = 0;
+
+    private int newLokasiID = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_penyesuain);
         initToolbar();
-        if(getIntent().hasExtra("VIEW")){
+        if (getIntent().hasExtra("VIEW")) {
             isView = true;
             loadData();
-        }else{
-            if(getIntent().hasExtra("STOCK LEBIH")){
+        } else {
+            if (getIntent().hasExtra("STOCK LEBIH")) {
                 isStockLebih = true;
-            }else if(getIntent().hasExtra("STOCK KURANG")){
+            } else if (getIntent().hasExtra("STOCK KURANG")) {
                 isStockKurang = true;
             }
-            setSpLokasi("");
+            //viewAllLokasiPart();
             setSpPenyesuaian("");
+            setSpLokasi("");
             initButton();
         }
     }
@@ -63,23 +70,28 @@ public class AturPenyesuain_StockOpname_Activity extends AppActivity {
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Penyesuaian");
+        getSupportActionBar().setTitle("Penyesuaian Stock Opname");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void loadData(){
+    private void loadData() {
         Nson data = Nson.readJson(getIntentStringExtra(DATA));
-        Tools.setViewAndChildrenEnabled(find(R.id.ly_container, LinearLayout.class), false);
-
+        setDisableIsView();
         setSpPenyesuaian(data.get("SEBAB").asString());
         setSpLokasi(data.get("LOKASI").asString());
         find(R.id.et_no_folder_lain, EditText.class).setText(data.get("FOLDER_LAIN").asString());
         find(R.id.et_ket_penyesuaian, EditText.class).setText(data.get("ALASAN").asString());
         find(R.id.et_user_saksi_penyesuaian, EditText.class).setText(data.get("USER_SAKSI").asString());
         find(R.id.btn_simpan).setVisibility(View.GONE);
-        find(R.id.et_no_folder_lain, EditText.class).setTextColor(getResources().getColor(R.color.grey_900));
-        find(R.id.et_ket_penyesuaian, EditText.class).setTextColor(getResources().getColor(R.color.grey_900));
-        find(R.id.et_user_saksi_penyesuaian, EditText.class).setTextColor(getResources().getColor(R.color.grey_900));
+        find(R.id.img_scan_barcode).setVisibility(View.GONE);
+    }
+
+    private void setDisableIsView() {
+        Tools.setViewAndChildrenEnabled(find(R.id.rl_sebab_penyesuaian, LinearLayout.class), false);
+        Tools.setViewAndChildrenEnabled(find(R.id.rl_lokasi_part, LinearLayout.class), false);
+        find(R.id.et_no_folder_lain, EditText.class).setEnabled(false);
+        find(R.id.et_ket_penyesuaian, EditText.class).setEnabled(false);
+        find(R.id.et_user_saksi_penyesuaian, EditText.class).setEnabled(false);
     }
 
     private void setPenyesuaian() {
@@ -89,6 +101,8 @@ public class AturPenyesuain_StockOpname_Activity extends AppActivity {
         penyesuaian.set("FOLDER_LAIN", find(R.id.et_no_folder_lain, EditText.class).getText().toString());
         penyesuaian.set("KET", find(R.id.et_ket_penyesuaian, EditText.class).getText().toString());
         penyesuaian.set("USER_SAKSI", find(R.id.et_user_saksi_penyesuaian, EditText.class).getText().toString());
+        penyesuaian.set("NEW_LOKASI_ID", newLokasiID);
+
 
         Intent i = new Intent();
         i.putExtra(DATA, penyesuaian.toJson());
@@ -99,67 +113,74 @@ public class AturPenyesuain_StockOpname_Activity extends AppActivity {
 
     private void setSpPenyesuaian(String selection) {
         List<String> penyesuaianList = new ArrayList<>();
+        Nson lokasiArray = Nson.readJson(getIntentStringExtra(PENYESUAIAN));
         penyesuaianList.add("--PILIH--");
-        if(isView){
+        if (isView) {
             penyesuaianList.add("SALAH CATAT");
             penyesuaianList.add("HILANG");
             penyesuaianList.add("RUSAK");
             penyesuaianList.add("PINDAH LOKASI");
-        }else{
-            if(isStockLebih){
+        } else {
+            if (isStockLebih) {
                 penyesuaianList.add("SALAH CATAT"); //HANYA AKTIF BILA LEBIH BESAR DARI STOCK
-            }else{
+            } else {
                 penyesuaianList.add("HILANG");
                 penyesuaianList.add("RUSAK");
-                penyesuaianList.add("PINDAH LOKASI"); //HANYA AKTIF BILA LOKASI TERSEDIA GUDANG DAN DISPLAY
+                if (lokasiArray.size() > 1) {
+                    penyesuaianList.add("PINDAH LOKASI"); //HANYA AKTIF BILA LOKASI TERSEDIA GUDANG DAN DISPLAY / BERBEDA
+                }
             }
         }
 
-
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, penyesuaianList);
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        find(R.id.sp_sebab_penyesuaian, Spinner.class).setAdapter(spinnerAdapter);
-        if(!selection.isEmpty()){
+        setSpinnerOffline(penyesuaianList, find(R.id.sp_sebab_penyesuaian, Spinner.class), "");
+        if (!selection.isEmpty()) {
             for (int i = 0; i < find(R.id.sp_sebab_penyesuaian, Spinner.class).getCount(); i++) {
-                if(selection.equals(find(R.id.sp_sebab_penyesuaian, Spinner.class).getItemAtPosition(i).toString())){
+                if (selection.equals(find(R.id.sp_sebab_penyesuaian, Spinner.class).getItemAtPosition(i).toString())) {
                     find(R.id.sp_sebab_penyesuaian, Spinner.class).setSelection(i);
                     break;
                 }
             }
         }
+        find(R.id.sp_sebab_penyesuaian, Spinner.class).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Tools.setViewAndChildrenEnabled(
+                        find(R.id.rl_lokasi_part, LinearLayout.class),
+                        parent.getItemAtPosition(position).toString().equals("PINDAH LOKASI")
+                );
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     private void setSpLokasi(String selection) {
-        Nson penyesuaian = Nson.readJson(getIntentStringExtra(PENYESUAIAN));
-        List<String> lokasiList = new ArrayList<>();
-        final List<String> kodeList = new ArrayList<>();
-        if(isView){
-            lokasiList.add("--PILIH--");
+        final Nson penyesuaian = Nson.readJson(getIntentStringExtra(PENYESUAIAN));
+        final List<String> lokasiList = new ArrayList<>();
+        lokasiList.add("--PILIH--");
+        if (isView) {
             lokasiList.add("RUANG PART");
             lokasiList.add("DISPLAY");
             lokasiList.add("PALET");
-        }else{
-            if (penyesuaian.asArray().size() > 1) {
-                penyesuaian.remove(0);
-                lokasiList.add("--PILIH--");
-                kodeList.add("");
-            }
-            for (int i = 0; i < penyesuaian.size(); i++) {
-                lokasiList.add(penyesuaian.get(i).get("LOKASI").asString());
-                kodeList.add(penyesuaian.get(i).get("KODE").asString());
+        } else {
+            penyesuaian.add("");
+                for (int i = 0; i < penyesuaian.size(); i++) {
+                if(!penyesuaian.get(i).get("LOKASI").asString().isEmpty()){
+                    lokasiList.add(penyesuaian.get(i).get("LOKASI").asString());
+                }
             }
         }
-
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, lokasiList);
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        find(R.id.sp_lokasi_stockOpname, Spinner.class).setAdapter(spinnerAdapter);
+        setSpinnerOffline(lokasiList, find(R.id.sp_lokasi_stockOpname, Spinner.class), "");
         if (lokasiList.size() == 1) {
             Tools.setViewAndChildrenEnabled(find(R.id.ly_lokasi_part, LinearLayout.class), false);
         }
 
-        if(!selection.isEmpty()){
+        if (!selection.isEmpty()) {
             for (int i = 0; i < find(R.id.sp_lokasi_stockOpname, Spinner.class).getCount(); i++) {
-                if(find(R.id.sp_lokasi_stockOpname, Spinner.class).getItemAtPosition(i).toString().equals(selection)){
+                if (find(R.id.sp_lokasi_stockOpname, Spinner.class).getItemAtPosition(i).toString().equals(selection)) {
                     find(R.id.sp_lokasi_stockOpname, Spinner.class).setSelection(i);
                     break;
                 }
@@ -167,19 +188,20 @@ public class AturPenyesuain_StockOpname_Activity extends AppActivity {
         }
         find(R.id.sp_lokasi_stockOpname, Spinner.class).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (kodeList.size() > 0) {
-                    kodeLokasi = kodeList.get(position);
-                    find(R.id.et_no_folder_lain, EditText.class).setText(kodeLokasi);
+            public void onItemSelected(AdapterView<?> parent, View view, int i, long id) {
+                if(!isView){
+                    if(i != 0){
+                        newLokasiID = penyesuaian.get(i).get("LOKASI_PART_ID").asInteger();
+                        find(R.id.et_no_folder_lain, EditText.class).setText(penyesuaian.get(i).get("KODE").asString());
+                    }
                 }
-
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 if (parent.getSelectedItemPosition() == 1) {
                     //showInfo("OK");
-                    find(R.id.et_no_folder_lain, EditText.class).setText(kodeLokasi);
+                    //find(R.id.et_no_folder_lain, EditText.class).setText(kodeLokasi);
                 }
             }
         });
@@ -202,13 +224,13 @@ public class AturPenyesuain_StockOpname_Activity extends AppActivity {
                     }
                 }
 
-                if(find(R.id.et_user_saksi_penyesuaian, EditText.class).getText().toString().isEmpty()){
+                if (find(R.id.et_user_saksi_penyesuaian, EditText.class).getText().toString().isEmpty()) {
                     find(R.id.et_user_saksi_penyesuaian, EditText.class).requestFocus();
                     showWarning("User Saksi Belum di Scan");
                     return;
                 }
 
-                if(find(R.id.et_ket_penyesuaian, EditText.class).getText().toString().isEmpty()){
+                if (find(R.id.et_ket_penyesuaian, EditText.class).getText().toString().isEmpty()) {
                     find(R.id.et_ket_penyesuaian, EditText.class).setError("KETERANGAN HARUS DI ISI");
                     viewFocus(find(R.id.et_ket_penyesuaian, EditText.class));
                     return;
@@ -226,6 +248,27 @@ public class AturPenyesuain_StockOpname_Activity extends AppActivity {
         });
     }
 
+    private void viewAllLokasiPart() {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("flag", "viewLokasi");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_LOKASI_PART), args));
+                result = result.get("data").get(0);
+                jumlahLokasi = result.get("TOTAL_LOKASI").asInteger();
+            }
+
+            @Override
+            public void runUI() {
+
+            }
+        });
+
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -235,7 +278,7 @@ public class AturPenyesuain_StockOpname_Activity extends AppActivity {
                 @Override
                 public void runWD(Nson nson) {
                     if (nson.get("status").asString().equals("OK")) {
-                        if(nson.get("data").asArray().isEmpty()){
+                        if (nson.get("data").asArray().isEmpty()) {
                             showWarning("Scan Barcode Tidak Valid");
                             return;
                         }

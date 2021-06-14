@@ -29,10 +29,192 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="WAKTU LAYANAN"
+                        android:textColor="@color/grey_900"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:background="@drawable/background_edittext"
+                        android:padding="10dp" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/paddingMedium"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        tools:ignore="DisableBaselineAlignment">
+
+                        <android.support.design.widget.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                            <EditText
+                                android:id="@+id/et_mulaiWaktu_checkin"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:enabled="false"
+                                android:textSize="14sp"
+                                android:text="MULAI"
+                                tools:ignore="TextFields" />
+
+                        </android.support.design.widget.TextInputLayout>
+
+                        <android.support.design.widget.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_weight="1">
+
+                            <EditText
+                                android:id="@+id/et_lamaWaktu_checkin"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:enabled="false"
+                                android:textSize="14sp"
+                                android:text="LAMA" />
+
+                        </android.support.design.widget.TextInputLayout>
+
+                        <android.support.design.widget.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:visibility="gone">
+
+                            <EditText
+                                android:id="@+id/et_selesaiWaktu_checkin"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:enabled="false"
+                                android:textSize="14sp"
+                                android:text="SELESAI" />
+
+                        </android.support.design.widget.TextInputLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:gravity="end"
+                        android:layout_gravity="end"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tv_jenis_antrian"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="JENIS ANTRIAN"
+                            android:textColor="@color/red_800"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:layout_gravity="end" />
+
+                        <TextView
+                            android:id="@+id/tv_waktu_layanan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/red_800"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:layout_gravity="end"
+                            android:visibility="gone" />
+
+                    </LinearLayout>
+
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp">
+
+                        <android.support.design.widget.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center">
+
+                            <EditText
+                                android:id="@+id/et_no_antrian_checkin4"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:enabled="false"
+                                android:hint="NO. ANTRIAN"
+                                android:inputType="numberDecimal"
+                                android:textSize="14sp" />
+
+                        </android.support.design.widget.TextInputLayout>
+
+                        <ImageButton
+                            android:id="@+id/btn_refresh_antrian"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/icon_rework"
+                            android:layout_gravity="end|center_vertical"
+                            android:layout_marginEnd="@dimen/paddingMedium"
+                            android:backgroundTint="@color/transparent" />
+
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
                         android:orientation="horizontal">
+
+                        <CheckBox
+                            android:id="@+id/cb_tidakMenunggu_checkin4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:layout_weight="3"
+                            android:text="TIDAK MENUNGGU" />
+
+                        <CheckBox
+                            android:id="@+id/cb_buangPart_checkin4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_weight="1"
+                            android:checked="true"
+                            android:text="BUANG PART BEKAS" />
+
+                    </LinearLayout>
+
+                    <CheckBox
+                        android:id="@+id/cb_konfirmTambah_checkin4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="KONFIRMASI PENAMBAHAN"
+                        android:checked="true" />
+
+                    <CheckBox
+                        android:id="@+id/cb_tinggalkan_stnk"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="TINGGALKAN STNK"
+                        android:checked="false" />
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="15dp">
 
                         <TextView
                             android:layout_width="0dp"
@@ -59,6 +241,92 @@
                         </RelativeLayout>
 
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ly_waktuAmbil"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="@dimen/paddingMedium"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="3"
+                            android:text="@string/waktu_ambil_antar_uppercase"
+                            android:textColor="@color/grey_900"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="34dp"
+                            android:layout_weight="6"
+                            android:background="@drawable/background_edittext">
+
+                            <TextView
+                                android:id="@+id/tv_tgl_ambil"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentStart="true"
+                                android:layout_alignParentTop="true"
+                                android:layout_alignParentBottom="true"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginTop="3dp"
+                                android:gravity="center"
+                                android:textAlignment="center"
+                                android:drawablePadding="10dp"
+                                android:layout_marginBottom="3dp"
+                                android:textColor="@color/grey_900"
+                                android:drawableStart="@drawable/icon_tanggal" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentStart="true"
+                                android:layout_alignParentTop="true"
+                                android:drawablePadding="5dp"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentBottom="true"
+                                android:layout_marginStart="10dp"
+                                android:textColor="@color/grey_900"
+                                android:layout_marginEnd="10dp"
+                                android:text="-" />
+
+                            <TextView
+                                android:id="@+id/tv_jam_ambil"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:layout_alignParentEnd="true"
+                                android:drawablePadding="10dp"
+                                android:layout_alignParentBottom="true"
+                                android:layout_marginTop="3dp"
+                                android:gravity="center"
+                                android:layout_marginEnd="5dp"
+                                android:textAlignment="center"
+                                android:textColor="@color/grey_900"
+                                android:layout_marginBottom="3dp"
+                                android:drawableEnd="@drawable/icon_jam" />
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_disable_waktu_antar"
+                        android:layout_height="wrap_content"
+                        android:text="DISABLE"
+                        android:layout_width="wrap_content"
+                        android:textColor="@color/red_800"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="-5dp" />
+
 
                     <LinearLayout
                         android:id="@+id/ly_estimasi_selesai"
@@ -141,273 +409,6 @@
                         android:textStyle="bold"
                         android:textSize="12sp"
                         android:layout_gravity="end" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:orientation="horizontal">
-
-                        <CheckBox
-                            android:id="@+id/cb_tidakMenunggu_checkin4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="start"
-                            android:layout_weight="3"
-                            android:text="TIDAK MENUNGGU" />
-
-                        <CheckBox
-                            android:id="@+id/cb_buangPart_checkin4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="end"
-                            android:layout_weight="1"
-                            android:checked="true"
-                            android:text="BUANG PART BEKAS" />
-
-                    </LinearLayout>
-
-                    <CheckBox
-                        android:id="@+id/cb_konfirmTambah_checkin4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text="KONFIRMASI PENAMBAHAN"
-                        android:checked="true" />
-
-                    <CheckBox
-                        android:id="@+id/cb_tinggalkan_stnk"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text="TINGGALKAN STNK"
-                        android:checked="false" />
-
-
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp">
-
-                        <android.support.design.widget.TextInputLayout
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center">
-
-                            <EditText
-                                android:id="@+id/et_no_antrian_checkin4"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:enabled="false"
-                                android:hint="NO. ANTRIAN"
-                                android:inputType="numberDecimal"
-                                android:textSize="14sp" />
-
-                        </android.support.design.widget.TextInputLayout>
-
-                        <ImageButton
-                            android:id="@+id/btn_refresh_antrian"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:src="@drawable/icon_rework"
-                            android:layout_gravity="end|center_vertical"
-                            android:layout_marginEnd="@dimen/paddingMedium"
-                            android:backgroundTint="@color/transparent" />
-
-                    </FrameLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="WAKTU LAYANAN"
-                        android:textColor="@color/grey_900"
-                        android:textStyle="bold"
-                        android:textSize="12sp"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:layout_marginTop="10dp"
-                        android:background="@drawable/background_edittext"
-                        android:padding="10dp" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/paddingMedium"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="5dp"
-                        tools:ignore="DisableBaselineAlignment">
-
-                        <android.support.design.widget.TextInputLayout
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1">
-
-                            <EditText
-                                android:id="@+id/et_mulaiWaktu_checkin"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:enabled="false"
-                                android:textSize="14sp"
-                                android:text="MULAI"
-                                tools:ignore="TextFields" />
-
-                        </android.support.design.widget.TextInputLayout>
-
-                        <android.support.design.widget.TextInputLayout
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="5dp"
-                            android:layout_marginLeft="5dp"
-                            android:layout_weight="1">
-
-                            <EditText
-                                android:id="@+id/et_lamaWaktu_checkin"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:enabled="false"
-                                android:textSize="14sp"
-                                android:text="LAMA" />
-
-                        </android.support.design.widget.TextInputLayout>
-
-                        <android.support.design.widget.TextInputLayout
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1">
-
-                            <EditText
-                                android:id="@+id/et_selesaiWaktu_checkin"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:enabled="false"
-                                android:textSize="14sp"
-                                android:text="SELESAI" />
-
-                        </android.support.design.widget.TextInputLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:gravity="end"
-                        android:layout_gravity="end"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/tv_jenis_antrian"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="JENIS ANTRIAN"
-                            android:textColor="@color/red_800"
-                            android:textSize="10sp"
-                            android:textStyle="bold"
-                            android:layout_gravity="end" />
-
-                        <TextView
-                            android:id="@+id/tv_waktu_layanan"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/red_800"
-                            android:textSize="10sp"
-                            android:textStyle="bold"
-                            android:layout_gravity="end"
-                            android:visibility="gone" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/ly_waktuAmbil"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginBottom="@dimen/paddingMedium"
-                        android:gravity="center"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_weight="3"
-                            android:text="@string/waktu_ambil_antar_uppercase"
-                            android:textColor="@color/grey_900"
-                            android:textSize="12sp"
-                            android:textStyle="bold" />
-
-                        <RelativeLayout
-                            android:layout_width="0dp"
-                            android:layout_height="34dp"
-                            android:layout_weight="6"
-                            android:background="@drawable/background_edittext">
-
-                            <TextView
-                                android:id="@+id/tv_tgl_ambil"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:layout_alignParentTop="true"
-                                android:layout_alignParentBottom="true"
-                                android:layout_marginStart="5dp"
-                                android:layout_marginTop="3dp"
-                                android:gravity="center"
-                                android:textAlignment="center"
-                                android:drawablePadding="10dp"
-                                android:layout_marginBottom="3dp"
-                                android:textColor="@color/grey_900"
-                                android:drawableStart="@drawable/icon_tanggal" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:layout_alignParentTop="true"
-                                android:drawablePadding="5dp"
-                                android:layout_alignParentEnd="true"
-                                android:layout_alignParentBottom="true"
-                                android:layout_marginStart="10dp"
-                                android:textColor="@color/grey_900"
-                                android:layout_marginEnd="10dp"
-                                android:text="-" />
-
-                            <TextView
-                                android:id="@+id/tv_jam_ambil"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentTop="true"
-                                android:layout_alignParentEnd="true"
-                                android:drawablePadding="10dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_marginTop="3dp"
-                                android:gravity="center"
-                                android:layout_marginEnd="5dp"
-                                android:textAlignment="center"
-                                android:textColor="@color/grey_900"
-                                android:layout_marginBottom="3dp"
-                                android:drawableEnd="@drawable/icon_jam" />
-
-                        </RelativeLayout>
-
-
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/tv_disable_waktu_antar"
-                        android:layout_height="wrap_content"
-                        android:text="DISABLE"
-                        android:layout_width="wrap_content"
-                        android:textColor="@color/red_800"
-                        android:textStyle="bold"
-                        android:textSize="12sp"
-                        android:layout_gravity="end"
-                        android:layout_marginTop="-5dp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"

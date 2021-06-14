@@ -4,18 +4,43 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 30
     defaultConfig {
-        applicationId "com.otomotives.bengkelpro"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode 6
-        versionName "1.0"
+        versionCode 12
+        versionName "1.12"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    flavorDimensions "version"
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        productFlavors {
+            dev {
+                applicationId "com.otomotives.bengkelpro"
+                applicationIdSuffix ".dev"
+                buildConfigField 'String', 'getBaseUrlV3', '"https://otomotives.com/api/dev/v3/"'
+                buildConfigField 'String', 'getBaseUrlV4', '"https://otomotives.com/api/dev/v4/"'
+                manifestPlaceholders = [
+                        "oto_app_id":"dev",
+                        app_label_name:"Bengkel Pro Dev",
+                        app_icon:"@drawable/speed_dev"
+                ]
+            }
+
+            prod {
+                applicationId "com.otomotives.bengkelpro"
+                //applicationIdSuffix ".prod"
+                buildConfigField 'String', 'getBaseUrlV3', '"https://otomotives.com/api/v3/"'
+                buildConfigField 'String', 'getBaseUrlV4', '"https://otomotives.com/api/v4/"'
+                manifestPlaceholders = [
+                        "oto_app_id":"prod",
+                        app_label_name:"Bengkel Pro",
+                        app_icon:"@drawable/speed"
+                ]
+            }
         }
     }
 }
@@ -91,6 +116,8 @@ dependencies {
     implementation 'com.github.MdFarhanRaja:SearchableSpinner:2.0'
     //expandable layout
     implementation 'com.github.cachapa:ExpandableLayout:2.9.2'
+    //google core
+    implementation 'com.google.android.play:core:1.10.0'
 
 }
 

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <com.rkrzmail.srv.NikitaAutoComplete
+        android:id="@+id/et_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/place_autocomplete_search_hint"
+        android:background="@drawable/box_shadow"
+        android:inputType="textCapCharacters"
+        android:maxLines="1"
+        android:padding="15dp"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="end|center_vertical"
+        android:layout_marginEnd="10dp">
+
+        <ProgressBar
+            android:id="@+id/pb_search"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|right"
+            tools:ignore="RtlHardcoded"
+            android:layout_marginEnd="5dp"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/img_submit_search"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_search"
+            android:tint="@color/grey_800" />
+
+    </LinearLayout>
+
+</FrameLayout>

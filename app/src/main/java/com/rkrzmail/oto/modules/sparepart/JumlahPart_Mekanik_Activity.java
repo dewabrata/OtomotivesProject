@@ -40,6 +40,8 @@ public class JumlahPart_Mekanik_Activity extends AppActivity implements View.OnC
     private Nson data = Nson.newObject();
     private String kondisi;
     private boolean isFlexible = false;
+    private boolean isMekanik1 = false, isMekanik2 = false, isMekanik3 = false;
+    private int biayaMekanik1 = 0, biayaMekanik2 = 0, biayaMekanik3 = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,11 +90,16 @@ public class JumlahPart_Mekanik_Activity extends AppActivity implements View.OnC
         find(R.id.btn_simpan).setOnClickListener(this);
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n","DefaultLocale"})
     private void initData(){
         data = Nson.readJson(getIntentStringExtra(DATA));
         etJumlah.setText("1");
         if(!data.asString().isEmpty()){
+            biayaMekanik1 =  data.get("BIAYA_MEKANIK_1").asInteger();
+            biayaMekanik2 =  data.get("BIAYA_MEKANIK_2").asInteger();
+            biayaMekanik3 =  data.get("BIAYA_MEKANIK_3").asInteger();
+
+            etHargaJasa.setText(RP + NumberFormatUtils.formatRp(String.valueOf(calculateBiayaMekanik(data))));
             if (data.get("POLA_HARGA_JUAL").asString().equalsIgnoreCase("FLEXIBLE")) {
                 find(R.id.ly_hpp_jumlah_harga_part, TextInputLayout.class).setVisibility(View.VISIBLE);
                 find(R.id.ly_hpp_jumlah_harga_part, TextInputLayout.class).setHint("HARGA JUAL FLEXIBLE");
@@ -105,6 +112,35 @@ public class JumlahPart_Mekanik_Activity extends AppActivity implements View.OnC
             }
         }
     }
+
+    private int calculateBiayaMekanik(Nson data){
+        int waktuHari = 0, waktuJam = 0, waktuMenit = 0;
+        if(!data.get("RATA2_WAKTU_KERJA_HARI").asString().isEmpty()){
+            waktuHari = data.get("RATA2_WAKTU_KERJA_HARI").asInteger() * 24 * 60;
+        }
+        if(!data.get("RATA2_WAKTU_KERJA_JAM").asString().isEmpty()){
+            waktuJam = data.get("RATA2_WAKTU_KERJA_JAM").asInteger() * 60;
+        }
+        if(!data.get("RATA2_WAKTU_KERJA_MENIT").asString().isEmpty()){
+            waktuMenit = data.get("RATA2_WAKTU_KERJA_MENIT").asInteger();
+        }
+        int totalKerjaMenit = waktuHari + waktuJam + waktuMenit;
+
+        int biaya = 0;
+        if (data.get("JENIS_MEKANIK").asInteger() == 1) {
+            biaya = totalKerjaMenit * biayaMekanik1 / 60;
+            isMekanik1 = true;
+        } else if (data.get("JENIS_MEKANIK").asInteger() == 2) {
+            biaya = totalKerjaMenit * biayaMekanik2 / 60;
+            isMekanik2 = true;
+        } else if (data.get("JENIS_MEKANIK").asInteger() == 3) {
+            biaya = totalKerjaMenit * biayaMekanik3 / 60;
+            isMekanik3 = true;
+        }
+
+        return biaya;
+    }
+
 
     public void watcher(final ImageButton imageButton, final EditText editText) {
         TextWatcher textWatcher = new TextWatcher() {
@@ -170,6 +206,7 @@ public class JumlahPart_Mekanik_Activity extends AppActivity implements View.OnC
 
         Intent i = new Intent();
         i.putExtra(DATA, sendData.toJson());
+        i.putExtra("PART_KOSONG", "N");
         i.putExtra("TOTAL_PART", totalPart);
         setResult(RESULT_OK, i);
         finish();

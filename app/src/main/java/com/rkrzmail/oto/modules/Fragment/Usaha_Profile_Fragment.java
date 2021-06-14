@@ -1,18 +1,15 @@
 package com.rkrzmail.oto.modules.Fragment;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -22,17 +19,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.naa.data.Nson;
+import com.naa.data.UtilityAndroid;
 import com.naa.utils.InternetX;
 import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
@@ -43,23 +39,18 @@ import com.rkrzmail.oto.modules.MapPicker_Dialog;
 import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
 import com.rkrzmail.srv.MultiSelectionSpinner;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
+import static com.rkrzmail.utils.APIUrls.GET_LOGO_BENGKEL;
 import static com.rkrzmail.utils.APIUrls.VIEW_PROFILE;
-import static com.rkrzmail.utils.ConstUtils.PICK_IMAGE_CAMERA;
-import static com.rkrzmail.utils.ConstUtils.PICK_IMAGE_GALLERY;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_FOTO;
 
 public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallback, MapPicker_Dialog.GetLocation {
 
@@ -67,20 +58,24 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
     private static final int REQUEST_LOGO = 81;
 
     private EditText etNamaBengkel, etAlamat, etBadanUsaha, etKotaKab, etNoTelp, etNib, etNpwp, etKodePos, etNoTelpMessage,
-            etMaxAntrianExpress, etMaxAntrianStandart;
-    private Spinner spAfiliasi, spPrincial;
-    private MultiSelectionSpinner spJenisKendaraan, spMerkKendaraan, spBidangUsaha;
+            etMaxAntrianExpress, etMaxAntrianStandart, etGoogleBisnis;
+    private Spinner spAfiliasi;
+    private MultiSelectionSpinner spJenisKendaraan, spMerkKendaraan, spBidangUsaha, spPrincial;
     private CheckBox cbPkp;
-    private TextView tvAntrianExpress, tvAntrianStandart;
     private AlertDialog alertDialog;
     private Button btnLogo, btnTampakDepan;
 
     private Bitmap bitmapLogo = null, bitmapTampakDepan = null;
     private String fotoLogoBase64 = "", fotoTampakDepanBase64 = "";
     private String latitude = "", longitude = "";
-    private Nson principalList = Nson.newArray();
+    private String logoName = "logo.png", tampakDepanName = "tampakDepan.png";
+    private Nson dataPrincipalList = Nson.newArray();
+    private final Nson principalSaveList = Nson.newArray();
+    List<String> loadPrincipalList = new ArrayList<>();
+
     private AppActivity activity;
     private Nson getData;
+    private File logoTempFile = null, tampakDepanTempFile = null;
 
     private boolean isLoadBitmapLogo = false, isLoadBitmapDepan = false;
     private boolean isLogo = false, isTampakDepan = false;
@@ -97,7 +92,7 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
     public Usaha_Profile_Fragment() {
     }
 
-    public Usaha_Profile_Fragment newIntasnce(Nson data){
+    public Usaha_Profile_Fragment newIntasnce(Nson data) {
         this.getData = data;
         Bundle args = new Bundle();
         args.putString("DATA", data.toJson());
@@ -120,7 +115,7 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
     @Override
     public void onResume() {
         super.onResume();
-        if(isVisible()){
+        if (isVisible()) {
         }
     }
 
@@ -142,12 +137,13 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
         cbPkp = v.findViewById(R.id.cb_pkp_usaha);
         etMaxAntrianExpress = v.findViewById(R.id.et_maxAntrianExpress);
         etMaxAntrianStandart = v.findViewById(R.id.et_maxAntrianStandart);
-        tvAntrianExpress = v.findViewById(R.id.ic_AntrianExpress_usaha);
-        tvAntrianStandart = v.findViewById(R.id.ic_AntrianStandart_usaha);
+        ImageView imgAntrianExpress = v.findViewById(R.id.ic_AntrianExpress_usaha);
+        ImageView imgAntrianStandart = v.findViewById(R.id.ic_AntrianStandart_usaha);
         btnLogo = v.findViewById(R.id.btn_logo_depan);
         btnTampakDepan = v.findViewById(R.id.btn_tampak_depan);
         Button btnSimpan = v.findViewById(R.id.btn_simpan_usaha);
         Button btnLokasi = v.findViewById(R.id.btn_lokasi_tambahan);
+        etGoogleBisnis = v.findViewById(R.id.et_google_bisnis);
 
         final MapPicker_Dialog mapPicker_dialog = new MapPicker_Dialog();
         mapPicker_dialog.getBengkelLocation(this);
@@ -158,14 +154,14 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
             }
         });
 
-        tvAntrianExpress.setOnClickListener(new View.OnClickListener() {
+        imgAntrianExpress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activity.getTimeHourDialog(etMaxAntrianExpress);
             }
         });
 
-        tvAntrianStandart.setOnClickListener(new View.OnClickListener() {
+        imgAntrianStandart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activity.getTimeHourDialog(etMaxAntrianStandart);
@@ -180,7 +176,7 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
                 } else {
                     isLogo = true;
                     isTampakDepan = false;
-                    getImage();
+                    getImagePickerByGalerryOrCamera();
                 }
             }
         });
@@ -193,7 +189,7 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
                 } else {
                     isLogo = false;
                     isTampakDepan = true;
-                    getImage();
+                    getImagePickerByGalerryOrCamera();
                 }
             }
         });
@@ -206,7 +202,7 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
         });
     }
 
-    private Bitmap decodeBase64ToBitmap(String base64){
+    private Bitmap decodeBase64ToBitmap(String base64) {
         byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
     }
@@ -218,35 +214,10 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
 
     private void initData() {
         if (activity != null) {
-            ((ProfileBengkel_Activity) getActivity()).getDataUsaha(new ProfileBengkel_Activity.UsahaData() {
+            ((ProfileBengkel_Activity) Objects.requireNonNull(getActivity())).getDataUsaha(new ProfileBengkel_Activity.UsahaData() {
                 @SuppressLint("SetTextI18n")
                 @Override
                 public void getData(Nson nson) {
-                    String logoBase64, depanBase64;
-                    try{
-                        logoBase64 = nson.get("LOGO_IMG").asString()
-                                .replace("data:image/;base64,", "")
-                                .replace("data:image/png;base64,", "");
-                    }catch (Exception e){
-                        logoBase64 = "";
-                    }
-                    try{
-                        depanBase64 = nson.get("DEPAN_IMG").asString()
-                                .replace("data:image/;base64,", "")
-                                .replace("data:image/png;base64,", "");
-                    }catch (Exception e){
-                        depanBase64 = "";
-                    }
-                    if (!logoBase64.isEmpty()) {
-                        isLoadBitmapLogo = true;
-                        bitmapLogo = decodeBase64ToBitmap(logoBase64);
-                        btnLogo.setText("PREVIEW LOGO");
-                    }
-                    if (!depanBase64.isEmpty()) {
-                        isLoadBitmapDepan = true;
-                        bitmapTampakDepan = decodeBase64ToBitmap(depanBase64);
-                        btnTampakDepan.setText("PREVIEW TAMPAK DEPAN");
-                    }
 
                     etKodePos.setText(nson.get("KODE_POS").asString());
                     cbPkp.setChecked(nson.get("PKP").asString().equals("Y"));
@@ -260,6 +231,7 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
                     etNoTelpMessage.setText(nson.get("HP_MESSAGE").asString());
                     etMaxAntrianExpress.setText(nson.get("MAX_ANTRIAN_EXPRESS_MENIT").asString());
                     etMaxAntrianStandart.setText(nson.get("MAX_ANTRIAN_STANDART_MENIT").asString());
+                    etGoogleBisnis.setText(nson.get("GOOGLE_BISNIS").asString());
 
                     List<String> jenisKendaraanList = new ArrayList<>(), merkKendaraanList = new ArrayList<>(),
                             bidangUsahaList = new ArrayList<>();
@@ -267,14 +239,26 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
                     merkKendaraanList.add(nson.get("MERK_KENDARAAN").asString());
                     bidangUsahaList.add(nson.get("KATEGORI_BENGKEL").asString());
 
-                    activity.setSpinnerOffline(afiliasiList, spAfiliasi, nson.get("AFLIASI").asString());
-                    setSpNamaPrincipal(nson.get("NAMA_PRINCIPAL").asString());
+                    activity.setSpinnerOffline(afiliasiList, spAfiliasi, nson.get("AFILIASI").asString());
+
                     setJenisKendaraan(jenisKendaraanList);
                     setMerkKendaraan(merkKendaraanList);
                     setSpBidangUsaha(bidangUsahaList);
+
+                    if (nson.get("PRINCIPAL_BENGKEL").asArray().size() > 0) {
+                        Nson loadPrincipal = nson.get("PRINCIPAL_BENGKEL");
+                        if (loadPrincipal.size() > 0) {
+                            for (int i = 0; i < loadPrincipal.size(); i++) {
+                                loadPrincipalList.add(loadPrincipal.get(i).get("NAMA_PRINCIPAL").asString());
+                            }
+                        }
+                        setSpNamaPrincipal(loadPrincipalList);
+                    }
                 }
             });
         }
+
+        getImageBase64();
     }
 
     private void saveData() {
@@ -287,13 +271,13 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
 
                 String latLong = latitude + ", " + longitude;
                 String afliasi = spAfiliasi.getSelectedItem().toString();
-                if(afliasi.contains("--PILIH--")){
+                if (afliasi.contains("--PILIH--")) {
                     afliasi = afliasi
                             .replace("--PILIH--", "")
                             .replace("--PILIH--,", "");
                 }
                 String principal = spPrincial.getSelectedItem().toString();
-                if(principal.contains("--PILIH--")){
+                if (principal.contains("--PILIH--")) {
                     principal = principal.replace("--PILIH--", "");
                 }
                 args.put("action", "update");
@@ -312,6 +296,8 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
                 args.put("antrianExpres", etMaxAntrianExpress.getText().toString());
                 args.put("antrianStandart", etMaxAntrianStandart.getText().toString());
                 args.put("petaLokasi", latLong);
+                args.put("principalList", principalSaveList.toJson());
+                args.put("googleBisnis", etGoogleBisnis.getText().toString());
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PROFILE), args));
             }
@@ -343,7 +329,7 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
         spBidangUsaha.setItems(string);
     }
 
-    private void setSpNamaPrincipal(final String principal) {
+    private void setSpNamaPrincipal(final List<String> selectionList) {
         activity.newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -351,31 +337,85 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "Principal");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("databengkel"), args));
+                if(dataPrincipalList.size() == 0){
+                    result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("databengkel"), args));
+                    result = result.get("data");
+                    dataPrincipalList = result;
+                }
+
             }
 
             @Override
             public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    result = result.get("data");
-                    principalList.add("--PILIH--");
-                    for (int i = 0; i < result.size(); i++) {
-                        principalList.add(result.get(i).get("NAMA"));
+                final List<String> principalNameList = new ArrayList<>();
+                principalNameList.add("--PILIH--");
+                dataPrincipalList.add("");
+                for (int i = 0; i < dataPrincipalList.size(); i++) {
+                    if(!dataPrincipalList.get(i).asString().isEmpty()){
+                        principalNameList.add(result.get(i).get("NAMA").asString());
                     }
-                    ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(Objects.requireNonNull(getActivity()), android.R.layout.simple_spinner_item, principalList.asArray());
-                    spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spPrincial.setAdapter(spinnerAdapter);
-                    if (!principal.isEmpty()) {
-                        for (int in = 0; in < spPrincial.getCount(); in++) {
-                            if (spPrincial.getItemAtPosition(in).toString().contains(principal)) {
-                                spPrincial.setSelection(in);
-                                break;
+                }
+                spPrincial.setItems(principalNameList, selectionList);
+                spPrincial.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
+                    @Override
+                    public void selectedIndices(List<Integer> indices) {
+
+                    }
+
+                    @Override
+                    public void selectedStrings(final List<String> strings) {
+                        if(strings.size() > 0){
+                            principalSaveList.asArray().clear();
+                            for (int i = 0; i < dataPrincipalList.size(); i++) {
+                                for (int j = 0; j < strings.size(); j++) {
+                                    if(dataPrincipalList.get(i).get("NAMA").asString().equals(strings.get(j))){
+                                        if(!loadPrincipalList.contains(dataPrincipalList.get(i).get("NAMA").asString())){
+                                            principalSaveList.add(Nson.newObject()
+                                                    .set("PRINCIPAL_ID", dataPrincipalList.get(i).get("ID"))
+                                                    .set("NAMA_PRINCIPAL", dataPrincipalList.get(i).get("NAMA"))
+                                            );
+                                        }
+                                        break;
+                                    }
+                                }
                             }
                         }
                     }
-                }
+                });
             }
         });
+    }
+
+    private void getImageBase64() {
+        activity.newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                String[] args = new String[3];
+                args[0] = "CID=" + UtilityAndroid.getSetting(activity.getApplicationContext(), "CID", "").trim();
+                //logo
+                result = Nson.readJson(InternetX.getHttpConnectionX(AppApplication.getBaseUrlV4(GET_LOGO_BENGKEL), args));
+                result = result.get("data");
+
+                String base64String = result.get("LOGO_IMAGE").asString();
+                byte[] decodedString = Base64.decode(base64String, Base64.DEFAULT);
+                bitmapLogo = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+                base64String = result.get("TAMPAK_DEPAN_IMAGE").asString();
+                decodedString = Base64.decode(base64String, Base64.DEFAULT);
+                bitmapTampakDepan = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            }
+
+            @Override
+            public void runUI() {
+                if (bitmapLogo != null)
+                    btnLogo.setText("PREVIEW LOGO");
+                if (bitmapTampakDepan != null)
+                    btnTampakDepan.setText("PREVIEW TAMPAK DEPAN");
+            }
+        });
+
     }
 
     private void getImageFromAlbum(final int REQUEST) {
@@ -388,37 +428,14 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
         }
     }
 
-    public void getImage() {
-        try {
-            PackageManager pm = getContext().getPackageManager();
-            int hasPerm = pm.checkPermission(Manifest.permission.CAMERA, getContext().getPackageName());
-            if (hasPerm == PackageManager.PERMISSION_GRANTED) {
-                final CharSequence[] options = {"Kamera", "Gallery", "Cancel"};
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Select Option");
-                builder.setItems(options, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int item) {
-                        if (options[item].equals("Kamera")) {
-                            dialog.dismiss();
-                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            startActivityForResult(intent, PICK_IMAGE_CAMERA);
-                        } else if (options[item].equals("Gallery")) {
-                            dialog.dismiss();
-                            Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                            startActivityForResult(pickPhoto, PICK_IMAGE_GALLERY);
-                        } else if (options[item].equals("Cancel")) {
-                            dialog.dismiss();
-                        }
-                    }
-                });
-                builder.show();
-            } else
-                activity.showError("IZINKAN AKSES CAMERA DI PENGATURAN");
-        } catch (Exception e) {
-            activity.showError("IZINKAN AKSES CAMERA DI PENGATURAN");
-            e.printStackTrace();
-        }
+    public void getImagePickerByGalerryOrCamera() {
+        final List<Intent> intents = new ArrayList<>();
+        intents.add(new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI));
+        intents.add(new Intent(MediaStore.ACTION_IMAGE_CAPTURE));
+
+        Intent result = Intent.createChooser(intents.remove(0), null);
+        result.putExtra(Intent.EXTRA_INITIAL_INTENTS, intents.toArray(new Parcelable[]{}));
+        startActivityForResult(result, REQUEST_FOTO);
     }
 
 
@@ -426,63 +443,43 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE_CAMERA) {
-            activity.showSuccess("");
-            try {
-                Uri selectedImage = data.getData();
-                Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-                if (isLogo) {
-                    bitmapLogo = bitmap;
-                    fotoLogoBase64 = activity.bitmapToBase64(bitmapLogo);
-                    btnLogo.setText("PREVIEW LOGO");
-                } else {
-                    if (isTampakDepan) {
-                        bitmapTampakDepan = bitmap;
-                        fotoTampakDepanBase64 = activity.bitmapToBase64(bitmapTampakDepan);
-                        btnTampakDepan.setText("PREVIEW TAMPAK DEPAN");
-                    }
-                }
-
-                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
-
-                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-                File destination = new File(Environment.getExternalStorageDirectory() + "/" +
-                        getString(R.string.app_name), "IMG_" + timeStamp + ".jpg");
-                FileOutputStream fo;
+        if (requestCode == REQUEST_FOTO) {
+            Bundle extras = null;
+            Uri imageUri = null;
+            if (data != null) {
+                extras = data.getExtras();
+                if (extras == null)
+                    imageUri = data.getData();
+            }
+            if (imageUri != null) {
                 try {
-                    destination.createNewFile();
-                    fo = new FileOutputStream(destination);
-                    fo.write(bytes.toByteArray());
-                    fo.close();
+                    if (isLogo) {
+                        bitmapLogo = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), imageUri);
+                    } else {
+                        if (isTampakDepan) {
+                            bitmapTampakDepan = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), imageUri);
+                        }
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else if (requestCode == PICK_IMAGE_GALLERY) {
-            Uri selectedImage = data.getData();
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), selectedImage);
+            } else {
                 if (isLogo) {
-                    bitmapLogo = bitmap;
-                    fotoLogoBase64 = activity.bitmapToBase64(bitmapLogo);
-                    btnLogo.setText("PREVIEW LOGO");
+                    bitmapLogo = (Bitmap) (extras != null ? extras.get("data") : null);
                 } else {
                     if (isTampakDepan) {
-                        bitmapTampakDepan = bitmap;
-                        fotoTampakDepanBase64 = activity.bitmapToBase64(bitmapTampakDepan);
-                        btnTampakDepan.setText("PREVIEW TAMPAK DEPAN");
+                        bitmapTampakDepan = (Bitmap) (extras != null ? extras.get("data") : null);
                     }
                 }
-
-                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
-
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+
+            fotoLogoBase64 = activity.bitmapToBase64(bitmapLogo);
+            fotoTampakDepanBase64 = activity.bitmapToBase64(bitmapTampakDepan);
+
+            if (bitmapLogo != null)
+                btnLogo.setText("PREVIEW LOGO");
+            if (bitmapTampakDepan != null)
+                btnTampakDepan.setText("PREVIEW TAMPAK DEPAN");
         }
     }
 
@@ -538,11 +535,11 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
                     if (bitmap == bitmapLogo) {
                         isLogo = true;
                         isTampakDepan = false;
-                        getImage();
+                        getImagePickerByGalerryOrCamera();
                     } else if (bitmap == bitmapTampakDepan) {
                         isLogo = false;
                         isTampakDepan = true;
-                        getImage();
+                        getImagePickerByGalerryOrCamera();
                     }
                 } else {
                     if (bitmap == bitmapLogo) {
@@ -569,6 +566,7 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
         Cursor cursor = activity.getContentResolver().query(uri, null, null, null, null);
         cursor.moveToFirst();
         int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+        cursor.close();
         return cursor.getString(idx);
     }
 

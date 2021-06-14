@@ -1,9 +1,11 @@
 package com.rkrzmail.oto.modules.Fragment;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -13,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +26,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.data.UtilityAndroid;
@@ -33,12 +37,14 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.bengkel.RekeningBank_MainTab_Activity;
 import com.rkrzmail.srv.MultipartRequest;
+import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -47,6 +53,7 @@ import static com.rkrzmail.utils.APIUrls.ENTRY_EWALLET;
 import static com.rkrzmail.utils.APIUrls.GET_BANK_BY_CID;
 import static com.rkrzmail.utils.APIUrls.GET_EWALLET;
 import static com.rkrzmail.utils.APIUrls.GET_NAMA_BANK_BY_CID;
+import static com.rkrzmail.utils.APIUrls.GET_QRIS_IMAGE;
 import static com.rkrzmail.utils.APIUrls.MST_EWALLET;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_FOTO;
 
@@ -54,7 +61,7 @@ public class EWallet_Rekening_Fragment extends Fragment {
 
     private View fragmentView;
     private AppActivity activity;
-    private EditText etNamaMerchant, etMerchantID, etNoRekening, etNamaRekening;
+    private EditText etNamaMerchant, etMerchantID, etNoRekening, etNamaRekening, etOnUs, etOffUs;
     private Spinner spNamaEwallet, spRekeningIn;
 
 
@@ -93,6 +100,11 @@ public class EWallet_Rekening_Fragment extends Fragment {
         spRekeningIn = fragmentView.findViewById(R.id.sp_rekening_internal);
         etNamaRekening = fragmentView.findViewById(R.id.et_nama_rekening);
         etNoRekening = fragmentView.findViewById(R.id.et_no_rekening);
+        etOffUs = fragmentView.findViewById(R.id.et_mdr_off_us);
+        etOnUs = fragmentView.findViewById(R.id.et_mdr_on_us);
+
+        etOffUs.addTextChangedListener(new NumberFormatUtils().percentTextWatcher(etOffUs));
+        etOnUs.addTextChangedListener(new NumberFormatUtils().percentTextWatcher(etOnUs));
 
         Button btnFotoQris = fragmentView.findViewById(R.id.btn_foto_qris);
         Button btnSimpan = fragmentView.findViewById(R.id.btn_simpan);
@@ -177,9 +189,15 @@ public class EWallet_Rekening_Fragment extends Fragment {
                 if (isPreview) {
                     getImagePickOrCamera();
                 } else {
-                    if (bitmapQris != null) {
-                        bitmapQrisBase64 = activity.bitmapToBase64(bitmapQris);
-                    }
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (bitmapQris != null) {
+                                bitmapQrisBase64 = activity.bitmapToBase64(bitmapQris);
+                            }
+                        }
+                    });
+
                     activity.showSuccess("BERHASIL MENYIMPAN FOTO");
                     alertDialog.dismiss();
                 }
@@ -222,12 +240,15 @@ public class EWallet_Rekening_Fragment extends Fragment {
                 }
 
                 eWalletID = result.get("ID").asString();
+                etOffUs.setText(result.get("MDR_OFF_US").asString());
+                etOnUs.setText(result.get("MDR_ON_US").asString());
                 etNoRekening.setText(result.get("NO_REKENING").asString());
                 etNamaRekening.setText(result.get("NAMA_REKENING").asString());
                 etNamaMerchant.setText(result.get("NAMA_MERCHANT").asString());
                 etMerchantID.setText(result.get("MERCHANT_ID").asString());
                 setSpNamaEwallet(result.get("NAMA_EWALLET").asString());
-                setSpRekening(result.get("NAMA_BANK").asString());
+                setSpRekening(result.get("NAMA_BANK").asString() + " - " + result.get("NO_REKENING").asString());
+                getQrisImage();
             }
         });
     }
@@ -266,13 +287,9 @@ public class EWallet_Rekening_Fragment extends Fragment {
                             if (adapterView.getItemAtPosition(i).toString().equals(dataEwallet.get(i).get("NAMA_EWALLET").asString())) {
                                 namaEwallet = dataEwallet.get(i).get("NAMA_EWALLET").asString();
                                 kodeEwallet = dataEwallet.get(i).get("KODE_EWALLET").asString();
-                                mdrOnUs = dataEwallet.get(i).get("MDR_ON_US").asString();
-                                mdrOffUs = dataEwallet.get(i).get("MDR_OFF_US").asString();
                             } else {
                                 namaEwallet = "";
                                 kodeEwallet = "";
-                                mdrOnUs = "";
-                                mdrOffUs = "";
                             }
                         }
 
@@ -293,7 +310,6 @@ public class EWallet_Rekening_Fragment extends Fragment {
                 }
             }
         });
-
     }
 
     public void setSpRekening(final String selection) {
@@ -365,6 +381,32 @@ public class EWallet_Rekening_Fragment extends Fragment {
         });
     }
 
+    private void getQrisImage() {
+        activity.newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                String[] args = new String[3];
+                args[0] = "CID=" + UtilityAndroid.getSetting(getContext(), "CID", "").trim();
+                result = Nson.readJson(InternetX.getHttpConnectionX(AppApplication.getBaseUrlV4(GET_QRIS_IMAGE), args));
+            }
+
+            @Override
+            public void runUI() {
+                if (result.get("status").asBoolean()) {
+                    result = result.get("data");
+                    if (!result.get("QRIS_IMAGE").asString().isEmpty()) {
+                        String base64String = result.get("QRIS_IMAGE").asString();
+                        byte[] decodedString = Base64.decode(base64String, Base64.DEFAULT);
+                        bitmapQris = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                    }
+                }
+            }
+        });
+
+    }
+
     private void saveData() {
         activity.newProses(new Messagebox.DoubleRunnable() {
             String response = "";
@@ -372,6 +414,7 @@ public class EWallet_Rekening_Fragment extends Fragment {
             @Override
             public void run() {
                 MultipartRequest formBody = new MultipartRequest(activity.getActivity());
+
                 formBody.addString("CID", UtilityAndroid.getSetting(activity.getApplicationContext(), "CID", "").trim());
                 formBody.addString("namaEwallet", namaEwallet);
                 formBody.addString("kodeEwallet", kodeEwallet);
@@ -380,10 +423,11 @@ public class EWallet_Rekening_Fragment extends Fragment {
                 formBody.addString("merchantId", etMerchantID.getText().toString());
                 formBody.addString("namaMerchant", etNamaMerchant.getText().toString());
                 formBody.addString("namaBank", namaBank);
-                formBody.addString("mdrOnUs", mdrOnUs);
-                formBody.addString("mdrOffUs", mdrOffUs);
-                formBody.addImageFile("fotoQris", tempQrisFile.getAbsolutePath(), fileNameQrisFile);
+                formBody.addString("mdrOnUs", NumberFormatUtils.clearPercent(etOnUs.getText().toString()));
+                formBody.addString("mdrOffUs", NumberFormatUtils.clearPercent(etOffUs.getText().toString()));
+                //formBody.addImageFile("fotoQris", tempQrisFile.getAbsolutePath(), fileNameQrisFile);
                 formBody.addString("eWalletID", eWalletID);
+                formBody.addString("qrisBase64", activity.bitmapToBase64(bitmapQris));
 
                 response = formBody.execute(AppApplication.getBaseUrlV4(ENTRY_EWALLET));
             }
@@ -397,10 +441,49 @@ public class EWallet_Rekening_Fragment extends Fragment {
         });
     }
 
+    private void getImageUri(final Uri imageUri, final Bundle imgBundle){
+        activity.newProses(new Messagebox.DoubleRunnable() {
+            @Override
+            public void run() {
+                if (imageUri != null) {
+                    try {
+                        bitmapQris = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), imageUri);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    bitmapQris = (Bitmap) (imgBundle != null ? imgBundle.get("data") : null);
+                }
+
+                if (bitmapQris != null) {
+                    tempQrisFile = new File(Objects.requireNonNull(getContext()).getCacheDir(), fileNameQrisFile);
+                    try {
+                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+                        bitmapQris.compress(Bitmap.CompressFormat.PNG, 100, bos);
+                        byte[] bitmapdata = bos.toByteArray();
+                        FileOutputStream fos = new FileOutputStream(tempQrisFile);
+                        fos.write(bitmapdata);
+                        fos.flush();
+                        fos.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void runUI() {
+                activity.showSuccess(tempQrisFile.getAbsolutePath(), Toast.LENGTH_LONG);
+                showDialogPreviewFoto(false);
+            }
+        });
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_FOTO) {
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_FOTO) {
             if (alertDialog != null && alertDialog.isShowing())
                 alertDialog.dismiss();
             Bundle extras = null;
@@ -410,34 +493,7 @@ public class EWallet_Rekening_Fragment extends Fragment {
                 if (extras == null)
                     imageUri = data.getData();
             }
-            if (imageUri != null) {
-                try {
-                    bitmapQris = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), imageUri);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                bitmapQris = (Bitmap) (extras != null ? extras.get("data") : null);
-            }
-
-            if (bitmapQris != null) {
-                tempQrisFile = new File(Objects.requireNonNull(getContext()).getCacheDir(), fileNameQrisFile);
-                try {
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
-                    bitmapQris.compress(Bitmap.CompressFormat.PNG, 0, bos);
-                    byte[] bitmapdata = bos.toByteArray();
-                    FileOutputStream fos = new FileOutputStream(tempQrisFile);
-                    fos.write(bitmapdata);
-                    fos.flush();
-                    fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            Log.d("qris_img", "onActivityResult: " + tempQrisFile.getAbsolutePath());
-            showDialogPreviewFoto(false);
+            getImageUri(imageUri, extras);
         }
     }
 }
