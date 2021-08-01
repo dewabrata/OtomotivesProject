@@ -2,39 +2,22 @@ package com.rkrzmail.oto.modules.hutang;
 
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
 
-import com.naa.data.Nson;
-import com.naa.utils.InternetX;
-import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
-import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.Fragment.Cash_Pembayaran_Fragment;
-import com.rkrzmail.oto.modules.Fragment.FragmentsAdapter;
+import com.rkrzmail.oto.modules.Adapter.FragmentsAdapter;
 import com.rkrzmail.oto.modules.Fragment.Invoice_Piutang_Fragment;
-import com.rkrzmail.oto.modules.Fragment.Print_Pembayaran_Fragment;
-import com.rkrzmail.oto.modules.Fragment.Setoran_Pembayaran_Fragment;
-import com.rkrzmail.oto.modules.Fragment.Transaksi_Pembayaran_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Transaksi_Piutang_Fragment;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class Piutang_MainTab_Activity extends AppActivity {
 

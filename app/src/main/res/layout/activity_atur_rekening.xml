@@ -92,35 +92,29 @@
                 android:layout_marginBottom="@dimen/paddingMedium"
                 android:gravity="center"
                 android:orientation="horizontal"
-                android:paddingStart="3dp"
-                android:paddingEnd="3dp">
+                android:padding="10dp"
+                android:background="@drawable/background_edittext">
 
-                <RelativeLayout
+                <CheckBox
+                    android:id="@+id/cb_edc_rekening"
                     android:layout_width="0dp"
-                    android:layout_height="39dp"
-                    android:layout_weight="6"
-                    android:background="@drawable/background_edittext">
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="EDC ACTIVE" />
 
-                    <CheckBox
-                        android:id="@+id/cb_edc_rekening"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:padding="10dp"
-                        android:layout_marginStart="20dp"
-                        android:text="EDC ACTIVE" />
+                <CheckBox
+                    android:id="@+id/cb_offUs_rekening"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="OFF US" />
 
-                    <CheckBox
-                        android:id="@+id/cb_offUs_rekening"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:padding="10dp"
-                        android:layout_marginEnd="20dp"
-                        android:text="OFF US" />
-
-                </RelativeLayout>
-
+                <CheckBox
+                    android:id="@+id/cb_publish"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="PUBLISH" />
             </LinearLayout>
 
             <include layout="@layout/layout_btn_simpan_hapus"/>

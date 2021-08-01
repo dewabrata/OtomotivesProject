@@ -18,7 +18,7 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.Fragment.Schedule_Profile_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Tambahan_Profile_Fragment;
 import com.rkrzmail.oto.modules.Fragment.Usaha_Profile_Fragment;
-import com.rkrzmail.oto.modules.Fragment.FragmentsAdapter;
+import com.rkrzmail.oto.modules.Adapter.FragmentsAdapter;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -96,7 +96,7 @@ public class ProfileBengkel_Activity extends AppActivity {
     }
 
 
-    private void getData() {
+    public void getData() {
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             @Override
             public void run() {

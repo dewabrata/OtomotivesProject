@@ -17,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,17 +26,16 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.sparepart.AturLokasiPart_Activity;
-import com.rkrzmail.oto.modules.sparepart.LokasiPart_MainTab_Activity;
+import com.rkrzmail.oto.modules.Adapter.LokasiPart_MainTab_Activity_OLD;
 import com.rkrzmail.srv.NikitaAutoComplete;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
-import com.rkrzmail.srv.NsonAutoCompleteAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
+import com.rkrzmail.oto.modules.Adapter.NsonAutoCompleteAdapter;
 
 import java.util.Map;
 import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.VIEW_LOKASI_PART;
-import static com.rkrzmail.utils.APIUrls.VIEW_NOMOR_POLISI;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_TERALOKASIKAN;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_ATUR_LOKASI;
 
@@ -116,7 +114,7 @@ public class PartTeralokasikan_Fragment extends Fragment {
 
 
     public void getTeralokasikan(final String cari) {
-        ((LokasiPart_MainTab_Activity) getActivity()).newProses(new Messagebox.DoubleRunnable() {
+        ((LokasiPart_MainTab_Activity_OLD) getActivity()).newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
             @Override
@@ -137,7 +135,7 @@ public class PartTeralokasikan_Fragment extends Fragment {
                     nListArray.asArray().addAll(result.get("data").asArray());
                     Objects.requireNonNull(rvLokasi_part.getAdapter()).notifyDataSetChanged();
                 } else {
-                    ((LokasiPart_MainTab_Activity) Objects.requireNonNull(getActivity())).showError(result.get("message").asString());
+                    ((LokasiPart_MainTab_Activity_OLD) Objects.requireNonNull(getActivity())).showError(result.get("message").asString());
                 }
             }
         });
@@ -225,7 +223,7 @@ public class PartTeralokasikan_Fragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK && requestCode == LokasiPart_MainTab_Activity.REQUEST_ATUR) {
+        if (resultCode == Activity.RESULT_OK && requestCode == LokasiPart_MainTab_Activity_OLD.REQUEST_ATUR) {
             getTeralokasikan("");
         } else if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_ATUR_LOKASI) {
             getTeralokasikan("");

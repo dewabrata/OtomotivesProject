@@ -17,23 +17,19 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
-import com.naa.data.UtilityAndroid;
 import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.bengkel.AturReferal_Activity;
 import com.rkrzmail.oto.modules.bengkel.AturRekening_Activity;
-import com.rkrzmail.oto.modules.bengkel.Referal_MainTab_Activity;
-import com.rkrzmail.oto.modules.bengkel.RekeningBank_MainTab_Activity;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.oto.modules.Adapter.RekeningBank_MainTab_Activity;
+import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
 
 import java.util.Map;
 import java.util.Objects;
 
-import static com.rkrzmail.utils.APIUrls.REFERAL;
 import static com.rkrzmail.utils.APIUrls.SET_REKENING_BANK;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,13 +40,14 @@ import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 
 public class AturFrekwensiDiscount_Acitivity extends AppActivity {
 
-    private EditText etDisc, etFrekwensi;
+    private EditText etDisc;
     private Button btnLayanan;
     private SpinnerDialog spDialogLayanan;
 
     private final Nson dataLayananList = Nson.newArray();
     private final ArrayList<String> layananList = new ArrayList<>();
 
+    private String frekwensi = "";
     private int idLayanan = 0;
     private int discountID = 0;
 
@@ -68,7 +70,6 @@ public class AturFrekwensiDiscount_Acitivity extends AppActivity {
     private void initComponent() {
         etDisc = findViewById(R.id.et_disc_freDisc);
         btnLayanan = findViewById(R.id.btn_layanan);
-        etFrekwensi = findViewById(R.id.et_frekwensi);
         etDisc.addTextChangedListener(new NumberFormatUtils().percentTextWatcher(etDisc));
     }
 
@@ -81,20 +82,19 @@ public class AturFrekwensiDiscount_Acitivity extends AppActivity {
             btnLayanan.setEnabled(false);
             btnLayanan.setText(data.get("NAMA_LAYANAN").asString());
             etDisc.setText(data.get("DISCOUNT_TRANSAKSI").asString());
-            etFrekwensi.setText(data.get("FREKWENSI").asString());
         }
 
         setSpLayanan();
         setSpStatus(data.get("STATUS").asString());
+        setSpFrekwensi(data.get("FREKWENSI").asString());
 
         final boolean finalIsUpdate = isUpdate;
         find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (finalIsUpdate) {
-                    if (etFrekwensi.getText().toString().isEmpty()) {
-                        etFrekwensi.setError("HARUS DI ISI");
-                        viewFocus(etFrekwensi);
+                    if (frekwensi.isEmpty()) {
+                       setErrorSpinner(find(R.id.sp_frekwensi, Spinner.class), "FREKWENSI HARUS DI PILIH");
                     } else if (etDisc.getText().toString().isEmpty()) {
                         etDisc.setError("HARUS DI ISI");
                         viewFocus(etDisc);
@@ -105,10 +105,9 @@ public class AturFrekwensiDiscount_Acitivity extends AppActivity {
                     if (btnLayanan.getText().toString().equals("--PILIH--")) {
                         btnLayanan.setError("HARUD DI PILIH");
                         viewFocus(btnLayanan);
-                    } else if (etFrekwensi.getText().toString().isEmpty()) {
-                        etFrekwensi.setError("HARUS DI ISI");
-                        viewFocus(etFrekwensi);
-                    } else if (etDisc.getText().toString().isEmpty()) {
+                    } else if (frekwensi.isEmpty()) {
+                        setErrorSpinner(find(R.id.sp_frekwensi, Spinner.class), "FREKWENSI HARUS DI PILIH");
+                    }  else if (etDisc.getText().toString().isEmpty()) {
                         etDisc.setError("HARUS DI ISI");
                         viewFocus(etDisc);
                     } else {
@@ -119,6 +118,29 @@ public class AturFrekwensiDiscount_Acitivity extends AppActivity {
             }
         });
 
+    }
+
+    private void setSpFrekwensi(final String selection){
+        List<String> frekwensiList = new ArrayList<>();
+        frekwensiList.add("--PILIH--");
+        for (int i = 1; i <= 10; i++) {
+            frekwensiList.add(String.valueOf(i));
+        }
+
+        setSpinnerOffline(frekwensiList, find(R.id.sp_frekwensi, Spinner.class), selection);
+        find(R.id.sp_frekwensi, Spinner.class).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position != 0){
+                    frekwensi = parent.getItemAtPosition(position).toString();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     private void setSpStatus(String status) {
@@ -220,7 +242,7 @@ public class AturFrekwensiDiscount_Acitivity extends AppActivity {
                 args.put("status", find(R.id.sp_status, Spinner.class).getSelectedItem().toString());
                 args.put("layananID", String.valueOf(idLayanan));
                 args.put("namaLayanan", btnLayanan.getText().toString());
-                args.put("frekwensi", etFrekwensi.getText().toString());
+                args.put("frekwensi", frekwensi);
                 args.put("diskonTransaksi", NumberFormatUtils.clearPercent(etDisc.getText().toString()));
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(DISCOUNT_FREKWENSI), args));

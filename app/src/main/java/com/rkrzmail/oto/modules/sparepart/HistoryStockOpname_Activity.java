@@ -14,6 +14,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -23,16 +25,18 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import static com.rkrzmail.utils.APIUrls.SET_STOCK_OPNAME;
 import static com.rkrzmail.utils.ConstUtils.ALL;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_LOKASI;
-import static com.rkrzmail.utils.ConstUtils.CARI_PART_TERALOKASIKAN;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.PART;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
@@ -46,7 +50,7 @@ public class HistoryStockOpname_Activity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_basic_with_fab);
+        setContentView(R.layout.activity_history_stock_opname);
         initComponent();
     }
 
@@ -64,6 +68,7 @@ public class HistoryStockOpname_Activity extends AppActivity {
             public void onClick(View view) {
                 intent = new Intent(getActivity(), CariPart_Activity.class);
                 intent.putExtra(CARI_PART_LOKASI, ALL);
+                intent.putExtra("OPNAME_PART", "");
                 startActivityForResult(intent, REQUEST_CARI_PART);
             }
         });
@@ -83,7 +88,7 @@ public class HistoryStockOpname_Activity extends AppActivity {
                 viewHolder.find(R.id.tv_pending_historyStock, TextView.class).setText(nListArray.get(position).get("PENDING_STOCK").asString());
                 viewHolder.find(R.id.tv_opname_historyStock, TextView.class).setText(nListArray.get(position).get("OPNAME").asString());
 
-                String tgl =  Tools.setFormatDateTimeFromDb(nListArray.get(position).get("CREATED_DATE").asString(), "", "dd/MM hh:mm", true);
+                String tgl = Tools.setFormatDateTimeFromDb(nListArray.get(position).get("CREATED_DATE").asString(), "", "dd/MM hh:mm", true);
 
                 viewHolder.find(R.id.tv_tgl, TextView.class).setText(tgl);
                 viewHolder.find(R.id.tv_user, TextView.class).setText(nListArray.get(position).get("USER").asString());
@@ -92,28 +97,29 @@ public class HistoryStockOpname_Activity extends AppActivity {
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Nson parent, View view, int position) {
-                if(!parent.get(position).get("PENYESUAIAN_ID").asString().isEmpty()){
+                if (!parent.get(position).get("PENYESUAIAN_ID").asString().isEmpty()) {
                     intent = new Intent(getActivity(), AturPenyesuain_StockOpname_Activity.class);
                     intent.putExtra("VIEW", "");
                     intent.putExtra(DATA, nListArray.get(position).toJson());
                     startActivityForResult(intent, REQUEST_OPNAME);
-                }else{
+                } else {
                     showWarning("TIDAK TERDAPAT PENYESUAIAN UNTUK " + parent.get(position).get("NAMA_PART").asString());
                 }
 
             }
         }));
 
-        reload("");
+        getData("");
+
         find(R.id.swiperefresh, SwipeRefreshLayout.class).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                reload("");
+                getData("");
             }
         });
     }
 
-    private void reload(final String cari) {
+    private void getData(final String cari) {
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -172,7 +178,7 @@ public class HistoryStockOpname_Activity extends AppActivity {
             public boolean onQueryTextSubmit(String query) {
                 searchMenu.collapseActionView();
                 //filter(null);
-                reload(query);
+                getData(query);
 
                 return true;
             }
@@ -185,7 +191,7 @@ public class HistoryStockOpname_Activity extends AppActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_OPNAME) {
-            reload("");
+            getData("");
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_CARI_PART) {
             intent = new Intent(getActivity(), AturStockOpname_Activity.class);
             intent.putExtra(DATA, Nson.readJson(getIntentStringExtra(data, PART)).toJson());

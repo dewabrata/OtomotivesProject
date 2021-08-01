@@ -2,17 +2,14 @@ package com.rkrzmail.oto.modules.sparepart;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +19,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -37,17 +35,13 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.BarcodeActivity;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
 import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -132,8 +126,8 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
                     showWarning("PART TIDAK BOLEH KOSONG", Toast.LENGTH_LONG);
                     return;
                 }
-                if(isPembayaranActive && (jenisPembayaran.equals("TRANSFER") || jenisPembayaran.equals("CASH ON DELIVERY"))
-                        && totalAll > lastBalance){
+                if (isPembayaranActive && (jenisPembayaran.equals("TRANSFER") || jenisPembayaran.equals("CASH ON DELIVERY"))
+                        && totalAll > lastBalance) {
                     showWarning("BALANCE KAS " + (jenisPembayaran.equals("CASH ON DELIVERY") ? "" : "BANK") + "TIDAK CUKUP");
                     return;
                 }
@@ -141,8 +135,7 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
             }
         });
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_tambah_terimaPart);
-        fab.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.fab_tambah_terimaPart).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addData();
@@ -151,7 +144,7 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
     }
 
     @SuppressLint("SetTextI18n")
-    private void dialogKonfirmasi(final Nson data, String namaPart, String noPart, String hargaPart, String jumlah, String disc) {
+    private void dialogKonfirmasi(final Nson data) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_info_terima_part, null);
@@ -163,14 +156,17 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
         TextView tvHargaPart = dialogView.findViewById(R.id.tv_harga_part);
         TextView tvJumlahPart = dialogView.findViewById(R.id.tv_jumlah);
         TextView tvDiscount = dialogView.findViewById(R.id.tv_discount);
+        TextView tvHargaNet = dialogView.findViewById(R.id.tv_harga_net);
         Button btnSimpan = dialogView.findViewById(R.id.btn_simpan);
         Button btnBatal = dialogView.findViewById(R.id.btn_batal);
 
-        tvNamaPart.setText(namaPart);
-        tvNoPart.setText(noPart);
-        tvHargaPart.setText(RP + NumberFormatUtils.formatRp(hargaPart));
-        tvJumlahPart.setText(jumlah);
-        tvDiscount.setText(disc);
+        tvNamaPart.setText(data.get("NAMA_PART").asString());
+        tvNoPart.setText(data.get("NO_PART").asString());
+        tvHargaPart.setText(RP + NumberFormatUtils.formatRp(data.get("HARGA_BELI").asString()));
+        tvJumlahPart.setText(data.get("JUMLAH").asString());
+        tvDiscount.setText(data.get("DISCOUNT").asString().contains(",") || data.get("DISCOUNT").asString().contains(".") ?
+                data.get("DISCOUNT").asString() + " %" : RP + NumberFormatUtils.formatRp(data.get("DISCOUNT").asString()));
+        tvHargaNet.setText(RP + NumberFormatUtils.formatRp(data.get("NET").asString()));
 
         btnSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -399,8 +395,8 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
             jumlahAllPart += jumlah;
         }
         Log.d(TAG, "total_part : " + jumlahAllPart);
-        getActivity().getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
         Nson dataAdd = Nson.newObject();
         dataAdd.set("NO_PART", txtNoPart.getText().toString());
         dataAdd.set("NAMA_PART", txtNamaPart.getText().toString());
@@ -411,6 +407,10 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
         dataAdd.set("KODE", kodeFolder);
         dataAdd.set("MERK", merkPart);
         dataAdd.set("LOKASI_SIMPAN", spinnerLokasiSimpan.getSelectedItem().toString());
+        dataAdd.set("NON_HPP", find(R.id.cb_non_hpp, CheckBox.class).isChecked() ? "Y" : "N");
+
+        if (find(R.id.cb_non_hpp, CheckBox.class).isChecked())
+            find(R.id.cb_non_hpp, CheckBox.class).setChecked(false);
 
         String disc = "";
         if (etDiscPercent.isEnabled()) {
@@ -419,18 +419,11 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
         } else if (etDiscRp.isEnabled()) {
             disc = formatOnlyNumber(etDiscRp.getText().toString());
             dataAdd.set("DISCOUNT", disc);
-        }else{
+        } else {
             dataAdd.set("DISCOUNT", disc);
         }
         totalAll += Long.parseLong(NumberFormatUtils.formatOnlyNumber(etHargaBersih.getText().toString()));
-        dialogKonfirmasi(
-                dataAdd,
-                dataAdd.get("NAMA_PART").asString(),
-                dataAdd.get("NO_PART").asString(),
-                dataAdd.get("HARGA_BELI").asString(),
-                dataAdd.get("JUMLAH").asString(),
-                dataAdd.get("DISCOUNT").asString()
-        );
+        dialogKonfirmasi(dataAdd);
     }
 
     private void initRecylerView() {
@@ -552,6 +545,7 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
         }
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -564,6 +558,7 @@ public class AturDetail_TerimaPart_Activity extends AppActivity implements View.
             merkPart = n.get("MERK").asString();
             txtNoPart.setText(n.get("NO_PART").asString());
             txtNamaPart.setText(n.get("NAMA_PART").asString());
+            find(R.id.et_non_hpp, EditText.class).setText(RP + NumberFormatUtils.formatRp(n.get("HPP").asString()));
             setSpinnerLokasiSimpan(lokasiPart);
             etPenempatan.setText(penempatan);
         } else if (requestCode == REQUEST_BARCODE && resultCode == RESULT_OK) {

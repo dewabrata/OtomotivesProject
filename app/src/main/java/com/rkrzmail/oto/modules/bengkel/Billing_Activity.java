@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,9 +17,8 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.Fragment.Absen_Absensi_Fragment;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
 import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.ConstUtils;
 import com.rkrzmail.utils.Tools;
@@ -28,7 +26,6 @@ import com.rkrzmail.utils.Tools;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.rkrzmail.utils.APIUrls.ABSEN;
 import static com.rkrzmail.utils.APIUrls.FEE_BILLING;
 import static com.rkrzmail.utils.ConstUtils.RP;
 

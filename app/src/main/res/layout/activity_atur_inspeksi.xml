@@ -51,8 +51,37 @@
                     android:background="@drawable/btn_rounded_accent"
                     android:textColor="@android:color/white"/>
 
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="15dp"
+                android:layout_marginTop="10dp">
+
+                <Button
+                    android:id="@+id/btn_foto_kondisi"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/btn_rounded_accent"
+                    android:textColor="@android:color/white"
+                    android:text="@string/foto_kondisi_uppercase" />
+
+                <Button
+                    android:id="@+id/btn_perlengkapan"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/btn_rounded_accent"
+                    android:textColor="@android:color/white"
+                    android:text="@string/perlengkapan_uppercase" />
 
             </LinearLayout>
+
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerView"

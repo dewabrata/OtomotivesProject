@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.naa.data.UtilityAndroid;
 import com.rkrzmail.oto.modules.LoginActivity;
+import com.rkrzmail.oto.modules.bengkel.RegistrasiBengkel_Activity;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -38,7 +39,6 @@ public class MainActivity extends AppActivity {
         try {
             GifDrawable gifDrawable = new GifDrawable(getResources().openRawResource(R.raw.spash1));
             gifView.setImageDrawable(gifDrawable);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -58,6 +58,8 @@ public class MainActivity extends AppActivity {
                 String tgl = simpleDateFormat.format(calendar.getTime());
                 String[] splitTgl = tgl.split("-");
 
+               /* Intent intent = new Intent(getActivity(), RegistrasiBengkel_Activity.class);
+                startActivity(intent);*/
                 if (getSetting("L").equalsIgnoreCase("L")) {
                     //login
                     Intent intent = new Intent(getActivity(), MenuActivity.class);

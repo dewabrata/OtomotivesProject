@@ -18,17 +18,15 @@ import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.bengkel.Absensi_MainTab_Activity;
-import com.rkrzmail.srv.DateFormatUtils;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.oto.modules.Adapter.Absensi_MainTab_Activity;
+import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.ABSEN;
-import static com.rkrzmail.utils.APIUrls.VIEW_PEMBAYARAN;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 
 
@@ -100,6 +98,7 @@ public class Schedule_Absensi_Fragment extends Fragment {
                 viewHolder.find(R.id.tv_tanggal_kerja, TextView.class).setText(scheduleList.get(position).get("TANGGAL").asString());
                 viewHolder.find(R.id.tv_bulan_kerja, TextView.class).setText(Tools.getmonth(Integer.parseInt(bulan)));
                 viewHolder.find(R.id.tv_lokasi, TextView.class).setText(scheduleList.get(position).get("LOKASI").asString());
+                viewHolder.find(R.id.tv_status, TextView.class).setText(scheduleList.get(position).get("STATUS").asString());
 
             }
         });

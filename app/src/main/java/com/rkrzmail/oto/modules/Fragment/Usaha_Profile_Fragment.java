@@ -43,12 +43,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
 import static com.rkrzmail.utils.APIUrls.GET_LOGO_BENGKEL;
+import static com.rkrzmail.utils.APIUrls.VIEW_JENIS_KENDARAAN;
+import static com.rkrzmail.utils.APIUrls.VIEW_MASTER;
 import static com.rkrzmail.utils.APIUrls.VIEW_PROFILE;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_FOTO;
 
@@ -59,7 +62,7 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
 
     private EditText etNamaBengkel, etAlamat, etBadanUsaha, etKotaKab, etNoTelp, etNib, etNpwp, etKodePos, etNoTelpMessage,
             etMaxAntrianExpress, etMaxAntrianStandart, etGoogleBisnis;
-    private Spinner spAfiliasi;
+    private Spinner spAfiliasi, spMngKeuangan;
     private MultiSelectionSpinner spJenisKendaraan, spMerkKendaraan, spBidangUsaha, spPrincial;
     private CheckBox cbPkp;
     private AlertDialog alertDialog;
@@ -69,12 +72,17 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
     private String fotoLogoBase64 = "", fotoTampakDepanBase64 = "";
     private String latitude = "", longitude = "";
     private String logoName = "logo.png", tampakDepanName = "tampakDepan.png";
-    private Nson dataPrincipalList = Nson.newArray();
-    private final Nson principalSaveList = Nson.newArray();
     List<String> loadPrincipalList = new ArrayList<>();
 
-    private AppActivity activity;
+    private Nson dataPrincipalList = Nson.newArray();
+    private final Nson principalSaveList = Nson.newArray();
+    private final Nson saveDataMerk = Nson.newArray();
+    private final Nson saveDataBidangUsaha = Nson.newArray();
+    private final Nson dataMerkKendaraan = Nson.newArray();
+    private Nson dataBidangUsaha = Nson.newArray();
     private Nson getData;
+
+    private AppActivity activity;
     private File logoTempFile = null, tampakDepanTempFile = null;
 
     private boolean isLoadBitmapLogo = false, isLoadBitmapDepan = false;
@@ -144,6 +152,7 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
         Button btnSimpan = v.findViewById(R.id.btn_simpan_usaha);
         Button btnLokasi = v.findViewById(R.id.btn_lokasi_tambahan);
         etGoogleBisnis = v.findViewById(R.id.et_google_bisnis);
+        spMngKeuangan  = v.findViewById(R.id.sp_management_keuangan);
 
         final MapPicker_Dialog mapPicker_dialog = new MapPicker_Dialog();
         mapPicker_dialog.getBengkelLocation(this);
@@ -197,7 +206,17 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
         btnSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveData();
+                if (etKodePos.getText().toString().isEmpty()) {
+                    activity.errorFocus(etKodePos, "KODE POS HARUS DI PILIH");
+                } else if (spAfiliasi.getSelectedItem().toString().equals("--PILIH--")) {
+                    activity.setErrorSpinner(spAfiliasi, "AFILIASI HARUS DI PILIH");
+                }else if(etMaxAntrianExpress.getText().toString().isEmpty()){
+                    activity.errorFocus(etMaxAntrianExpress, "WAKTU MAX ANTRIAN HARUS DI ISI");
+                }else if(etMaxAntrianStandart.getText().toString().isEmpty()){
+                    activity.errorFocus(etMaxAntrianStandart, "WAKTU MAX ANTRIAN HARUS DI ISI");
+                } else {
+                    saveData();
+                }
             }
         });
     }
@@ -223,7 +242,7 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
                     cbPkp.setChecked(nson.get("PKP").asString().equals("Y"));
                     etNpwp.setText(nson.get("NPWP").asString());
                     etNib.setText(nson.get("NIB").asString());
-                    etBadanUsaha.setText(nson.get("KATEGORI_BENGKEL").asString());
+                    etBadanUsaha.setText(nson.get("NAMA_USAHA").asString());
                     etNamaBengkel.setText(nson.get("NAMA_BENGKEL").asString());
                     etAlamat.setText(nson.get("ALAMAT").asString());
                     etKotaKab.setText(nson.get("KOTA_KABUPATEN").asString());
@@ -233,17 +252,13 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
                     etMaxAntrianStandart.setText(nson.get("MAX_ANTRIAN_STANDART_MENIT").asString());
                     etGoogleBisnis.setText(nson.get("GOOGLE_BISNIS").asString());
 
-                    List<String> jenisKendaraanList = new ArrayList<>(), merkKendaraanList = new ArrayList<>(),
-                            bidangUsahaList = new ArrayList<>();
-                    jenisKendaraanList.add(nson.get("JENIS_KENDARAAN").asString());
-                    merkKendaraanList.add(nson.get("MERK_KENDARAAN").asString());
-                    bidangUsahaList.add(nson.get("KATEGORI_BENGKEL").asString());
+                    String isPembayaran = nson.get("PEMBAYARAN_ACTIVE").asString().equals("Y") ? "YA" : "TIDAK";
 
+                    activity.setSpinnerOffline(Arrays.asList(activity.getResources().getStringArray(R.array.ya_tidak)), spMngKeuangan, isPembayaran);
+                    setJenisKendaraan(Collections.singletonList(UtilityAndroid.getSetting(getContext(), "JENIS_KENDARAAN", "")));
+                    setMerkKendaraan(nson.get("MERK_BENGKEL"));
+                    setSpBidangUsaha(nson.get("BIDANG_USAHA_BENGKEL"));
                     activity.setSpinnerOffline(afiliasiList, spAfiliasi, nson.get("AFILIASI").asString());
-
-                    setJenisKendaraan(jenisKendaraanList);
-                    setMerkKendaraan(merkKendaraanList);
-                    setSpBidangUsaha(bidangUsahaList);
 
                     if (nson.get("PRINCIPAL_BENGKEL").asArray().size() > 0) {
                         Nson loadPrincipal = nson.get("PRINCIPAL_BENGKEL");
@@ -252,8 +267,8 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
                                 loadPrincipalList.add(loadPrincipal.get(i).get("NAMA_PRINCIPAL").asString());
                             }
                         }
-                        setSpNamaPrincipal(loadPrincipalList);
                     }
+                    setSpNamaPrincipal(loadPrincipalList);
                 }
             });
         }
@@ -262,6 +277,11 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
     }
 
     private void saveData() {
+        final int jamExpress = Integer.parseInt(etMaxAntrianExpress.getText().toString().substring(0, 2));
+        final int menitExpress = Integer.parseInt(etMaxAntrianExpress.getText().toString().substring(3, 5));
+        final int jamStandart = Integer.parseInt(etMaxAntrianStandart.getText().toString().substring(0, 2));
+        final int menitStandart = Integer.parseInt(etMaxAntrianStandart.getText().toString().substring(3, 5));
+
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -276,28 +296,28 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
                             .replace("--PILIH--", "")
                             .replace("--PILIH--,", "");
                 }
-                String principal = spPrincial.getSelectedItem().toString();
-                if (principal.contains("--PILIH--")) {
-                    principal = principal.replace("--PILIH--", "");
-                }
+               
                 args.put("action", "update");
                 args.put("kategori", "USAHA");
-                args.put("kodePos", etKodePos.getText().toString().toUpperCase());
-                args.put("namaUsaha", etBadanUsaha.getText().toString().toUpperCase());
-                args.put("nib", etNib.getText().toString().toUpperCase());
-                args.put("npwp", etNpwp.getText().toString().toUpperCase());
+                args.put("kodePos", etKodePos.getText().toString());
+                args.put("namaUsaha", etBadanUsaha.getText().toString());
+                args.put("nib", etNib.getText().toString());
+                args.put("npwp", etNpwp.getText().toString());
                 args.put("pkp", cbPkp.isChecked() ? "Y" : "N");
                 args.put("afliasi", afliasi);
-                args.put("namaPrincipial", principal);
-                args.put("noTelp", etNoTelp.getText().toString().toUpperCase());
-                args.put("hpMessage", etNoTelpMessage.getText().toString().toUpperCase());
+                args.put("namaPrincipial", "");
+                args.put("noTelp", etNoTelp.getText().toString());
+                args.put("hpMessage", etNoTelpMessage.getText().toString());
                 args.put("fotoLogo", fotoLogoBase64);
                 args.put("fotoTampakDepan", fotoTampakDepanBase64);
-                args.put("antrianExpres", etMaxAntrianExpress.getText().toString());
-                args.put("antrianStandart", etMaxAntrianStandart.getText().toString());
+                args.put("antrianExpres", formatAntrianTime(jamExpress, menitExpress));
+                args.put("antrianStandart", formatAntrianTime(jamStandart, menitStandart));
                 args.put("petaLokasi", latLong);
                 args.put("principalList", principalSaveList.toJson());
                 args.put("googleBisnis", etGoogleBisnis.getText().toString());
+                args.put("merkList", saveDataMerk.toJson());
+                args.put("bidangUsahaList", saveDataBidangUsaha.toJson());
+                args.put("pembayaranAktif", spMngKeuangan.getSelectedItem().toString().equals("YA") ? "Y" : "N");
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PROFILE), args));
             }
@@ -305,28 +325,170 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    activity.showSuccess("Sukses Menyimpan Data");
-                    activity.setResult(RESULT_OK);
+                    activity.setSetting("MAX_ANTRIAN_EXPRESS_MENIT", formatAntrianTime(jamExpress, menitExpress));
+                    activity.setSetting("MAX_ANTRIAN_STANDART_MENIT", formatAntrianTime(jamStandart, menitStandart));
+                    if (saveDataMerk.size() > 0)
+                        activity.setSetting("MERK_KENDARAAN_ARRAY", saveDataMerk.toJson());
+                    if (saveDataBidangUsaha.size() > 0)
+                        activity.setSetting("BIDANG_USAHA_ARRAY", saveDataBidangUsaha.toJson());
+
+                    activity.showSuccess("BEHASIL MENYIMPAN DATA");
+                    ((ProfileBengkel_Activity) activity).getData();
+                    initData();
                 } else {
-                    activity.showError("Gagagl Menyimpan Data");
+                    activity.showError(result.get("message").asString());
                 }
             }
         });
     }
 
+    @SuppressLint("DefaultLocale")
+    private String formatAntrianTime(int jam, int menit) {
+        try {
+            return String.format("%02d:%02d:%02d", 0, jam, menit);
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
     private void setJenisKendaraan(List<String> string) {
         spJenisKendaraan.setEnabled(false);
-        spJenisKendaraan.setItems(string);
+        spJenisKendaraan.setItems(string, true);
     }
 
-    private void setMerkKendaraan(List<String> string) {
-        spMerkKendaraan.setEnabled(false);
-        spMerkKendaraan.setItems(string);
+    private void setMerkKendaraan(final Nson merkArray) {
+        activity.newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("flag", "Merk");
+                if (dataMerkKendaraan.size() == 0) {
+                    result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_JENIS_KENDARAAN), args));
+                    result = result.get("data");
+                    for (int i = 0; i < result.size(); i++) {
+                        if (result.get(i).get("TYPE").asString().equalsIgnoreCase(activity.getSetting("JENIS_KENDARAAN"))) {
+                            dataMerkKendaraan.add(Nson.newObject()
+                                    .set("ID", result.get(i).get("ID").asString())
+                                    .set("MERK", result.get(i).get("MERK").asString())
+                            );
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void runUI() {
+                List<String> loadMerk = new ArrayList<>();
+                List<String> merkList = new ArrayList<>();
+
+                for (int i = 0; i < merkArray.size(); i++) {
+                    loadMerk.add(merkArray.get(i).get("MERK").asString());
+                }
+                if (dataMerkKendaraan.size() > 0) {
+                    for (int j = 0; j < dataMerkKendaraan.size(); j++) {
+                        merkList.add(dataMerkKendaraan.get(j).get("MERK").asString());
+                    }
+                }
+
+                spMerkKendaraan.setTittle("Pilih Merk Kendaraan");
+                spMerkKendaraan.setItems(merkList, loadMerk);
+                spMerkKendaraan.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
+                    @Override
+                    public void selectedIndices(List<Integer> indices) {
+
+                    }
+
+                    @Override
+                    public void selectedStrings(List<String> strings) {
+                        if (strings.size() > 0) {
+                            saveDataMerk.asArray().clear();
+                            for (int i = 0; i < strings.size(); i++) {
+                                for (int j = 0; j < dataMerkKendaraan.size(); j++) {
+                                    if (strings.get(i).equals(dataMerkKendaraan.get(j).get("MERK").asString())) {
+                                        saveDataMerk.add(Nson.newObject()
+                                                .set("MERK_ID", dataMerkKendaraan.get(j).get("ID").asString())
+                                                .set("MERK", dataMerkKendaraan.get(j).get("MERK").asString())
+                                        );
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                });
+            }
+        });
     }
 
-    private void setSpBidangUsaha(List<String> string) {
-        spBidangUsaha.setEnabled(false);
-        spBidangUsaha.setItems(string);
+    private void setSpBidangUsaha(final Nson bidangUsahaArray) {
+        activity.newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("nama", "bidangUsaha");
+                if (dataBidangUsaha.size() == 0) {
+                    result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MASTER), args));
+                    result = result.get("data");
+                    for (int i = 0; i < result.size(); i++) {
+                        if (result.get(i).get("JENIS_KENDARAAN").asString().equalsIgnoreCase(activity.getSetting("JENIS_KENDARAAN"))) {
+                            dataBidangUsaha.add(Nson.newObject()
+                                    .set("ID", result.get(i).get("ID").asString())
+                                    .set("BIDANG_USAHA", result.get(i).get("BIDANG_USAHA").asString())
+                            );
+                        }
+                    }
+
+                }
+            }
+
+            @Override
+            public void runUI() {
+                List<String> loadBidangUsahaList = new ArrayList<>();
+                List<String> bidangUsahaList = new ArrayList<>();
+
+                if (dataBidangUsaha.size() > 0) {
+                    for (int j = 0; j < dataBidangUsaha.size(); j++) {
+                        bidangUsahaList.add(dataBidangUsaha.get(j).get("BIDANG_USAHA").asString());
+                    }
+                }
+                for (int i = 0; i < bidangUsahaArray.size(); i++) {
+                    loadBidangUsahaList.add(bidangUsahaArray.get(i).get("KATEGORI").asString());
+                }
+
+                spBidangUsaha.setItems(bidangUsahaList, loadBidangUsahaList);
+                spBidangUsaha.setTittle("Pilih Bidang Usaha");
+                spBidangUsaha.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
+                    @Override
+                    public void selectedIndices(List<Integer> indices) {
+
+                    }
+
+                    @Override
+                    public void selectedStrings(List<String> strings) {
+                        if (strings.size() > 0) {
+                            saveDataBidangUsaha.asArray().clear();
+                            for (int i = 0; i < strings.size(); i++) {
+                                for (int j = 0; j < dataBidangUsaha.size(); j++) {
+                                    if (strings.get(i).equals(dataBidangUsaha.get(j).get("BIDANG_USAHA").asString())) {
+                                        saveDataBidangUsaha.add(Nson.newObject()
+                                                .set("BIDANG_USAHA_ID", dataBidangUsaha.get(j).get("ID").asString())
+                                                .set("BIDANG_USAHA", dataBidangUsaha.get(j).get("BIDANG_USAHA").asString())
+                                        );
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                });
+            }
+        });
     }
 
     private void setSpNamaPrincipal(final List<String> selectionList) {
@@ -337,7 +499,7 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "Principal");
-                if(dataPrincipalList.size() == 0){
+                if (dataPrincipalList.size() == 0) {
                     result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("databengkel"), args));
                     result = result.get("data");
                     dataPrincipalList = result;
@@ -350,11 +512,15 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
                 final List<String> principalNameList = new ArrayList<>();
                 principalNameList.add("--PILIH--");
                 dataPrincipalList.add("");
-                for (int i = 0; i < dataPrincipalList.size(); i++) {
-                    if(!dataPrincipalList.get(i).asString().isEmpty()){
-                        principalNameList.add(result.get(i).get("NAMA").asString());
+                if (dataPrincipalList.size() > 0) {
+                    for (int i = 0; i < dataPrincipalList.size(); i++) {
+                        if (!dataPrincipalList.get(i).asString().isEmpty()) {
+                            principalNameList.add(dataPrincipalList.get(i).get("NAMA").asString());
+                        }
                     }
                 }
+
+                spPrincial.setTittle("Pilih Principal");
                 spPrincial.setItems(principalNameList, selectionList);
                 spPrincial.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
                     @Override
@@ -364,12 +530,12 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
 
                     @Override
                     public void selectedStrings(final List<String> strings) {
-                        if(strings.size() > 0){
+                        if (strings.size() > 0) {
                             principalSaveList.asArray().clear();
                             for (int i = 0; i < dataPrincipalList.size(); i++) {
                                 for (int j = 0; j < strings.size(); j++) {
-                                    if(dataPrincipalList.get(i).get("NAMA").asString().equals(strings.get(j))){
-                                        if(!loadPrincipalList.contains(dataPrincipalList.get(i).get("NAMA").asString())){
+                                    if (dataPrincipalList.get(i).get("NAMA").asString().equals(strings.get(j))) {
+                                        if (!loadPrincipalList.contains(dataPrincipalList.get(i).get("NAMA").asString())) {
                                             principalSaveList.add(Nson.newObject()
                                                     .set("PRINCIPAL_ID", dataPrincipalList.get(i).get("ID"))
                                                     .set("NAMA_PRINCIPAL", dataPrincipalList.get(i).get("NAMA"))

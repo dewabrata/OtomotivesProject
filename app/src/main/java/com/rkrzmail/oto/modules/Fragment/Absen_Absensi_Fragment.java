@@ -21,17 +21,15 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.bengkel.Absensi_MainTab_Activity;
-import com.rkrzmail.oto.modules.bengkel.Pembayaran_MainTab_Activity;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.oto.modules.Adapter.Absensi_MainTab_Activity;
+import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
 import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.ABSEN;
-import static com.rkrzmail.utils.APIUrls.VIEW_PEMBAYARAN;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 
 

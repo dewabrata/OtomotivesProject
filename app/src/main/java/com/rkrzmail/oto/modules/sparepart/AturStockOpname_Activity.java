@@ -269,45 +269,45 @@ public class AturStockOpname_Activity extends AppActivity {
 
             @Override
             public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    result = result.get("data");
-                    List<String> lokasiList = new ArrayList<>();
+                result = result.get("data");
+                List<String> lokasiList = new ArrayList<>();
+                if(result.size() > 0) {
                     for (int i = 0; i < result.size(); i++) {
                         if (result.get(i).get("PART_ID").asInteger() == data.get("PART_ID").asInteger()) {
                             lokasiList.add(result.get(i).get("LOKASI").asString());
                             lokasiArray.add(Nson.newObject()
-                                    .set("LOKASI_PART_ID", result.get(i).get("ID"))
+                                    .set("LOKASI_PART_ID", result.get(i).get("LOKASI_ID"))
                                     .set("LOKASI", result.get(i).get("LOKASI"))
                                     .set("KODE", result.get(i).get("KODE"))
                             );
                         }
                     }
+                }
 
-                    setSpLokasi(lokasiList);
-                    if (!lokasi.equals("")) {
-                        for (int i = 0; i < find(R.id.sp_lokasi_stockOpname, Spinner.class).getCount(); i++) {
-                            if (lokasi.equals(find(R.id.sp_lokasi_stockOpname, Spinner.class).getItemAtPosition(i))) {
-                                find(R.id.sp_lokasi_stockOpname, Spinner.class).setSelection(i);
-                                find(R.id.sp_lokasi_stockOpname, Spinner.class).setEnabled(false);
-                                break;
-                            }
+                setSpLokasi(lokasiList);
+                if (!lokasi.equals("")) {
+                    for (int i = 0; i < find(R.id.sp_lokasi_stockOpname, Spinner.class).getCount(); i++) {
+                        if (lokasi.equals(find(R.id.sp_lokasi_stockOpname, Spinner.class).getItemAtPosition(i))) {
+                            find(R.id.sp_lokasi_stockOpname, Spinner.class).setSelection(i);
+                            find(R.id.sp_lokasi_stockOpname, Spinner.class).setEnabled(false);
+                            break;
                         }
                     }
-                    find(R.id.sp_lokasi_stockOpname, Spinner.class).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            oldLokasiID = lokasiArray.get(position).get("LOKASI_PART_ID").asInteger();
-                        }
-
-                        @Override
-                        public void onNothingSelected(AdapterView<?> parent) {
-
-                        }
-                    });
-
-                    if (lokasiArray.size() == 1) {
-                        Tools.setViewAndChildrenEnabled(find(R.id.ly_lokasi_part, LinearLayout.class), false);
+                }
+                find(R.id.sp_lokasi_stockOpname, Spinner.class).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        oldLokasiID = lokasiArray.get(position).get("LOKASI_PART_ID").asInteger();
                     }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
+
+                if (lokasiArray.size() == 1) {
+                    Tools.setViewAndChildrenEnabled(find(R.id.ly_lokasi_part, LinearLayout.class), false);
                 }
             }
         });

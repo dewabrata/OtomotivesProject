@@ -19,10 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -32,16 +28,21 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
-import com.rkrzmail.srv.NsonAutoCompleteAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
+import com.rkrzmail.oto.modules.Adapter.NsonAutoCompleteAdapter;
 import com.rkrzmail.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.rkrzmail.utils.APIUrls.SET_STOCK_OPNAME;
+import static com.rkrzmail.utils.APIUrls.VIEW_CARI_PART_SUGGESTION;
 import static com.rkrzmail.utils.APIUrls.VIEW_JASA_LAIN;
+import static com.rkrzmail.utils.APIUrls.VIEW_LOKASI_PART;
+import static com.rkrzmail.utils.APIUrls.VIEW_SPAREPART;
+import static com.rkrzmail.utils.APIUrls.VIEW_SUGGESTION;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.JASA_LAIN;
 
@@ -179,7 +180,8 @@ public class JasaLain_Activity extends AppActivity {
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
 
-        adapterSearchView(mSearchView, "", VIEW_JASA_LAIN, "KELOMPOK_PART", "ALL");
+        //adapterSearchView(mSearchView, "", VIEW_JASA_LAIN, "KELOMPOK_PART", "ALL");
+        adapterSearchView();
         final SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String newText) {
 
@@ -209,6 +211,65 @@ public class JasaLain_Activity extends AppActivity {
             finish();
         }
     }
+
+    private void adapterSearchView() {
+        final String[] searchObject = {""};
+        final SearchView.SearchAutoComplete searchAutoComplete = mSearchView.findViewById(R.id.search_src_text);
+        searchAutoComplete.setDropDownBackgroundResource(R.drawable.bg_radius_white);
+        searchAutoComplete.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
+            Nson result;
+
+            @Override
+            public Nson onFindNson(Context context, String bookTitle) {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                searchObject[0] = bookTitle;
+
+                args.put("action", "view");
+                args.put("flag", "ALL");
+                args.put("search", bookTitle);
+
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_JASA_LAIN), args));
+                result = result.get("data");
+                result = Tools.removeDuplicates(result);
+
+                return result;
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                if (convertView == null) {
+                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    convertView = inflater.inflate(R.layout.item_suggestion, parent, false);
+                }
+                String search;
+                if(searchObject[0].toLowerCase().equals(getItem(position).get("NAMA_LAIN").asString().toLowerCase())){
+                    search = getItem(position).get("NAMA_LAIN").asString();
+                }else{
+                    search = getItem(position).get("KELOMPOK_PART").asString();
+                }
+
+                findView(convertView, R.id.title, TextView.class).setText(search);
+                return convertView;
+            }
+        });
+        searchAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(i)));
+                String object;
+                if(searchObject[0].toLowerCase().equals(n.get("NAMA_LAIN").asString().toLowerCase())){
+                    object = n.get("NAMA_LAIN").asString();
+                } else {
+                    object = n.get("KELOMPOK_PART").asString();
+                }
+
+                find(R.id.search_src_text, SearchView.SearchAutoComplete.class).setText(object);
+                find(R.id.search_src_text, SearchView.SearchAutoComplete.class).setTag(String.valueOf(adapterView.getItemAtPosition(i)));
+                mSearchView.setQuery(object, true);
+            }
+        });
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

@@ -23,9 +23,8 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
-import com.rkrzmail.utils.Tools;
+import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
 
 import java.util.Map;
 import java.util.Objects;
@@ -76,6 +75,8 @@ public class DiscountPart_Activity extends AppActivity {
                 viewHolder.find(R.id.tv_discount_disc, TextView.class).setText(nListArray.get(position).get("DISCOUNT_PART").asString() + " %");
                 viewHolder.find(R.id.tv_status, TextView.class).setText(nListArray.get(position).get("STATUS").asString());
                 viewHolder.find(R.id.tv_pekerjaan, TextView.class).setText(nListArray.get(position).get("PEKERJAAN").asString());
+                viewHolder.find(R.id.tv_nama_layanan, TextView.class).setText(nListArray.get(position).get("NAMA_LAYANAN").asString());
+
             }
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                     @Override
@@ -103,6 +104,7 @@ public class DiscountPart_Activity extends AppActivity {
 
             @Override
             public void run() {
+                swipeProgress(true);
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 args.put("search", cari);
@@ -112,6 +114,7 @@ public class DiscountPart_Activity extends AppActivity {
             @SuppressLint("NewApi")
             @Override
             public void runUI() {
+                swipeProgress(false);
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());

@@ -4,8 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -26,7 +24,7 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaAutoComplete;
-import com.rkrzmail.srv.NsonAutoCompleteAdapter;
+import com.rkrzmail.oto.modules.Adapter.NsonAutoCompleteAdapter;
 import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
@@ -38,7 +36,6 @@ import static com.rkrzmail.utils.APIUrls.SET_CLAIM;
 import static com.rkrzmail.utils.APIUrls.SET_REKENING_BANK;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.Tools.setFormatDayAndMonthToDb;
-import static java.nio.file.Files.find;
 
 public class ClaimGaransiStatus_Activity extends AppActivity {
 

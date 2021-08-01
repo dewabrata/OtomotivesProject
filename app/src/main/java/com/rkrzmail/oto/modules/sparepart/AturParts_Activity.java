@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -32,6 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.ATUR_SPAREPART;
 import static com.rkrzmail.utils.APIUrls.VIEW_SPAREPART;
@@ -60,7 +62,7 @@ public class AturParts_Activity extends AppActivity {
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_part);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Atur Parts");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Atur Parts");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -74,6 +76,12 @@ public class AturParts_Activity extends AppActivity {
         //isParts = true for aturParts, isParts = false for addParts
         if (getIntent().hasExtra("atur_part")) {
             isParts = true;
+            Tools.setViewAndChildrenEnabled(find(R.id.rl_lokasi_part, RelativeLayout.class), false);
+            Tools.setViewAndChildrenEnabled(find(R.id.rl_penempatan, RelativeLayout.class), false);
+            Tools.setViewAndChildrenEnabled(find(R.id.rl_no_folder, RelativeLayout.class), false);
+            Tools.setViewAndChildrenEnabled(find(R.id.rl_no_rak_palet, RelativeLayout.class), false);
+            Tools.setViewAndChildrenEnabled(find(R.id.rl_tinggi_rak, RelativeLayout.class), false);
+
             //find(R.id.et_hpp_part, EditText.class).setEnabled(false);
             find(R.id.tl_stock).setVisibility(View.GONE);
             find(R.id.btn_hapus, Button.class).setVisibility(View.VISIBLE);
@@ -167,16 +175,15 @@ public class AturParts_Activity extends AppActivity {
         find(R.id.et_stockTersedia_part, EditText.class).setText(aturParts.get("STOCK").asString());
         find(R.id.et_waktuPesan_part, EditText.class).setText(aturParts.get("WAKTU_PESAN_HARI").asString());
         find(R.id.et_stockMin_part, EditText.class).setText(aturParts.get("STOCK_MINIMUM").asString());
-        find(R.id.et_hargaJual_part, EditText.class).setText("Rp. " + NumberFormatUtils.formatRp(aturParts.get("HPP").asString()));
         find(R.id.sp_polaHarga_part, Spinner.class).setSelection(Tools.getIndexSpinner(find(R.id.sp_polaHarga_part, Spinner.class), aturParts.get("POLA_HARGA_JUAL").asString()));
         try {
             find(R.id.et_het_part, EditText.class).setText(isParts ?
                     "Rp. " + NumberFormatUtils.formatRp(aturParts.get("HET").asString()) :
                     "Rp. " + NumberFormatUtils.formatRp(addParts.get("HET").asString()));
-            if (!aturParts.get("MARGIN").asString().isEmpty()) {
-                find(R.id.et_hargaJual_part, EditText.class).setText(NumberFormatUtils.formatPercent(Double.parseDouble(aturParts.get("MARGIN").asString())));
-            } else {
+            if (aturParts.get("POLA_HARGA_JUAL").asString().equals("NOMINAL") || aturParts.get("POLA_HARGA_JUAL").asString().equals("HET")) {
                 find(R.id.et_hargaJual_part, EditText.class).setText("Rp. " + NumberFormatUtils.formatRp(aturParts.get("HARGA_JUAL").asString()));
+            } else {
+                find(R.id.et_hargaJual_part, EditText.class).setText(NumberFormatUtils.formatPercent(Double.parseDouble(aturParts.get("MARGIN").asString())));
             }
         } catch (Exception e) {
             Log.d(TAG, "Number Exception : " + e.getMessage());
@@ -216,11 +223,9 @@ public class AturParts_Activity extends AppActivity {
     private void setSpinnerView() {
         final List<String> lokasiList = Arrays.asList("RUANG PART", "GUDANG", "DISPLAY");
         final List<String> noRakList = new ArrayList<String>();
-        noRakList.add("--PILIH--");
         final List<String> tinggiRakList = new ArrayList<String>();
         tinggiRakList.add("--PILIH--");
         final List<String> noFolderList = new ArrayList<String>();
-        noFolderList.add("--PILIH--");
         final List<String> penempatanList = Arrays.asList(getResources().getStringArray(R.array.penempatan_lokasi_part));
 
         for (int i = 1; i <= 100; i++) {
@@ -342,7 +347,9 @@ public class AturParts_Activity extends AppActivity {
         final String hpp = NumberFormatUtils.formatOnlyNumber(find(R.id.et_hpp_part, EditText.class).getText().toString());
 
         try {
-            if (hargaJual.contains("%")) {
+            if (polaHarga.equalsIgnoreCase("BELI + MARGIN") ||
+                    polaHarga.equalsIgnoreCase("RATA - RATA + MARGIN") ||
+                    polaHarga.equalsIgnoreCase("FLEXIBLE")) {
                 harga = NumberFormatUtils.clearPercent(hargaJual);
                 margin = (int) (Integer.parseInt(hpp) * Double.parseDouble(harga) / 100);
                 total = margin + Integer.parseInt(hpp);
@@ -370,7 +377,9 @@ public class AturParts_Activity extends AppActivity {
                         polaHarga.equalsIgnoreCase("RATA - RATA + MARGIN") ||
                         polaHarga.equalsIgnoreCase("FLEXIBLE")) {
                     args.put("hargajual", String.valueOf(total));
-                    args.put("margin",  hargaJual.replace("%", ""));
+                    args.put("margin", hargaJual.replace("%", ""));
+                }else{
+                    args.put("hargajual", NumberFormatUtils.formatOnlyNumber(hargaJual));
                 }
                 args.put("polahargajual", polaHarga);
                 args.put("hpp", hpp);
@@ -407,7 +416,9 @@ public class AturParts_Activity extends AppActivity {
         final String hpp = find(R.id.et_hpp_part, EditText.class).getText().toString().replaceAll("[^0-9]+", "");
 
         try {
-            if (hargaJual.contains("%")) {
+            if (polaHarga.equalsIgnoreCase("BELI + MARGIN") ||
+                    polaHarga.equalsIgnoreCase("RATA - RATA + MARGIN") ||
+                    polaHarga.equalsIgnoreCase("FLEXIBLE")) {
                 harga = NumberFormatUtils.clearPercent(hargaJual);
                 margin = (int) (Integer.parseInt(hpp) * Double.parseDouble(harga) / 100);
                 total = margin + Integer.parseInt(hpp);
@@ -417,15 +428,6 @@ public class AturParts_Activity extends AppActivity {
             showError(e.getMessage());
         }
 
-        final String nofolder = find(R.id.sp_noFolder_part, Spinner.class).getSelectedItem().toString().toUpperCase();
-        final String rakOrPalet = find(R.id.sp_norakPalet_part, Spinner.class).getSelectedItem().toString();
-        String tinggirak;
-        if (find(R.id.sp_tinggiRak, Spinner.class).isEnabled()) {
-            tinggirak = find(R.id.sp_tinggiRak, Spinner.class).getSelectedItem().toString();
-        } else {
-            tinggirak = "0";
-        }
-        final String finalTinggirak = tinggirak;
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -433,11 +435,25 @@ public class AturParts_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
-                args.put("action", "add");
-                args.put("nama", namaPart);
-                args.put("nopart", noPart);
-                args.put("partid", id.get("ID").asString());
-                args.put("merk", merkPart);
+                String nofolder = find(R.id.sp_noFolder_part, Spinner.class).getSelectedItem().toString().toUpperCase();
+                String rakOrPalet = find(R.id.sp_norakPalet_part, Spinner.class).getSelectedItem().toString();
+
+                tempatPart = tempatPart.equals("--PILIH--") ? "RAK" : tempatPart;
+                String tinggirak;
+                if (find(R.id.sp_tinggiRak, Spinner.class).isEnabled()) {
+                    tinggirak = find(R.id.sp_tinggiRak, Spinner.class).getSelectedItem().toString();
+                    tinggirak = tinggirak.equals("--PILIH--") ? "1" : tinggirak;
+                } else {
+                    tinggirak = "0";
+                }
+
+                if (tempatPart.equalsIgnoreCase("PALET")) {
+                    args.put("palet", rakOrPalet);
+                    args.put("rak", "0");
+                } else {
+                    args.put("rak", rakOrPalet);
+                    args.put("palet", "0");
+                }
                 if (polaHarga.equalsIgnoreCase("HET")) {
                     args.put("hargajual", het.replaceAll("[^0-9]+", ""));
                 } else if (polaHarga.equalsIgnoreCase("BELI + MARGIN") ||
@@ -445,7 +461,15 @@ public class AturParts_Activity extends AppActivity {
                         polaHarga.equalsIgnoreCase("FLEXIBLE")) {
                     args.put("hargajual", String.valueOf(total));
                     args.put("margin", hargaJual.replace("%", ""));
+                }else{
+                    args.put("hargajual", hargaJual);
                 }
+
+                args.put("action", "add");
+                args.put("nama", namaPart);
+                args.put("nopart", noPart);
+                args.put("partid", id.get("ID").asString());
+                args.put("merk", merkPart);
                 args.put("waktupesan", waktuPesan);
                 args.put("stokminim", stockMin);
                 args.put("het", het.replaceAll("[^0-9]+", ""));
@@ -456,16 +480,9 @@ public class AturParts_Activity extends AppActivity {
                 args.put("hpp", hpp);
                 args.put("penempatan", tempatPart);
                 args.put("lokasi", find(R.id.sp_lokasiPart, Spinner.class).getSelectedItem().toString());
-                if (tempatPart.equalsIgnoreCase("PALET")) {
-                    args.put("palet", rakOrPalet);
-                    args.put("rak", "0");
-                } else {
-                    args.put("rak", rakOrPalet);
-                    args.put("palet", "0");
-                }
                 args.put("noFolder", nofolder);
-                args.put("tingkatrak", finalTinggirak);
-                args.put("kode", tempatPart.equals("--PILIH--") ? "*" : kodePenempatan(tempatPart, rakOrPalet, finalTinggirak, nofolder));
+                args.put("tingkatrak", tinggirak);
+                args.put("kode", kodePenempatan(tempatPart, rakOrPalet, tinggirak, nofolder));
                 args.put("kendaraan", UtilityAndroid.getSetting(getApplicationContext(), "JENIS_KENDARAAN", "").trim());
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_SPAREPART), args));

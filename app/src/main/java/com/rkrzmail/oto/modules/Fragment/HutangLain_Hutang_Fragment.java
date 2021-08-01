@@ -25,14 +25,13 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.hutang.AturPembayaranHutang_Activity;
 import com.rkrzmail.oto.modules.hutang.Hutang_MainTab_Activity;
 import com.rkrzmail.srv.DateFormatUtils;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
 import com.rkrzmail.srv.NumberFormatUtils;
 
 import java.util.Map;
 
 import static com.rkrzmail.utils.APIUrls.HUTANG;
-import static com.rkrzmail.utils.APIUrls.PIUTANG;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 import static com.rkrzmail.utils.ConstUtils.RP;

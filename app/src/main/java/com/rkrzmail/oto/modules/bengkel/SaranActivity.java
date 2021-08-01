@@ -5,14 +5,11 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -21,24 +18,15 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.komisi.AturKomisiLayanan_Activity;
-import com.rkrzmail.oto.modules.sparepart.AturTerimaPart_Activity;
-import com.rkrzmail.oto.modules.sparepart.DetailTerimaPart_Activity;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
-import com.rkrzmail.utils.Tools;
+import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
 
 import java.util.Map;
 import java.util.Objects;
 
-import static com.rkrzmail.utils.APIUrls.VIEW_MST;
 import static com.rkrzmail.utils.APIUrls.VIEW_SARAN;
 import static com.rkrzmail.utils.ConstUtils.ADD;
-import static com.rkrzmail.utils.ConstUtils.PART;
-import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_SARAN;
-import static com.rkrzmail.utils.ConstUtils.RP;
-import static java.nio.file.Files.find;
 
 public class SaranActivity extends AppActivity {
 

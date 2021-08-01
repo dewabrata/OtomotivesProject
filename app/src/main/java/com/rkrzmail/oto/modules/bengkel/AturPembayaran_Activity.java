@@ -4,11 +4,17 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,7 +24,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -36,20 +41,29 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.NikitaAutoComplete;
-import com.rkrzmail.srv.NsonAutoCompleteAdapter;
+import com.rkrzmail.oto.modules.Adapter.NsonAutoCompleteAdapter;
 import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static com.rkrzmail.utils.APIUrls.ATUR_PEMBAYARAN;
 import static com.rkrzmail.utils.APIUrls.GET_QRIS_IMAGE;
-import static com.rkrzmail.utils.APIUrls.JURNAL_KAS;
 import static com.rkrzmail.utils.APIUrls.SET_REKENING_BANK;
 import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.PERMISSION_REQUEST_CODE;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_FOTO;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_KONFIRMASI;
 import static com.rkrzmail.utils.ConstUtils.RP;
 
@@ -105,7 +119,7 @@ public class AturPembayaran_Activity extends AppActivity {
             isLoadEwallet = false;
 
     private String fotoBuktiBase64 = "";
-    private Bitmap bitmapQris = null;
+    private Bitmap bitmapQris = null, bitmapBuktiBayar = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -421,7 +435,8 @@ public class AturPembayaran_Activity extends AppActivity {
         find(R.id.btn_foto_bukti).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                moveToCamera();
+                //moveToCamera();
+                getImagePickOrCamera();
             }
         });
 
@@ -450,6 +465,22 @@ public class AturPembayaran_Activity extends AppActivity {
             }
         }
     }
+
+    private void getImagePickOrCamera() {
+        if (ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(Objects.requireNonNull(getActivity()), new String[]{WRITE_EXTERNAL_STORAGE
+                    , READ_EXTERNAL_STORAGE, CAMERA}, PERMISSION_REQUEST_CODE);
+        } else {
+            final List<Intent> intents = new ArrayList<>();
+            intents.add(new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI));
+            intents.add(new Intent(MediaStore.ACTION_IMAGE_CAPTURE));
+
+            Intent result = Intent.createChooser(intents.remove(0), null);
+            result.putExtra(Intent.EXTRA_INITIAL_INTENTS, intents.toArray(new Parcelable[]{}));
+            startActivityForResult(result, REQUEST_FOTO);
+        }
+    }
+
 
     private void setBlankCash() {
         find(R.id.et_namaBankEpay, NikitaAutoComplete.class).setText("");
@@ -882,6 +913,7 @@ public class AturPembayaran_Activity extends AppActivity {
         tvTittle.setVisibility(View.VISIBLE);
         btnSimpan.setVisibility(View.GONE);
         tvTittle.setText(namaMerchant);
+        btnCancel.setText("TUTUP");
 
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null)
@@ -903,6 +935,33 @@ public class AturPembayaran_Activity extends AppActivity {
         alertDialog.show();
     }
 
+    private void getImageUri(final Uri imageUri, final Bundle imgBundle) {
+        newProses(new Messagebox.DoubleRunnable() {
+            @Override
+            public void run() {
+                if (imageUri != null) {
+                    ImageView dummy = new ImageView(getActivity());
+                    dummy.setImageURI(imageUri);
+                    BitmapDrawable drawable = (BitmapDrawable) dummy.getDrawable();
+                    bitmapBuktiBayar = drawable.getBitmap();
+                } else {
+                    bitmapBuktiBayar = (Bitmap) (imgBundle != null ? imgBundle.get("data") : null);
+                }
+
+                if (bitmapBuktiBayar != null) {
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    bitmapBuktiBayar.compress(Bitmap.CompressFormat.PNG, 100, bos);
+                }
+            }
+
+            @Override
+            public void runUI() {
+               showSuccess("BERHASIL MENYIMPAN BUKTI BAYAR");
+            }
+        });
+    }
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -914,6 +973,19 @@ public class AturPembayaran_Activity extends AppActivity {
                 }
                 bitmapQris = (Bitmap) (extras != null ? extras.get("data") : null);
                 fotoBuktiBase64 = bitmapToBase64(bitmapQris);
+            }else if(requestCode == REQUEST_FOTO){
+                try {
+                    Bundle extras = null;
+                    Uri imageUri = null;
+                    if (data != null) {
+                        extras = data.getExtras();
+                        if (extras == null)
+                            imageUri = data.getData();
+                    }
+                    getImageUri(imageUri, extras);
+                } catch (Exception e) {
+                    showError(e.getMessage(), Toast.LENGTH_LONG);
+                }
             }
         }
     }

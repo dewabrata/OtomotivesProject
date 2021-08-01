@@ -30,8 +30,8 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
@@ -119,6 +119,11 @@ public class KontrolLayanan_Activity extends AppActivity {
                         viewHolder.find(R.id.tv_no_kunci, TextView.class).setText(nListArray.get(position).get("NO_KUNCI").asString());
                         viewHolder.find(R.id.tv_waktu_status, TextView.class).setText(waktuStatus);
                         viewHolder.find(R.id.tv_status, TextView.class).setText(nListArray.get(position).get("STATUS_KONTROL").asString());
+
+                        if(!nListArray.get(position).get("MEKANIK").asString().isEmpty())
+                            viewHolder.find(R.id.tv_nama_mekanik, TextView.class).setText(nListArray.get(position).get("MEKANIK").asString());
+                        else
+                            viewHolder.find(R.id.tr_nama_mekanik).setVisibility(View.GONE);
 
                         viewHolder.find(R.id.img_more_booking, ImageButton.class).setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -357,7 +362,7 @@ public class KontrolLayanan_Activity extends AppActivity {
             showWarning("TIDAK ADA KONEKSI INTERNET", Toast.LENGTH_LONG);
             return;
         }
-        newTask(new Messagebox.DoubleRunnable() {
+        newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
             @Override

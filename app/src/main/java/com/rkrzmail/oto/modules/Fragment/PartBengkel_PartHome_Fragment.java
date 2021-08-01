@@ -6,13 +6,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,24 +23,22 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.sparepart.PartHome_MainTab_Activity;
+import com.rkrzmail.oto.modules.Adapter.PartHome_MainTab_Activity;
 import com.rkrzmail.srv.NikitaAutoComplete;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
-import com.rkrzmail.srv.NsonAutoCompleteAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
+import com.rkrzmail.oto.modules.Adapter.NsonAutoCompleteAdapter;
 import com.rkrzmail.srv.NumberFormatUtils;
-import com.rkrzmail.srv.SearchListener;
 
 import java.util.Map;
 import java.util.Objects;
 
-import static com.rkrzmail.utils.APIUrls.VIEW_LOKASI_PART;
 import static com.rkrzmail.utils.APIUrls.VIEW_SPAREPART;
 import static com.rkrzmail.utils.APIUrls.VIEW_SUGGESTION;
 import static com.rkrzmail.utils.ConstUtils.ALL;
 import static com.rkrzmail.utils.ConstUtils.RP;
 
-public class PartBengkel_PartHome_Fragment extends Fragment{
+public class PartBengkel_PartHome_Fragment extends Fragment {
 
     private RecyclerView rvPart;
     private AppActivity activity;
@@ -247,4 +242,4 @@ public class PartBengkel_PartHome_Fragment extends Fragment{
             }
         });
     }
-    }
+}

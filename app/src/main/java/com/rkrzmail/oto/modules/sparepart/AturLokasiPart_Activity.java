@@ -1,24 +1,17 @@
 package com.rkrzmail.oto.modules.sparepart;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -33,10 +26,13 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Predicate;
 
 import static com.rkrzmail.utils.APIUrls.ATUR_LOKASI_PART;
 import static com.rkrzmail.utils.APIUrls.VIEW_LOKASI_PART;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_TERALOKASIKAN;
+import static com.rkrzmail.utils.ConstUtils.DATA;
 
 public class AturLokasiPart_Activity extends AppActivity {
 
@@ -52,6 +48,7 @@ public class AturLokasiPart_Activity extends AppActivity {
             tempatPart = "",
             lokasiPart = "",
             penempatanPart = "", partId = "";
+    int lokasiID = 0;
     private Nson lokasiArray = Nson.newArray();
 
     @Override
@@ -59,14 +56,14 @@ public class AturLokasiPart_Activity extends AppActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_atur_lokasi_part);
         initToolbar();
-        Tools.setViewAndChildrenEnabled(find(R.id.ly_lokasiPart, LinearLayout.class), false);
+        // Tools.setViewAndChildrenEnabled(find(R.id.ly_lokasiPart, LinearLayout.class), false);
         initComponent();
     }
 
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Atur Lokasi Part");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Atur Lokasi Part");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -80,40 +77,41 @@ public class AturLokasiPart_Activity extends AppActivity {
         sp_tinggiRak_part = findViewById(R.id.sp_tinggiRak);
         sp_noFolder_part = findViewById(R.id.sp_noFolder_part);
 
-        final Nson nonLokasi = Nson.readJson(getIntentStringExtra("NON_ALOKASI"));
         final Nson teralokasi = Nson.readJson(getIntentStringExtra(CARI_PART_TERALOKASIKAN));
-        if (getIntent().hasExtra("NON_ALOKASI")) {
-            isLokasi = false;
-            lokasiPart = "RUANG PART";
-        } else {
-            isLokasi = true;
-            viewLokasiPart(teralokasi);
-            Tools.setViewAndChildrenEnabled(find(R.id.ly_lokasiPart, LinearLayout.class), true);
+        final Nson addNew = Nson.readJson(getIntentStringExtra(DATA));
+
+        if (getIntent().hasExtra(CARI_PART_TERALOKASIKAN)) {
+            isUpdate = true;
+            Tools.setViewAndChildrenEnabled(find(R.id.ly_lokasiPart, LinearLayout.class), false);
             noRak = teralokasi.get("RAK").asString();
             tinggkatRak = teralokasi.get("").asString();
             noFolder = teralokasi.get("NO_FOLDER").asString();
             lokasiPart = teralokasi.get("LOKASI").asString();
             penempatanPart = teralokasi.get("PENEMPATAN").asString();
+            partId = teralokasi.get("PART_ID").asString();
+            lokasiID = teralokasi.get("LOKASI_ID").asInteger();
+            no_part.setText(teralokasi.get("NO_PART").asString());
+            nama_part.setText(teralokasi.get("NAMA_PART").asString());
+            merk_part.setText(teralokasi.get("MERK").asString());
+        } else {
+            no_part.setText(addNew.get("NO_PART").asString());
+            nama_part.setText(addNew.get("NAMA_PART").asString());
+            merk_part.setText(addNew.get("MERK").asString());
+            partId = addNew.get("PART_ID").asString();
         }
 
-        no_part.setText(isLokasi ? teralokasi.get("NOMOR_PART_NOMOR").asString() : nonLokasi.get("NO_PART").asString());
-        nama_part.setText(isLokasi ? teralokasi.get("NAMA_MASTER").asString() : nonLokasi.get("NAMA_PART").asString());
-        merk_part.setText(isLokasi ? teralokasi.get("MERK").asString() : nonLokasi.get("MERK").asString());
-        Log.d(TAG, "initComponent: " + nonLokasi);
+        if (!isUpdate) viewLokasiPart();
+        setSpLokasiPart(lokasiPart);
         spinnerView();
         find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isLokasi) {
-                    updateData(teralokasi);
-                } else {
-                    updateData(nonLokasi);
-                }
+                saveData();
             }
         });
     }
 
-    private void updateData(final Nson data) {
+    private void saveData() {
         String tinggirak = "";
         if (sp_tinggiRak_part.isEnabled()) {
             tinggirak = sp_tinggiRak_part.getSelectedItem().toString().toUpperCase();
@@ -130,11 +128,7 @@ public class AturLokasiPart_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
-                args.put("action", "update");
-                if (isLokasi) {
-                    args.put("lokasi", "TAMBAH_LOKASI");
-                    args.put("lokasi_part", sp_lokasi_part.getSelectedItem().toString());
-                }
+                args.put("action", "insertOrUpdate");
                 args.put("tempat", tempatPart);
                 if (tempatPart.equalsIgnoreCase("PALET")) {
                     args.put("palet", rakOrPalet);
@@ -143,13 +137,13 @@ public class AturLokasiPart_Activity extends AppActivity {
                     args.put("rak", rakOrPalet);
                     args.put("palet", "0");
                 }
-                args.put("id", data.get("id").asString());
+                args.put("lokasiID", String.valueOf(lokasiID));
                 args.put("folder", nofolder);
                 args.put("tingkatrak", finalTinggirak);
-                args.put("partid", data.get("PART_ID").asString());
-                args.put("stock", data.get("STOCK").asString());
-                args.put("tanggal", currentDateTime());
+                args.put("partid", partId);
+                args.put("stock", "0");
                 args.put("kode", kodePenempatan(tempatPart, rakOrPalet, finalTinggirak, nofolder));
+                args.put("lokasi_part", sp_lokasi_part.getSelectedItem().toString());
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_LOKASI_PART), args));
             }
@@ -161,13 +155,17 @@ public class AturLokasiPart_Activity extends AppActivity {
                     setResult(RESULT_OK);
                     finish();
                 } else {
-                    showError(result.get("status").asString());
+                    if (result.get("message").asString().toLowerCase().contains("duplicate")) {
+                        showError("Data Lokasi Sudah di Masukkan");
+                    } else {
+                        showError(result.get("message").asString());
+                    }
                 }
             }
         });
     }
 
-    private void viewLokasiPart(final Nson data) {
+    private void viewLokasiPart() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -176,7 +174,7 @@ public class AturLokasiPart_Activity extends AppActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("flag", "TERALOKASI");
                 args.put("lokasi", "RUANG PART");
-                args.put("partid", data.get("PART_ID").asString());
+                args.put("partid", partId);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_LOKASI_PART), args));
             }
 
@@ -184,9 +182,20 @@ public class AturLokasiPart_Activity extends AppActivity {
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     result = result.get("data");
-                    for (int i = 0; i < result.size(); i++) {
-                        lokasiArray.add(result.get(i).get("LOKASI"));
+                    if (result.size() > 0) {
+                        for (int i = 0; i < result.size(); i++) {
+                            lokasiArray.add(result.get(i).get("LOKASI"));
+                        }
                     }
+                    if (result.size() >= 3) {
+                        showInfoDialog("Konfirmasi", "PART SUDAH DI TEMPATKAN DI SEMUA LOKASI", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        });
+                    }
+                    setSpLokasiPart(lokasiPart);
                 }
             }
         });
@@ -223,19 +232,12 @@ public class AturLokasiPart_Activity extends AppActivity {
         setSpinnerOffline(noRakList, sp_noRakPalet_part, noRak);
         setSpinnerOffline(tinggiRakList, sp_tinggiRak_part, tinggkatRak);
         setSpinnerOffline(noFolderList, sp_noFolder_part, noFolder);
-        setSpLokasiPart();
 
         sp_penempatan_part.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
                 tempatPart = parent.getItemAtPosition(position).toString();
-                if (tempatPart.equalsIgnoreCase("PALET")) {
-                    sp_tinggiRak_part.setEnabled(false);
-                } else if (tempatPart.equalsIgnoreCase("RAK")) {
-                    sp_tinggiRak_part.setEnabled(true);
-                } else {
-                    sp_tinggiRak_part.setEnabled(false);
-                }
+                sp_tinggiRak_part.setEnabled(tempatPart.equalsIgnoreCase("RAK"));
             }
 
             @Override
@@ -245,33 +247,23 @@ public class AturLokasiPart_Activity extends AppActivity {
         });
     }
 
-    private void setSpLokasiPart() {
-        final List<String> lokasiList = Arrays.asList(getResources().getStringArray(R.array.lokasi_simpan));
-        ArrayAdapter<String> lokasiAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, lokasiList) {
-            @SuppressLint("WrongConstant")
-            @Override
-            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                View view = null;
-                if (isLokasi) {
-                    for (int i = 0; i < lokasiArray.size(); i++) {
-                        if (lokasiArray.get(i).asString().equals(lokasiList.get(position))) {
-                            TextView mTextView = new TextView(getContext());
-                            mTextView.setVisibility(View.GONE);
-                            mTextView.setHeight(0);
-                            view = mTextView;
-                        } else {
-                            view = super.getDropDownView(position, convertView, parent);
-                        }
-                    }
-                }else{
-                    view = super.getDropDownView(position, convertView, parent);
-                }
-                return view;
-            }
-        };
+    @SuppressLint("NewApi")
+    private void setSpLokasiPart(String selection) {
+        List<String> lokasiList = new ArrayList<>();
+        lokasiList.add("RUANG PART");
+        lokasiList.add("DISPLAY");
+        lokasiList.add("GUDANG");
 
-        lokasiAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sp_lokasi_part.setAdapter(lokasiAdapter);
+        if (!isUpdate && lokasiArray.size() > 0) {
+            lokasiList.removeIf(new Predicate<String>() {
+                @Override
+                public boolean test(String s) {
+                    return lokasiArray.containsValue(s);
+                }
+            });
+        }
+
+        setSpinnerOffline(lokasiList, sp_lokasi_part, selection);
         sp_lokasi_part.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -283,18 +275,54 @@ public class AturLokasiPart_Activity extends AppActivity {
 
             }
         });
+    }
 
+    private void backupSpLokasi() {
+/*
+        ArrayAdapter<String> lokasiAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, lokasiList) {
+            @SuppressLint("WrongConstant")
+            @Override
+            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View view = null;
+                if (isLokasi) {
+                    if(lokasiArray.size() > 0){
+                        for (int i = 0; i < lokasiArray.size(); i++) {
+                            if (lokasiArray.get(i).asString().equals(lokasiList.get(position))) {
+                                TextView mTextView = new TextView(getContext());
+                                mTextView.setVisibility(View.GONE);
+                                mTextView.setHeight(0);
+                                view = mTextView;
+                            } else {
+                                view = super.getDropDownView(position, convertView, parent);
+                            }
+                        }
+                    }else{
+                        view = super.getDropDownView(position, convertView, parent);
+                    }
+                }else{
+                    view = super.getDropDownView(position, convertView, parent);
+                }
+                return view;
+            }
+        };
+
+
+        lokasiAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //sp_lokasi_part.setAdapter(lokasiAdapter);
         if (!lokasiPart.isEmpty()) {
+
             for (int i = 0; i < lokasiList.size(); i++) {
                 if (sp_lokasi_part.getItemAtPosition(i).toString().equals(lokasiPart)) {
                     if (isLokasi) {
-                        sp_lokasi_part.setSelection(i + 1);
+                        sp_lokasi_part.setSelection(i);
                     } else {
                         sp_lokasi_part.setSelection(i);
                     }
                 }
             }
+
         }
+*/
     }
 
     @Override

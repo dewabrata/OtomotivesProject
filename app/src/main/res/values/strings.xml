@@ -414,6 +414,7 @@
     <string name="saldo_akhir">Saldo Akhir</string>
     <string name="akun_uppercase">AKUN</string>
     <string name="rekening_epay_uppercase">REKENING / E-WALLET</string>
+    <string name="rekening_kasir_uppercase">REKENING / KASIR</string>
     <string name="saldo_akhir_uppercase">SALDO AKHIR</string>
     <string name="saldo_di_sesuaikan_uppercase">SALDO DI SESUAIKAN</string>
     <string name="jenis_akun_uppercase">JENIS AKUN</string>
@@ -440,6 +441,22 @@
     <string name="tanggal_gaji_uppercase">TAMGGAL GAJI</string>
     <string name="kode_pos_uppercase">KODE POS</string>
     <string name="tanggal_registrasi">Tanggal Registrasi</string>
+    <string name="harga_part_net">Harga Part Net</string>
+    <string name="waktu_layanan">Waktu Layanan</string>
+    <string name="jenis_antrian">Jenis Antrian</string>
+    <string name="part_wajib">Part Wajib</string>
+    <string name="management_keuangan_uppercase">MGT KEUANGAN</string>
+    <string name="cari_lokasi_uppercase">CARI LOKASI</string>
+    <string name="foto_kondisi_uppercase">FOTO KONDISI</string>
+    <string name="perlengkapan_uppercase">PERLENGKAPAN</string>
+    <string name="non_hpp_uppercase">NON HPP</string>
+    <string name="harga_bersih_uppercase">HARGA BERSIH</string>
+    <string name="tambah_uppercase">TAMBAH</string>
+    <string name="periode_gajian_uppercase">PERIODE GAJIAN</string>
+    <string name="lembur_jam_uppercase">LEMBUR / JAM</string>
+    <string name="max_jam_minggu_uppercase">MAX JAM / MINGGU</string>
+    <string name="min_waktu_terlambat_uppercase">MIN WAKTU TERLAMBAT</string>
+    <string name="cari_lokasi">Cari Lokasi</string>
     <string-array name="pola_harga_jual">
         <item>FLEXIBLE</item>
         <item>BELI + MARGIN</item>

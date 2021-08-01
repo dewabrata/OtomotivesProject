@@ -77,7 +77,7 @@ public class AppApplication extends Application {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                InternetX.postHttpConnection("https://aps.neyama.com/wapi/queueoto.php", args);
+                InternetX.postHttpConnection("https://oto.neyama.com/wapi/queueoto.php", args);
             }
         }).start();
     }
@@ -106,7 +106,7 @@ public class AppApplication extends Application {
 
         //hashtable.put("userId", UtilityAndroid.getSetting(getApplicationContext(), "USER_ID", ""));
         if(!UtilityAndroid.getSetting(getApplicationContext(), "MERK_KENDARAAN_ARRAY", "").isEmpty()){
-            hashtable.put("merkKendaraanArray", UtilityAndroid.getSetting(getApplicationContext(), "MERK_KENDARAAN_BENGKEL", ""));
+            hashtable.put("merkKendaraanArray", UtilityAndroid.getSetting(getApplicationContext(), "MERK_KENDARAAN_ARRAY", ""));
         }
         if(!UtilityAndroid.getSetting(getApplicationContext(), "BIDANG_USAHA_ARRAY", "").isEmpty()){
             hashtable.put("bidangUsahaArray", UtilityAndroid.getSetting(getApplicationContext(), "BIDANG_USAHA_ARRAY", ""));
@@ -126,9 +126,6 @@ public class AppApplication extends Application {
         if (hashtable.containsValue("--PILIH--")) {
             hashtable.values().remove("--PILIH--");
         }
-//        if (!hashtable.containsKey("action")) {
-//            hashtable.put("action", "view");
-//        }
 
         int vi = TimeZone.getDefault().getRawOffset() / 1000;
         hashtable.put("xzona", String.valueOf(vi / 60 / 60));//gmt

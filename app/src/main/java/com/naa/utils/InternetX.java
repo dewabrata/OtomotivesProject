@@ -116,7 +116,7 @@ public class InternetX {
                 }
 
                 writer.append(LINE_FEED).flush();
-                writer.append("--" + boundary + "--").append(LINE_FEED);
+                writer.append("--").append(boundary).append("--").append(LINE_FEED);
                 writer.close();
                 //display what returns the POST request
 
@@ -129,7 +129,7 @@ public class InternetX {
                             new InputStreamReader(con.getInputStream(), "utf-8"));
                     String line = null;
                     while ((line = br.readLine()) != null) {
-                        sb.append(line + "\n");
+                        sb.append(line).append("\n");
                     }
                     br.close();
 
@@ -150,18 +150,11 @@ public class InternetX {
                     BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
                     String line = null;
                     while ((line = br.readLine()) != null) {
-                        sb.append(line + "\n");
+                        sb.append(line).append("\n");
                     }
                     br.close();
                     return sb.toString();
                 }
-            } catch (IOException e) {
-                //Utility.nikitaErrorConn();
-                e.printStackTrace();
-                Nson nson = Nson.newObject();
-                nson.set("STATUS", "ERROR");
-                nson.set("ERROR", e.getMessage());
-                return nson.toJson();
             } catch (Exception e) {
                 //Utility.nikitaErrorConn();
                 e.printStackTrace();
@@ -187,6 +180,7 @@ public class InternetX {
         try {
             return URLEncoder.encode(s, "UTF-8");
         } catch (Exception e) {
+            e.printStackTrace();
         }
         return "";
     }
@@ -419,16 +413,9 @@ public class InternetX {
                     br.close();
                     return sb.toString();
                 }
-            } catch (IOException e) {
-                //Utility.nikitaErrorConn();
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-                Nson nson = Nson.newObject();
-                nson.set("STATUS", "ERROR");
-                nson.set("ERROR", e.getMessage());
-                return nson.toJson();
             } catch (Exception e) {
                 //Utility.nikitaErrorConn();
+                // TODO Auto-generated catch block
                 e.printStackTrace();
                 Nson nson = Nson.newObject();
                 nson.set("STATUS", "ERROR");

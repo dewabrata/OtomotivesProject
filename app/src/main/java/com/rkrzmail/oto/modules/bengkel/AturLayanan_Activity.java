@@ -18,12 +18,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.data.Utility;
+import com.naa.data.UtilityAndroid;
 import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
@@ -31,8 +33,8 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.TimePicker_Dialog;
 import com.rkrzmail.srv.MultiSelectionSpinner;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
 import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
@@ -41,8 +43,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.ATUR_LAYANAN;
+import static com.rkrzmail.utils.APIUrls.GET_BENGKEL_PRINCIPAL;
+import static com.rkrzmail.utils.APIUrls.GET_KENDARAAN_LAYANAN;
+import static com.rkrzmail.utils.APIUrls.GET_VARIAN_BY_NAMA_LAYANAN;
+import static com.rkrzmail.utils.APIUrls.JURNAL_PEMBAYARAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_DATA_BENGKEL;
 import static com.rkrzmail.utils.APIUrls.VIEW_LAYANAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_MST;
@@ -59,7 +66,6 @@ public class AturLayanan_Activity extends AppActivity {
 
     private Spinner spJenisLayanan, spNamaPrincipal, spNamaLayanan, spStatus;
     private RecyclerView rvLayanan;
-    private DecimalFormat formatter;
 
     private final Nson layananPaketList = Nson.newArray();
     private final Nson layananOtolist = Nson.newArray();
@@ -70,43 +76,38 @@ public class AturLayanan_Activity extends AppActivity {
     private final Nson discPartList = Nson.newArray();
     private final Nson discJasaList = Nson.newArray();
     private final Nson layananBengkelAvail = Nson.newArray();
-    private final Nson dataMerkKendaraanList = Nson.newArray();
     private final Nson dataVarianKendaraanList = Nson.newArray();
     private final Nson dataModelKendaraanList = Nson.newArray();
-
-    private StringBuilder modelBuilder = new StringBuilder();
-    private StringBuilder merkBuilder = new StringBuilder();
+    private Nson loadVarianByNamaLayanan = Nson.newArray();
 
     private Nson editNson;
-    List<String> loadMerkList = new ArrayList<>();
-    List<String> loadModelList = new ArrayList<>();
 
     boolean isUpdate = false;
-    String loadVarian = "", varianSelected;
+    String loadVarian = "", varianSelected = "", merkSelected = "", loadMerk = "";
     private String jenisLayanan = "",
             layananId = "",
             namaLayanan = "",
             idPrincipal = "",
             namaPrincipal = "",
             kendaraan = "",
-            garansi = "";
+            garansi = "",
+            loadNamaLayanan = "";
     private int maxDisc = 0, size = 0;
     private boolean isDiscList,
             isPaket = false,
             isAfterService = false,
             isRecall = false,
             isOtomotives = false, isAdd = false;
-    private String jenisKendaraan = "", modelKendaraan = "", tipeKendaraan = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_atur_layanan);
-        if(!Tools.isNetworkAvailable(getActivity())){
+        if (!Tools.isNetworkAvailable(getActivity())) {
             showWarning("TIDAK ADA KONEKSI INTERNET", Toast.LENGTH_LONG);
         }
         initToolbar();
-        getDataLayanan();
+        //     getDataLayanan();
         getDataKendaraan();
         initComponent();
     }
@@ -114,7 +115,7 @@ public class AturLayanan_Activity extends AppActivity {
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Layanan");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Layanan");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -149,25 +150,14 @@ public class AturLayanan_Activity extends AppActivity {
 
         } else if (getIntent().hasExtra(EDIT)) {
             isUpdate = true;
-            namaLayanan = editNson.get("NAMA_LAYANAN").asString();
             namaPrincipal = editNson.get("PRINCIPAL").asString();
             loadVarian = editNson.get("VARIAN").asString();
-            String loadMerk = editNson.get("MERK").asString();
+            loadMerk = editNson.get("MERK").asString();
+            loadNamaLayanan = editNson.get("NAMA_LAYANAN").asString();
             String loadModel = editNson.get("MODEL").asString();
-            String[] splitMerk = loadMerk.split(", ");
-            String[] splitModel = loadModel.split(", ");
 
-            if (splitMerk.length > 0) {
-                loadMerkList = removeEmptyString(splitMerk);
-            } else {
-                loadMerkList.add(loadMerk.replace(", ", ""));
-            }
-            if (splitModel.length > 0) {
-                loadModelList = removeEmptyString(splitModel);
-            } else {
-                loadModelList.add(loadModel.replace(", ", ""));
-            }
-
+            Tools.setViewAndChildrenEnabled(find(R.id.rl_merk, RelativeLayout.class), false);
+            Tools.setViewAndChildrenEnabled(find(R.id.rl_varian, RelativeLayout.class), false);
             Tools.setViewAndChildrenEnabled(find(R.id.vg_jenis_layanan, LinearLayout.class), false);
             Tools.setViewAndChildrenEnabled(find(R.id.vg_nama_principal, LinearLayout.class), false);
             Tools.setViewAndChildrenEnabled(find(R.id.vg_nama_layanan, LinearLayout.class), false);
@@ -202,6 +192,7 @@ public class AturLayanan_Activity extends AppActivity {
         setSpinnerFromApi(spNamaLayanan, "action", "view", VIEW_LAYANAN, "NAMA_LAYANAN", editNson.get("NAMA_LAYANAN").asString());
         setSpinnerFromApi(spNamaPrincipal, "action", "principal", "databengkel", "NAMA", editNson.get("PRINCIPAL").asString());
         final boolean finalIsUpdate = isUpdate;
+
         find(R.id.btn_simpan_atur_layanan, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -228,12 +219,8 @@ public class AturLayanan_Activity extends AppActivity {
                     }
                 }
 
-                if (merkBuilder.toString().isEmpty()) {
+                if (merkSelected.isEmpty()) {
                     showWarning("MERK KENDARAAN HARUS DI PILIH");
-                    return;
-                }
-                if(modelBuilder.toString().isEmpty()){
-                    showWarning("MODEL KENDARAAN HARUS DI PILIH");
                     return;
                 }
                 if (varianSelected.isEmpty()) {
@@ -241,9 +228,9 @@ public class AturLayanan_Activity extends AppActivity {
                     return;
                 }
 
-                if(finalIsUpdate){
+                if (finalIsUpdate) {
                     updateData(editNson);
-                }else{
+                } else {
                     saveData();
                 }
             }
@@ -251,21 +238,21 @@ public class AturLayanan_Activity extends AppActivity {
 
     }
 
-    private List<String> removeEmptyString(String[] args){
+    private List<String> removeEmptyString(String[] args) {
         List<String> argsList = new ArrayList<>();
-        if(args.length > 0){
-            for(String index : args){
-                if(!index.equals(" ") || !index.isEmpty()){
+        if (args.length > 0) {
+            for (String index : args) {
+                if (!index.equals(" ") || !index.isEmpty()) {
                     index = index.replace(",", "");
                     argsList.add(index);
                 }
             }
         }
-        return  argsList;
+        return argsList;
     }
 
     private void updateData(final Nson id) {
-        if(!Tools.isNetworkAvailable(getActivity())){
+        if (!Tools.isNetworkAvailable(getActivity())) {
             showWarning("TIDAK ADA KONEKSI INTERNET", Toast.LENGTH_LONG);
         }
         newProses(new Messagebox.DoubleRunnable() {
@@ -278,12 +265,12 @@ public class AturLayanan_Activity extends AppActivity {
                 args.put("action", "update");
                 args.put("id", id.get("ID").asString());
                 args.put("status", spStatus.getSelectedItem().toString());
-                args.put("merk", merkBuilder.toString());
+                args.put("merk", merkSelected);
                 args.put("varian", varianSelected);
-                args.put("model", modelBuilder.toString());
+                args.put("model", null);
                 args.put("keterangan", find(R.id.et_keterangan, EditText.class).getText().toString());
                 if (!jenisLayanan.equalsIgnoreCase("PAKET LAYANAN")) {
-                    args.put("biaya", jenisLayanan);
+                    args.put("biaya", "0");
                 } else {
                     args.put("biaya", formatOnlyNumber(find(R.id.et_biayaPaket_layanan, EditText.class).getText().toString()));
                 }
@@ -344,20 +331,20 @@ public class AturLayanan_Activity extends AppActivity {
                 jenisLayanan = parent.getItemAtPosition(position).toString();
                 Tools.setViewAndChildrenEnabled(find(R.id.ly_garansi, LinearLayout.class), jenisLayanan.equals("AFTER SALES SERVIS"));
                 Tools.setViewAndChildrenEnabled(find(R.id.vg_nama_principal, LinearLayout.class), jenisLayanan.equals("AFTER SALES SERVIS"));
-                Tools.setViewAndChildrenEnabled(find(R.id.ly_kendaraan, LinearLayout.class), jenisLayanan.equals("PAKET LAYANAN"));
+                //Tools.setViewAndChildrenEnabled(find(R.id.ly_kendaraan, LinearLayout.class), jenisLayanan.equals("PAKET LAYANAN"));
 
                 if (jenisLayanan.equalsIgnoreCase("PAKET LAYANAN")) {
-                    if(!isUpdate) spNamaLayanan.setEnabled(true);
+                    if (!isUpdate) spNamaLayanan.setEnabled(true);
                     find(R.id.sp_garansi_atur_layanan, Spinner.class).setEnabled(true);
                 } else if (jenisLayanan.equalsIgnoreCase("OTOMOTIVES")) {
-                    if(!isUpdate) spNamaLayanan.setEnabled(true);
+                    if (!isUpdate) spNamaLayanan.setEnabled(true);
                     find(R.id.btn_deskripsi_aturLayanan, Button.class).setEnabled(true);
                 } else if (jenisLayanan.equalsIgnoreCase("AFTER SALES SERVIS") || jenisLayanan.equalsIgnoreCase("RECALL")) {
                     find(R.id.btn_deskripsi_aturLayanan, Button.class).setEnabled(true);
                     find(R.id.btn_simpan_atur_layanan, Button.class).setEnabled(true);
                 }
 
-                setSpinnerNamaLayanan(namaLayanan);
+                setSpinnerNamaLayanan();
             }
 
             @Override
@@ -444,7 +431,7 @@ public class AturLayanan_Activity extends AppActivity {
     }
 
     private void saveData() {
-        if(!Tools.isNetworkAvailable(getActivity())){
+        if (!Tools.isNetworkAvailable(getActivity())) {
             showWarning("TIDAK ADA KONEKSI INTERNET", Toast.LENGTH_LONG);
             return;
         }
@@ -467,15 +454,15 @@ public class AturLayanan_Activity extends AppActivity {
                 args.put("keterangan", find(R.id.et_keterangan, EditText.class).getText().toString());
                 args.put("discbook", find(R.id.et_discBooking_layanan, EditText.class).getText().toString());
                 if (!jenisLayanan.equalsIgnoreCase("PAKET LAYANAN")) {
-                    args.put("biaya", jenisLayanan);
+                    args.put("biaya", "0");
                 } else {
                     args.put("biaya", formatOnlyNumber(find(R.id.et_biayaPaket_layanan, EditText.class).getText().toString()));
                 }
                 args.put("garansi", find(R.id.sp_garansi_atur_layanan, Spinner.class).getSelectedItem().toString());
                 args.put("fgb", formatOnlyNumber(find(R.id.et_feeGB_layanan, EditText.class).getText().toString()));
                 args.put("kendaraan", kendaraan);
-                args.put("merk", merkBuilder.toString());
-                args.put("model", modelBuilder.toString());
+                args.put("merk", merkSelected);
+                args.put("model", null);
                 args.put("varian", varianSelected);
                 args.put("tanggal", currentDateTime());
                 if (discPartList.size() > 0) {
@@ -488,7 +475,7 @@ public class AturLayanan_Activity extends AppActivity {
                 } else {
                     args.put("jasa", "");
                 }
-                args.put("jenis_kendaraan", jenisKendaraan.equals("") ? "*" : jenisKendaraan);
+                args.put("jenis_kendaraan", kendaraan);
                 args.put("waktuLayananHari", find(R.id.et_waktu_kerja_hari, EditText.class).getText().toString());
                 args.put("waktuLayananJam", find(R.id.et_waktu_kerja_jam, EditText.class).getText().toString());
                 args.put("waktuLayananMenit", find(R.id.et_waktu_kerja_menit, EditText.class).getText().toString());
@@ -529,26 +516,27 @@ public class AturLayanan_Activity extends AppActivity {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     result = result.get("data");
                     for (int i = 0; i < result.size(); i++) {
-                        if (result.get(i).get("JENIS").asString().equals("PAKET LAYANAN")
-                                && result.get(i).get("KENDARAAN").asString().contains(kendaraan)) {
+                        if (result.get(i).get("JENIS").asString().equals("PAKET LAYANAN")) {
                             layananPaketList.add(result.get(i));
-                        } else if (result.get(i).get("JENIS").asString().equalsIgnoreCase("AFTER SALES SERVIS")
-                                && result.get(i).get("KENDARAAN").asString().contains(kendaraan)) {
+                        } else if (result.get(i).get("JENIS").asString().equalsIgnoreCase("AFTER SALES SERVIS")) {
                             layananAfterList.add(result.get(i));
-                        } else if (result.get(i).get("JENIS").asString().equalsIgnoreCase("RECALL")
-                                && result.get(i).get("KENDARAAN").asString().contains(kendaraan)) {
+                        } else if (result.get(i).get("JENIS").asString().equalsIgnoreCase("RECALL")) {
                             layananRecallList.add(result.get(i));
-                        } else if (result.get(i).get("JENIS").asString().equalsIgnoreCase("OTOMOTIVES") &&
-                                result.get("KENDARAAN").asString().trim().contains(kendaraan)) {
+                        } else if (result.get(i).get("JENIS").asString().equalsIgnoreCase("OTOMOTIVES")) {
                             layananOtolist.add(result.get(i));
                         }
                     }
 
                 } else {
-                    showInfoDialog("Gagal Load Nama Layanan, Muat Ulang ?", new DialogInterface.OnClickListener() {
+                    showInfoDialog("Konfirmasi", "Gagal Load Nama Layanan, Muat Ulang ?", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             getDataLayanan();
+                        }
+                    }, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
                         }
                     });
                 }
@@ -558,25 +546,25 @@ public class AturLayanan_Activity extends AppActivity {
         });
     }
 
-    private void setSpinnerNamaLayanan(final String selection) {
-        newTask(new Messagebox.DoubleRunnable() {
+    private void setSpinnerNamaLayanan() {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
             @Override
             public void run() {
-
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "view");
+                args.put("spec", "OTOMOTIVES");
+                args.put("layanan", "BENGKEL");
+                args.put("jenisLayanan", jenisLayanan);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_LAYANAN), args));
             }
 
             @Override
             public void runUI() {
+                result = result.get("data");
                 dataLayananList.asArray().clear();
-                if (jenisLayanan.equalsIgnoreCase("PAKET LAYANAN")) {
-                    dataLayananList.asArray().addAll(layananPaketList.asArray());
-                } else if (jenisLayanan.equalsIgnoreCase("RECALL")) {
-                    dataLayananList.asArray().addAll(layananRecallList.asArray());
-                } else if (jenisLayanan.equalsIgnoreCase("AFTER SALES SERVIS")) {
-                    dataLayananList.asArray().addAll(layananAfterList.asArray());
-                } else {
-                    dataLayananList.asArray().addAll(layananOtolist.asArray());
-                }
+                dataLayananList.asArray().addAll(result.asArray());
 
                 final List<String> namaLayananList = new ArrayList<>();
                 namaLayananList.add("--PILIH--");
@@ -586,48 +574,18 @@ public class AturLayanan_Activity extends AppActivity {
                     }
                 }
 
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, namaLayananList) {
-                   /* @SuppressLint("WrongConstant")
-                    @Override
-                    public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                        View mView = null;
-                        if(layananBengkelAvail.size() > 0){
-                            for (int i = 0; i < layananBengkelAvail.size(); i++) {
-                                if (layananBengkelAvail.get(i).asString().equals(namaLayananList.get(position))) {
-                                    TextView mTextView = new TextView(getContext());
-                                    mTextView.setVisibility(View.GONE);
-                                    mTextView.setHeight(0);
-                                    mView = mTextView;
-                                    break;
-                                } else {
-                                    mView = super.getDropDownView(position, null, parent);
-                                }
-                            }
-                        }else{
-                            mView = super.getDropDownView(position, null, parent);
-                        }
-                        return mView;
-                    }*/
-                };
-
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                adapter.notifyDataSetChanged();
-                spNamaLayanan.setAdapter(adapter);
+                setSpinnerOffline(namaLayananList, spNamaLayanan, loadNamaLayanan);
                 spNamaLayanan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @SuppressLint("SetTextI18n")
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        String item = parent.getItemAtPosition(position).toString();
+                        namaLayanan = parent.getItemAtPosition(position).toString();
                         if (position != 0) {
+                            setSpVarianKendaraan();
                             if (dataLayananList.size() > 0) {
                                 for (int i = 0; i < dataLayananList.size(); i++) {
-                                    if (dataLayananList.get(i).get("NAMA_LAYANAN").asString().equals(item)) {
+                                    if (dataLayananList.get(i).get("NAMA_LAYANAN").asString().equals(namaLayanan)) {
                                         layananId = dataLayananList.get(i).get("ID").asString();
-                                        kendaraan = dataLayananList.get(i).get("KENDARAAN").asString();
-                                        jenisKendaraan = dataLayananList.get(i).get("JENIS_KENDARAAN").asString();
-                                        modelKendaraan = dataLayananList.get(i).get("MODEL_KENDARAAN").asString();
-                                        tipeKendaraan = dataLayananList.get(i).get("KENDARAAN").asString();
-
                                         if (!dataLayananList.get(i).get("PRINCIPAL").asString().equals("N")) {
                                             namaPrincipal = dataLayananList.get(i).get("PRINCIPAL").asString();
                                         } else {
@@ -643,10 +601,6 @@ public class AturLayanan_Activity extends AppActivity {
                                 }
                             }
                         }
-
-                        setSpMerkKendaraan();
-                        setSpVarianKendaraan(null);
-                        setSpModelKendaraan();
                     }
 
                     @Override
@@ -654,15 +608,6 @@ public class AturLayanan_Activity extends AppActivity {
 
                     }
                 });
-
-                if (!selection.isEmpty()) {
-                    for (int in = 0; in < spNamaLayanan.getCount(); in++) {
-                        if (spNamaLayanan.getItemAtPosition(in).toString().equals(selection)) {
-                            spNamaLayanan.setSelection(in);
-                            break;
-                        }
-                    }
-                }
             }
         });
 
@@ -675,20 +620,7 @@ public class AturLayanan_Activity extends AppActivity {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("nama", "DATA_KENDARAAN");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MST), args));
-                result = result.get("data");
-                if (result.size() > 0) {
-                    for (int i = 0; i < result.size(); i++) {
-                        dataVarianKendaraanList.add(Nson.newObject()
-                                .set("TYPE", result.get(i).get("TYPE").asString())
-                                .set("JENIS", result.get(i).get("JENIS").asString())
-                                .set("VARIAN", result.get(i).get("VARIAN").asString())
-                                .set("MODEL", result.get(i).get("MODEL").asString())
-                        );
-                    }
-                }
-
+               /*
                 args.remove("nama");
                 args.put("nama", "MODEL");
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MST), args));
@@ -701,71 +633,75 @@ public class AturLayanan_Activity extends AppActivity {
                         );
                     }
                 }
+                */
 
-                args.put("action", "merkKendaraan");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_DATA_BENGKEL), args));
-                result = result.get("data").get(0);
-                String jenisKendaraan = result.get("JENIS_KENDARAAN").asString();
-                String[] splitMerk = result.get("MERK_KENDARAAN").asString().split(", ");
-                if (splitMerk.length > 0) {
-                    for (String merk : splitMerk) {
-                        dataMerkKendaraanList.add(Nson.newObject()
-                                .set("TYPE", jenisKendaraan)
-                                .set("MERK", merk.replace(",", ""))
+                args.put("nama", "DATA_KENDARAAN");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MST), args));
+                result = result.get("data");
+                if (result.size() > 0) {
+                    for (int i = 0; i < result.size(); i++) {
+                        dataVarianKendaraanList.add(Nson.newObject()
+                                .set("TYPE", result.get(i).get("TYPE").asString())
+                                .set("JENIS", result.get(i).get("JENIS").asString())
+                                .set("VARIAN", result.get(i).get("VARIAN").asString())
+                                .set("MODEL", result.get(i).get("MODEL").asString())
+                                .set("MERK", result.get(i).get("MERK").asString())
                         );
                     }
-                }else{
-                    dataMerkKendaraanList.add(Nson.newObject()
-                            .set("TYPE", jenisKendaraan)
-                            .set("MERK", result.get("MERK_KENDARAAN").asString())
-                    );
-
                 }
             }
 
             @Override
             public void runUI() {
-                setSpMerkKendaraan();
-                setSpVarianKendaraan(null);
-                setSpModelKendaraan();
+                setSpMerkKendaraan(loadMerk);
             }
         });
     }
 
-    private void setSpMerkKendaraan() {
+    private void setSpMerkKendaraan(final String selection) {
         newTask(new Messagebox.DoubleRunnable() {
+            List<String> merkList = new ArrayList<>();
+
             @Override
             public void run() {
+                Nson loadMerk = Nson.readJson(UtilityAndroid.getSetting(getApplicationContext(), "MERK_KENDARAAN_ARRAY", ""));
+                Nson merkArray = Nson.newArray();
+                merkArray.asArray().addAll(loadMerk.asArray());
 
+                merkList.add("--PILIH--");
+                if (merkArray.size() > 1) {
+                    for (int i = 0; i < merkArray.size(); i++) {
+                        merkList.add(merkArray.get(i).get("MERK").asString());
+                    }
+                } else {
+                    String merk = merkArray.get(0).get("MERK").asString();
+                    merkList.add(merk);
+                }
+
+                merkList = Tools.removeDuplicates(merkList);
             }
 
             @Override
             public void runUI() {
-                List<String> merkList = new ArrayList<>();
-                merkList.add("--PILIH--");
-                for (int i = 0; i < dataMerkKendaraanList.size(); i++) {
-                    if (dataMerkKendaraanList.get(i).get("TYPE").asString().equals(kendaraan)) {
-                        if (!merkList.contains(dataMerkKendaraanList.get(i).get("MERK").asString())) {
-                            merkList.add(dataMerkKendaraanList.get(i).get("MERK").asString());
-                        }
-                    }
+                setSpinnerOffline(merkList, find(R.id.sp_merk_kendaraan, Spinner.class), selection);
+                if (merkList.size() == 2) {
+                    find(R.id.sp_merk_kendaraan, Spinner.class).setSelection(1);
+                    Tools.setViewAndChildrenEnabled(find(R.id.rl_merk, RelativeLayout.class), false);
                 }
-                merkList = Tools.removeDuplicates(merkList);
-                find(R.id.sp_merk_kendaraan, MultiSelectionSpinner.class).setItems(merkList, loadMerkList);
-                find(R.id.sp_merk_kendaraan, MultiSelectionSpinner.class).setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
+                find(R.id.sp_merk_kendaraan, Spinner.class).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
-                    public void selectedIndices(List<Integer> indices) {
-
-                    }
-
-                    @Override
-                    public void selectedStrings(List<String> strings) {
-                        if(strings.size() > 0){
-                            merkBuilder = new StringBuilder();
-                            for (int i = 0; i < strings.size(); i++) {
-                                merkBuilder.append(strings.get(i)).append(", ");
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        merkSelected = parent.getItemAtPosition(position).toString().equals("--PILIH--") ? "" : parent.getItemAtPosition(position).toString();
+                        if (!merkSelected.isEmpty()) {
+                            if(!isUpdate){
+                                setSpVarianKendaraan();
                             }
                         }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
                     }
                 });
             }
@@ -773,48 +709,38 @@ public class AturLayanan_Activity extends AppActivity {
 
     }
 
-    private void setSpVarianKendaraan(final List<String> varianByModel) {
-        newTask(new Messagebox.DoubleRunnable() {
+    private void setSpVarianKendaraan() {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
             @Override
             public void run() {
+                String[] args1 = new String[6];
+                args1[0] = "CID=" + getSetting("CID");
+                args1[1] = "namaLayanan=" + namaLayanan;
+                args1[2] = "jenisKendaraan=" + kendaraan;
+                args1[3] = "merkKendaraan=" + merkSelected;
+                args1[4] = "varian=" + loadVarian;
 
+                result = Nson.readJson(InternetX.getHttpConnectionX(AppApplication.getBaseUrlV4(GET_VARIAN_BY_NAMA_LAYANAN), args1));
             }
 
             @Override
             public void runUI() {
-                List<String> varianList = new ArrayList<>();
+                result = result.get("data");
+                final List<String> varianList = new ArrayList<>();
                 varianList.add("--PILIH--");
-                for (int i = 0; i < dataVarianKendaraanList.size(); i++) {
-                    if (dataVarianKendaraanList.get(i).get("JENIS").asString().equals(jenisKendaraan)) {
-                        if (!varianList.contains(dataVarianKendaraanList.get(i).get("VARIAN").asString())) {
-                            varianList.add(dataVarianKendaraanList.get(i).get("VARIAN").asString());
-                        }
-                    }else{
-                        if(varianByModel != null && varianByModel.size() > 0){
-                            for (int j = 0; j < varianByModel.size(); j++) {
-                                if(dataVarianKendaraanList.get(i).get("MODEL").asString().equals(varianByModel.get(j))){
-                                    varianList.add(dataVarianKendaraanList.get(i).get("VARIAN").asString());
-                                }
-                            }
-                        }else{
-                            if(dataVarianKendaraanList.get(i).get("TYPE").asString().equals(kendaraan)){
-                                if (!varianList.contains(dataVarianKendaraanList.get(i).get("VARIAN").asString())) {
-                                    varianList.add(dataVarianKendaraanList.get(i).get("VARIAN").asString());
-                                }
-                            }
-                        }
+                if (result.size() > 0) {
+                    for (int i = 0; i < result.size(); i++) {
+                        varianList.add(result.get(i).get("VARIAN").asString());
                     }
                 }
-                varianList = Tools.removeDuplicates(varianList);
+
                 setSpinnerOffline(varianList, find(R.id.sp_varian_kendaraan, Spinner.class), loadVarian);
                 find(R.id.sp_varian_kendaraan, Spinner.class).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        if(position != 0){
-                            varianSelected = parent.getItemAtPosition(position).toString();
-                        }else{
-                            varianSelected = "";
-                        }
+                        varianSelected = position != 0 ? parent.getItemAtPosition(position).toString() : "";
                     }
 
                     @Override
@@ -842,8 +768,9 @@ public class AturLayanan_Activity extends AppActivity {
                         modelList.add(dataModelKendaraanList.get(i).get("MODEL").asString());
                     }
                 }
+
                 modelList = Tools.removeDuplicates(modelList);
-                find(R.id.sp_model_kendaraan, MultiSelectionSpinner.class).setItems(modelList, loadModelList);
+                find(R.id.sp_model_kendaraan, MultiSelectionSpinner.class).setItems(modelList, null);
                 find(R.id.sp_model_kendaraan, MultiSelectionSpinner.class).setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
                     @Override
                     public void selectedIndices(List<Integer> indices) {
@@ -852,12 +779,8 @@ public class AturLayanan_Activity extends AppActivity {
 
                     @Override
                     public void selectedStrings(List<String> strings) {
-                        if(strings.size() > 0){
-                            modelBuilder = new StringBuilder();
-                            for (int i = 0; i < strings.size(); i++) {
-                                modelBuilder.append(strings.get(i)).append(", ");
-                            }
-                            setSpVarianKendaraan(strings);
+                        if (strings.size() > 0) {
+
                         }
                     }
                 });
@@ -865,28 +788,37 @@ public class AturLayanan_Activity extends AppActivity {
         });
     }
 
-
     private void setSpNamaPrincipal(final String selection) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
             @Override
             public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("nama", "PRINCIPAL BENGKEL");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MST), args));
+                String[] args = new String[4];
+                args[0] = "CID=" + getSetting("CID");
+                result = Nson.readJson(InternetX.getHttpConnectionX(AppApplication.getBaseUrlV4(GET_BENGKEL_PRINCIPAL), args));
             }
 
             @Override
             public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                if (result.get("status").asBoolean()) {
                     result = result.get("data");
-                    principalList.add("--PILIH--");
-                    for (int i = 0; i < result.size(); i++) {
-                        principalList.add(result.get(i).get("NAMA_PRINCIPAL"));
+                    if(result.size() > 0){
+                        principalList.add("--PILIH--");
+                        for (int i = 0; i < result.size(); i++) {
+                            principalList.add(result.get(i).get("NAMA_PRINCIPAL").asString());
+                        }
+                        if(principalList.size() == 2){
+                            setSpinnerOffline(principalList.asArray(), spNamaPrincipal, 2);
+                        }else{
+                            setSpinnerOffline(principalList.asArray(), spNamaPrincipal, selection);
+                        }
+                    }else{
+                        showWarning("PRINCIPAL TIDAK TERSEDIA, SILAHKAN PILIH JENIS LAYANAN LAIN", Toast.LENGTH_LONG);
+                        spJenisLayanan.setSelection(0);
+                        spJenisLayanan.performClick();
+                        viewFocus(spJenisLayanan);
                     }
-
-                    setSpinnerOffline(principalList.asArray(), spNamaPrincipal, selection);
                 }
             }
         });

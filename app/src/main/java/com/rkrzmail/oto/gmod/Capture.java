@@ -31,10 +31,13 @@ import android.widget.RatingBar;
 import com.naa.data.UtilityAndroid;
 import com.rkrzmail.oto.R;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Objects;
 
 import static com.rkrzmail.utils.ConstUtils.EXTERNAL_DIR_OTO;
 
@@ -47,7 +50,6 @@ public class Capture extends Activity {
     public static String tempDir;
     public int count = 1;
     public String current = null;
-    public static Bitmap mBitmap;
     public View mView;
     public File mypath;
 
@@ -113,25 +115,18 @@ public class Capture extends Activity {
                 mSignature.save(mView);
                 //Bundle b = new Bundle();
                 // b.putString("status", "done");
-                Intent intent = new Intent();
-                intent.putExtra("imagePath", mypath);
-                intent.putExtra("status", "done");
 
-                RatingBar ratingBar = (RatingBar) findViewById(R.id.ratingBar);
-                intent.putExtra("rating", String.valueOf(ratingBar.getRating()));
-                setResult(RESULT_OK, intent);
-                finish();
+
+               /* RatingBar ratingBar = (RatingBar) findViewById(R.id.ratingBar);
+                intent.putExtra("rating", String.valueOf(ratingBar.getRating()));*/
+
                 //  }
             }
         });
 
         mCancel.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-                Log.v("log_tag", "Panel Canceled");
-                Bundle b = new Bundle();
-                b.putString("status", "cancel");
                 Intent intent = new Intent();
-                intent.putExtras(b);
                 setResult(RESULT_CANCELED, intent);
                 finish();
             }
@@ -212,7 +207,7 @@ public class Capture extends Activity {
 
         if (tempdir.isDirectory()) {
             File[] files = tempdir.listFiles();
-            for (File file : files) {
+            for (File file : Objects.requireNonNull(files)) {
                 if (!file.delete()) {
                     System.out.println("Failed to delete " + file);
                 }
@@ -248,11 +243,37 @@ public class Capture extends Activity {
             Log.v("log_tag", "Width: " + v.getWidth());
             Log.v("log_tag", "Height: " + v.getHeight());
             //if(mBitmap == null) {
-            mBitmap = Bitmap.createBitmap(mContent.getWidth(), mContent.getHeight(), Bitmap.Config.ARGB_8888);//RGB_565
+            Bitmap mBitmap = Bitmap.createBitmap(mContent.getWidth(), mContent.getHeight(), Bitmap.Config.ARGB_8888);//RGB_565
             //}
             Canvas canvas = new Canvas(mBitmap);
             try {
-                File photo = new File(Environment.getExternalStorageDirectory(), "imgTom");
+                canvas.drawPath(path, paint);
+
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                mBitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);
+                byte[] bytes = bos.toByteArray();
+                bos.close();
+
+                Intent intent = new Intent();
+                intent.putExtra("bytesBitmap", bytes);
+                intent.putExtra("status", "done");
+                setResult(RESULT_OK, intent);
+                finish();
+
+            } catch (Exception e) {
+                Log.i("finish", e.toString());
+            }
+        }
+
+        private void saveOLD(){
+            /*Log.v("log_tag", "Width: " + v.getWidth());
+            Log.v("log_tag", "Height: " + v.getHeight());
+            //if(mBitmap == null) {
+            Bitmap mBitmap = Bitmap.createBitmap(mContent.getWidth(), mContent.getHeight(), Bitmap.Config.ARGB_8888);//RGB_565
+            //}
+            Canvas canvas = new Canvas(mBitmap);
+            try {
+             *//*   File photo = new File(Environment.getExternalStorageDirectory(), "imgTom");
                 String fname = photo.getAbsolutePath();
                 if (getIntent() != null) {
                     if (getIntent().getStringExtra(MediaStore.EXTRA_OUTPUT) != null) {
@@ -261,15 +282,26 @@ public class Capture extends Activity {
                 }
                 // @SuppressLint("SdCardPath") FileOutputStream mFileOutStream = new FileOutputStream("/sdcard/"+fname);
                 FileOutputStream mFileOutStream = new FileOutputStream(new File(fname));
-
+*//*
 
                 canvas.drawPath(path, paint);
                 //v.draw(canvas);
-                mBitmap.compress(Bitmap.CompressFormat.PNG, 100, mFileOutStream);
-                createDirectoryAndSaveFile(mBitmap);
+
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                mBitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);
+                byte[] bytes = bos.toByteArray();
+                bos.close();
+
+                Intent intent = new Intent();
+                intent.putExtra("imagePath", bytes);
+                intent.putExtra("status", "done");
+                setResult(RESULT_OK, intent);
+                finish();
+
+                //createDirectoryAndSaveFile(mBitmap);
                 //createDirectoryAndSaveFile(mBitmap, currentDateTime() + "/" + getSetting("NAMA_USER"));
-                mFileOutStream.flush();
-                mFileOutStream.close();
+               *//* mFileOutStream.flush();
+                mFileOutStream.close();*//*
 //                //In case you want to delete the file
 //                boolean deleted = mypath.delete();
 //                Log.v("log_tag","deleted: " + mypath.toString() + deleted);
@@ -278,7 +310,7 @@ public class Capture extends Activity {
 
             } catch (Exception e) {
                 Log.i("finish", e.toString());
-            }
+            }*/
         }
 
         public String currentDateTime() {

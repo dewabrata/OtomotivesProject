@@ -35,7 +35,7 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.srv.DateFormatUtils;
 import com.rkrzmail.srv.NikitaAutoComplete;
-import com.rkrzmail.srv.NsonAutoCompleteAdapter;
+import com.rkrzmail.oto.modules.Adapter.NsonAutoCompleteAdapter;
 import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 import com.squareup.okhttp.FormEncodingBuilder;
@@ -389,7 +389,13 @@ public class AturJurnal_Activity extends AppActivity implements View.OnClickList
                         }
                     });
 
-                    spDialogTransaksi = new SpinnerDialog(getActivity(), transaksiList, "Pilih Jenis Transaksi", R.style.DialogAnimations_SmileWindow, "Tutup");
+                    spDialogTransaksi = new SpinnerDialog(
+                            getActivity(),
+                            transaksiList,
+                            "Pilih Jenis Transaksi",
+                            R.style.DialogAnimations_SmileWindow,
+                            "Tutup"
+                    );
                     spDialogTransaksi.setCancellable(true); // for cancellable
                     spDialogTransaksi.setShowKeyboard(false);// for open keyboard by default
                     spDialogTransaksi.bindOnSpinerListener(new OnSpinerItemClick() {

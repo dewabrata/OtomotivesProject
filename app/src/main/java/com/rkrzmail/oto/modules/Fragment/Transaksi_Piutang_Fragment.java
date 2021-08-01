@@ -11,13 +11,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,15 +29,14 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.bengkel.AturTotalInvoice_Activity;
 import com.rkrzmail.oto.modules.hutang.Piutang_MainTab_Activity;
 import com.rkrzmail.srv.DateFormatUtils;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
 import com.rkrzmail.srv.NumberFormatUtils;
 
 import java.util.Map;
 
 import static com.rkrzmail.utils.APIUrls.PIUTANG;
 import static com.rkrzmail.utils.ConstUtils.DATA;
-import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 import static com.rkrzmail.utils.ConstUtils.RP;
 
@@ -182,14 +179,14 @@ public class Transaksi_Piutang_Fragment extends Fragment {
                     }
                 }
                 if (transaksiList.get(position).get("NO_MESIN").asString().isEmpty() && transaksiList.get(position).get("KODE_TIPE").asString().isEmpty()) {
-                    viewHolder.find(R.id.row_no_mesin, TableRow.class).setVisibility(View.GONE);
-                    viewHolder.find(R.id.row_kode_tipe, TableRow.class).setVisibility(View.GONE);
+                    viewHolder.find(R.id.tv_kode_tipe, TextView.class).setVisibility(View.GONE);
+                    viewHolder.find(R.id.tv_no_mesin, TextView.class).setVisibility(View.GONE);
                 } else {
                     viewHolder.find(R.id.tv_no_mesin, TextView.class).setText(transaksiList.get(position).get("NO_MESIN").asString());
                     viewHolder.find(R.id.tv_kode_tipe, TextView.class).setText(transaksiList.get(position).get("KODE_TIPE").asString());
                 }
                 if (transaksiList.get(position).get("JENIS_KENDARAAN").asString().isEmpty()) {
-                    viewHolder.find(R.id.row_jenis_kendaraan, TableRow.class).setVisibility(View.GONE);
+                    viewHolder.find(R.id.tv_jenis_kendaraan, TextView.class).setVisibility(View.GONE);
                 } else {
                     viewHolder.find(R.id.tv_jenis_kendaraan, TextView.class).setText(transaksiList.get(position).get("JENIS_KENDARAAN").asString());
                 }

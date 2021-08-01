@@ -191,6 +191,23 @@
 
             </TableRow>
 
+            <TableRow
+                android:id="@+id/tr_nama_mekanik"
+                android:layout_marginTop="@dimen/paddingMedium">
+
+                <TextView
+                    android:id="@+id/tv_nama_mekanik"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/nama_mekanik"
+                    android:textSize="12sp"
+                    android:paddingEnd="30dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_gravity="start"
+                    card_view:ignore="RtlSymmetry" />
+
+            </TableRow>
+
 
         </TableLayout>
 

@@ -18,10 +18,10 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.bengkel.Schedule_MainTab_Activity;
+import com.rkrzmail.oto.modules.Adapter.Schedule_MainTab_Activity;
 import com.rkrzmail.srv.DateFormatUtils;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
 
 import java.util.Map;
 

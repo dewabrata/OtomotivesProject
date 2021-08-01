@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -28,6 +29,7 @@ import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.ATUR_COLLECTION;
 import static com.rkrzmail.utils.APIUrls.SET_REKENING_BANK;
+import static com.rkrzmail.utils.APIUrls.VIEW_COLLECTION;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.RP;
@@ -43,7 +45,7 @@ public class AturCollection_Activity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cash_collection_);
+        setContentView(R.layout.activity_cash_collection);
         initToolbar();
         initComponent();
         loadData();
@@ -73,10 +75,10 @@ public class AturCollection_Activity extends AppActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!editable.toString().isEmpty() &&
-                        !find(R.id.et_terhutang_cashCollection, EditText.class).getText().toString().isEmpty()) {
+                        !find(R.id.et_total_cash, EditText.class).getText().toString().isEmpty()) {
                     try {
                         setor = Integer.parseInt(formatOnlyNumber(editable.toString()));
-                        terhutang = Integer.parseInt(formatOnlyNumber(find(R.id.et_terhutang_cashCollection, EditText.class).getText().toString()));
+                        terhutang = Integer.parseInt(formatOnlyNumber(find(R.id.et_total_cash, EditText.class).getText().toString()));
                         sisaTerhutang = terhutang - setor;
                         find(R.id.et_sisa_cashCollection, EditText.class).setText(RP + formatRp(String.valueOf(sisaTerhutang)));
                     } catch (Exception e) {
@@ -89,7 +91,7 @@ public class AturCollection_Activity extends AppActivity {
         });
 
         find(R.id.et_namaKasir_cashCollection);
-        find(R.id.et_terhutang_cashCollection);
+        find(R.id.et_total_cash);
 
         find(R.id.sp_tipe_cashCollection, Spinner.class).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -141,11 +143,12 @@ public class AturCollection_Activity extends AppActivity {
         Nson n = Nson.readJson(getIntentStringExtra(DATA));
         kasirId = n.get("KASIR_ID").asString();
         find(R.id.et_namaKasir_cashCollection, EditText.class).setText(n.get("NAMA").asString());
-        find(R.id.et_terhutang_cashCollection, EditText.class).setText(RP + formatRp(n.get("SALDO_KASIR").asString()));
+        find(R.id.et_total_cash, EditText.class).setText(RP + formatRp(n.get("SALDO_KASIR").asString()));
+        getDataTotal();
     }
 
     private void saveData() {
-        if(!Tools.isNetworkAvailable(getActivity())){
+        if (!Tools.isNetworkAvailable(getActivity())) {
             showWarning("TIDAK ADA KONEKSI INTERNET", Toast.LENGTH_LONG);
         }
         newProses(new Messagebox.DoubleRunnable() {
@@ -163,6 +166,7 @@ public class AturCollection_Activity extends AppActivity {
                 args.put("tipeSetoran", tipeColl);
                 args.put("namaBank", namaBank);
                 args.put("noRekening", noRek);
+                args.put("isCollectNonCash", find(R.id.cb_collect_non_cash, CheckBox.class).isChecked() ? "Y" : "N");
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_COLLECTION), args));
             }
@@ -178,6 +182,57 @@ public class AturCollection_Activity extends AppActivity {
                 }
             }
         });
+    }
+
+    private void getDataTotal() {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
+            @Override
+            public void run() {
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "totalHarian");
+                args.put("userID", kasirId);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_COLLECTION), args));
+            }
+
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void runUI() {
+                result = result.get("data");
+                int totalTf = 0, totalKredit = 0, totalDebet = 0, totalEwallet = 0, totalInv = 0;
+
+                if (result.size() > 0) {
+                    for (int i = 0; i < result.size(); i++) {
+                        switch (result.get(i).get("TIPE_PEMBAYARAN").asString()) {
+                            case "TRANSFER":
+                                totalTf = result.get(i).get("TOTAL").asInteger();
+                                break;
+                            case "DEBET":
+                                totalDebet = result.get(i).get("TOTAL").asInteger();
+                                break;
+                            case "KREDIT":
+                                totalKredit = result.get(i).get("TOTAL").asInteger();
+                                break;
+                            case "E-WALLET":
+                                totalEwallet = result.get(i).get("TOTAL").asInteger();
+                                break;
+                            case "INVOICE":
+                                totalInv = result.get(i).get("TOTAL").asInteger();
+                                break;
+                        }
+                    }
+                }
+
+                find(R.id.et_total_transfer, EditText.class).setText(RP + NumberFormatUtils.formatRp(totalTf));
+                find(R.id.et_total_debet, EditText.class).setText(RP + NumberFormatUtils.formatRp(totalDebet));
+                find(R.id.et_total_kredit, EditText.class).setText(RP + NumberFormatUtils.formatRp(totalKredit));
+                find(R.id.et_total_ewallet, EditText.class).setText(RP + NumberFormatUtils.formatRp(totalEwallet));
+                find(R.id.et_total_invoice, EditText.class).setText(RP + NumberFormatUtils.formatRp(totalInv));
+
+            }
+        });
+
     }
 
     public void setSpRek() {

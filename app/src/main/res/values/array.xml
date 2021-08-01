@@ -1,26 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <integer-array name="sample_images">
-        <item>@drawable/image_1</item>
-        <item>@drawable/image_2</item>
-        <item>@drawable/image_3</item>
-        <item>@drawable/image_4</item>
-        <item>@drawable/image_5</item>
-
-        <item>@drawable/image_6</item>
-        <item>@drawable/image_7</item>
-        <item>@drawable/image_8</item>
-        <item>@drawable/image_9</item>
-        <item>@drawable/image_10</item>
-
-        <item>@drawable/image_11</item>
-        <item>@drawable/image_12</item>
-        <item>@drawable/image_13</item>
-        <item>@drawable/image_14</item>
-        <item>@drawable/image_15</item>
-    </integer-array>
-
     <string-array name="max_jumlah_user">
         <item>MAX 3</item>
         <item>MAX 5</item>
@@ -49,27 +28,6 @@
         <item>River Forest</item>
         <item>Mist Mountain</item>
     </string-array>
-
-
-    <integer-array name="people_images">
-        <item>@drawable/photo_male_1</item>
-        <item>@drawable/photo_male_2</item>
-        <item>@drawable/photo_female_1</item>
-        <item>@drawable/photo_female_2</item>
-        <item>@drawable/photo_male_3</item>
-
-        <item>@drawable/photo_female_3</item>
-        <item>@drawable/photo_male_4</item>
-        <item>@drawable/photo_female_4</item>
-        <item>@drawable/photo_female_5</item>
-        <item>@drawable/photo_male_5</item>
-
-        <item>@drawable/photo_female_6</item>
-        <item>@drawable/photo_male_6</item>
-        <item>@drawable/photo_male_7</item>
-        <item>@drawable/photo_female_7</item>
-        <item>@drawable/photo_female_8</item>
-    </integer-array>
 
     <string-array name="jenis_layanan">
         <item>PAKET LAYANAN</item>
@@ -152,6 +110,7 @@
         <item>MEKANIK</item>
         <item>TUGAS PARTS</item>
         <item>INSPEKSI</item>
+        <item>PARTS</item>
         <item>JUAL PARTS</item>
         <item>TERIMA PARTS</item>
         <item>STOCK OPNAME</item>
@@ -443,19 +402,6 @@
         <item>Youtube</item>
     </string-array>
 
-
-    <integer-array name="shop_category_bg">
-        <item>@drawable/image_4</item>
-        <item>@drawable/image_19</item>
-        <item>@drawable/image_20</item>
-        <item>@drawable/image_21</item>
-        <item>@drawable/image_8</item>
-
-        <item>@drawable/image_22</item>
-        <item>@drawable/image_23</item>
-        <item>@drawable/image_24</item>
-    </integer-array>
-
     <string-array name="shop_category_title">
         <item>Gadgets and Computers</item>
         <item>Fashion</item>
@@ -506,25 +452,6 @@
     </string-array>
 
     <!--music data-->
-    <integer-array name="album_cover">
-        <item>@drawable/image_20</item>
-        <item>@drawable/image_2</item>
-        <item>@drawable/image_3</item>
-        <item>@drawable/image_4</item>
-        <item>@drawable/image_21</item>
-
-        <item>@drawable/image_16</item>
-        <item>@drawable/image_7</item>
-        <item>@drawable/image_17</item>
-        <item>@drawable/image_18</item>
-        <item>@drawable/image_10</item>
-
-        <item>@drawable/image_11</item>
-        <item>@drawable/image_12</item>
-        <item>@drawable/image_19</item>
-        <item>@drawable/image_14</item>
-        <item>@drawable/image_15</item>
-    </integer-array>
 
     <string-array name="song_name">
         <item>All The Arguments</item>

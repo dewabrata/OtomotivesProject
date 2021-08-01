@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/lyt_parent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -14,9 +15,11 @@
         android:layout_height="0dp" />
 
     <ImageView
+        android:id="@+id/img_suggestion"
         android:layout_width="@dimen/spacing_mlarge"
         android:layout_height="@dimen/spacing_mlarge"
-        app:srcCompat="@drawable/ic_history_resize" />
+        android:src="@drawable/ic_history"
+        tools:ignore="ContentDescription" />
 
     <View
         android:layout_width="@dimen/spacing_smlarge"

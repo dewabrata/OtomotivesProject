@@ -42,7 +42,6 @@ import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.style.UnderlineSpan;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -73,7 +72,7 @@ import com.rkrzmail.oto.modules.TimePicker_Dialog;
 import com.rkrzmail.oto.modules.YearPicker_Dialog;
 import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.srv.NikitaAutoComplete;
-import com.rkrzmail.srv.NsonAutoCompleteAdapter;
+import com.rkrzmail.oto.modules.Adapter.NsonAutoCompleteAdapter;
 import com.rkrzmail.utils.Tools;
 import com.valdesekamdem.library.mdtoast.MDToast;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -91,6 +90,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static com.rkrzmail.utils.APIUrls.SET_STOCK_OPNAME;
@@ -98,6 +98,7 @@ import static com.rkrzmail.utils.APIUrls.VIEW_CARI_PART_SUGGESTION;
 import static com.rkrzmail.utils.APIUrls.VIEW_JASA_LAIN;
 import static com.rkrzmail.utils.APIUrls.VIEW_LAYANAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_LOKASI_PART;
+import static com.rkrzmail.utils.APIUrls.VIEW_MASTER;
 import static com.rkrzmail.utils.APIUrls.VIEW_SPAREPART;
 import static com.rkrzmail.utils.APIUrls.VIEW_SUGGESTION;
 import static com.rkrzmail.utils.ConstUtils.PERMISSION_REQUEST_CODE;
@@ -107,9 +108,16 @@ import static com.rkrzmail.utils.ConstUtils.PICK_IMAGE_GALLERY;
 
 public class AppActivity extends AppCompatActivity {
 
+   /* @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(!Tools.isNetworkAvailable(getActivity())){
+            showWarning("TIDAK ADA KONEKSI INTERNET", Toast.LENGTH_LONG);
+        }
+    }*/
 
     public void swipeProgress(final boolean show) {
-        if(find(R.id.swiperefresh, SwipeRefreshLayout.class) == null) return;
+        if (find(R.id.swiperefresh, SwipeRefreshLayout.class) == null) return;
         if (!show) {
             find(R.id.swiperefresh, SwipeRefreshLayout.class).setRefreshing(show);
             return;
@@ -288,6 +296,9 @@ public class AppActivity extends AppCompatActivity {
         }
     };
 
+    public void showConfirmationDialog(){
+
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -478,7 +489,7 @@ public class AppActivity extends AppCompatActivity {
         boolean haveConnectedMobile = false;
 
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+        @SuppressLint("MissingPermission") NetworkInfo[] netInfo = cm.getAllNetworkInfo();
         for (NetworkInfo ni : netInfo) {
             if (ni.getTypeName().equalsIgnoreCase("WIFI"))
                 if (ni.isConnected())
@@ -625,7 +636,9 @@ public class AppActivity extends AppCompatActivity {
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(api), args));
                 result = result.get("data");
                 result = Tools.removeDuplicates(result);
-                isJasaLain[0] = api.equals(VIEW_JASA_LAIN) & result.get(0).get("AKTIVITAS").asString().toLowerCase().contains(bookTitle.toLowerCase());
+                isJasaLain[0] = api.equals(VIEW_JASA_LAIN) &&
+                        (result.get(0).get("AKTIVITAS").asString().toLowerCase().contains(bookTitle.toLowerCase()) ||
+                                result.get(0).get("NAMA_LAIN").asString().toLowerCase().contains(bookTitle.toLowerCase()));
                 isNoPart[0] = (
                         api.equals(VIEW_SPAREPART) | api.equals(VIEW_SUGGESTION) |
                                 api.equals(VIEW_LOKASI_PART) |
@@ -704,7 +717,7 @@ public class AppActivity extends AppCompatActivity {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("nama", params);
                 args.put("search", bookTitle);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("viewmst"), args));
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MASTER), args));
                 return result.get("data");
             }
 
@@ -727,18 +740,17 @@ public class AppActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(i)));
 
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append(n.get("JENIS").asString()).append(" ");
-                stringBuilder.append(n.get(jsonObject[0]).asString()).append(" ");
-
-                editText.setText(stringBuilder.toString());
+                String stringBuilder = n.get("JENIS").asString() + " " +
+                        n.get(jsonObject[0]).asString() + " ";
+                editText.setText(stringBuilder);
                 editText.setTag(String.valueOf(adapterView.getItemAtPosition(i)));
+                editText.setSelection(stringBuilder.length());
             }
         });
     }
 
     public void setMultiSelectionSpinnerFromApi(final MultiSelectionSpinner spinner, final String params, final String arguments, final String api, final MultiSelectionSpinner.OnMultipleItemsSelectedListener listener, final String... jsonObject) {
-        if(!Tools.isNetworkAvailable(getActivity())){
+        if (!Tools.isNetworkAvailable(getActivity())) {
             showWarning("TIDAK ADA KONEKSI INTERNET");
             return;
         }
@@ -772,7 +784,7 @@ public class AppActivity extends AppCompatActivity {
     }
 
     public void setSpinnerFromApi(final Spinner spinner, final String params, final String arguments, final String api, final String jsonObject) {
-        if(!Tools.isNetworkAvailable(getActivity())){
+        if (!Tools.isNetworkAvailable(getActivity())) {
             showWarning("TIDAK ADA KONEKSI INTERNET");
             return;
         }
@@ -794,16 +806,14 @@ public class AppActivity extends AppCompatActivity {
                     str.add(result.get("data").get(i).get(jsonObject).asString());
                 }
                 ArrayList<String> newStr = Tools.removeDuplicates(str);
-                ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, newStr);
-                spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinner.setAdapter(spinnerAdapter);
+                setSpinnerOffline(newStr, spinner, "");
                 notifyDataSetChanged(spinner);
             }
         });
     }
 
     public void setSpinnerFromApi(final Spinner spinner, final String params, final String arguments, final String api, final String jsonObject, final String selection) {
-        if(!Tools.isNetworkAvailable(getActivity())){
+        if (!Tools.isNetworkAvailable(getActivity())) {
             showWarning("TIDAK ADA KONEKSI INTERNET");
             return;
         }
@@ -856,32 +866,28 @@ public class AppActivity extends AppCompatActivity {
     }
 
 
-    public void setSpinnerOffline(List listItem, Spinner spinner, String selection) {
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, listItem);
+    public void setSpinnerOffline(List<?> listItem, Spinner spinner, String selection) {
+        ArrayAdapter<?> spinnerAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, listItem);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinnerAdapter);
-        if (!selection.isEmpty()) {
-            for (int in = 0; in < spinner.getCount(); in++) {
-                if (spinner.getItemAtPosition(in).toString().contains(selection)) {
-                    spinner.setSelection(in);
-                    break;
-                }
-            }
+        setSelectionSpinner(selection, spinner);
+    }
+
+    public void setSpinnerOffline(List<?> listItem, Spinner spinner, int index) {
+        ArrayAdapter<?> spinnerAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, listItem);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerAdapter);
+        if (index != 0) {
+            spinner.setSelection(index);
         }
     }
+
 
     public void setSpinnerOffline(Nson listItem, Spinner spinner, String selection) {
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, listItem.asArray());
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinnerAdapter);
-        if (!selection.isEmpty()) {
-            for (int in = 0; in < spinner.getCount(); in++) {
-                if (spinner.getItemAtPosition(in).toString().contains(selection)) {
-                    spinner.setSelection(in);
-                    break;
-                }
-            }
-        }
+        setSelectionSpinner(selection, spinner);
     }
 
 
@@ -975,7 +981,8 @@ public class AppActivity extends AppCompatActivity {
             @SuppressLint({"DefaultLocale", "SetTextI18n"})
             @Override
             public void getTime(int hours, int minutes) {
-                ddHHmm.setText(String.format("%02d", hours) + ":" + String.format("%02d", minutes));
+                String time = String.format("%02d:%02d:%02d", 0, hours, minutes);
+                ddHHmm.setText(time);
             }
 
             @Override
@@ -1163,15 +1170,18 @@ public class AppActivity extends AppCompatActivity {
 
     public boolean checkPermission() {
         return ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
+                && ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this, CAMERA) != PackageManager.PERMISSION_GRANTED;
     }
 
     public void requestPermissionAndContinue() {
         if (ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                && ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this, CAMERA) != PackageManager.PERMISSION_GRANTED) {
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, WRITE_EXTERNAL_STORAGE)
-                    && ActivityCompat.shouldShowRequestPermissionRationale(this, READ_EXTERNAL_STORAGE)) {
+                    && ActivityCompat.shouldShowRequestPermissionRationale(this, READ_EXTERNAL_STORAGE)
+                    && ActivityCompat.shouldShowRequestPermissionRationale(this, CAMERA)) {
                 AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
                 alertBuilder.setCancelable(true);
                 alertBuilder.setTitle("");
@@ -1180,14 +1190,14 @@ public class AppActivity extends AppCompatActivity {
                     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                     public void onClick(DialogInterface dialog, int which) {
                         ActivityCompat.requestPermissions(getActivity(), new String[]{WRITE_EXTERNAL_STORAGE
-                                , READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+                                , READ_EXTERNAL_STORAGE, CAMERA}, PERMISSION_REQUEST_CODE);
                     }
                 });
                 AlertDialog alert = alertBuilder.create();
                 alert.show();
             } else {
                 ActivityCompat.requestPermissions(getActivity(), new String[]{WRITE_EXTERNAL_STORAGE,
-                        READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+                        READ_EXTERNAL_STORAGE, CAMERA}, PERMISSION_REQUEST_CODE);
             }
         }
     }
@@ -1247,6 +1257,20 @@ public class AppActivity extends AppCompatActivity {
         });
     }
 
+    public void errorFocus(final EditText view, final String errorMessage) {
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+                view.setFocusable(true);
+                view.requestFocusFromTouch();
+                view.requestFocus();
+                ((EditText) view).setError(errorMessage);
+                view.performClick();
+            }
+        });
+    }
+
+
     public void setErrorSpinner(Spinner errorSpinner, String errorMessage) {
         TextView tvError = (TextView) errorSpinner.getSelectedView();
         tvError.setError(errorMessage);
@@ -1295,6 +1319,99 @@ public class AppActivity extends AppCompatActivity {
             showError("IZINKAN AKSES CAMERA DI PENGATURAN");
             e.printStackTrace();
         }
+    }
+
+    public final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
+
+
+    public void checkAndRequestPermissions() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            int permissionCamera = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA);
+            int locationPermission = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION);
+            int courseLocationPermission = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION);
+            int readContactPermision = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS);
+            int WritePermision = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            int readPhonePermision = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE);
+            int callPhonePermission = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CALL_PHONE);
+            int readExternalPermission = ContextCompat.checkSelfPermission(getActivity(), READ_EXTERNAL_STORAGE);
+
+            List<String> listPermissionsNeeded = new ArrayList<>();
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
+                if (permissionCamera != PackageManager.PERMISSION_GRANTED) {
+                    listPermissionsNeeded.add(Manifest.permission.CAMERA);
+                }
+            }
+
+            if (locationPermission != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
+            }
+            if (courseLocationPermission != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+            }
+            if (readContactPermision != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(Manifest.permission.READ_CONTACTS);
+            }
+            if (WritePermision != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            }
+            if (readPhonePermision != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(Manifest.permission.READ_PHONE_STATE);
+            }
+            if (callPhonePermission != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(Manifest.permission.CALL_PHONE);
+            }
+            if (readExternalPermission != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(READ_EXTERNAL_STORAGE);
+            }
+            if (!listPermissionsNeeded.isEmpty()) {
+                ActivityCompat.requestPermissions(getActivity(), listPermissionsNeeded.toArray(new String[0]), REQUEST_ID_MULTIPLE_PERMISSIONS);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_ID_MULTIPLE_PERMISSIONS) {
+            int permissionCamera = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA);
+            int locationPermission = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION);
+            int courseLocationPermission = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION);
+            int readContactPermision = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS);
+            int WritePermision = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            int readPhonePermision = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE);
+            int callPhonePermission = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CALL_PHONE);
+            int readExternalPermission = ContextCompat.checkSelfPermission(getActivity(), READ_EXTERNAL_STORAGE);
+
+            StringBuilder mssgResult = new StringBuilder();
+            for (int i = 0; i < permissions.length; i++) {
+                if (permissions[i].equals(Manifest.permission.CAMERA) && permissionCamera != PackageManager.PERMISSION_GRANTED) {
+                    mssgResult.append("Kamera, ");
+                } else if ((permissions[i].equals(Manifest.permission.ACCESS_FINE_LOCATION) && locationPermission != PackageManager.PERMISSION_GRANTED) ||
+                        (permissions[i].equals(Manifest.permission.ACCESS_COARSE_LOCATION) && courseLocationPermission != PackageManager.PERMISSION_GRANTED)) {
+                    mssgResult.append("Lokasi, ");
+                }else if ((permissions[i].equals(Manifest.permission.READ_CONTACTS) && readContactPermision != PackageManager.PERMISSION_GRANTED) ||
+                        (permissions[i].equals(Manifest.permission.READ_PHONE_STATE) && readPhonePermision != PackageManager.PERMISSION_GRANTED)) {
+                    mssgResult.append("Kontak Hp, ");
+                }else if ((permissions[i].equals(Manifest.permission.WRITE_EXTERNAL_STORAGE) && WritePermision != PackageManager.PERMISSION_GRANTED) ||
+                        (permissions[i].equals(Manifest.permission.READ_EXTERNAL_STORAGE) && readExternalPermission != PackageManager.PERMISSION_GRANTED)) {
+                    mssgResult.append("Penyimpanan, ");
+                }else if (permissions[i].equals(Manifest.permission.CALL_PHONE) && callPhonePermission != PackageManager.PERMISSION_GRANTED) {
+                    mssgResult.append("Telepon Selular, ");
+                }
+            }
+            if(!mssgResult.toString().isEmpty())
+                showWarning("Ijinkan Aplikasi Untuk Mengakses " + mssgResult + ", di Pengaturan", Toast.LENGTH_LONG);
+        }
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    private void showDialogOK(DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(getActivity())
+                .setMessage("Camera, Call Phone, Read Phone State, Location, Read Contacts Services Permission required for this app")
+                .setPositiveButton("OK", okListener)
+                .setNegativeButton("Cancel", okListener)
+                .create()
+                .show();
     }
 
 

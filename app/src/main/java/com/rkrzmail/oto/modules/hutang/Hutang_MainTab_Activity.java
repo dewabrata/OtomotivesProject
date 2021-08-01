@@ -14,7 +14,7 @@ import android.view.MenuItem;
 
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.Fragment.FragmentsAdapter;
+import com.rkrzmail.oto.modules.Adapter.FragmentsAdapter;
 import com.rkrzmail.oto.modules.Fragment.HutangUsaha_Hutang_Fragment;
 import com.rkrzmail.oto.modules.Fragment.HutangLain_Hutang_Fragment;
 

@@ -10,9 +10,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.io.ByteArrayInputStream;
@@ -23,6 +27,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.NoSuchElementException;
 
 import static com.rkrzmail.utils.ConstUtils.PICK_IMAGE_CAMERA;
 import static com.rkrzmail.utils.ConstUtils.PICK_IMAGE_GALLERY;
@@ -243,12 +248,8 @@ public class FileUtility {
             fOutputStream.flush();
             fOutputStream.close();
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return;
         } catch (IOException e) {
             e.printStackTrace();
-            return;
         }
     }
 

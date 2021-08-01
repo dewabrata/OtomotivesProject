@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.rkrzmail.oto">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.REQUEST_WRITE_PERMISSION"/>
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission
         android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
         tools:ignore="ProtectedPermissions" />
@@ -16,8 +21,12 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+        tools:ignore="ScopedStorage"
+        tools:remove="android:maxSdkVersion" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:requiredFeature="true"
+        tools:targetApi="o" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
@@ -28,15 +37,16 @@
         android:appComponentFactory="android.support.v4.app.CoreComponentFactory"
         android:icon="${app_icon}"
         android:label="${app_label_name}"
-        android:largeHeap="true"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="${app_icon}"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        tools:ignore="AllowBackup,UnusedAttribute"
-        tools:replace="android:label,android:appComponentFactory">
-        <activity android:name=".modules.sparepart.DetailJualPart_Activity"></activity>
+        tools:ignore="AllowBackup,HardcodedDebugMode,UnusedAttribute"
+        tools:replace="android:label,android:appComponentFactory"
+        android:testOnly="false"
+        android:debuggable="true"
+        >
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -49,16 +59,34 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity android:name=".modules.bengkel.Atur_Saldo_Activity" />
-        <activity android:name=".modules.bengkel.Saldo_Activity" />
-        <activity android:name=".modules.bengkel.Billing_Activity" />
-        <activity android:name=".modules.bengkel.VerifikasiOtp_Activity" />
-        <activity android:name=".modules.sparepart.JumlahPart_Mekanik_Activity" />
+        <activity android:name=".modules.sparepart.LokasiPart_Activity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.sparepart.DetailJualPart_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.Adapter.Checkin_MainTab_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.bengkel.Atur_Saldo_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.bengkel.Saldo_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.bengkel.Billing_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.bengkel.VerifikasiOtp_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.sparepart.JumlahPart_Mekanik_Activity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".modules.bengkel.AturFeeBilling_Activity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".modules.bengkel.Billing_MainTab_Activity"
+            android:name=".modules.Adapter.Billing_MainTab_Activity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".modules.bengkel.DaftarUser_Activity"
@@ -82,7 +110,7 @@
             android:name=".modules.bengkel.AturTotalInvoice_Activity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".modules.bengkel.Schedule_MainTab_Activity"
+            android:name=".modules.Adapter.Schedule_MainTab_Activity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".modules.bengkel.AturSaran_Activity"
@@ -91,10 +119,10 @@
             android:name=".modules.bengkel.SaranActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".modules.bengkel.Dashboard_MainTab_Activity"
+            android:name=".modules.Adapter.Dashboard_MainTab_Activity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".modules.sparepart.PartHome_MainTab_Activity"
+            android:name=".modules.Adapter.PartHome_MainTab_Activity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".modules.komisi.KomisiTerbayar_Activity"
@@ -106,7 +134,7 @@
             android:name=".modules.bengkel.Laporan_Activity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".modules.bengkel.Absensi_MainTab_Activity"
+            android:name=".modules.Adapter.Absensi_MainTab_Activity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".modules.mekanik.LkkClaimMekanik_Activity"
@@ -238,7 +266,7 @@
             android:name=".modules.bengkel.Rincian_Pembayaran_Activity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".modules.bengkel.Pembayaran_MainTab_Activity"
+            android:name=".modules.Adapter.Pembayaran_MainTab_Activity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".modules.checkin.DetailKontrolLayanan_Activity"
@@ -277,9 +305,9 @@
             android:name=".modules.checkin.Checkin2_Activity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".modules.checkin.Checkin1_Activity"
+            android:name=".modules.checkin.Checkin1_Activity_OLD"
             android:screenOrientation="portrait" />
-        <activity android:name=".modules.sparepart.TugasPart_MainTab_Activity" />
+        <activity android:name=".modules.Adapter.TugasPart_MainTab_Activity" />
         <activity android:name=".modules.bengkel.ProfileBengkel_Activity" />
         <activity android:name=".modules.sparepart.JumlahPart_PartKeluar_Activity" />
         <activity android:name=".modules.sparepart.PartKeluar_Activity" />
@@ -290,10 +318,10 @@
         <activity android:name=".modules.discount.AturFrekwensiDiscount_Acitivity" />
         <activity android:name=".modules.discount.FrekwensiDiscount_Activity" />
         <activity android:name=".modules.bengkel.AturReferal_Activity" />
-        <activity android:name=".modules.bengkel.Referal_MainTab_Activity" />
+        <activity android:name=".modules.Adapter.Referal_MainTab_Activity" />
         <activity android:name=".modules.bengkel.RegistrasiBengkel_Activity" />
         <activity android:name=".modules.bengkel.AturUser_Activity" />
-        <activity android:name=".modules.bengkel.AturUser_MainTab_Activity" />
+        <activity android:name=".modules.Adapter.AturUser_MainTab_Activity" />
         <activity android:name=".modules.checkin.KontrolBooking_Activity" />
         <activity android:name=".modules.komisi.AturKomisiJasaLain_Activity" />
         <activity android:name=".modules.komisi.KomisiJasaLain_Activity" />
@@ -305,7 +333,7 @@
         <activity android:name=".modules.discount.DiscountLayanan_Activity" />
         <activity android:name=".modules.bengkel.DeskripsiLayanan_Activiy" />
         <activity android:name=".modules.bengkel.AturRekening_Activity" />
-        <activity android:name=".modules.bengkel.RekeningBank_MainTab_Activity" />
+        <activity android:name=".modules.Adapter.RekeningBank_MainTab_Activity" />
         <activity android:name=".modules.discount.AturDiscountPart_Activity" />
         <activity android:name=".modules.discount.DiscountPart_Activity" />
         <activity android:name=".modules.discount.AturSpotDiscount_Activity" />
@@ -378,7 +406,7 @@
             android:screenOrientation="portrait" />
         <activity android:name=".gmod.MyCode" />
         <activity
-            android:name=".modules.sparepart.LokasiPart_MainTab_Activity"
+            android:name=".modules.Adapter.LokasiPart_MainTab_Activity_OLD"
             android:screenOrientation="portrait" />
         <activity android:name=".WebActivity" />
         <activity android:name=".MainActivity">

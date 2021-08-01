@@ -2,54 +2,88 @@ package com.rkrzmail.oto.modules;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
-import android.os.Build;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.play.core.appupdate.AppUpdateInfo;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.InstallState;
+import com.google.android.play.core.install.InstallStateUpdatedListener;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.InstallStatus;
+import com.google.android.play.core.install.model.UpdateAvailability;
+import com.google.android.play.core.tasks.OnSuccessListener;
+import com.google.android.play.core.tasks.Task;
 import com.naa.data.Nson;
 import com.naa.data.Utility;
 import com.naa.utils.InternetX;
-import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
+import com.rkrzmail.oto.BuildConfig;
+import com.rkrzmail.oto.MenuActivity;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.bengkel.RegistrasiBengkel_Activity;
+import com.rkrzmail.oto.modules.Task.UpdateAppTask;
 import com.rkrzmail.oto.modules.bengkel.VerifikasiOtp_Activity;
-import com.valdesekamdem.library.mdtoast.MDToast;
+import com.rkrzmail.srv.DialogOto;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import pl.droidsonroids.gif.GifDrawable;
+import pl.droidsonroids.gif.GifImageView;
+
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static com.rkrzmail.oto.MenuActivity.REQUEST_APP_UPDATE;
 import static com.rkrzmail.utils.APIUrls.SET_LOGIN;
-import static com.rkrzmail.utils.APIUrls.VIEW_DATA_BENGKEL;
 
 public class LoginActivity extends AppActivity {
 
-    public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
+    DialogOto dialog;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_login);
+
         checkAndRequestPermissions();
+        if(reqStoragePermission()){
+            UpdateAppTask updateAppTask = new UpdateAppTask(getActivity());
+            updateAppTask.excuteVersionChecker(getActivity());
+        }else{
+            reqStoragePermission();
+        }
+
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         initComponent();
@@ -61,28 +95,66 @@ public class LoginActivity extends AppActivity {
                     showWarning("Nomor Handphone Harus Di isi");
                     find(R.id.user, EditText.class).requestFocus();
                 } else {
-                    showInfoDialog("KONFIRMASI", "NOMOR PONSEL SUDAH BENAR ? " + "\n" + "\n" + find(R.id.user, EditText.class).getText().toString().replaceAll(" ", ""), new DialogInterface.OnClickListener() {
+                    String noPonsel = find(R.id.user, EditText.class).getText().toString().replace(" ", "");
+                    String message = "Nomor Ponsel Sudah Benar ? " + "\n" + "\n" + Html.fromHtml(noPonsel);
+                    dialog = new DialogOto(getActivity());
+                    dialog.setMessage(message);
+                    dialog.onClickOk(new View.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
+                        public void onClick(View v) {
                             requestOtp();
                         }
-                    }, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                            viewFocus(find(R.id.user, EditText.class));
-                        }
                     });
+                    if (dialog.getWindow() != null)
+                        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+                    dialog.show();
                 }
             }
         });
 
-        if(getSetting("noponsel") != null){
+        if (getSetting("noponsel") != null) {
             find(R.id.user, EditText.class).setText(getSetting("noponsel"));
         }
 
-        if(getIntent().hasExtra("NO_PONSEL")){
+        if (getIntent().hasExtra("NO_PONSEL")) {
             find(R.id.user, EditText.class).setText(getIntentStringExtra("NO_PONSEL"));
+        }
+    }
+
+    private boolean reqStoragePermission(){
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        int WritePermision = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int readExternalPermission = ContextCompat.checkSelfPermission(getActivity(), READ_EXTERNAL_STORAGE);
+
+        if(WritePermision != PackageManager.PERMISSION_GRANTED || readExternalPermission != PackageManager.PERMISSION_GRANTED){
+            if (WritePermision != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            }
+            if (readExternalPermission != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(READ_EXTERNAL_STORAGE);
+            }
+            ActivityCompat.requestPermissions(getActivity(), listPermissionsNeeded.toArray(new String[0]), REQUEST_ID_MULTIPLE_PERMISSIONS);
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        int WritePermision = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int readExternalPermission = ContextCompat.checkSelfPermission(getActivity(), READ_EXTERNAL_STORAGE);
+        if (requestCode == REQUEST_ID_MULTIPLE_PERMISSIONS) {
+            StringBuilder mssgResult = new StringBuilder();
+            for (String permission : permissions) {
+                if ((permission.equals(Manifest.permission.WRITE_EXTERNAL_STORAGE) && WritePermision != PackageManager.PERMISSION_GRANTED) ||
+                        (permission.equals(Manifest.permission.READ_EXTERNAL_STORAGE) && readExternalPermission != PackageManager.PERMISSION_GRANTED)) {
+                    mssgResult.append("Penyimpanan, ");
+                }
+            }
+            if(!mssgResult.toString().isEmpty())
+                showWarning("Ijinkan Aplikasi Untuk Mengakses " + mssgResult + ", di Pengaturan", Toast.LENGTH_LONG);
         }
     }
 
@@ -92,9 +164,9 @@ public class LoginActivity extends AppActivity {
         find(R.id.registrasi, TextView.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), RegistrasiBengkel_Activity.class));
+                //startActivity(new Intent(getActivity(), RegistrasiBengkel_Activity.class));
 
-             // startActivity(new Intent(getActivity(), VerifikasiOtp_Activity.class));
+                startActivity(new Intent(getActivity(), VerifikasiOtp_Activity.class));
             }
         });
 
@@ -102,7 +174,7 @@ public class LoginActivity extends AppActivity {
             @SuppressLint("SetTextI18n")
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                if(hasFocus && !find(R.id.user, EditText.class).getText().toString().startsWith("+62")){
+                if (hasFocus && !find(R.id.user, EditText.class).getText().toString().startsWith("+62")) {
                     find(R.id.user, EditText.class).setText("+62 ");
                     find(R.id.user, EditText.class).setSelection(find(R.id.user, EditText.class).getText().toString().length());
                 }
@@ -128,7 +200,7 @@ public class LoginActivity extends AppActivity {
                 int counting = (s == null) ? 0 : s.toString().length();
                 if (counting == 0) {
                     find(R.id.tl_user, TextInputLayout.class).setErrorEnabled(false);
-                }else if (counting < 12) {
+                } else if (counting < 12) {
                     find(R.id.tl_user, TextInputLayout.class).setError("No. Hp Min. 6 Karakter");
                     find(R.id.user, EditText.class).requestFocus();
                 } else {
@@ -143,8 +215,10 @@ public class LoginActivity extends AppActivity {
     private void requestOtp() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
+                dialog.dismiss();
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "Request");
                 args.put("user", formatOnlyNumber(find(R.id.user, EditText.class).getText().toString()));
@@ -154,12 +228,12 @@ public class LoginActivity extends AppActivity {
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    showSuccess("Sukses Request OTP, Silahkan Login");
-                    // find(R.id.password, EditText.class).setText("123456");
+                    showSuccess("Berhasil Request OTP, Silahkan Masukkan OTP Kembali");
 
                     Intent intent = new Intent(getActivity(), Otp_Activity.class);
-                    intent.putExtra("user",  formatPhone(find(R.id.user, EditText.class).getText().toString()));
+                    intent.putExtra("user", formatPhone(find(R.id.user, EditText.class).getText().toString()));
                     startActivity(intent);
+                    finish();
                 } else {
                     showError(result.get("message").asString());
                 }
@@ -173,181 +247,14 @@ public class LoginActivity extends AppActivity {
         } else if (phone.startsWith("0")) {
             phone = "62" + phone.substring(1);
         }
-        phone = Utility.replace(phone," ","");
+        phone = Utility.replace(phone, " ", "");
         return phone.trim();
     }
 
-    private void login() {
-        MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
-            String sResult;
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "Login");
-                args.put("user", formatPhone(find(R.id.user, EditText.class).getText().toString()));
-                sResult = (InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_LOGIN), args));
-            }
-
-            @Override
-            public void runUI() {
-                Nson nson = Nson.readNson(sResult);//test1
-                if (nson.get("status").asString().equalsIgnoreCase("OK")) {
-                    if (nson.get("data").get(0).get("status").asString().equalsIgnoreCase("error")) {
-                        showError("User tidak di temukan / password salah");
-                        return;
-                    }
-
-                    nson = nson.get("data").get(0);
-                    if(nson.get("TIPE_USER").asString().equals("MEKANIK") || nson.get("MEKANIK").asString().equals("YA")){
-                        setSetting("MEKANIK", "TRUE");
-                    }else{
-                        setSetting("MEKANIK", "FALSE");
-                    }
-                    setSetting("L", "L");
-                    setSetting("NAMA_BENGKEL", nson.get("NAMA_BENGKEL").asString());
-                    setSetting("JENIS_KENDARAAN", nson.get("JENIS_KENDARAAN").asString().trim());
-                    setSetting("result", nson.toJson());
-                    setSetting("CID", nson.get("CID").asString());
-                    setSetting("USER_ID", nson.get("USER_ID").asString());
-                    viewDataBengkel();
-                    setSetting("NAMA_USER", nson.get("NAMA_USER").asString());
-                    setSetting("TIPE_USER", nson.get("TIPE_USER").asString());
-                    setSetting("ACCESS_MENU", nson.get("AKSES_APP").asString());
-                    setSetting("JENIS_KENDARAAN_BENGKEL", nson.get("JENIS_KENDARAAN_BENGKEL").asString());
-                    setSetting("MERK_KENDARAAN_BENGKEL", nson.get("MERK_KENDARAAN").asString());
-                    setSetting("KATEGORI_BENGKEL", nson.get("KATEGORI_BENGKEL").asString());
-                    setSetting("userId", nson.get("USER_ID").asString());
-                    setSetting("session", nson.get("token").asString());
-                    setSetting("user", formatOnlyNumber(find(R.id.user, EditText.class).getText().toString()));
-                    Intent intent = new Intent(getActivity(), Otp_Activity.class);
-                    intent.putExtra("user",  formatPhone(  find(R.id.user, EditText.class).getText().toString().replaceAll("[^0-9]+", "")));
-                    startActivity(intent);
-                } else {
-                    showError(nson.get("error").asString());
-                }
-            }
-        });
-    }
-
-    private void viewDataBengkel(){
-        newTask(new Messagebox.DoubleRunnable() {
-            Nson result;
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "Data Bengkel");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_DATA_BENGKEL), args));
-                if(result.get("status").asString().equalsIgnoreCase("OK")) {
-                    result = result.get("data").get(0);
-                    setSetting("MAX_ANTRIAN_EXPRESS_MENIT", result.get("MAX_ANTRIAN_EXPRESS_MENIT").asString());
-                    setSetting("MAX_ANTRIAN_STANDART_MENIT", result.get("MAX_ANTRIAN_STANDART_MENIT").asString());
-                    setSetting("DP_PERSEN", result.get("DP_PERSEN").asString());
-                }
-            }
-            @Override
-            public void runUI() {
-
-            }
-        });
-    }
-
-    private void checkAndRequestPermissions() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            int permissionCamera = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
-            int locationPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
-            int courseLocationPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
-            int readContactPermision = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
-            int WritePermision = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            int readPhonePermision = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
-            int callPhonePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE);
-
-            List<String> listPermissionsNeeded = new ArrayList<>();
-            if (permissionCamera != PackageManager.PERMISSION_GRANTED) {
-                listPermissionsNeeded.add(Manifest.permission.CAMERA);
-            }
-            if (locationPermission != PackageManager.PERMISSION_GRANTED) {
-                listPermissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
-            }
-            if (courseLocationPermission != PackageManager.PERMISSION_GRANTED) {
-                listPermissionsNeeded.add(Manifest.permission.ACCESS_COARSE_LOCATION);
-            }
-            if (readContactPermision != PackageManager.PERMISSION_GRANTED) {
-                listPermissionsNeeded.add(Manifest.permission.READ_CONTACTS);
-            }
-            if (WritePermision != PackageManager.PERMISSION_GRANTED) {
-                listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            }
-            if (readPhonePermision != PackageManager.PERMISSION_GRANTED) {
-                listPermissionsNeeded.add(Manifest.permission.READ_PHONE_STATE);
-            }
-            if (callPhonePermission != PackageManager.PERMISSION_GRANTED) {
-                listPermissionsNeeded.add(Manifest.permission.CALL_PHONE);
-            }
-            if (!listPermissionsNeeded.isEmpty()) {
-                ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[0]), REQUEST_ID_MULTIPLE_PERMISSIONS);
-            }
-        }
-    }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_ID_MULTIPLE_PERMISSIONS) {
-            Map<String, Integer> perms = new HashMap<>();
-            perms.put(Manifest.permission.CAMERA, PackageManager.PERMISSION_GRANTED);
-            perms.put(Manifest.permission.ACCESS_FINE_LOCATION, PackageManager.PERMISSION_GRANTED);
-            perms.put(Manifest.permission.ACCESS_COARSE_LOCATION, PackageManager.PERMISSION_GRANTED);
-            perms.put(Manifest.permission.CALL_PHONE, PackageManager.PERMISSION_GRANTED);
-            perms.put(Manifest.permission.WRITE_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
-            perms.put(Manifest.permission.READ_PHONE_STATE, PackageManager.PERMISSION_GRANTED);
-            perms.put(Manifest.permission.READ_CONTACTS, PackageManager.PERMISSION_GRANTED);
-
-            if (grantResults.length > 0) {
-                for (int i = 0; i < permissions.length; i++)
-                    perms.put(permissions[i], grantResults[i]);
-                if (perms.get(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
-                        || perms.get(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                        || perms.get(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                        || perms.get(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED
-                        || perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                        || perms.get(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED
-                        || perms.get(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA) ||
-                            ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION) ||
-                            ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION) ||
-                            ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE) ||
-                            ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
-                            ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE) ||
-                            ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CONTACTS)) {
-                        showDialogOK(new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                switch (i) {
-                                    case DialogInterface.BUTTON_POSITIVE:
-                                        checkAndRequestPermissions();
-                                        break;
-                                    case DialogInterface.BUTTON_NEGATIVE:
-                                        break;
-                                }
-                            }
-                        });
-                    } else {
-                        MDToast.makeText(this, "Go to settings and enable permissions",
-                                Toast.LENGTH_LONG, MDToast.TYPE_WARNING).show();
-                    }
-                }
-            }
-        }
-
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    private void showDialogOK(DialogInterface.OnClickListener okListener) {
-        new AlertDialog.Builder(this)
-                .setMessage("Camera, Call Phone, Read Phone State, Location, Read Contacts Services Permission required for this app")
-                .setPositiveButton("OK", okListener)
-                .setNegativeButton("Cancel", okListener)
-                .create()
-                .show();
+    protected void onResume() {
+        super.onResume();
     }
 
 

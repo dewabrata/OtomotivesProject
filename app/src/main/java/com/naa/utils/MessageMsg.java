@@ -5,6 +5,11 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 
+import com.rkrzmail.srv.ProgressDialogOto;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class MessageMsg {
 
     public static void newTask(Activity activity, Messagebox.DoubleRunnable run) {
@@ -68,14 +73,21 @@ public class MessageMsg {
 
             Activity activity;
             Messagebox.DoubleRunnable run;
-            private ProgressDialog prb;
+            private ProgressDialogOto prb;
 
-            public Runnable get(Activity activity, Messagebox.DoubleRunnable run, ProgressDialog prb) {
+            public Runnable get(Activity activity, Messagebox.DoubleRunnable run, ProgressDialogOto prb) {
                 this.activity = activity;
                 this.run = run;
                 this.prb = prb;
                 return this;
             }
-        }.get(activity, run, showProgresBar(activity, "Please Wait . . . "))).start();
+        }.get(activity, run, showPrbOto(activity))).start();
+    }
+
+    private static ProgressDialogOto showPrbOto(Context context) {
+        ProgressDialogOto prb = new ProgressDialogOto(context);
+        prb.setCancelable(false);
+        prb.show();
+        return prb;
     }
 }

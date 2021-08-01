@@ -38,10 +38,11 @@
                     android:textSize="12sp"/>
 
                 <RelativeLayout
+                    android:id="@+id/rl_referral"
                     android:layout_width="0dp"
                     android:layout_height="34dp"
                     android:layout_weight="6"
-                    android:background="@drawable/background_edittext">
+                    android:background="@drawable/state_textview_clickable_border">
 
                     <Spinner
                         android:id="@+id/sp_kode_refferal"
@@ -311,6 +312,11 @@
                 android:background="@drawable/btn_rounded_accent"
                 android:textColor="@android:color/white" />
 
+            <TextView
+                android:id="@+id/tv_longlat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
             <LinearLayout
                 android:layout_width="match_parent"

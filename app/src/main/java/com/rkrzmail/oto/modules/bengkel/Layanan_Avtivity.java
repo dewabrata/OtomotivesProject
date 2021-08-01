@@ -28,8 +28,8 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
@@ -71,8 +71,8 @@ public class Layanan_Avtivity extends AppActivity {
 
         find(R.id.ly_container_filter_saldo).setVisibility(View.GONE);
         find(R.id.ly_container_filter_kontrol_layanan).setVisibility(View.GONE);
-        find(R.id.fab_tambah).setVisibility(View.VISIBLE);
 
+        find(R.id.fab_tambah).setVisibility(View.VISIBLE);
         find(R.id.fab_tambah).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

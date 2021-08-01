@@ -14,6 +14,7 @@ import android.text.Selection;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -21,8 +22,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -36,8 +37,10 @@ import com.rkrzmail.oto.modules.LoginActivity;
 import com.rkrzmail.oto.modules.MapPicker_Dialog;
 import com.rkrzmail.srv.MultiSelectionSpinner;
 import com.rkrzmail.srv.NikitaAutoComplete;
-import com.rkrzmail.srv.NsonAutoCompleteAdapter;
+import com.rkrzmail.oto.modules.Adapter.NsonAutoCompleteAdapter;
 import com.rkrzmail.srv.NumberFormatUtils;
+import com.rkrzmail.srv.SpinnerDialogOto;
+import com.rkrzmail.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,12 +48,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import in.galaxyofandroid.spinerdialog.OnSpinerItemClick;
+
 import static com.rkrzmail.utils.APIUrls.CHECK_REFFERAL;
 import static com.rkrzmail.utils.APIUrls.SET_REGISTRASI;
 import static com.rkrzmail.utils.APIUrls.VIEW_JENIS_KENDARAAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_MASTER;
 import static com.rkrzmail.utils.APIUrls.VIEW_MST;
-import static com.rkrzmail.utils.APIUrls.VIEW_NOMOR_POLISI;
 import static com.rkrzmail.utils.APIUrls.VIEW_NOMOR_PONSEL;
 
 public class RegistrasiBengkel_Activity extends AppActivity implements View.OnClickListener, MapPicker_Dialog.GetLocation {
@@ -118,7 +122,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
         minEntryEditText(etKontakPerson, 5, find(R.id.tl_cp_regist, TextInputLayout.class), "Panjang Nama Min. 5 Karakter");
         minEntryEditText(etNamaBengkel, 8, find(R.id.tl_namaBengkel_regist, TextInputLayout.class), "Nama Bengkel Min. 5 Karakter");
         minEntryEditText(etAlamat, 20, find(R.id.tl_alamat_regist, TextInputLayout.class), "Entry Alamat Min. 20 Karakter");
-        getNoPonsel();
+        //getNoPonsel();
         setSpKendaraan("");
 
         if (getIntent().hasExtra("NO_PONSEL")) {
@@ -152,14 +156,14 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (noHpList.size() > 0) {
+               /* if (noHpList.size() > 0) {
                     String noHp = etNoPonsel.getText().toString().replaceAll("[^0-9]+", "");
                     for (String no : noHpList) {
                         if (noHp.equalsIgnoreCase(no)) {
                             find(R.id.tl_nohp_regist, TextInputLayout.class).setError("No. Hp Sudah Terdaftar");
                         }
                     }
-                }
+                }*/
 
             }
         });
@@ -187,6 +191,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
             }
         });
 
+
         String aggrement = "Setuju dengan <font color=#F44336><u> Syarat & kondisi </u></font> pemakain Bengkel Pro";
         find(R.id.tv_setuju_regist, TextView.class).setText(Html.fromHtml(aggrement));
         find(R.id.tv_setuju_regist, TextView.class).setOnClickListener(new View.OnClickListener() {
@@ -205,8 +210,18 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
             }
         });
 
-        etKotaKab.setLoadingIndicator((ProgressBar) findViewById(R.id.pb_et_kotakab_regist));
-        remakeAutoCompleteMaster(etKotaKab, "DAERAH", "KOTA_KAB");
+       /* etKotaKab.setLoadingIndicator((ProgressBar) findViewById(R.id.pb_et_kotakab_regist));
+        remakeAutoCompleteMaster(etKotaKab, "DAERAH", "KOTA_KAB");*/
+        etKotaKab.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN){
+                    initDialogKotaKab();
+                }
+                return true;
+            }
+        });
         Log.d(TAG, "initComponent: " + bidangUsahaMotorList.size());
         find(R.id.btn_simpan_regist, Button.class).setOnClickListener(this);
         getRefferal();
@@ -298,6 +313,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                 args.put("longitudeLokasi", longitude);
                 args.put("merkList", saveDataMerk.toJson());
                 args.put("bidangUsahaList", saveDataBidangUsaha.toJson());
+                args.put("jabatan", etJabatan.getText().toString());
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_REGISTRASI), args));
             }
@@ -305,6 +321,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    AppApplication.getMessageTrigger();
                     showSuccess("Registrasi Berhasil");
                     Intent i = new Intent(getActivity(), LoginActivity.class);
                     i.putExtra("NO_PONSEL", etNoPonsel.getText().toString().replaceAll("[^0-9]+", ""));
@@ -315,8 +332,9 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                         showError("No Ponsel Sudah Terdaftar");
                         etNoPonsel.setText("");
                         etNoPonsel.requestFocus();
+                        etNoPonsel.setEnabled(true);
                     } else {
-                        showError("Registrasi Gagal, Silahkan Cek Data Anda Kembali");
+                        showError(result.get("message").asString());
                     }
                 }
             }
@@ -394,7 +412,12 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                     return;
                 }
                 if (!find(R.id.cb_setuju_regist, CheckBox.class).isChecked()) {
-                    showInfo("Silahkan Setujui Syarat Dan Ketentuan Aplikasi");
+                    showWarning("Silahkan Setujui Syarat Dan Ketentuan Aplikasi");
+                    return;
+                }
+
+                if(latitude.isEmpty() && longitude.isEmpty()){
+                    showWarning("PETA LOKASI HARUS DI SET");
                     return;
                 }
 
@@ -523,6 +546,8 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                                 kodeList.add(result.get(i).get("NAMA_REFEREE").asString() + " - " + result.get(i).get("NO_PONSEL_REFEREE").asString());
                             }
                         }
+                    }else{
+                        Tools.setViewAndChildrenEnabled(find(R.id.rl_referral, RelativeLayout.class), false);
                     }
 
                     setSpinnerOffline(kodeList, spKodeRefferal, "");
@@ -635,49 +660,25 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
     }
 
     private void initDialogKotaKab(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_auto_complete, null);
-        builder.setView(dialogView);
-        alertDialog = builder.create();
+        SpinnerDialogOto spinnerDialog = new SpinnerDialogOto(
+                getActivity(),
+                new ArrayList<String>(),
+                "Pilih Kota / Kab"
+        );
 
+        Map<String, String> args = AppApplication.getInstance().getArgsData();
+        args.put("nama", "DAERAH");
 
-    }
-
-    private void initAutoComplete(View dialogView){
-        NikitaAutoComplete etSearch = dialogView.findViewById(R.id.et_search);
-        etSearch.setThreshold(2);
-        etSearch.setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
+        spinnerDialog.setParamsSearch(args, "search");
+        spinnerDialog.setApiUrl(AppApplication.getBaseUrlV3(VIEW_MST), "KOTA_KAB");
+        spinnerDialog.bindOnSpinerListener(new SpinnerDialogOto.OnItemClick() {
             @Override
-            public Nson onFindNson(Context context, String bookTitle) {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("nama", "DAERAH");
-                args.put("search", bookTitle);
-                Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MST), args));
-                return result.get("data");
-            }
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                if (convertView == null) {
-                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    convertView = inflater.inflate(R.layout.item_suggestion, parent, false);
-                }
-                findView(convertView, R.id.title, TextView.class).setText(formatNopol(getItem(position).get("KOTA_KAB").asString()));
-                return convertView;
+            public void onClick(String item) {
+                etKotaKab.setText(item);
             }
         });
 
-        etSearch.setLoadingIndicator((android.widget.ProgressBar) findViewById(R.id.pb));
-        etSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Nson data = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
-
-
-            }
-        });
+        spinnerDialog.showSpinerDialog();
     }
 
     @Override
@@ -685,9 +686,11 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void getLatLong(String latitude, String longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
+        find(R.id.tv_longlat, TextView.class).setText(latitude + ", " +longitude);
     }
 }

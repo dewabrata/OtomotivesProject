@@ -10,7 +10,7 @@
         android:id="@+id/et_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/place_autocomplete_search_hint"
+        android:hint="Cari"
         android:background="@drawable/box_shadow"
         android:inputType="textCapCharacters"
         android:maxLines="1"

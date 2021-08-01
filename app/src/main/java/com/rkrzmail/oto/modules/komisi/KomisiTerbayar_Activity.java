@@ -23,8 +23,8 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
 import com.rkrzmail.srv.NumberFormatUtils;
 
 import java.util.Map;
@@ -33,7 +33,6 @@ import java.util.Objects;
 import static com.rkrzmail.utils.APIUrls.KOMISI_PART;
 import static com.rkrzmail.utils.APIUrls.PEMBAYARAN_KOMISI;
 import static com.rkrzmail.utils.ConstUtils.ADD;
-import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 import static com.rkrzmail.utils.ConstUtils.RP;
 

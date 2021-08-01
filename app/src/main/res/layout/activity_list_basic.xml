@@ -14,6 +14,16 @@
 
         <include layout="@layout/toolbar" />
 
+        <LinearLayout
+            android:id="@+id/ly_search_lokasi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <include layout="@layout/search_kode_lokasi_part"/>
+
+        </LinearLayout>
+
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.widget.SwipeRefreshLayout

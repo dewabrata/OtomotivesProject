@@ -177,7 +177,6 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
 
             }*/
 
-            etJumlah.setEnabled(false);
             etBiayaJasa.setEnabled(false);
             etBiayaJasa.setText("0");
             find(R.id.btn_img_waktu_kerja, ImageButton.class).setEnabled(false);
@@ -357,6 +356,7 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
         idLokasiPart = nson.get("LOKASI_PART_ID").asString();
         String waktuDefault = String.format("%02d:%02d:%02d", nson.get("RATA2_WAKTU_KERJA_HARI").asInteger(), nson.get("RATA2_WAKTU_KERJA_JAM").asInteger(), nson.get("RATA2_WAKTU_KERJA_MENIT").asInteger());
         find(R.id.et_waktuDefault, EditText.class).setText(waktuDefault);
+        etJumlah.setText("1");
         etBiayaJasa.setText(RP + NumberFormatUtils.formatRp(String.valueOf(calculateBiayaMekanik(nson))));
         if (stock == 0) {
             isPartKosong = true;

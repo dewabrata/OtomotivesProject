@@ -37,6 +37,13 @@ public class MultipartRequest {
                 RequestBody.create(MediaType.parse("image/png"), new File(filePath)));
     }
 
+    public void addImageFile(String name, String fileName, byte[] byteData) {
+        this.builder.addFormDataPart(
+                name,
+                fileName,
+                RequestBody.create(MediaType.parse("image/png"), byteData));
+    }
+
     public void addTXTFile(String name, String filePath, String fileName) {
         this.builder.addFormDataPart(name, fileName, RequestBody.create(
                 MediaType.parse("text/plain"), new File(filePath)));
@@ -62,11 +69,10 @@ public class MultipartRequest {
                     .post(requestBody)
                     .build();
             response = client.newCall(request).execute();
-            if (!response.isSuccessful())
-                throw new IOException();
+           /* if (!response.isSuccessful())
+                throw new IOException();*/
 
             code = response.networkResponse().code();
-
             strResponse = response.body().string();
         } catch (Exception e) {
             e.printStackTrace();

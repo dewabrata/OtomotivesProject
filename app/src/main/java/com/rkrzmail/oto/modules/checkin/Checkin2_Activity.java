@@ -27,7 +27,7 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.TimePicker_Dialog;
 import com.rkrzmail.oto.modules.YearPicker_Dialog;
 import com.rkrzmail.srv.NikitaAutoComplete;
-import com.rkrzmail.srv.NsonAutoCompleteAdapter;
+import com.rkrzmail.oto.modules.Adapter.NsonAutoCompleteAdapter;
 import com.rkrzmail.utils.Tools;
 
 import java.text.ParseException;
@@ -73,18 +73,14 @@ public class Checkin2_Activity extends AppActivity {
         setSupportActionBar(toolbar);
         if (getIntent().hasExtra("KONFIRMASI DATA")) {
             Objects.requireNonNull(getSupportActionBar()).setTitle(getIntent().getStringExtra("KONFIRMASI DATA"));
-            viewDataKendaraan();
             isKonfirmasi = true;
-            merkKendaraan = getIntentStringExtra("MERK");
-            noHp = getIntentStringExtra("NO_PONSEL");
-            find(R.id.btn_lanjut_checkin2, Button.class).setText("SIMPAN");
         } else {
-            find(R.id.btn_lanjut_checkin2, Button.class).setText("LEWATI");
             Objects.requireNonNull(getSupportActionBar()).setTitle("Check-In");
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    @SuppressLint("SetTextI18n")
     private void initComponent() {
         initToolbar();
         etWarna = findViewById(R.id.et_warna_checkin2);
@@ -95,7 +91,9 @@ public class Checkin2_Activity extends AppActivity {
         etKotaKab = findViewById(R.id.et_kota_kab);
 
         readCheckin = Nson.readJson(getIntentStringExtra(DATA));
+        find(R.id.et_nopol).setVisibility(getIntent().hasExtra("KONFIRMASI DATA") ? View.VISIBLE : View.GONE);
         if (!isKonfirmasi) {
+            find(R.id.btn_lanjut_checkin2, Button.class).setText("LEWATI");
             etNorangka.setText(readCheckin.get("noRangka").asString());
             etNomesin.setText(readCheckin.get("noMesin").asString());
             tvTgl.setText(readCheckin.get("tglBeli").asString());
@@ -107,6 +105,12 @@ public class Checkin2_Activity extends AppActivity {
             etKotaKab.setText(readCheckin.get("KOTA").asString());
             etWarna.setText(readCheckin.get("WARNA").asString());
             noHp = readCheckin.get("noPonsel").asString();
+        }else{
+            viewDataKendaraan();
+            merkKendaraan = getIntentStringExtra("MERK");
+            noHp = getIntentStringExtra("NO_PONSEL");
+            find(R.id.et_nopol, EditText.class).setText(getIntentStringExtra("NOPOL"));
+            find(R.id.btn_lanjut_checkin2, Button.class).setText("SIMPAN");
         }
 
         initListener();
@@ -315,6 +319,15 @@ public class Checkin2_Activity extends AppActivity {
                 args.put("alamat", find(R.id.et_alamat, EditText.class).getText().toString());
                 args.put("kota", etKotaKab.getText().toString());
                 args.put("nopol", getIntentStringExtra("NOPOL"));
+
+                String nopolEditText = find(R.id.et_nopol, EditText.class).getText().toString().replace(" ", "");
+                if(getIntentStringExtra("NOPOL").equals(nopolEditText)){
+                    args.put("koreksiNopol", "");
+                }else{
+                    args.put("koreksiNopol", nopolEditText);
+                }
+
+                args.put("merk", getIntentStringExtra("MERK"));
                 if (isKonfirmasi) {
                     args.put("isKonfirmasi", "Y");
                 }

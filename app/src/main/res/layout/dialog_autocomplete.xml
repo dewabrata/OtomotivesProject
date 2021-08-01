@@ -59,12 +59,12 @@
                 android:divider="#d1d1d1"
                 android:dividerHeight="0.1dp"/>
 
-            <ProgressBar
-                android:id="@+id/progress_bar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <pl.droidsonroids.gif.GifImageView
+                android:id="@+id/gif_progress"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_gravity="center"
-                android:visibility="gone"/>
+                />
 
         </FrameLayout>
 

@@ -75,6 +75,15 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:textSize="12sp" />
 
+            <TextView
+                android:id="@+id/tv_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="@string/status"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textSize="12sp" />
+
         </TableRow>
 
     </TableLayout>

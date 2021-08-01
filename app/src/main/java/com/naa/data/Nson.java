@@ -5,6 +5,7 @@
  */
 package com.naa.data;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import com.naa.data.google.gson.JsonReader;
@@ -380,6 +381,10 @@ public class Nson implements Serializable {
         return setInternal(key, value);
     }
 
+    public Nson set(String key, Bitmap value) {
+        return setInternal(key, value);
+    }
+
     private Nson setInternal(String key, Object value) {
         if (value == null) {
             value = Nson.newNull();
@@ -677,6 +682,13 @@ public class Nson implements Serializable {
             return (Map) internalObject;
         }
         return new HashMap();
+    }
+
+    public Bitmap asBitmap(){
+        if (internalObject instanceof Bitmap) {
+            return (Bitmap) internalObject;
+        }
+        return null;
     }
 
     public boolean asBoolean() {

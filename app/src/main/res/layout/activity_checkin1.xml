@@ -7,7 +7,7 @@
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true">
 
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
@@ -34,7 +34,7 @@
                         android:id="@+id/et_nopol_checkin1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="NO. POLISI"
+                        android:hint="@string/no_polisi_uppercase"
                         android:inputType="textCapCharacters"
                         android:maxLength="12"
                         android:padding="15dp"
@@ -50,8 +50,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|right"
-                    android:layout_marginRight="20dp"
-                    android:visibility="gone" />
+                    android:layout_marginEnd="20dp"
+                    android:visibility="gone"
+                    tools:ignore="RtlHardcoded" />
 
             </FrameLayout>
 
@@ -285,9 +286,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
-                    android:text="PEKERJAAN"
+                    android:text="@string/pekerjaan_uppercase"
                     android:textColor="@color/grey_900"
-                    android:textSize="12sp"
+                    android:textSize="@dimen/text_size_label"
                     android:textStyle="bold" />
 
                 <RelativeLayout
@@ -321,7 +322,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
-                    android:layout_weight="2">
+                    android:layout_weight="6.2">
 
                     <com.rkrzmail.srv.NikitaAutoComplete
                         android:id="@+id/et_km_checkin1"
@@ -340,7 +341,7 @@
                     android:id="@+id/btn_foto_km"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="3.4"
                     android:background="@drawable/btn_rounded_accent"
                     android:drawableStart="@drawable/icon_camera_unfill"
                     android:padding="10dp"
@@ -362,7 +363,7 @@
 
         </LinearLayout>
 
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"

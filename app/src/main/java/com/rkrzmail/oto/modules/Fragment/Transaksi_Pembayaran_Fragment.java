@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
@@ -22,12 +23,14 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.bengkel.Pembayaran_MainTab_Activity;
+import com.rkrzmail.oto.modules.Adapter.Pembayaran_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Rincian_Pembayaran_Activity;
-import com.rkrzmail.srv.NikitaMultipleViewAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.oto.modules.Adapter.NikitaMultipleViewAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
+import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
+import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.VIEW_PEMBAYARAN;
 import static com.rkrzmail.utils.ConstUtils.DATA;
@@ -169,37 +172,40 @@ public class Transaksi_Pembayaran_Fragment extends Fragment {
     }
 
     private void viewPembayaran() {
-        activity.newTask(new Messagebox.DoubleRunnable() {
-            Nson result;
+        if (!Tools.isNetworkAvailable(Objects.requireNonNull(getContext()))) {
+           activity.showWarning("TIDAK ADA KONEKSI INTERNET", Toast.LENGTH_LONG);
+        }else{
+            activity.newTask(new Messagebox.DoubleRunnable() {
+                Nson result;
+                @Override
+                public void run() {
+                    swipeProgress(true);
+                    Map<String, String> args = AppApplication.getInstance().getArgsData();
 
-            @Override
-            public void run() {
-                swipeProgress(true);
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                    args.put("action", "TRANSAKSI");
+                    args.put("jenisPembayaran", "CHECKIN");
+                    result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PEMBAYARAN), args));
+                    pembayaranList.asArray().clear();
+                    pembayaranList.asArray().addAll(result.get("data").asArray());
 
-                args.put("action", "TRANSAKSI");
-                args.put("jenisPembayaran", "CHECKIN");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PEMBAYARAN), args));
-                pembayaranList.asArray().clear();
-                pembayaranList.asArray().addAll(result.get("data").asArray());
-
-                args.remove("jenisPembayaran");
-                args.put("jenisPembayaran", "JUAL PART");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PEMBAYARAN), args));
-                pembayaranList.asArray().addAll(result.get("data").asArray());
-            }
-
-            @Override
-            public void runUI() {
-                swipeProgress(false);
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    rvPembayaranCheckin.getAdapter().notifyDataSetChanged();
-                    rvPembayaranCheckin.scheduleLayoutAnimation();
-                } else {
-                    activity.showError(ERROR_INFO);
+                    args.remove("jenisPembayaran");
+                    args.put("jenisPembayaran", "JUAL PART");
+                    result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PEMBAYARAN), args));
+                    pembayaranList.asArray().addAll(result.get("data").asArray());
                 }
-            }
-        });
+
+                @Override
+                public void runUI() {
+                    swipeProgress(false);
+                    if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                        Objects.requireNonNull(rvPembayaranCheckin.getAdapter()).notifyDataSetChanged();
+                        rvPembayaranCheckin.scheduleLayoutAnimation();
+                    } else {
+                        activity.showError(ERROR_INFO);
+                    }
+                }
+            });
+        }
     }
 
     @Override

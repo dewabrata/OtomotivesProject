@@ -343,10 +343,11 @@
                         android:textStyle="bold" />
 
                     <RelativeLayout
+                        android:id="@+id/rl_lokasi_part"
                         android:layout_width="0dp"
                         android:layout_height="34dp"
                         android:layout_weight="6"
-                        android:background="@drawable/background_edittext">
+                        android:background="@drawable/state_textview_clickable_border">
 
                         <Spinner
                             android:id="@+id/sp_lokasiPart"
@@ -378,10 +379,11 @@
                         android:textStyle="bold" />
 
                     <RelativeLayout
+                        android:id="@+id/rl_penempatan"
                         android:layout_width="0dp"
                         android:layout_height="34dp"
                         android:layout_weight="6"
-                        android:background="@drawable/background_edittext">
+                        android:background="@drawable/state_textview_clickable_border">
 
                         <Spinner
                             android:id="@+id/sp_penempatan_part"
@@ -414,10 +416,11 @@
                         android:textStyle="bold" />
 
                     <RelativeLayout
+                        android:id="@+id/rl_no_rak_palet"
                         android:layout_width="0dp"
                         android:layout_height="34dp"
                         android:layout_weight="6"
-                        android:background="@drawable/background_edittext">
+                        android:background="@drawable/state_textview_clickable_border">
 
                         <Spinner
                             android:id="@+id/sp_norakPalet_part"
@@ -450,10 +453,11 @@
                         android:textStyle="bold" />
 
                     <RelativeLayout
+                        android:id="@+id/rl_tinggi_rak"
                         android:layout_width="0dp"
                         android:layout_height="34dp"
                         android:layout_weight="6"
-                        android:background="@drawable/background_edittext">
+                        android:background="@drawable/state_textview_clickable_border">
 
                         <Spinner
                             android:id="@+id/sp_tinggiRak"
@@ -486,10 +490,11 @@
                         android:textStyle="bold" />
 
                     <RelativeLayout
+                        android:id="@+id/rl_no_folder"
                         android:layout_width="0dp"
                         android:layout_height="34dp"
                         android:layout_weight="6"
-                        android:background="@drawable/background_edittext">
+                        android:background="@drawable/state_textview_clickable_border">
 
                         <Spinner
                             android:id="@+id/sp_noFolder_part"

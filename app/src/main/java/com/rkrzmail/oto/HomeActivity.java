@@ -35,11 +35,11 @@ import com.rkrzmail.oto.modules.discount.DiscountPart_Activity;
 import com.rkrzmail.oto.modules.discount.DiscountSpot_Activity;
 import com.rkrzmail.oto.modules.bengkel.Jurnal_Activity;
 import com.rkrzmail.oto.modules.bengkel.Layanan_Avtivity;
-import com.rkrzmail.oto.modules.sparepart.LokasiPart_MainTab_Activity;
+import com.rkrzmail.oto.modules.Adapter.LokasiPart_MainTab_Activity_OLD;
 import com.rkrzmail.oto.gmod.part.PartActivity;
 import com.rkrzmail.oto.gmod.part.PartSearchActivity;
 import com.rkrzmail.oto.modules.mekanik.Schedule_Activity;
-import com.rkrzmail.oto.modules.bengkel.RekeningBank_MainTab_Activity;
+import com.rkrzmail.oto.modules.Adapter.RekeningBank_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Tenda_Activity;
 import com.rkrzmail.oto.modules.sparepart.TerimaPart_Activity;
 
@@ -163,7 +163,7 @@ public class HomeActivity extends MenuActivity{
                     startActivity(intent);
 
                 }else if(nPopulate.get(position).get("id").asInteger() == MN_LOKASI_PART){
-                    Intent intent = new Intent(HomeActivity.this, LokasiPart_MainTab_Activity.class);
+                    Intent intent = new Intent(HomeActivity.this, LokasiPart_MainTab_Activity_OLD.class);
                     startActivity(intent);
 
                 }else if(nPopulate.get(position).get("id").asInteger() == MN_TERIMA_PART){

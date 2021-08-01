@@ -30,7 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="30dp"
         android:layout_marginBottom="20dp"
         android:orientation="vertical">
 
@@ -53,110 +53,127 @@
 
     </LinearLayout>
 
-
-    <android.support.design.card.MaterialCardView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="20dp">
+        android:layout_marginTop="50dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="10dp">
-
-            <CheckBox
-                android:id="@+id/cb_aggree"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight="0.6"
-                android:text="@string/verifikasi_info2" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight="0.6"
-                android:text="@string/verifikasi_info"
-                android:textColor="@android:color/black"
-                android:textSize="14sp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"/>
+            android:orientation="vertical">
 
             <android.support.design.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
+                android:layout_height="350dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
                 android:layout_marginBottom="20dp"
-                app:cardElevation="10dp">
+                app:cardCornerRadius="10dp"
+                app:cardElevation="7dp">
 
-                <EditText
-                    android:id="@+id/et_no_ponsel"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@android:color/transparent"
-                    android:hint="@string/no_ponsel_uppercase"
-                    android:inputType="phone"
-                    android:padding="15dp"
-                    android:textColor="@android:color/black" />
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <CheckBox
+                        android:id="@+id/cb_aggree"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_weight="0.6"
+                        android:text="@string/verifikasi_info2" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_weight="0.6"
+                        android:text="@string/verifikasi_info"
+                        android:textColor="@android:color/black"
+                        android:textSize="14sp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"/>
+
+                    <android.support.design.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginBottom="20dp"
+                        app:cardElevation="10dp">
+
+                        <EditText
+                            android:id="@+id/et_no_ponsel"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@android:color/transparent"
+                            android:hint="@string/no_ponsel_uppercase"
+                            android:inputType="phone"
+                            android:padding="15dp"
+                            android:textColor="@android:color/black" />
+
+                    </android.support.design.card.MaterialCardView>
+
+
+                    <TextView
+                        android:id="@+id/tv_timer_refresh"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:layout_weight="0"
+                        android:background="@drawable/state_textview_clickable"
+                        android:text="0"
+                        android:textColor="@android:color/black"
+                        android:textSize="15sp"
+                        android:visibility="gone" />
+
+                    <android.support.design.card.MaterialCardView
+                        android:id="@+id/cv_refresh_otp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="20dp"
+                        android:layout_weight="0"
+                        android:background="@drawable/state_textview_clickable"
+                        android:visibility="gone"
+                        app:cardElevation="10dp"
+                        app:contentPadding="5dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:text="@string/refresh_otp_uppercase"
+                            android:textColor="@android:color/black" />
+
+
+                    </android.support.design.card.MaterialCardView>
+
+                    <Button
+                        android:id="@+id/btn_lanjut"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        android:background="@drawable/btn_rounded_accent"
+                        android:text="@string/registrasi_uppercase"
+                        android:textColor="@android:color/white" />
+
+
+                </LinearLayout>
+
 
             </android.support.design.card.MaterialCardView>
 
-
-            <TextView
-                android:id="@+id/tv_timer_refresh"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_weight="0"
-                android:background="@drawable/state_textview_clickable"
-                android:text="0"
-                android:textColor="@android:color/black"
-                android:textSize="15sp"
-                android:visibility="gone" />
-
-            <android.support.design.card.MaterialCardView
-                android:id="@+id/cv_refresh_otp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="20dp"
-                android:layout_weight="0"
-                android:background="@drawable/state_textview_clickable"
-                android:visibility="gone"
-                app:cardElevation="10dp"
-                app:contentPadding="5dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="@string/refresh_otp_uppercase"
-                    android:textColor="@android:color/black" />
-
-
-            </android.support.design.card.MaterialCardView>
-
-            <Button
-                android:id="@+id/btn_lanjut"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:background="@drawable/btn_rounded_accent"
-                android:text="@string/registrasi_uppercase"
-                android:textColor="@android:color/white" />
 
         </LinearLayout>
 
-    </android.support.design.card.MaterialCardView>
-
+    </ScrollView>
 
 </FrameLayout>

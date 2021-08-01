@@ -2,6 +2,16 @@ package com.rkrzmail.utils;
 
 public class APIUrls {
 
+    public static final String GET_PART_ID_DISCOUNT_PART = "part/partID_discount";
+    public static final String GET_NAMA_LAYANAN_BENGKEL = "layanan/namaLayananBengkel";
+    public static final String SAVE_IMAGE_CHECKIN = "checkin";
+    public static final String GET_MST_PERLENGKAPAN = "master_data/perlengkapan";
+    public static final String GET_BALANCE_KAS_DAN_BANK_BENGKEL = "saldo/balanceRekening";
+    public static final String GET_BALANCE_ALL_USER = "saldo/balanceUser";
+    public static final String GET_BENGKEL_PRINCIPAL = "bengkel/bengkelPrincipal";
+    public static final String GET_VARIAN_BY_NAMA_LAYANAN = "kendaraan/varian_kendaraan_layanan";
+    public static final String GET_KENDARAAN_LAYANAN = "kendaraan/kendaraan_layanan";
+    public static final String GET_KATALOG_PAKET_LAYANAN = "layanan/paket_layanan_bengkel";
     public static final String GET_HISTORY_POINT_LAYANAN = "mekanik/history_point_layanan";
     public static final String GET_HISTORY_USULAN_MEKANIK = "mekanik/history_usulan_mekanik";
     public static final String GET_LOGO_BENGKEL = "bengkel/logo_bengkel";

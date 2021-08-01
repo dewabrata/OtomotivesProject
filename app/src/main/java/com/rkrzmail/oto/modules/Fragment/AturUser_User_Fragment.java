@@ -4,9 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -20,10 +18,8 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -42,28 +38,20 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.bengkel.AturUser_MainTab_Activity;
+import com.rkrzmail.oto.modules.Adapter.AturUser_MainTab_Activity;
 import com.rkrzmail.srv.MultiSelectionSpinner;
-import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.KARYAWAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_MST;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_FOTO;
-import static com.rkrzmail.utils.ConstUtils.RP;
 
 public class AturUser_User_Fragment extends Fragment {
 
@@ -528,7 +516,7 @@ public class AturUser_User_Fragment extends Fragment {
 
         activity.setSupportActionBar(toolbar);
         if (activity.getSupportActionBar() != null)
-            activity.getSupportActionBar().setTitle("Preview Qris");
+            activity.getSupportActionBar().setTitle("Preview Foto");
 
         if (bitmapFoto != null)
             img.setImageBitmap(bitmapFoto);

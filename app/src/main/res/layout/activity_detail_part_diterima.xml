@@ -177,16 +177,43 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:hint="HARGA BERSIH">
+                android:hint="@string/harga_bersih_uppercase">
 
                 <EditText
                     android:id="@+id/et_hargaBersih_detailTerimaPart"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
 
             </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="@string/non_hpp_uppercase">
+
+                <EditText
+                    android:id="@+id/et_non_hpp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:textSize="14sp"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
+
+            </android.support.design.widget.TextInputLayout>
+
+
+            <CheckBox
+                android:id="@+id/cb_non_hpp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/non_hpp_uppercase"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"/>
 
             <LinearLayout
                 android:id="@+id/ly_lokasi"

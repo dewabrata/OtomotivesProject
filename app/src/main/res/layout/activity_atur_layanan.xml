@@ -186,12 +186,13 @@
                         android:textStyle="bold" />
 
                     <RelativeLayout
+                        android:id="@+id/rl_merk"
                         android:layout_width="0dp"
                         android:layout_height="34dp"
                         android:layout_weight="6"
-                        android:background="@drawable/background_edittext">
+                        android:background="@drawable/state_textview_clickable_border">
 
-                        <com.rkrzmail.srv.MultiSelectionSpinner
+                        <Spinner
                             android:id="@+id/sp_merk_kendaraan"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -209,7 +210,8 @@
                     android:gravity="center"
                     android:orientation="horizontal"
                     android:paddingStart="@dimen/paddingMedium"
-                    android:paddingEnd="@dimen/paddingMedium">
+                    android:paddingEnd="@dimen/paddingMedium"
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="0dp"
@@ -257,10 +259,11 @@
                         android:textStyle="bold" />
 
                     <RelativeLayout
+                        android:id="@+id/rl_varian"
                         android:layout_width="0dp"
                         android:layout_height="34dp"
                         android:layout_weight="6"
-                        android:background="@drawable/background_edittext">
+                        android:background="@drawable/state_textview_clickable_border">
 
                         <Spinner
                             android:id="@+id/sp_varian_kendaraan"

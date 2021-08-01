@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -13,6 +14,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -21,15 +24,16 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
 import com.rkrzmail.srv.NumberFormatUtils;
-import com.rkrzmail.utils.Tools;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import static com.rkrzmail.utils.APIUrls.VIEW_CARI_PART;
-import static com.rkrzmail.utils.APIUrls.VIEW_CARI_PART_SUGGESTION;
 import static com.rkrzmail.utils.APIUrls.VIEW_LOKASI_PART;
 import static com.rkrzmail.utils.APIUrls.VIEW_MASTER;
 import static com.rkrzmail.utils.APIUrls.VIEW_SPAREPART;
@@ -41,7 +45,6 @@ import static com.rkrzmail.utils.ConstUtils.CARI_PART_OTOMOTIVES;
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_TERALOKASIKAN;
 import static com.rkrzmail.utils.ConstUtils.PART;
 import static com.rkrzmail.utils.ConstUtils.RP;
-import static com.rkrzmail.utils.ConstUtils.TAMBAH_PART;
 
 public class CariPart_Activity extends AppActivity {
 
@@ -60,19 +63,25 @@ public class CariPart_Activity extends AppActivity {
     private boolean isCheckin = false;
     private Toolbar toolbar;
     int countForCariPart = 0;
+
     private String cari;
-    private Nson partLokasiPart = Nson.newArray(), partClaim = Nson.newArray();
+    private String penempatanSearch, noTempatSearch, tinggiRakSearch, noFolderSearch;
+
+    private final Nson partLokasiPart = Nson.newArray();
+    private final Nson partClaim = Nson.newArray();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_basic);
         initComponent();
+        setSpSearchLokasi();
     }
 
     private void initToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        find(R.id.ly_search_lokasi).setVisibility(getIntent().hasExtra("OPNAME_PART") ? View.VISIBLE : View.GONE);
         //flag = true is for view part and flag false for else than part (MASTER)
         if (getIntent().hasExtra("flag")) {
             getSupportActionBar().setTitle("Cari Part");
@@ -137,6 +146,31 @@ public class CariPart_Activity extends AppActivity {
             }
             initRecylerviewCariPart();
         }
+
+        find(R.id.swiperefresh, SwipeRefreshLayout.class).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (isLokasi) {
+                    initRecylerViewCarPartLokasi();
+                    cariPartWithLokasi("");
+                } else if (isTeralokasikan) {
+                    initRecylerViewCarPartTeralokasikan();
+                    cariPartTeralokasikan("");
+                } else if (isPartCheckin) {
+                    initRecylerViewCarPartClaim();
+                    cariPartCheckin("");
+                } else if (isPartOto) {
+                    initRecylerViewCariPartOto();
+                    cariPart("");
+                } else {
+                    if (countForCariPart == 0) {
+                        cariPart("");
+                    }
+                    initRecylerviewCariPart();
+                }
+            }
+        });
+
     }
 
     private void initRecylerviewCariPart() {
@@ -338,6 +372,7 @@ public class CariPart_Activity extends AppActivity {
 
             @Override
             public void run() {
+                swipeProgress(true);
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("flag", getIntentStringExtra("flag"));
                 if (flagCariPart) {
@@ -375,6 +410,7 @@ public class CariPart_Activity extends AppActivity {
 
             @Override
             public void runUI() {
+                swipeProgress(false);
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
@@ -392,6 +428,7 @@ public class CariPart_Activity extends AppActivity {
 
             @Override
             public void run() {
+                swipeProgress(true);
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "view");
@@ -401,12 +438,14 @@ public class CariPart_Activity extends AppActivity {
                 args.put("kendaraanID", String.valueOf(getIntentIntegerExtra("KENDARAAN_ID")));
                 args.put("layananID", getIntentStringExtra("LAYANAN_ID"));
                 args.put("pekerjaan", getIntentStringExtra("PEKERJAAN"));
+                args.put("namaLayanan", getIntentStringExtra("NAMA_LAYANAN"));
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_SPAREPART), args));
             }
 
             @Override
             public void runUI() {
+                swipeProgress(false);
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     result = result.get("data");
                     partLokasiPart.asArray().clear();
@@ -425,6 +464,7 @@ public class CariPart_Activity extends AppActivity {
 
             @Override
             public void run() {
+                swipeProgress(true);
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 args.put("search", cari);
@@ -434,6 +474,7 @@ public class CariPart_Activity extends AppActivity {
 
             @Override
             public void runUI() {
+                swipeProgress(false);
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     partLokasiPart.asArray().clear();
                     partLokasiPart.asArray().addAll(result.get("data").asArray());
@@ -451,6 +492,7 @@ public class CariPart_Activity extends AppActivity {
 
             @Override
             public void run() {
+                swipeProgress(true);
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "LKK");
                 args.put("search", cari);
@@ -460,6 +502,7 @@ public class CariPart_Activity extends AppActivity {
 
             @Override
             public void runUI() {
+                swipeProgress(false);
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     partClaim.asArray().clear();
                     partClaim.asArray().addAll(result.get("data").asArray());
@@ -470,6 +513,141 @@ public class CariPart_Activity extends AppActivity {
             }
         });
     }
+
+    private void setSpSearchLokasi() {
+        List<String> noRakList = new ArrayList<String>();
+        List<String> tinggiRakList = new ArrayList<String>();
+        List<String> noFolderList = new ArrayList<String>();
+        List<String> penempatanList = Arrays.asList(getResources().getStringArray(R.array.penempatan_lokasi_part));
+        noRakList.add("--PILIH--");
+        tinggiRakList.add("--PILIH--");
+        noFolderList.add("--PILIH--");
+        for (int i = 1; i <= 100; i++) {
+            if (!noRakList.contains(i)) {
+                noRakList.add(String.valueOf(i));
+            }
+            if (!noFolderList.contains(i)) {
+                noFolderList.add(String.valueOf(i));
+            }
+            if (i <= 10) {
+                tinggiRakList.add(String.valueOf(i));
+            }
+        }
+
+        setSpinnerOffline(penempatanList, find(R.id.sp_search_penempatan, Spinner.class), "");
+        setSpinnerOffline(noRakList, find(R.id.sp_search_no_tempat, Spinner.class), "");
+        setSpinnerOffline(tinggiRakList, find(R.id.sp_search_tingkat_rak, Spinner.class), "");
+        setSpinnerOffline(noFolderList, find(R.id.sp_search_no_folder, Spinner.class), "");
+
+        find(R.id.sp_search_penempatan, Spinner.class).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                penempatanSearch = parent.getItemAtPosition(position).toString().equals("--PILIH--") ? "" : parent.getItemAtPosition(position).toString();
+                find(R.id.sp_search_tingkat_rak, Spinner.class).setEnabled(penempatanSearch.equalsIgnoreCase("RAK"));
+                if (find(R.id.sp_search_tingkat_rak, Spinner.class).isEnabled()) {
+                    if (!penempatanSearch.isEmpty() && !noTempatSearch.isEmpty() && !tinggiRakSearch.isEmpty() && !noFolderSearch.isEmpty()) {
+                        String kodePenempatan = kodePenempatan(penempatanSearch, noTempatSearch, tinggiRakSearch, noFolderSearch);
+                        cariPartWithLokasi(kodePenempatan);
+                    }
+                } else {
+                    if (!penempatanSearch.isEmpty() && !noTempatSearch.isEmpty() && !noFolderSearch.isEmpty()) {
+                        String kodePenempatan = kodePenempatan(penempatanSearch, noTempatSearch, tinggiRakSearch, noFolderSearch);
+                        cariPartWithLokasi(kodePenempatan);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        find(R.id.sp_search_no_tempat, Spinner.class).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                noTempatSearch = parent.getItemAtPosition(position).toString().equals("--PILIH--") ? "" : parent.getItemAtPosition(position).toString();
+                if (find(R.id.sp_search_tingkat_rak, Spinner.class).isEnabled()) {
+                    if (!penempatanSearch.isEmpty() && !noTempatSearch.isEmpty() && !tinggiRakSearch.isEmpty() && !noFolderSearch.isEmpty()) {
+                        String kodePenempatan = kodePenempatan(penempatanSearch, noTempatSearch, tinggiRakSearch, noFolderSearch);
+                        cariPartWithLokasi(kodePenempatan);
+                    }
+                } else {
+                    if (!penempatanSearch.isEmpty() && !noTempatSearch.isEmpty() && !noFolderSearch.isEmpty()) {
+                        String kodePenempatan = kodePenempatan(penempatanSearch, noTempatSearch, tinggiRakSearch, noFolderSearch);
+                        cariPartWithLokasi(kodePenempatan);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        find(R.id.sp_search_tingkat_rak, Spinner.class).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                tinggiRakSearch = parent.getItemAtPosition(position).toString().equals("--PILIH--") ? "" : parent.getItemAtPosition(position).toString();
+                if (find(R.id.sp_search_tingkat_rak, Spinner.class).isEnabled()) {
+                    if (!penempatanSearch.isEmpty() && !noTempatSearch.isEmpty() && !tinggiRakSearch.isEmpty() && !noFolderSearch.isEmpty()) {
+                        String kodePenempatan = kodePenempatan(penempatanSearch, noTempatSearch, tinggiRakSearch, noFolderSearch);
+                        cariPartWithLokasi(kodePenempatan);
+                    }
+                } else {
+                    if (!penempatanSearch.isEmpty() && !noTempatSearch.isEmpty() && !noFolderSearch.isEmpty()) {
+                        String kodePenempatan = kodePenempatan(penempatanSearch, noTempatSearch, tinggiRakSearch, noFolderSearch);
+                        cariPartWithLokasi(kodePenempatan);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        find(R.id.sp_search_no_folder, Spinner.class).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                noFolderSearch = parent.getItemAtPosition(position).toString().equals("--PILIH--") ? "" : parent.getItemAtPosition(position).toString();
+                if (find(R.id.sp_search_tingkat_rak, Spinner.class).isEnabled()) {
+                    if (!penempatanSearch.isEmpty() && !noTempatSearch.isEmpty() && !tinggiRakSearch.isEmpty() && !noFolderSearch.isEmpty()) {
+                        String kodePenempatan = kodePenempatan(penempatanSearch, noTempatSearch, tinggiRakSearch, noFolderSearch);
+                        cariPartWithLokasi(kodePenempatan);
+                    }
+                } else {
+                    if (!penempatanSearch.isEmpty() && !noTempatSearch.isEmpty() && !noFolderSearch.isEmpty()) {
+                        String kodePenempatan = kodePenempatan(penempatanSearch, noTempatSearch, tinggiRakSearch, noFolderSearch);
+                        cariPartWithLokasi(kodePenempatan);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+    }
+
+    private String kodePenempatan(String tempat, String no, String tingkat, String folder) {
+        String kode;
+        if (tempat.equals("RAK")) {
+            kode = "R" + "." + no + "." + tingkat + "." + folder;
+        } else {
+            kode = "P" + "." + no + "." + folder;
+        }
+        return kode;
+    }
+
 
     SearchView mSearchView;
 

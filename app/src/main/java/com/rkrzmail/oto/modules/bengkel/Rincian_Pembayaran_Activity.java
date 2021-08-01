@@ -29,9 +29,9 @@ import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.checkin.Checkin2_Activity;
-import com.rkrzmail.srv.NikitaMultipleViewAdapter;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.oto.modules.Adapter.NikitaMultipleViewAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
 import com.rkrzmail.srv.NumberFormatUtils;
 
 import java.text.ParseException;
@@ -41,8 +41,6 @@ import java.util.Map;
 import java.util.Objects;
 
 
-import static com.rkrzmail.srv.NumberFormatUtils.calculatePercentage;
-import static com.rkrzmail.utils.APIUrls.VIEW_INSPEKSI;
 import static com.rkrzmail.utils.APIUrls.VIEW_PEMBAYARAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_PERINTAH_KERJA_MEKANIK;
 import static com.rkrzmail.utils.ConstUtils.DATA;
@@ -81,7 +79,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             pemilik = "",
             isPkp = "",
             ket = "",
-            catatanMekanik = "", merkKendaraan = "";
+            catatanMekanik = "", merkKendaraan = "", varianKendaraan = "";
     private String idCheckin = "", idJualPart = "";
     private String tglLayanan = "", noKunci = "";
     private int maxFreePenyimpanan = 0;
@@ -191,6 +189,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                 intent.putExtra("NO_PONSEL", noHp);
                 intent.putExtra("KONFIRMASI DATA", "Konfirmasi Data Kendaraan");
                 intent.putExtra("MERK", merkKendaraan);
+                intent.putExtra("VARIAN", varianKendaraan);
                 startActivityForResult(intent, REQUEST_NEW_CS);
             }
         });
@@ -242,6 +241,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         merkKendaraan = data.get("MERK").asString();
         noKunci = data.get("NO_KUNCI").asString();
         isEwallet = !data.get("NAMA_MERCHANT").asString().isEmpty();
+        varianKendaraan = data.get("VARIAN").asString();
     }
 
 
@@ -389,7 +389,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                                 result.get(i).get("GARANSI_PART_JASA").asString().isEmpty())) {
                     totalPart += result.get(i).get("HARGA_PART").asInteger();
                 }
-                if(result.get(i).get("PART_JASA").asString().equals("JASA") &&
+                if(result.get(i).get("PART_JASA").asString().equals("JASA LAIN") &&
                         (result.get(i).get("GARANSI_PART_JASA").asString().equals("N") ||
                                 result.get(i).get("GARANSI_PART_JASA").asString().isEmpty())) {
                     totalJasa += result.get(i).get("HARGA_JASA_LAIN").asInteger();

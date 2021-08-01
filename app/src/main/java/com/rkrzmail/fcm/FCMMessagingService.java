@@ -17,10 +17,9 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.naa.data.Nson;
 import com.naa.data.UtilityAndroid;
 
-import com.rkrzmail.oto.MainActivity;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.mekanik.PerintahKerjaMekanik_Activity;
-import com.rkrzmail.oto.modules.sparepart.TugasPart_MainTab_Activity;
+import com.rkrzmail.oto.modules.Adapter.TugasPart_MainTab_Activity;
 
 import java.util.Random;
 
@@ -37,13 +36,13 @@ public class FCMMessagingService extends FirebaseMessagingService {
         super.onMessageReceived(remoteMessage);
         Nson data = Nson.newObject();
 
-        if (remoteMessage.getNotification() != null) {
+       /* if (remoteMessage.getNotification() != null) {
             data.set("msg", String.valueOf(remoteMessage.getNotification().getBody()));
             data.set("title", String.valueOf(remoteMessage.getNotification().getTitle()));
         }
         if (remoteMessage.getData() != null) {
             data.asObject().putAll(remoteMessage.getData());
-        }
+        }*/
 
         Log.i("FirebasegetMessaging", data.toJson());
 

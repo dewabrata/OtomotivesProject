@@ -36,8 +36,8 @@ import com.rkrzmail.oto.modules.jasa.JasaLain_Activity;
 import com.rkrzmail.oto.modules.sparepart.CariPart_Activity;
 import com.rkrzmail.oto.modules.sparepart.JumlahPart_Mekanik_Activity;
 import com.rkrzmail.oto.modules.sparepart.JumlahPart_Checkin_Activity;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
 import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -509,8 +509,6 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
                 }
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_KONTROL_LAYANAN), args));
-                result.getError();
-                Log.d("cok__", "run: " + result);
             }
 
             @Override
@@ -659,14 +657,12 @@ public class TambahPartJasaDanBatal_Activity extends AppActivity implements View
             switch (requestCode) {
                 case REQUEST_CODE_SIGN:
                     isSign = true;
-                    @SuppressLint("SdCardPath") File imgFile = null;
                     if (data != null) {
-                        imgFile = (File) Objects.requireNonNull(data.getExtras()).get("imagePath");
-                    }
-                    if (imgFile != null && imgFile.exists()) {
-                        Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                        byte[] bytes = data.getByteArrayExtra("bytesBitmap");
+                        Bitmap myBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                         find(R.id.img_tandaTangan, ImageView.class).setImageBitmap(myBitmap);
                     }
+
                     break;
                 case REQUEST_JASA_LAIN:
                     try {

@@ -1,7 +1,6 @@
 package com.rkrzmail.oto.modules.bengkel;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -40,8 +39,9 @@ public class AturRekening_Activity extends AppActivity {
 
     private List<String> dataBank = new ArrayList<>();
     private List<Boolean> isCheckedList = new ArrayList<>();
-    private Nson n, rekeningList = Nson.newArray();
+    private Nson data, rekeningList = Nson.newArray();
     private String bankCode = "", namaBank = "";
+    boolean isUpdate = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +85,47 @@ public class AturRekening_Activity extends AppActivity {
         }
     };
 
+    private void loadData() {
+        data = Nson.readJson(getIntentStringExtra(DATA));
+        isUpdate = !data.asString().isEmpty();
+        if (!data.asString().isEmpty()) {
+            namaBank = data.get("BANK_NAME").asString();
+            etNoRek.setText(data.get("NO_REKENING").asString());
+            etNamaRek.setText(data.get("NAMA_REKENING").asString());
+
+            find(R.id.cb_edc_rekening, CheckBox.class).setChecked(data.get("EDC_ACTIVE").asString().equalsIgnoreCase("Y"));
+            find(R.id.cb_offUs_rekening, CheckBox.class).setChecked(data.get("OFF_US").asString().equalsIgnoreCase("Y"));
+        }
+
+        if (isUpdate) {
+            find(R.id.btn_simpan, Button.class).setText("UPDATE");
+            find(R.id.btn_hapus).setVisibility(View.VISIBLE);
+            find(R.id.btn_hapus).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    deleteData(data);
+                }
+            });
+        }
+
+        find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (spBank.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
+                    setErrorSpinner(spBank, "NAMA BANK HARUS DI PILIH");
+                } else if (etNoRek.getText().toString().isEmpty()) {
+                    etNoRek.setError("Harus Di isi");
+                    viewFocus(etNoRek);
+                } else if (etNamaRek.getText().toString().isEmpty()) {
+                    etNamaRek.setError("Harus Di isi");
+                    viewFocus(etNamaRek);
+                } else {
+                    saveData();
+                }
+            }
+        });
+
+    }
 
     private void saveData() {
         newProses(new Messagebox.DoubleRunnable() {
@@ -94,13 +135,16 @@ public class AturRekening_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
-                args.put("action", "add");
+                args.put("action", isUpdate ? "update" : "add");
                 args.put("norek", etNoRek.getText().toString());
                 args.put("bankCode", bankCode);
                 args.put("namarek", etNamaRek.getText().toString());
                 args.put("edc", find(R.id.cb_edc_rekening, CheckBox.class).isChecked() ? "Y" : "N");
                 args.put("off_us", find(R.id.cb_offUs_rekening, CheckBox.class).isChecked() ? "Y" : "N");
                 args.put("tanggal", dateTime);
+                args.put("id", data.get("ID").asString());
+                args.put("bank", spBank.getSelectedItem().toString());
+                args.put("publish", find(R.id.cb_publish, CheckBox.class).isChecked() ? "Y" : "N");
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_REKENING_BANK), args));
             }
@@ -113,96 +157,6 @@ public class AturRekening_Activity extends AppActivity {
                     finish();
                 } else {
                     showInfo("GAGAL");
-                }
-            }
-        });
-    }
-
-    private void loadData() {
-        n = Nson.readJson(getIntentStringExtra(DATA));
-        Log.d("Nson____", "loadData: " + n);
-        Intent i = getIntent();
-
-        if (i.hasExtra("data")) {
-            namaBank = n.get("BANK_NAME").asString();
-            etNoRek.setText(n.get("NO_REKENING").asString());
-            etNamaRek.setText(n.get("NAMA_REKENING").asString());
-
-            find(R.id.cb_edc_rekening, CheckBox.class).setChecked(n.get("EDC_ACTIVE").asString().equalsIgnoreCase("Y"));
-            find(R.id.cb_offUs_rekening, CheckBox.class).setChecked(n.get("OFF_US").asString().equalsIgnoreCase("Y"));
-
-            find(R.id.btn_hapus).setVisibility(View.VISIBLE);
-            find(R.id.btn_hapus).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    deleteData(n);
-                }
-            });
-
-            find(R.id.btn_simpan, Button.class).setText("UPDATE");
-            find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (spBank.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
-                        spBank.performClick();
-                        showWarning("Silahkan Pilih Nama Bank");
-                    } else if (etNoRek.getText().toString().isEmpty()) {
-                        etNoRek.setError("Harus Di isi");
-                    } else if (etNamaRek.getText().toString().isEmpty()) {
-                        etNamaRek.setError("Harus Di isi");
-                    } else {
-                        updateData(n);
-                    }
-                }
-            });
-        } else {
-            find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (spBank.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
-                        spBank.performClick();
-                        showWarning("Silahkan Pilih Nama Bank");
-                    } else if (etNoRek.getText().toString().isEmpty()) {
-                        etNoRek.setError("Harus Di isi");
-                    } else if (etNamaRek.getText().toString().isEmpty()) {
-                        etNamaRek.setError("Harus Di isi");
-                    } else {
-                        saveData();
-                    }
-
-                }
-            });
-        }
-    }
-
-    private void updateData(final Nson id) {
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
-
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "update");
-                args.put("id", id.get("ID").asString());
-                args.put("norek", etNoRek.getText().toString());
-                args.put("bank", spBank.getSelectedItem().toString());
-                args.put("namarek", etNamaRek.getText().toString());
-                args.put("edc", find(R.id.cb_edc_rekening, CheckBox.class).isChecked() ? "Y" : "N");
-                args.put("off_us", find(R.id.cb_offUs_rekening, CheckBox.class).isChecked() ? "Y" : "N");
-                //args.put("status", );
-                args.put("tanggal", dateTime);
-
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_REKENING_BANK), args));
-            }
-
-            @Override
-            public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    showSuccess("Sukses Memperbaharui Aktifitas");
-                    setResult(RESULT_OK);
-                    finish();
-                } else {
-                    showError("Gagal menambahkan Aktifitas");
                 }
             }
         });

@@ -1,45 +1,43 @@
 package com.rkrzmail.oto.modules;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.text.Html;
-import android.util.Log;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.NumberPicker;
-import android.widget.Toast;
+import android.widget.EditText;
+import android.widget.ImageView;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
 
-import java.util.Calendar;
 import java.util.Objects;
 
-import im.delight.android.location.SimpleLocation;
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class MapPicker_Dialog extends DialogFragment implements OnMapReadyCallback {
 
@@ -48,9 +46,16 @@ public class MapPicker_Dialog extends DialogFragment implements OnMapReadyCallba
     private SupportMapFragment mapFragment;
     private String getLatitude = "", getLongitude = "";
     private AppActivity activity;
+    private EditText etSearch;
+    private ImageView imgSelectLocation;
+    private RecyclerView rvPlaces;
 
     private GetLocation getLocation;
     private LocationManager locationManager;
+    private LocationListener locationListener;
+    private LatLng locationSelected;
+
+    // private PlacesAutoCompleteAdapter placesAutoCompleteAdapter;
 
     private static final long MIN_TIME = 400;
     private static final float MIN_DISTANCE = 1000;
@@ -69,34 +74,97 @@ public class MapPicker_Dialog extends DialogFragment implements OnMapReadyCallba
         return super.onCreateDialog(savedInstanceState);
     }
 
-    @SuppressLint("MissingPermission")
+    int REQUEST_CODE_AUTOCOMPLETE = 8789;
+
+    @SuppressLint({"MissingPermission", "ClickableViewAccessibility"})
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_location_peta_picker, container, false);
         activity = ((AppActivity) getActivity());
-        assert activity != null;
-        locationManager = (LocationManager) activity.getActivity().getSystemService(Context.LOCATION_SERVICE);
 
         assert getFragmentManager() != null;
         mapFragment = (SupportMapFragment) getFragmentManager().findFragmentById(R.id.map);
         btnGetLocation = rootView.findViewById(R.id.btn_get_location);
+        etSearch = rootView.findViewById(R.id.et_search);
+        imgSelectLocation = rootView.findViewById(R.id.img_select_location_manualy);
+        rvPlaces = rootView.findViewById(R.id.rv_places);
+
+        //initAutoCompletePalaces();
+
+        imgSelectLocation.setVisibility(View.GONE);
+        //etSearch.addTextChangedListener(filterTextWatcher);
+        etSearch.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                return true;
+            }
+        });
+
+        imgSelectLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         btnGetLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 takeLocation();
             }
         });
-
-        if (mapFragment == null) {
-            Toast.makeText(getActivity(),
-                    "Sorry! unable to create maps", Toast.LENGTH_SHORT)
-                    .show();
-        }
         mapFragment.getMapAsync(this);
-
+        //initAutoCompletePalaces();
         return rootView;
     }
+
+/*
+    private TextWatcher filterTextWatcher = new TextWatcher() {
+        public void afterTextChanged(Editable s) {
+            if (!s.toString().equals("")) {
+                placesAutoCompleteAdapter.getFilter().filter(s.toString());
+                if (rvPlaces.getVisibility() == View.GONE) {
+                    rvPlaces.setVisibility(View.VISIBLE);
+                }
+            } else {
+                if (rvPlaces.getVisibility() == View.VISIBLE) {
+                    rvPlaces.setVisibility(View.GONE);
+                }
+            }
+        }
+
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+    };
+
+
+    private void initAutoCompletePalaces() {
+        Places.initialize(Objects.requireNonNull(getContext()), getResources().getString(R.string.GoogleMapsApi));
+        placesAutoCompleteAdapter = new PlacesAutoCompleteAdapter(getContext());
+        rvPlaces.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvPlaces.setAdapter(placesAutoCompleteAdapter);
+        Objects.requireNonNull(rvPlaces.getAdapter()).notifyDataSetChanged();
+
+        placesAutoCompleteAdapter.setClickListener(new PlacesAutoCompleteAdapter.ClickListener() {
+            @Override
+            public void click(Place place) {
+                locationSelected = place.getLatLng();
+                map.clear();
+                map.addMarker(new MarkerOptions()
+                        .title("Lokasi Anda")
+                        .position(locationSelected)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+
+            }
+        });
+    }
+*/
 
     @Override
     public void onResume() {
@@ -110,32 +178,72 @@ public class MapPicker_Dialog extends DialogFragment implements OnMapReadyCallba
     @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        map = googleMap;
-        map.setPadding(10, 180, 10, 10);
-        map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        map.setMyLocationEnabled(true);
-        map.getUiSettings().setCompassEnabled(true);
-        map.getUiSettings().setZoomGesturesEnabled(true);
-        map.getUiSettings().setRotateGesturesEnabled(false);
-        map.getUiSettings().setZoomControlsEnabled(true);
+        if (checkPermission()) {
+            map = googleMap;
+            map.setPadding(10, 180, 10, 10);
+            map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+            map.setMyLocationEnabled(true);
+            map.getUiSettings().setCompassEnabled(true);
+            map.getUiSettings().setZoomGesturesEnabled(true);
+            map.getUiSettings().setRotateGesturesEnabled(false);
+            //map.getUiSettings().setZoomControlsEnabled(true);
+            map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+                LatLng latLng;
 
-        Location location = new Location(LocationManager.GPS_PROVIDER);
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(latLng)
-                .zoom(17)
-                .build();
+                @Override
+                public void onMarkerDragStart(Marker marker) {
+                    latLng = marker.getPosition();
+                }
 
-        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                @Override
+                public void onMarkerDrag(Marker marker) {
+                    map.clear();
+                    latLng = marker.getPosition();
+               /* map.addMarker(new MarkerOptions()
+                        .title("Lokasi Anda")
+                        .position(latLng)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));*/
+                }
+
+                @Override
+                public void onMarkerDragEnd(Marker marker) {
+
+                }
+            });
+
+            locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
+            locationListener = new LocationListener() {
+                @Override
+                public void onLocationChanged(@NonNull Location location) {
+                    locationSelected = new LatLng(location.getLatitude(), location.getLongitude());
+                    map.clear();
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(locationSelected, 16));
+                    map.addMarker(new MarkerOptions()
+                            .title("Lokasi Anda")
+                            .position(locationSelected)
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                }
+            };
+
+
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            locationSelected = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+            map.clear();
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(locationSelected, 16));
+            map.addMarker(new MarkerOptions()
+                    .title("Lokasi Anda")
+                    .position(locationSelected)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+        } else {
+            requestPermission();
+        }
     }
 
+
     private void takeLocation() {
-        SimpleLocation location = new SimpleLocation(activity.getActivity(), false, false, 6000);
-        if (!location.hasLocationEnabled()) {
-            SimpleLocation.openSettings(activity.getActivity());
-        }
-        final double latitude = location.getLatitude();
-        final double longtitude = location.getLongitude();
+        final double latitude = locationSelected.latitude;
+        final double longtitude = locationSelected.longitude;
 
         getLatitude = String.valueOf(latitude);
         getLongitude = String.valueOf(longtitude);
@@ -143,15 +251,32 @@ public class MapPicker_Dialog extends DialogFragment implements OnMapReadyCallba
             getLocation.getLatLong(getLatitude, getLongitude);
         }
 
-        LatLng current = new LatLng(latitude, longtitude);
-        map.addMarker(new MarkerOptions()
-                .position(current)
-                .title("Current"));
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 10));
-        map.animateCamera(CameraUpdateFactory.zoomTo(15));
-        Log.d("latitude", String.valueOf(latitude));
-        Log.d("longtitude", String.valueOf(longtitude));
         dismiss();
+    }
+
+    int REQUEST_LOCATION = 8765;
+
+    private boolean checkPermission() {
+        return ActivityCompat.checkSelfPermission(activity, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(activity, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(activity, new String[]{ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_LOCATION) {
+            if (grantResults.length > 0 && (grantResults[0] == PackageManager.PERMISSION_GRANTED || grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                if (checkPermission()) {
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                } else {
+                    activity.showWarning("Anda Harus Mengijinkan Akses Lokasi!");
+                }
+            }
+        }
     }
 
     @Override
@@ -159,7 +284,7 @@ public class MapPicker_Dialog extends DialogFragment implements OnMapReadyCallba
         super.onDestroy();
         if (null != mapFragment)
             Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction()
-                    .remove(mapFragment)
+                    .remove((Fragment) mapFragment)
                     .commit();
     }
 

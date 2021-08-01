@@ -23,17 +23,14 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.bengkel.AturReferal_Activity;
-import com.rkrzmail.oto.modules.bengkel.Referal_MainTab_Activity;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.oto.modules.Adapter.Referal_MainTab_Activity;
+import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
 import com.rkrzmail.srv.NumberFormatUtils;
 
-import java.util.Map;
 import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.BONUS_REFFERAL;
-import static com.rkrzmail.utils.APIUrls.REFERAL;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 import static com.rkrzmail.utils.ConstUtils.RP;
 

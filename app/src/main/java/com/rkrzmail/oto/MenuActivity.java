@@ -1,13 +1,18 @@
 package com.rkrzmail.oto;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -16,7 +21,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -51,20 +58,21 @@ import com.rkrzmail.oto.fragment.PageAdapter;
 import com.rkrzmail.oto.fragment.SlideFragment;
 import com.rkrzmail.oto.fragment.pageindicator.CirclePageIndicator;
 import com.rkrzmail.oto.gmod.MyCode;
+import com.rkrzmail.oto.modules.Adapter.Checkin_MainTab_Activity;
+import com.rkrzmail.oto.modules.Task.UpdateAppTask;
 import com.rkrzmail.oto.modules.antar_jemput.AntarJemput_Activity;
-import com.rkrzmail.oto.modules.bengkel.Absensi_MainTab_Activity;
+import com.rkrzmail.oto.modules.Adapter.Absensi_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Asset_Activity;
 import com.rkrzmail.oto.modules.bengkel.Billing_Activity;
 import com.rkrzmail.oto.modules.bengkel.Collection_Activity;
 import com.rkrzmail.oto.modules.bengkel.DaftarUser_Activity;
-import com.rkrzmail.oto.modules.bengkel.Dashboard_MainTab_Activity;
+import com.rkrzmail.oto.modules.Adapter.Dashboard_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Jurnal_Activity;
 import com.rkrzmail.oto.modules.bengkel.Laporan_Activity;
 import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
 import com.rkrzmail.oto.modules.bengkel.Saldo_Activity;
 import com.rkrzmail.oto.modules.bengkel.SaranActivity;
-import com.rkrzmail.oto.modules.bengkel.Schedule_MainTab_Activity;
-import com.rkrzmail.oto.modules.checkin.Checkin1_Activity;
+import com.rkrzmail.oto.modules.Adapter.Schedule_MainTab_Activity;
 import com.rkrzmail.oto.modules.hutang.Hutang_MainTab_Activity;
 import com.rkrzmail.oto.modules.hutang.Piutang_MainTab_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiTerbayar_Activity;
@@ -74,8 +82,9 @@ import com.rkrzmail.oto.modules.komisi.KomisiPart_Activity;
 import com.rkrzmail.oto.modules.mekanik.ClaimGaransiPart_Activity;
 import com.rkrzmail.oto.modules.mekanik.InspeksiMekanik_Activity;
 import com.rkrzmail.oto.modules.mekanik.PerintahKerjaMekanik_Activity;
+import com.rkrzmail.oto.modules.sparepart.LokasiPart_Activity;
 import com.rkrzmail.oto.modules.sparepart.MenungguPart_Activity;
-import com.rkrzmail.oto.modules.bengkel.Pembayaran_MainTab_Activity;
+import com.rkrzmail.oto.modules.Adapter.Pembayaran_MainTab_Activity;
 import com.rkrzmail.oto.modules.checkin.KontrolLayanan_Activity;
 import com.rkrzmail.oto.modules.discount.DiscountLayanan_Activity;
 import com.rkrzmail.oto.modules.checkin.CheckOut_Activity;
@@ -84,33 +93,44 @@ import com.rkrzmail.oto.modules.sparepart.DetailCariPart_Activity;
 import com.rkrzmail.oto.modules.discount.DiscountPart_Activity;
 import com.rkrzmail.oto.modules.discount.FrekwensiDiscount_Activity;
 import com.rkrzmail.oto.modules.discount.DiscountSpot_Activity;
-import com.rkrzmail.oto.modules.bengkel.Referal_MainTab_Activity;
-import com.rkrzmail.oto.modules.sparepart.PartHome_MainTab_Activity;
+import com.rkrzmail.oto.modules.Adapter.Referal_MainTab_Activity;
+import com.rkrzmail.oto.modules.Adapter.PartHome_MainTab_Activity;
 import com.rkrzmail.oto.modules.sparepart.PenjualanPart_Activity;
 import com.rkrzmail.oto.modules.sparepart.Spareparts_Activity;
 import com.rkrzmail.oto.modules.sparepart.PartKeluar_Activity;
 import com.rkrzmail.oto.modules.sparepart.HistoryStockOpname_Activity;
-import com.rkrzmail.oto.modules.sparepart.TugasPart_MainTab_Activity;
+import com.rkrzmail.oto.modules.Adapter.TugasPart_MainTab_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiJasaLain_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiLayanan_Activity;
 import com.rkrzmail.oto.modules.bengkel.Layanan_Avtivity;
-import com.rkrzmail.oto.modules.sparepart.LokasiPart_MainTab_Activity;
-import com.rkrzmail.oto.modules.bengkel.RekeningBank_MainTab_Activity;
+import com.rkrzmail.oto.modules.Adapter.RekeningBank_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Tenda_Activity;
 import com.rkrzmail.oto.modules.sparepart.TerimaPart_Activity;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Vector;
 
+import pl.droidsonroids.gif.GifDrawable;
+import pl.droidsonroids.gif.GifImageView;
+
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE;
 import static com.rkrzmail.utils.APIUrls.ATUR_KONTROL_LAYANAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_TUGAS_PART;
 import static com.rkrzmail.utils.ConstUtils.PART;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 
-public class MenuActivity extends AppActivity {
+public class MenuActivity extends AppActivity implements InstallStateUpdatedListener {
 
     Nson nPopulate = Nson.newArray();
     Nson dataBengkel = Nson.newObject();
@@ -204,24 +224,24 @@ public class MenuActivity extends AppActivity {
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         setContentView(R.layout.activity_main);
+        //debugSharePreferences();
 
-        initAppUpdate();
+        if(reqStoragePermission()){
+            UpdateAppTask updateAppTask = new UpdateAppTask(getActivity());
+            updateAppTask.excuteVersionChecker(getActivity());
+        }else{
+            reqStoragePermission();
+        }
+
+        //initAppUpdate();
         initBrodcastReceiver();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         Drawable iconOto = getResources().getDrawable(R.drawable.icon_oto);
         iconOto.setTint(getResources().getColor(R.color.colorWhite));
         toolbar.setOverflowIcon(iconOto);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(getSetting("NAMA_BENGKEL"));
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         GridView gridView = findViewById(R.id.gridView);
         populate(gridView);
@@ -236,7 +256,7 @@ public class MenuActivity extends AppActivity {
                     startActivity(intent);*/
                     showInfo("COMING SOON");
                 } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_CHECK_IN) && getAccess(M_CHECK_IN)) {
-                    Intent intent = new Intent(MenuActivity.this, Checkin1_Activity.class);
+                    Intent intent = new Intent(MenuActivity.this, Checkin_MainTab_Activity.class);
                     startActivity(intent);
                 } else if (nPopulate.get(position).get("text").asString().equalsIgnoreCase(M_KONTROL_LAYANAN) && getAccess(M_KONTROL_LAYANAN)) {
                     Intent intent = new Intent(MenuActivity.this, KontrolLayanan_Activity.class);
@@ -296,13 +316,73 @@ public class MenuActivity extends AppActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        try{
+            if(receiverNotif != null)
+                unregisterReceiver(receiverNotif);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        super.onDestroy();
+    }
+
+    private boolean reqStoragePermission(){
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        int WritePermision = ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int readExternalPermission = ContextCompat.checkSelfPermission(getActivity(), READ_EXTERNAL_STORAGE);
+
+        if(WritePermision != PackageManager.PERMISSION_GRANTED || readExternalPermission != PackageManager.PERMISSION_GRANTED){
+            if (WritePermision != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            }
+            if (readExternalPermission != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(READ_EXTERNAL_STORAGE);
+            }
+            ActivityCompat.requestPermissions(getActivity(), listPermissionsNeeded.toArray(new String[0]), REQUEST_ID_MULTIPLE_PERMISSIONS);
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+
+    private void debugSharePreferences() {
+        String a = getSetting("MERK_KENDARAAN_BENGKEL");
+        String b = getSetting("KATEGORI_BENGKEL");
+        String c = getSetting("MAX_ANTRIAN_EXPRESS_MENIT");
+        String d = getSetting("MAX_ANTRIAN_STANDART_MENIT");
+        String e = getSetting("DP_PERSEN");
+        String f = getSetting("STATUS_BENGKEL");
+        String g = getSetting("PEMBAYARAN_ACTIVE");
+        String h = getSetting("NAMA_BENGKEL");
+        String i = getSetting("JENIS_KENDARAAN");
+        String j = getSetting("CID");
+        String k = getSetting("BIDANG_USAHA_ARRAY");
+        String l = getSetting("MERK_KENDARAAN_ARRAY");
+        String m = getSetting("L");
+        String n = getSetting("NAMA_USER");
+        String o = getSetting("TIPE_USER");
+        String p = getSetting("ACCESS_MENU");
+        String q = getSetting("POSISI");
+        String r = getSetting("session");
+        String s = getSetting("user");
+    }
+
     InstallStateUpdatedListener installStateUpdatedListener = new InstallStateUpdatedListener() {
         @Override
         public void onStateUpdate(@NonNull InstallState state) {
-            if (state.installStatus() == InstallStatus.DOWNLOADED){
+            if (state.installStatus() == InstallStatus.DOWNLOADED) {
                 popupSnackbarForCompleteUpdate();
-            } else if (state.installStatus() == InstallStatus.INSTALLED){
-                if (appUpdateManager != null){
+            } else if (state.installStatus() == InstallStatus.INSTALLED) {
+                if (appUpdateManager != null) {
                     appUpdateManager.unregisterListener(installStateUpdatedListener);
                 }
             } else {
@@ -319,7 +399,7 @@ public class MenuActivity extends AppActivity {
             @Override
             public void onSuccess(AppUpdateInfo appUpdateInfo) {
                 if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-                        && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
+                        && (appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE) || appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE))) {
                     try {
                         appUpdateManager.startUpdateFlowForResult(
                                 appUpdateInfo, AppUpdateType.FLEXIBLE, getActivity(), REQUEST_APP_UPDATE);
@@ -355,8 +435,9 @@ public class MenuActivity extends AppActivity {
         snackbar.show();
     }
 
+    BroadcastReceiver receiverNotif;
     private void initBrodcastReceiver() {
-        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        receiverNotif = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 switch (Objects.requireNonNull(intent.getAction())) {
@@ -375,7 +456,7 @@ public class MenuActivity extends AppActivity {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("notifyMekanik");
         intentFilter.addAction("notifyPart");
-        registerReceiver(broadcastReceiver, intentFilter);
+        registerReceiver(receiverNotif, intentFilter);
     }
 
     @Override
@@ -386,112 +467,242 @@ public class MenuActivity extends AppActivity {
         } else if (item.getTitle().toString().equalsIgnoreCase(REFFERAL)) {
             Intent intent = new Intent(MenuActivity.this, Referal_MainTab_Activity.class);
             startActivity(intent);
-        } else if (item.getTitle().toString().equalsIgnoreCase(CHECK_OUT) && getAccess(CHECK_OUT)) {
-            Intent intent = new Intent(MenuActivity.this, CheckOut_Activity.class);
-            startActivity(intent);
+        } else if (item.getTitle().toString().equalsIgnoreCase(CHECK_OUT)) {
+            if (getAccess(CHECK_OUT)) {
+                Intent intent = new Intent(MenuActivity.this, CheckOut_Activity.class);
+                startActivity(intent);
+            } else {
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + CHECK_OUT);
+            }
         }
         //Business
-        else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_HUTANG) && getAccess(MY_BUSINESS)) {
-            Intent intent = new Intent(MenuActivity.this, Hutang_MainTab_Activity.class);
-            startActivity(intent);
+        else if(item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS) && !getAccess(MY_BUSINESS)){
+            closeOptionsMenu();
+            showWarning("ANDA TIDAK MEMILIKI AKSES " + MY_BUSINESS);
+            super.onBackPressed();
+        }
+        else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_HUTANG)) {
+            if (getAccess(MY_BUSINESS)) {
+                Intent intent = new Intent(MenuActivity.this, Hutang_MainTab_Activity.class);
+                startActivity(intent);
+            } else {
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + MY_BUSINESS);
+            }
+
             /*Intent intent = new Intent(MenuActivity.this, WebActivity.class);
             intent.putExtra("title", "Dashboard");
             intent.putExtra("url", "https://m.otomotives.com/#/hutang?" + getWebUrl());
             startActivity(intent);*/
-        } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_PIUTANG) && getAccess(MY_BUSINESS)) {
-            Intent intent = new Intent(MenuActivity.this, Piutang_MainTab_Activity.class);
-            startActivity(intent);
+        } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_PIUTANG)) {
+            if (getAccess(MY_BUSINESS)) {
+                Intent intent = new Intent(MenuActivity.this, Piutang_MainTab_Activity.class);
+                startActivity(intent);
+            } else {
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + MY_BUSINESS);
+            }
+
            /* Intent intent = new Intent(MenuActivity.this, WebActivity.class);
             intent.putExtra("title", "Dashboard");
             intent.putExtra("url", "https://m.otomotives.com/#/piutang?" + getWebUrl());
             startActivity(intent);*/
-        } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_PIUTANG) && getAccess(MY_BUSINESS)) {
+        } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_PIUTANG)) {
+            if (getAccess(MY_BUSINESS)) {
+                Intent intent = new Intent(MenuActivity.this, ProfileBengkel_Activity.class);
+                startActivity(intent);
+            } else {
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + MY_BUSINESS_PIUTANG);
+            }
 
-        } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_PIUTANG) && getAccess(PENGATURAN)) {
-            Intent intent = new Intent(MenuActivity.this, ProfileBengkel_Activity.class);
-            startActivity(intent);
-        } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_ASET) && getAccess(MY_BUSINESS)) {
-            Intent intent = new Intent(MenuActivity.this, Asset_Activity.class);
-            startActivity(intent);
+        } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_ASET)) {
+            if (getAccess(MY_BUSINESS)) {
+                Intent intent = new Intent(MenuActivity.this, Asset_Activity.class);
+                startActivity(intent);
+            } else {
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + MY_BUSINESS_ASET);
+            }
+
            /* Intent intent = new Intent(MenuActivity.this, WebActivity.class);
             intent.putExtra("title", "Dashboard");
             intent.putExtra("url", "https://m.otomotives.com/#/aset?" + getWebUrl());
             startActivity(intent);*/
         } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_CUSTOMER) && getAccess(MY_BUSINESS)) {
 
-        } else if (item.getTitle().toString().equalsIgnoreCase(LAPORAN) && getAccess(LAPORAN)) {
-            Intent intent = new Intent(MenuActivity.this, Laporan_Activity.class);
-            startActivity(intent);
-        } else if (item.getTitle().toString().equalsIgnoreCase(SCHEDULE) && getAccess(SCHEDULE)) {
-            Intent intent = new Intent(MenuActivity.this, Schedule_MainTab_Activity.class);
-            startActivity(intent);
+        } else if (item.getTitle().toString().equalsIgnoreCase(LAPORAN)) {
+            if (getAccess(LAPORAN)) {
+                Intent intent = new Intent(MenuActivity.this, Laporan_Activity.class);
+                startActivity(intent);
+            } else {
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + LAPORAN);
+            }
+
+        } else if (item.getTitle().toString().equalsIgnoreCase(SCHEDULE)) {
+            if (getAccess(SCHEDULE)) {
+                Intent intent = new Intent(MenuActivity.this, Schedule_MainTab_Activity.class);
+                startActivity(intent);
+            } else {
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + SCHEDULE);
+            }
         }
         //Pengaturan
-        else if (item.getTitle().toString().equalsIgnoreCase(USER) && getAccess(USER)) {
-            Intent intent = new Intent(MenuActivity.this, DaftarUser_Activity.class);
-            startActivity(intent);
-        } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_LAYANAN) && getAccess(PENGATURAN)) {
-            Intent intent = new Intent(MenuActivity.this, Layanan_Avtivity.class);
-            startActivity(intent);
-        } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_BIAYA_MEKANIK) && getAccess(PENGATURAN)) {
-            Intent intent = new Intent(MenuActivity.this, AturBiayaMekanik_Activity.class);
-            intent.putExtra("data", dataBengkel.toJson());
-            startActivity(intent);
-        } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_SPAREPARTS) && getAccess(PENGATURAN)) {
-            Intent intent = new Intent(MenuActivity.this, Spareparts_Activity.class);
-            intent.putExtra("flag", "atur_sparepart");
-            startActivityForResult(intent, MN_SPAREPART);
-        } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_REKENING) && getAccess(PENGATURAN)) {
-            Intent intent = new Intent(MenuActivity.this, RekeningBank_MainTab_Activity.class);
-            startActivity(intent);
-        } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_PROFILE) && getAccess(PENGATURAN)) {
-            Intent intent = new Intent(MenuActivity.this, ProfileBengkel_Activity.class);
-            startActivity(intent);
-        } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_LOKASI_PART) && getAccess(MY_BUSINESS)) {
-            Intent intent = new Intent(MenuActivity.this, LokasiPart_MainTab_Activity.class);
-            startActivity(intent);
-        } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_TENDA) && getAccess(PENGATURAN)) {
-            Intent intent = new Intent(MenuActivity.this, Tenda_Activity.class);
-            startActivity(intent);
+        else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN) && !getAccess(PENGATURAN)) {
+            showWarning("ANDA TIDAK MEMILIKI AKSES " + PENGATURAN);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    closeOptionsMenu();
+                }
+            }, 500);
+
+        } else if (item.getTitle().toString().equalsIgnoreCase(USER)) {
+            if (getAccess(USER)) {
+                Intent intent = new Intent(MenuActivity.this, DaftarUser_Activity.class);
+                startActivity(intent);
+            } else {
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + USER);
+
+            }
+
+        }else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_LAYANAN)) {
+            if (getAccess(PENGATURAN)) {
+                Intent intent = new Intent(MenuActivity.this, Layanan_Avtivity.class);
+                startActivity(intent);
+            } else {
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + PENGATURAN_USER_LAYANAN);
+            }
+
+        } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_BIAYA_MEKANIK)) {
+            if (getAccess(PENGATURAN)) {
+                Intent intent = new Intent(MenuActivity.this, AturBiayaMekanik_Activity.class);
+                intent.putExtra("data", dataBengkel.toJson());
+                startActivity(intent);
+            } else {
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + PENGATURAN_USER_BIAYA_MEKANIK);
+            }
+
+        } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_SPAREPARTS)) {
+            if (getAccess(PENGATURAN)) {
+                Intent intent = new Intent(MenuActivity.this, Spareparts_Activity.class);
+                intent.putExtra("flag", "atur_sparepart");
+                startActivityForResult(intent, MN_SPAREPART);
+            } else {
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + PENGATURAN_USER_SPAREPARTS);
+            }
+
+        } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_REKENING)) {
+            if (getAccess(PENGATURAN)) {
+                Intent intent = new Intent(MenuActivity.this, RekeningBank_MainTab_Activity.class);
+                startActivity(intent);
+            } else {
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + PENGATURAN_USER_REKENING);
+            }
+
+        } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_PROFILE)) {
+            if (getAccess(PENGATURAN)) {
+                Intent intent = new Intent(MenuActivity.this, ProfileBengkel_Activity.class);
+                startActivity(intent);
+            } else {
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + PENGATURAN_PROFILE);
+
+            }
+        } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_LOKASI_PART)) {
+            if(getAccess(MY_BUSINESS)){
+                Intent intent = new Intent(MenuActivity.this, LokasiPart_Activity.class);
+                startActivity(intent);
+            }else{
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + MY_BUSINESS_LOKASI_PART);
+            }
+
+        } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_USER_TENDA)) {
+            if(getAccess(PENGATURAN)){
+                Intent intent = new Intent(MenuActivity.this, Tenda_Activity.class);
+                startActivity(intent);
+            }else{
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + PENGATURAN_USER_TENDA);
+            }
+
         } else if (item.getTitle().toString().equalsIgnoreCase(PART_KELUAR) && getAccess(PART_KELUAR)) {
             Intent intent = new Intent(MenuActivity.this, PartKeluar_Activity.class);
             startActivity(intent);
         }
         //Discount
-        else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_FREKWENSI) && getAccess(DISCOUNT)) {
-            Intent intent = new Intent(MenuActivity.this, FrekwensiDiscount_Activity.class);
-            startActivity(intent);
+        else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_FREKWENSI)) {
+            if(getAccess(DISCOUNT)){
+                Intent intent = new Intent(MenuActivity.this, FrekwensiDiscount_Activity.class);
+                startActivity(intent);
+            }else{
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + DISCOUNT);
+            }
         }
         /*else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_JASA_LAIN) && getAccess(DISCOUNT)) {
             Intent intent = new Intent(MenuActivity.this, DiscountJasaLain_Activity.class);
             startActivity(intent);
         }*/
-        else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_LAYANAN) && getAccess(DISCOUNT)) {
-            Intent intent = new Intent(MenuActivity.this, DiscountLayanan_Activity.class);
-            startActivity(intent);
+        else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_LAYANAN)) {
+            if( getAccess(DISCOUNT)){
+                Intent intent = new Intent(MenuActivity.this, DiscountLayanan_Activity.class);
+                startActivity(intent);
+            }else{
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + DISCOUNT);
+            }
+
         } else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_PART) && getAccess(DISCOUNT)) {
-            Intent intent = new Intent(MenuActivity.this, DiscountPart_Activity.class);
-            startActivity(intent);
-        } else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_SPOT) && getAccess(DISCOUNT_SPOT)) {
-            Intent intent = new Intent(MenuActivity.this, DiscountSpot_Activity.class);
-            startActivity(intent);
+            if (getAccess(DISCOUNT)) {
+                Intent intent = new Intent(MenuActivity.this, DiscountPart_Activity.class);
+                startActivity(intent);
+            } else {
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + DISCOUNT);
+            }
+
+        } else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_SPOT)) {
+            if (getAccess(DISCOUNT_SPOT)) {
+                Intent intent = new Intent(MenuActivity.this, DiscountSpot_Activity.class);
+                startActivity(intent);
+            } else {
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + DISCOUNT_SPOT);
+            }
+
         }
         //Komisi
+        else if (item.getTitle().toString().equalsIgnoreCase(KOMISI) && !getAccess(KOMISI)) {
+            showWarning("ANDA TIDAK MEMILIKI AKSES " + KOMISI);
+        }
         else if (item.getTitle().toString().equalsIgnoreCase(KOMISI_JASA_LAIN) && getAccess(KOMISI)) {
-            Intent intent = new Intent(MenuActivity.this, KomisiJasaLain_Activity.class);
-            startActivity(intent);
+            if(getAccess(KOMISI)){
+                Intent intent = new Intent(MenuActivity.this, KomisiJasaLain_Activity.class);
+                startActivity(intent);
+            }else{
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + KOMISI);
+            }
         } else if (item.getTitle().toString().equalsIgnoreCase(KOMISI_LAYANAN) && getAccess(KOMISI)) {
-            Intent intent = new Intent(MenuActivity.this, KomisiLayanan_Activity.class);
-            startActivity(intent);
-        } else if (item.getTitle().toString().equalsIgnoreCase(KOMISI_PART) && getAccess(KOMISI)) {
-            Intent intent = new Intent(MenuActivity.this, KomisiPart_Activity.class);
-            startActivity(intent);
+            if(getAccess(KOMISI)) {
+                Intent intent = new Intent(MenuActivity.this, KomisiLayanan_Activity.class);
+                startActivity(intent);
+            }else{
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + KOMISI);
+            }
+        } else if (item.getTitle().toString().equalsIgnoreCase(KOMISI_PART)) {
+            if(getAccess(KOMISI)){
+                Intent intent = new Intent(MenuActivity.this, KomisiPart_Activity.class);
+                startActivity(intent);
+            }else{
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + KOMISI);
+            }
         } else if (item.getTitle().toString().equalsIgnoreCase(KOMISI_PEMBAYARAN) && getAccess(KOMISI)) {
-            Intent intent = new Intent(MenuActivity.this, KomisiTerbayar_Activity.class);
-            startActivity(intent);
-        } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_CLAIM_STATUS) && getAccess(MY_BUSINESS)) {
-            Intent intent = new Intent(MenuActivity.this, ClaimGaransiPart_Activity.class);
-            startActivity(intent);
+            if(getAccess(KOMISI)) {
+                Intent intent = new Intent(MenuActivity.this, KomisiTerbayar_Activity.class);
+                startActivity(intent);
+            }else{
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + KOMISI);
+            }
+
+        } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_CLAIM_STATUS)) {
+            if(getAccess(MY_BUSINESS)){
+                Intent intent = new Intent(MenuActivity.this, ClaimGaransiPart_Activity.class);
+                startActivity(intent);
+            }else{
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + MY_BUSINESS_CLAIM_STATUS);
+            }
+
         } else if (item.getItemId() == R.id.action_logout) {
             Messagebox.showDialog(getActivity(), "Logout", "Yakin Logout ?", "Ya", "Tidak", new DialogInterface.OnClickListener() {
                 @Override
@@ -513,36 +724,21 @@ public class MenuActivity extends AppActivity {
         } else if (item.getTitle().toString().equalsIgnoreCase(SARAN)) {
             Intent intent = new Intent(MenuActivity.this, SaranActivity.class);
             startActivity(intent);
-        } else if (item.getTitle().toString().equalsIgnoreCase(BILLING) && getAccess(BILLING)) {
-            Intent intent = new Intent(MenuActivity.this, Billing_Activity.class);
-            startActivity(intent);
-        } else if (item.getTitle().toString().equalsIgnoreCase(SALDO) && getAccess(SALDO)) {
-            Intent intent = new Intent(MenuActivity.this, Saldo_Activity.class);
-            startActivity(intent);
-        } else {
-             if (!getAccess(CHECK_OUT)) {
-                showWarning("ANDA TIDAK MEMILIKI AKSES " + CHECK_OUT);
-            } else if (!getAccess(MY_BUSINESS)) {
-                showWarning("ANDA TIDAK MEMILIKI AKSES " + MY_BUSINESS);
-            } else if (!getAccess(PENGATURAN)) {
-                showWarning("ANDA TIDAK MEMILIKI AKSES " + PENGATURAN);
-            } else if (!getAccess(DISCOUNT_SPOT)) {
-                showWarning("ANDA TIDAK MEMILIKI AKSES " + DISCOUNT_SPOT);
-            } else if (!getAccess(SCHEDULE)) {
-                showWarning("ANDA TIDAK MEMILIKI AKSES " + SCHEDULE);
-            } else if (!getAccess(PART_KELUAR)) {
-                showWarning("ANDA TIDAK MEMILIKI AKSES " + PART_KELUAR);
-            } else if (!getAccess(DISCOUNT)) {
-                showWarning("ANDA TIDAK MEMILIKI AKSES " + DISCOUNT);
-            } else if (!getAccess(KOMISI)) {
-                showWarning("ANDA TIDAK MEMILIKI AKSES " + KOMISI);
-            } else if (!getAccess(BILLING)) {
+        } else if (item.getTitle().toString().equalsIgnoreCase(BILLING)) {
+            if(getAccess(BILLING)){
+                Intent intent = new Intent(MenuActivity.this, Billing_Activity.class);
+                startActivity(intent);
+            }else{
                 showWarning("ANDA TIDAK MEMILIKI AKSES " + BILLING);
-            } else if (!getAccess(USER)) {
-                showWarning("ANDA TIDAK MEMILIKI AKSES " + USER);
-            } else if (!getAccess(SALDO)) {
+            }
+        } else if (item.getTitle().toString().equalsIgnoreCase(SALDO)) {
+            if(getAccess(SALDO)){
+                Intent intent = new Intent(MenuActivity.this, Saldo_Activity.class);
+                startActivity(intent);
+            }else{
                 showWarning("ANDA TIDAK MEMILIKI AKSES " + SALDO);
             }
+
         }
 
 
@@ -644,7 +840,7 @@ public class MenuActivity extends AppActivity {
     public final String M_ABSENSI = "ABSENSI";
     public final String M_MENUNGGU = "MENUNGGU";
     public final String M_MY_CODE = "MY CODE";
-    public final String M_PART = "PART";
+    public final String M_PART = "PARTS";
     public final String M_PEMBAYARAN = "PEMBAYARAN";
     public final String M_STOCK_OPNAME = "STOCK OPNAME";
     public final String M_TERIMA_PARTS = "TERIMA PARTS";
@@ -729,7 +925,7 @@ public class MenuActivity extends AppActivity {
         subMenu.add(MY_BUSINESS_ASET);
         subMenu.add(MY_BUSINESS_CUSTOMER);
         subMenu.add(MY_BUSINESS_LOKASI_PART);
-       // subMenu.add(MY_BUSINESS_CLAIM_STATUS);
+        // subMenu.add(MY_BUSINESS_CLAIM_STATUS);
 
         subMenu = menu.addSubMenu(PENGATURAN);
         subMenu.add(PENGATURAN_USER_LAYANAN);
@@ -871,13 +1067,44 @@ public class MenuActivity extends AppActivity {
                 Intent i = new Intent(getActivity(), DetailCariPart_Activity.class);
                 i.putExtra(PART, Nson.readJson(getIntentStringExtra(data, PART)).toJson());
                 startActivityForResult(i, 109);
-            }else if(requestCode == REQUEST_APP_UPDATE){
+            } else if (requestCode == REQUEST_APP_UPDATE) {
                 showSuccess("Aplikasi Berhasil di Update", Toast.LENGTH_LONG);
             }
-        }else{
-            if(requestCode == REQUEST_APP_UPDATE){
+        } else {
+            if (requestCode == REQUEST_APP_UPDATE) {
                 showError("Aplikasi Gagal di Update", Toast.LENGTH_LONG);
             }
+        }
+    }
+
+    @Override
+    public void onStateUpdate(@NonNull InstallState state) {
+        switch (state.installStatus()) {
+            case InstallStatus.INSTALLED:
+            case InstallStatus.FAILED:
+            case InstallStatus.CANCELED:
+                appUpdateManager.unregisterListener(this);
+                return;
+            default:
+                appUpdateManager.getAppUpdateInfo().addOnSuccessListener(new OnSuccessListener<AppUpdateInfo>() {
+                    @Override
+                    public void onSuccess(AppUpdateInfo appUpdateInfo) {
+                        if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                                && (appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE) || appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE))) {
+                            try {
+                                appUpdateManager.startUpdateFlowForResult(
+                                        appUpdateInfo, AppUpdateType.FLEXIBLE, getActivity(), REQUEST_APP_UPDATE);
+                            } catch (IntentSender.SendIntentException e) {
+                                e.printStackTrace();
+                            }
+                        } else if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
+                            popupSnackbarForCompleteUpdate();
+                        } else {
+                            Log.e("update_app", "checkForAppUpdateAvailability: something else");
+                        }
+                    }
+                });
+               break;
         }
     }
 }

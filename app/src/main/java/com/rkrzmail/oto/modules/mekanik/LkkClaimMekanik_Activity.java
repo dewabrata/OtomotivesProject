@@ -1,15 +1,22 @@
 package com.rkrzmail.oto.modules.mekanik;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
@@ -38,17 +45,26 @@ import com.rkrzmail.utils.Tools;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static com.rkrzmail.utils.APIUrls.SET_CLAIM;
 import static com.rkrzmail.utils.APIUrls.VIEW_MST;
 
 import static com.rkrzmail.utils.ConstUtils.CARI_PART_CLAIM;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.PART;
+import static com.rkrzmail.utils.ConstUtils.PERMISSION_REQUEST_CODE;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CARI_PART;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_FOTO;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_FOTO_KTP;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_FOTO_PART;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_FOTO_STNK;
@@ -62,7 +78,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
     private CheckBox cbClaim;
     private AlertDialog alertDialog;
     private Bitmap bitmapPart, bitmapKtp, bitmapStnk;
-    private File fileStnk, fileKtp, filePart;
+    private File tempFileStnk, tempFileKtp, tempFilePart;
 
     private final String[] fotoPart = {""};
     private final String[] fotoStnk = {""};
@@ -181,7 +197,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
             @Override
             public void onClick(View v) {
                 if (find(R.id.btn_foto_part, Button.class).getText().toString().equals("FOTO PART")) {
-                    setFotoPart();
+                    getImagePickOrCamera(REQUEST_FOTO_PART);
                 } else {
                     showDialogPreviewFoto(bitmapPart, "Foto Part", fotoPart, true);
                 }
@@ -193,7 +209,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
             @Override
             public void onClick(View v) {
                 if (btn_fotostnk.getText().toString().equals("FOTO STNK")) {
-                    setFotoStnk();
+                    getImagePickOrCamera(REQUEST_FOTO_STNK);
                 } else {
                     showDialogPreviewFoto(bitmapStnk, "Foto STNK", fotoStnk, true);
                 }
@@ -205,7 +221,7 @@ public class LkkClaimMekanik_Activity extends AppActivity {
             @Override
             public void onClick(View v) {
                 if (btn_fotoktp.getText().toString().equals("FOTO KTP")) {
-                    setFotoKtp();
+                    getImagePickOrCamera(REQUEST_FOTO_KTP);
                 } else {
                     showDialogPreviewFoto(bitmapKtp, "Foto KTP", fotoKtp, true);
                 }
@@ -214,47 +230,21 @@ public class LkkClaimMekanik_Activity extends AppActivity {
         });
     }
 
-    private void setFotoPart() {
-        if (!checkPermission()) {
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(intent, REQUEST_FOTO_PART);
+    private void getImagePickOrCamera(int requestCode) {
+        if (ContextCompat.checkSelfPermission(getActivity(), CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{WRITE_EXTERNAL_STORAGE
+                    , READ_EXTERNAL_STORAGE, CAMERA}, PERMISSION_REQUEST_CODE);
         } else {
-            if (checkPermission()) {
-                requestPermissionAndContinue();
-            } else {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent, REQUEST_FOTO_PART);
-            }
+            final List<Intent> intents = new ArrayList<>();
+            intents.add(new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI));
+            intents.add(new Intent(MediaStore.ACTION_IMAGE_CAPTURE));
+
+            Intent result = Intent.createChooser(intents.remove(0), null);
+            result.putExtra(Intent.EXTRA_INITIAL_INTENTS, intents.toArray(new Parcelable[]{}));
+            startActivityForResult(result, requestCode);
         }
     }
 
-    private void setFotoStnk() {
-        if (!checkPermission()) {
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(intent, REQUEST_FOTO_STNK);
-        } else {
-            if (checkPermission()) {
-                requestPermissionAndContinue();
-            } else {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent, REQUEST_FOTO_STNK);
-            }
-        }
-    }
-
-    private void setFotoKtp() {
-        if (!checkPermission()) {
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(intent, REQUEST_FOTO_KTP);
-        } else {
-            if (checkPermission()) {
-                requestPermissionAndContinue();
-            } else {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent, REQUEST_FOTO_KTP);
-            }
-        }
-    }
 
     private void setSpSebabKerusakan() {
         final Nson data = Nson.readJson(getIntentStringExtra(DATA));
@@ -371,23 +361,22 @@ public class LkkClaimMekanik_Activity extends AppActivity {
                 //base64[0] = FileUtility.encodeToStringBase64(fileFoto[0].getAbsolutePath());
                 if (isPreview) {
                     if (bitmap == bitmapPart) {
-                        setFotoPart();
+                        getImagePickOrCamera(REQUEST_FOTO_PART);
                     } else if (bitmap == bitmapStnk) {
-                        setFotoStnk();
+                        getImagePickOrCamera(REQUEST_FOTO_STNK);
                     } else if (bitmap == bitmapKtp) {
-                        setFotoKtp();
+                        getImagePickOrCamera(REQUEST_FOTO_KTP);
                     }
                 } else {
-                    if (bitmap == bitmapPart) {
+                    if (bitmap != null && bitmap == bitmapPart) {
                         find(R.id.btn_foto_part, Button.class).setText("PREVIEW FOTO PART");
-                    } else if (bitmap == bitmapStnk) {
+                    } else if (bitmap != null && bitmap == bitmapStnk) {
                         btn_fotostnk.setText("PREVIEW FOTO STNK");
-                    } else if (bitmap == bitmapKtp) {
+                    } else if (bitmap != null && bitmap == bitmapKtp) {
                         btn_fotoktp.setText("PREVIEW FOTO KTP");
                     }
-                    if (bitmap != null) {
-                        base64[0] = bitmapToBase64(bitmap);
-                    }
+
+                    base64[0] = bitmapToBase64(bitmap);
                     showInfo("SUKSES MENYIMPAN FOTO");
                     alertDialog.dismiss();
                 }
@@ -491,6 +480,12 @@ public class LkkClaimMekanik_Activity extends AppActivity {
         if (data != null) {
             extras = data.getExtras();
         }
+        Uri imageUri = null;
+        if (data != null) {
+            extras = data.getExtras();
+            if (extras == null)
+                imageUri = data.getData();
+        }
 
         if (resultCode == RESULT_OK && requestCode == REQUEST_CARI_PART) {
             Nson nson = Nson.readJson(getIntentStringExtra(data, PART));
@@ -507,39 +502,113 @@ public class LkkClaimMekanik_Activity extends AppActivity {
                 showWarning("BUKAN PART GARANSI LAYANAN");
             }
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_FOTO_PART) {
-            bitmapPart = (Bitmap) (extras != null ? extras.get("data") : null);
-            find(R.id.btn_foto_part, Button.class).setText("PREVIEW FOTO PART");
-            //showDialogPreviewFoto(bitmapPart,  "Foto Part", fotoPart, false);
+            getImageUri("PART", imageUri, extras);
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_FOTO_STNK) {
-            bitmapStnk = (Bitmap) (extras != null ? extras.get("data") : null);
-            btn_fotostnk.setText("PREVIEW FOTO STNK");
-            //showDialogPreviewFoto(bitmapStnk,  "Foto STNK", fotoStnk, false);
+            getImageUri("STNK", imageUri, extras);
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_FOTO_KTP) {
-            bitmapKtp = (Bitmap) (extras != null ? extras.get("data") : null);
-            btn_fotoktp.setText("PREVIEW FOTO KTP");
-            //showDialogPreviewFoto(bitmapKtp,  "Foto KTP", fotoKtp, false);
+            getImageUri("KTP", imageUri, extras);
         }
     }
 
-    private File SaveImage(Bitmap finalBitmap, String foto) {
-        String root = Environment.getExternalStorageDirectory().getAbsolutePath();
-        @SuppressLint("SimpleDateFormat") String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        File myDir = new File(root + "/Otomotives");
-        myDir.mkdirs();
-
-        String fname = foto + "-" + timeStamp + ".png";
-        File file = new File(myDir, fname);
-        if (file.exists()) file.delete();
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-            out.flush();
-            out.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            int permissionCamera = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA);
+            if (permissions.length > 0) {
+                for (String permission : permissions) {
+                    if (permission.equals(CAMERA) && permissionCamera == PackageManager.PERMISSION_DENIED) {
+                        showWarning("Ijinkan Aplikasi Untuk Mengakses Kamera di Pengaturan");
+                        break;
+                    } else if (permission.equals(CAMERA) && permissionCamera == PackageManager.PERMISSION_GRANTED) {
+                        showSuccess("Aplikasi di Ijinkan Mengakses Kamera");
+                        break;
+                    }
+                }
+            }
         }
-        return file;
+    }
+
+    private void getImageUri(final String flagFoto, final Uri imageUri, final Bundle imgBundle) {
+        newProses(new Messagebox.DoubleRunnable() {
+            @Override
+            public void run() {
+                if (imageUri != null) {
+                    try {
+                        switch (flagFoto) {
+                            case "PART":
+                                bitmapPart = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+                                break;
+                            case "STNK":
+                                bitmapStnk = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+                                break;
+                            case "KTP":
+                                bitmapKtp = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+                                break;
+                        }
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    switch (flagFoto) {
+                        case "PART":
+                            bitmapPart = (Bitmap) (imgBundle != null ? imgBundle.get("data") : null);
+                            break;
+                        case "STNK":
+                            bitmapStnk = (Bitmap) (imgBundle != null ? imgBundle.get("data") : null);
+                            break;
+                        case "KTP":
+                            bitmapKtp = (Bitmap) (imgBundle != null ? imgBundle.get("data") : null);
+                            break;
+                    }
+                }
+
+                try {
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    FileOutputStream fos = null;
+                    switch (flagFoto) {
+                        case "PART":
+                            tempFilePart = new File(Objects.requireNonNull(getActivity()).getCacheDir(), "part.png");
+                            bitmapPart.compress(Bitmap.CompressFormat.PNG, 100, bos);
+                            fos = new FileOutputStream(tempFilePart);
+                            break;
+                        case "STNK":
+                            tempFileStnk = new File(Objects.requireNonNull(getActivity()).getCacheDir(), "stmk.png");
+                            bitmapStnk.compress(Bitmap.CompressFormat.PNG, 100, bos);
+                            fos = new FileOutputStream(tempFileStnk);
+                            break;
+                        case "KTP":
+                            tempFileKtp = new File(Objects.requireNonNull(getActivity()).getCacheDir(), "ktp.png");
+                            bitmapKtp.compress(Bitmap.CompressFormat.PNG, 100, bos);
+                            fos = new FileOutputStream(tempFileKtp);
+                            break;
+                    }
+
+                    byte[] bitmapdata = bos.toByteArray();
+                    fos.write(bitmapdata);
+                    fos.flush();
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void runUI() {
+                switch (flagFoto) {
+                    case "PART":
+                        showDialogPreviewFoto(bitmapPart, "Foto Part", fotoPart, false);
+                        break;
+                    case "STNK":
+                        showDialogPreviewFoto(bitmapStnk, "Foto STNK", fotoStnk, false);
+                        break;
+                    case "KTP":
+                        showDialogPreviewFoto(bitmapKtp, "Foto KTP", fotoKtp, false);
+                        break;
+                }
+            }
+        });
     }
 
 }

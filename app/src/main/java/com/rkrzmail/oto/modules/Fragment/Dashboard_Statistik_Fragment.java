@@ -1,15 +1,12 @@
 package com.rkrzmail.oto.modules.Fragment;
 
 import android.annotation.SuppressLint;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,18 +16,15 @@ import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
-import com.rkrzmail.oto.MenuActivity;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.bengkel.Dashboard_MainTab_Activity;
+import com.rkrzmail.oto.modules.Adapter.Dashboard_MainTab_Activity;
 import com.rkrzmail.srv.NumberFormatUtils;
 
 import java.util.Map;
 import java.util.Vector;
 
-import static android.view.View.VISIBLE;
 import static com.rkrzmail.utils.APIUrls.VIEW_DASHBOARD;
 import static com.rkrzmail.utils.ConstUtils.RP;
-import static com.rkrzmail.utils.Tools.setFormatDayAndMonthToDb;
 
 public class Dashboard_Statistik_Fragment extends Fragment {
 

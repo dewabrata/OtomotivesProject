@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,11 +15,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
-import com.naa.data.Utility;
 import com.naa.utils.InternetX;
 import com.naa.utils.MessageMsg;
 import com.naa.utils.Messagebox;
@@ -29,19 +26,13 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.MenuActivity;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.bengkel.RegistrasiBengkel_Activity;
-import com.rkrzmail.oto.modules.sparepart.JumlahPart_Checkin_Activity;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
 import com.rkrzmail.utils.APIUrls;
 
 import java.util.Map;
 
 import static com.rkrzmail.utils.APIUrls.SET_LOGIN;
-import static com.rkrzmail.utils.APIUrls.VIEW_DATA_BENGKEL;
-import static com.rkrzmail.utils.ConstUtils.MASTER_PART;
-import static com.rkrzmail.utils.ConstUtils.PARTS_UPPERCASE;
-import static com.rkrzmail.utils.ConstUtils.PART_WAJIB;
-import static com.rkrzmail.utils.ConstUtils.REQUEST_HARGA_PART;
 
 public class Otp_Activity extends AppActivity {
 
@@ -188,21 +179,21 @@ public class Otp_Activity extends AppActivity {
                     find(R.id.et5, EditText.class).requestFocus();
                 }
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append(((EditText)findViewById(R.id.et1)).getText().toString());
-                stringBuilder.append(((EditText)findViewById(R.id.et2)).getText().toString());
-                stringBuilder.append(((EditText)findViewById(R.id.et3)).getText().toString());
-                stringBuilder.append(((EditText)findViewById(R.id.et4)).getText().toString());
-                stringBuilder.append(((EditText)findViewById(R.id.et5)).getText().toString());
-                stringBuilder.append(((EditText)findViewById(R.id.et6)).getText().toString());
+                stringBuilder.append(((EditText) findViewById(R.id.et1)).getText().toString());
+                stringBuilder.append(((EditText) findViewById(R.id.et2)).getText().toString());
+                stringBuilder.append(((EditText) findViewById(R.id.et3)).getText().toString());
+                stringBuilder.append(((EditText) findViewById(R.id.et4)).getText().toString());
+                stringBuilder.append(((EditText) findViewById(R.id.et5)).getText().toString());
+                stringBuilder.append(((EditText) findViewById(R.id.et6)).getText().toString());
                 String dummy = stringBuilder.toString();
 
-                if (dummy.length()==6){
-                    if(isRegist){
+                if (dummy.length() == 6) {
+                    if (isRegist) {
                         checkOtpRegistasi(dummy);
-                    }else{
+                    } else {
                         login(dummy);
                     }
-                }else{
+                } else {
                     showError("Lengkapi Request OTP");
                 }
 
@@ -227,9 +218,11 @@ public class Otp_Activity extends AppActivity {
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "Request");
-                args.put("user",   getIntentStringExtra("user"));
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("login"), args));
+                args.put("action", isRegist ? "requestOtp" : "Request");
+                args.put("user", getIntentStringExtra("user"));
+                args.put("nohp", getIntentStringExtra("user"));
+
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(isRegist ? APIUrls.SET_REGISTRASI : "login"), args));
             }
 
             @Override
@@ -247,11 +240,12 @@ public class Otp_Activity extends AppActivity {
     private void login(final String otp) {
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             String sResult;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "Login");
-                args.put("user",   getIntentStringExtra("user"));
+                args.put("user", getIntentStringExtra("user"));
                 args.put("password", otp);
 
                 sResult = (InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_LOGIN), args));
@@ -267,9 +261,9 @@ public class Otp_Activity extends AppActivity {
                     }
 
                     nson = nson.get("data").get(0);
-                    if(nson.get("TIPE_USER").asString().equals("MEKANIK") || nson.get("MEKANIK").asString().equals("YA")){
+                    if (nson.get("TIPE_USER").asString().equals("MEKANIK") || nson.get("MEKANIK").asString().equals("YA")) {
                         setSetting("MEKANIK", "TRUE");
-                    }else{
+                    } else {
                         setSetting("MEKANIK", "FALSE");
                     }
 
@@ -278,17 +272,24 @@ public class Otp_Activity extends AppActivity {
                     setSetting("NAMA_USER", nson.get("NAMA_USER").asString());
                     setSetting("TIPE_USER", nson.get("TIPE_USER").asString());
                     setSetting("ACCESS_MENU", nson.get("AKSES_APP").asString());
-                    setSetting("USER_ID", nson.get("USER_ID").asString());
-                    setSetting("userId", nson.get("USER_ID").asString());
                     setSetting("POSISI", nson.get("POSISI").asString());
                     setSetting("session", nson.get("token").asString());
-                    setSetting("user", formatOnlyNumber(  getIntentStringExtra("user") ));
+                    if (getIntentStringExtra("user").isEmpty()) {
+                        setSetting("user", formatOnlyNumber(getIntentStringExtra("user")));
+                    }else{
+                        setSetting("user", formatOnlyNumber(getIntentStringExtra("user")));
+                    }
+
                     //bengkel
-                    if(nson.get("BENGKEL").asArray().size() > 1 && nson.get("TIPE_USER").asString().equals("ADMIN")){
+                    if (nson.get("BENGKEL").asArray().size() > 1 && nson.get("TIPE_USER").asString().equals("ADMIN")) {
                         bengkelList.asArray().addAll(nson.get("BENGKEL").asArray());
                         initDialogSelectBengkel();
-                    }else{
+                    } else {
                         nson = nson.get("BENGKEL").get(0);
+                        if (nson.asString().isEmpty()) {
+                            showWarning("System Sedang Error, Hubungi Administrator");
+                            return;
+                        }
                         setSetting("CID", nson.get("CID").asString());
                         setSetting("STATUS_BENGKEL", nson.get("STATUS_BENGKEL").asString());
                         setSetting("PEMBAYARAN_ACTIVE", nson.get("PEMBAYARAN_ACTIVE").asString());
@@ -299,16 +300,16 @@ public class Otp_Activity extends AppActivity {
                         setSetting("MAX_ANTRIAN_EXPRESS_MENIT", nson.get("MAX_ANTRIAN_EXPRESS_MENIT").asString());
                         setSetting("MAX_ANTRIAN_STANDART_MENIT", nson.get("MAX_ANTRIAN_STANDART_MENIT").asString());
                         setSetting("DP_PERSEN", nson.get("DP_PERSEN").asString());
-                        if(nson.get("BIDANG_USAHA").size() > 0){
-                            setSetting("BIDANG_USAHA_ARRAY", nson.get("BIDANG_USAHA").toJson());
+                        if (nson.get("BIDANG_USAHA_ARRAY").size() > 0) {
+                            setSetting("BIDANG_USAHA_ARRAY", nson.get("BIDANG_USAHA_ARRAY").toJson());
                         }
-                        if(nson.get("MERK_KENDARAAN_BENGKEL").size() > 0){
-                            setSetting("MERK_KENDARAAN_ARRAY", nson.get("MERK_KENDARAAN_BENGKEL").toJson());
+                        if (nson.get("MERK_KENDARAAN_ARRAY").size() > 0) {
+                            setSetting("MERK_KENDARAAN_ARRAY", nson.get("MERK_KENDARAAN_ARRAY").toJson());
                         }
                         setSetting("L", "L");
 
                         Intent intent = new Intent(getActivity(), MenuActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                         finish();
                     }
@@ -319,8 +320,8 @@ public class Otp_Activity extends AppActivity {
             }
         });
     }
-    
-    private void checkOtpRegistasi(final String kodeOtp){
+
+    private void checkOtpRegistasi(final String kodeOtp) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -328,7 +329,7 @@ public class Otp_Activity extends AppActivity {
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "checkOtp");
-                args.put("nohp",   getIntentStringExtra("NO_PONSEL"));
+                args.put("nohp", getIntentStringExtra("NO_PONSEL"));
                 args.put("otp", kodeOtp);
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(APIUrls.SET_REGISTRASI), args));
             }
@@ -348,21 +349,21 @@ public class Otp_Activity extends AppActivity {
         });
     }
 
-    private void initDialogSelectBengkel(){
+    private void initDialogSelectBengkel() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_selection_bengkel, null);
         builder.setView(dialogView);
         AlertDialog alertDialog = builder.create();
-        
+
         initRvBengkel(dialogView);
         if (alertDialog.getWindow() != null)
             alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
         alertDialog.show();
         alertDialog.setCancelable(false);
     }
-    
-    private void initRvBengkel(View dialogView){
+
+    private void initRvBengkel(View dialogView) {
         RecyclerView rvBengkel = dialogView.findViewById(R.id.recyclerView);
         rvBengkel.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvBengkel.setHasFixedSize(false);
@@ -387,16 +388,16 @@ public class Otp_Activity extends AppActivity {
                 setSetting("NAMA_BENGKEL", parent.get(position).get("NAMA_BENGKEL").asString());
                 setSetting("JENIS_KENDARAAN", parent.get(position).get("JENIS_KENDARAAN").asString().trim());
                 setSetting("CID", parent.get(position).get("CID").asString());
-                if(parent.get(position).get("BIDANG_USAHA").size() > 0){
+                if (parent.get(position).get("BIDANG_USAHA").size() > 0) {
                     setSetting("BIDANG_USAHA_ARRAY", parent.get(position).get("BIDANG_USAHA").toJson());
                 }
-                if(parent.get(position).get("MERK_KENDARAAN_BENGKEL").size() > 0){
+                if (parent.get(position).get("MERK_KENDARAAN_BENGKEL").size() > 0) {
                     setSetting("MERK_KENDARAAN_ARRAY", parent.get(position).get("MERK_KENDARAAN_BENGKEL").asString());
                 }
                 setSetting("L", "L");
 
                 Intent intent = new Intent(getActivity(), MenuActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();
             }
@@ -404,11 +405,11 @@ public class Otp_Activity extends AppActivity {
     }
 
 
-    private void clearAndSetFocus(final EditText editText, final EditText editText2){
+    private void clearAndSetFocus(final EditText editText, final EditText editText2) {
         editText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if(keyEvent.getAction() == KeyEvent.KEYCODE_DEL){
+                if (keyEvent.getAction() == KeyEvent.KEYCODE_DEL) {
                     editText.clearFocus();
                     editText2.requestFocus();
                 }

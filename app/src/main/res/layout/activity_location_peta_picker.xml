@@ -2,14 +2,46 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".modules.LocationPicker_Activity">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/et_search"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="10dp"
+            android:background="@android:color/white"
+            android:hint="@string/cari_lokasi"
+            android:translationZ="10dp" />
+
+        <ImageView
+            android:id="@+id/img_select_location_manualy"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:translationZ="10dp"
+            android:layout_gravity="end|center"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_arrow_down"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_places"
+            android:translationZ="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="80dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
 
         <fragment
             android:id="@+id/map"
@@ -17,16 +49,20 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-    </LinearLayout>
+        <Button
+            android:id="@+id/btn_get_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="-100dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/btn_rounded_accent"
+            android:onClick="chooseLocation"
+            android:text="@string/select_location"
+            android:textColor="@android:color/white" />
 
-    <Button
-        android:id="@+id/btn_get_location"
-        android:background="@drawable/btn_rounded_accent"
-        android:textColor="@android:color/white"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="chooseLocation"
-        android:text="@string/select_location"
-        android:layout_gravity="bottom|center"/>
+    </FrameLayout>
 
 </FrameLayout>

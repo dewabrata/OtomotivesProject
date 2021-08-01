@@ -1,11 +1,13 @@
 package com.rkrzmail.oto.modules.mekanik;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,28 +16,34 @@ import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.srv.NikitaMultipleViewAdapter;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.oto.modules.Adapter.NikitaMultipleViewAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
 import com.rkrzmail.srv.NumberFormatUtils;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.ATUR_INSPEKSI;
 import static com.rkrzmail.utils.APIUrls.VIEW_INSPEKSI;
 import static com.rkrzmail.utils.APIUrls.VIEW_KELUHAN;
+import static com.rkrzmail.utils.APIUrls.VIEW_KONTROL_LAYANAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_PERINTAH_KERJA_MEKANIK;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
@@ -45,11 +53,14 @@ import static com.rkrzmail.utils.Tools.removeDuplicates;
 
 public class AturInspeksi_Activity extends AppActivity implements View.OnClickListener {
 
-    private RecyclerView rvPointLayanan, rvKeluhan, rvRekomendasi;
+    private RecyclerView rvPointLayanan, rvKeluhanPerlengkapan, rvRekomendasi;
     private AlertDialog alertDialog;
 
     private final Nson keluhanList = Nson.newArray();
     private final Nson rekomendasiMekanikList = Nson.newArray();
+    private final Nson fotoKondisiList = Nson.newArray();
+    private final Nson perlengkapanList = Nson.newArray();
+
     private int countClick = 0;
 
     private String idMekanikKerja = "", idCheckin = "";
@@ -75,10 +86,10 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void initToolbarKeluhan(View dialogView) {
+    private void initToolbarKeluhan(View dialogView, boolean isKeluhan) {
         Toolbar toolbar = dialogView.findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Keluhan");
+        getSupportActionBar().setTitle(isKeluhan ? "Keluhan" : "Perlengkapan");
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
@@ -87,6 +98,13 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Rekomendasi Mekanik");
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+    }
+
+    @SuppressLint("NewApi")
+    private void initToolbarFoto(View dialogView) {
+        Toolbar toolbar = dialogView.findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Foto Kondisi");
     }
 
 
@@ -100,6 +118,8 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
         find(R.id.imgBtn_start).setOnClickListener(this);
         find(R.id.imgBtn_stop).setOnClickListener(this);
         find(R.id.btn_rekomendasi_mekanik).setOnClickListener(this);
+        find(R.id.btn_foto_kondisi).setOnClickListener(this);
+        find(R.id.btn_perlengkapan).setOnClickListener(this);
     }
 
     private void loadData() {
@@ -112,6 +132,13 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
         noPonsel = nson.get("NO_PONSEL").asString();
         tidakMenunggu = nson.get("TIDAK_MENUNGGU").asString();
         nopol = nson.get("NOPOL").asString();
+
+        String perlengkapan = nson.get("PERLENGKAPAN").asString();
+        if (!perlengkapan.isEmpty()) {
+            String[] perlengkapanSplit = perlengkapan.split(", ");
+            perlengkapanList.asArray().clear();
+            perlengkapanList.asArray().addAll(Arrays.asList(perlengkapanSplit));
+        }
 
         viewLayananPartJasa();
         viewKeluhan();
@@ -178,15 +205,16 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
 
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void initKeluhanDialog() {
+    private void showKeluhanPerlengkapanDialog(boolean isKeluhan) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.activity_list_basic, null);
         builder.setView(dialogView);
 
-        initToolbarKeluhan(dialogView);
-        initRecylerviewKeluhan(dialogView);
-        Objects.requireNonNull(rvKeluhan.getAdapter()).notifyDataSetChanged();
+        initToolbarKeluhan(dialogView, isKeluhan);
+        initRecylerviewKeluhan(dialogView, isKeluhan);
+
+        Objects.requireNonNull(rvKeluhanPerlengkapan.getAdapter()).notifyDataSetChanged();
 
         alertDialog = builder.create();
         if (alertDialog != null) {
@@ -277,21 +305,36 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
         });
     }
 
-    private void initRecylerviewKeluhan(View dialogView) {
-        rvKeluhan = dialogView.findViewById(R.id.recyclerView);
-        rvKeluhan.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rvKeluhan.setHasFixedSize(true);
-        rvKeluhan.setAdapter(new NikitaRecyclerAdapter(keluhanList, R.layout.item_keluhan) {
-            @Override
-            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                super.onBindViewHolder(viewHolder, position);
-                viewHolder.find(R.id.tv_no, TextView.class).setVisibility(View.VISIBLE);
-                viewHolder.find(R.id.tv_no, TextView.class).setText(keluhanList.get(position).get("NO").asString() + ". ");
-                viewHolder.find(R.id.tv_keluhan, TextView.class).setText(keluhanList.get(position).get("KELUHAN").asString());
-                viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.GONE);
-            }
-        });
+    @SuppressLint("SetTextI18n")
+    private void initRecylerviewKeluhan(View dialogView, boolean isKeluhan) {
+        rvKeluhanPerlengkapan = dialogView.findViewById(R.id.recyclerView);
+        rvKeluhanPerlengkapan.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvKeluhanPerlengkapan.setHasFixedSize(true);
+        if(isKeluhan){
+            rvKeluhanPerlengkapan.setAdapter(new NikitaRecyclerAdapter(keluhanList, R.layout.item_keluhan) {
+                @Override
+                public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+                    super.onBindViewHolder(viewHolder, position);
+                    viewHolder.find(R.id.tv_no, TextView.class).setVisibility(View.VISIBLE);
+                    viewHolder.find(R.id.tv_no, TextView.class).setText(keluhanList.get(position).get("NO").asString() + ". ");
+                    viewHolder.find(R.id.tv_keluhan, TextView.class).setText(keluhanList.get(position).get("KELUHAN").asString());
+                    viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.GONE);
+                }
+            });
 
+        }else{
+            rvKeluhanPerlengkapan.setAdapter(new NikitaRecyclerAdapter(perlengkapanList, R.layout.item_keluhan) {
+                @Override
+                public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+                    super.onBindViewHolder(viewHolder, position);
+                    int pos = position + 1;
+                    viewHolder.find(R.id.tv_no, TextView.class).setVisibility(View.VISIBLE);
+                    viewHolder.find(R.id.tv_no, TextView.class).setText(pos + ". ");
+                    viewHolder.find(R.id.tv_keluhan, TextView.class).setText(perlengkapanList.get(position).asString());
+                    viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.GONE);
+                }
+            });
+        }
     }
 
     @SuppressLint("NewApi")
@@ -301,6 +344,9 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
 
             @Override
             public void run() {
+                nListArray.asArray().clear();
+                fotoKondisiList.asArray().clear();
+
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
 
                 args.put("action", "view");
@@ -334,6 +380,11 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
                 result = result.get("data");
                 rekomendasiMekanikList.asArray().clear();
                 rekomendasiMekanikList.asArray().addAll(result.asArray());
+
+                args.remove("detail");
+                args.put("detail", "fotoKondisi");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_KONTROL_LAYANAN), args));
+                fotoKondisiList.asArray().addAll(result.get("data").asArray());
             }
 
             @Override
@@ -464,6 +515,186 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
         }
     }
 
+    @SuppressLint("InflateParams")
+    private void showDialogFotoKondisi() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.dialog_foto_kondisi, null);
+        builder.setView(dialogView);
+        alertDialog = builder.create();
+
+        initToolbarFoto(dialogView);
+
+        final ImageView imgDepan = dialogView.findViewById(R.id.img_kondisi_depan);
+        final ImageView imgBelakang = dialogView.findViewById(R.id.img_kondisi_belakang);
+        final ImageView imgKanan = dialogView.findViewById(R.id.img_kondisi_kanan);
+        final ImageView imgKiri = dialogView.findViewById(R.id.img_kondisi_kiri);
+        final ImageView imgTambahan1 = dialogView.findViewById(R.id.img_kondisi_tambahan1);
+        final ImageView imgTambahan2 = dialogView.findViewById(R.id.img_kondisi_tambahan2);
+
+        dialogView.findViewById(R.id.img_close).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+
+        dialogView.findViewById(R.id.ly_button).setVisibility(View.GONE);
+
+        if (fotoKondisiList.size() > 0) {
+            for (int i = 0; i < fotoKondisiList.size(); i++) {
+                switch (fotoKondisiList.get(i).get("TIPE_FOTO").asString()) {
+                    case "depan":
+                        getFotoKondisi(imgDepan, fotoKondisiList.get(i).get("FILE_FOTO").asString());
+                        break;
+                    case "belakang":
+                        getFotoKondisi(imgBelakang, fotoKondisiList.get(i).get("FILE_FOTO").asString());
+                        break;
+                    case "kanan":
+                        getFotoKondisi(imgKanan, fotoKondisiList.get(i).get("FILE_FOTO").asString());
+                        break;
+                    case "kiri":
+                        getFotoKondisi(imgKiri, fotoKondisiList.get(i).get("FILE_FOTO").asString());
+                        break;
+                    case "tambahan1":
+                        getFotoKondisi(imgTambahan1, fotoKondisiList.get(i).get("FILE_FOTO").asString());
+                        break;
+                    case "tambahan2":
+                        getFotoKondisi(imgTambahan2, fotoKondisiList.get(i).get("FILE_FOTO").asString());
+                        break;
+                }
+            }
+        }
+
+        imgDepan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(imgDepan.getDrawable() == getResources().getDrawable(R.drawable.icon_camera_fill)){
+                    showWarning("FOTO KONDISI DEPAN TIDAK TERSEDIA");
+                }else{
+                    showDialogPreviewFoto("Depan", getBitmap(imgDepan));
+                }
+            }
+        });
+
+        imgBelakang.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(imgBelakang.getDrawable() == getResources().getDrawable(R.drawable.icon_camera_fill)){
+                    showWarning("FOTO KONDISI DEPAN TIDAK TERSEDIA");
+                }else{
+                    showDialogPreviewFoto("Belakang", getBitmap(imgBelakang));
+                }
+            }
+        });
+
+        imgKanan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(imgKanan.getDrawable() == getResources().getDrawable(R.drawable.icon_camera_fill)){
+                    showWarning("FOTO KONDISI DEPAN TIDAK TERSEDIA");
+                }else{
+                    showDialogPreviewFoto("Kanan", getBitmap(imgKanan));
+                }
+            }
+        });
+
+        imgKiri.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(imgKiri.getDrawable() == getResources().getDrawable(R.drawable.icon_camera_fill)){
+                    showWarning("FOTO KONDISI DEPAN TIDAK TERSEDIA");
+                }else{
+                    showDialogPreviewFoto("Kiri", getBitmap(imgKiri));
+                }
+            }
+        });
+
+        imgTambahan1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(imgTambahan1.getDrawable() == getResources().getDrawable(R.drawable.icon_camera_fill)){
+                    showWarning("FOTO KONDISI DEPAN TIDAK TERSEDIA");
+                }else{
+                    showDialogPreviewFoto("Tambahan 1", getBitmap(imgTambahan1));
+                }
+            }
+        });
+
+        imgTambahan2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(imgTambahan2.getDrawable() == getResources().getDrawable(R.drawable.icon_camera_fill)){
+                    showWarning("FOTO KONDISI DEPAN TIDAK TERSEDIA");
+                }else{
+                    showDialogPreviewFoto("Tambahan 2", getBitmap(imgTambahan2));
+                }
+            }
+        });
+
+
+        if (alertDialog.getWindow() != null)
+            alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        alertDialog = builder.show();
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void showDialogPreviewFoto(String tittle, Bitmap bitmap) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.layout_alert_camera, null);
+        builder.setView(dialogView);
+        alertDialog = builder.create();
+
+        Toolbar toolbar = dialogView.findViewById(R.id.toolbar);
+        ImageView img = (ImageView) dialogView.findViewById(R.id.img_alert_foto);
+        Button btnCancel = dialogView.findViewById(R.id.btn_alert_cancel);
+        Button btnSimpan = dialogView.findViewById(R.id.btn_alert_save);
+
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle("Preview " + tittle);
+
+        if(bitmap != null){
+            img.setImageBitmap(bitmap);
+        }
+
+        btnSimpan.setVisibility(View.GONE);
+        btnCancel.setText("Tutup");
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+
+
+        if (alertDialog.getWindow() != null)
+            alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        alertDialog.show();
+    }
+
+    private Bitmap getBitmap(ImageView imageView) {
+        try {
+            BitmapDrawable drawable = (BitmapDrawable) imageView.getDrawable();
+            return drawable.getBitmap();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private void getFotoKondisi(ImageView imageView, String url) {
+        imageView.setLayoutParams(
+                new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT)
+        );
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        imageView.requestLayout();
+
+        Glide.with(getActivity()).load(url).into(imageView);
+    }
+
 
     @SuppressLint({"NewApi", "NonConstantResourceId"})
     @Override
@@ -497,13 +728,22 @@ public class AturInspeksi_Activity extends AppActivity implements View.OnClickLi
                 if(keluhanList.size() == 0)
                     showInfo("KELUHAN PELANGGAN TIDAK TERSEDIA");
                 else
-                    initKeluhanDialog();
+                    showKeluhanPerlengkapanDialog(true);
                 break;
             case R.id.btn_rekomendasi_mekanik:
                 if(rekomendasiMekanikList.size() == 0)
                     showInfo("REKOMENDASI MEKANIK TIDAK TERSEDIA");
                 else
                     initRekomendasiMekanikDialog();
+                break;
+            case R.id.btn_foto_kondisi:
+                showDialogFotoKondisi();
+                break;
+            case R.id.btn_perlengkapan:
+                if(perlengkapanList.size() == 0)
+                    showInfo("PERLENGKAPAN TIDAK TERSEDIA");
+                else
+                    showKeluhanPerlengkapanDialog(false);
                 break;
         }
     }

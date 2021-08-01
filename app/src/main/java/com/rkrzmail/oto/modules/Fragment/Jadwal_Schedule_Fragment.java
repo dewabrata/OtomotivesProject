@@ -12,7 +12,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,10 +33,10 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.bengkel.Schedule_MainTab_Activity;
+import com.rkrzmail.oto.modules.Adapter.Schedule_MainTab_Activity;
 import com.rkrzmail.srv.DateFormatUtils;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
 import com.squareup.timessquare.CalendarPickerView;
 
@@ -45,11 +44,9 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -57,7 +54,6 @@ import static android.view.View.GONE;
 import static com.rkrzmail.oto.AppActivity.getTimePickerDialogTextView;
 import static com.rkrzmail.utils.APIUrls.SET_SCHEDULE;
 import static com.rkrzmail.utils.APIUrls.VIEW_MST;
-import static com.rkrzmail.utils.ConstUtils.DATE_DEFAULT_PATTERN;
 import static com.rkrzmail.utils.ConstUtils.ONEDAY;
 import static com.rkrzmail.utils.Tools.setFormatDayAndMonthToDb;
 
@@ -684,6 +680,7 @@ public class Jadwal_Schedule_Fragment extends Fragment {
                         viewHolder.find(R.id.tv_schedule_jammulai, TextView.class).setText(scheduleArray.get(position).get("SCHEDULE_MULAI").asString());
                         viewHolder.find(R.id.tv_schedule_jampulang, TextView.class).setText(scheduleArray.get(position).get("SCHEDULE_SELESAI").asString());
                         viewHolder.find(R.id.tv_schedule_lokasi, TextView.class).setText(scheduleArray.get(position).get("LOKASI").asString());
+                        viewHolder.find(R.id.tv_status, TextView.class).setText(scheduleArray.get(position).get("STATUS").asString());
                     }
                 }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                     @Override

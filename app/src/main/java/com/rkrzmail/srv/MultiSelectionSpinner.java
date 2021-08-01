@@ -13,6 +13,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
+import android.widget.Toast;
+
+import com.valdesekamdem.library.mdtoast.MDToast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,10 +33,11 @@ public class MultiSelectionSpinner extends Spinner implements
     }
 
     private OnMultipleItemsSelectedListener listener;
-
+    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
     String[] _items = null;
     boolean[] mSelectionBool = null;
     boolean[] mSelectionAtStartBool = null;
+    boolean isDiabledAll = false;
     String _itemsAtStart = null;
 
     ArrayAdapter<String> simple_adapter;
@@ -58,6 +62,7 @@ public class MultiSelectionSpinner extends Spinner implements
         this.listener = listener;
     }
 
+    @Override
     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
         if (mSelectionBool != null && which < mSelectionBool.length) {
             mSelectionBool[which] = isChecked;
@@ -69,32 +74,40 @@ public class MultiSelectionSpinner extends Spinner implements
         }
     }
 
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean performClick() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        if(_items == null || _items.length == 0){
+            MDToast.makeText(getContext(), "Item Tidak Tersedia", Toast.LENGTH_SHORT, MDToast.TYPE_WARNING).show();
+            return true;
+        }
         builder.setMultiChoiceItems(_items, mSelectionBool, this);
         _itemsAtStart = getSelectedItemsAsString();
-        builder.setPositiveButton("Pilih", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                System.arraycopy(mSelectionBool, 0, mSelectionAtStartBool, 0, mSelectionBool.length);
-                listener.selectedIndices(getSelectedIndices());
-                listener.selectedStrings(getSelectedStrings());
-            }
-        });
-        builder.setNegativeButton("Batal", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                try {
-                    simple_adapter.clear();
-                    simple_adapter.add(_itemsAtStart);
-                    System.arraycopy(mSelectionAtStartBool, 0, mSelectionBool, 0, mSelectionAtStartBool.length);
-                } catch (Exception e) {
-                    e.printStackTrace();
+        if(!isDiabledAll){
+            builder.setPositiveButton("Pilih", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    System.arraycopy(mSelectionBool, 0, mSelectionAtStartBool, 0, mSelectionBool.length);
+                    listener.selectedIndices(getSelectedIndices());
+                    listener.selectedStrings(getSelectedStrings());
                 }
-            }
-        });
+            });
+            builder.setNegativeButton("Batal", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    try {
+                        if(simple_adapter.getCount() == 0){
+                            simple_adapter.clear();
+                            simple_adapter.add(_itemsAtStart);
+                            System.arraycopy(mSelectionAtStartBool, 0, mSelectionBool, 0, mSelectionAtStartBool.length);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
 
         builder.create();
         builder.show();
@@ -108,15 +121,21 @@ public class MultiSelectionSpinner extends Spinner implements
                 "setAdapter is not supported by MultiSelectSpinner.");
     }
 
+    public void setTittle(String tittle){
+        if(builder != null){
+            builder.setTitle(tittle);
+        }
+    }
+
     public void setItems(String[] items) {
         _items = items;
         mSelectionBool = new boolean[_items.length];
         mSelectionAtStartBool = new boolean[_items.length];
         simple_adapter.clear();
-        simple_adapter.add(_items[0]);
+       // simple_adapter.add(_items[0]);
         Arrays.fill(mSelectionBool, false);
-        mSelectionBool[0] = true;
-        mSelectionAtStartBool[0] = true;
+      //  mSelectionBool[0] = true;
+       // mSelectionAtStartBool[0] = true;
     }
 
     public void setItems(List<String> items) {
@@ -124,9 +143,21 @@ public class MultiSelectionSpinner extends Spinner implements
         mSelectionBool = new boolean[_items.length];
         mSelectionAtStartBool = new boolean[_items.length];
         simple_adapter.clear();
-        simple_adapter.add(_items[0]);
+        //simple_adapter.add(_items[0]);
         Arrays.fill(mSelectionBool, false);
-        mSelectionBool[0] = true;
+      //  mSelectionBool[0] = true;
+    }
+
+    public void setItems(List<String> items, boolean isLoad) {
+        _items = items.toArray(new String[items.size()]);
+        mSelectionBool = new boolean[_items.length];
+        mSelectionAtStartBool = new boolean[_items.length];
+        simple_adapter.clear();
+        Arrays.fill(mSelectionBool, false);
+        if(isLoad){
+            simple_adapter.add(_items[0]);
+            mSelectionBool[0] = true;
+        }
     }
 
 
@@ -140,14 +171,14 @@ public class MultiSelectionSpinner extends Spinner implements
                     String item = listChecked.get(i);
                     if (item.equals(_items[j])) {
                         mSelectionBool[j] = true;
-                        mSelectionAtStartBool[j] = true;
+                      // mSelectionAtStartBool[j] = true;
                     }
                 }
             }
         }else{
             Arrays.fill(mSelectionBool, false);
-            mSelectionBool[0] = true;
-            mSelectionAtStartBool[0] = true;
+          //  mSelectionBool[0] = true;
+           // mSelectionAtStartBool[0] = true;
         }
 
         simple_adapter.clear();
@@ -169,6 +200,17 @@ public class MultiSelectionSpinner extends Spinner implements
         }
         simple_adapter.clear();
         simple_adapter.add(buildSelectedItemString());
+    }
+
+    public void setDisabled(){
+        isDiabledAll = true;
+        simple_adapter = new ArrayAdapter<String>(getContext(),
+                android.R.layout.simple_spinner_item){
+            @Override
+            public boolean isEnabled(int position) {
+                return false;
+            }
+        };
     }
 
     public void setSelection(List<String> selection) {

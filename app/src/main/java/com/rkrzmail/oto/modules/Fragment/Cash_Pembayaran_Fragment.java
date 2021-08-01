@@ -1,10 +1,8 @@
 package com.rkrzmail.oto.modules.Fragment;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -21,13 +19,11 @@ import android.widget.TextView;
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
-import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.bengkel.Pembayaran_MainTab_Activity;
-import com.rkrzmail.oto.modules.sparepart.JumlahPart_Checkin_Activity;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.oto.modules.Adapter.Pembayaran_MainTab_Activity;
+import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
 import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
@@ -35,10 +31,6 @@ import java.util.Objects;
 
 import static com.rkrzmail.utils.APIUrls.VIEW_PEMBAYARAN;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
-import static com.rkrzmail.utils.ConstUtils.MASTER_PART;
-import static com.rkrzmail.utils.ConstUtils.PARTS_UPPERCASE;
-import static com.rkrzmail.utils.ConstUtils.PART_WAJIB;
-import static com.rkrzmail.utils.ConstUtils.REQUEST_HARGA_PART;
 import static com.rkrzmail.utils.ConstUtils.RP;
 
 

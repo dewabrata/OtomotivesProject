@@ -6,6 +6,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -20,6 +22,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -27,11 +30,13 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.naa.data.Nson;
 import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
@@ -40,9 +45,10 @@ import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.bengkel.AturUser_Activity;
 import com.rkrzmail.oto.modules.mekanik.PerintahKerjaMekanik_Activity;
-import com.rkrzmail.srv.NikitaMultipleViewAdapter;
-import com.rkrzmail.srv.NikitaRecyclerAdapter;
-import com.rkrzmail.srv.NikitaViewHolder;
+import com.rkrzmail.oto.modules.Adapter.NikitaMultipleViewAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
+import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
@@ -50,6 +56,7 @@ import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -81,9 +88,9 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
 
     private static final String TAG = "DetailKontrol__";
 
-    private EditText etNoAntrian, etStatus, etNopol, etNoKunci, etNamaPelanggan, etTotal,
+    private EditText etNoAntrian, etStatus, etNopol, etNoKunci, etNamaPelanggan, etTotalBiaya,
             etDp, etSisa, etEstimasiSebelum, etEstimasiLama, etEstimasiSelesai, etKeteranganTambahan, etNamaLayanan;
-    private RecyclerView rvDetail, rvKeluhan, rvPart, rvJasaLain;
+    private RecyclerView rvDetail, rvKeluhanPerlengkapan, rvPart, rvJasaLain;
     private Spinner spAktifitas, spNamaMekanik;
     private TextView tvNamaLayanan, tvBiayaLayanan, tvTglAmbil, tvJamAmbil;
     private AlertDialog alertDialog;
@@ -99,6 +106,8 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
     private final Nson kurangiPartJasaList = Nson.newArray();
     private final Nson partList = Nson.newArray();
     private final Nson jasaList = Nson.newArray();
+    private final Nson fotoKondisiList = Nson.newArray();
+    private final Nson perlengkapanList = Nson.newArray();
 
     private boolean isMekanik = false, isMekanikFromCheckin = false; // true = part, false = jasa
     private boolean isKurangi = false;
@@ -123,7 +132,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail_kontrol_layanan_);
+        setContentView(R.layout.activity_detail_kontrol_layanan);
         initToolbar();
         initComponent();
         initRecyclerviewDetail();
@@ -138,13 +147,12 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void initToolbarKeluhan(View dialogView) {
+    private void initToolbarKeluhan(View dialogView, boolean isKeluhan) {
         Toolbar toolbar = dialogView.findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Keluhan");
+        Objects.requireNonNull(getSupportActionBar()).setTitle(isKeluhan ? "Keluhan" : "Perlengkapan");
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
-
 
     private void initComponent() {
         etNoAntrian = findViewById(R.id.et_noAntrian);
@@ -153,7 +161,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         etNoKunci = findViewById(R.id.et_noKunci);
         etNamaLayanan = findViewById(R.id.et_namaLayanan);
         etNamaPelanggan = findViewById(R.id.et_nama_pelanggan);
-        etTotal = findViewById(R.id.et_totalBiaya);
+        etTotalBiaya = findViewById(R.id.et_totalBiaya);
         etDp = findViewById(R.id.et_dp);
         etSisa = findViewById(R.id.et_sisa);
         etEstimasiSebelum = findViewById(R.id.et_estimasi_sebelum);
@@ -205,9 +213,9 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 data.get("WAKTU_LAYANAN_LAMA_JAM").asString(),
                 data.get("WAKTU_LAYANAN_LAMA_MENIT").asString()));
         String estimasiSelesai;
-        if((jenisAntrian.equals("STANDART") || jenisAntrian.equals("EXPRESS")) && data.get("PELANGGAN_TIDAK_MENUNGGU").asString().equals("N")){
+        if ((jenisAntrian.equals("STANDART") || jenisAntrian.equals("EXPRESS")) && data.get("PELANGGAN_TIDAK_MENUNGGU").asString().equals("N")) {
             estimasiSelesai = data.get("ESTIMASI_SELESAI").asString();
-        }else{
+        } else {
             estimasiSelesai = Tools.setFormatDateTimeFromDb(data.get("ESTIMASI_SELESAI").asString(), "yyyy-MM-dd hh:mm", "dd/MM-hh:mm", false);
         }
         etEstimasiSelesai.setText(estimasiSelesai);
@@ -234,11 +242,9 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!status.isEmpty() && status.equals("BATAL PELANGGAN")) {
-                    if (etKeteranganTambahan.getText().toString().isEmpty()) {
-                        etKeteranganTambahan.setError("Keterangan Batal Harus di Isi");
-                        return;
-                    }
+                if (etKeteranganTambahan.getText().toString().isEmpty() && status.equals("BATAL PELANGGAN")) {
+                    etKeteranganTambahan.setError("Keterangan Batal Harus di Isi");
+                    return;
                 }
 
                 if (isMekanik && namaMekanik.equals("--PILIH--")) {
@@ -246,12 +252,6 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                     return;
                 }
 
-                /*if (spAktifitas.getSelectedItem().toString().equals("--PILIH--")) {
-                    showWarning("Aktivitas Harus di Pilih");
-                    spAktifitas.performClick();
-                    spAktifitas.requestFocus();
-                    return;
-                }*/
                 if (find(R.id.cb_tidak_menunggu, CheckBox.class).isChecked() && tvJamAmbil.getText().toString().isEmpty()) {
                     showWarning("WAKTU AMBIL HARUS DI ISI UNTUK PELANGGAN TIDAK MENUNGGU", Toast.LENGTH_LONG);
                 } else {
@@ -277,7 +277,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         find(R.id.btn_keluhan, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                initKeluhanDialog();
+                showKeluhanPerlengkapanDialog(true);
             }
         });
 
@@ -304,135 +304,95 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             }
         });
 
-        getDetailCheckin(idCheckin);
-        setSpMekanik(data.get("MEKANIK").asString());
-        viewKeluhan();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void initKeluhanDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.activity_list_basic, null);
-        builder.setView(dialogView);
-
-        SwipeRefreshLayout swipeRefreshLayout = dialogView.findViewById(R.id.swiperefresh);
-        swipeRefreshLayout.setEnabled(false);
-        initToolbarKeluhan(dialogView);
-        initRecylerviewKeluhan(dialogView);
-        if (keluhanList.size() > 0) {
-            Objects.requireNonNull(rvKeluhan.getAdapter()).notifyDataSetChanged();
-        }
-        alertDialog = builder.create();
-        Objects.requireNonNull(alertDialog.getWindow()).getAttributes().windowAnimations = R.style.DialogAnimation;
-        alertDialog.show();
-    }
-
-    @SuppressLint("SetTextI18n")
-    private void initRecylerviewKeluhan(View dialogView) {
-        rvKeluhan = dialogView.findViewById(R.id.recyclerView);
-        rvKeluhan.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rvKeluhan.setHasFixedSize(true);
-        rvKeluhan.setAdapter(new NikitaRecyclerAdapter(keluhanList, R.layout.item_keluhan) {
+        find(R.id.btn_foto_kondisi).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
-                super.onBindViewHolder(viewHolder, position);
-                viewHolder.find(R.id.tv_no, TextView.class).setVisibility(View.VISIBLE);
-                viewHolder.find(R.id.tv_no, TextView.class).setText(keluhanList.get(position).get("NO").asString() + ". ");
-                viewHolder.find(R.id.tv_keluhan, TextView.class).setText(keluhanList.get(position).get("KELUHAN").asString());
-                viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.GONE);
+            public void onClick(View v) {
+                showDialogFotoKondisi();
             }
         });
 
+        find(R.id.btn_perlengkapan).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showKeluhanPerlengkapanDialog(false);
+
+            }
+        });
+
+        getDetailCheckin(idCheckin);
+        setSpMekanik(data.get("MEKANIK").asString());
+        getKeluhan();
     }
 
-    private void initRecyclerviewDetail() {
-        rvDetail.setLayoutManager(new LinearLayoutManager(this));
-        rvDetail.setHasFixedSize(false);
-        rvDetail.setAdapter(new NikitaMultipleViewAdapter(detailCheckinList, R.layout.item_part_booking3_checkin3, R.layout.item_jasalain_booking_checkin) {
-            @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n")
+    private void getDetailCheckin(final String id) {
+        newProses(new Messagebox.DoubleRunnable() {
+            Nson result;
+
             @Override
-            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
-                super.onBindViewHolder(viewHolder, position);
-                final int itemType = getItemViewType(position);
+            public void run() {
+                fotoKondisiList.asArray().clear();
+                detailCheckinList.asArray().clear();
 
-                viewHolder.find(R.id.tv_no, TextView.class).setVisibility(View.VISIBLE);
-                viewHolder.find(R.id.tv_no, TextView.class).setText("" + (position + 1));
-                if (isKurangi) {
-                    viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.VISIBLE);
-                    viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            String tittle = detailCheckinList.get(position).get("PARENT VIEW TYPE").asInteger() == ITEM_VIEW_1 ? "Part ?" : "Jasa Lain ?";
-                            Messagebox.showDialog(getActivity(), "Konfirmasi", "Kurangi " + tittle, "Ya", "Tidak", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    int index = position;
-                                    kurangiPartJasaList.add(detailCheckinList.get(position));
-                                    if (!detailCheckinList.get(position).get("PART_ID").asString().isEmpty()) {
-                                        partList.add(detailCheckinList.get(position));
-                                    } else if (!detailCheckinList.get(position).get("JASA_ID").asString().isEmpty()) {
-                                        jasaList.add(detailCheckinList.get(position));
-                                    }
+                Map<String, String> args = AppApplication.getInstance().getArgsData();
+                args.put("action", "view");
+                args.put("detail", "TRUE");
+                args.put("id", id);
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_KONTROL_LAYANAN), args));
+                detailCheckinList.asArray().addAll(result.get("data").asArray());
 
-                                    totalBiaya -= detailCheckinList.get(position).get("NET").asInteger();
-                                    etTotal.setText(RP + formatRp(String.valueOf(totalBiaya)));
-                                    detailCheckinList.asArray().remove(position);
-                                    notifyItemRemoved(position);
-                                    rvDetail.getAdapter().notifyDataSetChanged();
-                                }
-                            }, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                        }
-                    });
-                } else {
-                    viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.GONE);
+                args.remove("detail");
+                args.put("detail", "fotoKondisi");
+                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_KONTROL_LAYANAN), args));
+                fotoKondisiList.asArray().addAll(result.get("data").asArray());
+            }
+
+            @Override
+            public void runUI() {
+                if (totalBiaya == 0) {
+                    totalBiaya = result.get("data").get(0).get("TOTAL_BIAYA").asInteger();
                 }
+                etTotalBiaya.setText(RP + formatRp(String.valueOf(totalBiaya)));
 
-                if (detailCheckinList.get(position).get("STATUS_DETAIL").asString().equals("TAMBAH PART - JASA") &&
-                        !etStatus.getText().toString().contains("SELESAI")) {
-                    viewHolder.find(R.id.view_mark_tambah_jasa).setVisibility(View.VISIBLE);
-                } else {
-                    viewHolder.find(R.id.view_mark_tambah_jasa).setVisibility(View.GONE);
-                }
-
-                if (itemType == ITEM_VIEW_1) {
-                    viewHolder.find(R.id.tv_namaPart_booking3_checkin3, TextView.class)
-                            .setText(detailCheckinList.get(position).get("NAMA_PART").asString());
-                    viewHolder.find(R.id.tv_noPart_booking3_checkin3, TextView.class)
-                            .setText(detailCheckinList.get(position).get("NO_PART").asString());
-                    viewHolder.find(R.id.tv_merk_booking3_checkin3, TextView.class)
-                            .setText(detailCheckinList.get(position).get("MERK").asString());
-                    viewHolder.find(R.id.tv_hargaNet_booking3_checkin3, TextView.class).setText(
-                            RP + formatRp(detailCheckinList.get(position).get("HARGA_PART").asString()));
-                    if (!detailCheckinList.get(position).get("JASA_EXTERNAL").asString().isEmpty()) {
-                        viewHolder.find(R.id.tv_jasaNet_booking3_checkin3, TextView.class).setText(
-                                RP + formatRp(detailCheckinList.get(position).get("JASA_EXTERNAL").asString()));
-                    } else {
-                        viewHolder.find(R.id.tv_jasaNet_booking3_checkin3, TextView.class).setText(
-                                RP + formatRp(detailCheckinList.get(position).get("HARGA_JASA_PART").asString()));
+                String perlengkapan = "";
+                for (int i = 0; i < detailCheckinList.size(); i++) {
+                    if (!detailCheckinList.get(i).get("PERLENGKAPAN").asString().isEmpty()) {
+                        perlengkapan = detailCheckinList.get(i).get("PERLENGKAPAN").asString();
                     }
-                } else if (itemType == ITEM_VIEW_2) {
-                    viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class)
-                            .setText(RP + formatRp(detailCheckinList.get(position).get("HARGA_JASA").asString()));
-                    viewHolder.find(R.id.tv_kelompokPart_booking3_checkin3, TextView.class)
-                            .setText(detailCheckinList.get(position).get("KELOMPOK_PART").asString());
-                    viewHolder.find(R.id.tv_aktifitas_booking3_checkin3, TextView.class)
-                            .setText(detailCheckinList.get(position).get("AKTIVITAS").asString());
-                    viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class).
-                            setText(RP + formatRp(detailCheckinList.get(position).get("HARGA_JASA_LAIN").asString()));
-
+                    partCheckinList.add(Nson.newObject()
+                            .set("CHECKIN_DETAIL_ID", detailCheckinList.get(i).get("CHECKIN_DETAIL_ID"))
+                            .set("PART_ID", detailCheckinList.get(i).get("PART_ID"))
+                            .set("JUMLAH", detailCheckinList.get(i).get("JUMLAH"))
+                            .set("CHECKIN_ID", idCheckin)
+                    );
+                    if (detailCheckinList.get(i).get("STATUS_DETAIL").asString().equals("TAMBAH PART - JASA")) {
+                        isKonfirmasiTambahan = detailCheckinList.get(i).get("KONFIRMASI_TAMBAHAN").asString().equals("Y");
+                        partMessage.add(Nson.newObject()
+                                .set("DETAIL_ID", detailCheckinList.get(i).get("CHECKIN_DETAIL_ID").asString())
+                                .set("PART_ID", detailCheckinList.get(i).get("PART_ID").asInteger())
+                                .set("JUMLAH", detailCheckinList.get(i).get("JUMLAH").asInteger())
+                                .set("LOKASI_PART_ID", detailCheckinList.get(i).get("LOKASI_PART_ID").asInteger())
+                                .set("NET", detailCheckinList.get(i).get("NET").asInteger())
+                        );
+                    }
                 }
+
+                if (!perlengkapan.isEmpty()) {
+                    String[] perlengkapanSplit = perlengkapan.split(", ");
+                    perlengkapanList.asArray().clear();
+                    perlengkapanList.asArray().addAll(Arrays.asList(perlengkapanSplit));
+                }
+
+                find(R.id.btn_foto_kondisi).setEnabled(fotoKondisiList.size() > 0);
+                find(R.id.btn_perlengkapan).setEnabled(perlengkapanList.size() > 0);
+                Objects.requireNonNull(rvDetail.getAdapter()).notifyDataSetChanged();
+                setSpAktifitas();
             }
         });
     }
 
     @SuppressLint("NewApi")
-    private void viewKeluhan() {
+    private void getKeluhan() {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -453,57 +413,6 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                     Log.d("no__", "runUI: " + keluhanList);
                 } else {
                     showInfo(result.get("message").asString());
-                }
-            }
-        });
-    }
-
-    @SuppressLint("SetTextI18n")
-    private void getDetailCheckin(final String id) {
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
-
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-                args.put("action", "view");
-                args.put("detail", "TRUE");
-                args.put("id", id);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_KONTROL_LAYANAN), args));
-            }
-
-            @Override
-            public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    if (totalBiaya == 0) {
-                        totalBiaya = result.get("data").get(0).get("TOTAL_BIAYA").asInteger();
-                    }
-                    etTotal.setText(RP + formatRp(String.valueOf(totalBiaya)));
-                    detailCheckinList.asArray().clear();
-                    detailCheckinList.asArray().addAll(result.get("data").asArray());
-                    for (int i = 0; i < detailCheckinList.size(); i++) {
-                        partCheckinList.add(Nson.newObject()
-                                .set("CHECKIN_DETAIL_ID", detailCheckinList.get(i).get("CHECKIN_DETAIL_ID"))
-                                .set("PART_ID", detailCheckinList.get(i).get("PART_ID"))
-                                .set("JUMLAH", detailCheckinList.get(i).get("JUMLAH"))
-                                .set("CHECKIN_ID", idCheckin)
-                        );
-                        if (detailCheckinList.get(i).get("STATUS_DETAIL").asString().equals("TAMBAH PART - JASA")) {
-                            isKonfirmasiTambahan = detailCheckinList.get(i).get("KONFIRMASI_TAMBAHAN").asString().equals("Y");
-                            partMessage.add(Nson.newObject()
-                                    .set("DETAIL_ID", detailCheckinList.get(i).get("CHECKIN_DETAIL_ID").asString())
-                                    .set("PART_ID", detailCheckinList.get(i).get("PART_ID").asInteger())
-                                    .set("JUMLAH", detailCheckinList.get(i).get("JUMLAH").asInteger())
-                                    .set("LOKASI_PART_ID", detailCheckinList.get(i).get("LOKASI_PART_ID").asInteger())
-                                    .set("NET", detailCheckinList.get(i).get("NET").asInteger())
-                            );
-                        }
-                    }
-                    Log.d("part__", "runUI: " + partMessage);
-                    rvDetail.getAdapter().notifyDataSetChanged();
-                    setSpAktifitas();
-                } else {
-                    showError(result.get("message").asString());
                 }
             }
         });
@@ -649,7 +558,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             aktifitasList.add("BATAL PELANGGAN");
             aktifitasList.add("KURANGI PART - JASA");
             aktifitasList.add("GANTI MEKANIK");
-        }else if(etStatus.getText().toString().contains("SELESAI")) {
+        } else if (etStatus.getText().toString().contains("SELESAI")) {
             isKonfirmasiTambahan = false;
             aktifitasList.add("TAMBAH PART - JASA");
             aktifitasList.add("KURANGI PART - JASA");
@@ -662,14 +571,12 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 status = parent.getSelectedItem().toString();
-                if (status.equals("PENUGASAN MEKANIK") && !isMekanikSelected) {
-                    isMekanik = true;
-                    Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_mekanik, LinearLayout.class), true);
-                } else if (status.equals("GANTI MEKANIK")) {
-                    isMekanik = true;
-                    Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_mekanik, LinearLayout.class), true);
-                } else {
-                    Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_mekanik, LinearLayout.class), false);
+                etTotalBiaya.setEnabled(status.equals("BATAL PELANGGAN"));
+                isMekanik = status.equals("PENUGASAN MEKANIK") || status.equals("GANTI MEKANIK") || !isMekanikSelected;
+                Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_mekanik, LinearLayout.class), status.equals("PENUGASAN MEKANIK") || status.equals("GANTI MEKANIK") || !isMekanikSelected);
+
+                if(position == 0){
+                    spNamaMekanik.setSelection(0);
                 }
 
                 if (status.equals("DATA KENDARAAN")) {
@@ -706,7 +613,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                     intent.putExtra("NAMA_PELANGGAN", etNamaPelanggan.getText().toString());
                     intent.putExtra("KM", kmKendaraan);
                     intent.putExtra("CHECKIN_ID", idCheckin);
-                    intent.putExtra(TOTAL_BIAYA, formatOnlyNumber(etTotal.getText().toString()));
+                    intent.putExtra(TOTAL_BIAYA, formatOnlyNumber(etTotalBiaya.getText().toString()));
                     intent.putExtra(TAMBAH_PART, "");
                     intent.putExtra("NO_PONSEL", noPonsel);
                     intent.putExtra("NOPOL", etNopol.getText().toString());
@@ -767,6 +674,13 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
     }
 
     @SuppressLint("NewApi")
+    private void initToolbarFoto(View dialogView) {
+        Toolbar toolbar = dialogView.findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Foto Kondisi");
+    }
+
+    @SuppressLint("NewApi")
     private void initToolbarKonfirmasi() {
         Toolbar toolbar = dialogView.findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -776,6 +690,124 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             @Override
             public void onClick(View view) {
                 finish();
+            }
+        });
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void initRvKeluhanPerlengkapan(View dialogView, boolean isKeluhan) {
+        rvKeluhanPerlengkapan = dialogView.findViewById(R.id.recyclerView);
+        rvKeluhanPerlengkapan.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvKeluhanPerlengkapan.setHasFixedSize(true);
+        if (isKeluhan) {
+            rvKeluhanPerlengkapan.setAdapter(new NikitaRecyclerAdapter(keluhanList, R.layout.item_keluhan) {
+                @Override
+                public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+                    super.onBindViewHolder(viewHolder, position);
+                    viewHolder.find(R.id.tv_no, TextView.class).setVisibility(View.VISIBLE);
+                    viewHolder.find(R.id.tv_no, TextView.class).setText(keluhanList.get(position).get("NO").asString() + ". ");
+                    viewHolder.find(R.id.tv_keluhan, TextView.class).setText(keluhanList.get(position).get("KELUHAN").asString());
+                    viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.GONE);
+                }
+            });
+        } else {
+            rvKeluhanPerlengkapan.setAdapter(new NikitaRecyclerAdapter(perlengkapanList, R.layout.item_keluhan) {
+                @Override
+                public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, int position) {
+                    super.onBindViewHolder(viewHolder, position);
+                    int pos = position + 1;
+                    viewHolder.find(R.id.tv_no, TextView.class).setVisibility(View.VISIBLE);
+                    viewHolder.find(R.id.tv_no, TextView.class).setText(pos + ". ");
+                    viewHolder.find(R.id.tv_keluhan, TextView.class).setText(perlengkapanList.get(position).asString());
+                    viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.GONE);
+                }
+            });
+
+        }
+
+    }
+
+    private void initRecyclerviewDetail() {
+        rvDetail.setLayoutManager(new LinearLayoutManager(this));
+        rvDetail.setHasFixedSize(false);
+        rvDetail.setAdapter(new NikitaMultipleViewAdapter(detailCheckinList, R.layout.item_part_booking3_checkin3, R.layout.item_jasalain_booking_checkin) {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
+                super.onBindViewHolder(viewHolder, position);
+                final int itemType = getItemViewType(position);
+
+                viewHolder.find(R.id.tv_no, TextView.class).setVisibility(View.VISIBLE);
+                viewHolder.find(R.id.tv_no, TextView.class).setText("" + (position + 1));
+                if (isKurangi) {
+                    viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.VISIBLE);
+                    viewHolder.find(R.id.img_delete, ImageButton.class).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            String tittle = detailCheckinList.get(position).get("PARENT VIEW TYPE").asInteger() == ITEM_VIEW_1 ? "Part ?" : "Jasa Lain ?";
+                            Messagebox.showDialog(getActivity(), "Konfirmasi", "Kurangi " + tittle, "Ya", "Tidak", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    int index = position;
+                                    kurangiPartJasaList.add(detailCheckinList.get(position));
+                                    if (!detailCheckinList.get(position).get("PART_ID").asString().isEmpty()) {
+                                        partList.add(detailCheckinList.get(position));
+                                    } else if (!detailCheckinList.get(position).get("JASA_ID").asString().isEmpty()) {
+                                        jasaList.add(detailCheckinList.get(position));
+                                    }
+
+                                    totalBiaya -= detailCheckinList.get(position).get("NET").asInteger();
+                                    etTotalBiaya.setText(RP + formatRp(String.valueOf(totalBiaya)));
+                                    detailCheckinList.asArray().remove(position);
+                                    notifyItemRemoved(position);
+                                    rvDetail.getAdapter().notifyDataSetChanged();
+                                }
+                            }, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    viewHolder.find(R.id.img_delete, ImageButton.class).setVisibility(View.GONE);
+                }
+
+                if (detailCheckinList.get(position).get("STATUS_DETAIL").asString().equals("TAMBAH PART - JASA") &&
+                        !etStatus.getText().toString().contains("SELESAI")) {
+                    viewHolder.find(R.id.view_mark_tambah_jasa).setVisibility(View.VISIBLE);
+                } else {
+                    viewHolder.find(R.id.view_mark_tambah_jasa).setVisibility(View.GONE);
+                }
+
+                if (itemType == ITEM_VIEW_1) {
+                    viewHolder.find(R.id.tv_namaPart_booking3_checkin3, TextView.class)
+                            .setText(detailCheckinList.get(position).get("NAMA_PART").asString());
+                    viewHolder.find(R.id.tv_noPart_booking3_checkin3, TextView.class)
+                            .setText(detailCheckinList.get(position).get("NO_PART").asString());
+                    viewHolder.find(R.id.tv_merk_booking3_checkin3, TextView.class)
+                            .setText(detailCheckinList.get(position).get("MERK").asString());
+                    viewHolder.find(R.id.tv_hargaNet_booking3_checkin3, TextView.class).setText(
+                            RP + formatRp(detailCheckinList.get(position).get("HARGA_PART").asString()));
+                    if (!detailCheckinList.get(position).get("JASA_EXTERNAL").asString().isEmpty()) {
+                        viewHolder.find(R.id.tv_jasaNet_booking3_checkin3, TextView.class).setText(
+                                RP + formatRp(detailCheckinList.get(position).get("JASA_EXTERNAL").asString()));
+                    } else {
+                        viewHolder.find(R.id.tv_jasaNet_booking3_checkin3, TextView.class).setText(
+                                RP + formatRp(detailCheckinList.get(position).get("HARGA_JASA_PART").asString()));
+                    }
+                } else if (itemType == ITEM_VIEW_2) {
+                    viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class)
+                            .setText(RP + formatRp(detailCheckinList.get(position).get("HARGA_JASA").asString()));
+                    viewHolder.find(R.id.tv_kelompokPart_booking3_checkin3, TextView.class)
+                            .setText(detailCheckinList.get(position).get("KELOMPOK_PART").asString());
+                    viewHolder.find(R.id.tv_aktifitas_booking3_checkin3, TextView.class)
+                            .setText(detailCheckinList.get(position).get("AKTIVITAS").asString());
+                    viewHolder.find(R.id.tv_jasaLainNet_booking3_checkin3, TextView.class).
+                            setText(RP + formatRp(detailCheckinList.get(position).get("HARGA_JASA_LAIN").asString()));
+
+                }
             }
         });
     }
@@ -842,6 +874,27 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void showKeluhanPerlengkapanDialog(boolean isKeluhan) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.activity_list_basic, null);
+        builder.setView(dialogView);
+
+        SwipeRefreshLayout swipeRefreshLayout = dialogView.findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setEnabled(false);
+        initToolbarKeluhan(dialogView, isKeluhan);
+        initRvKeluhanPerlengkapan(dialogView, isKeluhan);
+
+        if (keluhanList.size() > 0 || perlengkapanList.size() > 0) {
+            Objects.requireNonNull(rvKeluhanPerlengkapan.getAdapter()).notifyDataSetChanged();
+        }
+
+        alertDialog = builder.create();
+        Objects.requireNonNull(alertDialog.getWindow()).getAttributes().windowAnimations = R.style.DialogAnimation;
+        alertDialog.show();
+    }
+
     @SuppressLint("SetTextI18n")
     private void showDialogKonfirmasi() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -864,17 +917,17 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         btnBatal.setText("BATAL");
         tvTittle.setText("*KONFIRMASI KURANGI PART - JASA");
 
-        if(partList.size() > 0){
+        if (partList.size() > 0) {
             lyPart.setVisibility(View.VISIBLE);
             rvPart.getAdapter().notifyDataSetChanged();
-        }else{
+        } else {
             lyPart.setVisibility(View.GONE);
         }
 
-        if(jasaList.size() > 0){
+        if (jasaList.size() > 0) {
             lyJasaLain.setVisibility(View.VISIBLE);
             rvJasaLain.getAdapter().notifyDataSetChanged();
-        }else{
+        } else {
             lyJasaLain.setVisibility(View.GONE);
         }
 
@@ -882,7 +935,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
             @Override
             public void onClick(View view) {
                 for (int i = 0; i < kurangiPartJasaList.size(); i++) {
-                    if(!detailCheckinList.asArray().contains(kurangiPartJasaList.get(i))){
+                    if (!detailCheckinList.asArray().contains(kurangiPartJasaList.get(i))) {
                         detailCheckinList.add(kurangiPartJasaList.get(i));
                     }
                 }
@@ -923,15 +976,195 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         alertDialog.show();
     }
 
-    private void clearList(){
+    @SuppressLint("InflateParams")
+    private void showDialogFotoKondisi() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.dialog_foto_kondisi, null);
+        builder.setView(dialogView);
+        alertDialog = builder.create();
+
+        initToolbarFoto(dialogView);
+
+        final ImageView imgDepan = dialogView.findViewById(R.id.img_kondisi_depan);
+        final ImageView imgBelakang = dialogView.findViewById(R.id.img_kondisi_belakang);
+        final ImageView imgKanan = dialogView.findViewById(R.id.img_kondisi_kanan);
+        final ImageView imgKiri = dialogView.findViewById(R.id.img_kondisi_kiri);
+        final ImageView imgTambahan1 = dialogView.findViewById(R.id.img_kondisi_tambahan1);
+        final ImageView imgTambahan2 = dialogView.findViewById(R.id.img_kondisi_tambahan2);
+
+        dialogView.findViewById(R.id.img_close).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+
+        dialogView.findViewById(R.id.ly_button).setVisibility(View.GONE);
+
+        if (fotoKondisiList.size() > 0) {
+            for (int i = 0; i < fotoKondisiList.size(); i++) {
+                switch (fotoKondisiList.get(i).get("TIPE_FOTO").asString()) {
+                    case "depan":
+                        getFotoKondisi(imgDepan, fotoKondisiList.get(i).get("FILE_FOTO").asString());
+                        break;
+                    case "belakang":
+                        getFotoKondisi(imgBelakang, fotoKondisiList.get(i).get("FILE_FOTO").asString());
+                        break;
+                    case "kanan":
+                        getFotoKondisi(imgKanan, fotoKondisiList.get(i).get("FILE_FOTO").asString());
+                        break;
+                    case "kiri":
+                        getFotoKondisi(imgKiri, fotoKondisiList.get(i).get("FILE_FOTO").asString());
+                        break;
+                    case "tambahan1":
+                        getFotoKondisi(imgTambahan1, fotoKondisiList.get(i).get("FILE_FOTO").asString());
+                        break;
+                    case "tambahan2":
+                        getFotoKondisi(imgTambahan2, fotoKondisiList.get(i).get("FILE_FOTO").asString());
+                        break;
+                }
+            }
+        }
+
+        imgDepan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(imgDepan.getDrawable() == getResources().getDrawable(R.drawable.icon_camera_fill)){
+                    showWarning("FOTO KONDISI DEPAN TIDAK TERSEDIA");
+                }else{
+                    showDialogPreviewFoto("Depan", getBitmap(imgDepan));
+                }
+            }
+        });
+
+        imgBelakang.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(imgBelakang.getDrawable() == getResources().getDrawable(R.drawable.icon_camera_fill)){
+                    showWarning("FOTO KONDISI DEPAN TIDAK TERSEDIA");
+                }else{
+                    showDialogPreviewFoto("Belakang", getBitmap(imgBelakang));
+                }
+            }
+        });
+
+        imgKanan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(imgKanan.getDrawable() == getResources().getDrawable(R.drawable.icon_camera_fill)){
+                    showWarning("FOTO KONDISI DEPAN TIDAK TERSEDIA");
+                }else{
+                    showDialogPreviewFoto("Kanan", getBitmap(imgKanan));
+                }
+            }
+        });
+
+        imgKiri.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(imgKiri.getDrawable() == getResources().getDrawable(R.drawable.icon_camera_fill)){
+                    showWarning("FOTO KONDISI DEPAN TIDAK TERSEDIA");
+                }else{
+                    showDialogPreviewFoto("Kiri", getBitmap(imgKiri));
+                }
+            }
+        });
+
+        imgTambahan1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(imgTambahan1.getDrawable() == getResources().getDrawable(R.drawable.icon_camera_fill)){
+                    showWarning("FOTO KONDISI DEPAN TIDAK TERSEDIA");
+                }else{
+                    showDialogPreviewFoto("Tambahan 1", getBitmap(imgTambahan1));
+                }
+            }
+        });
+
+        imgTambahan2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(imgTambahan2.getDrawable() == getResources().getDrawable(R.drawable.icon_camera_fill)){
+                    showWarning("FOTO KONDISI DEPAN TIDAK TERSEDIA");
+                }else{
+                    showDialogPreviewFoto("Tambahan 2", getBitmap(imgTambahan2));
+                }
+            }
+        });
+
+        if (alertDialog.getWindow() != null)
+            alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        alertDialog = builder.show();
+    }
+
+    private void getFotoKondisi(ImageView imageView, String url) {
+        imageView.setLayoutParams(
+                new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT)
+        );
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        imageView.requestLayout();
+
+        Glide.with(getActivity()).load(url).asBitmap().into(imageView);
+    }
+
+    private Bitmap getBitmap(ImageView imageView) {
+        try {
+            BitmapDrawable drawable = (BitmapDrawable) imageView.getDrawable();
+            return drawable.getBitmap();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+
+    @SuppressLint("SetTextI18n")
+    private void showDialogPreviewFoto(String tittle, Bitmap bitmap) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.layout_alert_camera, null);
+        builder.setView(dialogView);
+        alertDialog = builder.create();
+
+        Toolbar toolbar = dialogView.findViewById(R.id.toolbar);
+        ImageView img = (ImageView) dialogView.findViewById(R.id.img_alert_foto);
+        Button btnCancel = dialogView.findViewById(R.id.btn_alert_cancel);
+        Button btnSimpan = dialogView.findViewById(R.id.btn_alert_save);
+
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle("Preview " + tittle);
+
+        if(bitmap != null){
+            img.setImageBitmap(bitmap);
+        }
+
+        btnSimpan.setVisibility(View.GONE);
+        btnCancel.setText("Tutup");
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+
+
+        if (alertDialog.getWindow() != null)
+            alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        alertDialog.show();
+    }
+
+
+    private void clearList() {
         partList.asArray().clear();
         jasaList.asArray().clear();
         kurangiPartJasaList.asArray().clear();
     }
 
-
     private void updateData(final String idCheckin) {
-        if (status.contains("MESSAGE") || status.equals("DATA KENDARAAN")) {
+        if (status.contains("MESSAGE") || status.equals("DATA KENDARAAN") || status.equals("--PILIH--")) {
             setResult(RESULT_OK);
             finish();
             return;
@@ -948,6 +1181,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 args.put("status", status);
                 args.put("idCheckin", idCheckin);
                 args.put("nopol", formatNopol(etNopol.getText().toString()));
+                args.put("totalBiaya", NumberFormatUtils.formatOnlyNumber(etTotalBiaya.getText().toString()));
                 if (find(R.id.cb_tidak_menunggu, CheckBox.class).isChecked()) {
                     if (tglAmbil.isEmpty()) {
                         tglAmbil = currentDateTime("dd/MM");
@@ -1037,31 +1271,6 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         });
     }
 
-    // if part not yet accepted they cannot be cancel
-    private void viewSerahTerimaPart() {
-        newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
-
-            @Override
-            public void run() {
-                Map<String, String> args = AppApplication.getInstance().getArgsData();
-
-                args.put("action", "view");
-
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_KONTROL_LAYANAN), args));
-            }
-
-            @Override
-            public void runUI() {
-                if (result.get("status").asString().equalsIgnoreCase("OK")) {
-
-                } else {
-                    showInfo("Gagal");
-                }
-            }
-        });
-    }
-
     private void getDatePickerTglAmbil() {
         final String[] waktuAmbil = {""};
         final Calendar cldr = Calendar.getInstance();
@@ -1094,7 +1303,6 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         datePickerDialog.setMinDate(cldr);
         datePickerDialog.show(getFragmentManager(), "Datepickerdialog");
     }
-
 
     private void getTimePickerDialogWaktuAmbil() {
         final String[] waktuAmbil = {""};
@@ -1156,6 +1364,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
 
         jamTglAmbil = sdf.parse(waktuAmbil);
         waktuEstimasi = sdf.parse(estimasi);
+        assert jamTglAmbil != null;
         return !jamTglAmbil.after(waktuEstimasi);
     }
 

@@ -4,11 +4,15 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +24,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.naa.data.Nson;
 import com.naa.data.UtilityAndroid;
@@ -28,10 +33,10 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.Adapter.NsonAutoCompleteAdapter;
 import com.rkrzmail.oto.modules.bengkel.AturRekening_Activity;
 import com.rkrzmail.srv.AutoCompleteDialog;
 import com.rkrzmail.srv.NikitaAutoComplete;
-import com.rkrzmail.srv.NsonAutoCompleteAdapter;
 import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -46,12 +51,14 @@ import java.util.Map;
 
 import in.galaxyofandroid.spinerdialog.SpinnerDialog;
 
+import static android.Manifest.permission.READ_CONTACTS;
+import static android.Manifest.permission.WRITE_CONTACTS;
+import static com.rkrzmail.utils.APIUrls.GET_BENGKEL_PRINCIPAL;
 import static com.rkrzmail.utils.APIUrls.JURNAL_KAS;
 import static com.rkrzmail.utils.APIUrls.SET_REKENING_BANK;
 import static com.rkrzmail.utils.APIUrls.VIEW_MST;
-import static com.rkrzmail.utils.APIUrls.VIEW_NOMOR_POLISI;
 import static com.rkrzmail.utils.APIUrls.VIEW_SUGGESTION;
-import static com.rkrzmail.utils.ConstUtils.DATA;
+import static com.rkrzmail.utils.ConstUtils.PERMISSION_REQUEST_CODE;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_CONTACT;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_REKENING;
 
@@ -121,12 +128,9 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
 
         setSpRek();
         initAutoCompletePerusahaan();
-        setSpPrincipal();
 
         etOngkir.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etOngkir));
-        Tools.setViewAndChildrenEnabled(find(R.id.ly_norek, LinearLayout.class), false);
-        Tools.setViewAndChildrenEnabled(find(R.id.ly_tgl_jatuh_tempo, LinearLayout.class), false);
-
+        
         tvTglPesan.setOnClickListener(this);
         tvTglTerima.setOnClickListener(this);
         tvTglJatuhTempo.setOnClickListener(this);
@@ -148,7 +152,6 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
                     find(R.id.sp_nama_principal, Spinner.class).setSelection(0);
                 }
                 etNamaPerusahaan.setEnabled(!tipeSupplier.equals("PRINCIPAL") && !tipeSupplier.equals("--PILIH--"));
-                Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_principal, LinearLayout.class), tipeSupplier.equals("PRINCIPAL") && sizeSupplier > 1);
                 Tools.setViewAndChildrenEnabled(find(R.id.ly_namaSup_terimaPart, LinearLayout.class),
                         !tipeSupplier.equals("PRINCIPAL") &&
                                 !tipeSupplier.equals("--PILIH--") &&
@@ -166,13 +169,12 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
             public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
                 tipePembayaran = parent.getItemAtPosition(position).toString();
                 find(R.id.et_no_trace).setEnabled(tipePembayaran.equals("TRANSFER"));
+                Tools.setViewAndChildrenEnabled(find(R.id.ly_tgl_jatuh_tempo, LinearLayout.class), tipePembayaran.equalsIgnoreCase("INVOICE"));
+                Tools.setViewAndChildrenEnabled(find(R.id.ly_norek, LinearLayout.class), tipePembayaran.equalsIgnoreCase("TRANSFER"));
 
                 if (tipePembayaran.equalsIgnoreCase("INVOICE")) {
                     find(R.id.et_no_trace, EditText.class).setText("");
-                    Tools.setViewAndChildrenEnabled(find(R.id.ly_tgl_jatuh_tempo, LinearLayout.class), true);
-                    Tools.setViewAndChildrenEnabled(find(R.id.ly_norek, LinearLayout.class), false);
                 } else if (tipePembayaran.equalsIgnoreCase("TRANSFER")) {
-                    Tools.setViewAndChildrenEnabled(find(R.id.ly_norek, LinearLayout.class), true);
                     if (spRekening.getCount() == 0) {
                         showInfoDialog("Konfirmasi", "Rekening Belum Di tambah, Tambah Rekening ? ", new DialogInterface.OnClickListener() {
                             @Override
@@ -187,7 +189,6 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
                             }
                         });
                     }
-                    Tools.setViewAndChildrenEnabled(find(R.id.ly_tgl_jatuh_tempo, LinearLayout.class), false);
                 } else if (tipePembayaran.equals("KONSIGNMENT")) {
                     find(R.id.et_no_trace, EditText.class).setText("");
                     showWarning("TIPE PEMBAYARAN BELUM AKTIF");
@@ -199,8 +200,6 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
                     });
                 } else {
                     find(R.id.et_no_trace, EditText.class).setText("");
-                    Tools.setViewAndChildrenEnabled(find(R.id.ly_norek, LinearLayout.class), false);
-                    Tools.setViewAndChildrenEnabled(find(R.id.ly_tgl_jatuh_tempo, LinearLayout.class), false);
                 }
             }
 
@@ -220,21 +219,33 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
 
                 @Override
                 public void run() {
-                    Map<String, String> args = AppApplication.getInstance().getArgsData();
-                    args.put("nama", "PRINCIPAL BENGKEL");
-                    result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_MST), args));
+                    String[] args = new String[4];
+                    args[0] = "CID=" + getSetting("CID");
+                    result = Nson.readJson(InternetX.getHttpConnectionX(AppApplication.getBaseUrlV4(GET_BENGKEL_PRINCIPAL), args));
                 }
 
                 @Override
                 public void runUI() {
-                    if (result.get("status").asString().equalsIgnoreCase("OK")) {
+                    if (result.get("status").asBoolean()) {
                         result = result.get("data");
-                        principalList.add("--PILIH--");
-                        for (int i = 0; i < result.size(); i++) {
-                            principalList.add(result.get(i).get("NAMA_PRINCIPAL").asString());
+                        if (result.size() > 0) {
+                            principalList.add("--PILIH--");
+                            for (int i = 0; i < result.size(); i++) {
+                                principalList.add(result.get(i).get("NAMA_PRINCIPAL").asString());
+                            }
+                            sizeSupplier = principalList.size();
+                            if (sizeSupplier == 2) {
+                                Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_principal, LinearLayout.class), tipeSupplier.equals("PRINCIPAL"));
+                                setSpinnerOffline(principalList, find(R.id.sp_nama_principal, Spinner.class), 2);
+                            } else {
+                                setSpinnerOffline(principalList, find(R.id.sp_nama_principal, Spinner.class), "");
+                            }
+                        } else {
+                            showWarning("PRINCIPAL TIDAK TERSEDIA, SILAHKAN PILIH TIPE SUPPLIER LAIN", Toast.LENGTH_LONG);
+                            spSupplier.setSelection(0);
+                            spSupplier.performClick();
+                            viewFocus(spSupplier);
                         }
-                        sizeSupplier = result.size();
-                        setSpinnerOffline(principalList, find(R.id.sp_nama_principal, Spinner.class), "");
                     }
                 }
             });
@@ -436,7 +447,11 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
         nson.set("noSupplier", nama.replaceAll("[^0-9]", ""));
         nson.set("tipe", tipe);
         nson.set("rekening", rek);
-        nson.set("PRINCIPAL", find(R.id.sp_nama_principal, Spinner.class).getSelectedItem().toString().equals("--PILIH--") ? "" : find(R.id.sp_nama_principal, Spinner.class).getSelectedItem().toString());
+        if (tipe.equals("PRINCIPAL")) {
+            nson.set("PRINCIPAL", find(R.id.sp_nama_principal, Spinner.class).getSelectedItem().toString().equals("--PILIH--") ? "" : find(R.id.sp_nama_principal, Spinner.class).getSelectedItem().toString());
+        } else {
+            nson.set("PRINCIPAL", "");
+        }
         nson.set("PERUSAHAAN", etNamaPerusahaan.getText().toString());
         nson.set("NO_TRACE", find(R.id.et_no_trace, EditText.class).getText().toString());
         nson.set("BALANCE", pembayaran.equals("CASH ON DELIVERY") ? lastBalanceKas : pembayaran.equals("TRANSFER") ? lastBalanceKasBank : 0);
@@ -497,16 +512,7 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
                 getDatePickerDialogTextView(getActivity(), tvTglJatuhTempo);
                 break;
             case R.id.vg_kontak:
-//                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-//                startActivityForResult(intent, REQUEST_CONTACT);
-                try {
-                    Uri uri = Uri.parse("content://contacts");
-                    Intent intent = new Intent(Intent.ACTION_PICK, uri);
-                    intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
-                    startActivityForResult(intent, REQUEST_CONTACT);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                getContactPhone();
                 break;
             case R.id.btnSelanjutnya:
                 final String tglpesan = tvTglPesan.getText().toString();
@@ -591,7 +597,7 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
                     return;
                 }
 
-                if(etNamaPerusahaan.isEnabled() && etNamaPerusahaan.getText().toString().isEmpty()){
+                if (etNamaPerusahaan.isEnabled() && etNamaPerusahaan.getText().toString().isEmpty()) {
                     etNamaPerusahaan.setError("NAMA PERUSAHAAN HARUS DI ISI");
                     viewFocus(etNamaPerusahaan);
                     return;
@@ -603,6 +609,29 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
                 break;
         }
     }
+
+    @SuppressLint("IntentReset")
+    private void getContactPhone() {
+        if (!checkContactPermission()) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{READ_CONTACTS,
+                    WRITE_CONTACTS}, PERMISSION_REQUEST_CODE);
+        } else {
+            try {
+                Uri uri = Uri.parse("content://contacts");
+                Intent intent = new Intent(Intent.ACTION_PICK, uri);
+                intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
+                startActivityForResult(intent, REQUEST_CONTACT);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private boolean checkContactPermission() {
+        return ContextCompat.checkSelfPermission(this, READ_CONTACTS) != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(this, WRITE_CONTACTS) != PackageManager.PERMISSION_GRANTED;
+    }
+
 
     private void getLastBalanceKas(final String noRek) {
         newProses(new Messagebox.DoubleRunnable() {
@@ -626,11 +655,18 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
         });
     }
 
-
     private Calendar parseTglPesan(long tglPesan) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(tglPesan);
         return calendar;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            getContactPhone();
+        }
     }
 
     @SuppressLint("SetTextI18n")
