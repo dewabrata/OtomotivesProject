@@ -2,14 +2,6 @@ apply plugin: 'com.android.application'
 
 
 android {
-    signingConfigs {
-        debug {
-            storeFile file('E:\\Project Otomotives\\App\\rkrzmail.jks')
-            storePassword 'nikita@willy'
-            keyAlias 'oto'
-            keyPassword 'bengkel@pro'
-        }
-    }
     compileSdkVersion 30
     defaultConfig {
         minSdkVersion 23

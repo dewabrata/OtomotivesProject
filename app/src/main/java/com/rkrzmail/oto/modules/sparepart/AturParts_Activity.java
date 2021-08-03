@@ -120,7 +120,7 @@ public class AturParts_Activity extends AppActivity {
             });
         } else if (getIntent().hasExtra("data")) {
             isParts = false;
-            namaPart = addParts.get("NAMA_PART").asString();
+            noPart = addParts.get("NAMA_PART").asString();
             getContainsSparepart();
             find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -283,7 +283,7 @@ public class AturParts_Activity extends AppActivity {
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     for (int i = 0; i < result.size(); i++) {
-                        if (namaPart.equalsIgnoreCase(result.get("data").get(i).get("NAMA_PART").asString())) {
+                        if (noPart.equalsIgnoreCase(result.get("data").get(i).get("NO_PART").asString())) {
                             showWarning("Part Duplikat");
                             finish();
                         }
