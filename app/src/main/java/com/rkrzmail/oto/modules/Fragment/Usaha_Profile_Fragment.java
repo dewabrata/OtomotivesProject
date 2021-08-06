@@ -12,8 +12,12 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.Selection;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -67,6 +71,7 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
     private CheckBox cbPkp;
     private AlertDialog alertDialog;
     private Button btnLogo, btnTampakDepan;
+    private View fragmentView;
 
     private Bitmap bitmapLogo = null, bitmapTampakDepan = null;
     private String fotoLogoBase64 = "", fotoTampakDepanBase64 = "";
@@ -113,11 +118,11 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_tab_usaha_bengkel, container, false);
+       fragmentView = inflater.inflate(R.layout.fragment_tab_usaha_bengkel, container, false);
         activity = ((ProfileBengkel_Activity) getActivity());
-        initComponent(v);
+        initComponent(fragmentView);
         initData();
-        return v;
+        return fragmentView;
     }
 
     @Override
@@ -154,8 +159,10 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
         etGoogleBisnis = v.findViewById(R.id.et_google_bisnis);
         spMngKeuangan  = v.findViewById(R.id.sp_management_keuangan);
 
+        etNoTelpMessage.addTextChangedListener(textWatcherPonsel);
         final MapPicker_Dialog mapPicker_dialog = new MapPicker_Dialog();
         mapPicker_dialog.getBengkelLocation(this);
+        btnLokasi.setEnabled(false);
         btnLokasi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -221,6 +228,35 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
         });
     }
 
+    TextWatcher textWatcherPonsel = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            TextInputLayout tlPonsel = fragmentView.findViewById(R.id.tl_nohp);
+            int counting = (s == null) ? 0 : s.toString().length();
+            if (counting == 0) {
+                tlPonsel.setErrorEnabled(false);
+            } else if (counting < 4) {
+                etNoTelpMessage.setText("+62 ");
+                Selection.setSelection(etNoTelpMessage.getText(), etNoTelpMessage.getText().length());
+            } else if (counting < 12) {
+                tlPonsel.setError("No. Hp Min. 6 Karakter");
+                etNoTelpMessage.requestFocus();
+            } else {
+                tlPonsel.setErrorEnabled(false);
+            }
+        }
+    };
+
     private Bitmap decodeBase64ToBitmap(String base64) {
         byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
@@ -277,11 +313,6 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
     }
 
     private void saveData() {
-        final int jamExpress = Integer.parseInt(etMaxAntrianExpress.getText().toString().substring(0, 2));
-        final int menitExpress = Integer.parseInt(etMaxAntrianExpress.getText().toString().substring(3, 5));
-        final int jamStandart = Integer.parseInt(etMaxAntrianStandart.getText().toString().substring(0, 2));
-        final int menitStandart = Integer.parseInt(etMaxAntrianStandart.getText().toString().substring(3, 5));
-
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             Nson result;
 
@@ -310,8 +341,8 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
                 args.put("hpMessage", etNoTelpMessage.getText().toString());
                 args.put("fotoLogo", fotoLogoBase64);
                 args.put("fotoTampakDepan", fotoTampakDepanBase64);
-                args.put("antrianExpres", formatAntrianTime(jamExpress, menitExpress));
-                args.put("antrianStandart", formatAntrianTime(jamStandart, menitStandart));
+                args.put("antrianExpres", etMaxAntrianExpress.getText().toString());
+                args.put("antrianStandart", etMaxAntrianStandart.getText().toString());
                 args.put("petaLokasi", latLong);
                 args.put("principalList", principalSaveList.toJson());
                 args.put("googleBisnis", etGoogleBisnis.getText().toString());
@@ -325,8 +356,8 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    activity.setSetting("MAX_ANTRIAN_EXPRESS_MENIT", formatAntrianTime(jamExpress, menitExpress));
-                    activity.setSetting("MAX_ANTRIAN_STANDART_MENIT", formatAntrianTime(jamStandart, menitStandart));
+                    activity.setSetting("MAX_ANTRIAN_EXPRESS_MENIT", etMaxAntrianExpress.getText().toString());
+                    activity.setSetting("MAX_ANTRIAN_STANDART_MENIT", etMaxAntrianStandart.getText().toString());
                     if (saveDataMerk.size() > 0)
                         activity.setSetting("MERK_KENDARAAN_ARRAY", saveDataMerk.toJson());
                     if (saveDataBidangUsaha.size() > 0)

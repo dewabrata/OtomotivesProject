@@ -197,6 +197,8 @@ public class MenuActivity extends AppActivity implements InstallStateUpdatedList
     private final String PENGATURAN_USER_REKENING = "REKENING";
     private final String PENGATURAN_USER_TENDA = "TENDA";
     private final String PENGATURAN_PROFILE = "PROFILE BENGKEL";
+    private final String PENGATURAN_SALDO_KASIR = "SALDO KASIR";
+
 
     private final String KOMISI_JASA_LAIN = "KOMISI JASA LAIN";
     private final String KOMISI_LAYANAN = "KOMISI LAYANAN";
@@ -604,7 +606,16 @@ public class MenuActivity extends AppActivity implements InstallStateUpdatedList
                 showWarning("ANDA TIDAK MEMILIKI AKSES " + PENGATURAN_PROFILE);
 
             }
-        } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_LOKASI_PART)) {
+        } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_SALDO_KASIR)) {
+            if (getAccess(PENGATURAN)) {
+                Intent intent = new Intent(MenuActivity.this, Saldo_Activity.class);
+                intent.putExtra("KASIR", "");
+                startActivity(intent);
+            } else {
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + PENGATURAN_SALDO_KASIR);
+
+            }
+        }else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_LOKASI_PART)) {
             if(getAccess(MY_BUSINESS)){
                 Intent intent = new Intent(MenuActivity.this, LokasiPart_Activity.class);
                 startActivity(intent);
@@ -934,6 +945,7 @@ public class MenuActivity extends AppActivity implements InstallStateUpdatedList
         subMenu.add(PENGATURAN_USER_REKENING);
         subMenu.add(PENGATURAN_USER_TENDA);
         subMenu.add(PENGATURAN_PROFILE);
+        subMenu.add(PENGATURAN_SALDO_KASIR);
 
         subMenu = menu.addSubMenu(DISCOUNT);
         //subMenu.add(DISCOUNT_JASA_LAIN);

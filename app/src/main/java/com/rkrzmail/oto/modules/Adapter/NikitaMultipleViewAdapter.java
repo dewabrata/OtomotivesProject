@@ -7,14 +7,16 @@ import android.view.ViewGroup;
 
 import com.naa.data.Nson;
 
+import java.util.List;
+
 public class NikitaMultipleViewAdapter extends RecyclerView.Adapter<NikitaViewHolder> {
 
     public static final int ITEM_VIEW_1 = 1;
     public static final int ITEM_VIEW_2 = 2;
     Nson nson;
+    List<Nson> nsonList;
     int rlayout;
     int rlayout2;
-
 
     public NikitaMultipleViewAdapter(Nson nson, int rlayout, int rlayout2) {
         this.nson = nson;
@@ -28,10 +30,10 @@ public class NikitaMultipleViewAdapter extends RecyclerView.Adapter<NikitaViewHo
 
     @Override
     public final int getItemViewType(int position) {
-        if(!nson.get("PART").asString().isEmpty() || !nson.get("JASA_LAIN").asString().isEmpty()){
-            if(nson.get("PART").get(position).get("PARENT VIEW TYPE") != null && nson.get(position).get("PARENT VIEW TYPE").asInteger() == ITEM_VIEW_1) {
+        if(!nson.get(position).get("PART").asArray().isEmpty() || !nson.get(position).get("JASA_LAIN").asArray().isEmpty()){
+            if(nson.get(position).get("PART").get(position).get("PARENT VIEW TYPE") != null) {
                 return ITEM_VIEW_1;
-            }else if (nson.get("JASA_LAIN").get(position).get("PARENT VIEW TYPE") != null && nson.get(position).get("PARENT VIEW TYPE").asInteger() == ITEM_VIEW_2){
+            }else if (nson.get(position).get("JASA_LAIN").get(position).get("PARENT VIEW TYPE") != null){
                 return ITEM_VIEW_2;
             }else{
                 return position;

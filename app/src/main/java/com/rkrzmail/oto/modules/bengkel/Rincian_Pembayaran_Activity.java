@@ -439,6 +439,11 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             find(R.id.tv_layanan, TextView.class).setText((result.get(i).get("LAYANAN").asString()));
             find(R.id.tv_nopol, TextView.class).setText(formatNopol(result.get(i).get("NOPOL").asString()));
             find(R.id.tv_frek, TextView.class).setText((result.get(i).get("FREKWENSI").asString()));
+
+            find(R.id.et_tgl_garansi, EditText.class).setText(result.get(i).get("MAX_GARANSI_HARI").asString());
+            find(R.id.et_km_garansi, TextView.class).setText((result.get(i).get("MAX_GARANSI_KM").asString()));
+            find(R.id.et_tgl_afs, EditText.class).setText(result.get(i).get("MAX_AFS_HARI").asString());
+            find(R.id.et_km_afs, TextView.class).setText((result.get(i).get("MAX_AFS_KM").asString()));
         }
 
         parseBiayaSimpan();

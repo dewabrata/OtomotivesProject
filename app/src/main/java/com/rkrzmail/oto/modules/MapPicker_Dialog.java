@@ -175,59 +175,60 @@ public class MapPicker_Dialog extends DialogFragment implements OnMapReadyCallba
         getDialog().getWindow().setAttributes(params);
     }
 
+
     @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        if (checkPermission()) {
-            map = googleMap;
-            map.setPadding(10, 180, 10, 10);
-            map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-            map.setMyLocationEnabled(true);
-            map.getUiSettings().setCompassEnabled(true);
-            map.getUiSettings().setZoomGesturesEnabled(true);
-            map.getUiSettings().setRotateGesturesEnabled(false);
-            //map.getUiSettings().setZoomControlsEnabled(true);
-            map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
-                LatLng latLng;
+        map = googleMap;
+        map.setPadding(10, 180, 10, 10);
+        map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        map.setMyLocationEnabled(true);
+        map.getUiSettings().setCompassEnabled(true);
+        map.getUiSettings().setZoomGesturesEnabled(true);
+        map.getUiSettings().setRotateGesturesEnabled(false);
+        //map.getUiSettings().setZoomControlsEnabled(true);
+        map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+            LatLng latLng;
 
-                @Override
-                public void onMarkerDragStart(Marker marker) {
-                    latLng = marker.getPosition();
-                }
+            @Override
+            public void onMarkerDragStart(Marker marker) {
+                latLng = marker.getPosition();
+            }
 
-                @Override
-                public void onMarkerDrag(Marker marker) {
-                    map.clear();
-                    latLng = marker.getPosition();
+            @Override
+            public void onMarkerDrag(Marker marker) {
+                map.clear();
+                latLng = marker.getPosition();
                /* map.addMarker(new MarkerOptions()
                         .title("Lokasi Anda")
                         .position(latLng)
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));*/
-                }
+            }
 
-                @Override
-                public void onMarkerDragEnd(Marker marker) {
+            @Override
+            public void onMarkerDragEnd(Marker marker) {
 
-                }
-            });
+            }
+        });
 
-            locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
-            locationListener = new LocationListener() {
-                @Override
-                public void onLocationChanged(@NonNull Location location) {
-                    locationSelected = new LatLng(location.getLatitude(), location.getLongitude());
-                    map.clear();
-                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(locationSelected, 16));
-                    map.addMarker(new MarkerOptions()
-                            .title("Lokasi Anda")
-                            .position(locationSelected)
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-                }
-            };
+        locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(@NonNull Location location) {
+                locationSelected = new LatLng(location.getLatitude(), location.getLongitude());
+                map.clear();
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(locationSelected, 16));
+                map.addMarker(new MarkerOptions()
+                        .title("Lokasi Anda")
+                        .position(locationSelected)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+            }
+        };
 
 
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-            Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if(lastLocation != null){
             locationSelected = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
             map.clear();
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(locationSelected, 16));
@@ -235,49 +236,24 @@ public class MapPicker_Dialog extends DialogFragment implements OnMapReadyCallba
                     .title("Lokasi Anda")
                     .position(locationSelected)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-        } else {
-            requestPermission();
         }
     }
 
 
     private void takeLocation() {
-        final double latitude = locationSelected.latitude;
-        final double longtitude = locationSelected.longitude;
+        if(locationSelected != null){
+            final double latitude = locationSelected.latitude;
+            final double longtitude = locationSelected.longitude;
 
-        getLatitude = String.valueOf(latitude);
-        getLongitude = String.valueOf(longtitude);
-        if (getLocation != null) {
-            getLocation.getLatLong(getLatitude, getLongitude);
-        }
-
-        dismiss();
-    }
-
-    int REQUEST_LOCATION = 8765;
-
-    private boolean checkPermission() {
-        return ActivityCompat.checkSelfPermission(activity, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(activity, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void requestPermission() {
-        ActivityCompat.requestPermissions(activity, new String[]{ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_LOCATION) {
-            if (grantResults.length > 0 && (grantResults[0] == PackageManager.PERMISSION_GRANTED || grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
-                if (checkPermission()) {
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-                } else {
-                    activity.showWarning("Anda Harus Mengijinkan Akses Lokasi!");
-                }
+            getLatitude = String.valueOf(latitude);
+            getLongitude = String.valueOf(longtitude);
+            if (getLocation != null) {
+                getLocation.getLatLong(getLatitude, getLongitude);
             }
+            dismiss();
         }
     }
+
 
     @Override
     public void onDestroy() {

@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,7 +19,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.Html;
+import android.text.InputType;
+import android.text.Selection;
 import android.text.TextWatcher;
+import android.text.method.DigitsKeyListener;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -200,6 +204,9 @@ public class LoginActivity extends AppActivity {
                 int counting = (s == null) ? 0 : s.toString().length();
                 if (counting == 0) {
                     find(R.id.tl_user, TextInputLayout.class).setErrorEnabled(false);
+                }else if(counting < 4){
+                    find(R.id.user, EditText.class).setText("+62 ");
+                    Selection.setSelection(find(R.id.user, EditText.class).getText(), find(R.id.user, EditText.class).getText().length());
                 } else if (counting < 12) {
                     find(R.id.tl_user, TextInputLayout.class).setError("No. Hp Min. 6 Karakter");
                     find(R.id.user, EditText.class).requestFocus();

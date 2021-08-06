@@ -237,6 +237,12 @@ public class Otp_Activity extends AppActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(getActivity(), LoginActivity.class));
+        finish();
+    }
+
     private void login(final String otp) {
         MessageMsg.showProsesBar(getActivity(), new Messagebox.DoubleRunnable() {
             String sResult;

@@ -28,7 +28,6 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.fragment.PageAdapter;
 import com.rkrzmail.oto.fragment.SlideFragment;
 import com.rkrzmail.oto.fragment.pageindicator.CirclePageIndicator;
-import com.rkrzmail.oto.gmod.MessageWA;
 import com.rkrzmail.oto.modules.LoginActivity;
 import com.rkrzmail.oto.modules.mekanik.BiayaMekanik2Activity;
 import com.rkrzmail.oto.modules.discount.DiscountPart_Activity;
@@ -125,8 +124,7 @@ public class HomeActivity extends MenuActivity{
                     Intent intent =  new Intent(HomeActivity.this, PartSearchActivity.class);
                     startActivity(intent);
                 }else if (nPopulate.get(position).get("id").asInteger() == MN_MESSAGE_WA){
-                    Intent intent =  new Intent(HomeActivity.this, MessageWA.class);
-                    startActivity(intent);
+
                 }
 //                else if (nPopulate.get(position).get("id").asInteger() == MN_BIAYA_MEKANIK) {
 //                    Intent intent = new Intent(HomeActivity.this, BiayaMekanikActivity.class);

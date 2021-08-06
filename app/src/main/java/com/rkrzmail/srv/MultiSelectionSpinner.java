@@ -38,6 +38,7 @@ public class MultiSelectionSpinner extends Spinner implements
     boolean[] mSelectionBool = null;
     boolean[] mSelectionAtStartBool = null;
     boolean isDiabledAll = false;
+    boolean isAll = false;
     String _itemsAtStart = null;
 
     ArrayAdapter<String> simple_adapter;
@@ -55,6 +56,7 @@ public class MultiSelectionSpinner extends Spinner implements
 
         simple_adapter = new ArrayAdapter<>(context,
                 android.R.layout.simple_spinner_item);
+
         super.setAdapter(simple_adapter);
     }
 
@@ -183,6 +185,7 @@ public class MultiSelectionSpinner extends Spinner implements
 
         simple_adapter.clear();
         simple_adapter.add(buildSelectedItemString());
+        builder.setMultiChoiceItems(_items, mSelectionBool, this);
     }
 
     public void setSelection(String[] selection) {
@@ -200,6 +203,11 @@ public class MultiSelectionSpinner extends Spinner implements
         }
         simple_adapter.clear();
         simple_adapter.add(buildSelectedItemString());
+    }
+
+    public boolean isAll(boolean isAll){
+        this.isAll = isAll;
+        return this.isAll;
     }
 
     public void setDisabled(){

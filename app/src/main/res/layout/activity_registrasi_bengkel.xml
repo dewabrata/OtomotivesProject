@@ -198,19 +198,17 @@
                     android:textStyle="bold"
                     android:textSize="12sp"/>
 
-                <RelativeLayout
+                <Button
+                    android:id="@+id/btn_merk_kendaraan"
                     android:layout_width="0dp"
                     android:layout_height="34dp"
                     android:layout_weight="6"
-                    android:background="@drawable/background_edittext">
-
-                    <com.rkrzmail.srv.MultiSelectionSpinner
-                        android:id="@+id/sp_merkKendaraan_regist"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:textAlignment="center" />
-
-                </RelativeLayout>
+                    android:background="@drawable/background_edittext"
+                    android:drawableEnd="@drawable/ic_arrow_down"
+                    android:drawablePadding="5dp"
+                    android:padding="5dp"
+                    android:drawableTint="@color/grey_800"
+                    android:textAlignment="center" />
 
             </LinearLayout>
 

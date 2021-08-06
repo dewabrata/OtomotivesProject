@@ -113,9 +113,9 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
     private final Nson partIdList = Nson.newArray();
     private final Nson keluhanList = Nson.newArray();
     private final Nson partJasaList = Nson.newArray();
-    private Nson pointLayananList = Nson.newArray();
-    private Nson rekomendasiPartList = Nson.newArray();
-    private Nson rekomendasiJasaList = Nson.newArray();
+    private final Nson pointLayananList = Nson.newArray();
+    private final Nson rekomendasiPartList = Nson.newArray();
+    private final Nson rekomendasiJasaList = Nson.newArray();
 
     private Nson data;
 
@@ -1235,7 +1235,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
 
             @Override
             public void run() {
-                String[] args = new String[10];
+                String[] args = new String[4];
                 args[0] = "CID=" + UtilityAndroid.getSetting(getApplicationContext(), "CID", "").trim();
                 args[1] = "nopol=" + nopol;
                 args[2] = "pekerjaan=" + pekerjaan;

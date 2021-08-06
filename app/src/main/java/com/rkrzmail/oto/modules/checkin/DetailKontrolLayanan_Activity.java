@@ -114,6 +114,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
     private boolean isMekanikSelected = false;
     private boolean isEstimasi = false, isKonfirmasiTambahan = false;
     private boolean isModifiedTidakMenunggu = false;
+    private boolean isLoadMenunggu;
 
     private String idCheckin = "", idAntrian = "";
     private String status = "";
@@ -230,9 +231,10 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         etNamaLayanan.setText(data.get("LAYANAN").asString());
         tvNamaLayanan.setText(data.get("LAYANAN").asString());
         tvBiayaLayanan.setText(RP + formatRp(formatOnlyNumber(data.get("BIAYA_LAYANAN").asString())));
+        isLoadMenunggu = data.get("PELANGGAN_TIDAK_MENUNGGU").asString().equals("Y");
 
         find(R.id.btn_history).setEnabled(!data.get("TOTAL_SERVICE").asString().isEmpty());
-        find(R.id.cb_tidak_menunggu, CheckBox.class).setChecked(data.get("PELANGGAN_TIDAK_MENUNGGU").asString().equals("Y"));
+        find(R.id.cb_tidak_menunggu, CheckBox.class).setChecked(isLoadMenunggu);
         find(R.id.cb_tungguConfirm_biaya, CheckBox.class).setChecked(data.get("TUNGGU_KONFIRMASI_BIAYA").asString().equals("Y"));
         find(R.id.cb_konfirm_tambah, CheckBox.class).setChecked(data.get("KONFIRMASI_TAMBAHAN").asString().equals("Y"));
         find(R.id.cb_buangPart, CheckBox.class).setChecked(data.get("BUANG_PART").asString().equals("Y"));
@@ -575,7 +577,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
                 isMekanik = status.equals("PENUGASAN MEKANIK") || status.equals("GANTI MEKANIK") || !isMekanikSelected;
                 Tools.setViewAndChildrenEnabled(find(R.id.ly_nama_mekanik, LinearLayout.class), status.equals("PENUGASAN MEKANIK") || status.equals("GANTI MEKANIK") || !isMekanikSelected);
 
-                if(position == 0){
+                if (position == 0) {
                     spNamaMekanik.setSelection(0);
                 }
 
@@ -1030,9 +1032,9 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         imgDepan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(imgDepan.getDrawable() == getResources().getDrawable(R.drawable.icon_camera_fill)){
+                if (imgDepan.getDrawable() == getResources().getDrawable(R.drawable.icon_camera_fill)) {
                     showWarning("FOTO KONDISI DEPAN TIDAK TERSEDIA");
-                }else{
+                } else {
                     showDialogPreviewFoto("Depan", getBitmap(imgDepan));
                 }
             }
@@ -1041,9 +1043,9 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         imgBelakang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(imgBelakang.getDrawable() == getResources().getDrawable(R.drawable.icon_camera_fill)){
+                if (imgBelakang.getDrawable() == getResources().getDrawable(R.drawable.icon_camera_fill)) {
                     showWarning("FOTO KONDISI DEPAN TIDAK TERSEDIA");
-                }else{
+                } else {
                     showDialogPreviewFoto("Belakang", getBitmap(imgBelakang));
                 }
             }
@@ -1052,9 +1054,9 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         imgKanan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(imgKanan.getDrawable() == getResources().getDrawable(R.drawable.icon_camera_fill)){
+                if (imgKanan.getDrawable() == getResources().getDrawable(R.drawable.icon_camera_fill)) {
                     showWarning("FOTO KONDISI DEPAN TIDAK TERSEDIA");
-                }else{
+                } else {
                     showDialogPreviewFoto("Kanan", getBitmap(imgKanan));
                 }
             }
@@ -1063,9 +1065,9 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         imgKiri.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(imgKiri.getDrawable() == getResources().getDrawable(R.drawable.icon_camera_fill)){
+                if (imgKiri.getDrawable() == getResources().getDrawable(R.drawable.icon_camera_fill)) {
                     showWarning("FOTO KONDISI DEPAN TIDAK TERSEDIA");
-                }else{
+                } else {
                     showDialogPreviewFoto("Kiri", getBitmap(imgKiri));
                 }
             }
@@ -1074,9 +1076,9 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         imgTambahan1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(imgTambahan1.getDrawable() == getResources().getDrawable(R.drawable.icon_camera_fill)){
+                if (imgTambahan1.getDrawable() == getResources().getDrawable(R.drawable.icon_camera_fill)) {
                     showWarning("FOTO KONDISI DEPAN TIDAK TERSEDIA");
-                }else{
+                } else {
                     showDialogPreviewFoto("Tambahan 1", getBitmap(imgTambahan1));
                 }
             }
@@ -1085,9 +1087,9 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         imgTambahan2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(imgTambahan2.getDrawable() == getResources().getDrawable(R.drawable.icon_camera_fill)){
+                if (imgTambahan2.getDrawable() == getResources().getDrawable(R.drawable.icon_camera_fill)) {
                     showWarning("FOTO KONDISI DEPAN TIDAK TERSEDIA");
-                }else{
+                } else {
                     showDialogPreviewFoto("Tambahan 2", getBitmap(imgTambahan2));
                 }
             }
@@ -1137,7 +1139,7 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle("Preview " + tittle);
 
-        if(bitmap != null){
+        if (bitmap != null) {
             img.setImageBitmap(bitmap);
         }
 
@@ -1164,11 +1166,17 @@ public class DetailKontrolLayanan_Activity extends AppActivity {
     }
 
     private void updateData(final String idCheckin) {
-        if (status.contains("MESSAGE") || status.equals("DATA KENDARAAN") || status.equals("--PILIH--")) {
-            setResult(RESULT_OK);
-            finish();
-            return;
+        boolean isChangeMenunggu = isLoadMenunggu != find(R.id.cb_tidak_menunggu, CheckBox.class).isChecked();
+        if (!isChangeMenunggu) {
+            if ((status.contains("MESSAGE") ||
+                    status.equals("DATA KENDARAAN") ||
+                    status.equals("--PILIH--"))) {
+                setResult(RESULT_OK);
+                finish();
+                return;
+            }
         }
+
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             String tglAmbil = find(R.id.tv_tgl_ambil, TextView.class).getText().toString();

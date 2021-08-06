@@ -130,27 +130,6 @@ public class AturGajiUser_User_Fragment extends Fragment {
         etLemburPerJam.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etLemburPerJam));
         etUpah.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etUpah));
         etPotongan.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etPotongan));
-        spSatuanGaji.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                satuanGaji = adapterView.getItemAtPosition(i).toString();
-                cbAlpha.setEnabled(satuanGaji.equals("BULAN"));
-                etPotongan.setEnabled(!satuanGaji.equals("JAM"));
-                Tools.setViewAndChildrenEnabled(activity.findView(fragmentView, R.id.rl_tgl_gaji, RelativeLayout.class), satuanGaji.equals("BULAN"));
-
-                if (satuanGaji.equals("BULAM")) {
-                    cbAlpha.setChecked(false);
-                }
-                if (satuanGaji.equals("JAM")) {
-                    etPotongan.setText("");
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
 
         spNamaBank.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -189,6 +168,43 @@ public class AturGajiUser_User_Fragment extends Fragment {
         activity.setSpinnerOffline(Arrays.asList("HARI", "MINGGU", "BULAN"), spPeriodeGajian, tglGaji);
         activity.setSpinnerOffline(Arrays.asList("--PILIH--", "JAM", "HARI", "BULAN"), spSatuanGaji, satuanGaji);
         activity.setSpinnerFromApi(spNamaBank, "nama", "NAMA BANK", VIEW_MST, "BANK_NAME", namaBank);
+
+        spSatuanGaji.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                satuanGaji = adapterView.getItemAtPosition(i).toString();
+                cbAlpha.setEnabled(satuanGaji.equals("BULAN"));
+                etPotongan.setEnabled(!satuanGaji.equals("JAM"));
+
+                if (satuanGaji.equals("BULAM")) {
+                    cbAlpha.setChecked(false);
+                }
+                if (satuanGaji.equals("JAM")) {
+                    etPotongan.setText("");
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        spPeriodeGajian.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String item = parent.getItemAtPosition(position).toString();
+                Tools.setViewAndChildrenEnabled(activity.findView(fragmentView, R.id.rl_tgl_gaji, RelativeLayout.class), item.equals("BULAN"));
+                if(!item.equals("BULAN")){
+                    spTglGaji.setSelection(0);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     private void saveData(final boolean isUpdate) {

@@ -114,7 +114,7 @@
                             android:layout_height="match_parent"
                             android:background="@android:color/transparent"
                             android:hint="@string/no_ponsel_uppercase"
-                            android:inputType="phone"
+                            android:inputType="number"
                             android:padding="15dp"
                             android:textColor="@android:color/black" />
 
