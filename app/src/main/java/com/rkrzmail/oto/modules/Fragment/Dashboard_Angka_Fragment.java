@@ -63,7 +63,7 @@ public class Dashboard_Angka_Fragment extends Fragment {
             totalPendapatanLain = 0, totalDonasi = 0, totalPenjualanHarian = 0,
             totalRataRataCheckin = 0, totalRataRataJualPart = 0, totalOutsource = 0,
             totalClaim = 0, totalPartKosong = 0, totalBelanjaPart = 0,
-            totalHutangKomisi = 0, totalHutangPPN = 0;
+            totalHutangKomisi = 0, totalHutangPPN = 0, totalBatal = 0;
 
     private double totalPercentMarginPartHarian = 0, totalUnitHarian = 0, totalPending = 0,  totalKasBank = 0;
 
@@ -230,6 +230,7 @@ public class Dashboard_Angka_Fragment extends Fragment {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     result = result.get("data").get(0);
 
+                    totalBatal = result.get("TOTAL_BATAL").asInteger();
                     totalHutangPPN = result.get("TOTAL_HUTANG_PPN").asInteger();
                     totalHutangKomisi = result.get("TOTAL_HUTANG_KOMISI").asInteger();
                     totalBelanjaPart = result.get("TOTAL_BELANJA_PART").asInteger();
@@ -296,7 +297,7 @@ public class Dashboard_Angka_Fragment extends Fragment {
         tvRPLayanan.setText(activity.setUnderline(String.valueOf(jumlahLayanan)));
         tvRPJualPart.setText(activity.setUnderline(String.valueOf(totalJualPart)));
         tvHariKerja.setText(activity.setUnderline(String.valueOf(totalHariKerja)));
-        tvRPBatal.setText(activity.setUnderline("0"));
+        tvRPBatal.setText(activity.setUnderline(String.valueOf(totalBatal)));
         tvPercentMarginPartHarian.setText(activity.setUnderline(String.valueOf((totalPercentMarginPartHarian))));
         tvRpPenjualanHarian.setText(activity.setUnderline(RP + NumberFormatUtils.formatRp(String.valueOf(totalPenjualanHarian))));
         tvUnitHarian.setText(activity.setUnderline(String.valueOf(totalUnitHarian)));

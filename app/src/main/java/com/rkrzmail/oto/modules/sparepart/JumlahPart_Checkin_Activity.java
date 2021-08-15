@@ -646,10 +646,10 @@ public class JumlahPart_Checkin_Activity extends AppActivity implements View.OnC
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.img_clear:
-                etHargaJual.setText("");
+                etHargaJual.setText(NumberFormatUtils.formatRp(0));
                 break;
             case R.id.img_clear2:
-                etBiayaJasa.setText("");
+                etBiayaJasa.setText(NumberFormatUtils.formatRp(0));
                 break;
             case R.id.btn_img_waktu_inspeksi:
                 if (inspeksi.equals("Y")) {

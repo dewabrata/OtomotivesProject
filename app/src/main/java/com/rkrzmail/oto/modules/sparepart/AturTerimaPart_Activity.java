@@ -1,5 +1,6 @@
 package com.rkrzmail.oto.modules.sparepart;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -51,8 +52,6 @@ import java.util.Map;
 
 import in.galaxyofandroid.spinerdialog.SpinnerDialog;
 
-import static android.Manifest.permission.READ_CONTACTS;
-import static android.Manifest.permission.WRITE_CONTACTS;
 import static com.rkrzmail.utils.APIUrls.GET_BENGKEL_PRINCIPAL;
 import static com.rkrzmail.utils.APIUrls.JURNAL_KAS;
 import static com.rkrzmail.utils.APIUrls.SET_REKENING_BANK;
@@ -130,7 +129,7 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
         initAutoCompletePerusahaan();
 
         etOngkir.addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(etOngkir));
-        
+
         tvTglPesan.setOnClickListener(this);
         tvTglTerima.setOnClickListener(this);
         tvTglJatuhTempo.setOnClickListener(this);
@@ -613,8 +612,7 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
     @SuppressLint("IntentReset")
     private void getContactPhone() {
         if (!checkContactPermission()) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{READ_CONTACTS,
-                    WRITE_CONTACTS}, PERMISSION_REQUEST_CODE);
+            requestContactPermission();
         } else {
             try {
                 Uri uri = Uri.parse("content://contacts");
@@ -628,8 +626,12 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
     }
 
     private boolean checkContactPermission() {
-        return ContextCompat.checkSelfPermission(this, READ_CONTACTS) != PackageManager.PERMISSION_GRANTED
-                || ContextCompat.checkSelfPermission(this, WRITE_CONTACTS) != PackageManager.PERMISSION_GRANTED;
+        return ContextCompat.checkSelfPermission(this, Manifest.permission_group.CONTACTS)
+                == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestContactPermission() {
+        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS}, PERMISSION_REQUEST_CODE);
     }
 
 
@@ -663,9 +665,19 @@ public class AturTerimaPart_Activity extends AppActivity implements View.OnClick
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+       // super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSION_REQUEST_CODE) {
-            getContactPhone();
+            if(permissions.length > 0){
+                for(int value : grantResults){
+                    if (value == PackageManager.PERMISSION_GRANTED) {
+                        getContactPhone();
+                    } else {
+                        showWarning("Anda Harus Mengijinkan Aplikasi Mengakses Kontak!");
+                    }
+                }
+            }else{
+                showWarning("Anda Harus Mengijinkan Aplikasi Mengakses Kontak!");
+            }
         }
     }
 

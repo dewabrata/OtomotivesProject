@@ -1043,10 +1043,12 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 if (jasaList.asArray().isEmpty() && partList.asArray().isEmpty() && spLayanan.getSelectedItem().toString().equals("PERAWATAN LAINNYA")) {
                     showWarning("PART - JASA HARUS DI MASUKKAN", Toast.LENGTH_LONG);
                 } else {
-                    // Check in Antrian (CHECKIN 4), layanan estimasi status (LAYANAN ESTIMASI ISCHECKED()), TUNGGU KONFIRMASI (TUNGGU KONFIRMASI ISCHECKED())
-                    showDialogPart();
+                    if(jasaList.asArray().isEmpty() || partList.asArray().isEmpty()){
+                        setSelanjutnya("CHECKIN 3", "");
+                    }else{
+                        showDialogPart();
+                    }
                 }
-
                 break;
             case R.id.btn_batal_checkin3:
                 //batal

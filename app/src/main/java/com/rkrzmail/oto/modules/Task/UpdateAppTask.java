@@ -1,12 +1,16 @@
 package com.rkrzmail.oto.modules.Task;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.View;
@@ -37,11 +41,14 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static com.rkrzmail.utils.APIUrls.SET_LOGIN;
 import static com.rkrzmail.utils.ConstUtils.EXTERNAL_DIR_OTO;
 
@@ -60,6 +67,11 @@ public class UpdateAppTask {
     public void excuteVersionChecker(Activity activity) {
         VersionCheckerAsync versionCheckerAsync = new VersionCheckerAsync(activity);
         versionCheckerAsync.execute();
+    }
+
+    public void directDownloadUpdateApp(){
+        VersionCheckerAsync versionCheckerAsync = new VersionCheckerAsync(activity);
+        versionCheckerAsync.updateApp();
     }
 
     private static class VersionCheckerAsync extends AsyncTask<String, String, String> {
@@ -162,7 +174,7 @@ public class UpdateAppTask {
 
         long downloadedsize, filesize;
 
-        private void updateApp(){
+        public void updateApp(){
             final ProgressDialog mProgressDialog = new ProgressDialog(activity[0]);
             mProgressDialog.setIndeterminate(true);
             mProgressDialog.setMessage("Downloading Update");
@@ -173,58 +185,62 @@ public class UpdateAppTask {
                 @Override
                 public void run() {
                     try {
-                        @SuppressLint("SdCardPath") File file = new File("/sdcard/Otomotives/");
-                        boolean isCreateDir = file.mkdirs();
-                        if (!isCreateDir)
-                            Log.d("isCreateDir", "doInBackground: " + "create directory fail");
+                        if(reqStoragePermission()){
+                            @SuppressLint("SdCardPath") File file = new File("/sdcard/Otomotives/");
+                            boolean isCreateDir = file.mkdirs();
+                            if (!isCreateDir)
+                                Log.d("isCreateDir", "doInBackground: " + "create directory fail");
 
-                        File outputFile = new File(file, "otomotives.apk");
-                        if (outputFile.exists()) {
-                            boolean isDelete = outputFile.delete();
-                            if (!isDelete)
-                                Log.d("isDelete", "doInBackground: " + "delete fail.");
-                        }
-
-                        Map<String, String> args = AppApplication.getInstance().getArgsData();
-                        args.put("action", "view");
-                        Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("MobileVersion"), args));
-                        result = result.get("data").get(0);
-
-                        URL url = new URL(result.get("LINK_DOWNLOAD").asString());
-                        URLConnection connection = url.openConnection();
-                        connection.connect();
-                        InputStream input = new BufferedInputStream(url.openStream(), 8192);
-                        OutputStream output = new FileOutputStream(outputFile);
-
-                        byte[] data = new byte[1024];
-                        filesize = connection.getContentLength();
-                        int len1 = 0;
-                        int progress = 0;
-
-                        while ((len1 = input.read(data)) != -1) {
-                            downloadedsize += len1;
-                            int progress_temp = (int) (downloadedsize * 100 / filesize);
-                            if (progress_temp % 10 == 0 && progress != progress_temp) {
-                                progress = progress_temp;
+                            File outputFile = new File(file, "otomotives.apk");
+                            if (outputFile.exists()) {
+                                boolean isDelete = outputFile.delete();
+                                if (!isDelete)
+                                    Log.d("isDelete", "doInBackground: " + "delete fail.");
                             }
-                            activity[0].runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mProgressDialog.setProgressNumberFormat((bytes2String(downloadedsize)) + "/" + (bytes2String(filesize)));
-                                    mProgressDialog.show();
+
+                            Map<String, String> args = AppApplication.getInstance().getArgsData();
+                            args.put("action", "view");
+                            Nson result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("MobileVersion"), args));
+                            result = result.get("data").get(0);
+
+                            URL url = new URL(result.get("LINK_DOWNLOAD").asString());
+                            URLConnection connection = url.openConnection();
+                            connection.connect();
+                            InputStream input = new BufferedInputStream(url.openStream(), 8192);
+                            OutputStream output = new FileOutputStream(outputFile);
+
+                            byte[] data = new byte[1024];
+                            filesize = connection.getContentLength();
+                            int len1 = 0;
+                            int progress = 0;
+
+                            while ((len1 = input.read(data)) != -1) {
+                                downloadedsize += len1;
+                                int progress_temp = (int) (downloadedsize * 100 / filesize);
+                                if (progress_temp % 10 == 0 && progress != progress_temp) {
+                                    progress = progress_temp;
                                 }
-                            });
+                                activity[0].runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mProgressDialog.setProgressNumberFormat((bytes2String(downloadedsize)) + "/" + (bytes2String(filesize)));
+                                        mProgressDialog.show();
+                                    }
+                                });
 
-                            output.write(data, 0, len1);
-                        }
+                                output.write(data, 0, len1);
+                            }
 
-                        output.flush();
-                        output.close();
-                        @SuppressLint("SetWorldReadable") boolean isReadable = outputFile.setReadable(true, false);
-                        if(!isReadable){
-                            Log.d("isReadable", "doInBackground: " + "cannot read.");
+                            output.flush();
+                            output.close();
+                            @SuppressLint("SetWorldReadable") boolean isReadable = outputFile.setReadable(true, false);
+                            if(!isReadable){
+                                Log.d("isReadable", "doInBackground: " + "cannot read.");
+                            }
+                            input.close();
+                        }else{
+                            ((AppActivity)activity[0]).showWarning("Izinkan Aplikasi untuk mengakses berkas!");
                         }
-                        input.close();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -269,6 +285,26 @@ public class UpdateAppTask {
                 return sizeInBytes + " Byte(s)";
             }
 
+        }
+
+        public final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
+        private boolean reqStoragePermission(){
+            List<String> listPermissionsNeeded = new ArrayList<>();
+            int WritePermision = ContextCompat.checkSelfPermission(activity[0], android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            int readExternalPermission = ContextCompat.checkSelfPermission(activity[0], READ_EXTERNAL_STORAGE);
+
+            if(WritePermision != PackageManager.PERMISSION_GRANTED || readExternalPermission != PackageManager.PERMISSION_GRANTED){
+                if (WritePermision != PackageManager.PERMISSION_GRANTED) {
+                    listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                }
+                if (readExternalPermission != PackageManager.PERMISSION_GRANTED) {
+                    listPermissionsNeeded.add(READ_EXTERNAL_STORAGE);
+                }
+                ActivityCompat.requestPermissions(activity[0], listPermissionsNeeded.toArray(new String[0]), REQUEST_ID_MULTIPLE_PERMISSIONS);
+                return false;
+            }else{
+                return true;
+            }
         }
     }
 }

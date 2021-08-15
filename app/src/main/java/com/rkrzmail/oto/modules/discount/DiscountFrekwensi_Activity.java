@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -33,7 +34,7 @@ import static com.rkrzmail.utils.APIUrls.DISCOUNT_FREKWENSI;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 
-public class FrekwensiDiscount_Activity extends AppActivity {
+public class DiscountFrekwensi_Activity extends AppActivity {
 
     private RecyclerView rvFreDisc;
 
@@ -83,14 +84,22 @@ public class FrekwensiDiscount_Activity extends AppActivity {
                     }
                 })
         );
-        catchData("");
+
+        find(R.id.swiperefresh, SwipeRefreshLayout.class).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                viewData("");
+            }
+        });
+        viewData("");
     }
 
-    private void catchData(final String cari) {
+    private void viewData(final String cari) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
             @Override
             public void run() {
+                swipeProgress(true);
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
                 args.put("action", "view");
                 args.put("search", cari);
@@ -98,6 +107,7 @@ public class FrekwensiDiscount_Activity extends AppActivity {
             }
             @Override
             public void runUI() {
+                swipeProgress(false);
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
                     nListArray.asArray().clear();
                     nListArray.asArray().addAll(result.get("data").asArray());
@@ -140,7 +150,7 @@ public class FrekwensiDiscount_Activity extends AppActivity {
             public boolean onQueryTextSubmit(String query) {
                 //searchMenu.collapseActionView();
                 //filter(null);
-                catchData(query);
+                viewData(query);
                 return true;
             }
         };
@@ -153,7 +163,7 @@ public class FrekwensiDiscount_Activity extends AppActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_DETAIL) {
-                catchData("");
+                viewData("");
             }
         }
     }

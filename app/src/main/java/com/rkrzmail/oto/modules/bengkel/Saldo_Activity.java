@@ -217,11 +217,10 @@ public class Saldo_Activity extends AppActivity {
                     viewHolder.find(R.id.tv_no_rek, TextView.class).setVisibility(View.GONE);
                     viewHolder.find(R.id.tv_nama_bank, TextView.class).setVisibility(View.GONE);
 
-                    viewHolder.find(R.id.tv_akun, TextView.class).setText(saldoList.get(position).get("AKUN").asString());
+                    viewHolder.find(R.id.tv_akun, TextView.class).setText(saldoList.get(position).get("NAMA").asString());
                     viewHolder.find(R.id.tv_tanggal, TextView.class).setText(saldoList.get(position).get("CREATED_DATE").asString());
                     viewHolder.find(R.id.tv_saldo_akhir, TextView.class).setText(RP + NumberFormatUtils.formatRp(saldoList.get(position).get("SALDO_AKHIR").asString()));
                     viewHolder.find(R.id.tv_saldo_disesuaikan, TextView.class).setText(RP + NumberFormatUtils.formatRp(saldoList.get(position).get("SALDO_PENYESUAIAN").asString()));
-
                 }
             }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                 @Override
@@ -277,7 +276,7 @@ public class Saldo_Activity extends AppActivity {
                 String[] args = new String[3];
                 args[0] = "CID=" + UtilityAndroid.getSetting(getApplicationContext(), "CID", "").trim();
                 args[1] = "sortBy=" + sortBy;
-                args[2] = "isKasir=" + isKasir;
+                args[2] = "isKasir=" + (isKasir ? "Y" : "N");
                 result = Nson.readJson(InternetX.getHttpConnectionX(AppApplication.getBaseUrlV4(SALDO), args));
             }
 

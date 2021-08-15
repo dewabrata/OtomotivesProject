@@ -45,6 +45,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.naa.data.Nson;
+import com.naa.data.Utility;
 import com.naa.data.UtilityAndroid;
 import com.naa.utils.InternetX;
 import com.naa.utils.Messagebox;
@@ -187,10 +188,13 @@ public class Checkin1_Checkin_Fragment extends Fragment implements View.OnClickL
                 } else if (spPekerjaan.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
                     activity.setErrorSpinner(spPekerjaan, "Silahkan Pilih Pekerjaan");
                 } else {
-                    if(kmBitmap != null && etKm.getText().toString().isEmpty() ){
+                    if (kmBitmap != null && etKm.getText().toString().isEmpty()) {
                         etKm.setError("KM HARUS DI ISI");
                         activity.viewFocus(etKm);
-                    }else {
+                    } else if (((TextInputLayout) fragmentView.findViewById(R.id.tl_kode_pos)).isErrorEnabled()) {
+                        activity.viewFocus(fragmentView.findViewById(R.id.tl_kode_pos));
+
+                    } else {
                         setSelanjutnya();
                     }
                 }
@@ -307,6 +311,29 @@ public class Checkin1_Checkin_Fragment extends Fragment implements View.OnClickL
 
                 validateNoPonsel(NumberFormatUtils.formatOnlyNumber(etNoPonsel.getText().toString()));
                 etNoPonsel.addTextChangedListener(this);
+            }
+        });
+
+        ((EditText) fragmentView.findViewById(R.id.et_kode_pos)).addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String text = s.toString();
+                if(text.isEmpty()) return;
+                if (!Utility.isNumeric(text)) {
+                    ((TextInputLayout) fragmentView.findViewById(R.id.tl_kode_pos)).setError("KODE POS TIDAK VALID");
+                } else {
+                    ((TextInputLayout) fragmentView.findViewById(R.id.tl_kode_pos)).setErrorEnabled(false);
+                }
             }
         });
     }
@@ -671,7 +698,7 @@ public class Checkin1_Checkin_Fragment extends Fragment implements View.OnClickL
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    if(kmBitmap != null){
+                    if (kmBitmap != null) {
                         uploadFotoKm(result.get("data").get("CHECKIN_ID").asString());
                     }
 
@@ -905,7 +932,7 @@ public class Checkin1_Checkin_Fragment extends Fragment implements View.OnClickL
             @Override
             public void run() {
                 MultipartRequest request = new MultipartRequest(getActivity());
-                String name = activity.currentDateTime("ddMMyyyy") + "-" + etNopol.getText().toString() +  "-km.png";
+                String name = activity.currentDateTime("ddMMyyyy") + "-" + etNopol.getText().toString() + "-km.png";
 
                 request.addString("CID", activity.getSetting("CID"));
                 request.addString("nopol", etNopol.getText().toString());
@@ -980,7 +1007,7 @@ public class Checkin1_Checkin_Fragment extends Fragment implements View.OnClickL
                 .setPriority(Notification.PRIORITY_LOW);
 
         notificationManager.notify(notificationId, mBuilder.build());
-        if(isSuccessfuly){
+        if (isSuccessfuly) {
             notificationManager.cancel(notificationId);
         }
     }

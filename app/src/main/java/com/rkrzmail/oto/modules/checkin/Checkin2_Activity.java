@@ -61,7 +61,7 @@ public class Checkin2_Activity extends AppActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkin2);
-        if(!Tools.isNetworkAvailable(getActivity())){
+        if (!Tools.isNetworkAvailable(getActivity())) {
             showWarning("TIDAK ADA KONEKSI INTERNET", Toast.LENGTH_LONG);
         }
         initComponent();
@@ -105,7 +105,7 @@ public class Checkin2_Activity extends AppActivity {
             etKotaKab.setText(readCheckin.get("KOTA").asString());
             etWarna.setText(readCheckin.get("WARNA").asString());
             noHp = readCheckin.get("noPonsel").asString();
-        }else{
+        } else {
             viewDataKendaraan();
             merkKendaraan = getIntentStringExtra("MERK");
             noHp = getIntentStringExtra("NO_PONSEL");
@@ -176,9 +176,6 @@ public class Checkin2_Activity extends AppActivity {
                     if (etWarna.getText().toString().isEmpty()) {
                         etWarna.setError("Warna Wajib di Isi");
                         etWarna.requestFocus();
-                    } else if (etKodeTipe.getText().toString().isEmpty()) {
-                        etKodeTipe.setError("Kode Tipe Harus di Isi");
-                        etKodeTipe.requestFocus();
                     } else if (etNomesin.getText().toString().isEmpty()) {
                         etNomesin.setError("Kode Tipe Harus di Isi");
                         etNomesin.requestFocus();
@@ -195,7 +192,7 @@ public class Checkin2_Activity extends AppActivity {
                     } else if (tvTgl.isEnabled() && tvTgl.getText().toString().isEmpty()) {
                         showWarning("Tanggal Berisi Harus Di Isi");
                         tvTgl.performClick();
-                    }else{
+                    } else {
                         setSelanjutnya(readCheckin);
                     }
                 }
@@ -321,9 +318,9 @@ public class Checkin2_Activity extends AppActivity {
                 args.put("nopol", getIntentStringExtra("NOPOL"));
 
                 String nopolEditText = find(R.id.et_nopol, EditText.class).getText().toString().replace(" ", "");
-                if(getIntentStringExtra("NOPOL").equals(nopolEditText)){
+                if (getIntentStringExtra("NOPOL").equals(nopolEditText)) {
                     args.put("koreksiNopol", "");
-                }else{
+                } else {
                     args.put("koreksiNopol", nopolEditText);
                 }
 

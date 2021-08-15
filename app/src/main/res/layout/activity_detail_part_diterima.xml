@@ -194,7 +194,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:hint="@string/non_hpp_uppercase">
+                android:hint="@string/hpp_uppercase">
 
                 <EditText
                     android:id="@+id/et_non_hpp"

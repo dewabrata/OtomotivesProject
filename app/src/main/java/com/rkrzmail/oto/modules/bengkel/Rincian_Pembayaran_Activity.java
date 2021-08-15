@@ -213,7 +213,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             @Override
             public void onClick(View v) {
                 if (isLayanan || isDp) {
-                    if (noRangka.isEmpty() || noMesin.isEmpty() || kodeTipe.isEmpty()) {
+                    if (noRangka.isEmpty() || noMesin.isEmpty()) {
                         showError("Data Kendaraan Tidak Lengkap", Toast.LENGTH_LONG);
                         find(R.id.btn_data_kendaraan, Button.class).requestFocus();
                     } else {
