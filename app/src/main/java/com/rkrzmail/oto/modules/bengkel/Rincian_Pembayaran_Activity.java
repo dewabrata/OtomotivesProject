@@ -28,10 +28,14 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.BarcodeActivity;
 import com.rkrzmail.oto.modules.checkin.Checkin2_Activity;
 import com.rkrzmail.oto.modules.Adapter.NikitaMultipleViewAdapter;
 import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
 import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
+import com.rkrzmail.srv.DateFormatUtils;
+import com.rkrzmail.srv.MultipartRequest;
+import com.rkrzmail.srv.NikitaAutoComplete;
 import com.rkrzmail.srv.NumberFormatUtils;
 
 import java.text.ParseException;
@@ -41,6 +45,7 @@ import java.util.Map;
 import java.util.Objects;
 
 
+import static com.rkrzmail.utils.APIUrls.SAVE_OR_UPDATE_DISCOUNT_LOYALTY;
 import static com.rkrzmail.utils.APIUrls.VIEW_PEMBAYARAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_PERINTAH_KERJA_MEKANIK;
 import static com.rkrzmail.utils.ConstUtils.DATA;
@@ -48,6 +53,7 @@ import static com.rkrzmail.utils.ConstUtils.DAYS;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.ID;
 import static com.rkrzmail.utils.ConstUtils.ONEDAY;
+import static com.rkrzmail.utils.ConstUtils.REQUEST_BARCODE;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_DETAIL;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_KONFIRMASI;
 import static com.rkrzmail.utils.ConstUtils.REQUEST_NEW_CS;
@@ -157,6 +163,7 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                 Objects.requireNonNull(getSupportActionBar()).setTitle(RINCIAN_LAYANAN);
                 find(R.id.row_dp_persen).setVisibility(View.GONE);
                 find(R.id.row_sisa_dp_persen).setVisibility(View.GONE);
+                find(R.id.row_disc_loyalty).setVisibility(View.GONE);
             }
         } else if (data.containsKey("RINCIAN_JUAL_PART")) {
             idJualPart = data.get("JUAL_PART_ID").asString();
@@ -177,6 +184,13 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             @Override
             public void onClick(View v) {
                 viewJasaPart();
+            }
+        });
+        find(R.id.btn_scan_disc_loyalty, Button.class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity(), BarcodeActivity.class);
+                startActivityForResult(i, REQUEST_BARCODE);
             }
         });
         find(R.id.btn_data_kendaraan, Button.class).setOnClickListener(new View.OnClickListener() {
@@ -215,13 +229,9 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
                 if (isLayanan || isDp) {
                     if (noRangka.isEmpty() || noMesin.isEmpty()) {
                         showError("Data Kendaraan Tidak Lengkap", Toast.LENGTH_LONG);
-                        find(R.id.btn_data_kendaraan, Button.class).requestFocus();
-                    } else {
-                        setIntent();
                     }
-                } else {
-                    setIntent();
                 }
+                setIntent();
 
             }
         });
@@ -384,12 +394,12 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             if (!isBatal) {
                 partIdList.add(isDp & result.get(i).get("DP_PART").asInteger() > 0 ?
                         Nson.newObject().set("PART_ID", result.get(i).get("PART_ID").asInteger()) : 0);
-                if(result.get(i).get("PART_JASA").asString().equals("PART") &&
+                if (result.get(i).get("PART_JASA").asString().equals("PART") &&
                         (result.get(i).get("GARANSI_PART_JASA").asString().equals("N") ||
                                 result.get(i).get("GARANSI_PART_JASA").asString().isEmpty())) {
                     totalPart += result.get(i).get("HARGA_PART").asInteger();
                 }
-                if(result.get(i).get("PART_JASA").asString().equals("JASA LAIN") &&
+                if (result.get(i).get("PART_JASA").asString().equals("JASA LAIN") &&
                         (result.get(i).get("GARANSI_PART_JASA").asString().equals("N") ||
                                 result.get(i).get("GARANSI_PART_JASA").asString().isEmpty())) {
                     totalJasa += result.get(i).get("HARGA_JASA_LAIN").asInteger();
@@ -811,6 +821,37 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
         }
     }
 
+    private void getDiscLoyalty(final String qrCode) {
+        newProses(new Messagebox.DoubleRunnable() {
+            String response = "";
+
+            @Override
+            public void run() {
+                MultipartRequest formBody = new MultipartRequest(getActivity());
+
+                int netTransaksi = Integer.parseInt(find(R.id.row_total_2).getVisibility() == View.VISIBLE ?
+                        NumberFormatUtils.formatOnlyNumber(find(R.id.tv_total_2, TextView.class).getText().toString()) :
+                        NumberFormatUtils.formatOnlyNumber(find(R.id.tv_total_1, TextView.class).getText().toString()));
+
+                formBody.addString("CID", getSetting("CID"));
+                formBody.addString("checkinID", idCheckin);
+                formBody.addString("tglPakai", currentDateTime("yyyy-MM-dd"));
+                formBody.addString("noPonselPakai", NumberFormatUtils.formatOnlyNumber(find(R.id.tv_no_ponsel_jual_part, TextView.class).getText().toString()));
+                formBody.addString("nopolPakai", nopol);
+                formBody.addString("netTransaksi", String.valueOf(netTransaksi));
+                formBody.addString("discRP", getSetting("user"));
+                formBody.addString("qrCode", qrCode);
+
+                response = formBody.execute(AppApplication.getBaseUrlV4(SAVE_OR_UPDATE_DISCOUNT_LOYALTY));
+            }
+
+            @Override
+            public void runUI() {
+                find(R.id.row_disc_loyalty).setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -828,6 +869,9 @@ public class Rincian_Pembayaran_Activity extends AppActivity {
             setResult(RESULT_OK);
             finish();
             showSuccess("Pembayaran Selesai");
+        } else if (resultCode == RESULT_OK && requestCode == REQUEST_BARCODE) {
+            String barcodeResult = data != null ? data.getStringExtra("TEXT").replace("\n", "").trim() : "";
+            getDiscLoyalty(barcodeResult);
         }
     }
 }

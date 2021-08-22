@@ -64,6 +64,15 @@
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/btn_scan_disc_loyalty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_rounded_accent"
+        android:text="SCAN DISCOUNT LOYALTY"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        android:layout_marginTop="10dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -510,6 +519,29 @@
 
                     <TextView
                         android:id="@+id/tv_disc_jasa_lain"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp. 0 "
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/row_disc_loyalty"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="DISCOUNT LOYALTY"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_900"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_disc_loyalty"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp. 0 "

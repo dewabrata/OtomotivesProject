@@ -55,7 +55,10 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-
+        <activity android:name=".modules.discount.AturDiscountLoyalty_Activity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".modules.discount.DiscountLoyalty_Activity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".modules.sparepart.LokasiPart_Activity"
             android:screenOrientation="portrait"/>
         <activity

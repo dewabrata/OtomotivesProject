@@ -2,6 +2,8 @@ package com.rkrzmail.utils;
 
 public class APIUrls {
 
+    public static final String SAVE_OR_UPDATE_DISCOUNT_LOYALTY = "discount/saveOrUpdateDiscLoyalty";
+    public static final String GET_DISCOUNT_LOYALTY = "discount/discLoyalty";
     public static final String GET_PART_ID_DISCOUNT_PART = "part/partID_discount";
     public static final String GET_NAMA_LAYANAN_BENGKEL = "layanan/namaLayananBengkel";
     public static final String SAVE_IMAGE_CHECKIN = "checkin";

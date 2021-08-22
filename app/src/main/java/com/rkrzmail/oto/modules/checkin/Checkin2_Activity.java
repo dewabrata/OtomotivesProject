@@ -48,7 +48,7 @@ public class Checkin2_Activity extends AppActivity {
 
     private EditText etNorangka, etNomesin;
     private TextView tvTgl;
-    private NikitaAutoComplete etWarna, etKodeTipe, etKotaKab;
+    private NikitaAutoComplete etWarna, etKodeTipe;
     private Nson readCheckin;
     private long tahunBeli = 0;
     private long tahunSekarang = 0;
@@ -88,7 +88,6 @@ public class Checkin2_Activity extends AppActivity {
         etNorangka = findViewById(R.id.et_noRangka_checkin2);
         etNomesin = findViewById(R.id.et_noMesin_checkin2);
         etKodeTipe = findViewById(R.id.et_kode_tipe);
-        etKotaKab = findViewById(R.id.et_kota_kab);
 
         readCheckin = Nson.readJson(getIntentStringExtra(DATA));
         find(R.id.et_nopol).setVisibility(getIntent().hasExtra("KONFIRMASI DATA") ? View.VISIBLE : View.GONE);
@@ -99,10 +98,9 @@ public class Checkin2_Activity extends AppActivity {
             tvTgl.setText(readCheckin.get("tglBeli").asString());
             etKodeTipe.setText(readCheckin.get("KODE_TIPE").asString());
             find(R.id.tv_tahun_checkin2, TextView.class).setText(readCheckin.get("tahunProduksi").asString());
-            etNomesin.setVisibility(View.GONE);
-            etNorangka.setVisibility(View.GONE);
-            find(R.id.et_alamat, EditText.class).setText(readCheckin.get("ALAMAT").asString());
-            etKotaKab.setText(readCheckin.get("KOTA").asString());
+            /*etNomesin.setVisibility(View.GONE);
+            etNorangka.setVisibility(View.GONE);*/
+
             etWarna.setText(readCheckin.get("WARNA").asString());
             noHp = readCheckin.get("noPonsel").asString();
         } else {
@@ -119,9 +117,6 @@ public class Checkin2_Activity extends AppActivity {
     }
 
     private void initListener() {
-        etKotaKab.setLoadingIndicator((ProgressBar) findViewById(R.id.pb_et_kotakab_regist));
-        remakeAutoCompleteMaster(etKotaKab, "DAERAH", "KOTA_KAB");
-
         Tools.setViewAndChildrenEnabled(find(R.id.ly_tgl_beli_checkin2, LinearLayout.class), false);
         tvTgl.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -313,8 +308,6 @@ public class Checkin2_Activity extends AppActivity {
                 args.put("checkinId", getIntentStringExtra(ID));//konfirmasi data
                 args.put("kodeTipe", etKodeTipe.getText().toString());
                 args.put("noPonsel", noHp);
-                args.put("alamat", find(R.id.et_alamat, EditText.class).getText().toString());
-                args.put("kota", etKotaKab.getText().toString());
                 args.put("nopol", getIntentStringExtra("NOPOL"));
 
                 String nopolEditText = find(R.id.et_nopol, EditText.class).getText().toString().replace(" ", "");
@@ -381,7 +374,6 @@ public class Checkin2_Activity extends AppActivity {
                     etNomesin.setText(result.get("NO_MESIN").asString());
                     etKodeTipe.setText(result.get("CODE_TYPE").asString());
                     find(R.id.et_alamat, EditText.class).setText(result.get("ALAMAT").asString());
-                    etKotaKab.setText(result.get("KOTA_KAB").asString());
                 } else {
                     showWarning(ERROR_INFO);
                 }

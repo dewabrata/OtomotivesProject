@@ -13,6 +13,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,6 +59,8 @@ public class KonfirmasiData_Pembayaran_Activity extends AppActivity {
     }
 
     private void initComponent() {
+        find(R.id.et_kota_kab, NikitaAutoComplete.class).setLoadingIndicator((ProgressBar) findViewById(R.id.pb_et_kotakab_regist));
+        remakeAutoCompleteMaster( find(R.id.et_kota_kab, NikitaAutoComplete.class), "DAERAH", "KOTA_KAB");
         setSpinnerFromApi(find(R.id.sp_pekerjaan, Spinner.class), "nama", "PEKERJAAN", "viewmst", "PEKERJAAN");
         find(R.id.btn_simpan).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,6 +116,8 @@ public class KonfirmasiData_Pembayaran_Activity extends AppActivity {
                 args.put("namaPelanggan", find(R.id.et_namaPelanggan, NikitaAutoComplete.class).getText().toString());
                 args.put("pekerjaan", find(R.id.sp_pekerjaan, Spinner.class).getSelectedItem().toString());
                 args.put("nopol", getIntentStringExtra("NOPOL"));
+                args.put("kota", find(R.id.et_kota_kab, NikitaAutoComplete.class).getText().toString());
+                args.put("alamat", find(R.id.et_alamat, EditText.class).getText().toString());
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PELANGGAN), args));
             }
@@ -166,6 +171,7 @@ public class KonfirmasiData_Pembayaran_Activity extends AppActivity {
                             result.get("PEKERJAAN").asString());
                     find(R.id.et_namaPelanggan, NikitaAutoComplete.class).setText(result.get("NAMA_PELANGGAN").asString());
                     find(R.id.et_noPonsel, NikitaAutoComplete.class).setText(result.get("NO_PONSEL").asString());
+                    find(R.id.et_kota_kab, NikitaAutoComplete.class).setText(result.get("KOTA").asString());
                     if(result.get("PEMILIK").asString().equals("Y")){
                         find(R.id.cb_pemilik, CheckBox.class).setChecked(true);
                     }

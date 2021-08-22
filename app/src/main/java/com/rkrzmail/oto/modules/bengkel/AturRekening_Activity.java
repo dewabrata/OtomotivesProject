@@ -63,9 +63,7 @@ public class AturRekening_Activity extends AppActivity {
         spBank = findViewById(R.id.sp_bank_rekening);
         etNamaRek = findViewById(R.id.et_namaRek_rekening);
 
-        setSpBank();
         loadData();
-        viewEdcAndOffUs();
 
         find(R.id.cb_edc_rekening, CheckBox.class).setOnCheckedChangeListener(listener);
         find(R.id.cb_offUs_rekening, CheckBox.class).setOnCheckedChangeListener(listener);
@@ -90,6 +88,7 @@ public class AturRekening_Activity extends AppActivity {
         isUpdate = !data.asString().isEmpty();
         if (!data.asString().isEmpty()) {
             namaBank = data.get("BANK_NAME").asString();
+            bankCode = data.get("BANK_CODE").asString();
             etNoRek.setText(data.get("NO_REKENING").asString());
             etNamaRek.setText(data.get("NAMA_REKENING").asString());
 
@@ -107,6 +106,9 @@ public class AturRekening_Activity extends AppActivity {
                 }
             });
         }
+
+        setSpBank();
+        viewEdcAndOffUs();
 
         find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -239,16 +241,8 @@ public class AturRekening_Activity extends AppActivity {
                         dataBank.add(result.get(i).get("BANK_CODE").asString() +
                                 " " + result.get(i).get("BANK_NAME").asString());
                     }
-                    ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, dataBank);
-                    spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spBank.setAdapter(spinnerAdapter);
-                    if (!namaBank.isEmpty()) {
-                        for (int in = 0; in < spBank.getCount(); in++) {
-                            if (spBank.getItemAtPosition(in).toString().contains(namaBank)) {
-                                spBank.setSelection(in);
-                            }
-                        }
-                    }
+                    setSpinnerOffline(dataBank, spBank, (bankCode + " " + namaBank));
+
                 } else {
                     showInfoDialog("Daftar Bank Gagal Di Muat, Muat Ulang ?", new DialogInterface.OnClickListener() {
                         @Override

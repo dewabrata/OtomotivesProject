@@ -66,6 +66,7 @@ import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
 import com.rkrzmail.oto.modules.bengkel.Saldo_Activity;
 import com.rkrzmail.oto.modules.bengkel.SaranActivity;
 import com.rkrzmail.oto.modules.Adapter.Schedule_MainTab_Activity;
+import com.rkrzmail.oto.modules.discount.DiscountLoyalty_Activity;
 import com.rkrzmail.oto.modules.hutang.Hutang_MainTab_Activity;
 import com.rkrzmail.oto.modules.hutang.Piutang_MainTab_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiTerbayar_Activity;
@@ -191,6 +192,7 @@ public class MenuActivity extends AppActivity implements InstallStateUpdatedList
     private final String DISCOUNT_PART = "DISCOUNT PART";
     private final String DISCOUNT_SPOT = "DISCOUNT SPOT";
     private final String DISCOUNT_FREKWENSI = "DISCOUNT FREKWENSI";
+    public  final String DISCOUNT_LOYALTY = "DISCOUNT LOYALTY";
 
     private final String MY_BUSINESS_HUTANG = "HUTANG";
     private final String MY_BUSINESS_PIUTANG = "PIUTANG";
@@ -619,6 +621,15 @@ public class MenuActivity extends AppActivity implements InstallStateUpdatedList
             Intent intent = new Intent(MenuActivity.this, DiscountJasaLain_Activity.class);
             startActivity(intent);
         }*/
+        else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_LOYALTY)) {
+            if( getAccess(DISCOUNT)){
+                Intent intent = new Intent(MenuActivity.this, DiscountLoyalty_Activity.class);
+                startActivity(intent);
+            }else{
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + DISCOUNT);
+            }
+
+        }
         else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_LAYANAN)) {
             if( getAccess(DISCOUNT)){
                 Intent intent = new Intent(MenuActivity.this, DiscountLayanan_Activity.class);
@@ -919,10 +930,10 @@ public class MenuActivity extends AppActivity implements InstallStateUpdatedList
         subMenu.add(PENGATURAN_SALDO_KASIR);
 
         subMenu = menu.addSubMenu(DISCOUNT);
-        //subMenu.add(DISCOUNT_JASA_LAIN);
         subMenu.add(DISCOUNT_LAYANAN);
         subMenu.add(DISCOUNT_PART);
         subMenu.add(DISCOUNT_FREKWENSI);
+        subMenu.add(DISCOUNT_LOYALTY);
 
         subMenu = menu.addSubMenu(KOMISI);
         subMenu.add(KOMISI_JASA_LAIN);
