@@ -29,10 +29,11 @@ import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
 import java.util.Map;
+import java.util.Objects;
 
+import static com.rkrzmail.utils.APIUrls.GET_HISTORY_USULAN_MEKANIK;
 import static com.rkrzmail.utils.APIUrls.VIEW_KELUHAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_KONTROL_LAYANAN;
-import static com.rkrzmail.utils.APIUrls.VIEW_PERINTAH_KERJA_MEKANIK;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.RP;
 
@@ -110,7 +111,7 @@ public class History_Activity extends AppActivity {
         initToolbarDetail(dialogView);
         initRvPartJasa(dialogView);
         initRecylerviewKeluhan(dialogView);
-        initRvRekomendasi(dialogView);
+        initRvRekomendasiPart(dialogView);
         viewKeluhan(idCheckin);
     }
 
@@ -224,8 +225,8 @@ public class History_Activity extends AppActivity {
         rvHistory.setAdapter(nikitaRecyclerAdapter);
     }
 
-    private void initRvRekomendasi(View dialogView) {
-        rvRekomendasi = dialogView.findViewById(R.id.rv_rekomendasi);
+    private void initRvRekomendasiPart(View dialogView) {
+        rvRekomendasi = dialogView.findViewById(R.id.rv_part_rekomendasi);
         rvRekomendasi.setLayoutManager(new LinearLayoutManager(this));
         rvRekomendasi.setHasFixedSize(false);
         rvRekomendasi.setAdapter(new NikitaMultipleViewAdapter(rekomendasiMekanikList, R.layout.item_part_booking3_checkin3, R.layout.item_jasalain_booking_checkin) {
@@ -266,9 +267,8 @@ public class History_Activity extends AppActivity {
         });
     }
 
-
     private void viewHistoryAll(final String nopol) {
-        if(!Tools.isNetworkAvailable(getActivity())){
+        if (!Tools.isNetworkAvailable(getActivity())) {
             showWarning("TIDAK ADA KONEKSI INTERNET", Toast.LENGTH_LONG);
             return;
         }
@@ -332,6 +332,7 @@ public class History_Activity extends AppActivity {
     private void viewPartJasa(final String idCheckin) {
         newProses(new Messagebox.DoubleRunnable() {
             Nson result;
+
             @Override
             public void run() {
                 Map<String, String> args = AppApplication.getInstance().getArgsData();
@@ -344,14 +345,26 @@ public class History_Activity extends AppActivity {
                 partJasaList.asArray().clear();
                 partJasaList.asArray().addAll(result.get("data").asArray());
 
-                args.remove("action");
-                args.remove("detail");
-                args.put("action", "view");
-                args.put("detail", "REKOMENDASI MEKANIK");
-                args.put("id", idCheckin);
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PERINTAH_KERJA_MEKANIK), args));
+                String[] args1 = new String[10];
+                args1[0] = "CID=" + UtilityAndroid.getSetting(getApplicationContext(), "CID", "").trim();
+                args1[1] = "nopol=" + getIntentStringExtra("NOPOL");
+                args1[2] = "pekerjaan=" + "";
+                args1[3] = "kendaraanID=" + "";
+
+                result = Nson.readJson(InternetX.getHttpConnectionX(AppApplication.getBaseUrlV4(GET_HISTORY_USULAN_MEKANIK), args1));
+                result = result.get("data");
                 rekomendasiMekanikList.asArray().clear();
-              //  rekomendasiMekanikList.asArray().addAll(result.get("data").asArray());
+                if(!result.get("PART").asArray().isEmpty()){
+                    for (int i = 0; i < result.get("PART").size(); i++) {
+                        rekomendasiMekanikList.add(result.get("PART").get(i));
+                    }
+                }
+                if(!result.get("JASA_LAIN").asArray().isEmpty()) {
+                    for (int i = 0; i < result.get("JASA_LAIN").size(); i++) {
+                        rekomendasiMekanikList.add(result.get("JASA_LAIN").get(i));
+                    }
+                }
+
             }
 
             @Override
@@ -362,13 +375,13 @@ public class History_Activity extends AppActivity {
                 if (partJasaList.asArray().isEmpty())
                     lyPartJasa.setVisibility(View.GONE);
 
-                if(rekomendasiMekanikList.asArray().isEmpty()){
+                if (rekomendasiMekanikList.asArray().isEmpty()) {
                     lyRekomendasi.setVisibility(View.GONE);
                 }
 
-                rvPartJasa.getAdapter().notifyDataSetChanged();
-                rvKeluhan.getAdapter().notifyDataSetChanged();
-               // rvRekomendasi.getAdapter().notifyDataSetChanged();
+                Objects.requireNonNull(rvPartJasa.getAdapter()).notifyDataSetChanged();
+                Objects.requireNonNull(rvKeluhan.getAdapter()).notifyDataSetChanged();
+                rvRekomendasi.getAdapter().notifyDataSetChanged();
 
                 if (alertDialog != null) {
                     if (alertDialog.getWindow() != null)

@@ -140,18 +140,18 @@ public class AppActivity extends AppCompatActivity {
         return UtilityAndroid.getSetting(getActivity(), key, "");
     }
 
-    public String formatNopol(String s) {
+    public String formatNopol(String nopol) {
         StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < s.length(); i++) {
-            if (s.charAt(i) == ' ') {
+        for (int i = 0; i < nopol.length(); i++) {
+            if (nopol.charAt(i) == ' ') {
             } else if (i >= 1) {
 
-                if (Utility.isNumeric(stringBuilder.length() >= 1 ? stringBuilder.charAt(stringBuilder.length() - 1) + "" : "") != Utility.isNumeric(s.charAt(i) + "")) {
+                if (Utility.isNumeric(stringBuilder.length() >= 1 ? stringBuilder.charAt(stringBuilder.length() - 1) + "" : "") != Utility.isNumeric(nopol.charAt(i) + "")) {
                     stringBuilder.append(" ");
                 }
-                stringBuilder.append(s.charAt(i));
+                stringBuilder.append(nopol.charAt(i));
             } else {
-                stringBuilder.append(s.charAt(i));
+                stringBuilder.append(nopol.charAt(i));
             }
         }
         return stringBuilder.toString().trim().toUpperCase();
@@ -1398,8 +1398,8 @@ public class AppActivity extends AppCompatActivity {
                     mssgResult.append("Telepon Selular, ");
                 }
             }
-            if(!mssgResult.toString().isEmpty())
-                showWarning("Ijinkan Aplikasi Untuk Mengakses " + mssgResult + ", di Pengaturan", Toast.LENGTH_LONG);
+           /* if(!mssgResult.toString().isEmpty())
+                showWarning("Ijinkan Aplikasi Untuk Mengakses " + mssgResult + ", di Pengaturan",Toast.LENGTH_LONG);*/
         }
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

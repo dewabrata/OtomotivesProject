@@ -200,25 +200,35 @@ public class AturCollection_Activity extends AppActivity {
             @Override
             public void runUI() {
                 result = result.get("data");
-                int totalTf = 0, totalKredit = 0, totalDebet = 0, totalEwallet = 0, totalInv = 0;
+                int totalTf = 0, totalKredit = 0, totalDebet = 0,
+                        totalEwallet = 0, totalInv = 0, transaksiTf = 0,
+                        transaksiKredit = 0, transaksiDebet = 0, transaksiEwallet = 0, transaksiInv = 0, transaksiCash = 0;
 
                 if (result.size() > 0) {
                     for (int i = 0; i < result.size(); i++) {
                         switch (result.get(i).get("TIPE_PEMBAYARAN").asString()) {
                             case "TRANSFER":
                                 totalTf = result.get(i).get("TOTAL").asInteger();
+                                transaksiTf = result.get(i).get("TRANSAKSI").asInteger();
                                 break;
                             case "DEBET":
                                 totalDebet = result.get(i).get("TOTAL").asInteger();
+                                transaksiDebet = result.get(i).get("TRANSAKSI").asInteger();
                                 break;
                             case "KREDIT":
                                 totalKredit = result.get(i).get("TOTAL").asInteger();
+                                transaksiKredit = result.get(i).get("TRANSAKSI").asInteger();
                                 break;
                             case "E-WALLET":
                                 totalEwallet = result.get(i).get("TOTAL").asInteger();
+                                transaksiEwallet = result.get(i).get("TRANSAKSI").asInteger();
                                 break;
                             case "INVOICE":
                                 totalInv = result.get(i).get("TOTAL").asInteger();
+                                transaksiInv = result.get(i).get("TRANSAKSI").asInteger();
+                                break;
+                            case "CASH":
+                                transaksiCash = result.get(i).get("TRANSAKSI").asInteger();
                                 break;
                         }
                     }
@@ -229,7 +239,13 @@ public class AturCollection_Activity extends AppActivity {
                 find(R.id.et_total_kredit, EditText.class).setText(RP + NumberFormatUtils.formatRp(totalKredit));
                 find(R.id.et_total_ewallet, EditText.class).setText(RP + NumberFormatUtils.formatRp(totalEwallet));
                 find(R.id.et_total_invoice, EditText.class).setText(RP + NumberFormatUtils.formatRp(totalInv));
-
+                find(R.id.et_transaksi_transfer, EditText.class).setText(String.valueOf(transaksiTf));
+                find(R.id.et_transaksi_debet, EditText.class).setText(String.valueOf(transaksiDebet));
+                find(R.id.et_transaksi_ewallet, EditText.class).setText(String.valueOf(transaksiEwallet));
+                find(R.id.et_transaksi_inv, EditText.class).setText(String.valueOf(transaksiInv));
+                find(R.id.et_transaksi_kredit, EditText.class).setText(String.valueOf(transaksiKredit));
+                find(R.id.et_transaksi_cash, EditText.class).setText(String.valueOf(transaksiCash));
+                find(R.id.et_transaksi_cash, EditText.class).setVisibility(View.GONE);
             }
         });
 

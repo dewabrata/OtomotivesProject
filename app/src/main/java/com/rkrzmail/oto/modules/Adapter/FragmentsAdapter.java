@@ -363,7 +363,7 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
                 case 0:
                     return "Transaksi";
                 case 1:
-                    return "Bukti";
+                    return "Terbayar";
                 case 2:
                     return "Cash";
                 case 3:

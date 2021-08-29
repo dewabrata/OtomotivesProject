@@ -50,7 +50,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|right"
-                    android:layout_marginEnd="20dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginTop="2dp"
                     android:visibility="gone"
                     tools:ignore="RtlHardcoded" />
 
@@ -85,7 +86,7 @@
                         android:id="@+id/et_jenisKendaraan_checkin1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/jenis_kendaraan_uppercase"
+                        android:hint="MERK/ MODEL"
                         android:inputType="textCapCharacters"
                         android:maxLength="35"
                         android:padding="15dp"
@@ -214,8 +215,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical|right"
-                        android:layout_marginRight="20dp"
-                        android:visibility="gone" />
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginTop="2dp"
+                        android:visibility="gone"
+                        tools:ignore="RtlHardcoded" />
 
                 </FrameLayout>
 
@@ -251,6 +254,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/tl_kode_pos"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -264,6 +268,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/kode_pos_uppercase"
                     android:textSize="14sp"
+                    android:maxLength="5"
                     android:inputType="numberSigned"
                     tools:ignore="LabelFor" />
 
@@ -322,6 +327,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
+                    android:id="@+id/tl_km"
                     android:layout_weight="6.2">
 
                     <com.rkrzmail.srv.NikitaAutoComplete

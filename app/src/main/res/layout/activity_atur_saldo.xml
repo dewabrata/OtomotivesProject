@@ -31,6 +31,7 @@
             android:padding="5dp">
 
             <LinearLayout
+                android:id="@+id/container_akun"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/paddingSemiLarge"
@@ -74,10 +75,11 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/tv_label_saldo"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
-                    android:text="@string/rekening_kasir_uppercase"
+                    android:text="@string/rekening_epay_uppercase"
                     android:textColor="@color/grey_900"
                     android:textSize="12sp"
                     android:textStyle="bold"

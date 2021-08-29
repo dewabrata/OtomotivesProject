@@ -175,7 +175,7 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
             menit = etWaktuKerja.getText().toString().substring(6, 8);
         }
 
-        if (find(R.id.et_discJasa, EditText.class).getVisibility() == View.VISIBLE) {
+        if (find(R.id.et_discJasa, EditText.class).getVisibility() == View.VISIBLE &&  Integer.parseInt(formatOnlyNumber(etBiaya.getText().toString())) > 0) {
             try {
                 discJasa = Double.parseDouble(find(R.id.et_discJasa, EditText.class).getText().toString()
                         .replace("%", "")
@@ -278,7 +278,7 @@ public class BiayaJasa_Activity extends AppActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.img_clear:
-                etBiaya.setText("");
+                etBiaya.setText(NumberFormatUtils.formatRp(0));
                 break;
             case R.id.btn_img_waktu_kerja:
                 getWaktuKerja();

@@ -11,7 +11,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -41,12 +44,14 @@ public class Saldo_Activity extends AppActivity {
     private BottomSheetBehavior filterBottomSheet;
 
     private String sortBy = "";
+    private boolean isKasir = false;
     private final Nson saldoList = Nson.newArray();
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_with_filter);
+        isKasir = getIntent().hasExtra("KASIR");
         initToolbar();
         initRv();
         viewSaldo("");
@@ -57,13 +62,24 @@ public class Saldo_Activity extends AppActivity {
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Saldo");
+        Objects.requireNonNull(getSupportActionBar()).setTitle(isKasir ? "Saldo Kasir" : "Saldo");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void initComponent(){
+    private void initComponent() {
         lyContainerFilter = findViewById(R.id.ly_container_filter_saldo);
 
+        if (isKasir) {
+            find(R.id.container_filter).setVisibility(View.GONE);
+            FrameLayout.LayoutParams ps = (FrameLayout.LayoutParams) find(R.id.swiperefresh, SwipeRefreshLayout.class).getLayoutParams();
+            int marginInDp = (int) TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP, 60, getResources()
+                            .getDisplayMetrics());
+            ps.topMargin = marginInDp;
+
+            find(R.id.swiperefresh, SwipeRefreshLayout.class).setLayoutParams(ps);
+            find(R.id.swiperefresh, SwipeRefreshLayout.class).requestLayout();
+        }
         find(R.id.fab_tambah).setVisibility(View.VISIBLE);
         find(R.id.ly_container_filter_layanan).setVisibility(View.GONE);
         find(R.id.ly_container_filter_kontrol_layanan).setVisibility(View.GONE);
@@ -96,7 +112,10 @@ public class Saldo_Activity extends AppActivity {
         find(R.id.fab_tambah).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(getActivity(), Atur_Saldo_Activity.class), REQUEST_DETAIL);
+                startActivityForResult(
+                        new Intent(getActivity(), Atur_Saldo_Activity.class).putExtra("KASIR", isKasir),
+                        REQUEST_DETAIL
+                );
             }
         });
 
@@ -160,9 +179,9 @@ public class Saldo_Activity extends AppActivity {
             @Override
             public void onBindViewHolder(@NonNull NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
                 super.onBindViewHolder(viewHolder, position);
-                if(sortBy.isEmpty()){
+                if (sortBy.isEmpty()) {
                     viewHolder.find(R.id.img_check_selected).setVisibility(jenisLayananList.get(position).get("tittle").asString().equals("ALL") ? View.VISIBLE : View.GONE);
-                }else{
+                } else {
                     viewHolder.find(R.id.img_check_selected).setVisibility(sortBy.equals(jenisLayananList.get(position).get("tittle").asString()) ? View.VISIBLE : View.GONE);
                 }
                 viewHolder.find(R.id.tv_tittle_sort_by, TextView.class).setText(jenisLayananList.get(position).get("tittle").asString());
@@ -185,41 +204,66 @@ public class Saldo_Activity extends AppActivity {
         });
     }
 
-
-    private void initRv(){
+    private void initRv() {
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(new NikitaRecyclerAdapter(saldoList, R.layout.item_saldo){
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
-                super.onBindViewHolder(viewHolder, position);
-                if(saldoList.get(position).get("AKUN").asString().equals("BANK")){
-                    viewHolder.find(R.id.tv_no_rek, TextView.class).setText((saldoList.get(position).get("NO_REKENING").asString()));
-                    viewHolder.find(R.id.tv_nama_bank, TextView.class).setText(saldoList.get(position).get("KETERANGAN").asString());
-                }else{
+        if (isKasir) {
+            recyclerView.setAdapter(new NikitaRecyclerAdapter(saldoList, R.layout.item_saldo) {
+                @SuppressLint("SetTextI18n")
+                @Override
+                public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
+                    super.onBindViewHolder(viewHolder, position);
                     viewHolder.find(R.id.tv_no_rek, TextView.class).setVisibility(View.GONE);
                     viewHolder.find(R.id.tv_nama_bank, TextView.class).setVisibility(View.GONE);
-                }
-                viewHolder.find(R.id.tv_akun, TextView.class).setText(saldoList.get(position).get("AKUN").asString());
-                viewHolder.find(R.id.tv_tanggal, TextView.class).setText(saldoList.get(position).get("CREATED_DATE").asString());
-                viewHolder.find(R.id.tv_saldo_akhir, TextView.class).setText(RP + NumberFormatUtils.formatRp(saldoList.get(position).get("SALDO_AKHIR").asString()));
-                viewHolder.find(R.id.tv_saldo_disesuaikan, TextView.class).setText(RP + NumberFormatUtils.formatRp(saldoList.get(position).get("SALDO_PENYESUAIAN").asString()));
 
-            }
-        }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Nson parent, View view, int position) {
-                Intent intent = new Intent(getActivity(), Atur_Saldo_Activity.class);
-                intent.putExtra(DATA, parent.get(position).toJson());
-                startActivityForResult(intent, REQUEST_DETAIL);
-            }
-        }));
+                    viewHolder.find(R.id.tv_akun, TextView.class).setText(saldoList.get(position).get("NAMA").asString());
+                    viewHolder.find(R.id.tv_tanggal, TextView.class).setText(saldoList.get(position).get("CREATED_DATE").asString());
+                    viewHolder.find(R.id.tv_saldo_akhir, TextView.class).setText(RP + NumberFormatUtils.formatRp(saldoList.get(position).get("SALDO_AKHIR").asString()));
+                    viewHolder.find(R.id.tv_saldo_disesuaikan, TextView.class).setText(RP + NumberFormatUtils.formatRp(saldoList.get(position).get("SALDO_PENYESUAIAN").asString()));
+                }
+            }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(Nson parent, View view, int position) {
+                    Intent intent = new Intent(getActivity(), Atur_Saldo_Activity.class);
+                    intent.putExtra(DATA, parent.get(position).toJson());
+                    startActivityForResult(intent, REQUEST_DETAIL);
+                }
+            }));
+
+        } else {
+            recyclerView.setAdapter(new NikitaRecyclerAdapter(saldoList, R.layout.item_saldo) {
+                @SuppressLint("SetTextI18n")
+                @Override
+                public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
+                    super.onBindViewHolder(viewHolder, position);
+                    if (saldoList.get(position).get("AKUN").asString().equals("BANK")) {
+                        viewHolder.find(R.id.tv_no_rek, TextView.class).setText((saldoList.get(position).get("NO_REKENING").asString()));
+                        viewHolder.find(R.id.tv_nama_bank, TextView.class).setText(saldoList.get(position).get("KETERANGAN").asString());
+                    } else {
+                        viewHolder.find(R.id.tv_no_rek, TextView.class).setVisibility(View.GONE);
+                        viewHolder.find(R.id.tv_nama_bank, TextView.class).setVisibility(View.GONE);
+                    }
+                    viewHolder.find(R.id.tv_akun, TextView.class).setText(saldoList.get(position).get("AKUN").asString());
+                    viewHolder.find(R.id.tv_tanggal, TextView.class).setText(saldoList.get(position).get("CREATED_DATE").asString());
+                    viewHolder.find(R.id.tv_saldo_akhir, TextView.class).setText(RP + NumberFormatUtils.formatRp(saldoList.get(position).get("SALDO_AKHIR").asString()));
+                    viewHolder.find(R.id.tv_saldo_disesuaikan, TextView.class).setText(RP + NumberFormatUtils.formatRp(saldoList.get(position).get("SALDO_PENYESUAIAN").asString()));
+
+                }
+            }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(Nson parent, View view, int position) {
+                    Intent intent = new Intent(getActivity(), Atur_Saldo_Activity.class);
+                    intent.putExtra(DATA, parent.get(position).toJson());
+                    startActivityForResult(intent, REQUEST_DETAIL);
+                }
+            }));
+
+        }
     }
 
     private void viewSaldo(final String sortBy) {
-        if(!Tools.isNetworkAvailable(getActivity())){
+        if (!Tools.isNetworkAvailable(getActivity())) {
             showWarning("TIDAK ADA KONEKSI INTERNET");
             return;
         }
@@ -232,6 +276,7 @@ public class Saldo_Activity extends AppActivity {
                 String[] args = new String[3];
                 args[0] = "CID=" + UtilityAndroid.getSetting(getApplicationContext(), "CID", "").trim();
                 args[1] = "sortBy=" + sortBy;
+                args[2] = "isKasir=" + (isKasir ? "Y" : "N");
                 result = Nson.readJson(InternetX.getHttpConnectionX(AppApplication.getBaseUrlV4(SALDO), args));
             }
 
@@ -262,6 +307,6 @@ public class Saldo_Activity extends AppActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK) viewSaldo("");
+        if (resultCode == RESULT_OK) viewSaldo("");
     }
 }

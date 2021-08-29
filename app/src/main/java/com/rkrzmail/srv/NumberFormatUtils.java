@@ -120,7 +120,6 @@ public class NumberFormatUtils {
         };
     }
 
-
     public TextWatcher percentTextWatcher(final EditText editText) {
         return new TextWatcher() {
             @Override

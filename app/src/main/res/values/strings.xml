@@ -457,6 +457,10 @@
     <string name="max_jam_minggu_uppercase">MAX JAM / MINGGU</string>
     <string name="min_waktu_terlambat_uppercase">MIN WAKTU TERLAMBAT</string>
     <string name="cari_lokasi">Cari Lokasi</string>
+    <string name="expired_date">Expired Date</string>
+    <string name="expired_uppercase">EXPIRED</string>
+    <string name="kirim_pesan_uppercase">KIRIM PESAN</string>
+    <string name="kategori_discount">Kategori Discount</string>
     <string-array name="pola_harga_jual">
         <item>FLEXIBLE</item>
         <item>BELI + MARGIN</item>

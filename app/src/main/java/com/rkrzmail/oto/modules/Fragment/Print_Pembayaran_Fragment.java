@@ -141,11 +141,11 @@ public class Print_Pembayaran_Fragment extends Fragment {
         }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(final Nson parent, View view, final int position) {
-                noBuktiBayar = parent.get(position).get("NO_BUKTI_BAYAR").asString();
+              /*  noBuktiBayar = parent.get(position).get("NO_BUKTI_BAYAR").asString();
                 noPonsel = parent.get(position).get("NO_PONSEL").asString();
 
                 boolean isCheckin = parent.get(position).get("JENIS").asString().equals("CHECKIN");
-                new DownloadBuktiBayar().execute(PRINT_BUKTI_BAYAR(parent.get(position).get("NO_BUKTI_BAYAR").asString(), isCheckin));
+                new DownloadBuktiBayar().execute(PRINT_BUKTI_BAYAR(parent.get(position).get("NO_BUKTI_BAYAR").asString(), isCheckin));*/
             }
         }));
 

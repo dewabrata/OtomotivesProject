@@ -23,12 +23,12 @@
         android:textStyle="bold"
         android:textColor="@android:color/black"
         android:background="@drawable/corner_border"
-        android:padding="15dp"/>
+        android:padding="10dp"/>
 
     <ImageView
         android:id="@+id/img_check_selected"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
         android:background="@drawable/ic_check_list"
         android:layout_gravity="top|end" />
 

@@ -2,9 +2,7 @@ package com.rkrzmail.oto.modules.bengkel;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -13,8 +11,8 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.naa.data.Nson;
@@ -23,18 +21,15 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
-import com.rkrzmail.oto.modules.checkin.Checkin2_Activity;
 import com.rkrzmail.srv.NikitaAutoComplete;
 
 import java.util.Map;
 import java.util.Objects;
 
-import static com.rkrzmail.utils.APIUrls.ATUR_PEMBAYARAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_PELANGGAN;
 import static com.rkrzmail.utils.ConstUtils.DATA;
 import static com.rkrzmail.utils.ConstUtils.ERROR_INFO;
 import static com.rkrzmail.utils.ConstUtils.ID;
-import static com.rkrzmail.utils.ConstUtils.REQUEST_NEW_CS;
 
 public class KonfirmasiData_Pembayaran_Activity extends AppActivity {
 
@@ -58,6 +53,8 @@ public class KonfirmasiData_Pembayaran_Activity extends AppActivity {
     }
 
     private void initComponent() {
+        find(R.id.et_kota_kab, NikitaAutoComplete.class).setLoadingIndicator((ProgressBar) findViewById(R.id.pb_et_kotakab));
+        remakeAutoCompleteMaster( find(R.id.et_kota_kab, NikitaAutoComplete.class), "DAERAH", "KOTA_KAB");
         setSpinnerFromApi(find(R.id.sp_pekerjaan, Spinner.class), "nama", "PEKERJAAN", "viewmst", "PEKERJAAN");
         find(R.id.btn_simpan).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,6 +110,9 @@ public class KonfirmasiData_Pembayaran_Activity extends AppActivity {
                 args.put("namaPelanggan", find(R.id.et_namaPelanggan, NikitaAutoComplete.class).getText().toString());
                 args.put("pekerjaan", find(R.id.sp_pekerjaan, Spinner.class).getSelectedItem().toString());
                 args.put("nopol", getIntentStringExtra("NOPOL"));
+                args.put("kota", find(R.id.et_kota_kab, NikitaAutoComplete.class).getText().toString());
+                args.put("alamat", find(R.id.et_alamat, EditText.class).getText().toString());
+                args.put("kodePos", find(R.id.et_kode_pos, EditText.class).getText().toString());
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PELANGGAN), args));
             }
@@ -166,9 +166,10 @@ public class KonfirmasiData_Pembayaran_Activity extends AppActivity {
                             result.get("PEKERJAAN").asString());
                     find(R.id.et_namaPelanggan, NikitaAutoComplete.class).setText(result.get("NAMA_PELANGGAN").asString());
                     find(R.id.et_noPonsel, NikitaAutoComplete.class).setText(result.get("NO_PONSEL").asString());
-                    if(result.get("PEMILIK").asString().equals("Y")){
-                        find(R.id.cb_pemilik, CheckBox.class).setChecked(true);
-                    }
+                    find(R.id.et_kota_kab, NikitaAutoComplete.class).setText(result.get("KOTA_KAB").asString());
+                    find(R.id.et_alamat, EditText.class).setText(result.get("ALAMAT").asString());
+                    find(R.id.cb_pemilik, CheckBox.class).setChecked(result.get("PEMILIK").asString().equals("Y"));
+                    find(R.id.et_kode_pos, EditText.class).setText(result.get("KODE_POS").asString());
                 } else {
                     showWarning(ERROR_INFO);
                 }

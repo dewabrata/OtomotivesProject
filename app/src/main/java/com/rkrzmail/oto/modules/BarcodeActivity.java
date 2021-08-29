@@ -42,7 +42,7 @@ public class BarcodeActivity extends AppActivity {
             intent.putExtra("STATUS", "CANCEL");
         }
         intent.putExtra("ORIGIN", "BARCODE");
-        setResult(Activity.RESULT_OK, intent);
+        setResult(resultCode == Activity.RESULT_OK ? RESULT_OK : RESULT_CANCELED, intent);
         finish();
     }
 }

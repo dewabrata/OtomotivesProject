@@ -39,6 +39,7 @@ import com.rkrzmail.oto.modules.checkin.TambahPartJasaDanBatal_Activity;
 import com.rkrzmail.oto.modules.Adapter.NikitaMultipleViewAdapter;
 import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
 import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
+import com.rkrzmail.srv.NumberFormatUtils;
 import com.rkrzmail.utils.Tools;
 
 import java.text.ParseException;
@@ -98,6 +99,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
     private int kmKendaraan = 0;
     private int waktuHari = 0, waktuJam = 0, waktuMenit = 0;
     private int usulanMekanik = 0;
+    private int kmBefore = 0;
 
     private boolean isGaransiLKK = false;
     private boolean isKeluhan = true;
@@ -184,6 +186,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
     private void loadData() {
         data = Nson.readJson(getIntentStringExtra(DATA));
 
+        kmBefore = data.get("KM_BEFORE").asInteger();
         kendaraanID = data.get("KENDARAAN_ID").asInteger();
         layananId = data.get("LAYANAN_ID").asString();
         pekerjaan = data.get("PEKERJAAN").asString();
@@ -356,6 +359,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
 
         if (isKm) {
             tlEt.setHint("KM");
+            tlEt.setError(kmBefore > 0 ? "KM Sebelumnya: " + kmBefore : "");
             etEditText.setText("");
             etEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
             builder.setCancelable(false);
@@ -405,6 +409,23 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                     if (etEditText.getText().toString().isEmpty()) {
                         showWarning("KM HARUS DI ISI");
                         viewFocus(etEditText);
+                    }else if(Integer.parseInt(NumberFormatUtils.formatOnlyNumber(etEditText.getText().toString())) > 0
+                            && kmBefore > 0
+                            && Integer.parseInt(NumberFormatUtils.formatOnlyNumber(etEditText.getText().toString())) <= kmBefore){
+                        showInfoDialog("Konfirmasi", "KM Entry kurang dari KM Sebelumnya, Lanutkan ?", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                kmKendaraan = Integer.parseInt(formatOnlyNumber(etEditText.getText().toString()));
+                                startWork();
+                                alertDialog.dismiss();
+                            }
+                        }, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
                     } else {
                         kmKendaraan = Integer.parseInt(formatOnlyNumber(etEditText.getText().toString()));
                         startWork();
@@ -562,7 +583,7 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                                 partJasaList.get(i).get("INSPEKSI_JASA").asString().equals("Y") ||
                                 partJasaList.get(i).get("INSPEKSI_MST_PART").asString().equals("Y") ||
                                 partJasaList.get(i).get("INSPEKSI_MST_JASA").asString().equals("Y")) {
-                            isInspeksi = true;
+                            isInspeksi =  data.get("IS_INSPEKSI").asString().equals("Y");
                         }
                         if (partJasaList.get(i).get("MERK_PART").asString().equals(merkLKKWajib)) {
                             isLkkWajib = true;
@@ -683,13 +704,8 @@ public class AturKerjaMekanik_Activity extends AppActivity implements View.OnCli
                 args.put("nopol", formatNopol(etNopol.getText().toString()));
                 args.put("noPonsel", noHp);
                 args.put("tidakMenunggu", isNotWait ? "Y" : "N");
-                if (isInspeksi) {
-                    statusDone = "PENUGASAN INSPEKSI";
-                    args.put("status", statusDone);
-                } else {
-                    statusDone = "PELAYANAN SELESAI";
-                    args.put("status", statusDone);
-                }
+                statusDone = isInspeksi ? "PENUGASAN INSPEKSI" : "PELAYANAN SELESAI";
+                args.put("status", statusDone);
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(ATUR_PERINTAH_KERJA_MEKANIK), args));
             }

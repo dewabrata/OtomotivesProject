@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.naa.data.Nson;
 import com.naa.data.UtilityAndroid;
@@ -31,8 +32,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.rkrzmail.utils.APIUrls.GET_BALANCE_KAS_DAN_BANK_BENGKEL;
 import static com.rkrzmail.utils.APIUrls.GET_BALANCE_ALL_USER;
+import static com.rkrzmail.utils.APIUrls.GET_BALANCE_KAS_DAN_BANK_BENGKEL;
+import static com.rkrzmail.utils.APIUrls.GET_EWALLET;
 import static com.rkrzmail.utils.APIUrls.SAVE_SALDO;
 import static com.rkrzmail.utils.APIUrls.SET_REKENING_BANK;
 import static com.rkrzmail.utils.ConstUtils.DATA;
@@ -43,20 +45,24 @@ public class Atur_Saldo_Activity extends AppActivity {
     private Nson getData;
     private final Nson dataRekeningList = Nson.newArray();
     private final Nson dataKasir = Nson.newArray();
-    private  Nson dataBalanceBengkel = Nson.newArray();
+    private final Nson dataEwallet = Nson.newArray();
+    private Nson dataBalanceBengkel = Nson.newArray();
 
-    private String loadKasir = "", loadRekening = "";
+    private String loadKasir = "", loadRekening = "", loadEwallet = "";
     private String noRek = "", namaBank = "";
     private String kasirId = "";
     private String akun;
 
     private boolean isView = false;
     private boolean isKasir = false;
+    private boolean isEwallet = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_atur_saldo);
+        isKasir = getIntent().getBooleanExtra("KASIR", false);
         initToolbar();
         initData();
     }
@@ -71,26 +77,29 @@ public class Atur_Saldo_Activity extends AppActivity {
 
     @SuppressLint("SetTextI18n")
     private void initData() {
-        getDataUserAndRekening();
         Nson data = Nson.readJson(getIntentStringExtra(DATA));
+        find(R.id.container_akun).setVisibility(isKasir ? View.GONE : View.VISIBLE);
+        find(R.id.tv_label_saldo, TextView.class).setText(isKasir ? "KASIR" : getResources().getString(R.string.rekening_epay_uppercase));
+        getDataUserAndRekening();
+
         if (!data.asString().isEmpty()) {
             isView = true;
-            loadKasir = data.get("NAMA_BANK").asString();
+            isEwallet = data.get("AKUN").asString().equals("E-WALLET");
+            loadKasir = data.get("NAMA").asString();
+            loadEwallet = data.get("NAMA_BANK").asString();
             loadRekening = data.get("NAMA_BANK").asString() + " - " + data.get("NO_REKENING").asString();
             setDisabledView();
-            setSpAkun(data.get("AKUN").asString());
-            if (data.get("AKUN").asString().equals("KASIR")) {
-                setSpRekOrKasir(loadKasir, true);
-            } else {
-                setSpRekOrKasir(loadRekening, false);
-            }
+            if (!isKasir)
+                setSpAkun(data.get("AKUN").asString());
+
             find(R.id.et_saldo_disesuaikan, EditText.class).setText(RP + NumberFormatUtils.formatRp(data.get("SALDO_PENYESUAIAN").asString()));
             find(R.id.et_saldo_akhir, EditText.class).setText(RP + NumberFormatUtils.formatRp(data.get("SALDO_AKHIR").asString()));
             find(R.id.et_keterangan, EditText.class).setText(data.get("KETERANGAN").asString());
         } else {
-            setSpAkun("");
-            setSpRekOrKasir("", false);
-            getLastBalanceKas();
+            if (!isKasir) {
+                setSpAkun("");
+                getLastBalanceKas();
+            }
         }
 
         find(R.id.et_saldo_disesuaikan, EditText.class).addTextChangedListener(new NumberFormatUtils().rupiahTextWatcher(find(R.id.et_saldo_disesuaikan, EditText.class)));
@@ -98,25 +107,40 @@ public class Atur_Saldo_Activity extends AppActivity {
             @Override
             public void onClick(View v) {
                 int saldoAkhir = Integer.parseInt(NumberFormatUtils.formatOnlyNumber(find(R.id.et_saldo_akhir, EditText.class).getText().toString()));
-                int saldoPenyesuaian =  Integer.parseInt(NumberFormatUtils.formatOnlyNumber(find(R.id.et_saldo_disesuaikan, EditText.class).getText().toString()));
+                int saldoPenyesuaian = Integer.parseInt(NumberFormatUtils.formatOnlyNumber(find(R.id.et_saldo_disesuaikan, EditText.class).getText().toString()));
 
-                if (akun.equals("--PILIH--")) {
-                    setErrorSpinner(find(R.id.sp_akun, Spinner.class), "AKUN HARUS DI PILIH");
-                } else if (akun.equals("BANK") && namaBank.isEmpty()) {
-                    setErrorSpinner(find(R.id.sp_norek, Spinner.class), "NO. REKENING HARUS DI PILIH");
-                }else if(akun.equals("KASIR") && kasirId.isEmpty()) {
-                    setErrorSpinner(find(R.id.sp_norek, Spinner.class), "USER HARUS DI PILIH");
-                } else if (NumberFormatUtils.formatOnlyNumber(find(R.id.et_saldo_disesuaikan, EditText.class).getText().toString()).equals("0")) {
-                    find(R.id.et_saldo_disesuaikan, EditText.class).setError("PENYESUAIAN HARUS DI ISI");
-                    viewFocus(find(R.id.et_saldo_disesuaikan, EditText.class));
-                }else if(akun.equals("KASIR") && saldoAkhir > saldoPenyesuaian){
-                    find(R.id.et_saldo_disesuaikan, EditText.class).setError("SALDO PENYESUAIAN TIDAK BOLEH KURANG DARI SALDO AKHIR");
-                    viewFocus(find(R.id.et_saldo_disesuaikan, EditText.class));
-                } else if (find(R.id.et_keterangan, EditText.class).getText().toString().isEmpty()) {
-                    find(R.id.et_keterangan, EditText.class).setError("KETERANGAN HARUS DI ISI");
-                    viewFocus(find(R.id.et_keterangan, EditText.class));
+                if (isKasir) {
+                    if (saldoAkhir > 0 && saldoPenyesuaian > saldoAkhir) {
+                        find(R.id.et_saldo_disesuaikan, EditText.class).setError("PENYESUAIAN TIDAK VALID");
+                        viewFocus(find(R.id.et_saldo_disesuaikan, EditText.class));
+                    } else if (saldoPenyesuaian == 0) {
+                        find(R.id.et_saldo_disesuaikan, EditText.class).setError("PENYESUAIAN HARUS DI ISI");
+                        viewFocus(find(R.id.et_saldo_disesuaikan, EditText.class));
+                    } else if (find(R.id.et_keterangan, EditText.class).getText().toString().isEmpty()) {
+                        find(R.id.et_keterangan, EditText.class).setError("KETERANGAN HARUS DI ISI");
+                        viewFocus(find(R.id.et_keterangan, EditText.class));
+                    } else {
+                        saveData();
+                    }
                 } else {
-                    saveData();
+                    if (akun.equals("--PILIH--")) {
+                        setErrorSpinner(find(R.id.sp_akun, Spinner.class), "AKUN HARUS DI PILIH");
+                    } else if (akun.equals("BANK") && namaBank.isEmpty()) {
+                        setErrorSpinner(find(R.id.sp_norek, Spinner.class), "NO. REKENING HARUS DI PILIH");
+                    } else if (akun.equals("KASIR") && kasirId.isEmpty()) {
+                        setErrorSpinner(find(R.id.sp_norek, Spinner.class), "USER HARUS DI PILIH");
+                    } else if (NumberFormatUtils.formatOnlyNumber(find(R.id.et_saldo_disesuaikan, EditText.class).getText().toString()).equals("0")) {
+                        find(R.id.et_saldo_disesuaikan, EditText.class).setError("PENYESUAIAN HARUS DI ISI");
+                        viewFocus(find(R.id.et_saldo_disesuaikan, EditText.class));
+                    } else if (akun.equals("KASIR") && saldoAkhir > saldoPenyesuaian) {
+                        find(R.id.et_saldo_disesuaikan, EditText.class).setError("SALDO PENYESUAIAN TIDAK BOLEH KURANG DARI SALDO AKHIR");
+                        viewFocus(find(R.id.et_saldo_disesuaikan, EditText.class));
+                    } else if (find(R.id.et_keterangan, EditText.class).getText().toString().isEmpty()) {
+                        find(R.id.et_keterangan, EditText.class).setError("KETERANGAN HARUS DI ISI");
+                        viewFocus(find(R.id.et_keterangan, EditText.class));
+                    } else {
+                        saveData();
+                    }
                 }
             }
         });
@@ -130,25 +154,24 @@ public class Atur_Saldo_Activity extends AppActivity {
     }
 
     private void setSpAkun(String selection) {
-        List<String> akunList = Arrays.asList("--PILIH--", "KAS", "BANK", "KASIR");
+        List<String> akunList = Arrays.asList("--PILIH--", "KAS", "BANK", "E-WALLET");
         setSpinnerOffline(akunList, find(R.id.sp_akun, Spinner.class), selection);
         find(R.id.sp_akun, Spinner.class).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @SuppressLint("SetTextI18n")
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 akun = parent.getItemAtPosition(position).toString();
-
-                Tools.setViewAndChildrenEnabled(find(R.id.ly_norek, RelativeLayout.class), (akun.equals("BANK") || akun.equals("KASIR"))  && !isView);
+                Tools.setViewAndChildrenEnabled(find(R.id.ly_norek, RelativeLayout.class), (akun.equals("BANK") || akun.equals("KASIR")) && !isView);
                 if (!find(R.id.ly_norek, RelativeLayout.class).isEnabled()) {
                     find(R.id.sp_norek, Spinner.class).setSelection(0);
                 }
 
-                if(!isView){
-                    if(akun.equals("KAS")){
+                if (!isView) {
+                    if (akun.equals("KAS")) {
                         int balance = dataBalanceBengkel.get("CASH").get("BALANCE").asInteger();
                         find(R.id.et_saldo_akhir, EditText.class).setText(RP + NumberFormatUtils.formatRp(balance));
-                    }else {
-                        setSpRekOrKasir("", akun.equals("KASIR"));
+                    } else {
+                        setSpRek("", akun.equals("E-WALLET"));
                     }
                 }
 
@@ -167,35 +190,47 @@ public class Atur_Saldo_Activity extends AppActivity {
 
             @Override
             public void run() {
-                String[] args = new String[3];
-                args[0] = "CID=" + UtilityAndroid.getSetting(getApplicationContext(), "CID", "").trim();
-                result = Nson.readJson(InternetX.getHttpConnectionX(AppApplication.getBaseUrlV4(GET_BALANCE_ALL_USER), args));
-                dataKasir.asArray().clear();
-                dataKasir.add("");
-                dataKasir.asArray().addAll(result.get("data").asArray());
+                if (isKasir) {
+                    String[] args = new String[3];
+                    args[0] = "CID=" + UtilityAndroid.getSetting(getApplicationContext(), "CID", "").trim();
+                    result = Nson.readJson(InternetX.getHttpConnectionX(AppApplication.getBaseUrlV4(GET_BALANCE_ALL_USER), args));
+                    dataKasir.asArray().clear();
+                    dataKasir.add("");
+                    dataKasir.asArray().addAll(result.get("data").asArray());
+                } else {
+                    String[] args1 = new String[3];
+                    args1[0] = "CID=" + UtilityAndroid.getSetting(getApplicationContext(), "CID", "").trim();
+                    result = Nson.readJson(InternetX.getHttpConnectionX(AppApplication.getBaseUrlV4(GET_EWALLET), args1));
+                    dataEwallet.asArray().clear();
+                    dataEwallet.add("");
+                    dataEwallet.add(result.get("data"));
 
-                Map<String, String> args2 = AppApplication.getInstance().getArgsData();
-                args2.put("action", "view");
-                result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_REKENING_BANK), args2));
-                result = result.get("data");
-                dataRekeningList.asArray().clear();
-                dataRekeningList.add("");
-                for (int i = 0; i < result.size(); i++) {
-                    dataRekeningList.add(Nson.newObject()
-                            .set("ID", result.get(i).get("ID"))
-                            .set("BANK_NAME", result.get(i).get("BANK_NAME"))
-                            .set("NO_REKENING", result.get(i).get("NO_REKENING").asString())
-                            .set("EDC", result.get(i).get("EDC_ACTIVE"))
-                            .set("OFF_US", result.get(i).get("OFF_US"))
-                            .set("COMPARISON", result.get(i).get("BANK_NAME").asString() + " - " + result.get(i).get("NO_REKENING").asString()));
+                    Map<String, String> args2 = AppApplication.getInstance().getArgsData();
+                    args2.put("action", "view");
+                    result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(SET_REKENING_BANK), args2));
+                    result = result.get("data");
+                    dataRekeningList.asArray().clear();
+                    dataRekeningList.add("");
+                    for (int i = 0; i < result.size(); i++) {
+                        dataRekeningList.add(Nson.newObject()
+                                .set("ID", result.get(i).get("ID"))
+                                .set("BANK_NAME", result.get(i).get("BANK_NAME"))
+                                .set("NO_REKENING", result.get(i).get("NO_REKENING").asString())
+                                .set("EDC", result.get(i).get("EDC_ACTIVE"))
+                                .set("OFF_US", result.get(i).get("OFF_US"))
+                                .set("COMPARISON", result.get(i).get("BANK_NAME").asString() + " - " + result.get(i).get("NO_REKENING").asString()));
+                    }
+
                 }
-
             }
 
             @SuppressLint("SetTextI18n")
             @Override
             public void runUI() {
-
+                if (isKasir)
+                    setSpRek(loadKasir, false);
+                else
+                    setSpRek(loadRekening, isEwallet);
             }
         });
 
@@ -223,10 +258,9 @@ public class Atur_Saldo_Activity extends AppActivity {
         });
     }
 
-    private void setSpRekOrKasir(final String selection, final boolean isKasir) {
+    private void setSpRek(final String selection, final boolean isEwallet) {
         newProses(new Messagebox.DoubleRunnable() {
-            Nson result;
-            ArrayList<String> dataList = new ArrayList<>();
+            final ArrayList<String> dataList = new ArrayList<>();
 
             @Override
             public void run() {
@@ -238,9 +272,17 @@ public class Atur_Saldo_Activity extends AppActivity {
                         }
                     }
                 } else {
-                    for (int i = 0; i < dataRekeningList.size(); i++) {
-                        if (!dataRekeningList.get(i).asString().isEmpty()) {
-                            dataList.add(dataRekeningList.get(i).get("BANK_NAME").asString() + " - " + dataRekeningList.get(i).get("NO_REKENING").asString());
+                    if (isEwallet) {
+                        for (int i = 0; i < dataEwallet.size(); i++) {
+                            if (!dataEwallet.get(i).asString().isEmpty()) {
+                                dataList.add(dataEwallet.get(i).get("NAMA_EWALLET").asString());
+                            }
+                        }
+                    } else {
+                        for (int i = 0; i < dataRekeningList.size(); i++) {
+                            if (!dataRekeningList.get(i).asString().isEmpty()) {
+                                dataList.add(dataRekeningList.get(i).get("BANK_NAME").asString() + " - " + dataRekeningList.get(i).get("NO_REKENING").asString());
+                            }
                         }
                     }
                 }
@@ -249,6 +291,9 @@ public class Atur_Saldo_Activity extends AppActivity {
             @Override
             public void runUI() {
                 setSpinnerOffline(dataList, find(R.id.sp_norek, Spinner.class), selection);
+                if (isEwallet) {
+                    find(R.id.sp_norek, Spinner.class).setSelection(1);
+                }
             }
         });
 
@@ -267,27 +312,36 @@ public class Atur_Saldo_Activity extends AppActivity {
                         kasirId = "";
                     }
                 } else {
-                    kasirId = "";
-                    if (adapterView.getSelectedItem().toString().equals(dataRekeningList.get(i).get("COMPARISON").asString())) {
-                        noRek = dataRekeningList.get(i).get("NO_REKENING").asString();
-                        namaBank = dataRekeningList.get(i).get("BANK_NAME").asString();
-                        Nson balanceList = dataBalanceBengkel.get("BANK");
-                        if(balanceList.size() > 0){
-                            for (int j = 0; j < balanceList.size(); j++) {
-                                if(balanceList.get(j).get("NO_REKENING").asString().equals(noRek)){
-                                    balance = balanceList.get(j).get("BALANCE").asInteger();
-                                    break;
-                                }
+                    if (isEwallet) {
+                        if (adapterView.getSelectedItem().toString().equals(dataEwallet.get(i).get("NAMA_EWALLET").asString())) {
+                            noRek = dataEwallet.get(i).get("MERCHANT_ID").asString();
+                            namaBank = dataEwallet.get(i).get("NAMA_EWALLET").asString();
+                        } else {
+                            noRek = "";
+                            namaBank = "";
+                        }
+                    } else {
+                        kasirId = "";
+                        if (adapterView.getSelectedItem().toString().equals(dataRekeningList.get(i).get("COMPARISON").asString())) {
+                            noRek = dataRekeningList.get(i).get("NO_REKENING").asString();
+                            namaBank = dataRekeningList.get(i).get("BANK_NAME").asString();
+                        } else {
+                            noRek = "";
+                            namaBank = "";
+                        }
+                    }
+                    Nson balanceList = dataBalanceBengkel.get("BANK");
+                    if (balanceList.size() > 0) {
+                        for (int j = 0; j < balanceList.size(); j++) {
+                            if (balanceList.get(j).get("NO_REKENING").asString().equals(noRek)) {
+                                balance = balanceList.get(j).get("BALANCE").asInteger();
+                                break;
                             }
                         }
-
-                    } else {
-                        noRek = "";
-                        namaBank = "";
                     }
                 }
 
-                if(i != 0 && !isView){
+                if (i != 0 && !isView) {
                     find(R.id.et_saldo_akhir, EditText.class).setText(RP + NumberFormatUtils.formatRp(balance));
                 }
             }
@@ -308,7 +362,7 @@ public class Atur_Saldo_Activity extends AppActivity {
             public void run() {
                 RequestBody formBody = new FormEncodingBuilder()
                         .add("CID", UtilityAndroid.getSetting(getApplicationContext(), "CID", "").trim())
-                        .add("akun", akun)
+                        .add("akun", isKasir ? "KASIR" : akun)
                         .add("keterangan", find(R.id.et_keterangan, EditText.class).getText().toString())
                         .add("saldoPenyesuaian", NumberFormatUtils.formatOnlyNumber(find(R.id.et_saldo_disesuaikan, EditText.class).getText().toString()))
                         .add("saldoAkhir", NumberFormatUtils.formatOnlyNumber(find(R.id.et_saldo_akhir, EditText.class).getText().toString()))

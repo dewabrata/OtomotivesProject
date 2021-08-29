@@ -55,7 +55,10 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-
+        <activity android:name=".modules.discount.AturDiscountLoyalty_Activity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".modules.discount.DiscountLoyalty_Activity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".modules.sparepart.LokasiPart_Activity"
             android:screenOrientation="portrait"/>
         <activity
@@ -313,7 +316,7 @@
         <activity android:name=".modules.sparepart.AturPenjualanPart_Activity" />
         <activity android:name=".modules.sparepart.PenjualanPart_Activity" />
         <activity android:name=".modules.discount.AturFrekwensiDiscount_Acitivity" />
-        <activity android:name=".modules.discount.FrekwensiDiscount_Activity" />
+        <activity android:name=".modules.discount.DiscountFrekwensi_Activity" />
         <activity android:name=".modules.bengkel.AturReferal_Activity" />
         <activity android:name=".modules.Adapter.Referal_MainTab_Activity" />
         <activity android:name=".modules.bengkel.RegistrasiBengkel_Activity" />

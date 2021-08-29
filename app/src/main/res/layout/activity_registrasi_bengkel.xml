@@ -198,21 +198,25 @@
                     android:textStyle="bold"
                     android:textSize="12sp"/>
 
-                <RelativeLayout
+                <Button
+                    android:id="@+id/btn_merk_kendaraan"
                     android:layout_width="0dp"
                     android:layout_height="34dp"
                     android:layout_weight="6"
-                    android:background="@drawable/background_edittext">
-
-                    <com.rkrzmail.srv.MultiSelectionSpinner
-                        android:id="@+id/sp_merkKendaraan_regist"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:textAlignment="center" />
-
-                </RelativeLayout>
+                    android:background="@drawable/background_edittext"
+                    android:drawableEnd="@drawable/ic_arrow_down"
+                    android:drawablePadding="5dp"
+                    android:drawableTint="@color/grey_800"
+                    android:padding="5dp"
+                    android:text="@string/pilih_uppercase"
+                    android:textAlignment="center" />
 
             </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_merk_kendaraan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -233,21 +237,25 @@
                     android:textStyle="bold"
                     android:textSize="12sp"/>
 
-                <RelativeLayout
+                <Button
+                    android:id="@+id/btn_bidang_usaha"
                     android:layout_width="0dp"
                     android:layout_height="34dp"
                     android:layout_weight="6"
-                    android:background="@drawable/background_edittext">
-
-                    <com.rkrzmail.srv.MultiSelectionSpinner
-                        android:id="@+id/sp_usaha_regist"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:textAlignment="center" />
-
-                </RelativeLayout>
+                    android:background="@drawable/background_edittext"
+                    android:drawableEnd="@drawable/ic_arrow_down"
+                    android:drawablePadding="5dp"
+                    android:drawableTint="@color/grey_800"
+                    android:padding="5dp"
+                    android:text="@string/pilih_uppercase"
+                    android:textAlignment="center" />
 
             </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_bidang_usaha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/tl_alamat_regist"
@@ -291,7 +299,7 @@
 
 
                 <ProgressBar
-                    android:id="@+id/pb_et_kotakab_regist"
+                    android:id="@+id/pb_et_kotakab"
                     style="?android:attr/progressBarStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

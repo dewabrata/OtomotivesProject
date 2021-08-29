@@ -58,7 +58,7 @@ public class MainActivity extends AppActivity {
                 String tgl = simpleDateFormat.format(calendar.getTime());
                 String[] splitTgl = tgl.split("-");
 
-               /* Intent intent = new Intent(getActivity(), RegistrasiBengkel_Activity.class);
+                /*Intent intent = new Intent(getActivity(), RegistrasiBengkel_Activity.class);
                 startActivity(intent);*/
                 if (getSetting("L").equalsIgnoreCase("L")) {
                     //login

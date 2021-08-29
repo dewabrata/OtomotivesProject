@@ -113,9 +113,9 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
     private final Nson partIdList = Nson.newArray();
     private final Nson keluhanList = Nson.newArray();
     private final Nson partJasaList = Nson.newArray();
-    private Nson pointLayananList = Nson.newArray();
-    private Nson rekomendasiPartList = Nson.newArray();
-    private Nson rekomendasiJasaList = Nson.newArray();
+    private final Nson pointLayananList = Nson.newArray();
+    private final Nson rekomendasiPartList = Nson.newArray();
+    private final Nson rekomendasiJasaList = Nson.newArray();
 
     private Nson data;
 
@@ -1043,10 +1043,12 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
                 if (jasaList.asArray().isEmpty() && partList.asArray().isEmpty() && spLayanan.getSelectedItem().toString().equals("PERAWATAN LAINNYA")) {
                     showWarning("PART - JASA HARUS DI MASUKKAN", Toast.LENGTH_LONG);
                 } else {
-                    // Check in Antrian (CHECKIN 4), layanan estimasi status (LAYANAN ESTIMASI ISCHECKED()), TUNGGU KONFIRMASI (TUNGGU KONFIRMASI ISCHECKED())
-                    showDialogPart();
+                    if(jasaList.asArray().isEmpty() || partList.asArray().isEmpty()){
+                        setSelanjutnya("CHECKIN 3", "");
+                    }else{
+                        showDialogPart();
+                    }
                 }
-
                 break;
             case R.id.btn_batal_checkin3:
                 //batal
@@ -1235,7 +1237,7 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
 
             @Override
             public void run() {
-                String[] args = new String[10];
+                String[] args = new String[4];
                 args[0] = "CID=" + UtilityAndroid.getSetting(getApplicationContext(), "CID", "").trim();
                 args[1] = "nopol=" + nopol;
                 args[2] = "pekerjaan=" + pekerjaan;

@@ -1,8 +1,6 @@
 package com.rkrzmail.oto;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,19 +9,14 @@ import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -73,6 +66,7 @@ import com.rkrzmail.oto.modules.bengkel.ProfileBengkel_Activity;
 import com.rkrzmail.oto.modules.bengkel.Saldo_Activity;
 import com.rkrzmail.oto.modules.bengkel.SaranActivity;
 import com.rkrzmail.oto.modules.Adapter.Schedule_MainTab_Activity;
+import com.rkrzmail.oto.modules.discount.DiscountLoyalty_Activity;
 import com.rkrzmail.oto.modules.hutang.Hutang_MainTab_Activity;
 import com.rkrzmail.oto.modules.hutang.Piutang_MainTab_Activity;
 import com.rkrzmail.oto.modules.komisi.KomisiTerbayar_Activity;
@@ -91,7 +85,7 @@ import com.rkrzmail.oto.modules.checkin.CheckOut_Activity;
 import com.rkrzmail.oto.modules.sparepart.AturParts_Activity;
 import com.rkrzmail.oto.modules.sparepart.DetailCariPart_Activity;
 import com.rkrzmail.oto.modules.discount.DiscountPart_Activity;
-import com.rkrzmail.oto.modules.discount.FrekwensiDiscount_Activity;
+import com.rkrzmail.oto.modules.discount.DiscountFrekwensi_Activity;
 import com.rkrzmail.oto.modules.discount.DiscountSpot_Activity;
 import com.rkrzmail.oto.modules.Adapter.Referal_MainTab_Activity;
 import com.rkrzmail.oto.modules.Adapter.PartHome_MainTab_Activity;
@@ -107,23 +101,12 @@ import com.rkrzmail.oto.modules.Adapter.RekeningBank_MainTab_Activity;
 import com.rkrzmail.oto.modules.bengkel.Tenda_Activity;
 import com.rkrzmail.oto.modules.sparepart.TerimaPart_Activity;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Vector;
 
-import pl.droidsonroids.gif.GifDrawable;
-import pl.droidsonroids.gif.GifImageView;
-
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE;
 import static com.rkrzmail.utils.APIUrls.ATUR_KONTROL_LAYANAN;
 import static com.rkrzmail.utils.APIUrls.VIEW_TUGAS_PART;
@@ -197,8 +180,10 @@ public class MenuActivity extends AppActivity implements InstallStateUpdatedList
     private final String PENGATURAN_USER_REKENING = "REKENING";
     private final String PENGATURAN_USER_TENDA = "TENDA";
     private final String PENGATURAN_PROFILE = "PROFILE BENGKEL";
+    private final String PENGATURAN_SALDO_KASIR = "SALDO KASIR";
 
-    private final String KOMISI_JASA_LAIN = "KOMISI JASA LAIN";
+
+    private final String KOMISI_JASA_LAIN = "KOMISI JASA";
     private final String KOMISI_LAYANAN = "KOMISI LAYANAN";
     private final String KOMISI_PART = "KOMISI PART";
     private final String KOMISI_PEMBAYARAN = "PEMBAYARAN KOMISI";
@@ -207,6 +192,7 @@ public class MenuActivity extends AppActivity implements InstallStateUpdatedList
     private final String DISCOUNT_PART = "DISCOUNT PART";
     private final String DISCOUNT_SPOT = "DISCOUNT SPOT";
     private final String DISCOUNT_FREKWENSI = "DISCOUNT FREKWENSI";
+    public  final String DISCOUNT_LOYALTY = "VOUCHER DISCOUNT";
 
     private final String MY_BUSINESS_HUTANG = "HUTANG";
     private final String MY_BUSINESS_PIUTANG = "PIUTANG";
@@ -226,12 +212,8 @@ public class MenuActivity extends AppActivity implements InstallStateUpdatedList
         setContentView(R.layout.activity_main);
         //debugSharePreferences();
 
-        if(reqStoragePermission()){
-            UpdateAppTask updateAppTask = new UpdateAppTask(getActivity());
-            updateAppTask.excuteVersionChecker(getActivity());
-        }else{
-            reqStoragePermission();
-        }
+        UpdateAppTask updateAppTask = new UpdateAppTask(getActivity());
+        updateAppTask.excuteVersionChecker(getActivity());
 
         //initAppUpdate();
         initBrodcastReceiver();
@@ -241,7 +223,7 @@ public class MenuActivity extends AppActivity implements InstallStateUpdatedList
         iconOto.setTint(getResources().getColor(R.color.colorWhite));
         toolbar.setOverflowIcon(iconOto);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(getSetting("NAMA_BENGKEL"));
+        Objects.requireNonNull(getSupportActionBar()).setTitle(getSetting("NAMA_BENGKEL"));
 
         GridView gridView = findViewById(R.id.gridView);
         populate(gridView);
@@ -334,25 +316,18 @@ public class MenuActivity extends AppActivity implements InstallStateUpdatedList
         super.onDestroy();
     }
 
-    private boolean reqStoragePermission(){
-        List<String> listPermissionsNeeded = new ArrayList<>();
-        int WritePermision = ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        int readExternalPermission = ContextCompat.checkSelfPermission(getActivity(), READ_EXTERNAL_STORAGE);
-
-        if(WritePermision != PackageManager.PERMISSION_GRANTED || readExternalPermission != PackageManager.PERMISSION_GRANTED){
-            if (WritePermision != PackageManager.PERMISSION_GRANTED) {
-                listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull @org.jetbrains.annotations.NotNull String[] permissions, @NonNull @org.jetbrains.annotations.NotNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == REQUEST_ID_MULTIPLE_PERMISSIONS){
+            if (grantResults.length > 0 && (grantResults[0] == PackageManager.PERMISSION_GRANTED || grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                UpdateAppTask updateAppTask = new UpdateAppTask(getActivity());
+                updateAppTask.directDownloadUpdateApp();
+            } else {
+                showWarning("Anda Harus Mengijinkan Akses Kontak!");
             }
-            if (readExternalPermission != PackageManager.PERMISSION_GRANTED) {
-                listPermissionsNeeded.add(READ_EXTERNAL_STORAGE);
-            }
-            ActivityCompat.requestPermissions(getActivity(), listPermissionsNeeded.toArray(new String[0]), REQUEST_ID_MULTIPLE_PERMISSIONS);
-            return false;
-        }else{
-            return true;
         }
     }
-
 
     private void debugSharePreferences() {
         String a = getSetting("MERK_KENDARAAN_BENGKEL");
@@ -604,7 +579,16 @@ public class MenuActivity extends AppActivity implements InstallStateUpdatedList
                 showWarning("ANDA TIDAK MEMILIKI AKSES " + PENGATURAN_PROFILE);
 
             }
-        } else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_LOKASI_PART)) {
+        } else if (item.getTitle().toString().equalsIgnoreCase(PENGATURAN_SALDO_KASIR)) {
+            if (getAccess(PENGATURAN)) {
+                Intent intent = new Intent(MenuActivity.this, Saldo_Activity.class);
+                intent.putExtra("KASIR", "");
+                startActivity(intent);
+            } else {
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + PENGATURAN_SALDO_KASIR);
+
+            }
+        }else if (item.getTitle().toString().equalsIgnoreCase(MY_BUSINESS_LOKASI_PART)) {
             if(getAccess(MY_BUSINESS)){
                 Intent intent = new Intent(MenuActivity.this, LokasiPart_Activity.class);
                 startActivity(intent);
@@ -627,7 +611,7 @@ public class MenuActivity extends AppActivity implements InstallStateUpdatedList
         //Discount
         else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_FREKWENSI)) {
             if(getAccess(DISCOUNT)){
-                Intent intent = new Intent(MenuActivity.this, FrekwensiDiscount_Activity.class);
+                Intent intent = new Intent(MenuActivity.this, DiscountFrekwensi_Activity.class);
                 startActivity(intent);
             }else{
                 showWarning("ANDA TIDAK MEMILIKI AKSES " + DISCOUNT);
@@ -637,6 +621,15 @@ public class MenuActivity extends AppActivity implements InstallStateUpdatedList
             Intent intent = new Intent(MenuActivity.this, DiscountJasaLain_Activity.class);
             startActivity(intent);
         }*/
+        else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_LOYALTY)) {
+            if( getAccess(DISCOUNT)){
+                Intent intent = new Intent(MenuActivity.this, DiscountLoyalty_Activity.class);
+                startActivity(intent);
+            }else{
+                showWarning("ANDA TIDAK MEMILIKI AKSES " + DISCOUNT);
+            }
+
+        }
         else if (item.getTitle().toString().equalsIgnoreCase(DISCOUNT_LAYANAN)) {
             if( getAccess(DISCOUNT)){
                 Intent intent = new Intent(MenuActivity.this, DiscountLayanan_Activity.class);
@@ -934,12 +927,13 @@ public class MenuActivity extends AppActivity implements InstallStateUpdatedList
         subMenu.add(PENGATURAN_USER_REKENING);
         subMenu.add(PENGATURAN_USER_TENDA);
         subMenu.add(PENGATURAN_PROFILE);
+        subMenu.add(PENGATURAN_SALDO_KASIR);
 
         subMenu = menu.addSubMenu(DISCOUNT);
-        //subMenu.add(DISCOUNT_JASA_LAIN);
         subMenu.add(DISCOUNT_LAYANAN);
         subMenu.add(DISCOUNT_PART);
         subMenu.add(DISCOUNT_FREKWENSI);
+        subMenu.add(DISCOUNT_LOYALTY);
 
         subMenu = menu.addSubMenu(KOMISI);
         subMenu.add(KOMISI_JASA_LAIN);

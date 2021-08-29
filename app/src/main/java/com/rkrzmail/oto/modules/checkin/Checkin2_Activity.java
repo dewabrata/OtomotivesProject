@@ -48,7 +48,7 @@ public class Checkin2_Activity extends AppActivity {
 
     private EditText etNorangka, etNomesin;
     private TextView tvTgl;
-    private NikitaAutoComplete etWarna, etKodeTipe, etKotaKab;
+    private NikitaAutoComplete etWarna, etKodeTipe;
     private Nson readCheckin;
     private long tahunBeli = 0;
     private long tahunSekarang = 0;
@@ -61,7 +61,7 @@ public class Checkin2_Activity extends AppActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkin2);
-        if(!Tools.isNetworkAvailable(getActivity())){
+        if (!Tools.isNetworkAvailable(getActivity())) {
             showWarning("TIDAK ADA KONEKSI INTERNET", Toast.LENGTH_LONG);
         }
         initComponent();
@@ -88,7 +88,6 @@ public class Checkin2_Activity extends AppActivity {
         etNorangka = findViewById(R.id.et_noRangka_checkin2);
         etNomesin = findViewById(R.id.et_noMesin_checkin2);
         etKodeTipe = findViewById(R.id.et_kode_tipe);
-        etKotaKab = findViewById(R.id.et_kota_kab);
 
         readCheckin = Nson.readJson(getIntentStringExtra(DATA));
         find(R.id.et_nopol).setVisibility(getIntent().hasExtra("KONFIRMASI DATA") ? View.VISIBLE : View.GONE);
@@ -99,18 +98,20 @@ public class Checkin2_Activity extends AppActivity {
             tvTgl.setText(readCheckin.get("tglBeli").asString());
             etKodeTipe.setText(readCheckin.get("KODE_TIPE").asString());
             find(R.id.tv_tahun_checkin2, TextView.class).setText(readCheckin.get("tahunProduksi").asString());
-            etNomesin.setVisibility(View.GONE);
-            etNorangka.setVisibility(View.GONE);
-            find(R.id.et_alamat, EditText.class).setText(readCheckin.get("ALAMAT").asString());
-            etKotaKab.setText(readCheckin.get("KOTA").asString());
+            /*etNomesin.setVisibility(View.GONE);
+            etNorangka.setVisibility(View.GONE);*/
             etWarna.setText(readCheckin.get("WARNA").asString());
             noHp = readCheckin.get("noPonsel").asString();
-        }else{
+            find(R.id.et_kota_kab, NikitaAutoComplete.class).setLoadingIndicator((ProgressBar) findViewById(R.id.pb_et_kotakab));
+            remakeAutoCompleteMaster( find(R.id.et_kota_kab, NikitaAutoComplete.class), "DAERAH", "KOTA_KAB");
+        } else {
             viewDataKendaraan();
             merkKendaraan = getIntentStringExtra("MERK");
             noHp = getIntentStringExtra("NO_PONSEL");
             find(R.id.et_nopol, EditText.class).setText(getIntentStringExtra("NOPOL"));
             find(R.id.btn_lanjut_checkin2, Button.class).setText("SIMPAN");
+            find(R.id.tl_alamat).setVisibility(View.GONE);
+            find(R.id.tl_kota_kab).setVisibility(View.GONE);
         }
 
         initListener();
@@ -119,9 +120,6 @@ public class Checkin2_Activity extends AppActivity {
     }
 
     private void initListener() {
-        etKotaKab.setLoadingIndicator((ProgressBar) findViewById(R.id.pb_et_kotakab_regist));
-        remakeAutoCompleteMaster(etKotaKab, "DAERAH", "KOTA_KAB");
-
         Tools.setViewAndChildrenEnabled(find(R.id.ly_tgl_beli_checkin2, LinearLayout.class), false);
         tvTgl.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,15 +152,10 @@ public class Checkin2_Activity extends AppActivity {
                 try {
                     @SuppressLint("SimpleDateFormat") Date inputYear = new SimpleDateFormat("yyyy").parse(find(R.id.tv_tahun_checkin2, TextView.class).getText().toString());
                     @SuppressLint("SimpleDateFormat") Date validationYear = new SimpleDateFormat("yyyy").parse(String.valueOf(year));
+                    assert inputYear != null;
                     tahunBeli = inputYear.getTime();
                     tahunSekarang = validationYear.getTime();
-                    if (tahunBeli <= tahunSekarang) {
-                        Tools.setViewAndChildrenEnabled(find(R.id.ly_tgl_beli_checkin2, LinearLayout.class), false);
-                        find(R.id.tv_disable).setVisibility(View.VISIBLE);
-                    } else {
-                        Tools.setViewAndChildrenEnabled(find(R.id.ly_tgl_beli_checkin2, LinearLayout.class), true);
-                        find(R.id.tv_disable).setVisibility(View.GONE);
-                    }
+                    Tools.setViewAndChildrenEnabled(find(R.id.ly_tgl_beli_checkin2, LinearLayout.class), tahunBeli > tahunSekarang);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -176,9 +169,6 @@ public class Checkin2_Activity extends AppActivity {
                     if (etWarna.getText().toString().isEmpty()) {
                         etWarna.setError("Warna Wajib di Isi");
                         etWarna.requestFocus();
-                    } else if (etKodeTipe.getText().toString().isEmpty()) {
-                        etKodeTipe.setError("Kode Tipe Harus di Isi");
-                        etKodeTipe.requestFocus();
                     } else if (etNomesin.getText().toString().isEmpty()) {
                         etNomesin.setError("Kode Tipe Harus di Isi");
                         etNomesin.requestFocus();
@@ -195,7 +185,7 @@ public class Checkin2_Activity extends AppActivity {
                     } else if (tvTgl.isEnabled() && tvTgl.getText().toString().isEmpty()) {
                         showWarning("Tanggal Berisi Harus Di Isi");
                         tvTgl.performClick();
-                    }else{
+                    } else {
                         setSelanjutnya(readCheckin);
                     }
                 }
@@ -316,14 +306,14 @@ public class Checkin2_Activity extends AppActivity {
                 args.put("checkinId", getIntentStringExtra(ID));//konfirmasi data
                 args.put("kodeTipe", etKodeTipe.getText().toString());
                 args.put("noPonsel", noHp);
-                args.put("alamat", find(R.id.et_alamat, EditText.class).getText().toString());
-                args.put("kota", etKotaKab.getText().toString());
                 args.put("nopol", getIntentStringExtra("NOPOL"));
+                args.put("alamat", find(R.id.et_alamat, EditText.class).getText().toString());
+                args.put("kotaKab", find(R.id.et_kota_kab, EditText.class).getText().toString());
 
                 String nopolEditText = find(R.id.et_nopol, EditText.class).getText().toString().replace(" ", "");
-                if(getIntentStringExtra("NOPOL").equals(nopolEditText)){
+                if (getIntentStringExtra("NOPOL").equals(nopolEditText)) {
                     args.put("koreksiNopol", "");
-                }else{
+                } else {
                     args.put("koreksiNopol", nopolEditText);
                 }
 
@@ -384,7 +374,6 @@ public class Checkin2_Activity extends AppActivity {
                     etNomesin.setText(result.get("NO_MESIN").asString());
                     etKodeTipe.setText(result.get("CODE_TYPE").asString());
                     find(R.id.et_alamat, EditText.class).setText(result.get("ALAMAT").asString());
-                    etKotaKab.setText(result.get("KOTA_KAB").asString());
                 } else {
                     showWarning(ERROR_INFO);
                 }
