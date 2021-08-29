@@ -89,9 +89,13 @@ public class OutSource_TugasPart_Fragment extends Fragment {
                 }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(Nson parent, View view, int position) {
-                        Intent i = new Intent(getActivity(), AturOutSource_Activity.class);
-                        i.putExtra(DATA, nListArray.get(position).toJson());
-                        startActivity(i);
+                        if(nListArray.get(position).get("STATUS").asString().equals("SELESAI")){
+                            activity.showWarning("OUTSOURCE SUDAH SELESAI!");
+                        }else{
+                            Intent i = new Intent(getActivity(), AturOutSource_Activity.class);
+                            i.putExtra(DATA, nListArray.get(position).toJson());
+                            startActivity(i);
+                        }
                     }
                 })
         );

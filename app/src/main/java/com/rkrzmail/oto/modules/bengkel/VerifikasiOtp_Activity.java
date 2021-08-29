@@ -103,7 +103,7 @@ public class VerifikasiOtp_Activity extends AppActivity {
                     find(R.id.et_no_ponsel, EditText.class).setText("+62 ");
                     Selection.setSelection(find(R.id.et_no_ponsel, EditText.class).getText(),
                             find(R.id.et_no_ponsel, EditText.class).getText().length());
-                } else if (counting < 12) {
+                } else if (counting < 11) {
                     find(R.id.et_no_ponsel, EditText.class).requestFocus();
                 }
 

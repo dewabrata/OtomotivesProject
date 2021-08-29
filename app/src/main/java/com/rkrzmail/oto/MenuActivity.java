@@ -183,7 +183,7 @@ public class MenuActivity extends AppActivity implements InstallStateUpdatedList
     private final String PENGATURAN_SALDO_KASIR = "SALDO KASIR";
 
 
-    private final String KOMISI_JASA_LAIN = "KOMISI JASA LAIN";
+    private final String KOMISI_JASA_LAIN = "KOMISI JASA";
     private final String KOMISI_LAYANAN = "KOMISI LAYANAN";
     private final String KOMISI_PART = "KOMISI PART";
     private final String KOMISI_PEMBAYARAN = "PEMBAYARAN KOMISI";
@@ -192,7 +192,7 @@ public class MenuActivity extends AppActivity implements InstallStateUpdatedList
     private final String DISCOUNT_PART = "DISCOUNT PART";
     private final String DISCOUNT_SPOT = "DISCOUNT SPOT";
     private final String DISCOUNT_FREKWENSI = "DISCOUNT FREKWENSI";
-    public  final String DISCOUNT_LOYALTY = "DISCOUNT LOYALTY";
+    public  final String DISCOUNT_LOYALTY = "VOUCHER DISCOUNT";
 
     private final String MY_BUSINESS_HUTANG = "HUTANG";
     private final String MY_BUSINESS_PIUTANG = "PIUTANG";

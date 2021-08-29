@@ -1,11 +1,16 @@
 package com.rkrzmail.oto.modules.discount;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Selection;
@@ -16,7 +21,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.naa.data.Nson;
@@ -25,6 +32,8 @@ import com.naa.utils.Messagebox;
 import com.rkrzmail.oto.AppActivity;
 import com.rkrzmail.oto.AppApplication;
 import com.rkrzmail.oto.R;
+import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
+import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
 import com.rkrzmail.oto.modules.Adapter.NsonAutoCompleteAdapter;
 import com.rkrzmail.srv.DateFormatUtils;
 import com.rkrzmail.srv.MultipartRequest;
@@ -34,8 +43,11 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -58,7 +70,7 @@ public class AturDiscountLoyalty_Activity extends AppActivity {
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Discount Loyalty");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Voucher Discount");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -70,12 +82,17 @@ public class AturDiscountLoyalty_Activity extends AppActivity {
                 getDatePickerDialog();
             }
         });
-
+        find(R.id.btn_kategori_disc).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initKategoriDisc();
+            }
+        });
         initAutoCompleteNopol();
         initTextListenerPonsel();
     }
 
-    private void initTextListenerPonsel(){
+    private void initTextListenerPonsel() {
         find(R.id.et_no_ponsel, NikitaAutoComplete.class).setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -123,6 +140,7 @@ public class AturDiscountLoyalty_Activity extends AppActivity {
             }
         });
     }
+
     private void initAutoCompleteNopol() {
         find(R.id.et_nopol, NikitaAutoComplete.class).setThreshold(3);
         find(R.id.et_nopol, NikitaAutoComplete.class).setAdapter(new NsonAutoCompleteAdapter(getActivity()) {
@@ -162,12 +180,22 @@ public class AturDiscountLoyalty_Activity extends AppActivity {
 
     @SuppressLint("SetTextI18n")
     private void loadData() {
-        final Nson data = Nson.readJson(getIntentStringExtra(DATA));
         find(R.id.btn_simpan, Button.class).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (find(R.id.et_disc, EditText.class).getText().toString().isEmpty() || find(R.id.et_disc, EditText.class).getText().toString().equals("0,00")) {
-                    find(R.id.et_disc, EditText.class).setError("DISCOUNT PART HARUS DI ISI");
+                if (builderKategori.toString().isEmpty()) {
+                    showWarning("KATEGORI DISCOUNT HARUS DI PILIH!");
+                } else if (NumberFormatUtils.formatOnlyNumber(find(R.id.et_no_ponsel, NikitaAutoComplete.class).getText().toString()).equals("0")) {
+                    find(R.id.et_no_ponsel, NikitaAutoComplete.class).setError("HARUS DI ISI");
+                    viewFocus(find(R.id.et_no_ponsel, NikitaAutoComplete.class));
+                } else if (find(R.id.et_nopol, NikitaAutoComplete.class).getText().toString().isEmpty()) {
+                    find(R.id.et_nopol, NikitaAutoComplete.class).setError("HARUS DI ISI");
+                    viewFocus(find(R.id.et_nopol, NikitaAutoComplete.class));
+                } else if (find(R.id.tv_tgl, TextView.class).getText().toString().isEmpty()) {
+                    find(R.id.tv_tgl, TextView.class).setError("HARUS DI ISI");
+                    viewFocus(find(R.id.tv_tgl, NikitaAutoComplete.class));
+                } else if (find(R.id.et_disc, EditText.class).getText().toString().isEmpty() || find(R.id.et_disc, EditText.class).getText().toString().equals("0,00")) {
+                    find(R.id.et_disc, EditText.class).setError("HARUS DI ISI");
                     viewFocus(find(R.id.et_disc, EditText.class));
                 } else {
                     saveData();
@@ -178,7 +206,7 @@ public class AturDiscountLoyalty_Activity extends AppActivity {
 
     private void saveData() {
         newProses(new Messagebox.DoubleRunnable() {
-            String response = "";
+            Nson response;
 
             @Override
             public void run() {
@@ -189,19 +217,22 @@ public class AturDiscountLoyalty_Activity extends AppActivity {
                 formBody.addString("noPonsel", NumberFormatUtils.formatOnlyNumber(find(R.id.et_no_ponsel, NikitaAutoComplete.class).getText().toString()));
                 formBody.addString("expiredDate", DateFormatUtils.formatDateToDatabase(find(R.id.tv_tgl, TextView.class).getText().toString()));
                 formBody.addString("discPercent", find(R.id.et_disc, EditText.class).getText().toString());
-                formBody.addString("userID",  getSetting("user"));
+                formBody.addString("userID", getSetting("user"));
+                formBody.addString("isSendMessage", find(R.id.cb_kirim_pesan, CheckBox.class).isChecked() ? "Y" : "N");
+                formBody.addString("kategoriDisc", builderKategori.toString());
 
-                response = formBody.execute(AppApplication.getBaseUrlV4(SAVE_OR_UPDATE_DISCOUNT_LOYALTY));
+                response = Nson.readJson(formBody.execute(AppApplication.getBaseUrlV4(SAVE_OR_UPDATE_DISCOUNT_LOYALTY)));
             }
 
             @Override
             public void runUI() {
-                if (response.equalsIgnoreCase("OK")) {
+                if (response.get("status").asBoolean()) {
+                    AppApplication.getMessageTrigger();
                     showSuccess("Sukses Menambahkan Aktivitas Part");
                     setResult(RESULT_OK);
                     finish();
                 } else {
-                    showError(response);
+                    showError("Gagal Menyimpan Data!");
                 }
             }
         });
@@ -230,6 +261,135 @@ public class AturDiscountLoyalty_Activity extends AppActivity {
 
         datePickerDialog.setMinDate(cldr);
         datePickerDialog.show(getFragmentManager(), "Datepickerdialog");
+    }
+
+    private final Nson kategoriSelectedList = Nson.newArray();
+    boolean[] isSelectedKategoriArr = null;
+    boolean selectAllKategori = true;
+    StringBuilder builderKategori = new StringBuilder();
+
+    private void initKategoriDisc() {
+        final List<String> kategoriList = Arrays.asList("ALL", "PART", "LAYANAN");
+        final List<String> selectedList = new ArrayList<>();
+        selectedList.addAll(kategoriSelectedList.asArray());
+
+        final String[] itemArray = kategoriList.toArray(new String[]{});
+        isSelectedKategoriArr = new boolean[itemArray.length];
+        if (selectedList.size() > 0) {
+            for (int j = 0; j < itemArray.length; j++) {
+                for (int i = 0; i < selectedList.size(); i++) {
+                    if (itemArray[j].equals(selectedList.get(i))) {
+                        isSelectedKategoriArr[j] = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Kategori Discount")
+                .setMultiChoiceItems(itemArray, isSelectedKategoriArr, null)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        kategoriSelectedList.asArray().clear();
+                        kategoriSelectedList.asArray().addAll(selectedList);
+                        if (selectedList.size() > 0) {
+                            builderKategori = new StringBuilder();
+                            for (int i = 0; i < selectedList.size(); i++) {
+                                for (int j = 0; j < kategoriList.size(); j++) {
+                                    if (selectedList.get(i).equals(kategoriList.get(j)) && !selectedList.get(i).equals("ALL")) {
+                                        builderKategori.append(selectedList.get(i)).append(", ");
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        initRvMerkKendaraan();
+                    }
+                })
+                .setNegativeButton("BATAL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        selectedList.clear();
+                        dialog.dismiss();
+                    }
+                });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.setCancelable(false);
+        alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        alertDialog.show();
+
+        final ListView listView = alertDialog.getListView();
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                boolean isChecked = listView.isItemChecked(position);
+                String itemSelected = parent.getItemAtPosition(position).toString();
+
+                if (itemSelected.equals("ALL")) {
+                    if (selectAllKategori) {
+                        for (int i = 1; i < itemArray.length; i++) { // we start with first element after "Select all" choice
+                            if (isChecked && !listView.isItemChecked(i)
+                                    || !isChecked && listView.isItemChecked(i)) {
+                                listView.performItemClick(listView, i, 0);
+                            }
+                        }
+                    }
+                } else {
+                    if (!isChecked && listView.isItemChecked(0)) {
+                        selectAllKategori = false;
+                        listView.performItemClick(listView, 0, 0);
+                        selectAllKategori = true;
+                    }
+                }
+
+                try {
+                    if (isChecked) {
+                        selectedList.add(itemSelected);
+                    } else {
+                        if (selectedList.size() > 0) {
+                            for (int i = 0; i < selectedList.size(); i++) {
+                                if (selectedList.get(i).equals(itemSelected)) {
+                                    selectedList.remove(i);
+                                }
+                            }
+                        }
+                    }
+                    isSelectedKategoriArr[position] = isChecked;
+                } catch (Exception e) {
+                    showError(selectedList.toString());
+                }
+
+            }
+        });
+    }
+
+    private void initRvMerkKendaraan() {
+        RecyclerView rv = findViewById(R.id.rv_kategori_disc);
+        rv.setHasFixedSize(false);
+        RecyclerView.LayoutManager layoutManager = new StaggeredGridLayoutManager
+                (
+                        1,
+                        StaggeredGridLayoutManager.HORIZONTAL
+                );
+        rv.setLayoutManager(layoutManager);
+        rv.setAdapter(new NikitaRecyclerAdapter(kategoriSelectedList, R.layout.item_sort_by) {
+            @Override
+            public void onBindViewHolder(@NonNull final NikitaViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
+                super.onBindViewHolder(viewHolder, position);
+                viewHolder.find(R.id.img_check_selected).setVisibility(View.GONE);
+                if (!kategoriSelectedList.get(position).asString().equals("ALL")) {
+                    viewHolder.find(R.id.tv_tittle_sort_by, TextView.class).setText(kategoriSelectedList.get(position).asString());
+                } else {
+                    viewHolder.find(R.id.tv_tittle_sort_by, TextView.class).setVisibility(View.GONE);
+                }
+            }
+        });
+        Objects.requireNonNull(rv.getAdapter()).notifyDataSetChanged();
+
     }
 
 

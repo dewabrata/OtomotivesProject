@@ -61,7 +61,7 @@ public class DiscountLoyalty_Activity extends AppActivity {
     private void initToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Discount Loyalty");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Voucher Discount");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -84,6 +84,14 @@ public class DiscountLoyalty_Activity extends AppActivity {
                         viewHolder.find(R.id.tv_expired_date, TextView.class).setText(nListArray.get(position).get("EXPIRED").asString());
                         viewHolder.find(R.id.tv_disc, TextView.class).setText(nListArray.get(position).get("DISCOUNT_PERCENT").asString() + " %");
                         viewHolder.find(R.id.tv_nopol, TextView.class).setText(nListArray.get(position).get("NO_POLISI").asString());
+
+                        String[] splitKategori = nListArray.get(position).get("KATEGORI_DISC").asString().split(", ");
+                        if(splitKategori.length == 1){
+                            viewHolder.find(R.id.tv_kategori_disc, TextView.class).setText(nListArray.get(position).get("KATEGORI_DISC").asString().replace(", ", ""));
+                        }else{
+                            viewHolder.find(R.id.tv_kategori_disc, TextView.class).setText(nListArray.get(position).get("KATEGORI_DISC").asString());
+                        }
+
                     }
                 }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {
                     @Override
@@ -153,7 +161,7 @@ public class DiscountLoyalty_Activity extends AppActivity {
                 findView(dialogView, R.id.tv_no_ponsel, TextView.class).setText(formatNopol(data.get("NO_PONSEL").asString()));
                 findView(dialogView, R.id.tv_disc, TextView.class).setText(formatNopol(data.get("DISCOUNT_PERCENT").asString()));
                 findView(dialogView, R.id.img_barcode, ImageView.class).setImageBitmap(bitmapBarcode);
-                findView(dialogView, R.id.toolbar, Toolbar.class).setTitle("Loyalty Discount");
+                findView(dialogView, R.id.toolbar, Toolbar.class).setTitle("Voucher Discount");
 
                 AlertDialog alertDialog = builder.create();
                 alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;

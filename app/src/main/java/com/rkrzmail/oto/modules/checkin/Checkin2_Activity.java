@@ -100,15 +100,18 @@ public class Checkin2_Activity extends AppActivity {
             find(R.id.tv_tahun_checkin2, TextView.class).setText(readCheckin.get("tahunProduksi").asString());
             /*etNomesin.setVisibility(View.GONE);
             etNorangka.setVisibility(View.GONE);*/
-
             etWarna.setText(readCheckin.get("WARNA").asString());
             noHp = readCheckin.get("noPonsel").asString();
+            find(R.id.et_kota_kab, NikitaAutoComplete.class).setLoadingIndicator((ProgressBar) findViewById(R.id.pb_et_kotakab));
+            remakeAutoCompleteMaster( find(R.id.et_kota_kab, NikitaAutoComplete.class), "DAERAH", "KOTA_KAB");
         } else {
             viewDataKendaraan();
             merkKendaraan = getIntentStringExtra("MERK");
             noHp = getIntentStringExtra("NO_PONSEL");
             find(R.id.et_nopol, EditText.class).setText(getIntentStringExtra("NOPOL"));
             find(R.id.btn_lanjut_checkin2, Button.class).setText("SIMPAN");
+            find(R.id.tl_alamat).setVisibility(View.GONE);
+            find(R.id.tl_kota_kab).setVisibility(View.GONE);
         }
 
         initListener();
@@ -149,15 +152,10 @@ public class Checkin2_Activity extends AppActivity {
                 try {
                     @SuppressLint("SimpleDateFormat") Date inputYear = new SimpleDateFormat("yyyy").parse(find(R.id.tv_tahun_checkin2, TextView.class).getText().toString());
                     @SuppressLint("SimpleDateFormat") Date validationYear = new SimpleDateFormat("yyyy").parse(String.valueOf(year));
+                    assert inputYear != null;
                     tahunBeli = inputYear.getTime();
                     tahunSekarang = validationYear.getTime();
-                    if (tahunBeli <= tahunSekarang) {
-                        Tools.setViewAndChildrenEnabled(find(R.id.ly_tgl_beli_checkin2, LinearLayout.class), false);
-                        find(R.id.tv_disable).setVisibility(View.VISIBLE);
-                    } else {
-                        Tools.setViewAndChildrenEnabled(find(R.id.ly_tgl_beli_checkin2, LinearLayout.class), true);
-                        find(R.id.tv_disable).setVisibility(View.GONE);
-                    }
+                    Tools.setViewAndChildrenEnabled(find(R.id.ly_tgl_beli_checkin2, LinearLayout.class), tahunBeli > tahunSekarang);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -309,6 +307,8 @@ public class Checkin2_Activity extends AppActivity {
                 args.put("kodeTipe", etKodeTipe.getText().toString());
                 args.put("noPonsel", noHp);
                 args.put("nopol", getIntentStringExtra("NOPOL"));
+                args.put("alamat", find(R.id.et_alamat, EditText.class).getText().toString());
+                args.put("kotaKab", find(R.id.et_kota_kab, EditText.class).getText().toString());
 
                 String nopolEditText = find(R.id.et_nopol, EditText.class).getText().toString().replace(" ", "");
                 if (getIntentStringExtra("NOPOL").equals(nopolEditText)) {

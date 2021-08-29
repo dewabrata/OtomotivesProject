@@ -30,7 +30,7 @@
                     android:id="@+id/et_namaBengkel_usaha"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
+                    android:inputType="textCapCharacters"
                     android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
@@ -47,11 +47,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="top|left"
-                    android:inputType="textCapSentences|textMultiLine"
+                    android:inputType="textCapCharacters|textMultiLine"
                     android:maxLength="2000"
                     android:maxLines="4"
-                    android:textSize="14sp"
-                    android:enabled="false"/>
+                    android:textSize="14sp" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -78,7 +77,7 @@
 
 
                 <ProgressBar
-                    android:id="@+id/pb_et_kotakab_regist"
+                    android:id="@+id/pb_et_kotakab"
                     style="?android:attr/progressBarStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -538,6 +537,41 @@
 
                     <Spinner
                         android:id="@+id/sp_management_keuangan"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textAlignment="center"
+                        android:textStyle="bold"
+                        android:entries="@array/ya_tidak"/>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/paddingLarge"
+                android:layout_marginBottom="@dimen/paddingMedium"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:text="INSPEKSI MEKANIK"
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:textColor="@color/grey_900"
+                    android:textStyle="bold"
+                    android:textSize="12sp"/>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_edittext">
+
+                    <Spinner
+                        android:id="@+id/sp_inspeksi_mekanik"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:textAlignment="center"

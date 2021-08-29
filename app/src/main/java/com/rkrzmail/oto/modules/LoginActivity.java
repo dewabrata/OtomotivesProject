@@ -207,7 +207,7 @@ public class LoginActivity extends AppActivity {
                 }else if(counting < 4){
                     find(R.id.user, EditText.class).setText("+62 ");
                     Selection.setSelection(find(R.id.user, EditText.class).getText(), find(R.id.user, EditText.class).getText().length());
-                } else if (counting < 12) {
+                } else if (counting < 11) {
                     find(R.id.tl_user, TextInputLayout.class).setError("No. Hp Min. 6 Karakter");
                     find(R.id.user, EditText.class).requestFocus();
                 } else {

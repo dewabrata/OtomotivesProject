@@ -65,6 +65,27 @@
 
         </TableRow>
 
+        <TableRow android:layout_marginTop="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:layout_gravity="start"/>
+
+            <TextView
+                android:id="@+id/tv_kategori_disc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/kategori_discount"
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:layout_gravity="end"/>
+
+        </TableRow>
+
         <TableRow
             android:visibility="gone"
             android:layout_marginTop="5dp">

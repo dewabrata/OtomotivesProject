@@ -265,6 +265,27 @@
 
             </android.support.design.widget.TextInputLayout>
 
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/tl_kode_pos"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp">
+
+                <EditText
+                    android:id="@+id/et_kode_pos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/kode_pos_uppercase"
+                    android:textSize="14sp"
+                    android:maxLength="5"
+                    android:inputType="numberSigned"
+                    tools:ignore="LabelFor" />
+
+            </android.support.design.widget.TextInputLayout>
+
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -290,7 +311,7 @@
 
 
                 <ProgressBar
-                    android:id="@+id/pb_et_kotakab_regist"
+                    android:id="@+id/pb_et_kotakab"
                     style="?android:attr/progressBarStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -184,7 +184,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                 } else if (counting < 4) {
                     etNoPonsel.setText("+62 ");
                     Selection.setSelection(etNoPonsel.getText(), etNoPonsel.getText().length());
-                } else if (counting < 12) {
+                } else if (counting < 11) {
                     find(R.id.tl_nohp_regist, TextInputLayout.class).setError("No. Hp Min. 6 Karakter");
                     etNoPonsel.requestFocus();
                 } else {
@@ -561,9 +561,10 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                         merkSelectedList.asArray().clear();
                         merkSelectedList.asArray().addAll(selectedList);
                         if (selectedList.size() > 0) {
+                            saveDataMerk.asArray().clear();
                             for (int i = 0; i < selectedList.size(); i++) {
                                 for (int j = 0; j < dataMerkKendaraan.size(); j++) {
-                                    if (selectedList.get(i).equals(dataMerkKendaraan.get(j).get("MERK").asString())) {
+                                    if (selectedList.get(i).equals(dataMerkKendaraan.get(j).get("MERK").asString()) && !selectedList.get(i).equals("ALL")) {
                                         saveDataMerk.add(Nson.newObject()
                                                 .set("MERK_ID", dataMerkKendaraan.get(j).get("ID").asString())
                                                 .set("MERK", dataMerkKendaraan.get(j).get("MERK").asString())
@@ -644,6 +645,8 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                     viewHolder.find(R.id.img_check_selected).setVisibility(View.GONE);
                     if(!merkSelectedList.get(position).asString().equals("ALL")){
                         viewHolder.find(R.id.tv_tittle_sort_by, TextView.class).setText(merkSelectedList.get(position).asString());
+                    }else{
+                        viewHolder.find(R.id.tv_tittle_sort_by, TextView.class).setVisibility(View.GONE);
                     }
                 }
             });
@@ -739,6 +742,7 @@ public class RegistrasiBengkel_Activity extends AppActivity implements View.OnCl
                         bidangUsahaSelectedList.asArray().clear();
                         bidangUsahaSelectedList.asArray().addAll(selectedList);
                         if (selectedList.size() > 0) {
+                            saveDataBidangUsaha.asArray().clear();
                             for (int i = 0; i < selectedList.size(); i++) {
                                 for (int j = 0; j < dataBidangUsaha.size(); j++) {
                                     if (selectedList.get(i).equals(dataBidangUsaha.get(j).get("BIDANG_USAHA").asString())) {

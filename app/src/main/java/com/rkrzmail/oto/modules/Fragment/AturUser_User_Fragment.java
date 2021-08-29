@@ -163,7 +163,7 @@ public class AturUser_User_Fragment extends Fragment {
             status = data.get("STATUS").asString();
             penggajian = data.get("PENGGAJIAN").asString();
             posisi = data.get("POSISI").asString();
-            fungsiMekanik = data.get("FUNGSI_MEKANIK").asString();
+            fungsiMekanik = data.get("MEKANIK").asString().equals("Y") ? "YA" : "TIDAK";
             idUser = data.get("ID").asInteger();
 
             find(R.id.tblSimpan, Button.class).setText("Update");
@@ -409,7 +409,7 @@ public class AturUser_User_Fragment extends Fragment {
                 args.put("tanggalmasuk", parseTglMasuk);
                 args.put("posisi", spPosisi.getSelectedItem().toString());
                 args.put("status", find(R.id.spinnerStatus, Spinner.class).getSelectedItem().toString());
-                args.put("mekanik", find(R.id.sp_fungsiMekanik, Spinner.class).getSelectedItem().toString());
+                args.put("mekanik", find(R.id.sp_fungsiMekanik, Spinner.class).getSelectedItem().toString().equals("YA") ? "Y" : "N");
                 args.put("akses", aksesApp);
                 args.put("myCodeAbsen", spMycode.getSelectedItem().toString().equals("YA") ? "Y" : "N");
                 if (args.containsValue("--PILIH--")) {
@@ -460,7 +460,7 @@ public class AturUser_User_Fragment extends Fragment {
                 args.put("akses", aksesApp);
                 args.put("myCodeAbsen", spMycode.getSelectedItem().toString().equals("YA") ? "Y" : "N");
                 args.put("jenisTab", "PERSONAL");
-                args.put("mekanik", find(R.id.sp_fungsiMekanik, Spinner.class).getSelectedItem().toString());
+                args.put("mekanik", find(R.id.sp_fungsiMekanik, Spinner.class).getSelectedItem().toString().equals("YA") ? "Y" : "N");
 
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(KARYAWAN), args));

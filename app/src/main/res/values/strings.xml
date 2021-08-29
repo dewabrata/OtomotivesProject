@@ -460,6 +460,7 @@
     <string name="expired_date">Expired Date</string>
     <string name="expired_uppercase">EXPIRED</string>
     <string name="kirim_pesan_uppercase">KIRIM PESAN</string>
+    <string name="kategori_discount">Kategori Discount</string>
     <string-array name="pola_harga_jual">
         <item>FLEXIBLE</item>
         <item>BELI + MARGIN</item>

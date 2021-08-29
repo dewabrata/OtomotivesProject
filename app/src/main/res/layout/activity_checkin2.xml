@@ -37,49 +37,6 @@
 
             </android.support.design.widget.TextInputLayout>
 
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/paddingLarge"
-                android:layout_marginBottom="@dimen/paddingMedium"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp">
-
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:text="TAHUN PRODUKSI"
-                    android:layout_width="0dp"
-                    android:layout_weight="3"
-                    android:textColor="@color/grey_900"
-                    android:textStyle="bold"
-                    android:textSize="12sp"/>
-
-                <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_height="34dp"
-                    android:layout_weight="6"
-                    android:paddingStart="10dp"
-                    android:paddingTop="2dp"
-                    android:paddingBottom="2dp"
-                    tools:ignore="RtlSymmetry"
-                    android:background="@drawable/background_edittext">
-
-                    <TextView
-                        android:id="@+id/tv_tahun_checkin2"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:drawableStart="@drawable/icon_tanggal"
-                        android:gravity="center"
-                        android:textAlignment="center"
-                        android:textColor="@color/grey_900"/>
-
-                </RelativeLayout>
-
-            </LinearLayout>
-
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -191,7 +148,7 @@
                             android:paddingStart="10dp"
                             android:paddingTop="2dp"
                             tools:ignore="RtlSymmetry"
-                            android:background="@drawable/background_edittext">
+                            android:background="@drawable/state_textview_clickable_border">
 
                             <TextView
                                 android:id="@+id/tv_tanggal_checkin2"
@@ -206,17 +163,45 @@
 
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/tv_disable"
-                        android:visibility="gone"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="DISABLE"
-                        android:layout_width="wrap_content"
-                        android:textColor="@color/red_800"
-                        android:textStyle="bold"
-                        android:textSize="12sp"
-                        android:layout_gravity="end"
-                        android:layout_marginTop="-5dp"/>
+                        android:layout_marginTop="@dimen/paddingLarge"
+                        android:layout_marginBottom="@dimen/paddingMedium"
+                        android:orientation="horizontal"
+                        android:gravity="center">
+
+                        <TextView
+                            android:layout_height="wrap_content"
+                            android:text="TAHUN PRODUKSI"
+                            android:layout_width="0dp"
+                            android:layout_weight="3"
+                            android:textColor="@color/grey_900"
+                            android:textStyle="bold"
+                            android:textSize="12sp"/>
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="34dp"
+                            android:layout_weight="6"
+                            android:paddingStart="10dp"
+                            android:paddingTop="2dp"
+                            android:paddingBottom="2dp"
+                            tools:ignore="RtlSymmetry"
+                            android:background="@drawable/background_edittext">
+
+                            <TextView
+                                android:id="@+id/tv_tahun_checkin2"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:drawableStart="@drawable/icon_tanggal"
+                                android:gravity="center"
+                                android:textAlignment="center"
+                                android:textColor="@color/grey_900"/>
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
 
                     <android.support.design.widget.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -252,6 +237,63 @@
                     </android.support.design.widget.TextInputLayout>
 
                 </LinearLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/tl_alamat">
+
+                    <EditText
+                        android:id="@+id/et_alamat"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="ALAMAT PELANGGAN"
+                        android:inputType="textCapCharacters|textMultiLine"
+                        android:maxLength="200"
+                        android:textSize="14sp" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:hint="KOTA / KAB"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:id="@+id/tl_kota_kab"
+                        android:layout_marginTop="10dp">
+
+                        <com.rkrzmail.srv.NikitaAutoComplete
+                            android:id="@+id/et_kota_kab"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:inputType="textCapCharacters"
+                            android:padding="@dimen/spacing_large"/>
+
+                    </android.support.design.widget.TextInputLayout>
+
+
+                    <ProgressBar
+                        android:id="@+id/pb_et_kotakab"
+                        style="?android:attr/progressBarStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_gravity="center_vertical|right"
+                        android:layout_marginRight="20dp"
+                        android:visibility="gone" />
+
+                </FrameLayout>
 
             </LinearLayout>
 

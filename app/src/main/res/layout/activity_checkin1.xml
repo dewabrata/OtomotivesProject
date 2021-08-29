@@ -86,7 +86,7 @@
                         android:id="@+id/et_jenisKendaraan_checkin1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/jenis_kendaraan_uppercase"
+                        android:hint="MERK/ MODEL"
                         android:inputType="textCapCharacters"
                         android:maxLength="35"
                         android:padding="15dp"
@@ -327,6 +327,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
+                    android:id="@+id/tl_km"
                     android:layout_weight="6.2">
 
                     <com.rkrzmail.srv.NikitaAutoComplete

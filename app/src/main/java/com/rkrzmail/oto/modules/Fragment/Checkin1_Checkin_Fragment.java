@@ -8,6 +8,7 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -117,6 +118,7 @@ public class Checkin1_Checkin_Fragment extends Fragment implements View.OnClickL
             warna = "";
     private int expiredGaransiHari = 0, expiredGaransiKm = 0, kmCheckinBefore = 0, totalHariCheckin = 0;
     private int kendaraanId = 0;
+    private int kmBefore = 0;
     private Nson historyList = Nson.newArray();
     private boolean keyDel = false, isNoHp = false, isNamaValid = false;
     private boolean availHistory = false;
@@ -188,13 +190,25 @@ public class Checkin1_Checkin_Fragment extends Fragment implements View.OnClickL
                 } else if (spPekerjaan.getSelectedItem().toString().equalsIgnoreCase("--PILIH--")) {
                     activity.setErrorSpinner(spPekerjaan, "Silahkan Pilih Pekerjaan");
                 } else {
-                    if (kmBitmap != null && etKm.getText().toString().isEmpty()) {
+                    int km = Integer.parseInt(NumberFormatUtils.formatOnlyNumber(etKm.getText().toString()));
+                    if (kmBitmap != null && km > 0) {
                         etKm.setError("KM HARUS DI ISI");
                         activity.viewFocus(etKm);
-                    } else if (((TextInputLayout) fragmentView.findViewById(R.id.tl_kode_pos)).isErrorEnabled()) {
-                        activity.viewFocus(fragmentView.findViewById(R.id.tl_kode_pos));
-
-                    } else {
+                    } else if(km > 0 && kmBefore > 0 && km <= kmBefore){
+                        activity.showInfoDialog("Konfirmasi", "KM Entry kurang dari KM Sebelumnya, Lanutkan ?", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                setSelanjutnya();
+                            }
+                        }, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                    }
+                    else {
                         setSelanjutnya();
                     }
                 }
@@ -298,7 +312,7 @@ public class Checkin1_Checkin_Fragment extends Fragment implements View.OnClickL
                     etNoPonsel.setTag(null);
                     etNoPonsel.setText("+62 ");
                     Selection.setSelection(etNoPonsel.getText(), etNoPonsel.getText().length());
-                } else if (counting < 12) {
+                } else if (counting < 11) {
                     ((TextInputLayout) fragmentView.findViewById(R.id.tl_nohp)).setError("No. Hp Min. 6 Karakter");
                     etNoPonsel.requestFocus();
                 } else {
@@ -502,6 +516,10 @@ public class Checkin1_Checkin_Fragment extends Fragment implements View.OnClickL
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Nson n = Nson.readJson(String.valueOf(adapterView.getItemAtPosition(position)));
 
+                kmBefore = n.get("KM_BEFORE").asInteger();
+                if(kmBefore > 0){
+                    ((TextInputLayout)fragmentView.findViewById(R.id.tl_km)).setError("KM Sebelumnya: " + kmBefore);
+                }
                 tanggalBeliKendaraan = n.get("TANGGAL_BELI").asString();
                 merkKendaraan = n.get("MERK").asString();
                 kendaraan = n.get("TYPE").asString();
@@ -686,9 +704,6 @@ public class Checkin1_Checkin_Fragment extends Fragment implements View.OnClickL
                 args.put("type", kendaraan);//dateKendaraan
                 args.put("kodeTipe", kodeTipe);
                 args.put("tanggalbeli", tanggalBeliKendaraan);
-                if (!km.isEmpty()) {
-                    args.put("fotoKm", base64fotoKM[0]);
-                }
                 args.put("email", find(R.id.et_email, EditText.class).getText().toString());
                 args.put("kodePos", find(R.id.et_kode_pos, EditText.class).getText().toString());
 

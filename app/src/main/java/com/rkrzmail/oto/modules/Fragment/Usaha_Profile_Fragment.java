@@ -72,7 +72,7 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
 
     private EditText etNamaBengkel, etAlamat, etBadanUsaha, etKotaKab, etNoTelp, etNib, etNpwp, etKodePos, etNoTelpMessage,
             etMaxAntrianExpress, etMaxAntrianStandart, etGoogleBisnis;
-    private Spinner spAfiliasi, spMngKeuangan;
+    private Spinner spAfiliasi, spMngKeuangan, spInspeksiMekanik;
     private MultiSelectionSpinner spJenisKendaraan;
     private CheckBox cbPkp;
     private AlertDialog alertDialog;
@@ -131,7 +131,7 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
                              Bundle savedInstanceState) {
        fragmentView = inflater.inflate(R.layout.fragment_tab_usaha_bengkel, container, false);
         activity = ((ProfileBengkel_Activity) getActivity());
-        initComponent(fragmentView);
+        initComponent();
         initData();
         return fragmentView;
     }
@@ -143,29 +143,30 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
         }
     }
 
-    private void initComponent(View v) {
-        etNamaBengkel = v.findViewById(R.id.et_namaBengkel_usaha);
-        etAlamat = v.findViewById(R.id.et_alamat_usaha);
-        etKodePos = v.findViewById(R.id.et_kodepos_usaha);
-        etBadanUsaha = v.findViewById(R.id.et_namaUsaha_usaha);
-        etKotaKab = v.findViewById(R.id.et_kotaKab_usaha);
-        etNoTelp = v.findViewById(R.id.et_no_telp);
-        etNoTelpMessage = v.findViewById(R.id.et_no_telp_message);
-        etNib = v.findViewById(R.id.et_nib_usaha);
-        etNpwp = v.findViewById(R.id.et_npwp_usaha);
-        spAfiliasi = v.findViewById(R.id.sp_afiliasi_usaha);
-        spJenisKendaraan = v.findViewById(R.id.sp_jenisKendaraan_usaha);
-        cbPkp = v.findViewById(R.id.cb_pkp_usaha);
-        etMaxAntrianExpress = v.findViewById(R.id.et_maxAntrianExpress);
-        etMaxAntrianStandart = v.findViewById(R.id.et_maxAntrianStandart);
-        ImageView imgAntrianExpress = v.findViewById(R.id.ic_AntrianExpress_usaha);
-        ImageView imgAntrianStandart = v.findViewById(R.id.ic_AntrianStandart_usaha);
-        btnLogo = v.findViewById(R.id.btn_logo_depan);
-        btnTampakDepan = v.findViewById(R.id.btn_tampak_depan);
-        Button btnSimpan = v.findViewById(R.id.btn_simpan_usaha);
-        Button btnLokasi = v.findViewById(R.id.btn_lokasi_tambahan);
-        etGoogleBisnis = v.findViewById(R.id.et_google_bisnis);
-        spMngKeuangan  = v.findViewById(R.id.sp_management_keuangan);
+    private void initComponent() {
+        etNamaBengkel = fragmentView.findViewById(R.id.et_namaBengkel_usaha);
+        etAlamat = fragmentView.findViewById(R.id.et_alamat_usaha);
+        etKodePos = fragmentView.findViewById(R.id.et_kodepos_usaha);
+        etBadanUsaha = fragmentView.findViewById(R.id.et_namaUsaha_usaha);
+        etKotaKab = fragmentView.findViewById(R.id.et_kotaKab_usaha);
+        etNoTelp = fragmentView.findViewById(R.id.et_no_telp);
+        etNoTelpMessage = fragmentView.findViewById(R.id.et_no_telp_message);
+        etNib = fragmentView.findViewById(R.id.et_nib_usaha);
+        etNpwp = fragmentView.findViewById(R.id.et_npwp_usaha);
+        spAfiliasi = fragmentView.findViewById(R.id.sp_afiliasi_usaha);
+        spJenisKendaraan = fragmentView.findViewById(R.id.sp_jenisKendaraan_usaha);
+        cbPkp = fragmentView.findViewById(R.id.cb_pkp_usaha);
+        etMaxAntrianExpress = fragmentView.findViewById(R.id.et_maxAntrianExpress);
+        etMaxAntrianStandart = fragmentView.findViewById(R.id.et_maxAntrianStandart);
+        ImageView imgAntrianExpress = fragmentView.findViewById(R.id.ic_AntrianExpress_usaha);
+        ImageView imgAntrianStandart = fragmentView.findViewById(R.id.ic_AntrianStandart_usaha);
+        btnLogo = fragmentView.findViewById(R.id.btn_logo_depan);
+        btnTampakDepan = fragmentView.findViewById(R.id.btn_tampak_depan);
+        Button btnSimpan = fragmentView.findViewById(R.id.btn_simpan_usaha);
+        Button btnLokasi = fragmentView.findViewById(R.id.btn_lokasi_tambahan);
+        etGoogleBisnis = fragmentView.findViewById(R.id.et_google_bisnis);
+        spMngKeuangan  = fragmentView.findViewById(R.id.sp_management_keuangan);
+        spInspeksiMekanik = fragmentView.findViewById(R.id.sp_inspeksi_mekanik);
 
         etNoTelpMessage.addTextChangedListener(textWatcherPonsel);
         final MapPicker_Dialog mapPicker_dialog = new MapPicker_Dialog();
@@ -302,11 +303,13 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
                     setJenisKendaraan(Collections.singletonList(UtilityAndroid.getSetting(getContext(), "JENIS_KENDARAAN", "")));
                     setSpMerkKendaraan(nson.get("MERK_BENGKEL"));
                     setSpBidangUsaha(nson.get("BIDANG_USAHA_BENGKEL"));
+                    setSpInspeksiMekanik(nson.get("INSPEKSI_MEKANIK").asString().equals("Y") ? "YA" : "TIDAK");
                     activity.setSpinnerOffline(afiliasiList, spAfiliasi, nson.get("AFILIASI").asString());
 
                     if (nson.get("PRINCIPAL_BENGKEL").asArray().size() > 0) {
                         Nson loadPrincipal = nson.get("PRINCIPAL_BENGKEL");
                         if (loadPrincipal.size() > 0) {
+                            loadPrincipalList.clear();
                             for (int i = 0; i < loadPrincipal.size(); i++) {
                                 loadPrincipalList.add(loadPrincipal.get(i).get("NAMA_PRINCIPAL").asString());
                             }
@@ -358,6 +361,9 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
                 args.put("merkList", saveDataMerk.toJson());
                 args.put("bidangUsahaList", saveDataBidangUsaha.toJson());
                 args.put("pembayaranAktif", spMngKeuangan.getSelectedItem().toString().equals("YA") ? "Y" : "N");
+                args.put("inspeksiMekanik", spInspeksiMekanik.getSelectedItem().toString().equals("YA") ? "Y" : "N");
+                args.put("namaBengkel", etNamaBengkel.getText().toString());
+                args.put("alamat", etAlamat.getText().toString());
 
                 result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3(VIEW_PROFILE), args));
             }
@@ -419,6 +425,7 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
                         merkListName.add(dataMerkKendaraan.get(i).get("MERK").asString());
                     }
                 }
+                merkSelectedList.asArray().clear();
                 if(loadMerk.size() > 0){
                     for (int i = 0; i < loadMerk.size(); i++) {
                         merkSelectedList.add(loadMerk.get(i).get("MERK").asString());
@@ -465,6 +472,7 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
                         merkSelectedList.asArray().clear();
                         merkSelectedList.asArray().addAll(selectedList);
                         if (selectedList.size() > 0) {
+                            saveDataMerk.asArray().clear();
                             for (int i = 0; i < selectedList.size(); i++) {
                                 for (int j = 0; j < dataMerkKendaraan.size(); j++) {
                                     if (selectedList.get(i).equals(dataMerkKendaraan.get(j).get("MERK").asString())) {
@@ -548,6 +556,8 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
                     viewHolder.find(R.id.img_check_selected).setVisibility(View.GONE);
                     if(!merkSelectedList.get(position).asString().equals("ALL")){
                         viewHolder.find(R.id.tv_tittle_sort_by, TextView.class).setText(merkSelectedList.get(position).asString());
+                    }else{
+                        viewHolder.find(R.id.tv_tittle_sort_by, TextView.class).setVisibility(View.GONE);
                     }
                 }
             });
@@ -566,6 +576,8 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
                     viewHolder.find(R.id.img_check_selected).setVisibility(View.GONE);
                     if(!bidangUsahaSelectedList.get(position).asString().equals("ALL")){
                         viewHolder.find(R.id.tv_tittle_sort_by, TextView.class).setText(bidangUsahaSelectedList.get(position).asString());
+                    }else{
+                        viewHolder.find(R.id.tv_tittle_sort_by, TextView.class).setVisibility(View.GONE);
                     }
                 }
             });
@@ -598,6 +610,7 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
                         }
                     }
                 }
+                bidangUsahaSelectedList.asArray().clear();
                 if(loadBidangUsaha.size() > 0){
                     for (int i = 0; i < loadBidangUsaha.size(); i++) {
                         bidangUsahaSelectedList.add(loadBidangUsaha.get(i).get("KATEGORI").asString());
@@ -644,6 +657,7 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
                         bidangUsahaSelectedList.asArray().clear();
                         bidangUsahaSelectedList.asArray().addAll(selectedList);
                         if (selectedList.size() > 0) {
+                            saveDataBidangUsaha.asArray().clear();
                             for (int i = 0; i < selectedList.size(); i++) {
                                 for (int j = 0; j < dataBidangUsaha.size(); j++) {
                                     if (selectedList.get(i).equals(dataBidangUsaha.get(j).get("BIDANG_USAHA").asString())) {
@@ -719,12 +733,13 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
                     result = Nson.readJson(InternetX.postHttpConnection(AppApplication.getBaseUrlV3("databengkel"), args));
                     dataPrincipalList = result.get("data");
                 }
+                principalListName.clear();
                 if(dataPrincipalList.size() > 0){
                     for (int i = 0; i < dataPrincipalList.size(); i++) {
                         principalListName.add(dataPrincipalList.get(i).get("NAMA").asString());
                     }
                 }
-
+                principalSelectedList.asArray().clear();
                 if(selectionList.size() > 0){
                     principalSelectedList.asArray().addAll(selectionList);
                 }
@@ -769,6 +784,7 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
                         principalSelectedList.asArray().clear();
                         principalSelectedList.asArray().addAll(selectedList);
                         if (selectedList.size() > 0) {
+                            saveDataprincipal.asArray().clear();
                             for (int i = 0; i < selectedList.size(); i++) {
                                 for (int j = 0; j < dataPrincipalList.size(); j++) {
                                     if (selectedList.get(i).equals(dataPrincipalList.get(j).get("NAMA").asString())) {
@@ -858,6 +874,10 @@ public class Usaha_Profile_Fragment extends Fragment implements OnMapReadyCallba
         return recyclerView;
     }
 
+    private void setSpInspeksiMekanik(final String selection){
+        List<String> yaTidak = Arrays.asList("YA", "TIDAK");
+        activity.setSpinnerOffline(yaTidak, spInspeksiMekanik, selection);
+    }
 
     private void getImageBase64() {
         activity.newProses(new Messagebox.DoubleRunnable() {
