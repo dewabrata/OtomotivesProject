@@ -60,6 +60,10 @@ public class ZanyEditText extends EditText {
             return super.sendKeyEvent(event);
         }
 
+        public void getClearFocus(EditText editText){
+            ZanyEditText.this.clearFocus(editText);
+        }
+
     }
 
 }

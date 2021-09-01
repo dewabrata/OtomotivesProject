@@ -1315,8 +1315,9 @@ public class Checkin3_Activity extends AppActivity implements View.OnClickListen
             @Override
             public void runUI() {
                 if (result.get("status").asString().equalsIgnoreCase("OK")) {
-                    alertDialog.dismiss();
-                    Log.d("message__", "runUI: " + result);
+                    if(alertDialog != null)
+                        alertDialog.dismiss();
+
                     Intent intent = new Intent(getActivity(), KontrolLayanan_Activity.class);
                     intent.putExtra("NOPOL", nopol);
                     if (status.equalsIgnoreCase("LAYANAN ESTIMASI")) {

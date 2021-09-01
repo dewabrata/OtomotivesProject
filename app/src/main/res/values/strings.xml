@@ -205,7 +205,7 @@
     <string name="km">KM</string>
     <string name="part_jasa_uppercase"><![CDATA[PART & JASA]]></string>
     <string name="part_uppercase">PART</string>
-    <string name="default_rp_uppercase">Rp. NN.NNN.NNN</string>
+    <string name="default_rp_uppercase">Rp. 0</string>
     <string name="jual_part_uppercase">JUAL PART</string>
     <string name="discount_uppercase">DISCOUNT</string>
     <string name="lainnya_uppercase">LAINNYA</string>
@@ -227,7 +227,7 @@
     <string name="tampilkan_uppercase">TAMPILKAN</string>
     <string name="dd_mm_yy_uppercase">DD/MM/YY</string>
     <string name="hari_uppercase">HARI</string>
-    <string name="default_number">NNN</string>
+    <string name="default_number">0</string>
     <string name="jasa_part_uppercase">JASA PART</string>
     <string name="min_stock">Min Stock</string>
     <string name="penjualan_30_hari_terakhir">Penjualan 30 Hari Terakhir</string>
@@ -461,6 +461,11 @@
     <string name="expired_uppercase">EXPIRED</string>
     <string name="kirim_pesan_uppercase">KIRIM PESAN</string>
     <string name="kategori_discount">Kategori Discount</string>
+    <string name="rugi_laba_uppercase">RUGI LABA</string>
+    <string name="margin_percent">MARGIN %</string>
+    <string name="penyusutan">PENYUSUTAN</string>
+    <string name="default_value_percent">0.0 %</string>
+    <string name="nama_paket">Nama Paket</string>
     <string-array name="pola_harga_jual">
         <item>FLEXIBLE</item>
         <item>BELI + MARGIN</item>

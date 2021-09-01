@@ -55,10 +55,10 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
             <TextView
-                android:id="@+id/tv_disc"
+                android:id="@+id/tv_disc_part"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/discount"
+                android:text="Diskon Part"
                 android:textSize="12sp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:layout_gravity="end"/>
@@ -68,18 +68,19 @@
         <TableRow android:layout_marginTop="5dp">
 
             <TextView
+                android:id="@+id/tv_paket_layanan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
+                android:text="@string/nama_paket"
                 android:textSize="12sp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:layout_gravity="start"/>
 
             <TextView
-                android:id="@+id/tv_kategori_disc"
+                android:id="@+id/tv_disc_layanan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/kategori_discount"
+                android:text="Diskon Layanan"
                 android:textSize="12sp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:layout_gravity="end"/>

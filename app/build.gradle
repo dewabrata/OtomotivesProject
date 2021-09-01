@@ -134,6 +134,9 @@ dependencies {
 
     //Pusher
     implementation 'com.pusher:pusher-java-client:2.2.6'
+
+    //workManager
+    implementation 'android.arch.work:work-runtime:1.0.0'
 }
 
 

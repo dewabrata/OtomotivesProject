@@ -59,6 +59,36 @@
                 android:orientation="vertical"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:layout_gravity="center"
+                android:paddingEnd="20dp"
+                tools:ignore="RtlSymmetry">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textSize="12sp"
+                    android:textColor="@color/grey_900" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:layout_gravity="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textSize="12sp"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@color/grey_900" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingStart="20dp"
                 android:layout_gravity="center">
 
                 <TextView
@@ -73,34 +103,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/unit_hari_uppercase"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textSize="12sp"
-                    android:layout_marginTop="5dp"
-                    tools:ignore="SmallSp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:layout_gravity="center"
-                android:paddingStart="20dp">
-
-                <TextView
-                    android:id="@+id/tv_total_margin_harian"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/default_rp_uppercase"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/margin_part_uppercase"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                     android:textSize="12sp"
                     android:layout_marginTop="5dp"

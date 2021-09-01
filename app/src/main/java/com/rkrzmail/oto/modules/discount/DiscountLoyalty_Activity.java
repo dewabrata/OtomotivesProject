@@ -82,15 +82,10 @@ public class DiscountLoyalty_Activity extends AppActivity {
                         super.onBindViewHolder(viewHolder, position);
                         viewHolder.find(R.id.tv_no_ponsel, TextView.class).setText(nListArray.get(position).get("NO_PONSEL").asString());
                         viewHolder.find(R.id.tv_expired_date, TextView.class).setText(nListArray.get(position).get("EXPIRED").asString());
-                        viewHolder.find(R.id.tv_disc, TextView.class).setText(nListArray.get(position).get("DISCOUNT_PERCENT").asString() + " %");
                         viewHolder.find(R.id.tv_nopol, TextView.class).setText(nListArray.get(position).get("NO_POLISI").asString());
-
-                        String[] splitKategori = nListArray.get(position).get("KATEGORI_DISC").asString().split(", ");
-                        if(splitKategori.length == 1){
-                            viewHolder.find(R.id.tv_kategori_disc, TextView.class).setText(nListArray.get(position).get("KATEGORI_DISC").asString().replace(", ", ""));
-                        }else{
-                            viewHolder.find(R.id.tv_kategori_disc, TextView.class).setText(nListArray.get(position).get("KATEGORI_DISC").asString());
-                        }
+                        viewHolder.find(R.id.tv_paket_layanan, TextView.class).setText(nListArray.get(position).get("NAMA_LAYANAN").asString());
+                        viewHolder.find(R.id.tv_disc_layanan, TextView.class).setText(nListArray.get(position).get("DISCOUNT_LAYANAN").asString() + " %");
+                        viewHolder.find(R.id.tv_disc_part, TextView.class).setText(nListArray.get(position).get("DISCOUNT_PART").asString()  + " %");
 
                     }
                 }.setOnitemClickListener(new NikitaRecyclerAdapter.OnItemClickListener() {

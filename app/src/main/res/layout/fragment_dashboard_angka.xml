@@ -73,7 +73,6 @@
                             android:layout_weight="1"
                             android:drawableEnd="@drawable/icon_tanggal"
                             android:textStyle="bold"
-                            android:enabled="false"
                             android:layout_marginEnd="5dp" />
 
                     </LinearLayout>
@@ -155,6 +154,8 @@
                 <include layout="@layout/layout_dashboard_angka_row_3" />
 
                 <include layout="@layout/layout_dashboard_angka_row_4" />
+
+                <include layout="@layout/layout_dashboard_margin" />
 
                 <include layout="@layout/layout_dashboard_angka_row_5" />
 

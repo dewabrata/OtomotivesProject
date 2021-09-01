@@ -80,7 +80,8 @@
                 android:orientation="vertical"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:paddingStart="20dp">
+                android:paddingStart="20dp"
+                tools:ignore="RtlSymmetry">
 
                 <TextView
                     android:id="@+id/tv_dbIncome"
@@ -172,7 +173,7 @@
                 tools:ignore="RtlSymmetry">
 
                 <TextView
-                    android:id="@+id/tv_dbMargin"
+                    android:id="@+id/tv_total_penyusutan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/default_rp_uppercase"
@@ -183,7 +184,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text="@string/margin_upercase"
+                    android:text="@string/penyusutan"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                     android:textSize="12sp" />
 

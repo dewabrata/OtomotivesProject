@@ -3,8 +3,10 @@ package com.rkrzmail.oto.modules;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -14,6 +16,13 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.CompletionInfo;
+import android.view.inputmethod.CorrectionInfo;
+import android.view.inputmethod.ExtractedText;
+import android.view.inputmethod.ExtractedTextRequest;
+import android.view.inputmethod.InputConnection;
+import android.view.inputmethod.InputConnectionWrapper;
+import android.view.inputmethod.InputContentInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -28,6 +37,7 @@ import com.rkrzmail.oto.R;
 import com.rkrzmail.oto.modules.bengkel.RegistrasiBengkel_Activity;
 import com.rkrzmail.oto.modules.Adapter.NikitaRecyclerAdapter;
 import com.rkrzmail.oto.modules.Adapter.NikitaViewHolder;
+import com.rkrzmail.srv.ZanyEditText;
 import com.rkrzmail.utils.APIUrls;
 
 import java.util.Map;
@@ -40,6 +50,8 @@ public class Otp_Activity extends AppActivity {
     private String one, two, three, four, five, six;
     private boolean isRegist = false;
     private Nson bengkelList = Nson.newArray();
+
+    private int count2 = 0, count3 = 0, count4 = 0, count5 = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,16 +75,16 @@ public class Otp_Activity extends AppActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                count2 = 0;
                 one = s.toString();
                 if (s.length() == 1) {
                     find(R.id.et2, EditText.class).requestFocus();
-                } else if (s.length() == 0) {
-                    find(R.id.et1, EditText.class).requestFocus();
                 }
             }
         });
 
-        find(R.id.et2, EditText.class).addTextChangedListener(new TextWatcher() {
+        find(R.id.et2, ZanyEditText.class).addTextChangedListener(new TextWatcher() {
+            private int lastLength;
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -80,7 +92,7 @@ public class Otp_Activity extends AppActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                lastLength = s.length();
             }
 
             @Override
@@ -88,9 +100,8 @@ public class Otp_Activity extends AppActivity {
                 two = s.toString();
                 if (s.length() == 1) {
                     find(R.id.et3, EditText.class).requestFocus();
-                } else if (s.length() == 0) {
-                    find(R.id.et1, EditText.class).requestFocus();
                 }
+
             }
         });
 
@@ -107,11 +118,10 @@ public class Otp_Activity extends AppActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                count2 = 0;
                 three = s.toString();
                 if (s.length() == 1) {
                     find(R.id.et4, EditText.class).requestFocus();
-                } else if (s.length() == 0) {
-                    find(R.id.et2, EditText.class).requestFocus();
                 }
             }
         });
@@ -132,8 +142,6 @@ public class Otp_Activity extends AppActivity {
                 four = s.toString();
                 if (s.length() == 1) {
                     find(R.id.et5, EditText.class).requestFocus();
-                } else if (s.length() == 0) {
-                    find(R.id.et3, EditText.class).requestFocus();
                 }
             }
         });
@@ -154,8 +162,6 @@ public class Otp_Activity extends AppActivity {
                 five = s.toString();
                 if (s.length() == 1) {
                     find(R.id.et6, EditText.class).requestFocus();
-                } else if (s.length() == 0) {
-                    find(R.id.et4, EditText.class).requestFocus();
                 }
             }
         });
@@ -175,8 +181,6 @@ public class Otp_Activity extends AppActivity {
             public void afterTextChanged(Editable s) {
                 if (s.length() == 1) {
                     find(R.id.et6, EditText.class).clearFocus();
-                } else if (s.length() == 0) {
-                    find(R.id.et5, EditText.class).requestFocus();
                 }
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append(((EditText) findViewById(R.id.et1)).getText().toString());
@@ -193,11 +197,7 @@ public class Otp_Activity extends AppActivity {
                     } else {
                         login(dummy);
                     }
-                } else {
-                    showError("Lengkapi Request OTP");
                 }
-
-
             }
         });
 
@@ -408,19 +408,5 @@ public class Otp_Activity extends AppActivity {
                 finish();
             }
         }));
-    }
-
-
-    private void clearAndSetFocus(final EditText editText, final EditText editText2) {
-        editText.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if (keyEvent.getAction() == KeyEvent.KEYCODE_DEL) {
-                    editText.clearFocus();
-                    editText2.requestFocus();
-                }
-                return false;
-            }
-        });
     }
 }

@@ -37,6 +37,91 @@
 
             </android.support.design.widget.TextInputLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/paddingLarge"
+                android:layout_marginBottom="@dimen/paddingMedium"
+                android:orientation="horizontal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:text="TAHUN PRODUKSI"
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:textColor="@color/grey_900"
+                    android:textStyle="bold"
+                    android:textSize="12sp"/>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:paddingStart="10dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    tools:ignore="RtlSymmetry"
+                    android:background="@drawable/background_edittext">
+
+                    <TextView
+                        android:id="@+id/tv_tahun_checkin2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:drawableStart="@drawable/icon_tanggal"
+                        android:gravity="center"
+                        android:textAlignment="center"
+                        android:textColor="@color/grey_900"/>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ly_tgl_beli_checkin2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/paddingMedium"
+                android:layout_marginBottom="@dimen/paddingMedium"
+                android:orientation="horizontal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/txttittle9"
+                    android:layout_height="wrap_content"
+                    android:text="TANGGAL BELI"
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:textColor="@color/grey_900"
+                    android:textStyle="bold"
+                    android:textSize="12sp"/>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_weight="6"
+                    android:paddingStart="10dp"
+                    android:paddingTop="2dp"
+                    tools:ignore="RtlSymmetry"
+                    android:background="@drawable/state_textview_clickable_border">
+
+                    <TextView
+                        android:id="@+id/tv_tanggal_checkin2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:drawableStart="@drawable/icon_tanggal"
+                        android:gravity="center"
+                        android:textAlignment="center"
+                        android:textColor="@color/grey_900"/>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -121,87 +206,6 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginRight="10dp"
                     android:orientation="vertical">
-
-                    <LinearLayout
-                        android:id="@+id/ly_tgl_beli_checkin2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/paddingMedium"
-                        android:layout_marginBottom="@dimen/paddingMedium"
-                        android:orientation="horizontal"
-                        android:gravity="center">
-
-                        <TextView
-                            android:id="@+id/txttittle9"
-                            android:layout_height="wrap_content"
-                            android:text="TANGGAL BELI"
-                            android:layout_width="0dp"
-                            android:layout_weight="3"
-                            android:textColor="@color/grey_900"
-                            android:textStyle="bold"
-                            android:textSize="12sp"/>
-
-                        <RelativeLayout
-                            android:layout_width="0dp"
-                            android:layout_height="34dp"
-                            android:layout_weight="6"
-                            android:paddingStart="10dp"
-                            android:paddingTop="2dp"
-                            tools:ignore="RtlSymmetry"
-                            android:background="@drawable/state_textview_clickable_border">
-
-                            <TextView
-                                android:id="@+id/tv_tanggal_checkin2"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:drawableStart="@drawable/icon_tanggal"
-                                android:gravity="center"
-                                android:textAlignment="center"
-                                android:textColor="@color/grey_900"/>
-
-                        </RelativeLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/paddingLarge"
-                        android:layout_marginBottom="@dimen/paddingMedium"
-                        android:orientation="horizontal"
-                        android:gravity="center">
-
-                        <TextView
-                            android:layout_height="wrap_content"
-                            android:text="TAHUN PRODUKSI"
-                            android:layout_width="0dp"
-                            android:layout_weight="3"
-                            android:textColor="@color/grey_900"
-                            android:textStyle="bold"
-                            android:textSize="12sp"/>
-
-                        <RelativeLayout
-                            android:layout_width="0dp"
-                            android:layout_height="34dp"
-                            android:layout_weight="6"
-                            android:paddingStart="10dp"
-                            android:paddingTop="2dp"
-                            android:paddingBottom="2dp"
-                            tools:ignore="RtlSymmetry"
-                            android:background="@drawable/background_edittext">
-
-                            <TextView
-                                android:id="@+id/tv_tahun_checkin2"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:drawableStart="@drawable/icon_tanggal"
-                                android:gravity="center"
-                                android:textAlignment="center"
-                                android:textColor="@color/grey_900"/>
-
-                        </RelativeLayout>
-
-                    </LinearLayout>
 
                     <android.support.design.widget.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
